@@ -1,0 +1,22 @@
+{
+  "name": "governance-portal-v2",
+  "license": "AGPL-3.0-only",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
+  },
+  "dependencies": {
+    "@makerdao/currency": "^0.9.6",
+    "@makerdao/dai": "^0.23.0-rc.5",
+    "dotenv": "^8.2.0",
+    "next": "latest",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-query": "^1.2.7",
+    "theme-ui": "^0.3.1",
+    "zustand": "^2.2.3"
+  }
+}
