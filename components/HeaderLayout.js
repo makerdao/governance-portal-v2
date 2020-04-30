@@ -4,7 +4,7 @@ import { Container, Flex, Heading, NavLink } from 'theme-ui';
 const HeaderLayout = (props) => (
   <Container>
     <Flex variant="flex.header">
-      <Heading>Dai UI</Heading>
+      <Heading>Maker</Heading>
       <Flex as="nav">
         <Link href="/executive">
           <NavLink>Executive</NavLink>

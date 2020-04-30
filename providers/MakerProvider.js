@@ -7,9 +7,7 @@ function MakerProvider({ children, network }) {
   const [maker, setMaker] = useState(null);
   useEffect(() => {
     if (!network) return;
-    instantiateMaker(network).then((maker) => {
-      setMaker(maker);
-    });
+    instantiateMaker(network).then(setMaker);
   }, [network]);
 
   return (

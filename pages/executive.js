@@ -1,24 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 import { NavLink } from 'theme-ui';
-import { useQuery } from 'react-query';
+import useSWR from 'swr';
 import HeaderLayout from '../components/HeaderLayout';
 
-const getProposals = async (_, network) => {
-  return (
-    await fetch(
-      'https://cms-gov.makerfoundation.com/content/governance-dashboard'
-    )
-  ).json();
-};
+const getProposals = async () =>
+  fetch(
+    'https://cms-gov.makerfoundation.com/content/governance-dashboard'
+  ).then((resp) => resp.json());
 
 const Executive = () => {
-  const { status, data: proposals, error, isFetching } = useQuery(
-    'proposals',
-    getProposals
-  );
+  const { data: proposals, error } = useSWR('proposals', getProposals);
 
-  if (isFetching) return null;
+  if (error) return <div>failed to load</div>;
+  if (!proposals) return <div>loading...</div>;
   return (
     <HeaderLayout>
       <div>

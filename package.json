@@ -9,13 +9,13 @@
     "export": "next export"
   },
   "dependencies": {
-    "@makerdao/currency": "^0.9.6",
-    "@makerdao/dai": "^0.23.0-rc.5",
+    "@makerdao/currency": "^0.9.7",
+    "@makerdao/dai": "^0.30.0",
     "dotenv": "^8.2.0",
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-query": "^1.2.7",
+    "swr": "^0.2.0",
     "theme-ui": "^0.3.1",
     "zustand": "^2.2.3"
   }
