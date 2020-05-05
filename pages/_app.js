@@ -1,6 +1,6 @@
 import React from 'react';
 import App from 'next/app';
-import theme from '@makerdao/dai-ui-theme-maker';
+import theme from '../lib/theme';
 import { ThemeProvider } from 'theme-ui';
 import MakerProvider from '../providers/MakerProvider';
 
