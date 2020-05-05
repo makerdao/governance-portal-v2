@@ -25,7 +25,7 @@ const Index = () => {
       </Head>
 
       <h1>Governance Portal V2</h1>
-      <Link href="/executive/">
+      <Link href="/executive">
         <a>to executive proposals</a>
       </Link>
       {!maker ? (

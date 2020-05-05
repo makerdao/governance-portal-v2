@@ -11,6 +11,7 @@
   "dependencies": {
     "@makerdao/currency": "^0.9.7",
     "@makerdao/dai": "^0.30.0",
+    "@makerdao/dai-ui-theme-maker": "^0.0.24",
     "dotenv": "^8.2.0",
     "next": "latest",
     "react": "^16.13.1",
