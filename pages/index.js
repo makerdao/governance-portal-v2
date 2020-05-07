@@ -1,47 +1,87 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
+import { Heading, NavLink, Card, Text } from 'theme-ui';
+import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
-import useMaker from '../hooks/useMaker';
 
-const Index = () => {
-  const { maker } = useMaker();
-  const [web3Connected, setWeb3Connected] = useState(false);
+import _maker from '../maker';
+import fetchPolls from '../lib/fetchPolls';
+import fetchExecutiveProposals from '../lib/fetchExecutiveProposals';
+import PrimaryLayout from '../components/PrimaryLayout';
 
-  async function connectBrowserWallet() {
-    try {
-      if (maker) {
-        await maker.authenticate();
-        setWeb3Connected(true);
-      }
-    } catch (err) {
-      window.alert(err);
-    }
-  }
+async function getSystemStats() {
+  const maker = await _maker;
+  return Promise.all([
+    maker.service('mcd:savings').getYearlyRate(),
+    maker.service('mcd:systemData').getSystemWideDebtCeiling(),
+  ]);
+}
+
+if (typeof window !== 'undefined') {
+  getSystemStats().then((stats) => {
+    mutate('/system-stats', stats, false);
+  });
+}
+
+export default function Index({ proposals, polls }) {
+  const { data } = useSWR('/system-stats', getSystemStats);
+
+  const [savingsRate, debtCeiling] = data || [];
 
   return (
-    <div className="wrap">
+    <PrimaryLayout>
       <Head>
         <title>Governance Portal V2</title>
       </Head>
 
-      <h1>Governance Portal V2</h1>
-      <Link href="/executive">
-        <a>to executive proposals</a>
-      </Link>
-      {!maker ? (
-        <div>
-          <h3>Loading...</h3>
-        </div>
-      ) : !web3Connected ? (
-        <button onClick={connectBrowserWallet}>Connect Wallet</button>
+      <Heading as="h1">Governance Portal V2</Heading>
+      {data ? (
+        <Card>
+          <Text>Savings Rate: {savingsRate.toFixed(2)}</Text>
+          <Text>Total Debt Celing: {debtCeiling.toLocaleString()}</Text>
+        </Card>
       ) : (
-        <div>
-          <h3>Connected Account</h3>
-          <p>{maker.currentAddress()}</p>
-        </div>
+        'Loading system stats…'
       )}
-    </div>
-  );
-};
 
-export default Index;
+      <Heading as="h2">Executive Votes</Heading>
+      {proposals.map((proposal) => (
+        <Link
+          key={proposal.key}
+          href="/executive/[proposal-id]"
+          as={`/executive/${proposal.key}`}
+        >
+          <NavLink>{proposal.key}</NavLink>
+        </Link>
+      ))}
+
+      <Heading as="h2">Polling Votes</Heading>
+      {polls.map((poll) => (
+        <Link
+          key={poll.multiHash}
+          href="/polling/[poll-id]"
+          as={`/polling/${poll.multiHash}`}
+        >
+          <NavLink>{poll.title}</NavLink>
+        </Link>
+      ))}
+    </PrimaryLayout>
+  );
+}
+
+export async function getStaticProps() {
+  const proposals = await fetchExecutiveProposals();
+  const polls = (await fetchPolls()).map((p) => ({
+    title: p.title,
+    summary: p.summary,
+    multiHash: p.multiHash,
+  }));
+
+  return {
+    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    props: {
+      proposals,
+      polls,
+    },
+  };
+}

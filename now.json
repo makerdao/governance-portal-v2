@@ -1,0 +1,7 @@
+{
+  "build": {
+    "env": {
+      "INFURA_KEY": "@infura-key"
+    }
+  }
+}
