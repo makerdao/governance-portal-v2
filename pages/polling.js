@@ -34,9 +34,6 @@ export async function getStaticProps() {
     startDate: p.startDate,
   }));
 
-  // Don't process polls where startDate is in the future
-  // const polls = uniqPolls.filter(poll => poll.startDate <= new Date());
-
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {

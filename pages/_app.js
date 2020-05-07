@@ -1,6 +1,7 @@
 import React from 'react';
 import App from 'next/app';
 import theme from '../lib/theme';
+import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
 import MakerProvider from '../providers/MakerProvider';
 
@@ -19,7 +20,9 @@ class MyApp extends App {
     return (
       <MakerProvider network={network}>
         <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
+          <SWRConfig value={{ refreshInterval: 2000 }}>
+            <Component {...pageProps} />
+          </SWRConfig>
         </ThemeProvider>
       </MakerProvider>
     );
