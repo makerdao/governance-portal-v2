@@ -4,7 +4,8 @@ import { Heading, NavLink, Card, Text } from 'theme-ui';
 import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 
-import _maker from '../maker';
+import _maker, { DAI } from '../maker';
+import { bigNumberKFormat } from '../lib/utils';
 import fetchPolls from '../lib/fetchPolls';
 import fetchExecutiveProposals from '../lib/fetchExecutiveProposals';
 import PrimaryLayout from '../components/PrimaryLayout';
@@ -13,10 +14,12 @@ async function getSystemStats() {
   const maker = await _maker;
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
+    maker.getToken(DAI).totalSupply(),
     maker.service('mcd:systemData').getSystemWideDebtCeiling(),
   ]);
 }
 
+// if we are on the browser trigger a prefetch as soon as possible
 if (typeof window !== 'undefined') {
   getSystemStats().then((stats) => {
     mutate('/system-stats', stats, false);
@@ -26,7 +29,7 @@ if (typeof window !== 'undefined') {
 export default function Index({ proposals, polls }) {
   const { data } = useSWR('/system-stats', getSystemStats);
 
-  const [savingsRate, debtCeiling] = data || [];
+  const [savingsRate, totalDaiSupply, debtCeiling] = data || [];
 
   return (
     <PrimaryLayout>
@@ -37,8 +40,9 @@ export default function Index({ proposals, polls }) {
       <Heading as="h1">Governance Portal V2</Heading>
       {data ? (
         <Card>
-          <Text>Savings Rate: {savingsRate.toFixed(2)}</Text>
-          <Text>Total Debt Celing: {debtCeiling.toLocaleString()}</Text>
+          <Text>Dai Savings Rate: {savingsRate.toFixed(2)}</Text>
+          <Text>Total Dai: {bigNumberKFormat(totalDaiSupply)}</Text>
+          <Text>Dai Debt Celing: {debtCeiling.toLocaleString()}</Text>
         </Card>
       ) : (
         'Loading system stats…'

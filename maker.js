@@ -1,9 +1,10 @@
 import Maker from '@makerdao/dai';
-import McdPlugin from '@makerdao/dai-plugin-mcd';
+import McdPlugin, { MDAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
+export const DAI = MDAI;
 
 function networkToRpc(network) {
   switch (network) {
