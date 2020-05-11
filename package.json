@@ -9,11 +9,11 @@
     "export": "next export"
   },
   "dependencies": {
-    "@makerdao/currency": "^0.9.7",
     "@makerdao/dai": "^0.30.0",
     "@makerdao/dai-plugin-governance": "^0.10.7",
     "@makerdao/dai-plugin-mcd": "^1.4.1",
-    "@makerdao/dai-ui-theme-maker": "^0.0.24",
+    "@makerdao/dai-ui-icons": "^0.0.26",
+    "@makerdao/dai-ui-theme-maker": "^0.0.26",
     "dotenv": "^8.2.0",
     "gray-matter": "^4.0.2",
     "isomorphic-unfetch": "^3.0.0",

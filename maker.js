@@ -9,9 +9,9 @@ export const DAI = MDAI;
 function networkToRpc(network) {
   switch (network) {
     case 'mainnet':
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
+      return `wss://mainnet.infura.io/ws/v3/${process.env.INFURA_KEY}`;
     case 'kovan':
-      return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
+      return `wss://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
   }
 }
 
@@ -23,10 +23,10 @@ let _maker = Maker.create('http', {
   ],
   provider: {
     url: networkToRpc(network),
-    type: 'HTTP',
+    type: 'WEBSOCKET',
   },
   web3: {
-    pollingInterval: network === 'testnet' ? 100 : null,
+    pollingInterval: null,
   },
   log: false,
   multicall: true,
@@ -37,29 +37,13 @@ if (typeof window !== 'undefined' && window.location.search.includes('kovan')) {
     plugins: [[McdPlugin, { prefetch: false }]],
     provider: {
       url: networkToRpc('kovan'),
-      type: 'HTTP',
+      type: 'WEBSOCKET',
     },
     web3: {
-      pollingInterval: network === 'testnet' ? 100 : null,
+      pollingInterval: null,
     },
     log: false,
     multicall: true,
   });
 }
 export default _maker;
-
-export async function instantiateMaker(network) {
-  const rpcUrl = networkToRpc(network);
-  const maker = await Maker.create('http', {
-    provider: {
-      url: rpcUrl,
-      type: 'HTTP',
-    },
-    web3: {
-      pollingInterval: network === 'testnet' ? 100 : null,
-    },
-    multicall: true,
-  });
-  window.maker = maker; // for debugging
-  return maker;
-}

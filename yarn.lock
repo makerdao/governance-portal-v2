@@ -2342,7 +2342,7 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@makerdao/currency@^0.9.5", "@makerdao/currency@^0.9.7":
+"@makerdao/currency@^0.9.5":
   version "0.9.7"
   resolved "https://registry.yarnpkg.com/@makerdao/currency/-/currency-0.9.7.tgz#7b7310cc4feb75ce78330116ae15dad2267040e0"
   integrity sha512-7N4w25lYwJf105RJZk/WZpxzUMs3GOxSJ4Qg2yro7V1bnsEHaZ0IeyrFOtUfo87Ia3tvld+k9JLG6ykYOxI3kw==
@@ -2373,10 +2373,15 @@
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
 
-"@makerdao/dai-ui-theme-maker@^0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-theme-maker/-/dai-ui-theme-maker-0.0.24.tgz#971ade24389e396bf9d7e6923ed7392f379eac1c"
-  integrity sha512-W1GQKjMq72V4A4o1DcpccZ/4f1XukonfNdHBdAYvC/MqMAsEfa99nGGZuPRn/LtlJnB7oqG65VvjcJtvgZH6zQ==
+"@makerdao/dai-ui-icons@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons/-/dai-ui-icons-0.0.26.tgz#9bd51d921b5adf3760cdf5c7cd33ff4233fac9ae"
+  integrity sha512-lfKNqYTWWrhaBU40pNQkuI1lxrCtjc9CT82g89lw6jImCaBFyXlm28tKN4kQ3l4VgVeVAqi/K8QnW/ZDJYoJmw==
+
+"@makerdao/dai-ui-theme-maker@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-theme-maker/-/dai-ui-theme-maker-0.0.26.tgz#1ed76917b1b310207ca372c63296824802c4c206"
+  integrity sha512-XAfTaZadbAyappu5a45wl/NPMtR+MTAqJELd0510GHRJD5R/AmAKZ4h+ubzxYVqwyCeYkRwIF71XWQ2NPoQMEA==
   dependencies:
     "@theme-ui/color" "^0.3.1"
 

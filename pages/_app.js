@@ -3,7 +3,7 @@ import App from 'next/app';
 import theme from '../lib/theme';
 import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
-import MakerProvider from '../providers/MakerProvider';
+import AccountsProvider from '../providers/AccountsProvider';
 
 class MyApp extends App {
   state = {};
@@ -18,13 +18,13 @@ class MyApp extends App {
     const { Component, pageProps } = this.props;
     const { network } = this.state;
     return (
-      <MakerProvider network={network}>
+      <AccountsProvider network={network}>
         <ThemeProvider theme={theme}>
           <SWRConfig value={{ refreshInterval: 2000 }}>
-            <Component {...pageProps} />
+            <Component {...pageProps} network={network} />
           </SWRConfig>
         </ThemeProvider>
-      </MakerProvider>
+      </AccountsProvider>
     );
   }
 }
