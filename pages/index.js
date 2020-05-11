@@ -4,6 +4,7 @@ import { Heading, NavLink, Container, Flex, Text, Box } from 'theme-ui';
 import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 
+import Skeleton from 'react-loading-skeleton';
 import _maker, { DAI } from '../maker';
 import { bigNumberKFormat } from '../lib/utils';
 import fetchPolls from '../lib/fetchPolls';
@@ -62,45 +63,42 @@ export default function Index({ proposals, polls }) {
           </Box>
         </Container>
 
-        {data ? (
-          <Container pb="5">
+        <Container pb="5">
+          <Flex
+            mx="auto"
+            variant="cards.primary"
+            sx={{ boxShadow: 'faint', height: '133px', maxWidth: 10 }}
+          >
             <Flex
-              variant="cards.primary"
-              sx={{ boxShadow: 'faint', height: '133px' }}
+              mx="4"
+              my="auto"
+              sx={{ width: '100%', justifyContent: 'space-between' }}
             >
-              <Flex
-                mx="4"
-                my="auto"
-                sx={{ width: '100%', justifyContent: 'space-between' }}
-              >
-                <div>
-                  <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
-                    Dai Savings Rate
-                  </Text>
-                  <Text mt="2" variant="h2">
-                    {savingsRate.toFixed(2)}%
-                  </Text>
-                </div>
-                <div>
-                  <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
-                  <Text mt="2" variant="h2">
-                    {bigNumberKFormat(totalDaiSupply)}
-                  </Text>
-                </div>
-                <div>
-                  <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
-                    Dai Debt Celing
-                  </Text>
-                  <Text mt="2" variant="h2">
-                    {debtCeiling.toLocaleString()}
-                  </Text>
-                </div>
-              </Flex>
+              <div>
+                <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
+                  Dai Savings Rate
+                </Text>
+                <Text mt="2" variant="h2">
+                  {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
+                </Text>
+              </div>
+              <div>
+                <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+                <Text mt="2" variant="h2">
+                  {data ? bigNumberKFormat(totalDaiSupply) : <Skeleton />}
+                </Text>
+              </div>
+              <div>
+                <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
+                  Dai Debt Celing
+                </Text>
+                <Text mt="2" variant="h2">
+                  {data ? debtCeiling.toLocaleString() : <Skeleton />}
+                </Text>
+              </div>
             </Flex>
-          </Container>
-        ) : (
-          'Loading system stats…'
-        )}
+          </Flex>
+        </Container>
 
         <Heading as="h2">Executive Votes</Heading>
         {proposals.map((proposal) => (
