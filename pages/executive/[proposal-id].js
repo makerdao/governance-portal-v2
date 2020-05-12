@@ -32,7 +32,7 @@ export default function ExecutiveProposal({ proposal }) {
 export async function getStaticProps({ params }) {
   const proposals = await fetchExecutiveProposals();
   const proposal = proposals.find(
-    (proposal) => proposal.key === params['proposal-id']
+    proposal => proposal.key === params['proposal-id']
   );
   const content = await markdownToHtml(proposal?.about || '');
 
@@ -40,18 +40,18 @@ export async function getStaticProps({ params }) {
     props: {
       proposal: {
         ...proposal,
-        content,
-      },
-    },
+        content
+      }
+    }
   };
 }
 
 export async function getStaticPaths() {
   const proposals = await fetchExecutiveProposals();
-  const paths = proposals.map((proposal) => `/executive/${proposal.key}`);
+  const paths = proposals.map(proposal => `/executive/${proposal.key}`);
 
   return {
     paths,
-    fallback: true,
+    fallback: true
   };
 }

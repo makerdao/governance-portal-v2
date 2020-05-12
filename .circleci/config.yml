@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  install:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: |
+            yarn install
+      - save_cache:
+          paths:
+            - node_modules
+            - ./node_modules
+          key: dependency-cache-{{ checksum "package.json" }}
+  test:
+    docker:
+      - image: makerdao/dapptools-node
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Run tests
+          command: |
+            source /home/circleci/setup-env.sh
+            yarn test:ci
+            npm i --no-save codecov
+            ./node_modules/.bin/codecov
+
+workflows:
+  version: 2
+  mainflow:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
