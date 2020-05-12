@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import _maker from '../maker';
+import _maker from '../lib/maker';
 
 export const AccountsContext = createContext();
 

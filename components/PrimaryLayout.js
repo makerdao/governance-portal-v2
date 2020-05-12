@@ -6,7 +6,7 @@ const PrimaryLayout = ({ children }) => (
   <Container mx="auto" px={4}>
     <Header />
     <Box as="main">{children}</Box>
-    {/* <Footer  /> */}
+    {/* <Footer /> */}
   </Container>
 );
 

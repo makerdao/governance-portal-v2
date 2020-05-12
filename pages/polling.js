@@ -4,7 +4,7 @@ import Link from 'next/link';
 import fetchPolls from '../lib/fetchPolls';
 import PrimaryLayout from '../components/PrimaryLayout';
 
-export default function Polling({ polls }) {
+export default function Polling({ polls = [] } = {}) {
   const validPolls = polls.filter(
     (poll) => new Date(poll.startDate) <= new Date()
   );

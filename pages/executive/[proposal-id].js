@@ -9,7 +9,7 @@ import fetchExecutiveProposals from '../../lib/fetchExecutiveProposals';
 export default function ExecutiveProposal({ proposal }) {
   const { isFallback } = useRouter();
 
-  if (!isFallback && !proposal.key) {
+  if (!isFallback && !proposal?.key) {
     return (
       <ErrorPage
         statusCode={404}

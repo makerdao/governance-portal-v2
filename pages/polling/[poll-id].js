@@ -27,7 +27,7 @@ export default function Poll({ poll }) {
 
 export async function getStaticProps({ params }) {
   const poll = (await fetchPolls()).filter(
-    (p) => p.multiHash === params['poll-id']
+    p => p.multiHash === params['poll-id']
   )[0];
 
   const content = await markdownToHtml(poll?.content || '');
@@ -36,18 +36,18 @@ export async function getStaticProps({ params }) {
     props: {
       poll: {
         ...poll,
-        content,
-      },
-    },
+        content
+      }
+    }
   };
 }
 
 export async function getStaticPaths() {
   const polls = await fetchPolls();
-  const paths = polls.map((p) => `/polling/${p.multiHash}`);
+  const paths = polls.map(p => `/polling/${p.multiHash}`);
 
   return {
     paths,
-    fallback: true,
+    fallback: true
   };
 }

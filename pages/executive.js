@@ -5,7 +5,7 @@ import { NavLink, Heading } from 'theme-ui';
 import fetchExecutiveProposals from '../lib/fetchExecutiveProposals';
 import PrimaryLayout from '../components/PrimaryLayout';
 
-export default function Executive({ proposals }) {
+export default function Executive({ proposals = [] } = {}) {
   return (
     <PrimaryLayout>
       <Heading as="h1">Executive Proposals</Heading>

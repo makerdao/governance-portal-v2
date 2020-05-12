@@ -1,11 +1,21 @@
 import React from 'react';
 import Head from 'next/head';
-import { Heading, NavLink, Container, Flex, Text, Box } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
+import {
+  Heading,
+  NavLink,
+  Container,
+  Flex,
+  Text,
+  Box,
+  Link as ExternalLink
+} from 'theme-ui';
 import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 
+import { Global } from '@emotion/core';
 import Skeleton from 'react-loading-skeleton';
-import _maker, { DAI } from '../maker';
+import _maker, { DAI } from '../lib/maker';
 import { bigNumberKFormat } from '../lib/utils';
 import fetchPolls from '../lib/fetchPolls';
 import fetchExecutiveProposals from '../lib/fetchExecutiveProposals';
@@ -16,31 +26,48 @@ async function getSystemStats() {
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.getToken(DAI).totalSupply(),
-    maker.service('mcd:systemData').getSystemWideDebtCeiling(),
+    maker.service('mcd:systemData').getSystemWideDebtCeiling()
   ]);
 }
 
 // if we are on the browser trigger a prefetch as soon as possible
 if (typeof window !== 'undefined') {
-  getSystemStats().then((stats) => {
+  getSystemStats().then(stats => {
     mutate('/system-stats', stats, false);
   });
 }
 
-export default function Index({ proposals, polls }) {
+export default function Index({ proposals = [], polls = [] } = {}) {
   const { data } = useSWR('/system-stats', getSystemStats);
 
   const [savingsRate, totalDaiSupply, debtCeiling] = data || [];
 
   return (
     <PrimaryLayout>
+      <Global
+        styles={theme => ({
+          html: {
+            backgroundRepeat: 'no-repeat',
+            backgroundImage: `linear-gradient(${theme.colors.surface}, ${theme.colors.surface}),
+            linear-gradient(${theme.colors.background}, ${theme.colors.background})`,
+            backgroundSize: `100% 560px, 100% 100%`
+          },
+          body: {
+            backgroundRepeat: 'inherit',
+            backgroundImage: 'inherit',
+            backgroundSize: 'inherit'
+          }
+        })}
+      />
+
       <Head>
         <title>Maker Governance Portal</title>
       </Head>
       <Container>
         <Container
+          as="section"
           sx={{
-            textAlign: 'center',
+            textAlign: 'center'
           }}
         >
           <Box py="6" mx="auto" sx={{ maxWidth: 9 }}>
@@ -54,7 +81,7 @@ export default function Index({ proposals, polls }) {
               sx={{
                 fontSize: [3, 5],
                 color: '#434358',
-                lineHeight: 'body',
+                lineHeight: 'body'
               }}
             >
               Join a decentralized community protecting the integrity of the
@@ -63,11 +90,30 @@ export default function Index({ proposals, polls }) {
           </Box>
         </Container>
 
-        <Container pb="5">
+        <Container as="section" pb="5" sx={{ maxWidth: 10 }}>
+          <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text pb="2" sx={{ fontSize: 6 }}>
+              System Stats
+            </Text>
+            <ExternalLink href="https://daistats.com/" target="_blank">
+              <Flex sx={{ alignItems: 'center' }}>
+                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                  See all system stats
+                  <Icon
+                    ml="2"
+                    name="chevron_right"
+                    size="2"
+                    sx={{ color: 'mutedAlt' }}
+                  />
+                </Text>
+              </Flex>
+            </ExternalLink>
+          </Flex>
+
           <Flex
             mx="auto"
             variant="cards.primary"
-            sx={{ boxShadow: 'faint', height: '133px', maxWidth: 10 }}
+            sx={{ boxShadow: 'faint', height: '133px' }}
           >
             <Flex
               mx="4"
@@ -100,27 +146,31 @@ export default function Index({ proposals, polls }) {
           </Flex>
         </Container>
 
-        <Heading as="h2">Executive Votes</Heading>
-        {proposals.map((proposal) => (
-          <Link
-            key={proposal.key}
-            href="/executive/[proposal-id]"
-            as={`/executive/${proposal.key}`}
-          >
-            <NavLink>{proposal.title}</NavLink>
-          </Link>
-        ))}
+        <Container as="section">
+          <Heading as="h2">Executive Votes</Heading>
+          {proposals.map(proposal => (
+            <Link
+              key={proposal.key}
+              href="/executive/[proposal-id]"
+              as={`/executive/${proposal.key}`}
+            >
+              <NavLink>{proposal.title}</NavLink>
+            </Link>
+          ))}
+        </Container>
 
-        <Heading as="h2">Polling Votes</Heading>
-        {polls.map((poll) => (
-          <Link
-            key={poll.multiHash}
-            href="/polling/[poll-id]"
-            as={`/polling/${poll.multiHash}`}
-          >
-            <NavLink>{poll.title}</NavLink>
-          </Link>
-        ))}
+        <Container as="section">
+          <Heading as="h2">Polling Votes</Heading>
+          {polls.map(poll => (
+            <Link
+              key={poll.multiHash}
+              href="/polling/[poll-id]"
+              as={`/polling/${poll.multiHash}`}
+            >
+              <NavLink>{poll.title}</NavLink>
+            </Link>
+          ))}
+        </Container>
       </Container>
     </PrimaryLayout>
   );
@@ -128,17 +178,17 @@ export default function Index({ proposals, polls }) {
 
 export async function getStaticProps() {
   const proposals = await fetchExecutiveProposals();
-  const polls = (await fetchPolls()).map((p) => ({
+  const polls = (await fetchPolls()).map(p => ({
     title: p.title,
     summary: p.summary,
-    multiHash: p.multiHash,
+    multiHash: p.multiHash
   }));
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals,
-      polls,
-    },
+      polls
+    }
   };
 }
