@@ -1,12 +1,32 @@
-import React from 'react';
+import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
-import fetchPolls from '../../lib/fetchPolls';
+import { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { getPolls, getPoll, getPollTally } from '../../lib/api';
 import PrimaryLayout from '../../components/PrimaryLayout';
-import markdownToHtml from '../../lib/markdownToHtml';
 
 export default function Poll({ poll }) {
+  // const network = getNetwork();
   const { isFallback } = useRouter();
+  const { data } = useSWR(
+    poll?.pollId ? ['/polling/tally', poll.pollId] : null,
+    (_, pollId) => getPollTally(pollId)
+  );
+
+  // const { data: polls } = useSWR(
+  //   isDefaultNetwork() ? null : ['/polling/polls', network],
+  //   getPolls
+  // );
+  // const { data: poll } = useSWR(
+  //   isDefaultNetwork() && polls ? null : ['/polling/poll', pollId, polls],
+  //   (_, polls) => getPoll()
+  // );
+
+  const winningOption = poll?.options?.[data?.winner];
+  const options = Object.values(poll?.options);
+
+  console.log(poll?.options, data, 'data');
 
   if (!isFallback && !poll?.multiHash) {
     return (
@@ -19,31 +39,35 @@ export default function Poll({ poll }) {
       {isFallback ? (
         <p>Loading…</p>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: poll.content }} />
+        <>
+          <p>
+            options:{' '}
+            {options.map(option => (
+              <span key={option}>{option} </span>
+            ))}
+          </p>
+          <p>
+            winner: {winningOption === undefined ? 'loading...' : winningOption}
+          </p>
+          <div dangerouslySetInnerHTML={{ __html: poll.content }} />
+        </>
       )}
     </PrimaryLayout>
   );
 }
 
 export async function getStaticProps({ params }) {
-  const poll = (await fetchPolls()).filter(
-    p => p.multiHash === params['poll-id']
-  )[0];
-
-  const content = await markdownToHtml(poll?.content || '');
+  const poll = await getPoll(params['poll-id']);
 
   return {
     props: {
-      poll: {
-        ...poll,
-        content
-      }
+      poll
     }
   };
 }
 
 export async function getStaticPaths() {
-  const polls = await fetchPolls();
+  const polls = await getPolls();
   const paths = polls.map(p => `/polling/${p.multiHash}`);
 
   return {

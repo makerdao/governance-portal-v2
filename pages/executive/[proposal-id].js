@@ -1,10 +1,9 @@
-import React from 'react';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 
 import PrimaryLayout from '../../components/PrimaryLayout';
-import markdownToHtml from '../../lib/markdownToHtml';
-import fetchExecutiveProposals from '../../lib/fetchExecutiveProposals';
+import { markdownToHtml } from '../../lib/utils';
+import { getExecutiveProposals } from '../../lib/api';
 
 export default function ExecutiveProposal({ proposal }) {
   const { isFallback } = useRouter();
@@ -30,7 +29,7 @@ export default function ExecutiveProposal({ proposal }) {
 }
 
 export async function getStaticProps({ params }) {
-  const proposals = await fetchExecutiveProposals();
+  const proposals = await getExecutiveProposals();
   const proposal = proposals.find(
     proposal => proposal.key === params['proposal-id']
   );
@@ -47,7 +46,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const proposals = await fetchExecutiveProposals();
+  const proposals = await getExecutiveProposals();
   const paths = proposals.map(proposal => `/executive/${proposal.key}`);
 
   return {

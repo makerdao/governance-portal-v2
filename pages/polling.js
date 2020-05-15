@@ -1,23 +1,31 @@
 import { NavLink, Heading } from 'theme-ui';
 import Link from 'next/link';
 
-import fetchPolls from '../lib/fetchPolls';
+import { getNetwork } from '../lib/maker';
+import { getPolls } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 
 export default function Polling({ polls = [] } = {}) {
+  const network = getNetwork();
   const validPolls = polls.filter(
-    (poll) => new Date(poll.startDate) <= new Date()
+    poll => new Date(poll.startDate) <= new Date()
   );
 
   return (
     <PrimaryLayout>
       <Heading as="h1">Polling Votes</Heading>
 
-      {validPolls.map((poll) => (
+      {validPolls.map(poll => (
         <Link
           key={poll.multiHash}
-          href="/polling/[poll-id]"
-          as={`/polling/${poll.multiHash}`}
+          href={{
+            pathname: '/polling/[poll-id]',
+            query: { network }
+          }}
+          as={{
+            pathname: `/polling/${poll.multiHash}`,
+            query: { network }
+          }}
         >
           <NavLink>{poll.title}</NavLink>
         </Link>
@@ -27,17 +35,17 @@ export default function Polling({ polls = [] } = {}) {
 }
 
 export async function getStaticProps() {
-  const polls = (await fetchPolls()).map((p) => ({
+  const polls = (await getPolls()).map(p => ({
     title: p.title,
     summary: p.summary,
     multiHash: p.multiHash,
-    startDate: p.startDate,
+    startDate: p.startDate
   }));
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
-    },
+      polls
+    }
   };
 }

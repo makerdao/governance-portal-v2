@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo, useEffect } from 'react';
 import Head from 'next/head';
 import { Icon } from '@makerdao/dai-ui-icons';
 import {
@@ -15,14 +15,13 @@ import Link from 'next/link';
 
 import { Global } from '@emotion/core';
 import Skeleton from 'react-loading-skeleton';
-import _maker, { DAI } from '../lib/maker';
+import getMaker, { getNetwork, DAI } from '../lib/maker';
 import { bigNumberKFormat } from '../lib/utils';
-import fetchPolls from '../lib/fetchPolls';
-import fetchExecutiveProposals from '../lib/fetchExecutiveProposals';
+import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 
 async function getSystemStats() {
-  const maker = await _maker;
+  const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.getToken(DAI).totalSupply(),
@@ -30,7 +29,7 @@ async function getSystemStats() {
   ]);
 }
 
-// if we are on the browser trigger a prefetch as soon as possible
+// if we are on the browser, trigger a prefetch as soon as possible
 if (typeof window !== 'undefined') {
   getSystemStats().then(stats => {
     mutate('/system-stats', stats, false);
@@ -38,9 +37,20 @@ if (typeof window !== 'undefined') {
 }
 
 export default function Index({ proposals = [], polls = [] } = {}) {
-  const { data } = useSWR('/system-stats', getSystemStats);
+  const network = getNetwork();
+  const { data } = useSWR(`/system-stats`, getSystemStats);
 
   const [savingsRate, totalDaiSupply, debtCeiling] = data || [];
+
+  const activePolls = useMemo(
+    () =>
+      polls.filter(
+        poll =>
+          new Date(poll.startDate) <= new Date() &&
+          new Date(poll.endDate) >= new Date()
+      ),
+    []
+  );
 
   return (
     <PrimaryLayout>
@@ -151,8 +161,14 @@ export default function Index({ proposals = [], polls = [] } = {}) {
           {proposals.map(proposal => (
             <Link
               key={proposal.key}
-              href="/executive/[proposal-id]"
-              as={`/executive/${proposal.key}`}
+              href={{
+                pathname: '/executive/[proposal-id]',
+                query: { network }
+              }}
+              as={{
+                pathname: `/executive/${proposal.key}`,
+                query: { network }
+              }}
             >
               <NavLink>{proposal.title}</NavLink>
             </Link>
@@ -161,11 +177,17 @@ export default function Index({ proposals = [], polls = [] } = {}) {
 
         <Container as="section">
           <Heading as="h2">Polling Votes</Heading>
-          {polls.map(poll => (
+          {activePolls.map(poll => (
             <Link
               key={poll.multiHash}
-              href="/polling/[poll-id]"
-              as={`/polling/${poll.multiHash}`}
+              href={{
+                pathname: '/polling/[poll-id]',
+                query: { network }
+              }}
+              as={{
+                pathname: `/polling/${poll.multiHash}`,
+                query: { network }
+              }}
             >
               <NavLink>{poll.title}</NavLink>
             </Link>
@@ -177,11 +199,14 @@ export default function Index({ proposals = [], polls = [] } = {}) {
 }
 
 export async function getStaticProps() {
-  const proposals = await fetchExecutiveProposals();
-  const polls = (await fetchPolls()).map(p => ({
+  const proposals = await getExecutiveProposals();
+  const polls = (await getPolls()).map(p => ({
     title: p.title,
     summary: p.summary,
-    multiHash: p.multiHash
+    multiHash: p.multiHash,
+    startDate: p.startDate,
+    endDate: p.endDate,
+    pollId: p.pollId
   }));
 
   return {

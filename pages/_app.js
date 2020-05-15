@@ -1,28 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import theme from '../lib/theme';
+import Router from 'next/router';
+import { useEffect } from 'react';
 import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
-import AccountsProvider from '../providers/AccountsProvider';
+import queryString from 'query-string';
+
+import theme from '../lib/theme';
+import { getNetwork } from '../lib/maker';
 
 export function reportWebVitals(metric) {
   console.log(metric);
 }
 
 function MyApp({ Component, pageProps }) {
-  const [network, setNetwork] = useState();
+  const currentNetwork = getNetwork();
 
   useEffect(() => {
-    setNetwork(window.location.search.includes('kovan') ? 'kovan' : 'mainnet');
+    // if the network is changed in the url, reload the page
+    Router.events.on('routeChangeComplete', url => {
+      const newNetwork = queryString.parse(url.replace('/', ''))?.network;
+      if (newNetwork && newNetwork !== currentNetwork) {
+        Router.reload();
+      }
+    });
   }, []);
 
   return (
-    <AccountsProvider network={network}>
-      <ThemeProvider theme={theme}>
-        <SWRConfig value={{ refreshInterval: 2000 }}>
-          <Component {...pageProps} network={network} />
-        </SWRConfig>
-      </ThemeProvider>
-    </AccountsProvider>
+    <ThemeProvider theme={theme}>
+      <SWRConfig value={{ refreshInterval: 2000 }}>
+        <Component {...pageProps} />
+      </SWRConfig>
+    </ThemeProvider>
   );
 }
 
