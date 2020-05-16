@@ -1,23 +1,15 @@
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import waitForExpect from 'wait-for-expect';
 
-beforeAll(() => {
-  delete window.location;
-  window.location = new URL('https://www.test-url.com/?network=testnet');
-});
+import { accountsApi } from '../../stores/accounts';
+import getMaker from '../../lib/maker';
 
-beforeEach(async () => {
-  jest.resetModules();
+let maker;
+beforeAll(async () => {
+  maker = await getMaker();
 });
-
-async function setup() {
-  const accountsApi = require('../../stores/accounts').accountsApi;
-  const maker = await require('../../lib/maker').default();
-  return { maker, accountsApi };
-}
 
 test('should automatically add an account changed listener to dai.js', async () => {
-  const { accountsApi, maker } = await setup();
   expect(accountsApi.getState().currentAccount).toBe(null);
 
   const nextAccount = TestAccountProvider.nextAccount();
@@ -33,7 +25,6 @@ test('should automatically add an account changed listener to dai.js', async () 
 });
 
 test('should connect to the browser provider and get its active account', async () => {
-  const { accountsApi, maker } = await setup();
   const firstAccount = TestAccountProvider.nextAccount();
   const mockEnable = jest.fn(() => [firstAccount.address]);
 

@@ -10,5 +10,8 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest'
   },
   transformIgnorePatterns: ['/node_modules/'],
-  moduleDirectories: ['node_modules', 'test/helpers']
+  moduleDirectories: ['node_modules', 'test/helpers'],
+  globals: {
+    __TESTCHAIN__: true
+  }
 };
