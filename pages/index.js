@@ -181,7 +181,7 @@ export default function Index({ proposals = [], polls = [] } = {}) {
             <Link
               key={poll.multiHash}
               href={{
-                pathname: '/polling/[poll-id]',
+                pathname: '/polling/[poll-hash]',
                 query: { network }
               }}
               as={{
@@ -205,8 +205,7 @@ export async function getStaticProps() {
     summary: p.summary,
     multiHash: p.multiHash,
     startDate: p.startDate,
-    endDate: p.endDate,
-    pollId: p.pollId
+    endDate: p.endDate
   }));
 
   return {

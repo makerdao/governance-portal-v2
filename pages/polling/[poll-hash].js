@@ -9,10 +9,10 @@ import PrimaryLayout from '../../components/PrimaryLayout';
 export default function Poll({ poll }) {
   // const network = getNetwork();
   const { isFallback } = useRouter();
-  const { data } = useSWR(
-    poll?.pollId ? ['/polling/tally', poll.pollId] : null,
-    (_, pollId) => getPollTally(pollId)
-  );
+  // const { data } = useSWR(
+  //   poll?.pollId ? ['/polling/tally', poll.pollId] : null,
+  //   (_, pollId) => getPollTally(pollId)
+  // );
 
   // const { data: polls } = useSWR(
   //   isDefaultNetwork() ? null : ['/polling/polls', network],
@@ -22,11 +22,6 @@ export default function Poll({ poll }) {
   //   isDefaultNetwork() && polls ? null : ['/polling/poll', pollId, polls],
   //   (_, polls) => getPoll()
   // );
-
-  const winningOption = poll?.options?.[data?.winner];
-  const options = Object.values(poll?.options);
-
-  console.log(poll?.options, data, 'data');
 
   if (!isFallback && !poll?.multiHash) {
     return (
@@ -40,15 +35,6 @@ export default function Poll({ poll }) {
         <p>Loading…</p>
       ) : (
         <>
-          <p>
-            options:{' '}
-            {options.map(option => (
-              <span key={option}>{option} </span>
-            ))}
-          </p>
-          <p>
-            winner: {winningOption === undefined ? 'loading...' : winningOption}
-          </p>
           <div dangerouslySetInnerHTML={{ __html: poll.content }} />
         </>
       )}
@@ -57,7 +43,7 @@ export default function Poll({ poll }) {
 }
 
 export async function getStaticProps({ params }) {
-  const poll = await getPoll(params['poll-id']);
+  const poll = await getPoll(params['poll-hash']);
 
   return {
     props: {

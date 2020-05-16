@@ -19,7 +19,7 @@ export default function Polling({ polls = [] } = {}) {
         <Link
           key={poll.multiHash}
           href={{
-            pathname: '/polling/[poll-id]',
+            pathname: '/polling/[poll-hash]',
             query: { network }
           }}
           as={{

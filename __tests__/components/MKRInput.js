@@ -1,8 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 
 import { MKR } from '../../lib/maker';
 import MKRInput from '../../components/MKRInput';
+
+afterEach(cleanup);
 
 function setup(props) {
   const mockOnChange = jest.fn();
