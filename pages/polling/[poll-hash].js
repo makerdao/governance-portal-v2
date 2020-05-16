@@ -43,7 +43,8 @@ export default function Poll({ poll }) {
 }
 
 export async function getStaticProps({ params }) {
-  const poll = await getPoll(params['poll-hash']);
+  // fetch the poll contents, this is called once for each individual poll when building for prod
+  const poll = await getPoll(params['poll-hash'], { useCache: true });
 
   return {
     props: {
