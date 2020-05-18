@@ -1,14 +1,13 @@
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 
 import PrimaryLayout from '../../components/PrimaryLayout';
-import { markdownToHtml } from '../../lib/utils';
-import { getExecutiveProposals } from '../../lib/api';
+import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
+import { isDefaultNetwork } from '../../lib/maker';
 
-export default function ExecutiveProposal({ proposal }) {
-  const { isFallback } = useRouter();
-
-  if (!isFallback && !proposal?.key) {
+function ExecutiveProposal({ proposal, loading }) {
+  if (!loading && !proposal?.key) {
     return (
       <ErrorPage
         statusCode={404}
@@ -19,7 +18,7 @@ export default function ExecutiveProposal({ proposal }) {
 
   return (
     <PrimaryLayout>
-      {isFallback ? (
+      {loading ? (
         <p>Loading…</p>
       ) : (
         <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
@@ -29,21 +28,42 @@ export default function ExecutiveProposal({ proposal }) {
 }
 
 export async function getStaticProps({ params }) {
-  const proposals = await getExecutiveProposals();
-  const proposal = proposals.find(
-    proposal => proposal.key === params['proposal-id']
-  );
-  const content = await markdownToHtml(proposal?.about || '');
+  // fetch proposal contents at build-time if on the default network
+  const proposal = await getExecutiveProposal(params['proposal-id'], {
+    useCache: true
+  });
 
   return {
     props: {
-      proposal: {
-        ...proposal,
-        content
-      }
+      proposal
     }
   };
 }
+
+export default ({ proposal }) => {
+  const [_proposal, _setProposal] = useState();
+  const [loading, setLoading] = useState(false);
+  const { query, isFallback } = useRouter();
+
+  // fetch proposal contents at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      setLoading(true);
+      getExecutiveProposal(query['proposal-id'], {
+        useCache: true
+      }).then(proposal => {
+        setLoading(false);
+        _setProposal(proposal);
+      });
+    }
+  }, []);
+  return (
+    <ExecutiveProposal
+      loading={loading || isFallback}
+      proposal={isDefaultNetwork() ? proposal : _proposal}
+    />
+  );
+};
 
 export async function getStaticPaths() {
   const proposals = await getExecutiveProposals();

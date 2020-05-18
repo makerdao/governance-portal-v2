@@ -28,6 +28,7 @@
     "remark-html": "^11.0.1",
     "swr": "^0.2.0",
     "theme-ui": "^0.3.1",
+    "valid-url": "^1.0.9",
     "zustand": "^2.2.3"
   },
   "devDependencies": {

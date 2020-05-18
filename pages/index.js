@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import Head from 'next/head';
 import { Icon } from '@makerdao/dai-ui-icons';
 import {
@@ -15,7 +15,7 @@ import Link from 'next/link';
 
 import { Global } from '@emotion/core';
 import Skeleton from 'react-loading-skeleton';
-import getMaker, { getNetwork, DAI } from '../lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork, DAI } from '../lib/maker';
 import { bigNumberKFormat } from '../lib/utils';
 import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
@@ -36,7 +36,29 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export default function Index({ proposals = [], polls = [] } = {}) {
+export default ({ proposals = [], polls = [] } = {}) => {
+  // fetch polls & proposals at run-time if on any network other than the default
+  const { data: _polls } = useSWR(
+    isDefaultNetwork() ? null : `/polling/polls`,
+    getPolls,
+    { refreshInterval: 0 }
+  );
+
+  const { data: _proposals } = useSWR(
+    isDefaultNetwork() ? null : `/executive/proposals`,
+    getExecutiveProposals,
+    { refreshInterval: 0 }
+  );
+
+  return (
+    <Index
+      proposals={isDefaultNetwork() ? proposals : _proposals}
+      polls={isDefaultNetwork() ? polls : _polls}
+    />
+  );
+};
+
+function Index({ proposals = [], polls = [] } = {}) {
   const network = getNetwork();
   const { data } = useSWR(`/system-stats`, getSystemStats);
 
@@ -139,7 +161,9 @@ export default function Index({ proposals = [], polls = [] } = {}) {
                 </Text>
               </div>
               <div>
-                <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+                <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
+                  Total ERC20 Dai
+                </Text>
                 <Text mt="2" variant="h2">
                   {data ? bigNumberKFormat(totalDaiSupply) : <Skeleton />}
                 </Text>
@@ -199,6 +223,7 @@ export default function Index({ proposals = [], polls = [] } = {}) {
 }
 
 export async function getStaticProps() {
+  // fetch polls & proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
   const polls = (await getPolls()).map(p => ({
     title: p.title,

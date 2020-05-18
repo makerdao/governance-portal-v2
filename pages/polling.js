@@ -1,11 +1,12 @@
+import { useEffect, useState } from 'react';
 import { NavLink, Heading } from 'theme-ui';
 import Link from 'next/link';
 
-import { getNetwork } from '../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 
-export default function Polling({ polls = [] } = {}) {
+function Polling({ polls = [] } = {}) {
   const network = getNetwork();
   const validPolls = polls.filter(
     poll => new Date(poll.startDate) <= new Date()
@@ -34,13 +35,22 @@ export default function Polling({ polls = [] } = {}) {
   );
 }
 
+export default ({ polls = [] } = {}) => {
+  const [_polls, _setPolls] = useState();
+
+  // fetch polls at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      getPolls({ useCache: true }).then(polls => _setPolls(polls));
+    }
+  }, []);
+
+  return <Polling polls={isDefaultNetwork() ? polls : _polls} />;
+};
+
 export async function getStaticProps() {
-  const polls = (await getPolls()).map(p => ({
-    title: p.title,
-    summary: p.summary,
-    multiHash: p.multiHash,
-    startDate: p.startDate
-  }));
+  // fetch polls at build-time if on the default network
+  const polls = await getPolls({ useCache: true });
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds

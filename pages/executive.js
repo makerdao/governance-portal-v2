@@ -1,11 +1,12 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { NavLink, Heading } from 'theme-ui';
 
 import { getExecutiveProposals } from '../lib/api';
-import { getNetwork } from '../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/PrimaryLayout';
 
-export default function Executive({ proposals = [] } = {}) {
+function Executive({ proposals = [] } = {}) {
   const network = getNetwork();
   return (
     <PrimaryLayout>
@@ -30,8 +31,24 @@ export default function Executive({ proposals = [] } = {}) {
   );
 }
 
+export default ({ proposals = [] } = {}) => {
+  const [_proposals, _setProposals] = useState();
+
+  // fetch proposals at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      getExecutiveProposals({ useCache: true }).then(proposals =>
+        _setProposals(proposals)
+      );
+    }
+  }, []);
+
+  return <Executive proposals={isDefaultNetwork() ? proposals : _proposals} />;
+};
+
 export async function getStaticProps() {
-  const proposals = await getExecutiveProposals();
+  // fetch proposals at build-time if on the default network
+  const proposals = await getExecutiveProposals({ useCache: true });
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
