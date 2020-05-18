@@ -28,7 +28,7 @@ export default function Header() {
             });
           }}
         >
-          Swith to {otherNetwork}
+          Switch to {otherNetwork}
         </Button>
         <Link href={{ pathname: '/polling', query: { network } }}>
           <NavLink p={2}>Polling</NavLink>
