@@ -2,22 +2,26 @@ import { useMemo } from 'react';
 import Head from 'next/head';
 import {
   Heading,
+  Card,
   NavLink,
   Container,
   Text,
   Box,
   Flex,
   Badge,
-  Button
+  Button,
 } from 'theme-ui';
 import useSWR from 'swr';
 import Link from 'next/link';
+import { Icon } from "@makerdao/dai-ui-icons";
 
 import { Global } from '@emotion/core';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
+import Executive from '../components/Executive';
+import Polling from '../components/Polling';
 
 export default ({ proposals = [], polls = [] } = {}) => {
   // fetch polls & proposals at run-time if on any network other than the default
@@ -82,7 +86,7 @@ function Index({ proposals = [], polls = [] } = {}) {
             textAlign: 'center'
           }}
         >
-          <Box py="6" mx="auto" sx={{ maxWidth: 9 }}>
+          <Box pt="6" mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h1" sx={{ fontSize: [7, 8], color: '#231536' }}>
               Maker Governance
             </Heading>
@@ -101,135 +105,34 @@ function Index({ proposals = [], polls = [] } = {}) {
             </Text>
           </Box>
         </Container>
-
+        <Box py="5" mx="auto" sx={{ maxWidth: 9, textAlign: 'center' }}>
+          <Button
+            variant='outline'
+            sx={{
+              borderRadius: 'round',
+              bg: 'background',
+              border: '1px solid',
+              borderColor: 'secondary',
+              color: '#434358',
+              alignItems: 'center'
+            }}
+          >
+            <span style={{
+              display: 'inline-block',
+              border: '1px solid #1AAB9B',
+              borderRadius: 13,
+              width: 26, height: 26, color: '#1AAB9B', marginRight: 20}}>
+              {activePolls.length}
+            </span>
+            New polling votes!
+            <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 20 }}/>
+          </Button>
+        </Box>
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-
-        <Container as="section">
-          <Heading as="h2">Executive Votes</Heading>
-          {proposals.map(proposal => (
-            <Link
-              key={proposal.key}
-              href={{
-                pathname: '/executive/[proposal-id]',
-                query: { network }
-              }}
-              as={{
-                pathname: `/executive/${proposal.key}`,
-                query: { network }
-              }}
-            >
-              <NavLink>{proposal.title}</NavLink>
-            </Link>
-          ))}
-        </Container>
-
-        <Container
-          as="section"
-          sx={{
-            textAlign: 'center'
-          }}
-        >
-          <Box mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h2">Polling Votes</Heading>
-            <Text
-              mx="auto"
-              mt="3"
-              as="p"
-              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
-            >
-              Polls are conducted to establish a rough consensus of community
-              sentiment before Executive Votes are conducted.
-            </Text>
-          </Box>
-          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
-            <Container py="4">
-              {activePolls.map(poll => (
-                <Flex
-                  p="4"
-                  mx="auto"
-                  variant="cards.primary"
-                  sx={{ boxShadow: 'faint', height: '210px' }}
-                >
-                  <Flex
-                    sx={{
-                      flexDirection: 'column',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <Text
-                      sx={{
-                        fontSize: [2, 3],
-                        color: '#708390',
-                        textTransform: 'uppercase'
-                      }}
-                    >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </Text>
-                    <Link
-                      key={poll.multiHash}
-                      href={{
-                        pathname: '/polling/[poll-hash]',
-                        query: { network }
-                      }}
-                      as={{
-                        pathname: `/polling/${poll.multiHash}`,
-                        query: { network }
-                      }}
-                    >
-                      <Text
-                        sx={{
-                          fontSize: [3, 4],
-                          color: '#231536'
-                        }}
-                      >
-                        {poll.title}
-                      </Text>
-                    </Link>
-                    <Text
-                      sx={{
-                        fontSize: [3, 4],
-                        color: '#434358'
-                      }}
-                    >
-                      {poll.summary}
-                    </Text>
-                    <Flex sx={{ justifyContent: 'space-around' }}>
-                      <Link
-                        key={poll.multiHash}
-                        href={{
-                          pathname: '/polling/[poll-hash]',
-                          query: { network }
-                        }}
-                        as={{
-                          pathname: `/polling/${poll.multiHash}`,
-                          query: { network }
-                        }}
-                      >
-                        <NavLink variant="buttons.outline">
-                          View Proposal
-                        </NavLink>
-                      </Link>
-                      <Badge
-                        variant="primary"
-                        sx={{ textTransform: 'uppercase', alignSelf: 'center' }}
-                      >
-                        Leading Option:{' '}
-                        {'Increase Stability fee by 1.50% to 7.50%'}
-                      </Badge>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              ))}
-            </Container>
-          </Box>
-        </Container>
+        <Executive proposals={proposals} network={network} />
+        <Polling activePolls={activePolls} network={network} />
       </Container>
     </PrimaryLayout>
   );

@@ -28,13 +28,10 @@ export default function() {
   return (
     <>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text pb="2" sx={{ fontSize: 6 }}>
-          System Stats
-        </Text>
         <ExternalLink href="https://daistats.com/" target="_blank">
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              See all system stats
+              View more stats
               <Icon
                 ml="2"
                 name="chevron_right"
@@ -65,15 +62,34 @@ export default function() {
             </Text>
           </div>
           <div>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
+              DSR Spread
+            </Text>
+            {/*//TODO*/}
             <Text mt="2" variant="h2">
-              {data ? bigNumberKFormat(totalDaiSupply) : <Skeleton />}
+
+              {data ? `0.50%` : <Skeleton />}
+            </Text>
+          </div>
+          <div>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+            <Text mt="2" variant="h2">
+              {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
             </Text>
           </div>
           <div>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
             <Text mt="2" variant="h2">
-              {data ? debtCeiling.toLocaleString() : <Skeleton />}
+              {data ? `${bigNumberKFormat(DAI(debtCeiling))} DAI` : <Skeleton />}
+            </Text>
+          </div>
+          <div>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
+              System Surplus
+            </Text>
+            {/*//TODO*/}
+            <Text mt="2" variant="h2">
+              {data ? `1,035,617 DAI` : <Skeleton />}
             </Text>
           </div>
         </Flex>
