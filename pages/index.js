@@ -1,6 +1,15 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
-import { Heading, NavLink, Container, Text, Box } from 'theme-ui';
+import {
+  Heading,
+  NavLink,
+  Container,
+  Text,
+  Box,
+  Flex,
+  Badge,
+  Button
+} from 'theme-ui';
 import useSWR from 'swr';
 import Link from 'next/link';
 
@@ -93,7 +102,7 @@ function Index({ proposals = [], polls = [] } = {}) {
           </Box>
         </Container>
 
-        <Container as="section" pb="5" sx={{ maxWidth: 10 }}>
+        <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
 
@@ -116,23 +125,110 @@ function Index({ proposals = [], polls = [] } = {}) {
           ))}
         </Container>
 
-        <Container as="section">
-          <Heading as="h2">Polling Votes</Heading>
-          {activePolls.map(poll => (
-            <Link
-              key={poll.multiHash}
-              href={{
-                pathname: '/polling/[poll-hash]',
-                query: { network }
-              }}
-              as={{
-                pathname: `/polling/${poll.multiHash}`,
-                query: { network }
-              }}
+        <Container
+          as="section"
+          sx={{
+            textAlign: 'center'
+          }}
+        >
+          <Box mx="auto" sx={{ maxWidth: 9 }}>
+            <Heading as="h2">Polling Votes</Heading>
+            <Text
+              mx="auto"
+              mt="3"
+              as="p"
+              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
             >
-              <NavLink>{poll.title}</NavLink>
-            </Link>
-          ))}
+              Polls are conducted to establish a rough consensus of community
+              sentiment before Executive Votes are conducted.
+            </Text>
+          </Box>
+          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
+            <Container py="4">
+              {activePolls.map(poll => (
+                <Flex
+                  p="4"
+                  mx="auto"
+                  variant="cards.primary"
+                  sx={{ boxShadow: 'faint', height: '210px' }}
+                >
+                  <Flex
+                    sx={{
+                      flexDirection: 'column',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <Text
+                      sx={{
+                        fontSize: [2, 3],
+                        color: '#708390',
+                        textTransform: 'uppercase'
+                      }}
+                    >
+                      Posted{' '}
+                      {new Date(poll.startDate).toLocaleString('default', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </Text>
+                    <Link
+                      key={poll.multiHash}
+                      href={{
+                        pathname: '/polling/[poll-hash]',
+                        query: { network }
+                      }}
+                      as={{
+                        pathname: `/polling/${poll.multiHash}`,
+                        query: { network }
+                      }}
+                    >
+                      <Text
+                        sx={{
+                          fontSize: [3, 4],
+                          color: '#231536'
+                        }}
+                      >
+                        {poll.title}
+                      </Text>
+                    </Link>
+                    <Text
+                      sx={{
+                        fontSize: [3, 4],
+                        color: '#434358'
+                      }}
+                    >
+                      {poll.summary}
+                    </Text>
+                    <Flex sx={{ justifyContent: 'space-around' }}>
+                      <Link
+                        key={poll.multiHash}
+                        href={{
+                          pathname: '/polling/[poll-hash]',
+                          query: { network }
+                        }}
+                        as={{
+                          pathname: `/polling/${poll.multiHash}`,
+                          query: { network }
+                        }}
+                      >
+                        <NavLink variant="buttons.outline">
+                          View Proposal
+                        </NavLink>
+                      </Link>
+                      <Badge
+                        variant="primary"
+                        sx={{ textTransform: 'uppercase', alignSelf: 'center' }}
+                      >
+                        Leading Option:{' '}
+                        {'Increase Stability fee by 1.50% to 7.50%'}
+                      </Badge>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              ))}
+            </Container>
+          </Box>
         </Container>
       </Container>
     </PrimaryLayout>
@@ -141,14 +237,10 @@ function Index({ proposals = [], polls = [] } = {}) {
 
 export async function getStaticProps() {
   // fetch polls & proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals();
-  const polls = (await getPolls()).map(p => ({
-    title: p.title,
-    summary: p.summary,
-    multiHash: p.multiHash,
-    startDate: p.startDate,
-    endDate: p.endDate
-  }));
+  const [proposals, polls] = await Promise.all([
+    getExecutiveProposals(),
+    getPolls()
+  ]);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
