@@ -42,7 +42,7 @@ export default async (req, res) => {
   const winner = tally.winner;
   const rounds = tally.rounds;
 
-  //   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=5, stale-while-revalidate');
   res
     .status(200)
     .json({ options: tally.options, winner, rounds, totalMkrParticipation });

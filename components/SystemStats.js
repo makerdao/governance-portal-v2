@@ -1,4 +1,4 @@
-import { Container, Flex, Link as ExternalLink, Text } from 'theme-ui';
+import { Flex, Link as ExternalLink, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
