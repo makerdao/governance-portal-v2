@@ -1,20 +1,6 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
-<<<<<<< HEAD
-import {
-  Heading,
-  Card,
-  NavLink,
-  Container,
-  Text,
-  Box,
-  Flex,
-  Badge,
-  Button,
-} from 'theme-ui';
-=======
-import { Heading, NavLink, Container, Text, Box } from 'theme-ui';
->>>>>>> master
+import { Heading, Container, Text, Box, Button } from 'theme-ui';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { Icon } from "@makerdao/dai-ui-icons";
@@ -24,12 +10,8 @@ import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
-<<<<<<< HEAD
 import Executive from '../components/Executive';
 import Polling from '../components/Polling';
-=======
-import PollCard from '../components/PollCard';
->>>>>>> master
 
 export default ({ proposals = [], polls = [] } = {}) => {
   // fetch polls & proposals at run-time if on any network other than the default
