@@ -13,7 +13,7 @@ export default function PollCard({ poll }) {
 
   const { data: _tally } = useSWR(
     hasPollEnded
-      ? `/api/polling/tally/cache-no-revalidation/${poll.pollId}?network=${network}`
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
