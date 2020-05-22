@@ -15,8 +15,6 @@ export default function PollCard({ poll }) {
     (_, pollId) => getPollTally(pollId)
   );
 
-  console.log(tally, poll, poll.options[tally?.winner], 'tally');
-
   return (
     <Flex
       p="4"

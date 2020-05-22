@@ -1,6 +1,7 @@
 import Maker from '@makerdao/dai';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 
+import withApiHandler from '../../_lib/with-api-handler';
 import { networkToRpc, isSupportedNetwork } from '../../../../lib/maker';
 import { DEFAULT_NETWORK } from '../../../../lib/constants';
 
@@ -27,13 +28,14 @@ async function getConnectedMakerObj(network) {
   return makerObj;
 }
 
-export default async (req, res) => {
+export default withApiHandler(async (req, res) => {
   const {
     query: { ['poll-id']: pollId, network }
   } = req;
   const maker = await getConnectedMakerObj(
     isSupportedNetwork(network) ? network : DEFAULT_NETWORK
   );
+
   const tally = await maker
     .service('govPolling')
     .getTallyRankedChoiceIrv(pollId);
@@ -46,4 +48,4 @@ export default async (req, res) => {
   res
     .status(200)
     .json({ options: tally.options, winner, rounds, totalMkrParticipation });
-};
+});

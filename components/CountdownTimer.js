@@ -22,28 +22,26 @@ export default function CountdownTimer({ endDate }) {
   const seconds = timeLeft - minutes * 60;
 
   return (
-    <Box>
+    <Flex sx={{ alignItems: 'center' }}>
       {_timeLeft <= 0 ? (
-        <Text
-          sx={{ fontSize: 2, textTransform: 'uppercase', color: '#708390' }}
-        >
-          Poll ended{' '}
-          {new Date(endDate).toLocaleString('default', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          })}
-        </Text>
+        <>
+          <Icon mr="1" name="clock" size="3" sx={{ color: '#D4D9E1' }} />
+          <Text
+            sx={{ fontSize: 2, textTransform: 'uppercase', color: '#D4D9E1' }}
+          >
+            Poll ended
+          </Text>
+        </>
       ) : (
-        <Flex sx={{ alignItems: 'center' }}>
+        <>
           <Icon mr="1" name="clock" size="3" sx={{ color: '#1AAB9B' }} />
           <Text
             sx={{ fontSize: 2, textTransform: 'uppercase', color: '#708390' }}
           >
             {hours}:{minutes}:{seconds} Remaining
           </Text>
-        </Flex>
+        </>
       )}
-    </Box>
+    </Flex>
   );
 }

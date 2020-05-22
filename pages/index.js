@@ -36,15 +36,7 @@ export default ({ proposals = [], polls = [] } = {}) => {
 function Index({ proposals = [], polls = [] } = {}) {
   const network = getNetwork();
 
-  const activePolls = useMemo(
-    () =>
-      polls.filter(
-        poll =>
-          new Date(poll.startDate) <= new Date() &&
-          new Date(poll.endDate) >= new Date()
-      ),
-    []
-  );
+  const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
   return (
     <PrimaryLayout>
@@ -137,8 +129,8 @@ function Index({ proposals = [], polls = [] } = {}) {
           </Box>
           <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
             <Container py="4">
-              {activePolls.map(poll => (
-                <PollCard key={poll.id} poll={poll} />
+              {recentPolls.map(poll => (
+                <PollCard key={poll.pollId} poll={poll} />
               ))}
             </Container>
           </Box>
