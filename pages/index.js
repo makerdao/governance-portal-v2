@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Heading, Container, Text, Box } from 'theme-ui';
 import useSWR from 'swr';
@@ -10,28 +10,6 @@ import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/PollCard';
 import ExecutiveCard from '../components/ExecutiveCard';
-
-export default ({ proposals = [], polls = [] } = {}) => {
-  // fetch polls & proposals at run-time if on any network other than the default
-  const { data: _polls } = useSWR(
-    isDefaultNetwork() ? null : `/polling/polls`,
-    getPolls,
-    { refreshInterval: 0 }
-  );
-
-  const { data: _proposals } = useSWR(
-    isDefaultNetwork() ? null : `/executive/proposals`,
-    getExecutiveProposals,
-    { refreshInterval: 0 }
-  );
-
-  return (
-    <Index
-      proposals={isDefaultNetwork() ? proposals : _proposals}
-      polls={isDefaultNetwork() ? polls : _polls}
-    />
-  );
-};
 
 function Index({ proposals = [], polls = [] } = {}) {
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
@@ -154,6 +132,36 @@ function Index({ proposals = [], polls = [] } = {}) {
     </PrimaryLayout>
   );
 }
+
+export default ({ proposals = [], polls = [] } = {}) => {
+  // fetch polls & proposals at run-time if on any network other than the default
+  const [_polls, _setPolls] = useState();
+  const [_proposals, _setProposals] = useState();
+  const [loading, setLoading] = useState(false);
+
+  // fetch poll contents at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      setLoading(true);
+      Promise.all([
+        getPolls({ useCache: true }),
+        getExecutiveProposals({ useCache: true })
+      ]).then(([polls, proposals]) => {
+        _setPolls(polls);
+        _setProposals(proposals);
+        setLoading(false);
+      });
+    }
+  }, []);
+
+  return (
+    <Index
+      loading={loading}
+      proposals={isDefaultNetwork() ? proposals : _proposals}
+      polls={isDefaultNetwork() ? polls : _polls}
+    />
+  );
+};
 
 export async function getStaticProps() {
   // fetch polls & proposals at build-time if on the default network

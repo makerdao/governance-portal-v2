@@ -17,7 +17,6 @@
     "@makerdao/dai-plugin-mcd": "^1.4.6",
     "@makerdao/dai-ui-icons": "^0.0.28",
     "@makerdao/dai-ui-theme-maker": "^0.0.28",
-    "fetch-retry": "^3.1.0",
     "gray-matter": "^4.0.2",
     "lodash.uniqby": "^4.7.0",
     "next": "^9.4.0",

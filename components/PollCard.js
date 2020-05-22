@@ -3,18 +3,21 @@ import useSWR from 'swr';
 import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import { getPollTally } from '../lib/api';
+import { formatPollTally } from '../lib/utils';
 import { getNetwork } from '../lib/maker';
 import CountdownTimer from './CountdownTimer';
 
 export default function PollCard({ poll }) {
   const network = getNetwork();
+  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
-  const { data: tally } = useSWR([`/polling/tally`, poll.pollId], (_, pollId) =>
-    getPollTally(pollId)
+  const { data: _tally } = useSWR(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidation/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
+  const tally = formatPollTally(_tally);
 
   return (
     <Flex

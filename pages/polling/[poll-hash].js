@@ -4,14 +4,19 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
 import { isDefaultNetwork } from '../../lib/maker';
-import { getPolls, getPoll, getPollTally } from '../../lib/api';
+import { getPolls, getPoll } from '../../lib/api';
+import { formatPollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
 
 function Poll({ poll, loading }) {
-  const { data } = useSWR(
-    poll?.pollId ? ['/polling/tally', poll.pollId] : null,
-    (_, pollId) => getPollTally(pollId)
+  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
+  const { data: _tally } = useSWR(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidation/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
+
+  const tally = formatPollTally(_tally);
 
   if (!loading && !poll?.multiHash) {
     return (
