@@ -93,6 +93,7 @@ function Index({ proposals = [], polls = [] } = {}) {
         </Container>
 
         <Container
+          pb="5"
           sx={{
             textAlign: 'center'
           }}
