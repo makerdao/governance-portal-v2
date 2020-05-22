@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
-import { Heading, NavLink, Container, Text, Box } from 'theme-ui';
+import { Heading, Container, Text, Box } from 'theme-ui';
 import useSWR from 'swr';
-import Link from 'next/link';
 
 import { Global } from '@emotion/core';
-import { getNetwork, isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/PollCard';
+import ExecutiveCard from '../components/ExecutiveCard';
 
 export default ({ proposals = [], polls = [] } = {}) => {
   // fetch polls & proposals at run-time if on any network other than the default
@@ -34,9 +34,11 @@ export default ({ proposals = [], polls = [] } = {}) => {
 };
 
 function Index({ proposals = [], polls = [] } = {}) {
-  const network = getNetwork();
-
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
+
+  const { data: hat } = useSWR(`/executive/hat`, () =>
+    getMaker().then(maker => maker.service('chief').getHat())
+  );
 
   return (
     <PrimaryLayout>
@@ -90,23 +92,35 @@ function Index({ proposals = [], polls = [] } = {}) {
           <SystemStats />
         </Container>
 
-        <Container as="section">
-          <Heading as="h2">Executive Votes</Heading>
-          {proposals.map(proposal => (
-            <Link
-              key={proposal.key}
-              href={{
-                pathname: '/executive/[proposal-id]',
-                query: { network }
-              }}
-              as={{
-                pathname: `/executive/${proposal.key}`,
-                query: { network }
-              }}
+        <Container
+          sx={{
+            textAlign: 'center'
+          }}
+          as="section"
+        >
+          <Box mx="auto" sx={{ maxWidth: 9 }}>
+            <Heading as="h2">Executive Votes</Heading>
+            <Text
+              mx="auto"
+              mt="3"
+              as="p"
+              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
             >
-              <NavLink>{proposal.title}</NavLink>
-            </Link>
-          ))}
+              Executive Votes are conducted to make changes to the system. The
+              governing proposal represents the current state of the system.
+            </Text>
+          </Box>
+          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
+            {proposals.map(proposal => (
+              <ExecutiveCard
+                isHat={
+                  hat && hat.toLowerCase() === proposal.source.toLowerCase()
+                }
+                key={proposal.key}
+                proposal={proposal}
+              />
+            ))}
+          </Box>
         </Container>
 
         <Container

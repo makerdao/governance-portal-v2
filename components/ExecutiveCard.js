@@ -3,18 +3,18 @@ import useSWR from 'swr';
 import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import { getPollTally } from '../lib/api';
-import { getNetwork } from '../lib/maker';
-import CountdownTimer from './CountdownTimer';
+import getMaker, { getNetwork } from '../lib/maker';
 
-export default function PollCard({ poll }) {
+export default function ExecutiveCard({ proposal, isHat }) {
   const network = getNetwork();
 
-  const { data: tally } = useSWR([`/polling/tally`, poll.pollId], (_, pollId) =>
-    getPollTally(pollId)
+  const { data: mkrSupport } = useSWR(
+    [`/executive/mkrSupport`, proposal.source],
+    async (_, spellAddress) =>
+      getMaker().then(maker =>
+        maker.service('chief').getApprovalCount(spellAddress)
+      )
   );
-
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
   return (
     <Flex
@@ -31,30 +31,13 @@ export default function PollCard({ poll }) {
           justifyContent: 'space-between'
         }}
       >
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <Text
-            sx={{
-              fontSize: [2, 3],
-              color: '#708390',
-              textTransform: 'uppercase'
-            }}
-          >
-            Posted{' '}
-            {new Date(poll.startDate).toLocaleString('default', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-          </Text>
-          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-        </Flex>
         <Link
           href={{
-            pathname: '/polling/[poll-hash]',
+            pathname: '/executive/[proposal-id]',
             query: { network }
           }}
           as={{
-            pathname: `/polling/${poll.multiHash}`,
+            pathname: `/executive/${proposal.key}`,
             query: { network }
           }}
         >
@@ -67,7 +50,7 @@ export default function PollCard({ poll }) {
               color: '#231536'
             }}
           >
-            {poll.title}
+            {proposal.title}
           </Text>
         </Link>
         <Text
@@ -80,38 +63,24 @@ export default function PollCard({ poll }) {
             opacity: 0.8
           }}
         >
-          {poll.summary}
+          {proposal.proposal_blurb}
         </Text>
         <Flex>
           <Link
-            key={poll.multiHash}
             href={{
-              pathname: '/polling/[poll-hash]',
+              pathname: '/executive/[proposal-id]',
               query: { network }
             }}
             as={{
-              pathname: `/polling/${poll.multiHash}`,
+              pathname: `/executive/${proposal.key}`,
               query: { network }
             }}
           >
-            <NavLink variant="buttons.outline">View Proposal</NavLink>
+            <NavLink variant="buttons.primary">Vote on proposal</NavLink>
           </Link>
           <Flex sx={{ alignItems: 'cetner' }}>
-            {tally ? (
-              hasPollEnded ? (
-                <Badge
-                  mx="3"
-                  variant="primary"
-                  sx={{
-                    borderColor: '#098C7D',
-                    color: '#098C7D',
-                    textTransform: 'uppercase',
-                    alignSelf: 'center'
-                  }}
-                >
-                  Winning Option: {poll.options[tally.winner]}
-                </Badge>
-              ) : (
+            {mkrSupport ? (
+              <>
                 <Badge
                   mx="3"
                   variant="primary"
@@ -122,11 +91,25 @@ export default function PollCard({ poll }) {
                     alignSelf: 'center'
                   }}
                 >
-                  Leading Option: {poll.options[tally.winner]}
+                  {mkrSupport.toString()} Supporting
                 </Badge>
-              )
+                {isHat ? (
+                  <Badge
+                    mx="2"
+                    variant="primary"
+                    sx={{
+                      borderColor: '#098C7D',
+                      color: '#098C7D',
+                      textTransform: 'uppercase',
+                      alignSelf: 'center'
+                    }}
+                  >
+                    Governing proposal
+                  </Badge>
+                ) : null}
+              </>
             ) : (
-              <Box m="auto" ml="3" sx={{ width: '300px' }}>
+              <Box m="auto" ml="3" sx={{ width: '200px' }}>
                 <Skeleton />
               </Box>
             )}

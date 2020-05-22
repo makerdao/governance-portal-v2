@@ -24,6 +24,7 @@ export default function withApiHandler(handler) {
       const result = await handler(req, res);
       return result;
     } catch (error) {
+      console.log('server error', error);
       return res.status(500).json({
         error: {
           code: 'unexpected_error',

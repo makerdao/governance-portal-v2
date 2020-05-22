@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from '../lib/useInterval';
 
-export default function CountdownTimer({ endDate }) {
+export default function CountdownTimer({ endDate, endText }) {
   const [_timeLeft, _setTimeLeft] = useState(
     Math.floor(new Date(endDate).getTime() / 1000) -
       Math.floor(new Date().getTime() / 1000)
@@ -29,7 +29,7 @@ export default function CountdownTimer({ endDate }) {
           <Text
             sx={{ fontSize: 2, textTransform: 'uppercase', color: '#D4D9E1' }}
           >
-            Poll ended
+            {endText}
           </Text>
         </>
       ) : (
