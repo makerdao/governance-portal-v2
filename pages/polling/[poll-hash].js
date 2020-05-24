@@ -3,12 +3,13 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-import { isDefaultNetwork } from '../../lib/maker';
+import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { formatPollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
 
 function Poll({ poll, loading }) {
+  const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
   const { data: _tally } = useSWR(
     hasPollEnded
