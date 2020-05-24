@@ -9,6 +9,19 @@ import { formatPollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
 
 function Poll({ poll, loading }) {
+  if (loading)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  if (!poll?.multiHash) {
+    return (
+      <ErrorPage statusCode={404} title="Polling vote could not be found" />
+    );
+  }
+
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
   const { data: _tally } = useSWR(
@@ -19,21 +32,9 @@ function Poll({ poll, loading }) {
 
   const tally = formatPollTally(_tally);
 
-  if (!loading && !poll?.multiHash) {
-    return (
-      <ErrorPage statusCode={404} title="Polling vote could not be found" />
-    );
-  }
-
   return (
     <PrimaryLayout>
-      {loading ? (
-        <p>Loading…</p>
-      ) : (
-        <>
-          <div dangerouslySetInnerHTML={{ __html: poll.content }} />
-        </>
-      )}
+      <div dangerouslySetInnerHTML={{ __html: poll.content }} />
     </PrimaryLayout>
   );
 }
