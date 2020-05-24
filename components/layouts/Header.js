@@ -3,8 +3,8 @@ import Router from 'next/router';
 import { Flex, Heading, NavLink, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from '../lib/maker';
-import AccountSelect from './AccountSelect';
+import { getNetwork } from '../../lib/maker';
+import AccountSelect from '../AccountSelect';
 
 export default function Header() {
   const network = getNetwork();
