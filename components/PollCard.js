@@ -19,6 +19,10 @@ export default function PollCard({ poll }) {
 
   const tally = formatPollTally(_tally);
 
+  const leadingOption = tally.winner
+    ? poll.options[tally.winner]
+    : 'none found';
+
   return (
     <Flex
       p="4"
@@ -112,7 +116,7 @@ export default function PollCard({ poll }) {
                     alignSelf: 'center'
                   }}
                 >
-                  Winning Option: {poll.options[tally.winner]}
+                  Winning Option: {leadingOption}
                 </Badge>
               ) : (
                 <Badge
@@ -125,7 +129,7 @@ export default function PollCard({ poll }) {
                     alignSelf: 'center'
                   }}
                 >
-                  Leading Option: {poll.options[tally.winner]}
+                  Leading Option: {leadingOption}
                 </Badge>
               )
             ) : (
