@@ -14,8 +14,8 @@ export default function CountdownTimer({ endDate, endText }) {
   }, 1000);
 
   let timeLeft = _timeLeft;
-  const days = Math.floor(timeLeft / (3600 * 24));
-  timeLeft -= days * 3600 * 24;
+  // const days = Math.floor(timeLeft / (3600 * 24));
+  // timeLeft -= days * 3600 * 24;
   const hours = Math.floor(timeLeft / 3600);
   timeLeft -= hours * 3600;
   const minutes = Math.floor(timeLeft / 60);

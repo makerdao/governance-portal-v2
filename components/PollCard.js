@@ -19,9 +19,8 @@ export default function PollCard({ poll }) {
 
   const tally = formatPollTally(_tally);
 
-  const leadingOption = tally.winner
-    ? poll.options[tally.winner]
-    : 'none found';
+  const leadingOption =
+    tally?.winner === null ? 'none found' : poll.options[tally?.winner];
 
   return (
     <Flex
