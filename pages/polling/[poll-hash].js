@@ -3,31 +3,38 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-import { isDefaultNetwork } from '../../lib/maker';
-import { getPolls, getPoll, getPollTally } from '../../lib/api';
+import { isDefaultNetwork, getNetwork } from '../../lib/maker';
+import { getPolls, getPoll } from '../../lib/api';
+import { formatPollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
 
 function Poll({ poll, loading }) {
-  const { data } = useSWR(
-    poll?.pollId ? ['/polling/tally', poll.pollId] : null,
-    (_, pollId) => getPollTally(pollId)
-  );
+  if (loading)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
 
-  if (!loading && !poll?.multiHash) {
+  if (!poll?.multiHash) {
     return (
       <ErrorPage statusCode={404} title="Polling vote could not be found" />
     );
   }
 
+  const network = getNetwork();
+  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
+  const { data: _tally } = useSWR(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`
+  );
+
+  const tally = formatPollTally(_tally);
+
   return (
     <PrimaryLayout>
-      {loading ? (
-        <p>Loading…</p>
-      ) : (
-        <>
-          <div dangerouslySetInnerHTML={{ __html: poll.content }} />
-        </>
-      )}
+      <div dangerouslySetInnerHTML={{ __html: poll.content }} />
     </PrimaryLayout>
   );
 }

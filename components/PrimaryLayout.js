@@ -1,6 +1,6 @@
 import { Box, Container } from 'theme-ui';
 
-import Header from './Header';
+import Header from './layouts/Header';
 
 export default function PrimaryLayout({ children }) {
   return (

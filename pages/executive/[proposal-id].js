@@ -7,7 +7,14 @@ import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { isDefaultNetwork } from '../../lib/maker';
 
 function ExecutiveProposal({ proposal, loading }) {
-  if (!loading && !proposal?.key) {
+  if (loading)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  if (!proposal?.key) {
     return (
       <ErrorPage
         statusCode={404}
@@ -18,11 +25,7 @@ function ExecutiveProposal({ proposal, loading }) {
 
   return (
     <PrimaryLayout>
-      {loading ? (
-        <p>Loading…</p>
-      ) : (
-        <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
-      )}
+      <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
     </PrimaryLayout>
   );
 }

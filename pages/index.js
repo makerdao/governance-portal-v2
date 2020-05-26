@@ -1,51 +1,21 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box, Button } from 'theme-ui';
+import { Heading, Container, Text, Box } from 'theme-ui';
 import useSWR from 'swr';
-import Link from 'next/link';
-import { Icon } from "@makerdao/dai-ui-icons";
 
 import { Global } from '@emotion/core';
-import { getNetwork, isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
-import Executive from '../components/Executive';
-import Polling from '../components/Polling';
-
-export default ({ proposals = [], polls = [] } = {}) => {
-  // fetch polls & proposals at run-time if on any network other than the default
-  const { data: _polls } = useSWR(
-    isDefaultNetwork() ? null : `/polling/polls`,
-    getPolls,
-    { refreshInterval: 0 }
-  );
-
-  const { data: _proposals } = useSWR(
-    isDefaultNetwork() ? null : `/executive/proposals`,
-    getExecutiveProposals,
-    { refreshInterval: 0 }
-  );
-
-  return (
-    <Index
-      proposals={isDefaultNetwork() ? proposals : _proposals}
-      polls={isDefaultNetwork() ? polls : _polls}
-    />
-  );
-};
+import PollCard from '../components/PollCard';
+import ExecutiveCard from '../components/ExecutiveCard';
 
 function Index({ proposals = [], polls = [] } = {}) {
-  const network = getNetwork();
+  const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
-  const activePolls = useMemo(
-    () =>
-      polls.filter(
-        poll =>
-          new Date(poll.startDate) <= new Date() &&
-          new Date(poll.endDate) >= new Date()
-      ),
-    []
+  const { data: hat } = useSWR(`/executive/hat`, () =>
+    getMaker().then(maker => maker.service('chief').getHat())
   );
 
   return (
@@ -121,12 +91,100 @@ function Index({ proposals = [], polls = [] } = {}) {
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-        <Executive proposals={proposals} network={network} />
-        <Polling activePolls={activePolls} network={network} />
+
+        <Container
+          pb="5"
+          sx={{
+            textAlign: 'center'
+          }}
+          as="section"
+        >
+          <Box mx="auto" sx={{ maxWidth: 9 }}>
+            <Heading as="h2">Executive Votes</Heading>
+            <Text
+              mx="auto"
+              mt="3"
+              as="p"
+              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
+            >
+              Executive Votes are conducted to make changes to the system. The
+              governing proposal represents the current state of the system.
+            </Text>
+          </Box>
+          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
+            {proposals.map(proposal => (
+              <ExecutiveCard
+                isHat={
+                  hat && hat.toLowerCase() === proposal.source.toLowerCase()
+                }
+                key={proposal.key}
+                proposal={proposal}
+              />
+            ))}
+          </Box>
+        </Container>
+
+        <Container
+          as="section"
+          sx={{
+            textAlign: 'center'
+          }}
+        >
+          <Box mx="auto" sx={{ maxWidth: 9 }}>
+            <Heading as="h2">Polling Votes</Heading>
+            <Text
+              mx="auto"
+              mt="3"
+              as="p"
+              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
+            >
+              Polls are conducted to establish a rough consensus of community
+              sentiment before Executive Votes are conducted.
+            </Text>
+          </Box>
+          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
+            <Container py="4">
+              {recentPolls.map(poll => (
+                <PollCard key={poll.pollId} poll={poll} />
+              ))}
+            </Container>
+          </Box>
+        </Container>
       </Container>
     </PrimaryLayout>
   );
 }
+
+export default ({ proposals = [], polls = [] } = {}) => {
+  // fetch polls & proposals at run-time if on any network other than the default
+  const [_polls, _setPolls] = useState();
+  const [_proposals, _setProposals] = useState();
+  const [loading, setLoading] = useState(false);
+
+  // fetch poll contents at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      setLoading(true);
+      Promise.all([
+        getPolls({ useCache: true }),
+        getExecutiveProposals({ useCache: true })
+      ]).then(([polls, proposals]) => {
+        _setPolls(polls);
+        _setProposals(proposals);
+        setLoading(false);
+      });
+    }
+  }, []);
+
+  return (
+    <Index
+      loading={loading}
+      proposals={isDefaultNetwork() ? proposals : _proposals}
+      polls={isDefaultNetwork() ? polls : _polls}
+    />
+  );
+};
+
 export async function getStaticProps() {
   // fetch polls & proposals at build-time if on the default network
   const [proposals, polls] = await Promise.all([

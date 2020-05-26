@@ -26,7 +26,12 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <SWRConfig value={{ refreshInterval: 2000 }}>
+      <SWRConfig
+        value={{
+          refreshInterval: 2000,
+          fetcher: (...args) => fetch(...args).then(res => res.json())
+        }}
+      >
         <Component {...pageProps} />
       </SWRConfig>
     </ThemeProvider>

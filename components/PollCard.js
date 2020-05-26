@@ -3,19 +3,24 @@ import useSWR from 'swr';
 import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import { getPollTally } from '../lib/api';
+import { formatPollTally } from '../lib/utils';
 import { getNetwork } from '../lib/maker';
 import CountdownTimer from './CountdownTimer';
 
 export default function PollCard({ poll }) {
   const network = getNetwork();
+  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
-  const { data: tally } = useSWR(
-    poll?.pollId ? ['/polling/tally', poll.pollId] : null,
-    (_, pollId) => getPollTally(pollId)
+  const { data: _tally } = useSWR(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  console.log(tally, poll, poll.options[tally?.winner], 'tally');
+  const tally = formatPollTally(_tally);
+
+  const leadingOption =
+    tally?.winner === null ? 'none found' : poll.options[tally?.winner];
 
   return (
     <Flex
@@ -47,10 +52,9 @@ export default function PollCard({ poll }) {
               year: 'numeric'
             })}
           </Text>
-          <CountdownTimer endDate={poll.endDate} />
+          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
         </Flex>
         <Link
-          key={poll.multiHash}
           href={{
             pathname: '/polling/[poll-hash]',
             query: { network }
@@ -100,18 +104,33 @@ export default function PollCard({ poll }) {
           </Link>
           <Flex sx={{ alignItems: 'cetner' }}>
             {tally ? (
-              <Badge
-                mx="3"
-                variant="primary"
-                sx={{
-                  borderColor: '#231536',
-                  color: '#231536',
-                  textTransform: 'uppercase',
-                  alignSelf: 'center'
-                }}
-              >
-                Leading Option: {poll.options[tally.winner]}
-              </Badge>
+              hasPollEnded ? (
+                <Badge
+                  mx="3"
+                  variant="primary"
+                  sx={{
+                    borderColor: '#098C7D',
+                    color: '#098C7D',
+                    textTransform: 'uppercase',
+                    alignSelf: 'center'
+                  }}
+                >
+                  Winning Option: {leadingOption}
+                </Badge>
+              ) : (
+                <Badge
+                  mx="3"
+                  variant="primary"
+                  sx={{
+                    borderColor: '#231536',
+                    color: '#231536',
+                    textTransform: 'uppercase',
+                    alignSelf: 'center'
+                  }}
+                >
+                  Leading Option: {leadingOption}
+                </Badge>
+              )
             ) : (
               <Box m="auto" ml="3" sx={{ width: '300px' }}>
                 <Skeleton />
