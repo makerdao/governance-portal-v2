@@ -36,6 +36,9 @@ export default function Header() {
         <Link href={{ pathname: '/executive', query: { network } }}>
           <NavLink p={2}>Executive</NavLink>
         </Link>
+        <Link href={{ pathname: '/esmodule', query: { network } }}>
+          <NavLink p={2}>ES Module</NavLink>
+        </Link>
         <AccountSelect />
       </Flex>
     </Flex>

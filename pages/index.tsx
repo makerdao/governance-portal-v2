@@ -5,9 +5,12 @@ import {
   Container,
   Text,
   Box,
+  Button,
   Image,
-  Flex
+  Flex,
+  Card
 } from '@theme-ui/components';
+import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 
 import { Global } from '@emotion/core';
@@ -68,7 +71,7 @@ const Index: React.FC<Props> = ({ proposals, polls }) => {
             textAlign: 'center'
           }}
         >
-          <Box py="6" mx="auto" sx={{ maxWidth: 9 }}>
+          <Box pt="6" mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h1" sx={{ fontSize: [7, 8], color: '#231536' }}>
               Maker Governance
             </Heading>
@@ -87,11 +90,113 @@ const Index: React.FC<Props> = ({ proposals, polls }) => {
             </Text>
           </Box>
         </Container>
-
+        <Box py="5" mx="auto" sx={{ maxWidth: 9, textAlign: 'center' }}>
+          <Button
+            variant="outline"
+            sx={{
+              borderRadius: 'round',
+              bg: 'background',
+              border: '1px solid',
+              borderColor: 'secondary',
+              color: '#434358',
+              alignItems: 'center'
+            }}
+          >
+            <span
+              style={{
+                display: 'inline-block',
+                border: '1px solid #1AAB9B',
+                borderRadius: 13,
+                width: 26,
+                height: 26,
+                color: '#1AAB9B',
+                marginRight: 20
+              }}
+            >
+              {recentPolls.length}
+            </span>
+            New polling votes!
+            <Icon
+              name="chevron_right"
+              color="#708390"
+              size="2"
+              sx={{ marginLeft: 20 }}
+            />
+          </Button>
+        </Box>
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-
+        <Flex
+          sx={{ justifyContent: 'space-around', maxWidth: 11 }}
+          mx="auto"
+          mb="6"
+        >
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Introduction to Governance
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              A guide to outlining the basics of getting started with voting.
+            </Text>
+          </Card>
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Governance Forum
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              Get the latest updates and take part in current discussions.
+            </Text>
+          </Card>
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Governance Calls
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              Weekly calls to present research and coordinate around current
+              issues.
+            </Text>
+          </Card>
+        </Flex>
         <Container
           pb="5"
           sx={{
@@ -150,6 +255,7 @@ const Index: React.FC<Props> = ({ proposals, polls }) => {
             </Container>
           </Box>
         </Container>
+
         <Container
           as="section"
           sx={{

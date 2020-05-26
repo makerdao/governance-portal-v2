@@ -1,4 +1,4 @@
-import { Flex, Link as ExternalLink, Text } from 'theme-ui';
+import { Flex, Link as ExternalLink, Text } from '@theme-ui/components';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
@@ -67,7 +67,7 @@ export default function() {
           <div>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
             <Text mt="2" variant="h2">
-              {data ? bigNumberKFormat(totalDaiSupply) : <Skeleton />}
+              {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
             </Text>
           </div>
           <div>
