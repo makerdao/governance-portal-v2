@@ -4,13 +4,14 @@ import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import getMaker, { getNetwork } from '../lib/maker';
+import CurrenctObject from '../types/currency';
 
 export default function ExecutiveCard({ proposal, isHat }) {
   const network = getNetwork();
 
-  const { data: mkrSupport } = useSWR(
+  const { data: mkrSupport } = useSWR<CurrenctObject>(
     [`/executive/mkrSupport`, proposal.source],
-    async (_, spellAddress) =>
+    (_, spellAddress) =>
       getMaker().then(maker =>
         maker.service('chief').getApprovalCount(spellAddress)
       )

@@ -1,13 +1,15 @@
 import Maker from '@makerdao/dai';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 import withApiHandler from '../../_lib/with-api-handler';
 import { networkToRpc, isSupportedNetwork } from '../../../../lib/maker';
-import { DEFAULT_NETWORK } from '../../../../lib/constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from '../../../../lib/constants';
 import { backoffRetry } from '../../../../lib/utils';
+import PollTally from '../../../../types/pollTally';
 
 const cachedMakerObjs = {};
-async function getConnectedMakerObj(network) {
+async function getConnectedMakerObj(network: SupportedNetworks) {
   if (cachedMakerObjs[network]) {
     return cachedMakerObjs[network];
   }
@@ -29,13 +31,17 @@ async function getConnectedMakerObj(network) {
   return makerObj;
 }
 
-function creatPollTallyRoute({ cacheType }) {
-  return withApiHandler(async (req, res) => {
-    const {
-      query: { ['poll-id']: pollId, network }
-    } = req;
+function createPollTallyRoute({ cacheType }: { cacheType: string }) {
+  return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+    const pollId: string = req.query['poll-id'] as string;
+    const network: string = req.query.network as string;
+
+    if (!pollId) throw new Error('poll id required');
+
     const maker = await getConnectedMakerObj(
-      isSupportedNetwork(network) ? network : DEFAULT_NETWORK
+      isSupportedNetwork(network)
+        ? (network as SupportedNetworks)
+        : DEFAULT_NETWORK
     );
 
     const tally = await backoffRetry(3, () =>
@@ -43,18 +49,23 @@ function creatPollTallyRoute({ cacheType }) {
     );
 
     const totalMkrParticipation = tally.totalMkrParticipation;
-    const winner = tally.winner;
-    const rounds = tally.rounds;
+    const winner: string = tally.winner;
+    const rounds = parseInt(tally.rounds);
+
+    const parsedTally: PollTally = {
+      options: tally.options,
+      winner,
+      rounds,
+      totalMkrParticipation
+    };
 
     res.setHeader('Cache-Control', cacheType);
-    res
-      .status(200)
-      .json({ options: tally.options, winner, rounds, totalMkrParticipation });
+    res.status(200).json(parsedTally);
   });
 }
 
-export { creatPollTallyRoute };
+export { createPollTallyRoute };
 
-export default creatPollTallyRoute({
+export default createPollTallyRoute({
   cacheType: 's-maxage=5, stale-while-revalidate'
 });

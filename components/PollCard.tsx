@@ -1,13 +1,18 @@
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
+import { NavLink, Text, Flex, Badge, Box } from '@theme-ui/components';
 import Skeleton from 'react-loading-skeleton';
 
-import { formatPollTally } from '../lib/utils';
+import { parsePollTally } from '../lib/utils';
 import { getNetwork } from '../lib/maker';
 import CountdownTimer from './CountdownTimer';
+import Poll from '../types/poll';
 
-export default function PollCard({ poll }) {
+type Props = {
+  poll: Poll;
+};
+
+const PollCard: React.FC<Props> = ({ poll }) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
@@ -17,7 +22,8 @@ export default function PollCard({ poll }) {
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const tally = formatPollTally(_tally);
+  console.log(_tally, '_tally');
+  const tally = parsePollTally(_tally);
 
   const leadingOption =
     tally?.winner === null ? 'none found' : poll.options[tally?.winner];
@@ -141,4 +147,6 @@ export default function PollCard({ poll }) {
       </Flex>
     </Flex>
   );
-}
+};
+
+export default PollCard;

@@ -1,8 +1,16 @@
 import { useState } from 'react';
-import { Input } from 'theme-ui';
+import { Input } from '@theme-ui/components';
 import { MKR } from '../lib/maker';
+import CurrencyObject from '../types/currency';
 
-export default function MKRInput({ placeholder = '0.00', ...props } = {}) {
+type Props = {
+  placeholder: string;
+  onChange: (value: CurrencyObject) => void;
+  min?: CurrencyObject;
+  max?: CurrencyObject;
+};
+
+const MKRInput: React.FC<Props> = ({ placeholder = '0.00', ...props }) => {
   const { onChange, min, max } = props;
   const [currentValueStr, setCurrentValueStr] = useState('');
 
@@ -27,4 +35,6 @@ export default function MKRInput({ placeholder = '0.00', ...props } = {}) {
       placeholder={placeholder}
     />
   );
-}
+};
+
+export default MKRInput;

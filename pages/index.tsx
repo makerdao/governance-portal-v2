@@ -1,22 +1,44 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box } from 'theme-ui';
+import {
+  Heading,
+  Container,
+  Text,
+  Box,
+  Image,
+  Flex
+} from '@theme-ui/components';
 import useSWR from 'swr';
 
 import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
-import { getPolls, getExecutiveProposals } from '../lib/api';
+import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/PollCard';
 import ExecutiveCard from '../components/ExecutiveCard';
+import Proposal from '../types/proposal';
+import Poll from '../types/poll';
+import BlogPost from '../types/blogPost';
 
-function Index({ proposals = [], polls = [] } = {}) {
+type Props = {
+  proposals: Proposal[];
+  polls: Poll[];
+};
+
+const Index: React.FC<Props> = ({ proposals, polls }) => {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>();
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
-  const { data: hat } = useSWR(`/executive/hat`, () =>
+  const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
+
+  useEffect(() => {
+    getPostsAndPhotos().then(blogPosts => {
+      setBlogPosts(blogPosts);
+    });
+  }, []);
 
   return (
     <PrimaryLayout>
@@ -128,15 +150,51 @@ function Index({ proposals = [], polls = [] } = {}) {
             </Container>
           </Box>
         </Container>
+        <Container
+          as="section"
+          sx={{
+            textAlign: 'center'
+          }}
+        >
+          <Heading as="h2">Polling Votes</Heading>
+          <Flex sx={{ justifyContent: 'center' }}>
+            {blogPosts
+              ? blogPosts.map(post => (
+                  <Box
+                    key={post.title}
+                    mx={'20px'}
+                    sx={{ width: ['100%', '20vw'], borderRadius: 3 }}
+                  >
+                    <Image
+                      src={post.photoHref}
+                      sx={{
+                        objectFit: 'cover',
+                        height: ['100px', '20vw'],
+                        backgroundColor: 'silver'
+                      }}
+                    />
+                    <Text>{post.title}</Text>
+                    <Text>
+                      {new Date(post.date).toLocaleString('default', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </Text>
+                  </Box>
+                ))
+              : 'loading...'}
+          </Flex>
+        </Container>
       </Container>
     </PrimaryLayout>
   );
-}
+};
 
-export default ({ proposals = [], polls = [] } = {}) => {
+export default ({ proposals, polls }) => {
   // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, _setPolls] = useState();
-  const [_proposals, _setProposals] = useState();
+  const [_polls, _setPolls] = useState([]);
+  const [_proposals, _setProposals] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // fetch poll contents at run-time if on any network other than the default
@@ -156,7 +214,6 @@ export default ({ proposals = [], polls = [] } = {}) => {
 
   return (
     <Index
-      loading={loading}
       proposals={isDefaultNetwork() ? proposals : _proposals}
       polls={isDefaultNetwork() ? polls : _polls}
     />

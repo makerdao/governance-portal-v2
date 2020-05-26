@@ -1,9 +1,18 @@
-import create from 'zustand';
+import create, { State } from 'zustand';
 
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
+import TX from '../types/transaction';
 
-const [useTransactionsStore, transactionsApi] = create((set, get) => ({
+interface Store extends State {
+  transactions: { [from: string]: TX[] };
+  initTx: (from: string, txObject: any, message: string) => void;
+  setPending: (from: string, txObject: any) => void;
+  setMined: (from: string, txObject: any) => void;
+  setError: (from: string, txObject: any, error: { message: string }) => void;
+}
+
+const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   transactions: {},
 
   initTx: (from, txObject, message) => {

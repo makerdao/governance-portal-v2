@@ -3,36 +3,36 @@ import McdPlugin, { MDAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
 
-import { DEFAULT_NETWORK, NETWORKS } from './constants';
+import { SupportedNetworks, DEFAULT_NETWORK, NETWORKS } from './constants';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
 export const MKR = Maker.MKR;
 export const DAI = MDAI;
 
-export function networkToRpc(network) {
+export function networkToRpc(network: SupportedNetworks) {
   switch (network) {
-    case NETWORKS.mainnet:
+    case SupportedNetworks.mainnet:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-    case NETWORKS.kovan:
+    case SupportedNetworks.kovan:
       return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
-    case NETWORKS.testnet:
+    case SupportedNetworks.testnet:
       return `http://localhost:2000`;
     default:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
   }
 }
 
-function chainIdToNetworkName(chainId) {
+function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
     case 1:
-      return NETWORKS.mainnet;
+      return SupportedNetworks.mainnet;
     case 42:
-      return NETWORKS.kovan;
+      return SupportedNetworks.kovan;
     case 999:
-      return NETWORKS.testnet;
+      return SupportedNetworks.testnet;
     case 1337:
-      return NETWORKS.testnet;
+      return SupportedNetworks.testnet;
     default:
       return undefined;
   }
@@ -54,14 +54,14 @@ const _maker = Maker.create('http', {
   log: false,
   multicall: true
 });
-if (typeof window !== 'undefined') {
-  window.maker = _maker;
-}
 
-function determineNetwork() {
-  if (typeof __TESTCHAIN__ !== 'undefined' && __TESTCHAIN__) {
+function determineNetwork(): SupportedNetworks {
+  if (
+    typeof (global as any).__TESTCHAIN__ !== 'undefined' &&
+    (global as any).__TESTCHAIN__
+  ) {
     // if the testhchain global is set, connect to the testchain
-    return NETWORKS.testnet;
+    return SupportedNetworks.testnet;
   } else if (typeof window === 'undefined') {
     // if not on the browser, connect to the default network
     // (eg when generating static pages at build-time)
@@ -70,23 +70,19 @@ function determineNetwork() {
     // otherwise, to determine the network...
     // 1) check the URL
     if (window.location.search.includes('mainnet')) {
-      return NETWORKS.mainnet;
+      return SupportedNetworks.mainnet;
     } else if (window.location.search.includes('kovan')) {
-      return NETWORKS.kovan;
+      return SupportedNetworks.kovan;
     } else if (window.location.search.includes('testnet')) {
-      return NETWORKS.testnet;
+      return SupportedNetworks.testnet;
     }
     // 2) check the browser provider if there is one
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof (window as any).ethereum !== 'undefined') {
       const providerNetwork = chainIdToNetworkName(
-        parseInt(window.ethereum.chainId)
+        parseInt((window as any).ethereum.chainId)
       );
-      if (providerNetwork === NETWORKS.mainnet) {
-        return NETWORKS.mainnet;
-      } else if (providerNetwork === NETWORKS.kovan) {
-        return NETWORKS.kovan;
-      } else if (providerNetwork === NETWORKS.testnet) {
-        return NETWORKS.testnet;
+      if (isSupportedNetwork(providerNetwork)) {
+        return providerNetwork;
       }
     }
     // if it's not clear what network to connect to, use the default
@@ -96,41 +92,43 @@ function determineNetwork() {
 
 if (
   typeof window !== 'undefined' &&
-  typeof window?.ethereum?.on !== 'undefined'
+  typeof (window as any)?.ethereum?.on !== 'undefined'
 ) {
-  window.ethereum.autoRefreshOnNetworkChange = false;
-  function handleChainChanged(chainId) {
+  (window as any).ethereum.autoRefreshOnNetworkChange = false;
+  function handleChainChanged(chainId: string) {
     const newNetwork = chainIdToNetworkName(parseInt(chainId));
     const asPath = Router?.router?.asPath?.replace(/network=[a-z]+/i, '');
     if (Router?.router) {
-      Router.push({
-        pathname: Router.router.pathname,
-        asPath,
-        query: { network: newNetwork || defaultNetwork }
-      });
+      Router.push(
+        {
+          pathname: Router.router.pathname,
+          query: { network: newNetwork || DEFAULT_NETWORK }
+        },
+        asPath
+      );
     }
   }
   // update the URL anytime the provider's network changes
   // we use both methods as the latter doesn't work atm, but the former will be removed once the latter is ready
   // https://github.com/MetaMask/metamask-extension/issues/8077
-  window.ethereum.on('chainIdChanged', handleChainChanged);
-  window.ethereum.on('chainChanged', handleChainChanged);
+  (window as any).ethereum.on('chainIdChanged', handleChainChanged);
+  (window as any).ethereum.on('chainChanged', handleChainChanged);
 }
 
 function getMaker() {
   return _maker;
 }
 
-function getNetwork() {
+function getNetwork(): SupportedNetworks {
   return _network;
 }
 
-function isDefaultNetwork() {
+function isDefaultNetwork(): boolean {
   return getNetwork() === DEFAULT_NETWORK;
 }
 
-function isSupportedNetwork(_network) {
-  return Object.values(NETWORKS).some(network => network === _network);
+function isSupportedNetwork(_network: string): boolean {
+  return Object.values(SupportedNetworks).some(network => network === _network);
 }
 
 export default getMaker;

@@ -3,11 +3,16 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS } from './constants';
+import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork } from './maker';
+import Poll from '../types/pollTally';
+import Proposal from '../types/proposal';
+import BlogPost from '../types/blogPost';
 
 let _cachedProposals;
-export async function getExecutiveProposals({ useCache = false } = {}) {
+export async function getExecutiveProposals({ useCache = false } = {}): Promise<
+  Proposal[]
+> {
   if (useCache && _cachedProposals) return _cachedProposals;
   const network = getNetwork();
   if (typeof CMS_ENDPOINTS[network] === 'undefined') return [];
@@ -25,7 +30,7 @@ export async function getExecutiveProposals({ useCache = false } = {}) {
 export async function getExecutiveProposal(
   proposalId,
   { useCache = false } = {}
-) {
+): Promise<Proposal> {
   const proposals =
     useCache && _cachedProposals
       ? _cachedProposals
@@ -40,7 +45,7 @@ export async function getExecutiveProposal(
 }
 
 let _cachedPolls;
-export async function getPolls({ useCache = false } = {}) {
+export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
   if (useCache && _cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
@@ -94,7 +99,10 @@ export async function getPolls({ useCache = false } = {}) {
   return polls;
 }
 
-export async function getPoll(pollHash, { useCache = false } = {}) {
+export async function getPoll(
+  pollHash,
+  { useCache = false } = {}
+): Promise<Poll> {
   const polls = useCache && _cachedPolls ? _cachedPolls : await getPolls();
   const [poll] = polls.filter(p => p.multiHash === pollHash);
   const content = await markdownToHtml(poll?.content || '');
@@ -103,4 +111,23 @@ export async function getPoll(pollHash, { useCache = false } = {}) {
     ...poll,
     content
   };
+}
+
+export async function getPostsAndPhotos(): Promise<BlogPost[]> {
+  const posts = await fetch(GOV_BLOG_POSTS_ENDPOINT).then(res => res.json());
+  const photoLinks: string[] = await Promise.all(
+    posts.map(post =>
+      fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json())
+    )
+  ).then(photosMeta =>
+    (photosMeta as any).map(
+      photoMeta => photoMeta.media_details.sizes.large.source_url
+    )
+  );
+
+  return posts.map((post, index) => ({
+    title: post.title.rendered,
+    date: post.date,
+    photoHref: photoLinks[index]
+  }));
 }

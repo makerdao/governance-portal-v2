@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NavLink, Heading } from 'theme-ui';
+import { NavLink, Heading } from '@theme-ui/components';
 
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/PrimaryLayout';
+import Proposal from '../types/proposal';
 
-function Executive({ proposals = [] } = {}) {
+type Props = {
+  proposals: Proposal[];
+};
+
+const Executive: React.FC<Props> = ({ proposals }) => {
   const network = getNetwork();
   return (
     <PrimaryLayout>
@@ -29,10 +34,10 @@ function Executive({ proposals = [] } = {}) {
       ))}
     </PrimaryLayout>
   );
-}
+};
 
-export default ({ proposals = [] } = {}) => {
-  const [_proposals, _setProposals] = useState();
+export default ({ proposals }) => {
+  const [_proposals, _setProposals] = useState([]);
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {

@@ -1,4 +1,5 @@
 import Router from 'next/router';
+import { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
@@ -11,7 +12,7 @@ export function reportWebVitals(metric) {
   console.log(metric);
 }
 
-function MyApp({ Component, pageProps }) {
+const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const currentNetwork = getNetwork();
 
   useEffect(() => {
@@ -36,6 +37,6 @@ function MyApp({ Component, pageProps }) {
       </SWRConfig>
     </ThemeProvider>
   );
-}
+};
 
 export default MyApp;

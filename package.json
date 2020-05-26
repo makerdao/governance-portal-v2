@@ -14,7 +14,7 @@
   "dependencies": {
     "@makerdao/dai": "^0.31.2",
     "@makerdao/dai-plugin-governance": "^0.12.6",
-    "@makerdao/dai-plugin-mcd": "^1.4.6",
+    "@makerdao/dai-plugin-mcd": "^1.4.7",
     "@makerdao/dai-ui-icons": "^0.0.28",
     "@makerdao/dai-ui-theme-maker": "^0.0.28",
     "gray-matter": "^4.0.2",
@@ -37,6 +37,7 @@
     "@testing-library/react": "^10.0.4",
     "dotenv": "^8.2.0",
     "jest": "^26.0.1",
+    "typescript": "^3.9.3",
     "wait-for-expect": "^3.0.2"
   }
 }

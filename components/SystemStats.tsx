@@ -4,13 +4,15 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../lib/maker';
 import { bigNumberKFormat } from '../lib/utils';
+import CurrenctObject from '../types/currency';
 
-async function getSystemStats() {
+async function getSystemStats(): Promise<CurrenctObject[]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
+    maker.service('mcd:systemData').getSystemSurplus(),
     maker.getToken(DAI).totalSupply(),
-    maker.service('mcd:systemData').getSystemWideDebtCeiling()
+    DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
 }
 
@@ -22,19 +24,16 @@ if (typeof window !== 'undefined') {
 }
 
 export default function() {
-  const { data } = useSWR(`/system-stats`, getSystemStats);
-  const [savingsRate, totalDaiSupply, debtCeiling] = data || [];
+  const { data } = useSWR<CurrenctObject[]>(`/system-stats`, getSystemStats);
+  const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
 
   return (
     <>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text pb="2" sx={{ fontSize: 6 }}>
-          System Stats
-        </Text>
         <ExternalLink href="https://daistats.com/" target="_blank">
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              See all system stats
+              View more stats
               <Icon
                 ml="2"
                 name="chevron_right"
@@ -64,8 +63,9 @@ export default function() {
               {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
             </Text>
           </div>
+
           <div>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
             <Text mt="2" variant="h2">
               {data ? bigNumberKFormat(totalDaiSupply) : <Skeleton />}
             </Text>
@@ -73,7 +73,17 @@ export default function() {
           <div>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
             <Text mt="2" variant="h2">
-              {data ? debtCeiling.toLocaleString() : <Skeleton />}
+              {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
+            </Text>
+          </div>
+          <div>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>System Surplus</Text>
+            <Text mt="2" variant="h2">
+              {data ? (
+                `${systemSurplus.toBigNumber().toFormat(0)} DAI`
+              ) : (
+                <Skeleton />
+              )}
             </Text>
           </div>
         </Flex>

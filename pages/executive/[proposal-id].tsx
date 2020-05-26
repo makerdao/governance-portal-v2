@@ -5,8 +5,14 @@ import ErrorPage from 'next/error';
 import PrimaryLayout from '../../components/PrimaryLayout';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { isDefaultNetwork } from '../../lib/maker';
+import Proposal from '../../types/proposal';
 
-function ExecutiveProposal({ proposal, loading }) {
+type Props = {
+  proposal: Proposal;
+  loading: boolean;
+};
+
+const ExecutiveProposal: React.FC<Props> = ({ proposal, loading }) => {
   if (loading)
     return (
       <PrimaryLayout>
@@ -28,7 +34,7 @@ function ExecutiveProposal({ proposal, loading }) {
       <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
     </PrimaryLayout>
   );
-}
+};
 
 export async function getStaticProps({ params }) {
   // fetch proposal contents at build-time if on the default network

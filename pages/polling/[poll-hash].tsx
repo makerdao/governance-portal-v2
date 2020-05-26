@@ -7,8 +7,14 @@ import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { formatPollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
+import Poll from '../../types/poll';
 
-function Poll({ poll, loading }) {
+type Props = {
+  poll: Poll;
+  loading: boolean;
+};
+
+const Poll: React.FC<Props> = ({ poll, loading }) => {
   if (loading)
     return (
       <PrimaryLayout>
@@ -17,9 +23,7 @@ function Poll({ poll, loading }) {
     );
 
   if (!poll?.multiHash) {
-    return (
-      <ErrorPage statusCode={404} title="Polling vote could not be found" />
-    );
+    return <ErrorPage statusCode={404} title="Poll could not be found" />;
   }
 
   const network = getNetwork();
@@ -37,7 +41,7 @@ function Poll({ poll, loading }) {
       <div dangerouslySetInnerHTML={{ __html: poll.content }} />
     </PrimaryLayout>
   );
-}
+};
 
 export default ({ poll }) => {
   const [_poll, _setPoll] = useState();
