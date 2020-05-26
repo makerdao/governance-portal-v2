@@ -12,7 +12,7 @@ type Props = {
   loading: boolean;
 };
 
-const ExecutiveProposal: React.FC<Props> = ({ proposal, loading }) => {
+const ExecutiveProposalPage: React.FC<Props> = ({ proposal, loading }) => {
   if (loading)
     return (
       <PrimaryLayout>
@@ -50,7 +50,7 @@ export async function getStaticProps({ params }) {
 }
 
 export default ({ proposal }) => {
-  const [_proposal, _setProposal] = useState();
+  const [_proposal, _setProposal] = useState<Proposal>();
   const [loading, setLoading] = useState(false);
   const { query, isFallback } = useRouter();
 
@@ -67,7 +67,7 @@ export default ({ proposal }) => {
     }
   }, []);
   return (
-    <ExecutiveProposal
+    <ExecutiveProposalPage
       loading={loading || isFallback}
       proposal={isDefaultNetwork() ? proposal : _proposal}
     />

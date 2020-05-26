@@ -30,7 +30,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
       <SWRConfig
         value={{
           refreshInterval: 2000,
-          fetcher: (...args) => fetch(...args).then(res => res.json())
+          fetcher: href => fetch(href).then(res => res.json())
         }}
       >
         <Component {...pageProps} />

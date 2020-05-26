@@ -6,7 +6,7 @@ import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
 
-function Polling({ polls = [] } = {}) {
+function PollingOverview({ polls = [] } = {}) {
   const network = getNetwork();
   const validPolls = polls.filter(
     poll => new Date(poll.startDate) <= new Date()
@@ -45,7 +45,7 @@ export default ({ polls = [] } = {}) => {
     }
   }, []);
 
-  return <Polling polls={isDefaultNetwork() ? polls : _polls} />;
+  return <PollingOverview polls={isDefaultNetwork() ? polls : _polls} />;
 };
 
 export async function getStaticProps() {

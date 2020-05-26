@@ -11,7 +11,7 @@ type Props = {
   proposals: Proposal[];
 };
 
-const Executive: React.FC<Props> = ({ proposals }) => {
+const ExecutiveOverview: React.FC<Props> = ({ proposals }) => {
   const network = getNetwork();
   return (
     <PrimaryLayout>
@@ -48,7 +48,11 @@ export default ({ proposals }) => {
     }
   }, []);
 
-  return <Executive proposals={isDefaultNetwork() ? proposals : _proposals} />;
+  return (
+    <ExecutiveOverview
+      proposals={isDefaultNetwork() ? proposals : _proposals}
+    />
+  );
 };
 
 export async function getStaticProps() {

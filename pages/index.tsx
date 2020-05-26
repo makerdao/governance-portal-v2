@@ -29,7 +29,7 @@ type Props = {
   polls: Poll[];
 };
 
-const Index: React.FC<Props> = ({ proposals, polls }) => {
+const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>();
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
@@ -319,7 +319,7 @@ export default ({ proposals, polls }) => {
   }, []);
 
   return (
-    <Index
+    <LandingPage
       proposals={isDefaultNetwork() ? proposals : _proposals}
       polls={isDefaultNetwork() ? polls : _polls}
     />

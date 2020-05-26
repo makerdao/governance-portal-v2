@@ -5,7 +5,7 @@ import validUrl from 'valid-url';
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork } from './maker';
-import Poll from '../types/pollTally';
+import Poll from '../types/poll';
 import Proposal from '../types/proposal';
 import BlogPost from '../types/blogPost';
 

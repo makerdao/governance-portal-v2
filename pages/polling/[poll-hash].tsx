@@ -5,7 +5,7 @@ import useSWR from 'swr';
 
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { formatPollTally } from '../../lib/utils';
+import { parsePollTally } from '../../lib/utils';
 import PrimaryLayout from '../../components/PrimaryLayout';
 import Poll from '../../types/poll';
 
@@ -14,7 +14,7 @@ type Props = {
   loading: boolean;
 };
 
-const Poll: React.FC<Props> = ({ poll, loading }) => {
+const PollPage: React.FC<Props> = ({ poll, loading }) => {
   if (loading)
     return (
       <PrimaryLayout>
@@ -34,7 +34,7 @@ const Poll: React.FC<Props> = ({ poll, loading }) => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const tally = formatPollTally(_tally);
+  const tally = parsePollTally(_tally);
 
   return (
     <PrimaryLayout>
@@ -44,7 +44,7 @@ const Poll: React.FC<Props> = ({ poll, loading }) => {
 };
 
 export default ({ poll }) => {
-  const [_poll, _setPoll] = useState();
+  const [_poll, _setPoll] = useState<Poll>();
   const [loading, setLoading] = useState(false);
   const { query, isFallback } = useRouter();
 
@@ -60,7 +60,7 @@ export default ({ poll }) => {
   }, []);
 
   return (
-    <Poll
+    <PollPage
       loading={loading || isFallback}
       poll={isDefaultNetwork() ? poll : _poll}
     />
