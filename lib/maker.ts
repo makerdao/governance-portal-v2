@@ -1,9 +1,10 @@
 import Maker from '@makerdao/dai';
+// @ts-ignore
 import McdPlugin, { MDAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
 
-import { SupportedNetworks, DEFAULT_NETWORK, NETWORKS } from './constants';
+import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
@@ -90,24 +91,25 @@ function determineNetwork(): SupportedNetworks {
   }
 }
 
+function handleChainChanged(chainId: string) {
+  const newNetwork = chainIdToNetworkName(parseInt(chainId));
+  const asPath = Router?.router?.asPath?.replace(/network=[a-z]+/i, '');
+  if (Router?.router) {
+    Router.push(
+      {
+        pathname: Router.router.pathname,
+        query: { network: newNetwork || DEFAULT_NETWORK }
+      },
+      asPath
+    );
+  }
+}
+
 if (
   typeof window !== 'undefined' &&
   typeof (window as any)?.ethereum?.on !== 'undefined'
 ) {
   (window as any).ethereum.autoRefreshOnNetworkChange = false;
-  function handleChainChanged(chainId: string) {
-    const newNetwork = chainIdToNetworkName(parseInt(chainId));
-    const asPath = Router?.router?.asPath?.replace(/network=[a-z]+/i, '');
-    if (Router?.router) {
-      Router.push(
-        {
-          pathname: Router.router.pathname,
-          query: { network: newNetwork || DEFAULT_NETWORK }
-        },
-        asPath
-      );
-    }
-  }
   // update the URL anytime the provider's network changes
   // we use both methods as the latter doesn't work atm, but the former will be removed once the latter is ready
   // https://github.com/MetaMask/metamask-extension/issues/8077

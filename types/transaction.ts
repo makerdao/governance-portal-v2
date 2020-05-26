@@ -1,4 +1,4 @@
-type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
+export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
 
 type TX = {
   submittedAt: string;
@@ -9,5 +9,4 @@ type TX = {
   errorType: null | string;
 };
 
-export { TxStatus };
 export default TX;

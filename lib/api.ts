@@ -86,7 +86,7 @@ export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
       };
     })
   ).then(polls =>
-    polls
+    (polls as any[])
       .filter(p => !!p.summary && !!p.options)
       // newest to oldest
       .sort(
