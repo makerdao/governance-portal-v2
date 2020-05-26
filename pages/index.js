@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box } from 'theme-ui';
+import { Heading, Container, Text, Box, Button, Flex, Card } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 
 import { Global } from '@emotion/core';
@@ -82,7 +83,7 @@ function Index({ proposals = [], polls = [] } = {}) {
               border: '1px solid #1AAB9B',
               borderRadius: 13,
               width: 26, height: 26, color: '#1AAB9B', marginRight: 20}}>
-              {activePolls.length}
+              {recentPolls.length}
             </span>
             New polling votes!
             <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 20 }}/>
@@ -91,7 +92,71 @@ function Index({ proposals = [], polls = [] } = {}) {
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-
+        <Flex sx={{ justifyContent: 'space-around', maxWidth: 11}} mx='auto' mb='6'>
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Introduction to Governance
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              A guide to outlining the basics of getting started with voting.
+            </Text>
+          </Card>
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Governance Forum
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              Get the latest updates and take part in current discussions.
+            </Text>
+          </Card>
+          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#231536',
+                textAlign: 'left'
+              }}
+            >
+              Governance Calls
+            </Text>
+            <Text
+              sx={{
+                fontSize: [3, 4],
+                color: '#434358',
+                opacity: 0.8,
+                whiteSpace: 'initial'
+              }}
+            >
+              Weekly calls to present research and coordinate around current issues.
+            </Text>
+          </Card>
+        </Flex>
         <Container
           pb="5"
           sx={{
