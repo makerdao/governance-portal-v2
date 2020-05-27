@@ -263,35 +263,53 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
             textAlign: 'center'
           }}
         >
-          <Heading as="h2">Polling Votes</Heading>
-          <Flex sx={{ justifyContent: 'center' }}>
-            {blogPosts
-              ? blogPosts.map(post => (
-                  <Box
-                    key={post.title}
-                    mx={'20px'}
-                    sx={{ width: ['100%', '20vw'], borderRadius: 3 }}
-                  >
-                    <Image
-                      src={post.photoHref}
-                      sx={{
-                        objectFit: 'cover',
-                        height: ['100px', '20vw'],
-                        backgroundColor: 'silver'
-                      }}
-                    />
-                    <Text>{post.title}</Text>
-                    <Text>
-                      {new Date(post.date).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
-                    </Text>
-                  </Box>
-                ))
-              : 'loading...'}
-          </Flex>
+          <Heading as="h2" mb="3">Blog Posts</Heading>
+          <Box>
+            <Flex sx={{ justifyContent: 'center' }} mb="6">
+              {blogPosts
+                ? blogPosts.map(post => (
+                    <Card
+                      key={post.title}
+                      mx={'20px'}
+                      sx={{ width: ['100%', '25vw'], borderRadius: 'medium' }}
+                      p={'0'}
+                    >
+                      <Image
+                        src={post.photoHref}
+                        sx={{
+                          objectFit: 'cover',
+                          height: ['100px', '20vw'],
+                          width: '100%',
+                          backgroundColor: 'silver'
+                        }}
+                      />
+
+                      <Text
+                        p={3}
+                        sx={{
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          fontSize: 3,
+                          color: '#231536',
+                          textAlign: 'left'
+                        }}
+                        
+                      >
+                         {post.title}
+                      </Text>
+                      <Text px={3} pb={3} sx={{ textAlign: 'left' }}>
+                        {new Date(post.date).toLocaleString('default', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </Text>
+                    </Card>
+                  ))
+                : 'loading...'}
+            </Flex>
+          </Box>
         </Container>
       </Container>
     </PrimaryLayout>

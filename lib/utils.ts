@@ -15,7 +15,7 @@ export function bigNumberKFormat(num: CurrencyObject) {
   const units = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y'];
   const typeIndex = Math.floor(num.toFixed(0).length / 3) - 1;
   const value = num.div(Math.pow(1000, typeIndex));
-  return `${value.toBigNumber().toFixed(0)} ${units[typeIndex - 1] || ''}`;
+  return `${value && value.toBigNumber().toFixed(0)} ${units[typeIndex - 1] || ''}`;
 }
 
 export async function markdownToHtml(markdown: string) {
