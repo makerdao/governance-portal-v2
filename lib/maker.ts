@@ -56,6 +56,7 @@ const _maker = Maker.create('http', {
   multicall: true
 });
 
+// make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
   if (
     typeof (global as any).__TESTCHAIN__ !== 'undefined' &&
