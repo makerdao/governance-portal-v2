@@ -16,7 +16,7 @@ import useSWR from 'swr';
 import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
-import PrimaryLayout from '../components/PrimaryLayout';
+import PrimaryLayout from '../components/layouts/PrimaryLayout';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/PollCard';
 import ExecutiveCard from '../components/ExecutiveCard';
@@ -139,6 +139,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
                 color: '#231536',
                 textAlign: 'left'
               }}
+              mb="m"
             >
               Introduction to Governance
             </Text>
