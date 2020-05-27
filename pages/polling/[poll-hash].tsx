@@ -34,7 +34,7 @@ const PollPage: React.FC<Props> = ({ poll, loading }) => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const tally = parsePollTally(_tally);
+  const tally = _tally ? parsePollTally(_tally, poll) : undefined;
 
   return (
     <PrimaryLayout>

@@ -299,8 +299,8 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
 
 export default ({ proposals, polls }) => {
   // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, _setPolls] = useState([]);
-  const [_proposals, _setProposals] = useState([]);
+  const [_polls, _setPolls] = useState<Poll[]>([]);
+  const [_proposals, _setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(false);
 
   // fetch poll contents at run-time if on any network other than the default

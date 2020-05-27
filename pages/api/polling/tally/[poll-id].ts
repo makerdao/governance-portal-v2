@@ -1,12 +1,12 @@
 import Maker from '@makerdao/dai';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import { NextApiRequest, NextApiResponse } from 'next';
+import invariant from 'tiny-invariant';
 
 import withApiHandler from '../../_lib/with-api-handler';
 import { networkToRpc, isSupportedNetwork } from '../../../../lib/maker';
 import { DEFAULT_NETWORK, SupportedNetworks } from '../../../../lib/constants';
 import { backoffRetry } from '../../../../lib/utils';
-import PollTally from '../../../../types/pollTally';
 
 const cachedMakerObjs = {};
 async function getConnectedMakerObj(network: SupportedNetworks) {
@@ -36,7 +36,7 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
     const pollId: string = req.query['poll-id'] as string;
     const network: string = req.query.network as string;
 
-    if (!pollId) throw new Error('poll id required');
+    invariant(pollId, 'poll id required');
 
     const maker = await getConnectedMakerObj(
       isSupportedNetwork(network)
@@ -52,7 +52,7 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
     const winner: string = tally.winner;
     const rounds = parseInt(tally.rounds);
 
-    const parsedTally: PollTally = {
+    const parsedTally = {
       options: tally.options,
       winner,
       rounds,

@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { Box, Select } from 'theme-ui';
 
 import useAccountsStore from '../stores/accounts';
@@ -6,7 +5,7 @@ import useAccountsStore from '../stores/accounts';
 const formatAddress = address =>
   address.slice(0, 7) + '...' + address.slice(-4);
 
-export default function AccountSelect() {
+const AccountSelect: React.FC = () => {
   const currentAccount = useAccountsStore(state => state.currentAccount);
   const connectWithBrowserProvider = useAccountsStore(
     state => state.connectWithBrowserProvider
@@ -24,7 +23,9 @@ export default function AccountSelect() {
         sx={{ width: '6', fontSize: '2' }}
       >
         {currentAccount ? (
-          <option defaultValue>{formatAddress(currentAccount.address)}</option>
+          <option defaultValue={formatAddress(currentAccount.address)}>
+            {formatAddress(currentAccount.address)}
+          </option>
         ) : (
           <>
             <option>Connect wallet</option>
@@ -34,4 +35,6 @@ export default function AccountSelect() {
       </Select>
     </Box>
   );
-}
+};
+
+export default AccountSelect;

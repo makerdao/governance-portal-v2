@@ -1,4 +1,5 @@
 import create, { State } from 'zustand';
+import invariant from 'tiny-invariant';
 
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
@@ -6,7 +7,7 @@ import TX from '../types/transaction';
 
 interface Store extends State {
   transactions: { [from: string]: TX[] };
-  initTx: (from: string, txObject: any, message: string) => void;
+  initTx: (from: string, txObject: any, message: string | null) => void;
   setPending: (from: string, txObject: any) => void;
   setMined: (from: string, txObject: any) => void;
   setError: (from: string, txObject: any, error: { message: string }) => void;
@@ -42,6 +43,10 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       const transaction = state.transactions[from].find(
         tx => tx.submittedAt === submittedAt
       );
+      invariant(
+        transaction,
+        `Unable to find tx from ${from} submitted at ${submittedAt}`
+      );
       transaction.status = status;
       transaction.hash = txObject.hash;
       return state;
@@ -55,6 +60,10 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       const transaction = state.transactions[from].find(
         tx => tx.submittedAt === submittedAt
       );
+      invariant(
+        transaction,
+        `Unable to find tx from ${from} submitted at ${submittedAt}`
+      );
       transaction.status = status;
       return state;
     });
@@ -66,6 +75,10 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     set(state => {
       const transaction = state.transactions[from].find(
         tx => tx.submittedAt === submittedAt
+      );
+      invariant(
+        transaction,
+        `Unable to find tx from ${from} submitted at ${submittedAt}`
       );
       const errorType = transaction.hash ? 'failed' : 'not sent';
       transaction.status = status;

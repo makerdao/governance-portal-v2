@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { Text, Box, Flex } from 'theme-ui';
+import { Text, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from '../lib/useInterval';
 
-export default function CountdownTimer({ endDate, endText }) {
+type props = {
+  endDate: string;
+  endText: string;
+};
+
+const CountdownTimer: React.FC<props> = ({ endDate, endText }) => {
   const [_timeLeft, _setTimeLeft] = useState(
     Math.floor(new Date(endDate).getTime() / 1000) -
       Math.floor(new Date().getTime() / 1000)
@@ -44,4 +49,6 @@ export default function CountdownTimer({ endDate, endText }) {
       )}
     </Flex>
   );
-}
+};
+
+export default CountdownTimer;

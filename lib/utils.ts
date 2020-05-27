@@ -1,14 +1,17 @@
 import remark from 'remark';
 import html from 'remark-html';
+import invariant from 'tiny-invariant';
 
 import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
+import Poll from '../types/poll';
 
 export function bigNumberKFormat(num: CurrencyObject) {
-  if (!num || !num.symbol || !num.toBigNumber) {
-    throw new Error('bigNumberKFormat must recieve a maker currency object');
-  }
+  invariant(
+    num && num.symbol && num.toBigNumber,
+    'bigNumberKFormat must recieve a maker currency object'
+  );
   const units = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y'];
   const typeIndex = Math.floor(num.toFixed(0).length / 3) - 1;
   const value = num.div(Math.pow(1000, typeIndex));
@@ -59,14 +62,13 @@ export function backoffRetry(
   );
 }
 
-export function parsePollTally(tally): PollTally {
-  if (
-    typeof tally === 'undefined' ||
-    typeof tally.totalMkrParticipation === 'undefined' ||
-    typeof tally.options === 'undefined'
-  )
-    return undefined;
+export function parsePollTally(tally, poll: Poll): PollTally {
   const totalMkrParticipation = MKR(tally.totalMkrParticipation);
+  if (tally?.winner === null) tally.winningOption = 'none found';
+  else
+    tally.winningOption = poll.options
+      ? poll.options[tally.winner]
+      : 'none found';
   Object.keys(tally.options).forEach(key => {
     tally.options[key].firstChoice = MKR(tally.options[key].firstChoice);
     tally.options[key].transfer = MKR(tally.options[key].transfer);

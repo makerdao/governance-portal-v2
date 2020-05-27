@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from '../../lib/maker';
 import AccountSelect from '../AccountSelect';
 
-export default function Header() {
+const Header: React.FC = () => {
   const network = getNetwork();
   const otherNetwork = network === 'mainnet' ? 'kovan' : 'mainnet';
 
@@ -22,10 +22,12 @@ export default function Header() {
         <Button
           variant="outline"
           onClick={() => {
-            Router.push({
-              pathname: Router.router.pathname,
-              query: { network: otherNetwork }
-            });
+            if (Router?.router) {
+              Router.push({
+                pathname: Router.router.pathname,
+                query: { network: otherNetwork }
+              });
+            }
           }}
         >
           Switch to {otherNetwork}
@@ -43,4 +45,6 @@ export default function Header() {
       </Flex>
     </Flex>
   );
-}
+};
+
+export default Header;

@@ -35,7 +35,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
     case 1337:
       return SupportedNetworks.testnet;
     default:
-      return undefined;
+      throw new Error(`Unsupported chain id ${chainId}`);
   }
 }
 
@@ -79,11 +79,14 @@ function determineNetwork(): SupportedNetworks {
     }
     // 2) check the browser provider if there is one
     if (typeof (window as any).ethereum !== 'undefined') {
-      const providerNetwork = chainIdToNetworkName(
-        parseInt((window as any).ethereum.chainId)
-      );
-      if (isSupportedNetwork(providerNetwork)) {
+      const chainId = parseInt((window as any).ethereum.chainId);
+      try {
+        const providerNetwork = chainIdToNetworkName(chainId);
         return providerNetwork;
+      } catch (err) {
+        console.log(
+          `Browser provider connected to unsupported network with id ${chainId}`
+        );
       }
     }
     // if it's not clear what network to connect to, use the default

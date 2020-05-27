@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.31.2",
-    "@makerdao/dai-plugin-governance": "^0.12.6",
-    "@makerdao/dai-plugin-mcd": "^1.4.7",
+    "@makerdao/dai-plugin-governance": "0.12.6",
+    "@makerdao/dai-plugin-mcd": "1.4.7",
     "@makerdao/dai-ui-icons": "^0.0.28",
     "@makerdao/dai-ui-theme-maker": "^0.0.28",
     "gray-matter": "^4.0.2",
@@ -27,6 +27,7 @@
     "remark-html": "^11.0.1",
     "swr": "^0.2.0",
     "theme-ui": "^0.3.1",
+    "tiny-invariant": "^1.1.0",
     "valid-url": "^1.0.9",
     "zustand": "^2.2.3"
   },

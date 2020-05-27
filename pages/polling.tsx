@@ -5,8 +5,13 @@ import Link from 'next/link';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import PrimaryLayout from '../components/PrimaryLayout';
+import Poll from '../types/poll';
 
-function PollingOverview({ polls = [] } = {}) {
+type Props = {
+  polls: Poll[];
+};
+
+const PollingOverview: React.FC<Props> = ({ polls }) => {
   const network = getNetwork();
   const validPolls = polls.filter(
     poll => new Date(poll.startDate) <= new Date()
@@ -33,10 +38,10 @@ function PollingOverview({ polls = [] } = {}) {
       ))}
     </PrimaryLayout>
   );
-}
+};
 
-export default ({ polls = [] } = {}) => {
-  const [_polls, _setPolls] = useState();
+export default ({ polls }) => {
+  const [_polls, _setPolls] = useState<Poll[]>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {

@@ -8,6 +8,7 @@ import getMaker, { getNetwork } from './maker';
 import Poll from '../types/poll';
 import Proposal from '../types/proposal';
 import BlogPost from '../types/blogPost';
+import VoteTypes from '../types/voteTypes';
 
 let _cachedProposals;
 export async function getExecutiveProposals({ useCache = false } = {}): Promise<
@@ -66,13 +67,18 @@ export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
         );
       }
 
-      const pollMeta = matter(document || '')?.data || null;
-      const content = matter(document || '')?.content || null;
-      const summary = pollMeta?.summary || null;
-      const title = pollMeta?.title || null;
+      const pollMeta = matter(document || '').data;
+      const content = matter(document || '')?.content || '';
+      const summary = pollMeta?.summary || '';
+      const title = pollMeta?.title || '';
       const options = pollMeta?.options || null;
-      const discussionLink = pollMeta?.discussion_link || null;
-      const voteType = pollMeta?.vote_type || null;
+      const discussionLink =
+        pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
+          ? pollMeta.discussion_link
+          : null;
+      const voteType: VoteTypes =
+        (pollMeta as { [key: string]: VoteTypes | null })?.vote_type ||
+        'Plurality Voting'; // compiler error if invalid vote type
       return {
         ...p,
         startDate: `${p.startDate}`,

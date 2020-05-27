@@ -37,7 +37,7 @@ const ExecutiveOverview: React.FC<Props> = ({ proposals }) => {
 };
 
 export default ({ proposals }) => {
-  const [_proposals, _setProposals] = useState([]);
+  const [_proposals, _setProposals] = useState<Proposal[]>([]);
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {

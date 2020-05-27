@@ -2,7 +2,11 @@ import { Box, Container } from 'theme-ui';
 
 import Header from './layouts/Header';
 
-export default function PrimaryLayout({ children }) {
+type props = {};
+
+const PrimaryLayout: React.FC<React.PropsWithChildren<props>> = ({
+  children
+}) => {
   return (
     <Container mx="auto" px={4}>
       <Header />
@@ -10,4 +14,6 @@ export default function PrimaryLayout({ children }) {
       {/* <Footer /> */}
     </Container>
   );
-}
+};
+
+export default PrimaryLayout;

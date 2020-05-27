@@ -22,11 +22,7 @@ const PollCard: React.FC<Props> = ({ poll }) => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  console.log(_tally, '_tally');
-  const tally = parsePollTally(_tally);
-
-  const leadingOption =
-    tally?.winner === null ? 'none found' : poll.options[tally?.winner];
+  const tally = _tally ? parsePollTally(_tally, poll) : undefined;
 
   return (
     <Flex
@@ -121,7 +117,7 @@ const PollCard: React.FC<Props> = ({ poll }) => {
                     alignSelf: 'center'
                   }}
                 >
-                  Winning Option: {leadingOption}
+                  Winning Option: {tally.winningOption}
                 </Badge>
               ) : (
                 <Badge
@@ -134,7 +130,7 @@ const PollCard: React.FC<Props> = ({ poll }) => {
                     alignSelf: 'center'
                   }}
                 >
-                  Leading Option: {leadingOption}
+                  Leading Option: {tally.winningOption}
                 </Badge>
               )
             ) : (
