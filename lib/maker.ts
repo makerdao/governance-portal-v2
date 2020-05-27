@@ -9,15 +9,14 @@ import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
 export const MKR = Maker.MKR;
-export { DAI };
 
 export function networkToRpc(network: SupportedNetworks) {
   switch (network) {
-    case SupportedNetworks.mainnet:
+    case SupportedNetworks.MAINNET:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.kovan:
+    case SupportedNetworks.KOVAN:
       return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.testnet:
+    case SupportedNetworks.TESTNET:
       return `http://localhost:2000`;
     default:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
@@ -27,13 +26,13 @@ export function networkToRpc(network: SupportedNetworks) {
 function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
     case 1:
-      return SupportedNetworks.mainnet;
+      return SupportedNetworks.MAINNET;
     case 42:
-      return SupportedNetworks.kovan;
+      return SupportedNetworks.KOVAN;
     case 999:
-      return SupportedNetworks.testnet;
+      return SupportedNetworks.TESTNET;
     case 1337:
-      return SupportedNetworks.testnet;
+      return SupportedNetworks.TESTNET;
     default:
       throw new Error(`Unsupported chain id ${chainId}`);
   }
@@ -58,12 +57,9 @@ const _maker = Maker.create('http', {
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
-  if (
-    typeof (global as any).__TESTCHAIN__ !== 'undefined' &&
-    (global as any).__TESTCHAIN__
-  ) {
+  if (typeof (global as any).__TESTCHAIN__ !== 'undefined' && (global as any).__TESTCHAIN__) {
     // if the testhchain global is set, connect to the testchain
-    return SupportedNetworks.testnet;
+    return SupportedNetworks.TESTNET;
   } else if (typeof window === 'undefined') {
     // if not on the browser, connect to the default network
     // (eg when generating static pages at build-time)
@@ -72,11 +68,11 @@ function determineNetwork(): SupportedNetworks {
     // otherwise, to determine the network...
     // 1) check the URL
     if (window.location.search.includes('mainnet')) {
-      return SupportedNetworks.mainnet;
+      return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('kovan')) {
-      return SupportedNetworks.kovan;
+      return SupportedNetworks.KOVAN;
     } else if (window.location.search.includes('testnet')) {
-      return SupportedNetworks.testnet;
+      return SupportedNetworks.TESTNET;
     }
     // 2) check the browser provider if there is one
     if (typeof (window as any).ethereum !== 'undefined') {
@@ -85,9 +81,7 @@ function determineNetwork(): SupportedNetworks {
         const providerNetwork = chainIdToNetworkName(chainId);
         return providerNetwork;
       } catch (err) {
-        console.log(
-          `Browser provider connected to unsupported network with id ${chainId}`
-        );
+        console.log(`Browser provider connected to unsupported network with id ${chainId}`);
       }
     }
     // if it's not clear what network to connect to, use the default
@@ -109,10 +103,7 @@ function handleChainChanged(chainId: string) {
   }
 }
 
-if (
-  typeof window !== 'undefined' &&
-  typeof (window as any)?.ethereum?.on !== 'undefined'
-) {
+if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'undefined') {
   (window as any).ethereum.autoRefreshOnNetworkChange = false;
   // update the URL anytime the provider's network changes
   // we use both methods as the latter doesn't work atm, but the former will be removed once the latter is ready
@@ -134,13 +125,8 @@ function isDefaultNetwork(): boolean {
 }
 
 function isSupportedNetwork(_network: string): boolean {
-  return Object.values(SupportedNetworks).some(network => network === _network);
+  return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
 }
 
 export default getMaker;
-export {
-  getNetwork,
-  isDefaultNetwork,
-  isSupportedNetwork,
-  chainIdToNetworkName
-};
+export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName };
