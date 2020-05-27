@@ -1,6 +1,6 @@
 import Maker from '@makerdao/dai';
 // @ts-ignore
-import McdPlugin, { MDAI } from '@makerdao/dai-plugin-mcd';
+import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
 
@@ -9,7 +9,7 @@ import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
 export const MKR = Maker.MKR;
-export const DAI = MDAI;
+export { DAI };
 
 export function networkToRpc(network: SupportedNetworks) {
   switch (network) {
