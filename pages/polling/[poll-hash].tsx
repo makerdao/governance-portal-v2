@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally } from '../../lib/utils';
-import PrimaryLayout from '../../components/PrimaryLayout';
+import PrimaryLayout from '../../components/layouts/Primary';
 import Poll from '../../types/poll';
 
 type Props = {

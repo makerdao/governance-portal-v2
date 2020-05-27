@@ -4,7 +4,7 @@ import { NavLink, Heading } from '@theme-ui/components';
 
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
-import PrimaryLayout from '../components/PrimaryLayout';
+import PrimaryLayout from '../components/layouts/Primary';
 import Proposal from '../types/proposal';
 
 type Props = {

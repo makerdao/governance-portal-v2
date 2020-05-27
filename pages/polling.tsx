@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
-import PrimaryLayout from '../components/PrimaryLayout';
+import PrimaryLayout from '../components/layouts/Primary';
 import Poll from '../types/poll';
 
 type Props = {

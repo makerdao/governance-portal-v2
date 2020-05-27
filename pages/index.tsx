@@ -16,7 +16,7 @@ import useSWR from 'swr';
 import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
-import PrimaryLayout from '../components/layouts/PrimaryLayout';
+import PrimaryLayout from '../components/layouts/Primary';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/PollCard';
 import ExecutiveCard from '../components/ExecutiveCard';
@@ -263,7 +263,9 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
             textAlign: 'center'
           }}
         >
-          <Heading as="h2" mb="3">Blog Posts</Heading>
+          <Heading as="h2" mb="3">
+            Blog Posts
+          </Heading>
           <Box>
             <Flex sx={{ justifyContent: 'center' }} mb="6">
               {blogPosts
@@ -294,9 +296,8 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
                           color: '#231536',
                           textAlign: 'left'
                         }}
-                        
                       >
-                         {post.title}
+                        {post.title}
                       </Text>
                       <Text px={3} pb={3} sx={{ textAlign: 'left' }}>
                         {new Date(post.date).toLocaleString('default', {

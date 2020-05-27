@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 
-import PrimaryLayout from '../../components/PrimaryLayout';
+import PrimaryLayout from '../../components/layouts/Primary';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { isDefaultNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
