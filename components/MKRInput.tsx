@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Input } from '@theme-ui/components';
+import { Input } from 'theme-ui';
 import { MKR } from '../lib/maker';
 import CurrencyObject from '../types/currency';
 

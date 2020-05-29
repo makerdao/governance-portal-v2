@@ -40,13 +40,8 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     const submittedAt = txObject._timeStampSubmitted;
     const status = 'pending';
     set(state => {
-      const transaction = state.transactions[from].find(
-        tx => tx.submittedAt === submittedAt
-      );
-      invariant(
-        transaction,
-        `Unable to find tx from ${from} submitted at ${submittedAt}`
-      );
+      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
+      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
       transaction.status = status;
       transaction.hash = txObject.hash;
       return state;
@@ -57,13 +52,8 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     const submittedAt = txObject._timeStampSubmitted;
     const status = 'mined';
     set(state => {
-      const transaction = state.transactions[from].find(
-        tx => tx.submittedAt === submittedAt
-      );
-      invariant(
-        transaction,
-        `Unable to find tx from ${from} submitted at ${submittedAt}`
-      );
+      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
+      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
       transaction.status = status;
       return state;
     });
@@ -73,13 +63,8 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     const submittedAt = txObject._timeStampSubmitted;
     const status = 'error';
     set(state => {
-      const transaction = state.transactions[from].find(
-        tx => tx.submittedAt === submittedAt
-      );
-      invariant(
-        transaction,
-        `Unable to find tx from ${from} submitted at ${submittedAt}`
-      );
+      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
+      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
       const errorType = transaction.hash ? 'failed' : 'not sent';
       transaction.status = status;
       transaction.error = parseTxError(error.message);

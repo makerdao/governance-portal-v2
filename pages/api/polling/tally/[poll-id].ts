@@ -39,14 +39,10 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
     invariant(pollId, 'poll id required');
 
     const maker = await getConnectedMakerObj(
-      isSupportedNetwork(network)
-        ? (network as SupportedNetworks)
-        : DEFAULT_NETWORK
+      isSupportedNetwork(network) ? (network as SupportedNetworks) : DEFAULT_NETWORK
     );
 
-    const tally = await backoffRetry(3, () =>
-      maker.service('govPolling').getTallyRankedChoiceIrv(pollId)
-    );
+    const tally = await backoffRetry(3, () => maker.service('govPolling').getTallyRankedChoiceIrv(pollId));
 
     const totalMkrParticipation = tally.totalMkrParticipation;
     const winner: string = tally.winner;

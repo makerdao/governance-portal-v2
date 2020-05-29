@@ -1,7 +1,6 @@
 export const CMS_ENDPOINTS = {
   mainnet: 'https://cms-gov.makerfoundation.com/content/governance-dashboard',
-  kovan:
-    'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard'
+  kovan: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard'
 };
 
 export const GOV_BLOG_POSTS_ENDPOINT =

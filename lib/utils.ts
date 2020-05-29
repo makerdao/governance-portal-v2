@@ -11,9 +11,12 @@ import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
   const units = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-  const typeIndex = Math.floor(num.toFixed(0).length / 3) - 1;
-  const value = num.div(Math.pow(1000, typeIndex));
-  return `${value && value.toBigNumber().toFixed(0)} ${units[typeIndex - 1] || ''}`;
+  let typeIndex = Math.floor(num.toFixed(0).length / 3) - 1;
+  typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
+  const noUnit = typeIndex <= 0; // if the number is smaller than 100,000
+  const value = noUnit ? num : num.div(Math.pow(1000, typeIndex));
+  invariant(value, 'bigNumberKFormat value undefined');
+  return `${value.toBigNumber().toFixed(0)} ${noUnit ? '' : units[typeIndex - 1]}`;
 }
 
 export async function markdownToHtml(markdown: string) {
@@ -62,16 +65,19 @@ export function parsePollTally(tally, poll: Poll): PollTally {
   return { ...tally, totalMkrParticipation };
 }
 
-export function getEtherscanLink(network: SupportedNetworks, data: string, type: 'transaction' | 'address'): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[network] || ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]}etherscan.io`;
+export function getEtherscanLink(
+  network: SupportedNetworks,
+  data: string,
+  type: 'transaction' | 'address'
+): string {
+  const prefix = `https://${ETHERSCAN_PREFIXES[network] ||
+    ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]}etherscan.io`;
 
   switch (type) {
-    case 'transaction': {
+    case 'transaction':
       return `${prefix}/tx/${data}`;
-    }
     case 'address':
-    default: {
+    default:
       return `${prefix}/address/${data}`;
-    }
   }
 }

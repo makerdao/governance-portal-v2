@@ -6,7 +6,7 @@ const [useAccountsStore, accountsApi] = create((set, get) => ({
   currentAccount: null,
   wrongNetwork: false,
 
-  canSendTransactions: () => !!currentAccount && !wrongNetwork,
+  canSendTransactions: () => !!get().currentAccount && !get().wrongNetwork,
 
   addAccountsListener: async () => {
     const maker = await getMaker();
@@ -20,16 +20,14 @@ const [useAccountsStore, accountsApi] = create((set, get) => ({
     const currentNetwork = getNetwork();
     let providerNetwork;
     let providerAddress;
-    if (typeof window.ethereum !== 'undefined') {
+    if (typeof (window as any).ethereum !== 'undefined') {
       try {
-        if (window.ethereum.enable) {
-          [providerAddress] = await window.ethereum.enable();
+        if ((window as any).ethereum.enable) {
+          [providerAddress] = await (window as any).ethereum.enable();
         } else {
-          [providerAddress] = await ethereum.send('eth_requestAccounts');
+          [providerAddress] = await (window as any).ethereum.send('eth_requestAccounts');
         }
-        providerNetwork = chainIdToNetworkName(
-          parseInt(window.ethereum.chainId)
-        );
+        providerNetwork = chainIdToNetworkName(parseInt((window as any).ethereum.chainId));
       } catch (err) {
         window.alert(err.message);
         return;
@@ -51,13 +49,9 @@ The UI will be put in read-only mode in the meantime. (note: only kovan and main
     set({ wrongNetwork: false });
 
     if (!providerAddress || !providerAddress.match(/^0x[a-fA-F0-9]{40}$/))
-      throw new Error(
-        'browser ethereum provider providing incorrect or non-existent address'
-      );
+      throw new Error('browser ethereum provider providing incorrect or non-existent address');
 
-    const makerAddresses = new Set(
-      maker.listAccounts().map(acc => acc.address)
-    );
+    const makerAddresses = new Set(maker.listAccounts().map(acc => acc.address));
 
     if (makerAddresses.has(providerAddress)) {
       console.log(`Using existing SDK account: ${providerAddress}`);

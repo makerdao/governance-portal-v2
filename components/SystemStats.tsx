@@ -1,4 +1,4 @@
-import { Flex, Link as ExternalLink, Text } from '@theme-ui/components';
+import { Flex, Link as ExternalLink, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
@@ -34,31 +34,16 @@ export default function() {
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
               View more stats
-              <Icon
-                ml="2"
-                name="chevron_right"
-                size="2"
-                sx={{ color: 'mutedAlt' }}
-              />
+              <Icon ml="2" name="chevron_right" size="2" sx={{ color: 'mutedAlt' }} />
             </Text>
           </Flex>
         </ExternalLink>
       </Flex>
 
-      <Flex
-        mx="auto"
-        variant="cards.primary"
-        sx={{ boxShadow: 'faint', height: '133px' }}
-      >
-        <Flex
-          mx="4"
-          my="auto"
-          sx={{ width: '100%', justifyContent: 'space-between' }}
-        >
+      <Flex mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint', height: '133px' }}>
+        <Flex mx="4" my="auto" sx={{ width: '100%', justifyContent: 'space-between' }}>
           <div>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>
-              Dai Savings Rate
-            </Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
             <Text mt="2" variant="h2">
               {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
             </Text>
@@ -79,11 +64,7 @@ export default function() {
           <div>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>System Surplus</Text>
             <Text mt="2" variant="h2">
-              {data ? (
-                `${systemSurplus.toBigNumber().toFormat(0)} DAI`
-              ) : (
-                <Skeleton />
-              )}
+              {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
             </Text>
           </div>
         </Flex>

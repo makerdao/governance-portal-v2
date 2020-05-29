@@ -1,15 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import {
-  Heading,
-  Container,
-  Text,
-  Box,
-  Button,
-  Image,
-  Flex,
-  Card
-} from '@theme-ui/components';
+import { Heading, Container, Text, Box, Button, Image, Flex, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 
@@ -18,8 +9,8 @@ import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
 import SystemStats from '../components/SystemStats';
-import PollCard from '../components/PollCard';
-import ExecutiveCard from '../components/ExecutiveCard';
+import PollCard from '../components/polling/PollCard';
+import ExecutiveCard from '../components/executive/ExecutiveCard';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -85,8 +76,8 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
                 lineHeight: 'body'
               }}
             >
-              Join a decentralized community protecting the integrity of the
-              Maker Protocol through research, discussion, and on-chain voting.
+              Join a decentralized community protecting the integrity of the Maker Protocol through research,
+              discussion, and on-chain voting.
             </Text>
           </Box>
         </Container>
@@ -116,22 +107,13 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
               {recentPolls.length}
             </span>
             New polling votes!
-            <Icon
-              name="chevron_right"
-              color="#708390"
-              size="2"
-              sx={{ marginLeft: 20 }}
-            />
+            <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 20 }} />
           </Button>
         </Box>
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-        <Flex
-          sx={{ justifyContent: 'space-around', maxWidth: 11 }}
-          mx="auto"
-          mb="6"
-        >
+        <Flex sx={{ justifyContent: 'space-around', maxWidth: 11 }} mx="auto" mb="6">
           <Card sx={{ minWidth: 348, maxWidth: 348 }}>
             <Text
               sx={{
@@ -193,8 +175,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
                 whiteSpace: 'initial'
               }}
             >
-              Weekly calls to present research and coordinate around current
-              issues.
+              Weekly calls to present research and coordinate around current issues.
             </Text>
           </Card>
         </Flex>
@@ -207,22 +188,15 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Executive Votes</Heading>
-            <Text
-              mx="auto"
-              mt="3"
-              as="p"
-              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
-            >
-              Executive Votes are conducted to make changes to the system. The
-              governing proposal represents the current state of the system.
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+              Executive Votes are conducted to make changes to the system. The governing proposal represents
+              the current state of the system.
             </Text>
           </Box>
           <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
             {proposals.map(proposal => (
               <ExecutiveCard
-                isHat={
-                  hat && hat.toLowerCase() === proposal.source.toLowerCase()
-                }
+                isHat={hat && hat.toLowerCase() === proposal.source.toLowerCase()}
                 key={proposal.key}
                 proposal={proposal}
               />
@@ -238,14 +212,9 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Polling Votes</Heading>
-            <Text
-              mx="auto"
-              mt="3"
-              as="p"
-              sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}
-            >
-              Polls are conducted to establish a rough consensus of community
-              sentiment before Executive Votes are conducted.
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+              Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
+              are conducted.
             </Text>
           </Box>
           <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
@@ -327,10 +296,7 @@ export default ({ proposals, polls }) => {
   useEffect(() => {
     if (!isDefaultNetwork()) {
       setLoading(true);
-      Promise.all([
-        getPolls({ useCache: true }),
-        getExecutiveProposals({ useCache: true })
-      ]).then(([polls, proposals]) => {
+      Promise.all([getPolls(), getExecutiveProposals()]).then(([polls, proposals]) => {
         _setPolls(polls);
         _setProposals(proposals);
         setLoading(false);
@@ -348,10 +314,7 @@ export default ({ proposals, polls }) => {
 
 export async function getStaticProps() {
   // fetch polls & proposals at build-time if on the default network
-  const [proposals, polls] = await Promise.all([
-    getExecutiveProposals(),
-    getPolls()
-  ]);
+  const [proposals, polls] = await Promise.all([getExecutiveProposals(), getPolls()]);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds

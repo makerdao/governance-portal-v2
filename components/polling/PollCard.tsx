@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box } from '@theme-ui/components';
+import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import { parsePollTally } from '../lib/utils';
-import { getNetwork } from '../lib/maker';
-import CountdownTimer from './CountdownTimer';
-import Poll from '../types/poll';
+import { parsePollTally } from '../../lib/utils';
+import { getNetwork } from '../../lib/maker';
+import CountdownTimer from '../CountdownTimer';
+import Poll from '../../types/poll';
 
 type Props = {
   poll: Poll;
@@ -25,13 +25,7 @@ const PollCard: React.FC<Props> = ({ poll }) => {
   const tally = _tally ? parsePollTally(_tally, poll) : undefined;
 
   return (
-    <Flex
-      p="4"
-      mx="auto"
-      my="3"
-      variant="cards.primary"
-      sx={{ boxShadow: 'faint', height: '210px' }}
-    >
+    <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>
       <Flex
         sx={{
           width: '100%',

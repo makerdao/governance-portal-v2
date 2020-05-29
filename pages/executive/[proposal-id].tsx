@@ -21,12 +21,7 @@ const ExecutiveProposalPage: React.FC<Props> = ({ proposal, loading }) => {
     );
 
   if (!proposal?.key) {
-    return (
-      <ErrorPage
-        statusCode={404}
-        title="Executive proposal could not be found"
-      />
-    );
+    return <ErrorPage statusCode={404} title="Executive proposal could not be found" />;
   }
 
   return (
@@ -38,9 +33,7 @@ const ExecutiveProposalPage: React.FC<Props> = ({ proposal, loading }) => {
 
 export async function getStaticProps({ params }) {
   // fetch proposal contents at build-time if on the default network
-  const proposal = await getExecutiveProposal(params['proposal-id'], {
-    useCache: true
-  });
+  const proposal = await getExecutiveProposal(params['proposal-id']);
 
   return {
     props: {
@@ -58,9 +51,7 @@ export default ({ proposal }) => {
   useEffect(() => {
     if (!isDefaultNetwork()) {
       setLoading(true);
-      getExecutiveProposal(query['proposal-id'], {
-        useCache: true
-      }).then(proposal => {
+      getExecutiveProposal(query['proposal-id']).then(proposal => {
         setLoading(false);
         _setProposal(proposal);
       });

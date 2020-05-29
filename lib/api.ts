@@ -1,6 +1,7 @@
 import uniqBy from 'lodash.uniqby';
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
+import invariant from 'tiny-invariant';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
@@ -10,11 +11,13 @@ import Proposal from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 
-let _cachedProposals;
-export async function getExecutiveProposals({ useCache = false } = {}): Promise<
-  Proposal[]
-> {
-  if (useCache && _cachedProposals) return _cachedProposals;
+let _cachedProposals: Proposal[];
+/**
+ * The first time this method is called, it fetches fresh proposals and caches them.
+ * Everytime after that, it returns from the cache.
+ */
+export async function getExecutiveProposals(): Promise<Proposal[]> {
+  if (_cachedProposals) return _cachedProposals;
   const network = getNetwork();
   if (typeof CMS_ENDPOINTS[network] === 'undefined') return [];
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
@@ -24,20 +27,14 @@ export async function getExecutiveProposals({ useCache = false } = {}): Promise<
     .map(topic => topic.proposals)
     .flat();
 
-  _cachedProposals = proposals;
-  return proposals;
+  return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(
-  proposalId,
-  { useCache = false } = {}
-): Promise<Proposal> {
-  const proposals =
-    useCache && _cachedProposals
-      ? _cachedProposals
-      : await getExecutiveProposals();
+export async function getExecutiveProposal(proposalId): Promise<Proposal> {
+  const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
-  const content = await markdownToHtml(proposal?.about || '');
+  invariant(proposal, `proposal not found for proposal id ${proposalId}`);
+  const content = await markdownToHtml(proposal.about || '');
 
   return {
     ...proposal,
@@ -45,9 +42,13 @@ export async function getExecutiveProposal(
   };
 }
 
-let _cachedPolls;
-export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
-  if (useCache && _cachedPolls) return _cachedPolls;
+let _cachedPolls: Poll[];
+/**
+ * The first time this method is called, it fetches fresh polls and caches them.
+ * Everytime after that, it returns from the cache.
+ */
+export async function getPolls(): Promise<Poll[]> {
+  if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
   const pollsList = await maker.service('govPolling').getAllWhitelistedPolls();
@@ -62,9 +63,7 @@ export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
             backoffRetry(3, () => fetch(p.url))
           ).then(response => response?.text()));
       } catch (err) {
-        console.log(
-          `unable to fetch poll content from ${p.url} for poll ${p.pollId}`
-        );
+        console.log(`unable to fetch poll content from ${p.url} for poll ${p.pollId}`);
       }
 
       const pollMeta = matter(document || '').data;
@@ -77,8 +76,7 @@ export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
           ? pollMeta.discussion_link
           : null;
       const voteType: VoteTypes =
-        (pollMeta as { [key: string]: VoteTypes | null })?.vote_type ||
-        'Plurality Voting'; // compiler error if invalid vote type
+        (pollMeta as { [key: string]: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
       return {
         ...p,
         startDate: `${p.startDate}`,
@@ -95,23 +93,17 @@ export async function getPolls({ useCache = false } = {}): Promise<Poll[]> {
     (polls as any[])
       .filter(p => !!p.summary && !!p.options)
       // newest to oldest
-      .sort(
-        (a, b) =>
-          new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-      )
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   );
 
-  _cachedPolls = polls;
-  return polls;
+  return (_cachedPolls = polls);
 }
 
-export async function getPoll(
-  pollHash,
-  { useCache = false } = {}
-): Promise<Poll> {
-  const polls = useCache && _cachedPolls ? _cachedPolls : await getPolls();
-  const [poll] = polls.filter(p => p.multiHash === pollHash);
-  const content = await markdownToHtml(poll?.content || '');
+export async function getPoll(pollHash): Promise<Poll> {
+  const polls = await getPolls();
+  const poll = polls.find(poll => poll.multiHash === pollHash);
+  invariant(poll, `poll not found for poll hash ${pollHash}`);
+  const content = await markdownToHtml(poll.content);
 
   return {
     ...poll,
@@ -122,14 +114,8 @@ export async function getPoll(
 export async function getPostsAndPhotos(): Promise<BlogPost[]> {
   const posts = await fetch(GOV_BLOG_POSTS_ENDPOINT).then(res => res.json());
   const photoLinks: string[] = await Promise.all(
-    posts.map(post =>
-      fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json())
-    )
-  ).then(photosMeta =>
-    (photosMeta as any).map(
-      photoMeta => photoMeta.media_details.sizes.large.source_url
-    )
-  );
+    posts.map(post => fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json()))
+  ).then(photosMeta => (photosMeta as any).map(photoMeta => photoMeta.media_details.sizes.large.source_url));
 
   return posts.map((post, index) => ({
     title: post.title.rendered,

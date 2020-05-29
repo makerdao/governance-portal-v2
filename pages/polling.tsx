@@ -13,9 +13,7 @@ type Props = {
 
 const PollingOverview: React.FC<Props> = ({ polls }) => {
   const network = getNetwork();
-  const validPolls = polls.filter(
-    poll => new Date(poll.startDate) <= new Date()
-  );
+  const validPolls = polls.filter(poll => new Date(poll.startDate) <= new Date());
 
   return (
     <PrimaryLayout>
@@ -46,7 +44,7 @@ export default ({ polls }) => {
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls({ useCache: true }).then(polls => _setPolls(polls));
+      getPolls().then(polls => _setPolls(polls));
     }
   }, []);
 
@@ -55,7 +53,7 @@ export default ({ polls }) => {
 
 export async function getStaticProps() {
   // fetch polls at build-time if on the default network
-  const polls = await getPolls({ useCache: true });
+  const polls = await getPolls();
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds

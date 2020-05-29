@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NavLink, Heading } from '@theme-ui/components';
+import { NavLink, Heading } from 'theme-ui';
 
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
@@ -42,22 +42,16 @@ export default ({ proposals }) => {
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getExecutiveProposals({ useCache: true }).then(proposals =>
-        _setProposals(proposals)
-      );
+      getExecutiveProposals().then(proposals => _setProposals(proposals));
     }
   }, []);
 
-  return (
-    <ExecutiveOverview
-      proposals={isDefaultNetwork() ? proposals : _proposals}
-    />
-  );
+  return <ExecutiveOverview proposals={isDefaultNetwork() ? proposals : _proposals} />;
 };
 
 export async function getStaticProps() {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals({ useCache: true });
+  const proposals = await getExecutiveProposals();
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds

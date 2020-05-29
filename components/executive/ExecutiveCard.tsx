@@ -3,28 +3,19 @@ import useSWR from 'swr';
 import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import getMaker, { getNetwork } from '../lib/maker';
-import CurrenctObject from '../types/currency';
+import getMaker, { getNetwork } from '../../lib/maker';
+import CurrencyObject from '../../types/currency';
 
 export default function ExecutiveCard({ proposal, isHat }) {
   const network = getNetwork();
 
-  const { data: mkrSupport } = useSWR<CurrenctObject>(
-    [`/executive/mkrSupport`, proposal.source],
-    (_, spellAddress) =>
-      getMaker().then(maker =>
-        maker.service('chief').getApprovalCount(spellAddress)
-      )
+  const { data: mkrSupport } = useSWR<CurrencyObject>(
+    [`/executive/mkr-support`, proposal.source],
+    (_, spellAddress) => getMaker().then(maker => maker.service('chief').getApprovalCount(spellAddress))
   );
 
   return (
-    <Flex
-      p="4"
-      mx="auto"
-      my="3"
-      variant="cards.primary"
-      sx={{ boxShadow: 'faint', height: '210px' }}
-    >
+    <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>
       <Flex
         sx={{
           width: '100%',
