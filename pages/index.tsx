@@ -11,6 +11,7 @@ import PrimaryLayout from '../components/layouts/Primary';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/polling/PollCard';
 import ExecutiveCard from '../components/executive/ExecutiveCard';
+import Footer from '../components/Footer'
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -242,7 +243,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
                     <Card
                       key={post.title}
                       mx={'20px'}
-                      sx={{ width: ['100%', '25vw'], borderRadius: 'medium' }}
+                      sx={{ width: ['100%', '20vw'], borderRadius: 'medium' }}
                       p={'0'}
                     >
                       <Image
@@ -281,6 +282,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
             </Flex>
           </Box>
         </Container>
+        <Footer linkComponent={<Link />}/>
       </Container>
     </PrimaryLayout>
   );
