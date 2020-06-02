@@ -11,7 +11,7 @@ import PrimaryLayout from '../components/layouts/Primary';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/polling/PollCard';
 import ExecutiveCard from '../components/executive/ExecutiveCard';
-import Footer from '../components/Footer'
+import Footer from '../components/Footer';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -19,21 +19,15 @@ import BlogPost from '../types/blogPost';
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
+  blogPosts: BlogPost[];
 };
 
-const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>();
+const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
-
-  useEffect(() => {
-    getPostsAndPhotos().then(blogPosts => {
-      setBlogPosts(blogPosts);
-    });
-  }, []);
 
   return (
     <PrimaryLayout>
@@ -288,7 +282,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
   );
 };
 
-export default ({ proposals, polls }) => {
+export default ({ proposals, polls, blogPosts }) => {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>([]);
   const [_proposals, _setProposals] = useState<Proposal[]>([]);
@@ -310,19 +304,25 @@ export default ({ proposals, polls }) => {
     <LandingPage
       proposals={isDefaultNetwork() ? proposals : _proposals}
       polls={isDefaultNetwork() ? polls : _polls}
+      blogPosts={blogPosts}
     />
   );
 };
 
 export async function getStaticProps() {
-  // fetch polls & proposals at build-time if on the default network
-  const [proposals, polls] = await Promise.all([getExecutiveProposals(), getPolls()]);
+  // fetch polls, proposals, blog posts at build-time
+  const [proposals, polls, blogPosts] = await Promise.all([
+    getExecutiveProposals(),
+    getPolls(),
+    getPostsAndPhotos()
+  ]);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals,
-      polls
+      polls,
+      blogPosts
     }
   };
 }
