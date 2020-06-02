@@ -282,7 +282,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
             </Flex>
           </Box>
         </Container>
-        <Footer linkComponent={<Link />}/>
+        <Footer />
       </Container>
     </PrimaryLayout>
   );

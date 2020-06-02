@@ -145,7 +145,7 @@ class Footer extends React.Component {
       showWeChatModal: false,
     };
 
-    this.Link = withInternalLink(this.props.linkComponent, this.props.host);
+    this.Link = withInternalLink(Link, this.props.host);
 
     this.subscribeEmail = this.subscribeEmail.bind(this);
     this.updateEmail = this.updateEmail.bind(this);
@@ -342,56 +342,34 @@ class Footer extends React.Component {
             >
               <Link to='https://twitter.com/MakerDAO'>
                 <Icon
-                  name="twitter"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="twitter" />
               </Link>
               <Link to='https://www.reddit.com/r/MakerDAO/'>
                 <Icon
-                  name="reddit"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="reddit" />
               </Link>
               <Link to='https://t.me/makerdaoOfficial'>
                 <Icon
-                  name="telegram"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="telegram" />
               </Link>
               <Link to='https://chat.makerdao.com/'>
                 <Icon
-                  name="rocket_chat"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="rocket_chat" />
               </Link>
               <Link to='https://blog.makerdao.com'>
                 <Icon
-                  name="medium"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="medium" />
               </Link>
-              <Icon
-                name="we_chat"
-                sx={{ cursor: 'pointer' }}
-                onClick={this.toggleWeChatModal}
-              />
+              {/*
+                <Icon
+                  name="we_chat"
+                  sx={{ cursor: 'pointer' }}
+                  onClick={this.toggleWeChatModal}
+                />
+              */}
               <Link to='https://www.youtube.com/MakerDAO'>
                 <Icon
-                  name="youtube"
-                  // color="#708390"
-                  // size="2"
-                  // sx={{ marginLeft: 20 }}
-                />
+                  name="youtube" />
               </Link>
             </Icons>
             <Box mt='1.8rem' maxWidth='180px'>
