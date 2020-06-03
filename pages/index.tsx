@@ -23,7 +23,7 @@ type Props = {
 };
 
 const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
-  const recentPolls = useMemo(() => polls.slice(0, 4), []);
+  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
