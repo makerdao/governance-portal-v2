@@ -127,8 +127,10 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           as="section"
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h2">Executive Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+            <Heading as="h2" mb="3">
+              Executive Votes
+            </Heading>
+            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>
