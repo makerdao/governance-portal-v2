@@ -1,16 +1,9 @@
 import { QRCode } from 'react-qr-svg';
-import React from 'react'
+import React from 'react';
+
 import Link from 'next/link';
 
-import {
-  Flex,
-  Grid,
-  Box,
-  Input,
-  Button,
-  Text,
-  Container
-} from '@theme-ui/components';
+import { Flex, Grid, Box, Input, Button, Text, Container } from '@theme-ui/components';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { translate } from '@makerdao/i18n-helper';
@@ -112,7 +105,7 @@ const Icons = (props) => <Flex sx={{
   {props.children}
 </Flex>
 
-const url = require("url");
+const url = require('url');
 
 const withInternalLink = (InternalLinkComponent, host) => {
   class InternalLink extends React.Component {
@@ -125,11 +118,7 @@ const withInternalLink = (InternalLinkComponent, host) => {
       const to = new UniversalURL(this.props.to);
 
       if (InternalLinkComponent && to.host === host && !this.props.external) {
-        return (
-          <InternalLinkComponent to={to.pathname}>
-            {this.props.children}
-          </InternalLinkComponent>
-        );
+        return <InternalLinkComponent to={to.pathname}>{this.props.children}</InternalLinkComponent>;
       } else {
         return (
           <a href={this.props.to} target="_blank" rel="noopener noreferrer">
@@ -157,7 +146,7 @@ class Footer extends React.Component {
       email: '',
       message: '',
       subscribeState: '',
-      showWeChatModal: false,
+      showWeChatModal: false
     };
 
     this.Link = withInternalLink(Link, this.props.host);
@@ -171,7 +160,7 @@ class Footer extends React.Component {
     this.setState({
       email: evt.target.value,
       message: '',
-      subscribeState: '',
+      subscribeState: ''
     });
   }
 
@@ -181,7 +170,7 @@ class Footer extends React.Component {
     if (!rfc2822EmailRegex.test(this.state.email)) {
       this.setState({
         message: 'Please enter a valid email address.',
-        subscribeState: 'failure',
+        subscribeState: 'failure'
       });
       return;
     }
@@ -192,12 +181,12 @@ class Footer extends React.Component {
           this.setState({
             email: '',
             message: `Thank you. You'll hear from us soon.`,
-            subscribeState: 'success',
+            subscribeState: 'success'
           });
         } else {
           this.setState({
             message: 'An error occurred. Please try again later.',
-            subscribeState: 'failure',
+            subscribeState: 'failure'
           });
         }
       }
@@ -206,7 +195,7 @@ class Footer extends React.Component {
     httpRequest.onerror = () => {
       this.setState({
         message: 'An error occurred. Please try again later.',
-        subscribeState: 'failure',
+        subscribeState: 'failure'
       });
     };
 
@@ -219,14 +208,14 @@ class Footer extends React.Component {
 
     httpRequest.send(
       JSON.stringify({
-        email: this.state.email,
+        email: this.state.email
       })
     );
   }
 
   toggleWeChatModal() {
     this.setState({
-      showWeChatModal: !this.state.showWeChatModal,
+      showWeChatModal: !this.state.showWeChatModal
     });
   }
 
@@ -237,31 +226,22 @@ class Footer extends React.Component {
     return (
       <FooterContainer>
         <Grid
-          sx={{ maxWidth: '11'}}
-          m='0 auto'
-          columns={[
-            '1fr',
-            '1fr 1fr',
-            '1fr 1fr',
-            'repeat(4, 1fr) auto',
-          ]}
-          gap='2rem'
+          sx={{ maxWidth: '11' }}
+          m="0 auto"
+          columns={['1fr', '1fr 1fr', '1fr 1fr', 'repeat(4, 1fr) auto']}
+          gap="2rem"
         >
           <div>
             <LinkListHeader>{t('Learn')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to='https://makerdao.com/whitepaper'>
-                  {t('White Paper')}
-                </Link>
+                <Link to="https://makerdao.com/whitepaper">{t('White Paper')}</Link>
               </li>
               <li>
-                <Link to='https://makerdao.com/privacy'>
-                  {t('Privacy Policy')}
-                </Link>
+                <Link to="https://makerdao.com/privacy">{t('Privacy Policy')}</Link>
               </li>
               <li>
-                <Link to='https://makerdao.com/roadmap'>{t('Roadmap')}</Link>
+                <Link to="https://makerdao.com/roadmap">{t('Roadmap')}</Link>
               </li>
             </LinkList>
           </div>
@@ -269,18 +249,16 @@ class Footer extends React.Component {
             <LinkListHeader>{t('Products')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to='https://makerdao.com/dai'>{t('Dai Stablecoin')}</Link>
+                <Link to="https://makerdao.com/dai">{t('Dai Stablecoin')}</Link>
               </li>
               <li>
-                <Link to={`https://${t('cdp-portal-subdomain')}.makerdao.com`}>
-                  {t('CDP Portal')}
-                </Link>
+                <Link to={`https://${t('cdp-portal-subdomain')}.makerdao.com`}>{t('CDP Portal')}</Link>
               </li>
               <li>
-                <Link to='https://vote.makerdao.com'>{t('Governance')}</Link>
+                <Link to="https://vote.makerdao.com">{t('Governance')}</Link>
               </li>
               <li>
-                <Link to='https://mkr.tools'>{t('Platform Data')}</Link>
+                <Link to="https://mkr.tools">{t('Platform Data')}</Link>
               </li>
             </LinkList>
           </div>
@@ -288,17 +266,15 @@ class Footer extends React.Component {
             <LinkListHeader>{t('Developer')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to='https://makerdao.com/documentation/' external>
+                <Link to="https://makerdao.com/documentation/" external>
                   {t('Documentation')}
                 </Link>
               </li>
               <li>
-                <Link to='https://github.com/makerdao/dai.js'>Dai.js</Link>
+                <Link to="https://github.com/makerdao/dai.js">Dai.js</Link>
               </li>
               <li>
-                <Link to='https://developer.makerdao.com/dai/1/graphql/'>
-                  GraphQL API
-                </Link>
+                <Link to="https://developer.makerdao.com/dai/1/graphql/">GraphQL API</Link>
               </li>
             </LinkList>
           </div>
@@ -306,13 +282,13 @@ class Footer extends React.Component {
             <LinkListHeader>{t('Foundation')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to='https://makerdao.com/team'>{t('Team')}</Link>
+                <Link to="https://makerdao.com/team">{t('Team')}</Link>
               </li>
               <li>
-                <Link to='https://makerdao.com/careers'>{t('Careers')}</Link>
+                <Link to="https://makerdao.com/careers">{t('Careers')}</Link>
               </li>
               <li>
-                <Link to='https://makerdao.com/contact'>{t('Contact')}</Link>
+                <Link to="https://makerdao.com/contact">{t('Contact')}</Link>
               </li>
             </LinkList>
           </div>
@@ -334,50 +310,33 @@ class Footer extends React.Component {
                 type='email'
                 value={this.state.email}
                 onChange={evt => this.updateEmail(evt)}
-                errorMessage={
-                  (this.state.subscribeState === 'failure' || undefined) &&
-                  this.state.message
-                }
-                successMessage={
-                  (this.state.subscribeState === 'success' || undefined) &&
-                  this.state.message
-                }
+                errorMessage={(this.state.subscribeState === 'failure' || undefined) && this.state.message}
+                successMessage={(this.state.subscribeState === 'success' || undefined) && this.state.message}
                 after={
                   <SubscribeButton
-                    type='submit'
-                    rightCaret={<Icon
-                                  name="chevron_right"
-                                />}
+                    type="submit"
+                    rightCaret={<Icon name="chevron_right" />}
                     onClick={this.subscribeEmail}
                   >
                     Subscribe
                   </SubscribeButton>
                 }/>
             </Box>
-            <Icons
-              gap='20px'
-              mt='1.8rem'
-              columns='repeat(7, 20px)'
-            >
-              <Link to='https://twitter.com/MakerDAO'>
-                <Icon
-                  name="twitter" />
+            <Icons gap="20px" mt="1.8rem" columns="repeat(7, 20px)">
+              <Link to="https://twitter.com/MakerDAO">
+                <Icon name="twitter" />
               </Link>
-              <Link to='https://www.reddit.com/r/MakerDAO/'>
-                <Icon
-                  name="reddit" />
+              <Link to="https://www.reddit.com/r/MakerDAO/">
+                <Icon name="reddit" />
               </Link>
-              <Link to='https://t.me/makerdaoOfficial'>
-                <Icon
-                  name="telegram" />
+              <Link to="https://t.me/makerdaoOfficial">
+                <Icon name="telegram" />
               </Link>
-              <Link to='https://chat.makerdao.com/'>
-                <Icon
-                  name="rocket_chat" />
+              <Link to="https://chat.makerdao.com/">
+                <Icon name="rocket_chat" />
               </Link>
-              <Link to='https://blog.makerdao.com'>
-                <Icon
-                  name="medium" />
+              <Link to="https://blog.makerdao.com">
+                <Icon name="medium" />
               </Link>
               {/*
                 <Icon
@@ -386,12 +345,11 @@ class Footer extends React.Component {
                   onClick={this.toggleWeChatModal}
                 />
               */}
-              <Link to='https://www.youtube.com/MakerDAO'>
-                <Icon
-                  name="youtube" />
+              <Link to="https://www.youtube.com/MakerDAO">
+                <Icon name="youtube" />
               </Link>
             </Icons>
-            <Box mt='1.8rem' maxWidth='180px'>
+            <Box mt="1.8rem" maxWidth="180px">
               {this.props.langDropdown}
             </Box>
           </Box>

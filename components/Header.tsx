@@ -1,24 +1,33 @@
 import Link from 'next/link';
 import Router from 'next/router';
-import { Flex, Heading, NavLink, Button } from 'theme-ui';
+import { Flex, Heading, NavLink, Button, Container, Box } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
+import { useState } from 'react';
 
 const Header: React.FC = () => {
   const network = getNetwork();
   const otherNetwork = network === 'mainnet' ? 'kovan' : 'mainnet';
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <Flex as="header" variant="styles.header" my={3}>
+    <Flex as="header" variant="styles.header" my={3} sx={{ alignItems: 'center' }}>
       <Link href={{ pathname: '/', query: { network } }}>
         <Heading as="h1" sx={{ cursor: 'pointer' }}>
           <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
         </Heading>
       </Link>
 
-      <Flex ml="auto" sx={{ alignItems: 'center' }}>
+      <Icon
+        name="menu"
+        size="24px"
+        sx={{ cursor: 'pointer', display: [null, 'none'] }}
+        ml="auto"
+        onClick={() => setShowMobileMenu(true)}
+      />
+      <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
         <Button
           variant="outline"
           onClick={() => {
@@ -42,8 +51,26 @@ const Header: React.FC = () => {
           <NavLink p={2}>ES Module</NavLink>
         </Link>
         <AccountSelect />
-      </Flex>
+      </Menu>
     </Flex>
+  );
+};
+
+const Menu = ({ children, shown, hide }) => {
+  return (
+    <>
+      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'flex'] }}>
+        {children}
+      </Box>
+      {shown && (
+        <Container variant="modal">
+          <Box as="h1" onClick={hide} mr="0" ml="auto">
+            X
+          </Box>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>{children}</Flex>
+        </Container>
+      )}
+    </>
   );
 };
 

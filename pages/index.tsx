@@ -11,7 +11,7 @@ import PrimaryLayout from '../components/layouts/Primary';
 import SystemStats from '../components/SystemStats';
 import PollCard from '../components/polling/PollCard';
 import ExecutiveCard from '../components/executive/ExecutiveCard';
-import Footer from '../components/Footer'
+import Footer from '../components/Footer';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -19,21 +19,15 @@ import BlogPost from '../types/blogPost';
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
+  blogPosts: BlogPost[];
 };
 
-const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>();
+const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), []);
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
-
-  useEffect(() => {
-    getPostsAndPhotos().then(blogPosts => {
-      setBlogPosts(blogPosts);
-    });
-  }, []);
 
   return (
     <PrimaryLayout>
@@ -114,71 +108,16 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-        <Flex sx={{ justifyContent: 'space-around', maxWidth: 11 }} mx="auto" mb="6">
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-              mb="m"
-            >
-              Introduction to Governance
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              A guide to outlining the basics of getting started with voting.
-            </Text>
-          </Card>
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-            >
-              Governance Forum
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              Get the latest updates and take part in current discussions.
-            </Text>
-          </Card>
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-            >
-              Governance Calls
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              Weekly calls to present research and coordinate around current issues.
-            </Text>
-          </Card>
+        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
+          <IntroCard title="Introduction to Governance">
+            A guide to outlining the basics of getting started with voting.
+          </IntroCard>
+          <IntroCard title="Governance Forum">
+            Get the latest updates and take part in current discussions.
+          </IntroCard>
+          <IntroCard title="Governance Calls">
+            Weekly calls to present research and coordinate around current issues.
+          </IntroCard>
         </Flex>
         <Container
           pb="5"
@@ -188,8 +127,10 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
           as="section"
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h2">Executive Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+            <Heading as="h2" mb="3">
+              Executive Votes
+            </Heading>
+            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>
@@ -288,7 +229,32 @@ const LandingPage: React.FC<Props> = ({ proposals, polls }) => {
   );
 };
 
-export default ({ proposals, polls }) => {
+const IntroCard = props => (
+  <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+    <Text
+      sx={{
+        fontSize: [3, 4],
+        color: '#231536',
+        textAlign: 'left'
+      }}
+      mb="m"
+    >
+      {props.title}
+    </Text>
+    <Text
+      sx={{
+        fontSize: [3, 4],
+        color: '#434358',
+        opacity: 0.8,
+        whiteSpace: 'initial'
+      }}
+    >
+      {props.children}
+    </Text>
+  </Card>
+);
+
+export default ({ proposals, polls, blogPosts }) => {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>([]);
   const [_proposals, _setProposals] = useState<Proposal[]>([]);
@@ -310,19 +276,25 @@ export default ({ proposals, polls }) => {
     <LandingPage
       proposals={isDefaultNetwork() ? proposals : _proposals}
       polls={isDefaultNetwork() ? polls : _polls}
+      blogPosts={blogPosts}
     />
   );
 };
 
 export async function getStaticProps() {
-  // fetch polls & proposals at build-time if on the default network
-  const [proposals, polls] = await Promise.all([getExecutiveProposals(), getPolls()]);
+  // fetch polls, proposals, blog posts at build-time
+  const [proposals, polls, blogPosts] = await Promise.all([
+    getExecutiveProposals(),
+    getPolls(),
+    getPostsAndPhotos()
+  ]);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals,
-      polls
+      polls,
+      blogPosts
     }
   };
 }
