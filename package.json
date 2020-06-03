@@ -12,9 +12,9 @@
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.31.2",
-    "@makerdao/dai-plugin-governance": "0.12.6",
-    "@makerdao/dai-plugin-mcd": "1.5.1",
+    "@makerdao/dai": "^0.31.5",
+    "@makerdao/dai-plugin-governance": "0.12.8",
+    "@makerdao/dai-plugin-mcd": "1.5.5",
     "@makerdao/dai-ui-icons": "^0.0.28",
     "@makerdao/dai-ui-theme-maker": "^0.0.28",
     "@makerdao/i18n-helper": "^0.1.8",
