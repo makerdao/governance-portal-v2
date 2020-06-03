@@ -112,7 +112,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           <IntroCard title="Introduction to Governance" linkText="Get started">
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard title="Governance Forum" linkText="Go to forum">
+          <IntroCard title="Governance Forum" linkText="Go to forum" icon={<Icon name='govForum' sx={{ width: '3.0rem', height: '3.0rem'}}/>}>
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard title="Governance Calls" linkText="View gov calls">
@@ -231,6 +231,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
 
 const IntroCard = props => (
   <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+    {props.icon}
     <Text
       sx={{
         fontSize: [3, 4],
