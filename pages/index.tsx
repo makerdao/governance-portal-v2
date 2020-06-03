@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box, Button, Image, Flex, Card } from 'theme-ui';
+import { Heading, Container, Text, Box, Button, Image, Flex, Card, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 
@@ -109,13 +109,13 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           <SystemStats />
         </Container>
         <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
-          <IntroCard title="Introduction to Governance">
+          <IntroCard title="Introduction to Governance" linkText="Get started">
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard title="Governance Forum">
+          <IntroCard title="Governance Forum" linkText="Go to forum">
             Get the latest updates and take part in current discussions.
           </IntroCard>
-          <IntroCard title="Governance Calls">
+          <IntroCard title="Governance Calls" linkText="View gov calls">
             Weekly calls to present research and coordinate around current issues.
           </IntroCard>
         </Flex>
@@ -237,7 +237,7 @@ const IntroCard = props => (
         color: '#231536',
         textAlign: 'left'
       }}
-      mb="m"
+      mb="3"
     >
       {props.title}
     </Text>
@@ -248,9 +248,13 @@ const IntroCard = props => (
         opacity: 0.8,
         whiteSpace: 'initial'
       }}
+      mb="4"
     >
       {props.children}
     </Text>
+    <ExternalLink sx={{ color: 'primary', fontSize: '3', fontWeight: '500'}} href={props.linkDest} target="_blank">
+      {props.linkText}
+    </ExternalLink>
   </Card>
 );
 
