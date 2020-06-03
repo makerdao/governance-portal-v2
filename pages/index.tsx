@@ -108,7 +108,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-        <Flex sx={{ justifyContent: 'space-around', maxWidth: 11 }} mx="auto" mb="6">
+        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
           <IntroCard title="Introduction to Governance">
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
