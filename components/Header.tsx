@@ -13,7 +13,7 @@ const Header: React.FC = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <Flex as="header" variant="styles.header" my={3}>
+    <Flex as="header" variant="styles.header" my={3} sx={{ alignItems: 'center' }}>
       <Link href={{ pathname: '/', query: { network } }}>
         <Heading as="h1" sx={{ cursor: 'pointer' }}>
           <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
@@ -21,8 +21,8 @@ const Header: React.FC = () => {
       </Link>
 
       <Icon
-        name="maker"
-        size="4"
+        name="menu"
+        size="24px"
         sx={{ cursor: 'pointer', display: [null, 'none'] }}
         ml="auto"
         onClick={() => setShowMobileMenu(true)}
