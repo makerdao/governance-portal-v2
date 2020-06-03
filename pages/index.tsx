@@ -109,70 +109,15 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           <SystemStats />
         </Container>
         <Flex sx={{ justifyContent: 'space-around', maxWidth: 11 }} mx="auto" mb="6">
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-              mb="m"
-            >
-              Introduction to Governance
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              A guide to outlining the basics of getting started with voting.
-            </Text>
-          </Card>
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-            >
-              Governance Forum
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              Get the latest updates and take part in current discussions.
-            </Text>
-          </Card>
-          <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#231536',
-                textAlign: 'left'
-              }}
-            >
-              Governance Calls
-            </Text>
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                color: '#434358',
-                opacity: 0.8,
-                whiteSpace: 'initial'
-              }}
-            >
-              Weekly calls to present research and coordinate around current issues.
-            </Text>
-          </Card>
+          <IntroCard title="Introduction to Governance">
+            A guide to outlining the basics of getting started with voting.
+          </IntroCard>
+          <IntroCard title="Governance Forum">
+            Get the latest updates and take part in current discussions.
+          </IntroCard>
+          <IntroCard title="Governance Calls">
+            Weekly calls to present research and coordinate around current issues.
+          </IntroCard>
         </Flex>
         <Container
           pb="5"
@@ -281,6 +226,31 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
     </PrimaryLayout>
   );
 };
+
+const IntroCard = props => (
+  <Card sx={{ minWidth: 348, maxWidth: 348 }}>
+    <Text
+      sx={{
+        fontSize: [3, 4],
+        color: '#231536',
+        textAlign: 'left'
+      }}
+      mb="m"
+    >
+      {props.title}
+    </Text>
+    <Text
+      sx={{
+        fontSize: [3, 4],
+        color: '#434358',
+        opacity: 0.8,
+        whiteSpace: 'initial'
+      }}
+    >
+      {props.children}
+    </Text>
+  </Card>
+);
 
 export default ({ proposals, polls, blogPosts }) => {
   // fetch polls & proposals at run-time if on any network other than the default
