@@ -41,6 +41,11 @@ const Header: React.FC = () => {
         >
           Switch to {otherNetwork}
         </Button>
+        <Link href={{ pathname: '/', query: { network } }}>
+          <NavLink p={2} sx={{ display: [null, 'none'] }}>
+            Home
+          </NavLink>
+        </Link>
         <Link href={{ pathname: '/polling', query: { network } }}>
           <NavLink p={2}>Polling</NavLink>
         </Link>
