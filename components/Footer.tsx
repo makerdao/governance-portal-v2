@@ -1,6 +1,5 @@
-import styled from 'styled-components';
 import { QRCode } from 'react-qr-svg';
-
+import React from 'react'
 import Link from 'next/link';
 
 import {
@@ -10,92 +9,108 @@ import {
   Input,
   Button,
   Text,
+  Container
 } from '@theme-ui/components';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { translate } from '@makerdao/i18n-helper';
 
-const FooterContainer = styled.footer`
-  font-size: 1.5rem;
-  padding: 3.6rem 2.5rem 2.7rem 2.5rem;
-  width: 100%;
-  background-color: #FFFFFF;
-`;
-// background-color: ${props => props.theme.footer.backgroundColor};
-const LinkListHeader = styled.div`
-  font-weight: 500;
-  margin-bottom: 0.7rem;
-  color: #333333;
-`;
+const FooterContainer = (props) => <Container as='footer' sx={{
+  fontSize: '1.5rem',
+  padding: '3.6rem 2.5rem 2.7rem 2.5rem',
+  width: '100%',
+  backgroundColor: '#FFFFFF',
+}}>
+  {props.children}
+</Container>
 
-const LinkList = styled.ul`
-  padding-left: 0;
-  list-style: none;
-  line-height: 3.1rem;
-  & a {
-    color: #7E7E88;
-    font-weight: 400;
-    transition: color 0.2s ease-out;
-    text-decoration: none;
-  }
-  & a:hover {
-    color: #231536;
-  }
-`;
+const LinkListHeader = (props) => <Box as='div' sx={{
+  fontWeight: '500',
+  marginBottom: '0.7rem',
+  color: '#333333',
+  fontSize: 15
+}}>
+  {props.children}
+</Box>
 
-const SignUpText = styled.div`
-  max-width: 32.6rem;
-  text-align: justify;
-`;
+const LinkList = (props) => <Box as='ul' sx={{
+  'paddingLeft': 0,
+  'listStyle': 'none',
+  'lineHeight': '2.4rem',
+  'fontSize': 16,
+  '& a': {
+    color: 'footerText',
+    'fontWeight': '400',
+    'transition': 'color 0.2s ease-out',
+    'textDecoration': 'none',
+    ':hover': { color: '#231536' }
+  },
+}}>
+  {props.children}
+</Box>
 
-const SubscribeButton = styled.button`
-  border: none;
-  font-size: 1em;
-  background-color: transparent;
-  color: #9898a6;
-  transition: color 0.125s;
-  cursor: pointer;
-  display: inline;
-  padding-right: 1rem;
-  &:hover:after,
-  &:focus:after {
-    transform: translate(0.3rem);
-    background-color: #53546a;
-  }
-  &:hover,
-  &:focus {
-    outline: none;
-    color: #53546a;
-  }
-  &:after {
-    content: '';
-    mask: url(${props => props.rightCaret}) center center no-repeat;
-    transition: all 0.125s;
-    background-color: #9898a6;
-    position: absolute;
-    height: 1.8rem;
-    width: 1.3rem;
-  }
-  input:focus + & {
-    color: #53546a;
-    &:after {
-      background-color: #53546a;
+const SubscribeButton = (props) => <Button sx={{
+  border: 'none',
+  fontSize: '1em',
+  backgroundColor: 'transparent',
+  color: '#9898a6',
+  transition: 'color 0.125s',
+  cursor: 'pointer',
+  display: 'inline',
+  paddingRight: '1rem',
+  ':hover:after': {
+    transform: 'translate(0.3rem)',
+    backgroundColor: '#53546a',
+  },
+  ':focus:after': {
+    transform: 'translate(0.3rem)',
+    backgroundColor: '#53546a',
+  },
+  ':hover': {
+    outline: 'none',
+    color: '#53546a',
+  },
+  ':focus:': {
+    outline: 'none',
+    color: '#53546a',
+  },
+  ':after': {
+    content: '',
+    mask: 'url(${props => props.rightCaret}) center center no-repeat',
+    transition: 'all 0.125s',
+    backgroundColor: '#9898a6',
+    position: 'absolute',
+    height: '1.8rem',
+    width: '1.3rem',
+  },
+  'input:focus': {
+    color: '#53546a',
+    ':after': {
+      backgroundColor: '#53546a',
     }
   }
-`;
+}}>
+  {props.children}
+</Button>
 
-const Icons = styled(Grid)`
-  & svg {
-    width: 20px;
-    height: 20px;
-    transition: opacity 0.2s;
-    cursor: pointer;
-    opacity: 0.8;
-    &:hover {
-      opacity: 1;
+const Icons = (props) => <Flex sx={{
+  flexDirection: 'row',
+  justifyContent: 'left',
+  marginTop: 22,
+  '& svg': {
+    width: 20,
+    height: 20,
+    transition: 'opacity 0.2s',
+    cursor: 'pointer',
+    opacity: 0.8,
+    marginRight: 24,
+    ':hover': {
+      opacity: 1
     }
   }
-`;
+}}>
+  {props.children}
+</Flex>
 
 const url = require("url");
 
@@ -302,14 +317,19 @@ class Footer extends React.Component {
             </LinkList>
           </div>
           <Box gridColumn={['1 / 3', '1 / 3', 'unset']}>
-            <Text color='slate.600'>
-              <SignUpText>{t('sign-up-text')}</SignUpText>
-            </Text>
             <Box mt='1.2rem' className={this.state.subscribeState}>
               <Input
                 maxWidth='320px'
                 py='xs'
-                placeholder='Email address'
+                placeholder='Sign up for our newsletter'
+                sx={{
+                  fontSize: 15
+                }}
+                // defaultValue={<Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+                //     <Text>
+                //       Sign up for our newsletter
+                //     </Text>
+                //   </Flex>}
                 name='email'
                 type='email'
                 value={this.state.email}
@@ -332,8 +352,7 @@ class Footer extends React.Component {
                   >
                     Subscribe
                   </SubscribeButton>
-                }
-              />
+                }/>
             </Box>
             <Icons
               gap='20px'
