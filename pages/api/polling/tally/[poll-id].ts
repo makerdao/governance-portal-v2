@@ -1,4 +1,6 @@
+// @ts-ignore
 import Maker from '@makerdao/dai';
+// @ts-ignore
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
@@ -33,8 +35,8 @@ async function getConnectedMakerObj(network: SupportedNetworks) {
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-    const pollId: string = req.query['poll-id'] as string;
-    const network: string = req.query.network as string;
+    const pollId = req.query['poll-id'] as string;
+    const network = req.query.network as string;
 
     invariant(pollId, 'poll id required');
 
@@ -63,5 +65,5 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
 export { createPollTallyRoute };
 
 export default createPollTallyRoute({
-  cacheType: 's-maxage=5, stale-while-revalidate'
+  cacheType: 'maxage=0, s-maxage=5, stale-while-revalidate'
 });

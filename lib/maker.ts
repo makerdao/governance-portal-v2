@@ -124,7 +124,7 @@ function isDefaultNetwork(): boolean {
   return getNetwork() === DEFAULT_NETWORK;
 }
 
-function isSupportedNetwork(_network: string): boolean {
+function isSupportedNetwork(_network: string): _network is SupportedNetworks {
   return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
 }
 

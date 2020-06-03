@@ -1,29 +1,19 @@
 import { useState, useEffect } from 'react';
+import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 
 import PrimaryLayout from '../../components/layouts/Primary';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { isDefaultNetwork } from '../../lib/maker';
+import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
+import invariant from 'tiny-invariant';
 
 type Props = {
   proposal: Proposal;
-  loading: boolean;
 };
 
-const ExecutiveProposalPage: React.FC<Props> = ({ proposal, loading }) => {
-  if (loading)
-    return (
-      <PrimaryLayout>
-        <p>Loading…</p>
-      </PrimaryLayout>
-    );
-
-  if (!proposal?.key) {
-    return <ErrorPage statusCode={404} title="Executive proposal could not be found" />;
-  }
-
+const ExecutiveProposalPage: React.FC<Props> = ({ proposal }) => {
   return (
     <PrimaryLayout>
       <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
@@ -31,8 +21,44 @@ const ExecutiveProposalPage: React.FC<Props> = ({ proposal, loading }) => {
   );
 };
 
-export async function getStaticProps({ params }) {
+// HOC to fetch the proposal depending on the network
+export default ({ proposal: preFetchedProposal }: { proposal?: Proposal }) => {
+  const [runtimeFetchedProposal, setRuntimeFetchedProposal] = useState<Proposal>();
+  const [error, setError] = useState<string>();
+  const { query, isFallback } = useRouter();
+
+  // fetch proposal contents at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      getExecutiveProposal(query['proposal-id'])
+        .then(setRuntimeFetchedProposal)
+        .catch(setError);
+    }
+  }, []);
+
+  if (error || (isDefaultNetwork() && !isFallback && !preFetchedProposal?.key)) {
+    return (
+      <ErrorPage
+        statusCode={404}
+        title="Executive proposal either does not exist, or could not be fetched at this time"
+      />
+    );
+  }
+
+  if (isFallback || (!isDefaultNetwork() && !runtimeFetchedProposal))
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  const proposal = isDefaultNetwork() ? preFetchedProposal : runtimeFetchedProposal;
+  return <ExecutiveProposalPage proposal={proposal as Proposal} />;
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
+  invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
   const proposal = await getExecutiveProposal(params['proposal-id']);
 
   return {
@@ -40,32 +66,9 @@ export async function getStaticProps({ params }) {
       proposal
     }
   };
-}
-
-export default ({ proposal }) => {
-  const [_proposal, _setProposal] = useState<Proposal>();
-  const [loading, setLoading] = useState(false);
-  const { query, isFallback } = useRouter();
-
-  // fetch proposal contents at run-time if on any network other than the default
-  useEffect(() => {
-    if (!isDefaultNetwork()) {
-      setLoading(true);
-      getExecutiveProposal(query['proposal-id']).then(proposal => {
-        setLoading(false);
-        _setProposal(proposal);
-      });
-    }
-  }, []);
-  return (
-    <ExecutiveProposalPage
-      loading={loading || isFallback}
-      proposal={isDefaultNetwork() ? proposal : _proposal}
-    />
-  );
 };
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const proposals = await getExecutiveProposals();
   const paths = proposals.map(proposal => `/executive/${proposal.key}`);
 
@@ -73,4 +76,4 @@ export async function getStaticPaths() {
     paths,
     fallback: true
   };
-}
+};
