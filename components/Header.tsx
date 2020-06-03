@@ -64,10 +64,23 @@ const Menu = ({ children, shown, hide }) => {
       </Box>
       {shown && (
         <Container variant="modal">
-          <Box as="h1" onClick={hide} mr="0" ml="auto">
-            X
-          </Box>
-          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>{children}</Flex>
+          <Icon
+            name="close"
+            size="32px"
+            sx={{ cursor: 'pointer', ml: 'auto', display: 'block' }}
+            onClick={hide}
+          />
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              height: '50vh'
+            }}
+            css={'> a { font-size: 32px }'}
+          >
+            {children}
+          </Flex>
         </Container>
       )}
     </>
