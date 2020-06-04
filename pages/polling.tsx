@@ -56,16 +56,16 @@ const PollingOverview = ({ polls }: Props) => {
           </Label>
         </Box>
 
-        <Flex>
+        <Flex sx={{ flexWrap: 'wrap' }}>
           <Label sx={{ whiteSpace: 'nowrap', alignItems: 'center' }}>
             Show only polls after
             <Input
-              ml="3"
+              mx="3"
               type="date"
               onChange={e => setDateFilter([new Date(e.target.value), dateFilter[1]])}
             />
           </Label>
-          <Label ml="3" sx={{ whiteSpace: 'nowrap', alignItems: 'center' }}>
+          <Label sx={{ whiteSpace: 'nowrap', alignItems: 'center' }}>
             Show only polls before
             <Input
               ml="3"
