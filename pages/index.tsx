@@ -85,17 +85,25 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           <SystemStats />
         </Container>
         <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
-          <IntroCard title="Introduction to Governance" linkText="Get started">
+          <IntroCard
+            title="Introduction to Governance"
+            linkText="Get started"
+            icon={<Icon name='govIntro' size="4" />}
+          >
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
           <IntroCard
             title="Governance Forum"
             linkText="Go to forum"
-            icon={<Icon name="govForum" sx={{ width: '3.0rem', height: '3.0rem' }} />}
+            icon={<Icon name='govForum' size="4" />}
           >
             Get the latest updates and take part in current discussions.
           </IntroCard>
-          <IntroCard title="Governance Calls" linkText="View gov calls">
+          <IntroCard
+            title="Governance Calls"
+            linkText="View gov calls"
+            icon={<Icon name='govCalls' size="4" />}
+          >
             Weekly calls to present research and coordinate around current issues.
           </IntroCard>
         </Flex>
