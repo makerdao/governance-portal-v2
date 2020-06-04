@@ -75,11 +75,15 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>View more stats</Text>
-        </Flex>
 
         <Grid mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint' }}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text sx={{ fontSize: 4, color: 'primary' }}>System Stats</Text>
+            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>See all stats ></Text>
+          </Flex>
+
+          {/* Add DSR spread */}
+
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
             <Text sx={{ fontSize: 3, color: 'primary' }}>
