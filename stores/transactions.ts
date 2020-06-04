@@ -1,17 +1,17 @@
-import create, { State } from 'zustand';
+import create from 'zustand';
 import invariant from 'tiny-invariant';
 
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
 import TX from '../types/transaction';
 
-interface Store extends State {
+type Store = {
   transactions: { [from: string]: TX[] };
   initTx: (from: string, txObject: any, message: string | null) => void;
   setPending: (from: string, txObject: any) => void;
   setMined: (from: string, txObject: any) => void;
   setError: (from: string, txObject: any, error: { message: string }) => void;
-}
+};
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   transactions: {},

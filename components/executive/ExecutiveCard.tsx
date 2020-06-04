@@ -5,8 +5,14 @@ import Skeleton from 'react-loading-skeleton';
 
 import getMaker, { getNetwork } from '../../lib/maker';
 import CurrencyObject from '../../types/currency';
+import Proposal from '../../types/proposal';
 
-export default function ExecutiveCard({ proposal, isHat }) {
+type Props = {
+  proposal: Proposal;
+  isHat: boolean;
+};
+
+export default function ExecutiveCard({ proposal, isHat }: Props) {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(

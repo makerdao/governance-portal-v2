@@ -14,7 +14,7 @@ type Props = {
   loading: boolean;
 };
 
-const PollPage: React.FC<Props> = ({ poll, loading }) => {
+const PollPage = ({ poll, loading }: Props) => {
   if (loading)
     return (
       <PrimaryLayout>

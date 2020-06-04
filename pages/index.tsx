@@ -22,7 +22,7 @@ type Props = {
   blogPosts: BlogPost[];
 };
 
-const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
+const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
@@ -112,7 +112,11 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           <IntroCard title="Introduction to Governance" linkText="Get started">
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard title="Governance Forum" linkText="Go to forum" icon={<Icon name='govForum' sx={{ width: '3.0rem', height: '3.0rem'}}/>}>
+          <IntroCard
+            title="Governance Forum"
+            linkText="Go to forum"
+            icon={<Icon name="govForum" sx={{ width: '3.0rem', height: '3.0rem' }} />}
+          >
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard title="Governance Calls" linkText="View gov calls">
@@ -138,7 +142,7 @@ const LandingPage: React.FC<Props> = ({ proposals, polls, blogPosts }) => {
           <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
             {proposals.map(proposal => (
               <ExecutiveCard
-                isHat={hat && hat.toLowerCase() === proposal.source.toLowerCase()}
+                isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
                 key={proposal.key}
                 proposal={proposal}
               />
@@ -253,7 +257,11 @@ const IntroCard = props => (
     >
       {props.children}
     </Text>
-    <ExternalLink sx={{ color: 'primary', fontSize: '3', fontWeight: '500'}} href={props.linkDest} target="_blank">
+    <ExternalLink
+      sx={{ color: 'primary', fontSize: '3', fontWeight: '500' }}
+      href={props.linkDest}
+      target="_blank"
+    >
       {props.linkText}
     </ExternalLink>
   </Card>

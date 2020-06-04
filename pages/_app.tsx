@@ -12,7 +12,7 @@ export function reportWebVitals(metric) {
   console.log(metric);
 }
 
-const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   const currentNetwork = getNetwork();
 
   useEffect(() => {

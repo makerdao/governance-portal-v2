@@ -13,9 +13,9 @@ function isActivePoll(poll) {
   return hasStarted && hasNotEnded;
 }
 
-interface Props {
+type Props = {
   polls: Poll[];
-}
+};
 
 const PollingOverview = ({ polls }: Props) => {
   const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);

@@ -2,14 +2,11 @@ import { Box, Select } from 'theme-ui';
 
 import useAccountsStore from '../stores/accounts';
 
-const formatAddress = address =>
-  address.slice(0, 7) + '...' + address.slice(-4);
+const formatAddress = address => address.slice(0, 7) + '...' + address.slice(-4);
 
-const AccountSelect: React.FC = () => {
+const AccountSelect = () => {
   const currentAccount = useAccountsStore(state => state.currentAccount);
-  const connectWithBrowserProvider = useAccountsStore(
-    state => state.connectWithBrowserProvider
-  );
+  const connectWithBrowserProvider = useAccountsStore(state => state.connectWithBrowserProvider);
 
   return (
     <Box>

@@ -12,7 +12,7 @@ type Props = {
   poll: Poll;
 };
 
-const PollCard: React.FC<Props> = ({ poll }) => {
+const PollCard = ({ poll }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
