@@ -4,15 +4,14 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from '../lib/useInterval';
 
-type props = {
+type Props = {
   endDate: string;
   endText: string;
 };
 
-const CountdownTimer: React.FC<props> = ({ endDate, endText }) => {
+const CountdownTimer = ({ endDate, endText }: Props) => {
   const [_timeLeft, _setTimeLeft] = useState(
-    Math.floor(new Date(endDate).getTime() / 1000) -
-      Math.floor(new Date().getTime() / 1000)
+    Math.floor(new Date(endDate).getTime() / 1000) - Math.floor(new Date().getTime() / 1000)
   );
   useInterval(() => {
     _setTimeLeft(_endDate => _endDate - 1);
@@ -31,18 +30,12 @@ const CountdownTimer: React.FC<props> = ({ endDate, endText }) => {
       {_timeLeft <= 0 ? (
         <>
           <Icon mr="1" name="clock" size="3" sx={{ color: '#D4D9E1' }} />
-          <Text
-            sx={{ fontSize: 2, textTransform: 'uppercase', color: '#D4D9E1' }}
-          >
-            {endText}
-          </Text>
+          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: '#D4D9E1' }}>{endText}</Text>
         </>
       ) : (
         <>
           <Icon mr="1" name="clock" size="3" sx={{ color: '#1AAB9B' }} />
-          <Text
-            sx={{ fontSize: 2, textTransform: 'uppercase', color: '#708390' }}
-          >
+          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: '#708390' }}>
             {hours}:{minutes}:{seconds} Remaining
           </Text>
         </>

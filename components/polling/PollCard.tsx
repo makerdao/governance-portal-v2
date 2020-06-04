@@ -12,7 +12,7 @@ type Props = {
   poll: Poll;
 };
 
-const PollCard: React.FC<Props> = ({ poll }) => {
+const PollCard = ({ poll }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
@@ -78,7 +78,7 @@ const PollCard: React.FC<Props> = ({ poll }) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: '#434358',
+            color: 'primaryText',
             opacity: 0.8
           }}
         >

@@ -76,7 +76,7 @@ export async function getPolls(): Promise<Poll[]> {
           ? pollMeta.discussion_link
           : null;
       const voteType: VoteTypes =
-        (pollMeta as { [key: string]: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
+        (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
       return {
         ...p,
         startDate: `${p.startDate}`,

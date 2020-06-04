@@ -2633,10 +2633,10 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.12.6":
-  version "0.12.6"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.6.tgz#b283f146de1e838a93413bc4a4c61b89fc7fbf4d"
-  integrity sha512-ZsJ6Pve26jWpTIhbnFF31WC9gxhuACfwrhKrKXZIRPCrQLih+lm5GORq35bBCkLso9yknZ2ZLSNw3GlD67yyPw==
+"@makerdao/dai-plugin-governance@0.12.8":
+  version "0.12.8"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.8.tgz#2598a5cd79c5392dfd2c33b389f9d475d14ec2d1"
+  integrity sha512-izTJJaesXhBfZIzo5Ilf+R1/8cnjuRZkn4lA0vryjjf/WG4p0LpmIt+8bpQweGTwZM3wgd7fXUOL2T23TNXElQ==
   dependencies:
     "@makerdao/currency" ">=0.9.0"
     "@makerdao/services-core" "^0.10.0"
@@ -2644,10 +2644,10 @@
     debug "^4.1.1"
     ramda "^0.25.0"
 
-"@makerdao/dai-plugin-mcd@1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.5.1.tgz#ff41b362be8e1a0803c5f72cd1c63c1d62d89696"
-  integrity sha512-hp+QwzTjvBpQxZG33qZ2X5bsWY5jxjOLbvnHlDa8MXyP2wDwAKTkhVWktKVr1xwC3TxVQaRNhywMNL9EbNjsDA==
+"@makerdao/dai-plugin-mcd@1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.5.5.tgz#f636eaa8f69dc8b95b3b53674d31296c8e1270e5"
+  integrity sha512-13Q+TD3+iK+D8gL+joBlO15WWwajF75EQ0l05RNLcESeqy32DC7UDMFtCruo/O5KAPl6+j7zrHuJuL5Wd6d4nQ==
   dependencies:
     "@makerdao/currency" "^0.9.8"
     "@makerdao/services-core" "^0.9.9"
@@ -2666,10 +2666,10 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.31.2":
-  version "0.31.4"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.31.4.tgz#8cca45fe35599b7e109b37b70719535285d1075e"
-  integrity sha512-jns4cU+b1Lz0QDrz5+TD9+kK2cc1841lRGY3DeBSVVUahtEBGXzVDgh7ThJgygd1cd0P2Tw94ycD8n3To94akg==
+"@makerdao/dai@^0.31.5":
+  version "0.31.5"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.31.5.tgz#fc49b95743c4b8166c441434b5a82a0701c91210"
+  integrity sha512-YFzkBRo23rPPbI4iem8REJQmP4akqo2E0L3P2keN49EWLd2Y2y8f5AyPdCCM7yoo7FRnIgN5Zi31n2+zIk2FBw==
   dependencies:
     "@babel/cli" "^7.2.3"
     "@babel/core" "^7.4.5"

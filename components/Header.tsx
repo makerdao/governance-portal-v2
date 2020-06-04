@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Router from 'next/router';
 import { Flex, Heading, NavLink, Button, Container, Box } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -7,9 +6,8 @@ import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
 import { useState } from 'react';
 
-const Header: React.FC = () => {
+const Header = () => {
   const network = getNetwork();
-  const otherNetwork = network === 'mainnet' ? 'kovan' : 'mainnet';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
@@ -28,19 +26,11 @@ const Header: React.FC = () => {
         onClick={() => setShowMobileMenu(true)}
       />
       <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
-        <Button
-          variant="outline"
-          onClick={() => {
-            if (Router?.router) {
-              Router.push({
-                pathname: Router.router.pathname,
-                query: { network: otherNetwork }
-              });
-            }
-          }}
-        >
-          Switch to {otherNetwork}
-        </Button>
+        <Link href={{ pathname: '/', query: { network } }}>
+          <NavLink p={2} sx={{ display: [null, 'none'] }}>
+            Home
+          </NavLink>
+        </Link>
         <Link href={{ pathname: '/polling', query: { network } }}>
           <NavLink p={2}>Polling</NavLink>
         </Link>

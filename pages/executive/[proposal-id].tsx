@@ -5,7 +5,7 @@ import ErrorPage from 'next/error';
 
 import PrimaryLayout from '../../components/layouts/Primary';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { isDefaultNetwork, getNetwork } from '../../lib/maker';
+import { isDefaultNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 
@@ -13,7 +13,7 @@ type Props = {
   proposal: Proposal;
 };
 
-const ExecutiveProposalPage: React.FC<Props> = ({ proposal }) => {
+const ExecutiveProposalPage = ({ proposal }: Props) => {
   return (
     <PrimaryLayout>
       <div dangerouslySetInnerHTML={{ __html: proposal.content }} />

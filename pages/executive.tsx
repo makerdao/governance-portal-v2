@@ -11,7 +11,7 @@ type Props = {
   proposals: Proposal[];
 };
 
-const ExecutiveOverview: React.FC<Props> = ({ proposals }) => {
+const ExecutiveOverview = ({ proposals }: Props) => {
   const network = getNetwork();
   return (
     <PrimaryLayout>

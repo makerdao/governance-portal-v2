@@ -5,8 +5,14 @@ import Skeleton from 'react-loading-skeleton';
 
 import getMaker, { getNetwork } from '../../lib/maker';
 import CurrencyObject from '../../types/currency';
+import Proposal from '../../types/proposal';
 
-export default function ExecutiveCard({ proposal, isHat }) {
+type Props = {
+  proposal: Proposal;
+  isHat: boolean;
+};
+
+export default function ExecutiveCard({ proposal, isHat }: Props) {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(
@@ -51,13 +57,13 @@ export default function ExecutiveCard({ proposal, isHat }) {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: '#434358',
+            color: 'primaryText',
             opacity: 0.8
           }}
         >
           {proposal.proposal_blurb}
         </Text>
-        <Flex>
+        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
           <Link
             href={{
               pathname: '/executive/[proposal-id]',
@@ -70,42 +76,38 @@ export default function ExecutiveCard({ proposal, isHat }) {
           >
             <NavLink variant="buttons.primary">Vote on proposal</NavLink>
           </Link>
-          <Flex sx={{ alignItems: 'cetner' }}>
-            {mkrSupport ? (
-              <>
+          {mkrSupport ? (
+            <>
+              <Badge
+                variant="primary"
+                sx={{
+                  borderColor: '#231536',
+                  color: '#231536',
+                  textTransform: 'uppercase',
+                  alignSelf: 'center'
+                }}
+              >
+                {mkrSupport.toString()} Supporting
+              </Badge>
+              {isHat ? (
                 <Badge
-                  mx="3"
                   variant="primary"
                   sx={{
-                    borderColor: '#231536',
-                    color: '#231536',
+                    borderColor: '#098C7D',
+                    color: '#098C7D',
                     textTransform: 'uppercase',
                     alignSelf: 'center'
                   }}
                 >
-                  {mkrSupport.toString()} Supporting
+                  Governing proposal
                 </Badge>
-                {isHat ? (
-                  <Badge
-                    mx="2"
-                    variant="primary"
-                    sx={{
-                      borderColor: '#098C7D',
-                      color: '#098C7D',
-                      textTransform: 'uppercase',
-                      alignSelf: 'center'
-                    }}
-                  >
-                    Governing proposal
-                  </Badge>
-                ) : null}
-              </>
-            ) : (
-              <Box m="auto" ml="3" sx={{ width: '200px' }}>
-                <Skeleton />
-              </Box>
-            )}
-          </Flex>
+              ) : null}
+            </>
+          ) : (
+            <Box m="auto" ml="3" sx={{ width: '200px' }}>
+              <Skeleton />
+            </Box>
+          )}
         </Flex>
       </Flex>
     </Flex>

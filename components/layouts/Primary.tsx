@@ -2,11 +2,9 @@ import { Box, Container } from 'theme-ui';
 
 import Header from '../Header';
 
-type props = {};
+type Props = {};
 
-const PrimaryLayout: React.FC<React.PropsWithChildren<props>> = ({
-  children
-}) => {
+const PrimaryLayout = ({ children }: React.PropsWithChildren<Props>) => {
   return (
     <Container mx="auto" px={4}>
       <Header />
