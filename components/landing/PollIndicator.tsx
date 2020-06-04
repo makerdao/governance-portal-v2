@@ -37,7 +37,7 @@ const IntroCard = ({ polls }: Props) => {
             bg: 'background',
             border: '1px solid',
             borderColor: 'secondary',
-            color: '#434358',
+            color: 'primaryText',
             alignItems: 'center'
           }}
         >

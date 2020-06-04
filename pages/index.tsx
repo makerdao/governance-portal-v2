@@ -69,7 +69,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               as="p"
               sx={{
                 fontSize: [3, 5],
-                color: '#434358',
+                color: 'primaryText',
                 lineHeight: 'body'
               }}
             >
@@ -110,7 +110,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Heading as="h2" mb="3">
               Executive Votes
             </Heading>
-            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>

@@ -78,7 +78,7 @@ const PollCard = ({ poll }: Props) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: '#434358',
+            color: 'primaryText',
             opacity: 0.8
           }}
         >

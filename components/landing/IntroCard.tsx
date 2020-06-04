@@ -24,7 +24,7 @@ const IntroCard = (props: Props) => (
     <Text
       sx={{
         fontSize: [3, 4],
-        color: '#434358',
+        color: 'primaryText',
         opacity: 0.8,
         whiteSpace: 'initial'
       }}
