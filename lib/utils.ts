@@ -81,3 +81,9 @@ export function getEtherscanLink(
       return `${prefix}/address/${data}`;
   }
 }
+
+export function isActivePoll(poll: Poll): boolean {
+  const hasStarted = new Date(poll.startDate).getTime() <= Date.now();
+  const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
+  return hasStarted && hasNotEnded;
+}

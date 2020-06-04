@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box, Button, Image, Flex, Card, Link as ExternalLink } from 'theme-ui';
+import { Heading, Container, Text, Box, Image, Flex, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 
@@ -8,9 +8,11 @@ import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
-import SystemStats from '../components/SystemStats';
+import SystemStats from '../components/landing/SystemStats';
 import PollCard from '../components/polling/PollCard';
 import ExecutiveCard from '../components/executive/ExecutiveCard';
+import IntroCard from '../components/landing/IntroCard';
+import PollingIndicator from '../components/landing/PollIndicator';
 import Footer from '../components/Footer';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
@@ -76,35 +78,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             </Text>
           </Box>
         </Container>
-        <Box py="5" mx="auto" sx={{ maxWidth: 9, textAlign: 'center' }}>
-          <Button
-            variant="outline"
-            sx={{
-              borderRadius: 'round',
-              bg: 'background',
-              border: '1px solid',
-              borderColor: 'secondary',
-              color: '#434358',
-              alignItems: 'center'
-            }}
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                border: '1px solid #1AAB9B',
-                borderRadius: 13,
-                width: 26,
-                height: 26,
-                color: '#1AAB9B',
-                marginRight: 20
-              }}
-            >
-              {recentPolls.length}
-            </span>
-            New polling votes!
-            <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 20 }} />
-          </Button>
-        </Box>
+
+        <PollingIndicator polls={polls} />
+
         <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
@@ -232,40 +208,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
     </PrimaryLayout>
   );
 };
-
-const IntroCard = props => (
-  <Card sx={{ minWidth: 348, maxWidth: 348 }}>
-    {props.icon}
-    <Text
-      sx={{
-        fontSize: [3, 4],
-        color: '#231536',
-        textAlign: 'left'
-      }}
-      mb="3"
-    >
-      {props.title}
-    </Text>
-    <Text
-      sx={{
-        fontSize: [3, 4],
-        color: '#434358',
-        opacity: 0.8,
-        whiteSpace: 'initial'
-      }}
-      mb="4"
-    >
-      {props.children}
-    </Text>
-    <ExternalLink
-      sx={{ color: 'primary', fontSize: '3', fontWeight: '500' }}
-      href={props.linkDest}
-      target="_blank"
-    >
-      {props.linkText}
-    </ExternalLink>
-  </Card>
-);
 
 export default ({ proposals, polls, blogPosts }) => {
   // fetch polls & proposals at run-time if on any network other than the default

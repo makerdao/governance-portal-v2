@@ -1,46 +1,48 @@
 import { useEffect, useState, useMemo } from 'react';
 import { NavLink, Heading, Checkbox, Label, Box, Flex, Input } from 'theme-ui';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
+import { isActivePoll } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
 import Poll from '../types/poll';
-
-function isActivePoll(poll) {
-  const hasStarted = new Date(poll.startDate).getTime() <= Date.now();
-  const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
-  return hasStarted && hasNotEnded;
-}
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
+  const { query } = useRouter();
   const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);
-  const [filterInactive, setFilterInactive] = useState(false);
-  const network = getNetwork();
+  const [filterInactivePolls, setFilterInactivePolls] = useState(false);
+
+  useEffect(() => {
+    if (query?.['pollFilter']?.includes('active')) {
+      setFilterInactivePolls(true);
+    }
+  }, [query]);
 
   const pollsToShow = useMemo(
     () =>
       polls.filter(poll => {
         let _show = true;
-        if (filterInactive) {
+        if (filterInactivePolls) {
           _show = _show && isActivePoll(poll);
         }
 
-        const [filterPollsBeforeTime, filterPollsAfterTime] = dateFilter;
-        if (filterPollsBeforeTime) {
-          _show = _show && new Date(poll.startDate).getTime() >= filterPollsBeforeTime.getTime();
+        const [filterPollsBeforeDate, filterPollsAfterDate] = dateFilter;
+        if (filterPollsBeforeDate) {
+          _show = _show && new Date(poll.startDate).getTime() >= filterPollsBeforeDate.getTime();
         }
-        if (filterPollsAfterTime) {
-          _show = _show && new Date(poll.startDate).getTime() <= filterPollsAfterTime.getTime();
+        if (filterPollsAfterDate) {
+          _show = _show && new Date(poll.startDate).getTime() <= filterPollsAfterDate.getTime();
         }
 
         return _show;
       }),
-    [polls, filterInactive, dateFilter]
+    [polls, filterInactivePolls, dateFilter]
   );
 
   return (
@@ -49,7 +51,7 @@ const PollingOverview = ({ polls }: Props) => {
       <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
         <Box>
           <Label>
-            <Checkbox checked={filterInactive} onChange={() => setFilterInactive(b => !b)} />
+            <Checkbox checked={filterInactivePolls} onChange={() => setFilterInactivePolls(b => !b)} />
             Show only active polls
           </Label>
         </Box>
@@ -79,11 +81,11 @@ const PollingOverview = ({ polls }: Props) => {
           <Link
             href={{
               pathname: '/polling/[poll-hash]',
-              query: { network }
+              query: { network: getNetwork() }
             }}
             as={{
               pathname: `/polling/${poll.multiHash}`,
-              query: { network }
+              query: { network: getNetwork() }
             }}
           >
             <NavLink>{poll.title}</NavLink>

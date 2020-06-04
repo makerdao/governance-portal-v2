@@ -1,10 +1,10 @@
-import { Flex, Link as ExternalLink, Text, Box, Grid, Card } from 'theme-ui';
+import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
-import getMaker, { DAI } from '../lib/maker';
-import { bigNumberKFormat } from '../lib/utils';
-import CurrenctObject from '../types/currency';
+import getMaker, { DAI } from '../../lib/maker';
+import { bigNumberKFormat } from '../../lib/utils';
+import CurrenctObject from '../../types/currency';
 
 async function getSystemStats(): Promise<CurrenctObject[]> {
   const maker = await getMaker();
