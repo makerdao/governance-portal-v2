@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 test('should automatically add an account changed listener to dai.js', async () => {
-  expect(accountsApi.getState().currentAccount).toBe(undefined);
+  expect(accountsApi.getState().currentAccount).toBeUndefined();
 
   const nextAccount = TestAccountProvider.nextAccount();
   await maker.service('accounts').addAccount('test-account', {

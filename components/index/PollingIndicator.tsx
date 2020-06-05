@@ -18,14 +18,15 @@ type Props = {
   account?: Account;
   activePolls: Poll[];
   unvotedPolls?: Poll[];
+  href?: string;
 };
 
-const PollingIndicator = ({ account, activePolls, unvotedPolls }: Props) => {
+const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) => {
   let message: string | undefined;
   let pollsToBeAwareOf = 0;
 
   if (account) {
-    invariant(unvotedPolls, 'unvotedPolls is unexpectadly falsey');
+    invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
     pollsToBeAwareOf = unvotedPolls.length;
     message =
       unvotedPolls.length > 0
@@ -41,6 +42,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls }: Props) => {
 
   return (
     <NavLink
+      href={href}
       variant="buttons.outline"
       sx={{
         borderRadius: 'round',
@@ -102,6 +104,7 @@ export default ({ polls }: { polls: Poll[] }) => {
             pathname: '/polling',
             query
           }}
+          passHref
         >
           <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
         </Link>
