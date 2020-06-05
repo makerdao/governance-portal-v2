@@ -22,7 +22,7 @@ const PollingOverview = ({ polls }: Props) => {
     if (query?.['pollFilter']?.includes('active')) {
       setFilterInactivePolls(true);
     }
-  }, [query]);
+  }, [query?.['pollFilter']]);
 
   const pollsToShow = useMemo(
     () =>
