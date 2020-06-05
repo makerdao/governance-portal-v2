@@ -19,28 +19,19 @@ const PollingOverview = ({ polls }: Props) => {
   const [filterInactivePolls, setFilterInactivePolls] = useState(false);
 
   useEffect(() => {
-    if (query?.['pollFilter']?.includes('active')) {
+    if (query?.pollFilter?.includes('active')) {
       setFilterInactivePolls(true);
     }
-  }, [query?.['pollFilter']]);
+  }, [query?.pollFilter]);
 
   const pollsToShow = useMemo(
     () =>
       polls.filter(poll => {
-        let _show = true;
-        if (filterInactivePolls) {
-          _show = _show && isActivePoll(poll);
-        }
-
-        const [filterPollsBeforeDate, filterPollsAfterDate] = dateFilter;
-        if (filterPollsBeforeDate) {
-          _show = _show && new Date(poll.startDate).getTime() >= filterPollsBeforeDate.getTime();
-        }
-        if (filterPollsAfterDate) {
-          _show = _show && new Date(poll.startDate).getTime() <= filterPollsAfterDate.getTime();
-        }
-
-        return _show;
+        if (filterInactivePolls && !isActivePoll(poll)) return false;
+        const [startDate, endDate] = dateFilter;
+        if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
+        if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
+        return true;
       }),
     [polls, filterInactivePolls, dateFilter]
   );
@@ -79,14 +70,8 @@ const PollingOverview = ({ polls }: Props) => {
       {pollsToShow.map(poll => (
         <Box key={poll.multiHash}>
           <Link
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network: getNetwork() }
-            }}
-            as={{
-              pathname: `/polling/${poll.multiHash}`,
-              query: { network: getNetwork() }
-            }}
+            href={{ pathname: '/polling/[poll-hash]', query: { network: getNetwork() } }}
+            as={{ pathname: `/polling/${poll.multiHash}`, query: { network: getNetwork() } }}
           >
             <NavLink>{poll.title}</NavLink>
           </Link>
