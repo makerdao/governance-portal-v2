@@ -96,7 +96,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default ({ polls }) => {
+export default function PollingOverviewPage({ polls }) {
   const [_polls, _setPolls] = useState<Poll[]>();
 
   // fetch polls at run-time if on any network other than the default
@@ -107,7 +107,7 @@ export default ({ polls }) => {
   }, []);
 
   return <PollingOverview polls={isDefaultNetwork() ? polls : _polls} />;
-};
+}
 
 export async function getStaticProps() {
   // fetch polls at build-time if on the default network

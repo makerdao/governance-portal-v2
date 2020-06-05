@@ -13,7 +13,7 @@ type Props = {
   proposal: Proposal;
 };
 
-const ExecutiveProposalPage = ({ proposal }: Props) => {
+const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout>
       <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
@@ -22,7 +22,7 @@ const ExecutiveProposalPage = ({ proposal }: Props) => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default ({ proposal: preFetchedProposal }: { proposal?: Proposal }) => {
+export default function ProposalPage ({ proposal: preFetchedProposal }: { proposal?: Proposal }) {
   const [runtimeFetchedProposal, setRuntimeFetchedProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -53,7 +53,7 @@ export default ({ proposal: preFetchedProposal }: { proposal?: Proposal }) => {
     );
 
   const proposal = isDefaultNetwork() ? preFetchedProposal : runtimeFetchedProposal;
-  return <ExecutiveProposalPage proposal={proposal as Proposal} />;
+  return <ProposalView proposal={proposal as Proposal} />;
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {

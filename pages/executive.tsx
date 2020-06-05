@@ -36,7 +36,7 @@ const ExecutiveOverview = ({ proposals }: Props) => {
   );
 };
 
-export default ({ proposals }) => {
+export default function ExecutiveOverviewPage({ proposals }) {
   const [_proposals, _setProposals] = useState<Proposal[]>([]);
 
   // fetch proposals at run-time if on any network other than the default

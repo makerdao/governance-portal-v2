@@ -14,7 +14,7 @@ type Props = {
   loading: boolean;
 };
 
-const PollPage = ({ poll, loading }: Props) => {
+const PollView = ({ poll, loading }: Props) => {
   if (loading)
     return (
       <PrimaryLayout>
@@ -43,7 +43,7 @@ const PollPage = ({ poll, loading }: Props) => {
   );
 };
 
-export default ({ poll }) => {
+export default function PollPage ({ poll }) {
   const [_poll, _setPoll] = useState<Poll>();
   const [loading, setLoading] = useState(false);
   const { query, isFallback } = useRouter();
@@ -59,7 +59,7 @@ export default ({ poll }) => {
     }
   }, []);
 
-  return <PollPage loading={loading || isFallback} poll={isDefaultNetwork() ? poll : _poll} />;
+  return <PollView loading={loading || isFallback} poll={isDefaultNetwork() ? poll : _poll} />;
 };
 
 export async function getStaticProps({ params }) {

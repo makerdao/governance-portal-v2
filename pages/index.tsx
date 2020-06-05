@@ -213,7 +213,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   );
 };
 
-export default ({ proposals, polls, blogPosts }) => {
+export default function Index({ proposals, polls, blogPosts }) {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>([]);
   const [_proposals, _setProposals] = useState<Proposal[]>([]);
