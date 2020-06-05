@@ -7,6 +7,7 @@ type Store = {
   currentAccount?: Account;
   wrongNetwork: boolean;
   addAccountsListener: () => Promise<void>;
+  connectWithBrowserProvider: () => Promise<void>;
 };
 
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
