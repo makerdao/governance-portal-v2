@@ -30,7 +30,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork() && query['proposal-id']) {
-      getExecutiveProposal(query['proposal-id'])
+      getExecutiveProposal(query['proposal-id'] as string)
         .then(_setProposal)
         .catch(setError);
     }
@@ -52,13 +52,14 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
       </PrimaryLayout>
     );
 
-  return <ProposalView proposal={isDefaultNetwork() ? prefetchedProposal : _proposal} />;
+  const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
+  return <ProposalView proposal={proposal as Proposal} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
   invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
-  const proposal = await getExecutiveProposal(params['proposal-id']);
+  const proposal = await getExecutiveProposal(params['proposal-id'] as string);
 
   return {
     props: {

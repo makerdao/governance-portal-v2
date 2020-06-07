@@ -13,10 +13,9 @@ import Poll from '../../types/poll';
 
 type Props = {
   poll: Poll;
-  loading: boolean;
 };
 
-const PollView = ({ poll, loading }: Props) => {
+const PollView = ({ poll }: Props) => {
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
   const { data: rawTally } = useSWR(
     hasPollEnded
@@ -33,7 +32,7 @@ const PollView = ({ poll, loading }: Props) => {
   );
 };
 
-export default function PollPage({ poll: prefetchedPoll }: { poll: Poll }) {
+export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }) {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -41,7 +40,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll: Poll }) {
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork() && query['poll-hash']) {
-      getPoll(query['poll-hash'])
+      getPoll(query['poll-hash'] as string)
         .then(_setPoll)
         .catch(setError);
     }
@@ -60,13 +59,14 @@ export default function PollPage({ poll: prefetchedPoll }: { poll: Poll }) {
       </PrimaryLayout>
     );
 
-  return <PollView poll={isDefaultNetwork() ? prefetchedPoll : _poll} />;
+  const poll = isDefaultNetwork() ? prefetchedPoll : _poll;
+  return <PollView poll={poll as Poll} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   invariant(params?.['poll-hash'], 'getStaticProps poll hash not found in params');
-  const poll = await getPoll(params['poll-hash']);
+  const poll = await getPoll(params['poll-hash'] as string);
 
   return {
     props: {

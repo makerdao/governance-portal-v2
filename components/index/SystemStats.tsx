@@ -8,12 +8,6 @@ import CurrencyObject from '../../types/currency';
 
 async function getSystemStats(): Promise<CurrencyObject[]> {
   const maker = await getMaker();
-  console.log([
-    await maker.service('mcd:savings').getYearlyRate(),
-    await maker.service('mcd:systemData').getSystemSurplus(),
-    await maker.getToken(DAI).totalSupply(),
-    await maker.service('mcd:systemData').getSystemWideDebtCeiling()
-  ]);
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
