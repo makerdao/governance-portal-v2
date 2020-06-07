@@ -11,6 +11,8 @@ test('renders header', () => {
       <Index />
     </ThemeProvider>
   );
-  const heading = getByText(/Maker Governance/);
+  const heading = getByText(/Executive/);
+  const polling = getByText(/Polling/);
   expect(heading).toBeInTheDocument();
+  expect(polling).toBeInTheDocument();
 });
