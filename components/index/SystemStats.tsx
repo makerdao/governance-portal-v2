@@ -8,6 +8,12 @@ import CurrencyObject from '../../types/currency';
 
 async function getSystemStats(): Promise<CurrencyObject[]> {
   const maker = await getMaker();
+  console.log([
+    await maker.service('mcd:savings').getYearlyRate(),
+    await maker.service('mcd:systemData').getSystemSurplus(),
+    await maker.getToken(DAI).totalSupply(),
+    await maker.service('mcd:systemData').getSystemWideDebtCeiling()
+  ]);
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
@@ -75,16 +81,13 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-
         <Grid mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint' }}>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'primaryText' }}>System Stats</Text>
-              <Text
-                sx={{ color: 'mutedAlt', fontSize: 3 }}
-              >
-                See all stats
-                <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
-              </Text>
+            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              See all stats
+              <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
+            </Text>
           </Flex>
 
           {/* Add DSR spread */}

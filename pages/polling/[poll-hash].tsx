@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { GetStaticProps, GetStaticPaths } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import invariant from 'tiny-invariant';
 
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
@@ -15,26 +17,14 @@ type Props = {
 };
 
 const PollView = ({ poll, loading }: Props) => {
-  if (loading)
-    return (
-      <PrimaryLayout>
-        <p>Loading…</p>
-      </PrimaryLayout>
-    );
-
-  if (!poll?.multiHash) {
-    return <ErrorPage statusCode={404} title="Poll could not be found" />;
-  }
-
-  const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
-  const { data: _tally } = useSWR(
+  const { data: rawTally } = useSWR(
     hasPollEnded
-      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
+      : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`
   );
 
-  const tally = _tally ? parsePollTally(_tally, poll) : undefined;
+  const tally = rawTally ? parsePollTally(rawTally, poll) : undefined;
 
   return (
     <PrimaryLayout>
@@ -43,27 +33,39 @@ const PollView = ({ poll, loading }: Props) => {
   );
 };
 
-export default function PollPage ({ poll }) {
+export default function PollPage({ poll: prefetchedPoll }: { poll: Poll }) {
   const [_poll, _setPoll] = useState<Poll>();
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      setLoading(true);
-      getPoll(query['poll-hash']).then(poll => {
-        _setPoll(poll);
-        setLoading(false);
-      });
+    if (!isDefaultNetwork() && query['poll-hash']) {
+      getPoll(query['poll-hash'])
+        .then(_setPoll)
+        .catch(setError);
     }
-  }, []);
+  }, [query['poll-hash']]);
 
-  return <PollView loading={loading || isFallback} poll={isDefaultNetwork() ? poll : _poll} />;
-};
+  if (error || (isDefaultNetwork() && !isFallback && !prefetchedPoll?.multiHash)) {
+    return (
+      <ErrorPage statusCode={404} title="Poll either does not exist, or could not be fetched at this time" />
+    );
+  }
 
-export async function getStaticProps({ params }) {
+  if (isFallback || (!isDefaultNetwork() && !_poll))
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  return <PollView poll={isDefaultNetwork() ? prefetchedPoll : _poll} />;
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
+  invariant(params?.['poll-hash'], 'getStaticProps poll hash not found in params');
   const poll = await getPoll(params['poll-hash']);
 
   return {
@@ -71,9 +73,9 @@ export async function getStaticProps({ params }) {
       poll
     }
   };
-}
+};
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths = async () => {
   const polls = await getPolls();
   const paths = polls.map(p => `/polling/${p.multiHash}`);
 
@@ -81,4 +83,4 @@ export async function getStaticPaths() {
     paths,
     fallback: true
   };
-}
+};

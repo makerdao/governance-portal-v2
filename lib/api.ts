@@ -19,7 +19,7 @@ let _cachedProposals: Proposal[];
 export async function getExecutiveProposals(): Promise<Proposal[]> {
   if (_cachedProposals) return _cachedProposals;
   const network = getNetwork();
-  if (typeof CMS_ENDPOINTS[network] === 'undefined') return [];
+  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
   const proposals = topics
     .filter(proposal => proposal.active)
@@ -30,7 +30,7 @@ export async function getExecutiveProposals(): Promise<Proposal[]> {
   return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(proposalId): Promise<Proposal> {
+export async function getExecutiveProposal(proposalId: string): Promise<Proposal> {
   const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
@@ -99,7 +99,7 @@ export async function getPolls(): Promise<Poll[]> {
   return (_cachedPolls = polls);
 }
 
-export async function getPoll(pollHash): Promise<Poll> {
+export async function getPoll(pollHash: string): Promise<Poll> {
   const polls = await getPolls();
   const poll = polls.find(poll => poll.multiHash === pollHash);
   invariant(poll, `poll not found for poll hash ${pollHash}`);

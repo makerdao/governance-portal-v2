@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { NavLink, Heading, Checkbox, Label, Box, Flex, Input } from 'theme-ui';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ErrorPage from 'next/error';
 
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
@@ -14,15 +15,15 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const { query } = useRouter();
+  const { asPath } = useRouter();
   const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);
   const [filterInactivePolls, setFilterInactivePolls] = useState(false);
 
   useEffect(() => {
-    if (query?.pollFilter?.includes('active')) {
+    if (asPath.includes('pollFilter=active')) {
       setFilterInactivePolls(true);
     }
-  }, [query?.pollFilter]);
+  }, [asPath]);
 
   const pollsToShow = useMemo(
     () =>
@@ -81,17 +82,31 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls }) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   const [_polls, _setPolls] = useState<Poll[]>();
+  const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(polls => _setPolls(polls));
+      getPolls()
+        .then(_setPolls)
+        .catch(setError);
     }
   }, []);
 
-  return <PollingOverview polls={isDefaultNetwork() ? polls : _polls} />;
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  }
+
+  if (!isDefaultNetwork() && !_polls)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
 export async function getStaticProps() {

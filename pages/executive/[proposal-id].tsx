@@ -22,21 +22,21 @@ const ProposalView = ({ proposal }: Props) => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage ({ proposal: preFetchedProposal }: { proposal?: Proposal }) {
-  const [runtimeFetchedProposal, setRuntimeFetchedProposal] = useState<Proposal>();
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }) {
+  const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
+    if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'])
-        .then(setRuntimeFetchedProposal)
+        .then(_setProposal)
         .catch(setError);
     }
-  }, []);
+  }, [query['proposal-id']]);
 
-  if (error || (isDefaultNetwork() && !isFallback && !preFetchedProposal?.key)) {
+  if (error || (isDefaultNetwork() && !isFallback && !prefetchedProposal?.key)) {
     return (
       <ErrorPage
         statusCode={404}
@@ -45,16 +45,15 @@ export default function ProposalPage ({ proposal: preFetchedProposal }: { propos
     );
   }
 
-  if (isFallback || (!isDefaultNetwork() && !runtimeFetchedProposal))
+  if (isFallback || (!isDefaultNetwork() && !_proposal))
     return (
       <PrimaryLayout>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const proposal = isDefaultNetwork() ? preFetchedProposal : runtimeFetchedProposal;
-  return <ProposalView proposal={proposal as Proposal} />;
-};
+  return <ProposalView proposal={isDefaultNetwork() ? prefetchedProposal : _proposal} />;
+}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network

@@ -54,15 +54,15 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   );
 }
 
-export function parsePollTally(tally, poll: Poll): PollTally {
-  const totalMkrParticipation = MKR(tally.totalMkrParticipation);
-  if (tally?.winner === null) tally.winningOption = 'none found';
-  else tally.winningOption = poll.options ? poll.options[tally.winner] : 'none found';
-  Object.keys(tally.options).forEach(key => {
-    tally.options[key].firstChoice = MKR(tally.options[key].firstChoice);
-    tally.options[key].transfer = MKR(tally.options[key].transfer);
+export function parsePollTally(rawTally, poll: Poll): PollTally {
+  const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
+  if (rawTally?.winner === null) rawTally.winningOption = 'none found';
+  else rawTally.winningOption = poll.options ? poll.options[rawTally.winner] : 'none found';
+  Object.keys(rawTally.options).forEach(key => {
+    rawTally.options[key].firstChoice = MKR(rawTally.options[key].firstChoice);
+    rawTally.options[key].transfer = MKR(rawTally.options[key].transfer);
   });
-  return { ...tally, totalMkrParticipation };
+  return { ...rawTally, totalMkrParticipation };
 }
 
 export function getEtherscanLink(

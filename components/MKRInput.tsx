@@ -14,7 +14,7 @@ const MKRInput = ({ placeholder = '0.00', ...props }: Props) => {
   const { onChange, min, max } = props;
   const [currentValueStr, setCurrentValueStr] = useState('');
 
-  function updateValue(e) {
+  function updateValue(e: { currentTarget: { value: string } }) {
     const newValueStr = e.currentTarget.value;
     const newValue = MKR(newValueStr || '0');
     const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max));

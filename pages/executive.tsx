@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { NavLink, Heading } from 'theme-ui';
+import ErrorPage from 'next/error';
 
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
@@ -36,18 +37,34 @@ const ExecutiveOverview = ({ proposals }: Props) => {
   );
 };
 
-export default function ExecutiveOverviewPage({ proposals }) {
-  const [_proposals, _setProposals] = useState<Proposal[]>([]);
+export default function ExecutiveOverviewPage({ proposals: prefetchedProposals }: Props) {
+  const [_proposals, _setProposals] = useState<Proposal[]>();
+  const [error, setError] = useState<string>();
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getExecutiveProposals().then(proposals => _setProposals(proposals));
+      getExecutiveProposals()
+        .then(_setProposals)
+        .catch(setError);
     }
   }, []);
 
-  return <ExecutiveOverview proposals={isDefaultNetwork() ? proposals : _proposals} />;
-};
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  }
+
+  if (!isDefaultNetwork() && !_proposals)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  return (
+    <ExecutiveOverview proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])} />
+  );
+}
 
 export async function getStaticProps() {
   // fetch proposals at build-time if on the default network
