@@ -4,9 +4,9 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../../lib/maker';
 import { bigNumberKFormat } from '../../lib/utils';
-import CurrencyObject from '../../types/currency';
+import CurrenctObject from '../../types/currency';
 
-async function getSystemStats(): Promise<CurrencyObject[]> {
+async function getSystemStats(): Promise<CurrenctObject[]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
@@ -24,17 +24,14 @@ if (typeof window !== 'undefined') {
 }
 
 export default function() {
-  const { data } = useSWR<CurrencyObject[]>(`/system-stats`, getSystemStats);
+  const { data } = useSWR<CurrenctObject[]>(`/system-stats`, getSystemStats);
   const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
 
   return (
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Text sx={{ color: 'text', fontSize: 5}}>
-            System stats
-          </Text>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <Flex sx={{ alignItems: 'center' }}>
               <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
@@ -61,7 +58,7 @@ export default function() {
               </Text>
             </div>
             <div>
-              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
+              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
               <Text mt="2" variant="h2">
                 {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
               </Text>
@@ -78,13 +75,16 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-        <Grid sx={{ background: '#E8F5F0' }}>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+
+        <Grid mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint' }}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'text' }}>System Stats</Text>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              See all stats
-              <Icon name="chevron_right" color="mutedAlt" size="2" sx={{ marginLeft: 10 }} />
-            </Text>
+              <Text
+                sx={{ color: 'mutedAlt', fontSize: 3 }}
+              >
+                See all stats
+                <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
+              </Text>
           </Flex>
 
           {/* Add DSR spread */}
@@ -103,7 +103,7 @@ export default function() {
             </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
             <Text sx={{ fontSize: 3, color: 'text' }}>
               {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
             </Text>

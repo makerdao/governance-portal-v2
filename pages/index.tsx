@@ -73,7 +73,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               as="p"
               sx={{
                 fontSize: [3, 5],
-                color: 'primaryText',
+                color: 'text',
                 lineHeight: 'body'
               }}
             >
@@ -123,7 +123,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Heading as="h2" mb="3">
               Executive Votes
             </Heading>
-            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'text', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>
@@ -147,7 +147,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'text', lineHeight: 'body' }}>
               Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
               are conducted.
             </Text>
