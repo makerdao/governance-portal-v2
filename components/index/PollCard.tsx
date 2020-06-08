@@ -22,7 +22,8 @@ const PollCard = ({ poll }: Props) => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const tally = rawTally ? parsePollTally(rawTally, poll) : undefined;
+  // const tally = rawTally ? parsePollTally(rawTally, poll) : undefined;
+  const tally = undefined;
 
   return (
     <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>

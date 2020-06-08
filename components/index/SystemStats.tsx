@@ -75,7 +75,7 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-        <Grid mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint' }}>
+        <Grid sx={{ background: '#E8F5F0' }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'primaryText' }}>System Stats</Text>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>

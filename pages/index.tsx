@@ -82,10 +82,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
         <PollingIndicator polls={polls} />
 
-        <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
+        <Container sx={{  }}>
           <SystemStats />
         </Container>
-        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
+        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11, border: 'none' }} mx="auto" mb="6">
           <IntroCard
             title="Introduction to Governance"
             linkText="Get started"
