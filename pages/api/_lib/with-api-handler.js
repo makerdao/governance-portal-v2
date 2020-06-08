@@ -2,10 +2,7 @@ export default function withApiHandler(handler) {
   return async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'Authorization, Accept, Content-Type'
-    );
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Accept, Content-Type');
 
     if (req.method === 'OPTIONS') {
       return res.status(200).json({});

@@ -15,7 +15,7 @@ type Props = {
 const ExecutiveOverview = ({ proposals }: Props) => {
   const network = getNetwork();
   return (
-    <PrimaryLayout>
+    <PrimaryLayout shortenFooter={true}>
       <Heading as="h1">Executive Proposals</Heading>
 
       {proposals.map(proposal => (

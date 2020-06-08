@@ -31,7 +31,10 @@ export default function() {
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Text sx={{ color: 'text', fontSize: 5}}>
+            System stats
+          </Text>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <Flex sx={{ alignItems: 'center' }}>
               <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
@@ -80,7 +83,7 @@ export default function() {
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'primaryText' }}>System Stats</Text>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
               See all stats
-              <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
+              <Icon name="chevron_right" color="mutedAlt" size="2" sx={{ marginLeft: 10 }} />
             </Text>
           </Flex>
 

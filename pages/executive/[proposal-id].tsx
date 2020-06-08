@@ -1,9 +1,12 @@
+/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
+import { Card, Flex, jsx } from 'theme-ui';
 
 import PrimaryLayout from '../../components/layouts/Primary';
+import DetailsPageLayout from '../../components/layouts/DetailsPage';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { isDefaultNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
@@ -15,8 +18,16 @@ type Props = {
 
 const ProposalView = ({ proposal }: Props) => {
   return (
-    <PrimaryLayout>
-      <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+    <PrimaryLayout shortenFooter={true}>
+      <DetailsPageLayout>
+        <Card sx={{ boxShadow: 'faint' }}>
+          <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+        </Card>
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Card variant="compact">Card 1</Card>
+          <Card variant="compact">Card 2</Card>
+        </Flex>
+      </DetailsPageLayout>
     </PrimaryLayout>
   );
 };

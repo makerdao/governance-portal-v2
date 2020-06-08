@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box, Image, Flex, Card } from 'theme-ui';
+import { Heading, Container, Text, Box, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
@@ -14,7 +14,7 @@ import PollCard from '../components/index/PollCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
-import Footer from '../components/Footer';
+import BlogPosts from '../components/index/BlogPosts'
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -26,7 +26,10 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
-  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
+  const recentPolls = useMemo(
+    () => polls.filter(poll => new Date(poll.startDate).getTime() <= Date.now()).slice(0, 4),
+    [polls]
+  );
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
@@ -89,22 +92,27 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           <IntroCard
             title="Introduction to Governance"
             linkText="Get started"
-            icon={<Icon name="govIntro" size="4" />}
+            icon={<Icon name="govIntro" size="5" />}
           >
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard title="Governance Forum" linkText="Go to forum" icon={<Icon name="govForum" size="4" />}>
+          <IntroCard
+            title="Governance Forum"
+            linkText="Go to forum"
+            icon={<Icon name="govForum" size="5" />}
+           >
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard
             title="Governance Calls"
             linkText="View gov calls"
-            icon={<Icon name="govCalls" size="4" />}
+            icon={<Icon name="govCalls" size="5" />}
           >
             Weekly calls to present research and coordinate around current issues.
           </IntroCard>
         </Flex>
-        <Container
+        {/* Executive Votes */}
+        {/* <Container
           pb="5"
           sx={{
             textAlign: 'center'
@@ -129,9 +137,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               />
             ))}
           </Box>
-        </Container>
-
-        <Container
+        </Container> */}
+        {/* Polling Votes */}
+        {/* <Container
           as="section"
           sx={{
             textAlign: 'center'
@@ -139,7 +147,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
               Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
               are conducted.
             </Text>
@@ -151,64 +159,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               ))}
             </Container>
           </Box>
-        </Container>
-
-        <Container
-          as="section"
-          sx={{
-            textAlign: 'center'
-          }}
-        >
-          <Heading as="h2" mb="3">
-            Blog Posts
-          </Heading>
-          <Box>
-            <Flex sx={{ justifyContent: 'center' }} mb="6">
-              {blogPosts
-                ? blogPosts.map(post => (
-                    <Card
-                      key={post.title}
-                      mx={'20px'}
-                      sx={{ width: ['100%', '20vw'], borderRadius: 'medium' }}
-                      p={'0'}
-                    >
-                      <Image
-                        src={post.photoHref}
-                        sx={{
-                          objectFit: 'cover',
-                          height: ['100px', '20vw'],
-                          width: '100%',
-                          backgroundColor: 'silver'
-                        }}
-                      />
-
-                      <Text
-                        p={3}
-                        sx={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          fontSize: 3,
-                          color: '#231536',
-                          textAlign: 'left'
-                        }}
-                      >
-                        {post.title}
-                      </Text>
-                      <Text px={3} pb={3} sx={{ textAlign: 'left' }}>
-                        {new Date(post.date).toLocaleString('default', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
-                      </Text>
-                    </Card>
-                  ))
-                : 'loading...'}
-            </Flex>
-          </Box>
-        </Container>
-        <Footer />
+        </Container> */}
+        {/* <BlogPosts blogPosts={blogPosts} /> */}
       </Container>
     </PrimaryLayout>
   );

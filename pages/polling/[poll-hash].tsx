@@ -1,14 +1,18 @@
+/** @jsx jsx */
 import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import invariant from 'tiny-invariant';
+import { Card, Flex, jsx } from 'theme-ui';
 
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally } from '../../lib/utils';
+import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
+import DetailsPageLayout from '../../components/layouts/DetailsPage';
+import TabbedLayout from '../../components/TabbedLayout';
 import Poll from '../../types/poll';
 
 type Props = {
@@ -17,17 +21,30 @@ type Props = {
 
 const PollView = ({ poll }: Props) => {
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
-  const { data: rawTally } = useSWR(
+  const { data: tally } = useSWR(
     hasPollEnded
       ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
-      : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`
+      : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`,
+    async url => parsePollTally(await fetchJson(url), poll)
   );
 
-  const tally = rawTally ? parsePollTally(rawTally, poll) : undefined;
-
   return (
-    <PrimaryLayout>
-      <div dangerouslySetInnerHTML={{ __html: poll.content }} />
+    <PrimaryLayout shortenFooter={true}>
+      <DetailsPageLayout>
+        <Card>
+          <TabbedLayout
+            tabTitles={['Poll Detail', 'Vote Breakdown']}
+            tabPanels={[
+              <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
+              <div>vote breakdown</div>
+            ]}
+          />
+        </Card>
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Card variant="compact">Card 1</Card>
+          <Card variant="compact">Card 2</Card>
+        </Flex>
+      </DetailsPageLayout>
     </PrimaryLayout>
   );
 };
