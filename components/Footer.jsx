@@ -1,9 +1,10 @@
+/** @jsx jsx */
 import { QRCode } from 'react-qr-svg';
 import React from 'react';
 
 import Link from 'next/link';
 
-import { Flex, Grid, Box, Input, Button, Text, Container } from '@theme-ui/components';
+import { Flex, Grid, Box, Input, Button, NavLink, Container, Divider, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { translate } from '@makerdao/i18n-helper';
@@ -161,7 +162,7 @@ const rfc2822EmailRegex = /[a-z0-9!#$%&'*+\/=?^_{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^
 /**
  *Global footer component.
  */
-class Footer extends React.Component {
+class LongFooter extends React.Component {
   constructor(props) {
     super(props);
 
@@ -402,4 +403,44 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+export default function Footer({ shorten = false } = {}) {
+  if (shorten) {
+    return (
+      <>
+        <Divider
+          sx={{ color: 'muted', position: 'relative', width: '100vw', left: '50%', my: 0 }}
+          ml="-50vw"
+        />
+        <footer
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            p: 2,
+            variant: 'styles.footer'
+          }}
+        >
+          <Link href="/terms">
+            <NavLink variant="footer" p={2}>
+              Terms
+            </NavLink>
+          </Link>
+          <Link href="/privacy-policy">
+            <NavLink variant="footer" p={2}>
+              Privacy Policy
+            </NavLink>
+          </Link>
+          <Link href="/status">
+            <NavLink variant="footer" p={2}>
+              Status
+            </NavLink>
+          </Link>
+          <div sx={{ mx: 'auto' }} />
+          <div sx={{ p: 2 }}>© 2020 Maker</div>
+        </footer>
+      </>
+    );
+  } else {
+    return <LongFooter />;
+  }
+}

@@ -25,7 +25,10 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
-  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
+  const recentPolls = useMemo(
+    () => polls.filter(poll => new Date(poll.startDate).getTime() <= Date.now()).slice(0, 4),
+    [polls]
+  );
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
@@ -138,7 +141,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: '#434358', lineHeight: 'body' }}>
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
               Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
               are conducted.
             </Text>

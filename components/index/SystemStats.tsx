@@ -80,7 +80,7 @@ export default function() {
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'primaryText' }}>System Stats</Text>
             <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
               See all stats
-              <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
+              <Icon name="chevron_right" color="mutedAlt" size="2" sx={{ marginLeft: 10 }} />
             </Text>
           </Flex>
 

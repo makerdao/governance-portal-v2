@@ -55,6 +55,7 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
 }
 
 export function parsePollTally(rawTally, poll: Poll): PollTally {
+  invariant(rawTally?.totalMkrParticipation, 'total mkr participation not defined on raw tally');
   const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
   if (rawTally?.winner === null) rawTally.winningOption = 'none found';
   else rawTally.winningOption = poll.options ? poll.options[rawTally.winner] : 'none found';
@@ -86,4 +87,13 @@ export function isActivePoll(poll: Poll): boolean {
   const hasStarted = new Date(poll.startDate).getTime() <= Date.now();
   const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
   return hasStarted && hasNotEnded;
+}
+
+export async function fetchJson(url: string): Promise<any> {
+  const response = await fetch(url);
+  const json = await response.json();
+
+  if (!response.ok) throw new Error(`${response.statusText}: ${json.error?.message || JSON.stringify(json)}`);
+
+  return json;
 }

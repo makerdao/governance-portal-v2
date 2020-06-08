@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useMemo } from 'react';
-import { Box, NavLink, jsx } from 'theme-ui';
+import { Box, NavLink, Badge, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -54,22 +54,12 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
       }}
     >
       {pollsToBeAwareOf > 0 ? (
-        <span
-          sx={{
-            display: 'inline-block',
-            border: '1px solid #1AAB9B',
-            borderRadius: 13,
-            width: 26,
-            height: 26,
-            color: '#1AAB9B',
-            marginRight: 3
-          }}
-        >
+        <Badge mr="3" variant="circle">
           {pollsToBeAwareOf}
-        </span>
+        </Badge>
       ) : null}
       {message}
-      <Icon name="chevron_right" color="#708390" size="2" ml="3" />
+      <Icon name="chevron_right" color="mutedAlt" size="2" ml="3" />
     </NavLink>
   );
 };
