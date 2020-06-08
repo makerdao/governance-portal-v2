@@ -1,6 +1,7 @@
 import { Box, Container } from 'theme-ui';
 
 import Header from '../Header';
+import Footer from '../Footer'
 
 type Props = {};
 
@@ -9,7 +10,7 @@ const PrimaryLayout = ({ children }: React.PropsWithChildren<Props>) => {
     <Container mx="auto" px={4}>
       <Header />
       <Box as="main">{children}</Box>
-      {/* <Footer /> */}
+      <Footer />
     </Container>
   );
 };

@@ -13,7 +13,6 @@ import PollCard from '../components/polling/PollCard';
 import ExecutiveCard from '../components/executive/ExecutiveCard';
 import IntroCard from '../components/landing/IntroCard';
 import PollingIndicator from '../components/landing/PollIndicator';
-import Footer from '../components/Footer';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -157,16 +156,19 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         </Container>
 
         <Container
+          mt="4"
+          p="5"
           as="section"
           sx={{
-            textAlign: 'center'
+            textAlign: 'center',
+            backgroundColor: 'rgba(209, 222, 230, 0.14)'
           }}
         >
-          <Heading as="h2" mb="3">
-            Blog Posts
+          <Heading as="h2" mb="4" mt="3">
+            Recent Governance Blog Posts
           </Heading>
           <Box>
-            <Flex sx={{ justifyContent: 'center' }} mb="6">
+            <Flex sx={{ justifyContent: 'center' }} mb="5" mt="5">
               {blogPosts
                 ? blogPosts.map(post => (
                     <Card
@@ -211,7 +213,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             </Flex>
           </Box>
         </Container>
-        <Footer />
       </Container>
     </PrimaryLayout>
   );
