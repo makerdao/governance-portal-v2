@@ -13,7 +13,7 @@ type Props = {
   proposal: Proposal;
 };
 
-const ExecutiveProposalPage = ({ proposal }: Props) => {
+const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout>
       <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
@@ -22,21 +22,21 @@ const ExecutiveProposalPage = ({ proposal }: Props) => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default ({ proposal: preFetchedProposal }: { proposal?: Proposal }) => {
-  const [runtimeFetchedProposal, setRuntimeFetchedProposal] = useState<Proposal>();
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }) {
+  const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      getExecutiveProposal(query['proposal-id'])
-        .then(setRuntimeFetchedProposal)
+    if (!isDefaultNetwork() && query['proposal-id']) {
+      getExecutiveProposal(query['proposal-id'] as string)
+        .then(_setProposal)
         .catch(setError);
     }
-  }, []);
+  }, [query['proposal-id']]);
 
-  if (error || (isDefaultNetwork() && !isFallback && !preFetchedProposal?.key)) {
+  if (error || (isDefaultNetwork() && !isFallback && !prefetchedProposal?.key)) {
     return (
       <ErrorPage
         statusCode={404}
@@ -45,21 +45,21 @@ export default ({ proposal: preFetchedProposal }: { proposal?: Proposal }) => {
     );
   }
 
-  if (isFallback || (!isDefaultNetwork() && !runtimeFetchedProposal))
+  if (isFallback || (!isDefaultNetwork() && !_proposal))
     return (
       <PrimaryLayout>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const proposal = isDefaultNetwork() ? preFetchedProposal : runtimeFetchedProposal;
-  return <ExecutiveProposalPage proposal={proposal as Proposal} />;
-};
+  const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
+  return <ProposalView proposal={proposal as Proposal} />;
+}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
   invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
-  const proposal = await getExecutiveProposal(params['proposal-id']);
+  const proposal = await getExecutiveProposal(params['proposal-id'] as string);
 
   return {
     props: {

@@ -3,16 +3,17 @@ import Head from 'next/head';
 import { Heading, Container, Text, Box, Image, Flex, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
+import ErrorPage from 'next/error';
 
 import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
-import SystemStats from '../components/landing/SystemStats';
-import PollCard from '../components/polling/PollCard';
-import ExecutiveCard from '../components/executive/ExecutiveCard';
-import IntroCard from '../components/landing/IntroCard';
-import PollingIndicator from '../components/landing/PollIndicator';
+import SystemStats from '../components/index/SystemStats';
+import PollCard from '../components/index/PollCard';
+import ExecutiveCard from '../components/index/ExecutiveCard';
+import IntroCard from '../components/index/IntroCard';
+import PollingIndicator from '../components/index/PollingIndicator';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -87,21 +88,17 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           <IntroCard
             title="Introduction to Governance"
             linkText="Get started"
-            icon={<Icon name='govIntro' size="4" />}
+            icon={<Icon name="govIntro" size="4" />}
           >
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard
-            title="Governance Forum"
-            linkText="Go to forum"
-            icon={<Icon name='govForum' size="4" />}
-          >
+          <IntroCard title="Governance Forum" linkText="Go to forum" icon={<Icon name="govForum" size="4" />}>
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard
             title="Governance Calls"
             linkText="View gov calls"
-            icon={<Icon name='govCalls' size="4" />}
+            icon={<Icon name="govCalls" size="4" />}
           >
             Weekly calls to present research and coordinate around current issues.
           </IntroCard>
@@ -218,32 +215,43 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   );
 };
 
-export default ({ proposals, polls, blogPosts }) => {
+export default function Index({ proposals: prefetchedProposals, polls: prefetchedPolls, blogPosts }: Props) {
   // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, _setPolls] = useState<Poll[]>([]);
-  const [_proposals, _setProposals] = useState<Proposal[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [_polls, _setPolls] = useState<Poll[]>();
+  const [_proposals, _setProposals] = useState<Proposal[]>();
+  const [error, setError] = useState<string>();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      setLoading(true);
-      Promise.all([getPolls(), getExecutiveProposals()]).then(([polls, proposals]) => {
-        _setPolls(polls);
-        _setProposals(proposals);
-        setLoading(false);
-      });
+      Promise.all([getPolls(), getExecutiveProposals()])
+        .then(([polls, proposals]) => {
+          _setPolls(polls);
+          _setProposals(proposals);
+        })
+        .catch(setError);
     }
   }, []);
 
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  }
+
+  if (!isDefaultNetwork() && (!_polls || !_proposals))
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
   return (
     <LandingPage
-      proposals={isDefaultNetwork() ? proposals : _proposals}
-      polls={isDefaultNetwork() ? polls : _polls}
+      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])}
+      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
   );
-};
+}
 
 export async function getStaticProps() {
   // fetch polls, proposals, blog posts at build-time

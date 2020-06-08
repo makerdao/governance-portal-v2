@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { NavLink, Heading, Checkbox, Label, Box, Flex, Input } from 'theme-ui';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ErrorPage from 'next/error';
 
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
@@ -14,33 +15,24 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const { query } = useRouter();
+  const { asPath } = useRouter();
   const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);
   const [filterInactivePolls, setFilterInactivePolls] = useState(false);
 
   useEffect(() => {
-    if (query?.['pollFilter']?.includes('active')) {
+    if (asPath.includes('pollFilter=active')) {
       setFilterInactivePolls(true);
     }
-  }, [query]);
+  }, [asPath]);
 
   const pollsToShow = useMemo(
     () =>
       polls.filter(poll => {
-        let _show = true;
-        if (filterInactivePolls) {
-          _show = _show && isActivePoll(poll);
-        }
-
-        const [filterPollsBeforeDate, filterPollsAfterDate] = dateFilter;
-        if (filterPollsBeforeDate) {
-          _show = _show && new Date(poll.startDate).getTime() >= filterPollsBeforeDate.getTime();
-        }
-        if (filterPollsAfterDate) {
-          _show = _show && new Date(poll.startDate).getTime() <= filterPollsAfterDate.getTime();
-        }
-
-        return _show;
+        if (filterInactivePolls && !isActivePoll(poll)) return false;
+        const [startDate, endDate] = dateFilter;
+        if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
+        if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
+        return true;
       }),
     [polls, filterInactivePolls, dateFilter]
   );
@@ -79,14 +71,8 @@ const PollingOverview = ({ polls }: Props) => {
       {pollsToShow.map(poll => (
         <Box key={poll.multiHash}>
           <Link
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network: getNetwork() }
-            }}
-            as={{
-              pathname: `/polling/${poll.multiHash}`,
-              query: { network: getNetwork() }
-            }}
+            href={{ pathname: '/polling/[poll-hash]', query: { network: getNetwork() } }}
+            as={{ pathname: `/polling/${poll.multiHash}`, query: { network: getNetwork() } }}
           >
             <NavLink>{poll.title}</NavLink>
           </Link>
@@ -96,18 +82,32 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default ({ polls }) => {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   const [_polls, _setPolls] = useState<Poll[]>();
+  const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(polls => _setPolls(polls));
+      getPolls()
+        .then(_setPolls)
+        .catch(setError);
     }
   }, []);
 
-  return <PollingOverview polls={isDefaultNetwork() ? polls : _polls} />;
-};
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  }
+
+  if (!isDefaultNetwork() && !_polls)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
+}
 
 export async function getStaticProps() {
   // fetch polls at build-time if on the default network

@@ -1,9 +1,17 @@
 import create from 'zustand';
 
 import getMaker, { getNetwork, chainIdToNetworkName } from '../lib/maker';
+import Account from '../types/account';
 
-const [useAccountsStore, accountsApi] = create((set, get) => ({
-  currentAccount: null,
+type Store = {
+  currentAccount?: Account;
+  wrongNetwork: boolean;
+  addAccountsListener: () => Promise<void>;
+  connectWithBrowserProvider: () => Promise<void>;
+};
+
+const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
+  currentAccount: undefined,
   wrongNetwork: false,
 
   canSendTransactions: () => !!get().currentAccount && !get().wrongNetwork,

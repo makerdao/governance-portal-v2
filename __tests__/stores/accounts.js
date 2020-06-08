@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 test('should automatically add an account changed listener to dai.js', async () => {
-  expect(accountsApi.getState().currentAccount).toBe(null);
+  expect(accountsApi.getState().currentAccount).toBeUndefined();
 
   const nextAccount = TestAccountProvider.nextAccount();
   await maker.service('accounts').addAccount('test-account', {
@@ -45,16 +45,12 @@ test('should connect to the browser provider and get its active account', async 
 
   await accountsApi.getState().connectWithBrowserProvider();
   expect(maker.currentAddress()).toBe(firstAccount.address);
-  expect(accountsApi.getState().currentAccount.address).toBe(
-    firstAccount.address
-  );
+  expect(accountsApi.getState().currentAccount.address).toBe(firstAccount.address);
 
   const secondAccount = TestAccountProvider.nextAccount();
   window.ethereum.selectedAddress = secondAccount.address;
   result[0] = secondAccount.address;
   await waitForExpect(() => {
-    expect(accountsApi.getState().currentAccount.address).toEqual(
-      secondAccount.address
-    );
+    expect(accountsApi.getState().currentAccount.address).toEqual(secondAccount.address);
   });
 });

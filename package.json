@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.31.5",
-    "@makerdao/dai-plugin-governance": "0.12.8",
+    "@makerdao/dai-plugin-governance": "0.12.9",
     "@makerdao/dai-plugin-mcd": "1.5.5",
     "@makerdao/dai-ui-icons": "^0.0.28",
     "@makerdao/dai-ui-theme-maker": "^0.0.28",

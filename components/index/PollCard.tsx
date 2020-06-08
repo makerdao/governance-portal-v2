@@ -16,13 +16,13 @@ const PollCard = ({ poll }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
-  const { data: _tally } = useSWR(
+  const { data: rawTally } = useSWR(
     hasPollEnded
       ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
       : `/api/polling/tally/${poll.pollId}?network=${network}`
   );
 
-  const tally = _tally ? parsePollTally(_tally, poll) : undefined;
+  const tally = rawTally ? parsePollTally(rawTally, poll) : undefined;
 
   return (
     <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>

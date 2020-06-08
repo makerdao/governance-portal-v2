@@ -4,9 +4,9 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../../lib/maker';
 import { bigNumberKFormat } from '../../lib/utils';
-import CurrenctObject from '../../types/currency';
+import CurrencyObject from '../../types/currency';
 
-async function getSystemStats(): Promise<CurrenctObject[]> {
+async function getSystemStats(): Promise<CurrencyObject[]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
@@ -24,7 +24,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default function() {
-  const { data } = useSWR<CurrenctObject[]>(`/system-stats`, getSystemStats);
+  const { data } = useSWR<CurrencyObject[]>(`/system-stats`, getSystemStats);
   const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
 
   return (
@@ -58,7 +58,7 @@ export default function() {
               </Text>
             </div>
             <div>
-              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
+              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
               <Text mt="2" variant="h2">
                 {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
               </Text>
@@ -75,11 +75,13 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-
         <Grid mx="auto" variant="cards.primary" sx={{ boxShadow: 'faint' }}>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'primaryText' }}>System Stats</Text>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>See all stats ></Text>
+            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              See all stats
+              <Icon name="chevron_right" color="#708390" size="2" sx={{ marginLeft: 10 }} />
+            </Text>
           </Flex>
 
           {/* Add DSR spread */}
@@ -98,7 +100,7 @@ export default function() {
             </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Celing</Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
             <Text sx={{ fontSize: 3, color: 'primaryText' }}>
               {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
             </Text>
