@@ -29,13 +29,13 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
     <Flex sx={{ alignItems: 'center' }}>
       {_timeLeft <= 0 ? (
         <>
-          <Icon mr="1" name="clock" size="3" sx={{ color: '#D4D9E1' }} />
-          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: '#D4D9E1' }}>{endText}</Text>
+          <Icon mr="1" name="clock" size="3" sx={{ color: 'secondary' }} />
+          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'secondary' }}>{endText}</Text>
         </>
       ) : (
         <>
-          <Icon mr="1" name="clock" size="3" sx={{ color: '#1AAB9B' }} />
-          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: '#708390' }}>
+          <Icon mr="1" name="clock" size="3" sx={{ color: 'primary' }} />
+          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'mutedAlt' }}>
             {hours}:{minutes}:{seconds} Remaining
           </Text>
         </>

@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import Link from 'next/link';
-import { Flex, Heading, NavLink, Button, Container, Box } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, MenuButton, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
@@ -11,11 +12,19 @@ const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <Flex as="header" variant="styles.header" pt={3} mb={3} sx={{ alignItems: 'center', zIndex: 10 }}>
+    <header
+      sx={{
+        pt: 3,
+        mb: 3,
+        display: 'flex',
+        alignItems: 'center',
+        variant: 'styles.header'
+      }}
+    >
       <Link href={{ pathname: '/', query: { network } }}>
-        <Heading as="h1" sx={{ cursor: 'pointer' }}>
-          <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
-        </Heading>
+        <IconButton aria-label="Maker home" sx={{ width: 5 }}>
+          <Icon name="maker" size="5" sx={{ cursor: 'pointer' }} />
+        </IconButton>
       </Link>
 
       <Icon
@@ -42,7 +51,7 @@ const Header = () => {
         </Link>
         <AccountSelect />
       </Menu>
-    </Flex>
+    </header>
   );
 };
 
@@ -54,20 +63,17 @@ const Menu = ({ children, shown, hide }) => {
       </Box>
       {shown && (
         <Container variant="modal">
-          <Icon
-            name="close"
-            size="32px"
-            sx={{ cursor: 'pointer', ml: 'auto', display: 'block' }}
-            onClick={hide}
-          />
+          <Close mt="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
           <Flex
             sx={{
               flexDirection: 'column',
               alignItems: 'flex-start',
               justifyContent: 'space-between',
-              height: '50vh'
+              height: '50vh',
+              '> a': {
+                fontSize: 7
+              }
             }}
-            css={'> a { font-size: 32px }'}
           >
             {children}
           </Flex>

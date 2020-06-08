@@ -28,6 +28,7 @@ const PollingOverview = ({ polls }: Props) => {
   const pollsToShow = useMemo(
     () =>
       polls.filter(poll => {
+        if (new Date(poll.startDate).getTime() > Date.now()) return false;
         if (filterInactivePolls && !isActivePoll(poll)) return false;
         const [startDate, endDate] = dateFilter;
         if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
@@ -38,7 +39,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
 
   return (
-    <PrimaryLayout>
+    <PrimaryLayout shortenFooter={true}>
       <Heading as="h1">Polling Votes</Heading>
       <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
         <Box>

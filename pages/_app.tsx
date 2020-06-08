@@ -5,6 +5,7 @@ import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
 import queryString from 'query-string';
 
+import { fetchJson } from '../lib/utils';
 import theme from '../lib/theme';
 import { getNetwork } from '../lib/maker';
 
@@ -30,7 +31,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <SWRConfig
         value={{
           refreshInterval: 2000,
-          fetcher: href => fetch(href).then(res => res.json())
+          fetcher: url => fetchJson(url)
         }}
       >
         <Component {...pageProps} />
