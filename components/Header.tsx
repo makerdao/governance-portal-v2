@@ -11,7 +11,7 @@ const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <Flex as="header" variant="styles.header" my={3} sx={{ alignItems: 'center' }}>
+    <Flex as="header" variant="styles.header" pt={3} mb={3} sx={{ alignItems: 'center', zIndex: 10 }}>
       <Link href={{ pathname: '/', query: { network } }}>
         <Heading as="h1" sx={{ cursor: 'pointer' }}>
           <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
