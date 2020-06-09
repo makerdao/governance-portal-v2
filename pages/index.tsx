@@ -14,7 +14,7 @@ import PollCard from '../components/index/PollCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
-import BlogPosts from '../components/index/BlogPosts'
+import BlogPosts from '../components/index/BlogPosts';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -96,11 +96,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           >
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
-          <IntroCard
-            title="Governance Forum"
-            linkText="Go to forum"
-            icon={<Icon name="govForum" size="5" />}
-           >
+          <IntroCard title="Governance Forum" linkText="Go to forum" icon={<Icon name="govForum" size="5" />}>
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard

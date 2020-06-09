@@ -1,4 +1,4 @@
-import { Link as ExternalLink, Text, Card, Flex } from 'theme-ui';
+import { Box, Link as ExternalLink, Text, Flex } from 'theme-ui';
 
 type Props = {
   title: string;
@@ -9,16 +9,15 @@ type Props = {
 };
 
 const IntroCard = (props: Props) => (
-  <Card sx={{ minWidth: 348, maxWidth: 348, border: "0px solid black", boxShadow: 'none'}}>
+  <Box sx={{ width: 348, mb: [4, null] }}>
     {props.icon}
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', height: '9rem'}}>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '9rem'}}>
       <Text
         sx={{
           fontSize: [3, 4],
           color: '#231536',
           textAlign: 'left'
         }}
-        mb="3"
       >
         {props.title}
       </Text>
@@ -29,19 +28,19 @@ const IntroCard = (props: Props) => (
           opacity: 0.8,
           whiteSpace: 'initial'
         }}
-        mb="4"
+        my="3"
       >
         {props.children}
       </Text>
+      <ExternalLink
+        sx={{ color: 'primary', fontSize: '3', fontWeight: '500' }}
+        href={props.linkDest}
+        target="_blank"
+        >
+        {props.linkText}
+      </ExternalLink>
     </Flex>
-    <ExternalLink
-      sx={{ color: 'primary', fontSize: '3', fontWeight: '500' }}
-      href={props.linkDest}
-      target="_blank"
-    >
-      {props.linkText}
-    </ExternalLink>
-  </Card>
+  </Box>
 );
 
 export default IntroCard;
