@@ -58,19 +58,19 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       </Head>
       <Container>
         <Container
-          as="section"
+          as='section'
           sx={{
             textAlign: 'center'
           }}
         >
-          <Box pt="6" mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h1" sx={{ fontSize: [7, 8], color: '#231536' }}>
+          <Box pt='6' mx='auto' sx={{ maxWidth: 9 }}>
+            <Heading as='h1' sx={{ fontSize: [7, 8], color: '#231536' }}>
               Maker Governance
             </Heading>
             <Text
-              mx="auto"
-              mt="3"
-              as="p"
+              mx='auto'
+              mt='3'
+              as='p'
               sx={{
                 fontSize: [3, 5],
                 color: 'primaryText',
@@ -85,50 +85,55 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
         <PollingIndicator polls={polls} />
 
-        <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
+        <Container as='section' pb='5' sx={{ maxWidth: 11 }}>
           <SystemStats />
         </Container>
-        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
+        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx='auto' mb='6'>
           <IntroCard
-            title="Introduction to Governance"
-            linkText="Get started"
-            icon={<Icon name="govIntro" size="5" />}
+            title='Introduction to Governance'
+            linkText='Get started'
+            linkDest='https://community-development.makerdao.com/onboarding/voter-onboarding'
+            icon={<Icon name='govIntro' size='5' />}
+            
           >
             A guide to outlining the basics of getting started with voting.
           </IntroCard>
           <IntroCard
-            title="Governance Forum"
-            linkText="Go to forum"
-            icon={<Icon name="govForum" size="5" />}
+            title='Governance Forum'
+            linkText='Go to forum'
+            linkDest='https://forum.makerdao.com/c/governance/'
+            icon={<Icon name='govForum' size='5' />}
+            
            >
             Get the latest updates and take part in current discussions.
           </IntroCard>
           <IntroCard
-            title="Governance Calls"
-            linkText="View gov calls"
-            icon={<Icon name="govCalls" size="5" />}
+            title='Governance Calls'
+            linkText='View gov calls'
+            linkDest='https://community-development.makerdao.com/governance/governance-and-risk-meetings'
+            icon={<Icon name='govCalls' size='5' />}
           >
             Weekly calls to present research and coordinate around current issues.
           </IntroCard>
         </Flex>
         {/* Executive Votes */}
         {/* <Container
-          pb="5"
+          pb='5'
           sx={{
             textAlign: 'center'
           }}
-          as="section"
+          as='section'
         >
-          <Box mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h2" mb="3">
+          <Box mx='auto' sx={{ maxWidth: 9 }}>
+            <Heading as='h2' mb='3'>
               Executive Votes
             </Heading>
-            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+            <Text mx='auto' as='p' sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>
           </Box>
-          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
+          <Box mx='auto' sx={{ textAlign: 'left', maxWidth: 10 }}>
             {proposals.map(proposal => (
               <ExecutiveCard
                 isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
@@ -140,20 +145,20 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         </Container> */}
         {/* Polling Votes */}
         {/* <Container
-          as="section"
+          as='section'
           sx={{
             textAlign: 'center'
           }}
         >
-          <Box mx="auto" sx={{ maxWidth: 9 }}>
-            <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+          <Box mx='auto' sx={{ maxWidth: 9 }}>
+            <Heading as='h2'>Polling Votes</Heading>
+            <Text mx='auto' mt='3' as='p' sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
               Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
               are conducted.
             </Text>
           </Box>
-          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 10 }}>
-            <Container py="4">
+          <Box mx='auto' sx={{ textAlign: 'left', maxWidth: 10 }}>
+            <Container py='4'>
               {recentPolls.map(poll => (
                 <PollCard key={poll.pollId} poll={poll} />
               ))}
@@ -185,7 +190,7 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
   }, []);
 
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+    return <ErrorPage statusCode={404} title='Error fetching proposals' />;
   }
 
   if (!isDefaultNetwork() && (!_polls || !_proposals))
