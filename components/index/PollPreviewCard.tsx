@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
-import { parsePollTally } from '../../lib/utils';
+import { parsePollTally, fetchJson } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import CountdownTimer from '../CountdownTimer';
 import Poll from '../../types/poll';
@@ -16,13 +16,12 @@ const PollCard = ({ poll }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
-  const { data: _tally } = useSWR(
+  const { data: tally } = useSWR(
     hasPollEnded
       ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`,
+    async url => parsePollTally(await fetchJson(url), poll)
   );
-
-  const tally = _tally ? parsePollTally(_tally, poll) : undefined;
 
   return (
     <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>
@@ -37,7 +36,7 @@ const PollCard = ({ poll }: Props) => {
           <Text
             sx={{
               fontSize: [2, 3],
-              color: '#708390',
+              color: 'mutedAlt',
               textTransform: 'uppercase'
             }}
           >
@@ -65,8 +64,7 @@ const PollCard = ({ poll }: Props) => {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              fontSize: [3, 4],
-              color: '#231536'
+              fontSize: [3, 4]
             }}
           >
             {poll.title}
@@ -78,7 +76,6 @@ const PollCard = ({ poll }: Props) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: 'text',
             opacity: 0.8
           }}
         >
@@ -118,8 +115,7 @@ const PollCard = ({ poll }: Props) => {
                   mx="3"
                   variant="primary"
                   sx={{
-                    borderColor: '#231536',
-                    color: '#231536',
+                    borderColor: 'text',
                     textTransform: 'uppercase',
                     alignSelf: 'center'
                   }}

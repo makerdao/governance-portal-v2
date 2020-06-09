@@ -40,7 +40,6 @@ export default ({ blogPosts }: Props) => (
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 fontSize: 3,
-                color: '#231536',
                 textAlign: 'left'
               }}
             >

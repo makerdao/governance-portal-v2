@@ -11,11 +11,10 @@ type Props = {
 const IntroCard = (props: Props) => (
   <Box sx={{ width: 348, mb: [4, null] }}>
     {props.icon}
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '9rem'}}>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '9rem' }}>
       <Text
         sx={{
           fontSize: [3, 4],
-          color: '#231536',
           textAlign: 'left'
         }}
       >
@@ -24,7 +23,6 @@ const IntroCard = (props: Props) => (
       <Text
         sx={{
           fontSize: [3, 4],
-          color: 'text',
           opacity: 0.8,
           whiteSpace: 'initial'
         }}
@@ -36,7 +34,7 @@ const IntroCard = (props: Props) => (
         sx={{ color: 'primary', fontSize: '3', fontWeight: '500' }}
         href={props.linkDest}
         target="_blank"
-        >
+      >
         {props.linkText}
       </ExternalLink>
     </Flex>

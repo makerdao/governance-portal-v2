@@ -5,34 +5,63 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, jsx } from 'theme-ui';
 
-import { isDefaultNetwork, getNetwork } from '../../lib/maker';
+import CountdownTimer from '../../components/CountdownTimer';
+import useAccountsStore from '../../stores/accounts';
+import getMaker, { isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import DetailsPageLayout from '../../components/layouts/DetailsPage';
-import TabbedLayout from '../../components/TabbedLayout';
+import SidebarLayout from '../../components/layouts/Sidebar';
+import StackLayout from '../../components/layouts/Stack';
+import Tabs from '../../components/Tabs';
+import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
+import PollVote from '../../types/pollVote';
 
-type Props = {
-  poll: Poll;
-};
-
-const PollView = ({ poll }: Props) => {
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
-  const { data: tally } = useSWR(
-    hasPollEnded
-      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
-      : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`,
-    async url => parsePollTally(await fetchJson(url), poll)
+const PollView = ({ poll }: { poll: Poll }) => {
+  const account = useAccountsStore(state => state.currentAccount);
+  const { data: allUserVotes } = useSWR<PollVote[]>(
+    account?.address ? [`/user/voting-for`, account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
   );
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <DetailsPageLayout>
+      <SidebarLayout>
         <Card>
-          <TabbedLayout
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Text
+              sx={{
+                fontSize: [2, 3],
+                color: 'mutedAlt',
+                textTransform: 'uppercase'
+              }}
+            >
+              {new Date(poll.startDate).toLocaleString('default', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </Text>
+            <Heading
+              my="3"
+              sx={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: [5, 6]
+              }}
+            >
+              {poll.title}
+            </Heading>
+            <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
+              <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+              <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+            </Flex>
+          </Flex>
+          <Divider sx={{ color: 'muted' }} />
+          <Tabs
             tabTitles={['Poll Detail', 'Vote Breakdown']}
             tabPanels={[
               <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
@@ -41,10 +70,12 @@ const PollView = ({ poll }: Props) => {
           />
         </Card>
         <Flex sx={{ flexDirection: 'column' }}>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
+          <StackLayout>
+            <Card variant="compact">Card 1</Card>
+            <Card variant="compact">Card 2</Card>
+          </StackLayout>
         </Flex>
-      </DetailsPageLayout>
+      </SidebarLayout>
     </PrimaryLayout>
   );
 };

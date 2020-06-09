@@ -44,8 +44,7 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              fontSize: [3, 4],
-              color: '#231536'
+              fontSize: [3, 4]
             }}
           >
             {proposal.title}
@@ -57,7 +56,6 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: 'text',
             opacity: 0.8
           }}
         >
@@ -81,8 +79,7 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
               <Badge
                 variant="primary"
                 sx={{
-                  borderColor: '#231536',
-                  color: '#231536',
+                  borderColor: 'text',
                   textTransform: 'uppercase',
                   alignSelf: 'center'
                 }}
