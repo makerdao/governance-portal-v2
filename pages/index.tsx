@@ -43,7 +43,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             backgroundRepeat: 'no-repeat',
             backgroundImage: `linear-gradient(${theme.colors.surface}, ${theme.colors.surface}),
             linear-gradient(${theme.colors.background}, ${theme.colors.background})`,
-            backgroundSize: `100% 560px, 100% 100%`
+            backgroundSize: `100% 560px 100% 100%`
           },
           body: {
             backgroundRepeat: 'inherit',
@@ -73,7 +73,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               as="p"
               sx={{
                 fontSize: [3, 5],
-                color: 'primaryText',
+                color: 'text',
                 lineHeight: 'body'
               }}
             >
@@ -85,10 +85,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
         <PollingIndicator polls={polls} />
 
-        <Container as="section" pb="5" sx={{ maxWidth: 11 }}>
+        <Container sx={{  }}>
           <SystemStats />
         </Container>
-        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11 }} mx="auto" mb="6">
+        <Flex sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 11, border: 'none' }} mx="auto" mb="6">
           <IntroCard
             title="Introduction to Governance"
             linkText="Get started"
@@ -119,7 +119,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Heading as="h2" mb="3">
               Executive Votes
             </Heading>
-            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+            <Text mx="auto" as="p" sx={{ fontSize: [3, 5], color: 'text', lineHeight: 'body' }}>
               Executive Votes are conducted to make changes to the system. The governing proposal represents
               the current state of the system.
             </Text>
@@ -143,7 +143,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         >
           <Box mx="auto" sx={{ maxWidth: 9 }}>
             <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'primaryText', lineHeight: 'body' }}>
+            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], color: 'text', lineHeight: 'body' }}>
               Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
               are conducted.
             </Text>
