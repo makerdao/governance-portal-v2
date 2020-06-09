@@ -52,16 +52,17 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
         borderColor: 'secondary',
         color: 'white',
         alignItems: 'center',
-        backgroundColor: 'primary'
+        backgroundColor: 'primary',
+        display: 'inline-flex'
       }}
     >
-      {pollsToBeAwareOf > 0 ? (
+      {pollsToBeAwareOf > 0 && (
         <Badge mr="3" variant="circle">
           {pollsToBeAwareOf}
         </Badge>
-      ) : null}
-      {message}
-      <Icon name="chevron_right" color="white" size="3" ml="3" pt="2" />
+      )}
+      <Box pb='2px'>{message}</Box>
+      <Icon name="chevron_right" color="white" size="3" ml="3" pb='1px' />
     </NavLink>
   );
 };
