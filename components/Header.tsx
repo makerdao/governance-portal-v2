@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Flex, NavLink, Container, Close, Box, IconButton, MenuButton, jsx } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
@@ -14,10 +14,11 @@ const Header = () => {
   return (
     <header
       sx={{
-        pt: 3,
-        mb: 3,
+        py: 3,
+        px: 4,
         display: 'flex',
         alignItems: 'center',
+        width: '100%',
         variant: 'styles.header'
       }}
     >
@@ -47,7 +48,7 @@ const Header = () => {
           <NavLink p={2}>Executive</NavLink>
         </Link>
         <Link href={{ pathname: '/esmodule', query: { network } }}>
-          <NavLink p={2}>ES Module</NavLink>
+          <NavLink p={2}>Module</NavLink>
         </Link>
         <AccountSelect />
       </Menu>
@@ -63,7 +64,7 @@ const Menu = ({ children, shown, hide }) => {
       </Box>
       {shown && (
         <Container variant="modal">
-          <Close mt="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+          <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
           <Flex
             sx={{
               flexDirection: 'column',

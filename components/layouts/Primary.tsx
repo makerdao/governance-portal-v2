@@ -1,4 +1,5 @@
-import { Container } from 'theme-ui';
+/** @jsx jsx */
+import { jsx } from 'theme-ui';
 
 import Header from '../Header';
 import Footer from '../Footer';
@@ -9,11 +10,35 @@ type Props = {
 
 const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Props>) => {
   return (
-    <Container mx="auto" px={4} sx={{ background: 'url(/assets/heroVisualTransparent.png) no-repeat', backgroundSize: '100%', backgroundPosition: '0 0' }}>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        variant: 'layout.root'
+      }}
+    >
       <Header />
-      <main>{children}</main>
+      <main
+        sx={{
+          width: '100%',
+          flex: '1 1 auto',
+          variant: 'layout.main'
+        }}
+      >
+        <div
+          sx={{
+            mx: 'auto',
+            px: [0, 4],
+            maxWidth: 'page',
+            variant: 'layout.container'
+          }}
+        >
+          {children}
+        </div>
+      </main>
       <Footer shorten={shortenFooter || false} />
-    </Container>
+    </div>
   );
 };
 

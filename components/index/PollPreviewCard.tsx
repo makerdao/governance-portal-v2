@@ -64,8 +64,7 @@ const PollCard = ({ poll }: Props) => {
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              fontSize: [3, 4],
-              color: '#231536'
+              fontSize: [3, 4]
             }}
           >
             {poll.title}
@@ -77,7 +76,6 @@ const PollCard = ({ poll }: Props) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: 'primaryText',
             opacity: 0.8
           }}
         >
@@ -117,8 +115,7 @@ const PollCard = ({ poll }: Props) => {
                   mx="3"
                   variant="primary"
                   sx={{
-                    borderColor: '#231536',
-                    color: '#231536',
+                    borderColor: 'text',
                     textTransform: 'uppercase',
                     alignSelf: 'center'
                   }}

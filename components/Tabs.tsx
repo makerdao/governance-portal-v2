@@ -16,19 +16,11 @@ const TabbedLayout = ({ tabTitles, tabPanels }: Props) => {
   return (
     <Flex
       sx={{
-        flexDirection: 'column',
-        minHeight: 256
+        flexDirection: 'column'
       }}
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
-        <TabList
-          sx={{
-            display: 'flex',
-            width: '100%',
-            top: 0,
-            zIndex: 2
-          }}
-        >
+        <TabList>
           {tabTitles.map(tabTitle => (
             <Tab key={tabTitle} sx={getTabStyles({ isActive: activeTab === tabTitle })}>
               {tabTitle}

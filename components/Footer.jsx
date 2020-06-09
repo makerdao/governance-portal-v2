@@ -4,7 +4,7 @@ import React from 'react';
 
 import Link from 'next/link';
 
-import { Flex, Grid, Box, Input, Button, NavLink, Container, Divider, jsx } from 'theme-ui';
+import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { translate } from '@makerdao/i18n-helper';
@@ -14,7 +14,7 @@ const FooterContainer = props => (
     as="footer"
     sx={{
       fontSize: '1.5rem',
-      padding: '3.6rem 2.5rem 2.7rem 2.5rem',
+      padding: '3.6rem 0 2rem 0',
       width: '100%',
       backgroundColor: '#FFFFFF'
     }}
@@ -50,7 +50,7 @@ const LinkList = props => (
         fontWeight: '400',
         transition: 'color 0.2s ease-out',
         textDecoration: 'none',
-        ':hover': { color: '#231536' }
+        ':hover': { color: 'text' }
       }
     }}
   >
@@ -250,7 +250,7 @@ class LongFooter extends React.Component {
     return (
       <FooterContainer>
         <Grid
-          sx={{ maxWidth: '11' }}
+          sx={{ maxWidth: 'page' }}
           m="0 auto"
           columns={['1fr', '1fr 1fr', '1fr 1fr', 'repeat(4, 1fr) auto']}
           gap="2rem"
@@ -406,39 +406,34 @@ class LongFooter extends React.Component {
 export default function Footer({ shorten = false } = {}) {
   if (shorten) {
     return (
-      <>
-        <Divider
-          sx={{ color: 'muted', position: 'relative', width: '100vw', left: '50%', my: 0 }}
-          ml="-50vw"
-        />
-        <footer
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'center',
-            p: 2,
-            variant: 'styles.footer'
-          }}
-        >
-          <Link href="/terms">
-            <NavLink variant="footer" p={2}>
-              Terms
-            </NavLink>
-          </Link>
-          <Link href="/privacy-policy">
-            <NavLink variant="footer" p={2}>
-              Privacy Policy
-            </NavLink>
-          </Link>
-          <Link href="/status">
-            <NavLink variant="footer" p={2}>
-              Status
-            </NavLink>
-          </Link>
-          <div sx={{ mx: 'auto' }} />
-          <div sx={{ p: 2 }}>© 2020 Maker</div>
-        </footer>
-      </>
+      <footer
+        sx={{
+          py: 3,
+          px: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          variant: 'styles.footer'
+        }}
+      >
+        <Link href="/terms">
+          <NavLink variant="footer" p={2}>
+            Terms
+          </NavLink>
+        </Link>
+        <Link href="/privacy-policy">
+          <NavLink variant="footer" p={2}>
+            Privacy Policy
+          </NavLink>
+        </Link>
+        <Link href="/status">
+          <NavLink variant="footer" p={2}>
+            Status
+          </NavLink>
+        </Link>
+        <div sx={{ mx: 'auto' }} />
+        <div sx={{ p: 2 }}>© 2020 Maker</div>
+      </footer>
     );
   } else {
     return <LongFooter />;

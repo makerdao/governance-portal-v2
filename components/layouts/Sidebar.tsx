@@ -7,11 +7,12 @@ type Props = {};
 const DetailsPageLayout = ({ children }: React.PropsWithChildren<Props>) => {
   return (
     <Grid
-      py="5"
-      gap="5"
+      py={4}
+      gap={4}
       sx={{
         gridTemplateColumns: [
-          'auto', // default to a stacked layout on small screens
+          'auto', // default to a stacked layout on small & medium screens
+          'auto',
           '1fr 256px' // use columns for larger screens
         ]
       }}

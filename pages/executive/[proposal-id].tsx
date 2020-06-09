@@ -6,7 +6,7 @@ import ErrorPage from 'next/error';
 import { Card, Flex, jsx } from 'theme-ui';
 
 import PrimaryLayout from '../../components/layouts/Primary';
-import DetailsPageLayout from '../../components/layouts/DetailsPage';
+import SidebarLayout from '../../components/layouts/Sidebar';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { isDefaultNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
@@ -19,7 +19,7 @@ type Props = {
 const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
-      <DetailsPageLayout>
+      <SidebarLayout>
         <Card sx={{ boxShadow: 'faint' }}>
           <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
         </Card>
@@ -27,7 +27,7 @@ const ProposalView = ({ proposal }: Props) => {
           <Card variant="compact">Card 1</Card>
           <Card variant="compact">Card 2</Card>
         </Flex>
-      </DetailsPageLayout>
+      </SidebarLayout>
     </PrimaryLayout>
   );
 };

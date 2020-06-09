@@ -6,6 +6,7 @@ type CurrencyObject = {
   sub: (n: string | number | CurrencyObject) => CurrencyObject;
   add: (n: string | number | CurrencyObject) => CurrencyObject;
   toFixed: (precision?: number) => string;
+  toNumber: () => number;
   symbol: string;
 };
 
