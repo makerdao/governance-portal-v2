@@ -27,9 +27,7 @@ const PollingOverview = ({ polls }: Props) => {
     }
   }, [asPath]);
 
-  const activePolls = polls.filter(poll => isActivePoll(poll));
-  const historicalPolls = polls.filter(poll => !isActivePoll(poll));
-  const pollsToShow = useMemo(
+  const filteredPolls = useMemo(
     () =>
       polls.filter(poll => {
         if (new Date(poll.startDate).getTime() > Date.now()) return false; // filter polls that haven't started yet
@@ -41,6 +39,9 @@ const PollingOverview = ({ polls }: Props) => {
       }),
     [polls, filterInactivePolls, dateFilter]
   );
+
+  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
+  const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
 
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -74,17 +75,21 @@ const PollingOverview = ({ polls }: Props) => {
       </Flex>
       <SidebarLayout>
         <div>
-          <Heading mb={3} as="h3">
-            Active Polls
-          </Heading>
+          {activePolls.length > 0 ? (
+            <Heading mb={3} as="h3">
+              Active Polls
+            </Heading>
+          ) : null}
           <StackLayout>
             {activePolls.map(poll => (
               <PollOverviewCard key={poll.multiHash} poll={poll} />
             ))}
           </StackLayout>
-          <Heading mb={3} mt={4} as="h3">
-            Historical Polls
-          </Heading>
+          {historicalPolls.length > 0 ? (
+            <Heading mb={3} mt={4} as="h3">
+              Historical Polls
+            </Heading>
+          ) : null}
           <StackLayout>
             {historicalPolls.map(poll => (
               <PollOverviewCard key={poll.multiHash} poll={poll} />

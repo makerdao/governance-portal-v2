@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Flex, NavLink, Container, Close, Box, IconButton, MenuButton, jsx } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';

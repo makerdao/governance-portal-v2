@@ -12,7 +12,7 @@ type PollTally = {
   winningOption: string;
   rounds: number;
   totalMkrParticipation: CurrencyObject;
-  options: { [key: string]: Option };
+  options: { [optionId: string]: Option };
 };
 
 export default PollTally;

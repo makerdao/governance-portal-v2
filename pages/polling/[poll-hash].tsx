@@ -5,12 +5,13 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Progress, jsx } from 'theme-ui';
 
 import CountdownTimer from '../../components/CountdownTimer';
 import useAccountsStore from '../../stores/accounts';
-import getMaker, { isDefaultNetwork } from '../../lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
+import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import StackLayout from '../../components/layouts/Stack';
@@ -18,6 +19,7 @@ import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
+import PollTally from '../../types/pollTally';
 
 const PollView = ({ poll }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -26,6 +28,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
   );
 
+  const network = getNetwork();
+  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
+  const { data: tally } = useSWR<PollTally>(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`,
+    async url => parsePollTally(await fetchJson(url), poll)
+  );
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
@@ -65,7 +75,24 @@ const PollView = ({ poll }: { poll: Poll }) => {
             tabTitles={['Poll Detail', 'Vote Breakdown']}
             tabPanels={[
               <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
-              <div>vote breakdown</div>
+              <div>
+                <Text as="h3">Vote Breakdown</Text>
+                {tally
+                  ? Object.entries(tally.options).map(([optionId, option]) => (
+                      <div>
+                        <Text sx={{ color: 'textMuted' }}>{optionId}</Text>
+                        <Progress
+                          sx={{ my: 2 }}
+                          max={1}
+                          value={option.firstChoice
+                            .div(tally.totalMkrParticipation)
+                            .toBigNumber()
+                            .toString()}
+                        />
+                      </div>
+                    ))
+                  : null}
+              </div>
             ]}
           />
         </Card>

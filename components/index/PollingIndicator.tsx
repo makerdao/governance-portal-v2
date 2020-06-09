@@ -45,6 +45,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
       href={href}
       variant="buttons.outline"
       sx={{
+        fontSize: [1, 2],
         borderRadius: 'round',
         bg: 'background',
         border: '1px solid',
@@ -60,7 +61,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
         </Badge>
       ) : null}
       {message}
-      <Icon name="chevron_right" color="white" size="3" ml="3" pt='2' />
+      <Icon name="chevron_right" color="white" size="3" ml="3" pt="2" />
     </NavLink>
   );
 };

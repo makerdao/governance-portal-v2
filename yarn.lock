@@ -2654,6 +2654,11 @@
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
 
+"@makerdao/dai-ui-icons-branding@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons-branding/-/dai-ui-icons-branding-0.0.39.tgz#c4826db284b40f3c3536fac4f5ebf9544f0eccd1"
+  integrity sha512-DA8qaFLpRL81wnfwUhuDSYMfTcGJdFC7GdKohQoHoZvhBa0H4mJz8R0R+/M0Jtt5kjxf6D/2Bx8NOfXEAWkYCg==
+
 "@makerdao/dai-ui-icons@^0.0.39":
   version "0.0.39"
   resolved "https://registry.yarnpkg.com/@makerdao/dai-ui-icons/-/dai-ui-icons-0.0.39.tgz#744174a186e4528f365e3482fbf22ae52b0177c1"

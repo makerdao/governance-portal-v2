@@ -4,7 +4,7 @@ import React from 'react';
 
 import Link from 'next/link';
 
-import { Flex, Grid, Box, Input, Button, NavLink, Container, Divider, jsx } from 'theme-ui';
+import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { translate } from '@makerdao/i18n-helper';
@@ -14,7 +14,7 @@ const FooterContainer = props => (
     as="footer"
     sx={{
       fontSize: '1.5rem',
-      padding: '3.6rem 2.5rem 2.7rem 2.5rem',
+      padding: '3.6rem 0 2rem 0',
       width: '100%',
       backgroundColor: '#FFFFFF'
     }}
@@ -250,7 +250,7 @@ class LongFooter extends React.Component {
     return (
       <FooterContainer>
         <Grid
-          sx={{ maxWidth: '11' }}
+          sx={{ maxWidth: 'page' }}
           m="0 auto"
           columns={['1fr', '1fr 1fr', '1fr 1fr', 'repeat(4, 1fr) auto']}
           gap="2rem"
