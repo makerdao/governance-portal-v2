@@ -12,7 +12,7 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
-        <Container mx="auto" px={4} sx={{ background: 'url(/assets/heroVisualTransparent.png) no-repeat', backgroundSize: '100%', backgroundPosition: '0 0' }}>
+        <Container mx="auto" px={4} sx={{ px: [0, 4], background: 'url(/assets/heroVisualTransparent.png) no-repeat', backgroundSize: '100%', backgroundPosition: '0 0' }}>
           <Header />
           <main>{children}</main>
           <Footer shorten={shortenFooter || false} />
