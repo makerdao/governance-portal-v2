@@ -81,10 +81,15 @@ export default function() {
         <Grid sx={{ background: '#E8F5F0' }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'text' }}>System Stats</Text>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              See all stats
-              <Icon name="chevron_right" color="mutedAlt" size="2" sx={{ marginLeft: 10 }} />
-            </Text>
+            <ExternalLink href="https://daistats.com/" target="_blank">
+              <Flex sx={{ alignItems: 'center' }}>
+                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                  View more stats
+                  <Icon ml="2" name="chevron_right" size="2" sx={{ color: 'mutedAlt' }} />
+                  {/* change this icon to the diagonal arrow */}
+                </Text>
+              </Flex>
+            </ExternalLink>
           </Flex>
 
           {/* Add DSR spread */}

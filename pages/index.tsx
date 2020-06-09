@@ -43,7 +43,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             backgroundRepeat: 'no-repeat',
             backgroundImage: `linear-gradient(${theme.colors.surface}, ${theme.colors.surface}),
             linear-gradient(${theme.colors.background}, ${theme.colors.background})`,
-            backgroundSize: `100% 560px, 100% 100%`
+            backgroundSize: `100% 100%, 100% 100%`
           },
           body: {
             backgroundRepeat: 'inherit',
