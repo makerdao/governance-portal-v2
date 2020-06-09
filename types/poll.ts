@@ -6,7 +6,7 @@ type Poll = {
   content: string;
   pollId: number;
   summary: string;
-  options: { [key: string]: string } | null;
+  options: { [optionId: string]: string } | null;
   endDate: string;
   startDate: string;
   discussionLink: string | null;

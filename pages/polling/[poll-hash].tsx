@@ -20,6 +20,7 @@ import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 import PollTally from '../../types/pollTally';
+import Skeleton from 'react-loading-skeleton';
 
 const PollView = ({ poll }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -77,21 +78,22 @@ const PollView = ({ poll }: { poll: Poll }) => {
               <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
               <div>
                 <Text as="h3">Vote Breakdown</Text>
-                {tally
-                  ? Object.entries(tally.options).map(([optionId, option]) => (
+                {tally ? (
+                  Object.entries(poll.options || {})
+                    .map(([optionId, optionName]) => [
+                      optionName,
+                      tally.options[optionId]?.firstChoice.div(tally.totalMkrParticipation).toBigNumber() || 0
+                    ])
+                    .sort(([, valueA], [, valueB]) => (valueB === 0 ? -1 : valueB.minus(valueA).toNumber()))
+                    .map(([optionName, value]) => (
                       <div>
-                        <Text sx={{ color: 'textMuted' }}>{optionId}</Text>
-                        <Progress
-                          sx={{ my: 2 }}
-                          max={1}
-                          value={option.firstChoice
-                            .div(tally.totalMkrParticipation)
-                            .toBigNumber()
-                            .toString()}
-                        />
+                        <Text sx={{ color: 'textMuted' }}>{optionName}</Text>
+                        <Progress sx={{ my: 2 }} max={1} value={value} />
                       </div>
                     ))
-                  : null}
+                ) : (
+                  <Skeleton count={5} />
+                )}
               </div>
             ]}
           />
