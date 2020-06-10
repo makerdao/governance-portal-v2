@@ -14,7 +14,9 @@ const FooterContainer = props => (
     as="footer"
     sx={{
       fontSize: '1.5rem',
-      padding: '3.6rem 0 2rem 0',
+      pt: 5,
+      pb: 3,
+      px: 4,
       width: '100%',
       backgroundColor: '#FFFFFF'
     }}

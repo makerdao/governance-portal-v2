@@ -44,7 +44,7 @@ export default function() {
           </ExternalLink>
         </Flex>
 
-        <Flex sx={{ mx: -4, p: 4, backgroundColor: 'bullAlt' }}>
+        <Flex sx={{ mx: -4, p: 4, backgroundColor: 'primaryMuted' }}>
           <Flex m="auto" sx={{ width: '100%', justifyContent: 'space-between' }}>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
@@ -77,7 +77,7 @@ export default function() {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'] }}>
-        <Grid sx={{ backgroundColor: 'bullAlt', p: 3 }}>
+        <Grid sx={{ backgroundColor: 'primaryMuted', p: 3 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'text' }}>System Stats</Text>
             <ExternalLink href="https://daistats.com/" target="_blank">

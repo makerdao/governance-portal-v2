@@ -84,7 +84,7 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
                   alignSelf: 'center'
                 }}
               >
-                {mkrSupport.toString()} Supporting
+                {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
               </Badge>
               {isHat ? (
                 <Badge
