@@ -102,35 +102,33 @@ const PollingOverview = ({ polls }: Props) => {
         </Flex>
       </Flex>
       <SidebarLayout>
-        <div sx={{ width: '100%' }}>
-          {activePolls.length > 0 ? (
+        <Box sx={{ minWidth: '0px' }}>
+          {activePolls.length > 0 && (
             <Heading mb={3} as="h3">
               Active Polls
             </Heading>
-          ) : null}
+          )}
           <StackLayout>
             {activePolls.map(poll => (
               <PollOverviewCard key={poll.multiHash} poll={poll} />
             ))}
           </StackLayout>
-          {historicalPolls.length > 0 ? (
+          {historicalPolls.length > 0 && (
             <Heading mb={3} mt={4} as="h3">
               Historical Polls
             </Heading>
-          ) : null}
+          )}
           <StackLayout>
             {historicalPolls.map(poll => (
               <PollOverviewCard key={poll.multiHash} poll={poll} />
             ))}
           </StackLayout>
           <div ref={loader} />
-        </div>
-        <Flex sx={{ flexDirection: 'column' }}>
-          <StackLayout>
-            <Card variant="compact">Card 1</Card>
-            <Card variant="compact">Card 2</Card>
-          </StackLayout>
-        </Flex>
+        </Box>
+        <StackLayout>
+          <Card variant="compact">Card 1</Card>
+          <Card variant="compact">Card 2</Card>
+        </StackLayout>
       </SidebarLayout>
     </PrimaryLayout>
   );

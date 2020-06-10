@@ -23,11 +23,9 @@ const PollCard = ({ poll }: { poll: Poll }) => {
     <Flex
       px={4}
       py={3}
-      mx="auto"
       variant="cards.primary"
       sx={{
         boxShadow: 'faint',
-        width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between'
       }}
@@ -63,9 +61,6 @@ const PollCard = ({ poll }: { poll: Poll }) => {
           >
             <Text
               sx={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
                 fontSize: [3, 4]
               }}
             >
