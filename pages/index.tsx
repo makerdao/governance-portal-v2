@@ -92,7 +92,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <IntroCard
               title="Introduction to Governance"
               linkText="Get started"
-              linkDest='https://community-development.makerdao.com/onboarding/voter-onboarding'
+              linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
               icon={<Icon name="govIntro" size="5" />}
             >
               A guide to outlining the basics of getting started with voting.
@@ -100,7 +100,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <IntroCard
               title="Governance Forum"
               linkText="Go to forum"
-              linkDest='https://forum.makerdao.com/c/governance/'
+              linkDest="https://forum.makerdao.com/c/governance/"
               icon={<Icon name="govForum" size="5" />}
             >
               Get the latest updates and take part in current discussions.
@@ -108,14 +108,13 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <IntroCard
               title="Governance Calls"
               linkText="View gov calls"
-              linkDest='https://community-development.makerdao.com/governance/governance-and-risk-meetings'
+              linkDest="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
               icon={<Icon name="govCalls" size="5" />}
             >
               Weekly calls to present research and coordinate around current issues.
             </IntroCard>
           </Flex>
-          {/* Executive Votes */}
-          {/* <Container
+          <Container
             pb="5"
             sx={{
               textAlign: 'center'
@@ -140,30 +139,29 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 />
               ))}
             </Box>
-          </Container> */}
-          {/* Polling Votes */}
-          {/* <Container
-          as="section"
-          sx={{
-            textAlign: 'center'
-          }}
-        >
-          <Box mx="auto" sx={{ maxWidth: 'title' }}>
-            <Heading as="h2">Polling Votes</Heading>
-            <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], lineHeight: 'body' }}>
-              Polls are conducted to establish a rough consensus of community sentiment before Executive Votes
-              are conducted.
-            </Text>
-          </Box>
-          <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 'column' }}>
-            <Container py="4">
-              {recentPolls.map(poll => (
-                <PollPreviewCard key={poll.pollId} poll={poll} />
-              ))}
-            </Container>
-          </Box>
-        </Container> */}
-          {/* <BlogPosts blogPosts={blogPosts} /> */}
+          </Container>
+          <Container
+            as="section"
+            sx={{
+              textAlign: 'center'
+            }}
+          >
+            <Box mx="auto" sx={{ maxWidth: 'title' }}>
+              <Heading as="h2">Polling Votes</Heading>
+              <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], lineHeight: 'body' }}>
+                Polls are conducted to establish a rough consensus of community sentiment before Executive
+                Votes are conducted.
+              </Text>
+            </Box>
+            <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 'column' }}>
+              <Container py="4">
+                {recentPolls.map(poll => (
+                  <PollPreviewCard key={poll.pollId} poll={poll} />
+                ))}
+              </Container>
+            </Box>
+          </Container>
+          <BlogPosts blogPosts={blogPosts} />
         </Container>
       </PrimaryLayout>
     </div>
@@ -189,7 +187,7 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
   }, []);
 
   if (error) {
-    return <ErrorPage statusCode={404} title='Error fetching proposals' />;
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
   if (!isDefaultNetwork() && (!_polls || !_proposals))
