@@ -55,10 +55,12 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
 }
 
 export function parsePollTally(rawTally, poll: Poll): PollTally {
-  invariant(rawTally?.totalMkrParticipation, 'total mkr participation not defined on raw tally');
+  invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
   const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
+
   if (rawTally?.winner === null) rawTally.winningOption = 'none found';
   else rawTally.winningOption = poll.options ? poll.options[rawTally.winner] : 'none found';
+
   Object.keys(rawTally.options).forEach(key => {
     rawTally.options[key].firstChoice = MKR(rawTally.options[key].firstChoice);
     rawTally.options[key].transfer = MKR(rawTally.options[key].transfer);
@@ -94,6 +96,22 @@ export async function fetchJson(url: string): Promise<any> {
   const json = await response.json();
 
   if (!response.ok) throw new Error(`${response.statusText}: ${json.error?.message || JSON.stringify(json)}`);
-
   return json;
+}
+
+// https://medium.com/@mhagemann/the-ultimate-way-to-slugify-a-url-string-in-javascript-b8e4a0d849e1
+export function slugify(string: string) {
+  const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;';
+  const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------';
+  const p = new RegExp(a.split('').join('|'), 'g');
+
+  return string
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(p, c => b.charAt(a.indexOf(c)))
+    .replace(/&/g, '-and-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }

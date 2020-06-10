@@ -1,17 +1,36 @@
 /** @jsx jsx */
+import { slugify } from '../lib/utils';
+
 import { jsx } from 'theme-ui';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flex, Divider, SxStyleProp } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
+import Router from 'next/router';
 
 type Props = {
   tabTitles: string[];
   tabPanels: React.ReactNode[];
+  hashRoute?: boolean;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels }: Props) => {
+const TabbedLayout = ({ tabTitles, tabPanels, hashRoute }: Props) => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
+
+  useEffect(() => {
+    const [, hash] = location.href.split('#');
+    if (hashRoute && hash) {
+      tabTitles.forEach((title, i) => {
+        if (slugify(title) === hash) setActiveTabIndex(i);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hashRoute) {
+      Router.push(`${location.pathname + location.search}#${slugify(activeTab)}`);
+    }
+  }, [activeTab]);
 
   return (
     <Flex
@@ -20,7 +39,7 @@ const TabbedLayout = ({ tabTitles, tabPanels }: Props) => {
       }}
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
-        <TabList>
+        <TabList sx={{ display: 'block', bg: 'inherit' }}>
           {tabTitles.map(tabTitle => (
             <Tab key={tabTitle} sx={getTabStyles({ isActive: activeTab === tabTitle })}>
               {tabTitle}
@@ -45,7 +64,7 @@ const baseTabStyles: SxStyleProp = {
   py: 2,
   fontSize: 3,
   fontWeight: 500,
-  border: 'none',
+  border: 'none !important',
   bg: 'inherit'
 };
 

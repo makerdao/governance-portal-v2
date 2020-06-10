@@ -23,18 +23,19 @@ const Header = () => {
       }}
     >
       <Link href={{ pathname: '/', query: { network } }}>
-        <IconButton aria-label="Maker home" sx={{ width: 5 }}>
+        <IconButton aria-label="Maker home" sx={{ width: 5, height: 5, p: 0 }}>
           <Icon name="maker" size="5" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
 
-      <Icon
-        name="menu"
-        size="24px"
-        sx={{ cursor: 'pointer', display: [null, 'none'] }}
+      <IconButton
+        aria-label="Maker home"
         ml="auto"
+        sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
-      />
+      >
+        <Icon name="menu" sx={{ height: '28px', width: '24px' }} />
+      </IconButton>
       <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
         <Link href={{ pathname: '/', query: { network } }}>
           <NavLink p={2} sx={{ display: [null, 'none'] }}>

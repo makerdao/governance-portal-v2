@@ -1,6 +1,5 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { Card, Heading, Checkbox, Label, Box, Flex, Input } from 'theme-ui';
-import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -17,27 +16,56 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const { asPath } = useRouter();
   const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);
+  const [numLoadedPolls, setNumLoadedPolls] = useState<number>(10);
   const [filterInactivePolls, setFilterInactivePolls] = useState(false);
+  const loader = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (asPath.includes('pollFilter=active')) {
+    if (location.href.includes('pollFilter=active')) {
       setFilterInactivePolls(true);
     }
-  }, [asPath]);
+  }, []);
+
+  const loadMore = useCallback(
+    entries => {
+      const target = entries[0];
+      if (target.isIntersecting) {
+        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 10 : numLoadedPolls);
+      }
+    },
+    [numLoadedPolls, setNumLoadedPolls]
+  );
+
+  useEffect(() => {
+    if (loader?.current) {
+      const options = {
+        root: null,
+        rootMargin: '80px'
+      };
+      // Create observer
+      const observer = new IntersectionObserver(loadMore, options);
+
+      // observer the loader
+      observer.observe(loader.current);
+      // clean up on willUnMount
+      return () => observer.unobserve(loader.current as HTMLDivElement);
+    }
+  }, [loader, loadMore]);
 
   const filteredPolls = useMemo(
     () =>
-      polls.filter(poll => {
-        if (new Date(poll.startDate).getTime() > Date.now()) return false; // filter polls that haven't started yet
-        if (filterInactivePolls && !isActivePoll(poll)) return false;
-        const [startDate, endDate] = dateFilter;
-        if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
-        if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
-        return true;
-      }),
-    [polls, filterInactivePolls, dateFilter]
+      polls
+        .filter(poll => {
+          if (new Date(poll.startDate).getTime() > Date.now()) return false; // filter polls that haven't started yet
+          if (filterInactivePolls && !isActivePoll(poll)) return false;
+          const [startDate, endDate] = dateFilter;
+          if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
+          if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
+          return true;
+        })
+        .slice(0, numLoadedPolls),
+    [polls, filterInactivePolls, dateFilter, numLoadedPolls]
   );
 
   const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
@@ -74,7 +102,7 @@ const PollingOverview = ({ polls }: Props) => {
         </Flex>
       </Flex>
       <SidebarLayout>
-        <div>
+        <div sx={{ width: '100%' }}>
           {activePolls.length > 0 ? (
             <Heading mb={3} as="h3">
               Active Polls
@@ -95,6 +123,7 @@ const PollingOverview = ({ polls }: Props) => {
               <PollOverviewCard key={poll.multiHash} poll={poll} />
             ))}
           </StackLayout>
+          <div ref={loader} />
         </div>
         <Flex sx={{ flexDirection: 'column' }}>
           <StackLayout>

@@ -15,6 +15,8 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
+        maxWidth: 'page',
+        mx: 'auto',
         variant: 'layout.root'
       }}
     >

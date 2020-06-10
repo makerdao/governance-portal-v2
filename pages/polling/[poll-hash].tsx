@@ -73,27 +73,28 @@ const PollView = ({ poll }: { poll: Poll }) => {
           </Flex>
           <Divider sx={{ color: 'muted' }} />
           <Tabs
+            hashRoute={true}
             tabTitles={['Poll Detail', 'Vote Breakdown']}
             tabPanels={[
               <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
-              <div>
-                <Text as="h3">Vote Breakdown</Text>
-                {tally ? (
-                  Object.entries(poll.options || {})
-                    .map(([optionId, optionName]) => [
-                      optionName,
-                      tally.options[optionId]?.firstChoice.div(tally.totalMkrParticipation).toBigNumber() || 0
-                    ])
-                    .sort(([, valueA], [, valueB]) => (valueB === 0 ? -1 : valueB.minus(valueA).toNumber()))
-                    .map(([optionName, value]) => (
-                      <div>
-                        <Text sx={{ color: 'textMuted' }}>{optionName}</Text>
-                        <Progress sx={{ my: 2 }} max={1} value={value} />
-                      </div>
-                    ))
-                ) : (
-                  <Skeleton count={5} />
-                )}
+              <div sx={{ pt: 3 }}>
+                <Text as="h3" sx={{ pb: 2 }}>
+                  Vote Breakdown
+                </Text>
+                {Object.entries(poll.options || {})
+                  .map(([optionId, optionName]) => [
+                    optionName,
+                    tally?.options[optionId]?.firstChoice.div(tally.totalMkrParticipation).toBigNumber() || 0
+                  ])
+                  .sort(([, valueA], [, valueB]) => (valueB === 0 ? -1 : valueB.minus(valueA).toNumber()))
+                  .map(([optionName, value]) => (
+                    <div>
+                      <Text sx={{ color: 'textMuted', width: '20%' }}>
+                        {tally ? optionName : <Skeleton />}
+                      </Text>
+                      {tally ? <Progress sx={{ my: 2 }} max={1} value={value} /> : <Skeleton />}
+                    </div>
+                  ))}
               </div>
             ]}
           />

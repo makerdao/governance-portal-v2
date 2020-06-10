@@ -27,7 +27,6 @@ const PollCard = ({ poll }: { poll: Poll }) => {
       variant="cards.primary"
       sx={{
         boxShadow: 'faint',
-        minWidth: 7,
         width: '100%',
         flexDirection: 'column',
         justifyContent: 'space-between'
