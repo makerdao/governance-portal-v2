@@ -1,4 +1,4 @@
-import { Heading, Container, Text, Box, Image, Flex, Card, Link } from 'theme-ui';
+import { Heading, Container, Text, Box, Image, Flex, Card, Link as ExternalLink } from 'theme-ui';
 import BlogPost from '../../types/blogPost';
 
 type Props = {
@@ -22,7 +22,7 @@ export default ({ blogPosts }: Props) => (
     <Box>
       <Flex sx={{ justifyContent: 'center' }} mb="5" mt="5">
         {blogPosts.map(post => (
-          <Link variant="card" href="https://www.google.com">
+          <ExternalLink target="_blank" variant="card" href={post.link}>
             <Card key={post.title} sx={{ p: 0, width: ['100%', '20vw'], borderRadius: 'medium' }}>
               <Image
                 src={post.photoHref}
@@ -54,7 +54,7 @@ export default ({ blogPosts }: Props) => (
                 })}
               </Text>
             </Card>
-          </Link>
+          </ExternalLink>
         ))}
       </Flex>
     </Box>

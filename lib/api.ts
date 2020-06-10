@@ -118,6 +118,7 @@ export async function getPostsAndPhotos(): Promise<BlogPost[]> {
   ).then(photosMeta => (photosMeta as any).map(photoMeta => photoMeta.media_details.sizes.large.source_url));
 
   return posts.map((post, index) => ({
+    link: post.link,
     title: post.title.rendered,
     date: post.date,
     photoHref: photoLinks[index]
