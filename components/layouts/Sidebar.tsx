@@ -4,7 +4,9 @@ import { Grid } from 'theme-ui';
 
 type Props = {};
 
-// expects two children: the first one is the main content, the second one is the sidebar
+/**
+ * Expects two children: the first one is the main content, the second one is the sidebar
+ */
 const SidebarLayout = ({ children }: React.PropsWithChildren<Props>) => {
   return (
     <Grid

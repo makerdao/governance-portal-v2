@@ -14,7 +14,10 @@ export const GOV_BLOG_POSTS_ENDPOINT =
 
 export const DEFAULT_NETWORK = SupportedNetworks.MAINNET;
 
-export const ETHERSCAN_PREFIXES: { [key in SupportedNetworks]?: string } = {
+export const ETHERSCAN_PREFIXES: { [key in SupportedNetworks.MAINNET | SupportedNetworks.KOVAN]: string } = {
   [SupportedNetworks.MAINNET]: '',
   [SupportedNetworks.KOVAN]: 'kovan.'
 };
+
+export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks.MAINNET | SupportedNetworks.KOVAN) =>
+  `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;

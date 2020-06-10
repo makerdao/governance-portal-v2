@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Flex } from 'theme-ui';
-import theme from '../../lib/theme';
 
 type Props = {
   gap: number;
@@ -13,12 +12,14 @@ type Props = {
 const StackLayout = ({ children, gap = 4 }: React.PropsWithChildren<Props>) => {
   return (
     <Flex
-      sx={{ width: '100%', flexDirection: 'column', alignItems: 'stretch' }}
-      css={`
-        > * + * {
-          margin-top: ${theme.sizes[gap]}px;
+      sx={{
+        width: '100%',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        '& > * + *': {
+          mt: theme => `${theme.sizes[gap]}px !important`
         }
-      `}
+      }}
     >
       {children}
     </Flex>

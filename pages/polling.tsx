@@ -29,7 +29,7 @@ const PollingOverview = ({ polls }: Props) => {
 
   const loadMore = useCallback(
     entries => {
-      const target = entries[0];
+      const target = entries.pop();
       if (target.isIntersecting) {
         setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 10 : numLoadedPolls);
       }

@@ -62,7 +62,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               textAlign: 'center'
             }}
           >
-            <Box pt="6" mx="auto" sx={{ maxWidth: 'title' }}>
+            <Box pt={[4, 6]} mx="auto" sx={{ maxWidth: 'title' }}>
               <Heading as="h1" sx={{ fontSize: [7, 8] }}>
                 Maker Governance
               </Heading>
@@ -72,6 +72,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 as="p"
                 sx={{
                   fontSize: [3, 5],
+                  px: [4, 'inherit'],
                   lineHeight: 'body'
                 }}
               >

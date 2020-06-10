@@ -28,7 +28,7 @@ const TabbedLayout = ({ tabTitles, tabPanels, hashRoute }: Props) => {
 
   useEffect(() => {
     if (hashRoute) {
-      Router.push(`${location.pathname + location.search}#${slugify(activeTab)}`);
+      Router.replace(`${location.pathname + location.search}#${slugify(activeTab)}`);
     }
   }, [activeTab]);
 
