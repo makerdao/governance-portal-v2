@@ -47,13 +47,15 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
       sx={{
         fontSize: [1, 2],
         borderRadius: 'round',
-        bg: 'background',
         border: '1px solid',
         borderColor: 'secondary',
-        color: 'white',
+        color: 'surface',
         alignItems: 'center',
         backgroundColor: 'primary',
-        display: 'inline-flex'
+        display: 'inline-flex',
+        '&:hover': {
+          '> svg': { color: 'primary' }
+        }
       }}
     >
       {pollsToBeAwareOf > 0 && (
@@ -61,8 +63,8 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
           {pollsToBeAwareOf}
         </Badge>
       )}
-      <Box pb='2px'>{message}</Box>
-      <Icon name="chevron_right" color="white" size="3" ml="3" pb='1px' />
+      <Box pb="2px">{message}</Box>
+      <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
     </NavLink>
   );
 };
@@ -90,14 +92,14 @@ export default ({ polls }: { polls: Poll[] }) => {
   return (
     <Box py="5" mx="auto" sx={{ maxWidth: 8, textAlign: 'center' }}>
       {account && !unvotedPolls ? (
-        <Skeleton />
+        <Skeleton height="39px" />
       ) : (
         <Link
+          passHref
           href={{
             pathname: '/polling',
             query
           }}
-          passHref
         >
           <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
         </Link>
