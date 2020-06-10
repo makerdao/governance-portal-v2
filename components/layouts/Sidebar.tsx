@@ -4,7 +4,8 @@ import { Grid } from 'theme-ui';
 
 type Props = {};
 
-const DetailsPageLayout = ({ children }: React.PropsWithChildren<Props>) => {
+// expects two children: the first one is the main content, the second one is the sidebar
+const SidebarLayout = ({ children }: React.PropsWithChildren<Props>) => {
   return (
     <Grid
       py={4}
@@ -22,4 +23,4 @@ const DetailsPageLayout = ({ children }: React.PropsWithChildren<Props>) => {
   );
 };
 
-export default DetailsPageLayout;
+export default SidebarLayout;
