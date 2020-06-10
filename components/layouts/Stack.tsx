@@ -11,7 +11,7 @@ const StackLayout = ({ children }: React.PropsWithChildren<Props>) => {
       sx={{ width: '100%', flexDirection: 'column', alignItems: 'stretch' }}
       css={`
         > * + * {
-          margin-top: ${theme.sizes[4]}px !important;
+          margin-top: ${theme.sizes[4]}px;
         }
       `}
     >
