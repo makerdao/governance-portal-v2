@@ -188,7 +188,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page' }}
                 >
                   {blogPosts.map(post => (
-                    <BlogPosts blogPost={post} />
+                    <BlogPosts key={post.link} blogPost={post} />
                   ))}
                 </Container>
               </StackLayout>

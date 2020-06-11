@@ -1,0 +1,414 @@
+[
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 188,
+    "blockCreated": 10223278,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmRHhGfSuhbKm1idGLGPap2vgWASzitLViMVGq8usHmqXi",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP14%3A%20Inclusion%20Poll%20for%20Protocol%20DAI%20Transfer%20-%20June%208%2C%202020.md",
+    "slug": "QmRHhGfS",
+    "content": "# MIP14: Inclusion Poll for Protocol DAI Transfer - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Proposal, [MIP14 (Protocol DAI Transfer)](https://forum.makerdao.com/t/2462), will proceed to next week's Governance Poll. In short, MIP14 defines a generic process for transfering DAI from the Maker Protocol to a target Ethereum address.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP14: Protocol DAI Transfer](https://forum.makerdao.com/t/2462). It was also discussed on the [Governance call](https://www.youtube.com/watch?v=jkVNeI3-rWs&feature=youtu.be&t=1182) on May 14, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP14: Inclusion Poll for Protocol DAI Transfer - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2462",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 190,
+    "blockCreated": 10223307,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmbmGDNjHqaLQ5hTZW7vBWT7EJG242rQ4bPRoVWBifMGpT",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP2%3A%20Inclusion%20Poll%20for%20MIP8%20Amendments%20-%20June%208%2C%202020.md",
+    "slug": "QmbmGDNj",
+    "content": "# MIP4c2-SP2: Inclusion Poll for MIP8 Amendments - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Subproposal, [MIP4c2-SP2 (MIP8 Amendments)](https://forum.makerdao.com/t/2664), will proceed to next week's Governance Poll. In short, MIP4c2-SP2 proposes that the Domain Greenlight process (MIP8) should occur after the proposed collateral asset has passed the MIP9 Community Greenlight Poll allowing the Domain teams to use the Community Greenlight Poll results to make a more informed decision and proceed with their domain work.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP4c2-SP2: MIP8 Amendments](https://forum.makerdao.com/t/2664). It was also discussed on the [Governance call](https://youtu.be/e9GDaRhGZC8?t=1913) on May 21, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP4c2-SP2: Inclusion Poll for MIP8 Amendments - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2664",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 189,
+    "blockCreated": 10223288,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmZdCuFZCGNEw3sgy6ZrPEnWyG4BptjGGPynkRv7CV43KC",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP1%3A%20Inclusion%20Poll%20for%20MIP6%20Amendments%20-%20June%208%2C%202020.md",
+    "slug": "QmZdCuFZ",
+    "content": "# MIP4c2-SP1: Inclusion Poll for MIP6 Amendments - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Subproposal, [MIP4c2-SP1 (MIP6 Amendment)](https://forum.makerdao.com/t/2663), will proceed to next week's Governance Poll. In short, MIP4c2-SP1 proposes updates to the collateral onboarding process to allow MIP6 collateral applications to be eligible for MIP9 Community Greenlight polls at least two weeks after the MIP6 application has been proposed, as well as moving the Domain Greenlight process until after the MIP9 polls have concluded.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP4c2-SP1: MIP6 Amendments](https://forum.makerdao.com/t/2663). It was also discussed on the [Governance call](https://youtu.be/e9GDaRhGZC8?t=1913) on May 21, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP4c2-SP1: Inclusion Poll for MIP6 Amendments - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2663",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 187,
+    "blockCreated": 10223259,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmZgcLZobBgbW47zPwTR6qESsG1wyZN6dUTd5ETc9xqntm",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP13%3A%20Inclusion%20Poll%20for%20Declarations%20of%20Intent%20-%20June%208%2C%202020.md",
+    "slug": "QmZgcLZo",
+    "content": "# MIP13: Inclusion Poll for Declarations of Intent - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Proposal, [MIP13 (Declarations of Intent)](https://forum.makerdao.com/t/mip13-declarations-of-intent/2461), will proceed to next week's Governance Poll. In short, MIP13 proposes a process that will allow Maker Governance to signal an intention to the wider community.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP13: Declarations of Intent](https://forum.makerdao.com/t/mip13-declarations-of-intent/2461). It was also discussed on the [Governance call](https://www.youtube.com/watch?v=jkVNeI3-rWs&feature=youtu.be&t=1182) on May 14, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP13: Inclusion Poll for Declarations of Intent - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2461",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 192,
+    "blockCreated": 10223330,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmQJktFxEjXipj6Sqife2SL8sHL3WiWFsnxZoykm6oZFxR",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP4%3A%20Inclusion%20Poll%20for%20MIP12%20Amendments%20-%20June%208%2C%202020.md",
+    "slug": "QmQJktFx",
+    "content": "# MIP4c2-SP4: Inclusion Poll for MIP12 Amendments - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Subproposal, [MIP4c2-SP4 (MIP12 Amendments)](https://forum.makerdao.com/t/2666), will proceed to next week's Governance Poll. In short, MIP4c2-SP4 proposes an update to MIP12 to allow the collateral onboarding process to operate more efficiently. More specifically, it states that collateral onboarding can continue to operate despite not having an official General Risk Model ratified through the [MIP11](https://github.com/makerdao/mips/blob/master/MIP11/mip11.md) process.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP4c2-SP4: MIP12 Amendments](https://forum.makerdao.com/t/2666). It was also discussed on the [Governance call](https://youtu.be/e9GDaRhGZC8?t=1913) on May 21, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP4c2-SP4: Inclusion Poll for MIP12 Amendments - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2666",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 193,
+    "blockCreated": 10223378,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmdnYA8Qh2ipjMqk74vGCFbpqJ4kTc7xsTwxvPNck2y8RG",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP7c3-SP2%3A%20Inclusion%20Poll%20for%20Onboarding%20a%20Risk%20Domain%20Team%20-%20June%208%2C%202020.md",
+    "slug": "QmdnYA8Q",
+    "content": "# MIP7c3-SP2: Inclusion Poll for Onboarding a Risk Domain Team - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Subproposal, [MIP7c3-SP2 (Domain Team Onboarding (Risk Domain Team)](https://forum.makerdao.com/t/2702), will proceed to next week's Governance Poll. In short, MIP7c3-SP2 proposes to onboard [Cyrus Younessi](https://twitter.com/cyounessi1) as an official Risk Domain Team. \n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP7c3-SP2: Domain Team Onboarding (Risk Domain Team)](https://forum.makerdao.com/t/2702). It was also discussed on the [Governance call](https://youtu.be/uvgXpZyp33g?t=1062) on June 4, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP7c3-SP2: Inclusion Poll for Onboarding a Risk Domain Team - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2702",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 185,
+    "blockCreated": 10222886,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmdBoDzaNjCscpjJ4AK5C1LpQNXLrmtPXisosSZmZhvRgG",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Base%20Rate%20Adjustment%20-%20June%208%2C%202020.md",
+    "slug": "QmdBoDza",
+    "content": "# Poll: Base Rate Adjustment - June 8, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) which presents a number of possible **Base Rate** options. Voters are now able to signal their support for a **Base Rate** within a range of -4% to 4%.\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, June 8 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, June 12, at 4 PM UTC.\n\n## Review\n\nThe **Base Rate** was discussed in an online [discussion](https://forum.makerdao.com/t/2380), please review to inform your position before voting.\n\n## Next Steps\n\n* On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to adjust the Base Rate within a range of -4% to 4%",
+    "title": "Base Rate Adjustment - June 8, 2020",
+    "options": {
+      "1": -4,
+      "2": -2,
+      "3": -1,
+      "4": -0.5,
+      "5": -0.25,
+      "6": 0,
+      "7": 0.25,
+      "8": 0.5,
+      "9": 1,
+      "10": 2,
+      "11": 4
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2742",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 186,
+    "blockCreated": 10222895,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "Qmd55J565FwS2Ky172bWMpW5cXuikwLqFtUcrPPnNKgiuN",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Dai%20Savings%20Rate%20Spread%20Adjustment%20-%20June%208%2C%202020.md",
+    "slug": "Qmd55J56",
+    "content": "# Poll: Dai Savings Rate Spread Adjustment - June 8, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) which presents a number of possible **Dai Savings Rate Spread** options. Voters are now able to signal their support for a **Dai Savings Rate Spread** within a range of 0% to 4%.\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, June 8 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, June 12, at 4 PM UTC.\n\n## Review\n\nThe **Dai Savings Rate Spread** was discussed in the Governance call on Thursday, May 21. Please review the [Video](https://www.youtube.com/playlist?list=PLLzkWCj8ywWNq5-90-Id6VPSsrk4OWVan), [Audio](https://soundcloud.com/makerdao/sets/governance-and-risk), [Summary](https://community-development.makerdao.com/governance/governance-and-risk-meetings/summaries) and the online [discussion](https://forum.makerdao.com/c/governance) to inform your position before voting.\n\n## Next Steps\n\n* On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to adjust the Dai Savings Rate Spread within a range of 0% to 4%",
+    "title": "Dai Savings Rate Spread Adjustment - June 8, 2020",
+    "options": {
+      "1": 0,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 1,
+      "5": 2,
+      "6": 4
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2742",
+    "voteType": "Ranked Choice IRV"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 191,
+    "blockCreated": 10223312,
+    "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmZnPpLhoDjY9B2vtsCkN6a1HRzA6HRh6sVGd6VBJBN37P",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP3%3A%20Inclusion%20Poll%20for%20MIP9%20Amendments%20-%20June%208%2C%202020.md",
+    "slug": "QmZnPpLh",
+    "content": "# MIP4c2-SP3: Inclusion Poll for MIP9 Amendments - June 8, 2020\n\nOn June 8, the Maker Community will vote to determine whether the Maker Improvement Subproposal, [MIP4c2-SP3 (MIP9 Amendments)](https://forum.makerdao.com/t/2665), will proceed to next week's Governance Poll. In short, MIP4c2-SP3 proposes some minor language edits and addresses some inconsistencies detailed throughout MIP9. More specifically, the proposed change will update the MIP to be consistent in saying that the Community Greenlight process will occur before the Domain Greenlight process, that Community Greenlight Polls will run for two weeks, and separating the components to increase clarity surrounding the overall process requirements and outcomes.\n\n**Inclusion Poll Details:**\n\n- If the **Yes** votes in the inclusion poll are higher than the combination of **No** votes plus the **Default Inclusion Threshold** at the end of the poll, the proposal will be included in the Governance Poll. In summary, if **Yes** votes > (**No** votes + **Default Inclusion Threshold**) = inclusion in the Governance Poll.\n- Note that the Default Inclusion Threshold is set to **3000 MKR**.\n\n## Review\n\nThe proposal can be reviewed here: [MIP4c2-SP3: MIP9 Amendments](https://forum.makerdao.com/t/2665). It was also discussed on the [Governance call](https://youtu.be/e9GDaRhGZC8?t=1913) on May 21, 2020.\n\n## Next Steps\n\nIf the Inclusion poll passes, the Governance Facilitators will confirm its inclusion in the Governance Poll on the Thursday Governance and Risk call on June 11. The Governance Poll would then be begin next Monday, June 15.\n\n## Resources\n\nAdditional information about the MIPs process can be found in the [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips) repository.\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
+    "title": "MIP4c2-SP3: Inclusion Poll for MIP9 Amendments - June 8, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2665",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 184,
+    "blockCreated": 10181226,
+    "startDate": "Mon Jun 01 2020 14:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 04 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmQQJ6xhp95rfyBoRbL5ZE4p6SBDdpi6bTxcADRtR9qXVq",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Debt%20Ceiling%20Adjustment%20-%20June%201%2C%202020.md",
+    "slug": "QmQQJ6xh",
+    "content": "# Poll: Debt Ceiling Adjustment - June 1, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) to alter the **Dai Debt Ceiling**. Voters are now able to signal their support to:\n\n- Raise the Dai ETH Debt Ceiling by 20 million to 140 million Dai\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, June 1 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, June 5, at 4 PM UTC.\n\n## Review\n\nAs outlined in the \"Debt Ceiling\" section of the previously ratified [Migration Risk Construct](https://vote.makerdao.com/polling-proposal/qmba2hpv3kcbjgzvlnv7xsogs3jenqdiqo3ffnktgqtepn) proposal, the Interim Risk Team is putting forth this governance proposal.\n\n## Next Steps\n\n- On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to raise the Dai Debt Ceiling to 140 million.",
+    "title": "Debt Ceiling Adjustment - June 1, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2655",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 181,
+    "blockCreated": 10178126,
+    "startDate": "Mon Jun 01 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 04 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmRULEF8bN3U7o8ce43kP9shRW8ZUcT1rzfE4B7y1qU7Vr",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Base%20Rate%20Adjustment%20-%20June%201%2C%202020.md",
+    "slug": "QmRULEF8",
+    "content": "# Poll: Base Rate Adjustment - June 1, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) which presents a number of possible **Base Rate** options. Voters are now able to signal their support for a **Base Rate** within a range of -4% to 4%.\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, June 1 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, June 5, at 4 PM UTC.\n\n## Review\n\nThe **Base Rate** was discussed in an online [discussion](https://forum.makerdao.com/t/2380) to inform your position before voting.\n\n## Next Steps\n\n* On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to adjust the Base Rate within a range of -4% to 4%",
+    "title": "Base Rate Adjustment - June 1, 2020",
+    "options": {
+      "1": -4,
+      "2": -2,
+      "3": -1,
+      "4": -0.5,
+      "5": -0.25,
+      "6": 0,
+      "7": 0.25,
+      "8": 0.5,
+      "9": 1,
+      "10": 2,
+      "11": 4
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2655",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 182,
+    "blockCreated": 10178133,
+    "startDate": "Mon Jun 01 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Jun 04 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmWgXHohFhECH2YX6cZiRJ1tfWbL1EofaqagzBLhw8ZUvQ",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Proposal%20-%20Should%20Monetary%20Policy%20Votes%20Use%20Ranked%20Choice%20Voting%3F%20-%20June%2001%2C%202020.md",
+    "slug": "QmWgXHoh",
+    "content": "# Poll: Should Monetary Policy Votes Use Ranked Choice Voting? - June 01, 2020\n\n## Description\n\nThe Maker Foundation Interim Governance Facilitator has placed this poll into the [voting system](https://vote.makerdao.com/polling) on behalf of the community.\n\nIf passed, this poll is to be taken as a signal to domain teams that MKR Token Holders have approved Ranked Choice Voting on all future monetary policy polls such as Base Rate, DSR spread, and Collateral Risk Premiums.\n\n## Review\n\nPlease review the [forum signal request](https://forum.makerdao.com/t/2589), the [original forum discussion](https://forum.makerdao.com/t/912), and [a brief description of ranked choice voting](http://www.youtube.com/watch?v=e9GDaRhGZC8&t=10m14s) provided on the May 28, 2020 governance call to inform your position before voting.\n\n## Next Steps\n\nIf this proposal passes, future monetary policy votes will use the Ranked Choice voting mechanism starting the week of Jun 8, 2020.\n\n## Resources\n\n- [Signal Request: Add Ranked Choice Voting as an Option for Governance Polls](https://forum.makerdao.com/t/signal-request-add-ranked-choice-voting-as-an-option-for-governance-polls/1274?u=andy_mccall)\n- [Previous Ranked Choice Vote: \"Change the Stability Fee Structure\"](https://vote.makerdao.com/polling-proposal/qmnun5btup2jmo5pnggsy2wviguzrpsqweb3aijn5muth3)\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support for the use of ranked choice voting in future monetary policy votes.",
+    "title": "Should Monetary Policy Votes Use Ranked Choice Voting? - June 01, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2589",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 180,
+    "blockCreated": 10136153,
+    "startDate": "Mon May 25 2020 13:30:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu May 28 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmdoMLbqb8mZV7tXV4LJW4pQPoyy9CRj7MSpsVAMSLop2t",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP9c2%20Community%20Greenlight%20for%20TUSD%20-%20May%2025%2C%202020.md",
+    "slug": "QmdoMLbq",
+    "content": "# Poll: Should we add TUSD to the Maker Protocol? - May 25, 2020\n\n## Description\n\nIf passed, this poll is to be taken as a signal to domain teams that MKR Token Holders have approved further domain work with the aim of adding TUSD (TrueUSD) as a collateral asset to the Maker Protocol.\n\n## Review\n\nPlease review the [forum thread](https://forum.makerdao.com/t/2277) and the general governance MIPs [discussion](https://forum.makerdao.com/c/MIPs/14) to inform your position before voting.\n\n## Next Steps\n\nThe poll will run for two weeks.\n\n## Resources\n\n- [MIP9: Community Greenlight](https://github.com/makerdao/mips/blob/master/MIP9/mip9.md#mip9-community-greenlight)\n- [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips)\n- Additional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n- Demos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n- To participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n- To add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll will provide guidance to the Domain Teams when they onboard additional assets.",
+    "title": "Should we add TUSD to the Maker Protocol? - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2277",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 167,
+    "blockCreated": 10133099,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu May 28 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmPMTxiCSi12DZNagbitc4jgRCD9xNxYNSFhPPwGanbPRX",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Proposal%20-%20Add%20TUSD%20as%20a%20Collateral%20Type%20-%20May%2025%2C%202020.md",
+    "slug": "QmPMTxiC",
+    "content": "# Poll: Add TUSD as a Collateral Type - May 25, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) through which the community can signal their support to add TUSD as a collateral type.\n\nThe proposed initial Risk Parameters for TUSD are:\n\n- Stability Fee: 0%\n- Debt Ceiling: 2,000,000\n- Liquidation Ratio: 120%\n- Auction Lot Size: 50,000 TUSD\n- Minimum Bid Increment: 3%\n- Bid Duration: 6 hours\n- Max Auction Duration: 3 days\n- Liquidation Penalty: 13%\n- Dust: 20 Dai\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for approximately 3 days beginning on Monday, May 25 at 4:00 PM UTC.\n\n## Review\n\nThis addition was discussed in the Governance call on Thursday, May 14, 2020.\n\nPlease review the [video](https://www.youtube.com/watch?v=jkVNeI3-rWs), [forum thread](https://forum.makerdao.com/t/tusd-proposal-for-collateral-onboarding/2402) and the general governance [discussion](https://forum.makerdao.com/c/governance) to inform your position before voting.\n\n## Next Steps\n\n- If this proposal passes there will be an Executive Vote on Friday May 29 asking MKR token holders if they support or reject the change.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll proposes Risk Parameters which could be used to initialize TUSD as a new asset class.",
+    "title": "Add TUSD as a Collateral Type - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/tusd-proposal-for-collateral-onboarding/2402",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 166,
+    "blockCreated": 10133092,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu May 28 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmeFZAguSPJSsWoQ2ZC1mTEGXXzxUAAsM54Y41CPuZUm5z",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Proposal%20-%20Add%20USDC-B%20as%20a%20Collateral%20Type%20-%20May%2025%2C%202020.md",
+    "slug": "QmeFZAgu",
+    "content": "# Poll: Add USDC-B as a Collateral Type - May 25, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) through which the community can signal their support to add USDC-B as a collateral type.\n\nThe proposed initial Risk Parameters for USDC-B are:\n\n- Stability Fee: 50%\n- Debt Ceiling: 10,000,000\n- Liquidation Ratio: 120%\n- Auction Lot Size: 50,000 USDC\n- Minimum Bid Increment: 3%\n- Bid Duration: 6 hours\n- Max Auction Duration: 3 days\n- Liquidation Penalty: 13%\n- Dust: 20 Dai\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for approximately 3 days beginning on Monday, May 25 at 4:00 PM UTC.\n\n## Review\n\nPlease review the [forum thread](https://forum.makerdao.com/t/usdc-b-proposal-for-collateral-onboarding/2582) and the general governance [discussion](https://forum.makerdao.com/c/governance) to inform your position before voting.\n\n## Next Steps\n\n- If this proposal passes there will be an Executive Vote on Friday May 29 asking MKR token holders if they support or reject the change.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll proposes Risk Parameters which could be used to initialize USDC-B as a new asset class.",
+    "title": "Add USDC-B as a Collateral Type - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2582",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 179,
+    "blockCreated": 10133375,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu May 28 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmVmyegkZq27FGWLFrScrGkM5y77wao7K28APMjeKF6BPH",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Dai%20Savings%20Rate%20Spread%20Adjustment%20-%20May%2025%2C%202020.md",
+    "slug": "QmVmyegk",
+    "content": "# Poll: Dai Savings Rate Spread Adjustment - May 25, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) which presents a number of possible **Dai Savings Rate Spread** options. Voters are now able to signal their support for a **Dai Savings Rate Spread** within a range of 0% to 4%.\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, May 25 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, May 29, at 4 PM UTC.\n\n## Review\n\nThe **Dai Savings Rate Spread** was discussed in the Governance call on Thursday, May 21. Please review the [Video](https://www.youtube.com/playlist?list=PLLzkWCj8ywWNq5-90-Id6VPSsrk4OWVan), [Audio](https://soundcloud.com/makerdao/sets/governance-and-risk), [Summary](https://community-development.makerdao.com/governance/governance-and-risk-meetings/summaries) and the online [discussion](https://forum.makerdao.com/c/governance) to inform your position before voting.\n\n## Next Steps\n\n* On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to adjust the Dai Savings Rate Spread within a range of 0% to 4%",
+    "title": "Dai Savings Rate Spread Adjustment - May 25, 2020",
+    "options": {
+      "1": 0,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 1,
+      "5": 2,
+      "6": 4
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2579",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 178,
+    "blockCreated": 10133375,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu May 28 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmZjLdZvnc3cgASWB6uYyoELDiJES2ULj1s9FaH1NxfQ55",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Base%20Rate%20Adjustment%20-%20May%2025%2C%202020.md",
+    "slug": "QmZjLdZv",
+    "content": "# Poll: Base Rate Adjustment - May 25, 2020\n\nThe Maker Foundation Interim Risk Team has placed a Governance Poll into the [voting system](https://vote.makerdao.com/polling) which presents a number of possible **Base Rate** options. Voters are now able to signal their support for a **Base Rate** within a range of 0% to 4.5%.\n\nThis Governance Poll ([FAQ](https://community-development.makerdao.com/makerdao-mcd-faqs/faqs#governance)) will be active for three days beginning on Monday, May 25 at 4 PM UTC, the results of which may inform an Executive Vote which will go live on Friday, May 29, at 4 PM UTC.\n\n## Review\n\nThe **Base Rate** was discussed in an online [discussion](https://forum.makerdao.com/t/2380) to inform your position before voting.\n\n## Next Steps\n\n* On the Friday following the conclusion of the poll, there will be an Executive Vote asking MKR token holders if they support or reject the change proposed by this Governance Poll.\n\n---\n\n## Resources\n\nAdditional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n\nDemos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n\nTo participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n\nTo add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "Signal your support to adjust the Base Rate within a range of 0% to 4.5%",
+    "title": "Base Rate Adjustment - May 25, 2020",
+    "options": {
+      "1": 0,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 0.75,
+      "5": 1,
+      "6": 1.5,
+      "7": 2.5,
+      "8": 4.5
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2380",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 172,
+    "blockCreated": 10133375,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmVA8uKdQrAxBXeE6nFRTrFn9TVYjUTim7U9mntemEfw74",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP9c2%20Community%20Greenlight%20for%20DMM%20-%20May%2025%2C%202020.md",
+    "slug": "QmVA8uKd",
+    "content": "# Poll: Should we add DMM to the Maker Protocol? - May 25, 2020\n\n## Description\n\nIf passed, this poll is to be taken as a signal to domain teams that MKR Token Holders have approved further domain work with the aim of adding DMM (DeFi Money Market) as a collateral asset to the Maker Protocol.\n\n## Review\n\nPlease review the [forum thread](https://forum.makerdao.com/t/2141) and the general governance MIPs [discussion](https://forum.makerdao.com/c/MIPs/14) to inform your position before voting.\n\n## Next Steps\n\nThe poll will run for two weeks.\n\n## Resources\n\n- [MIP9: Community Greenlight](https://github.com/makerdao/mips/blob/master/MIP9/mip9.md#mip9-community-greenlight)\n- [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips)\n- Additional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n- Demos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n- To participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n- To add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll will provide guidance to the Domain Teams when they onboard additional assets.",
+    "title": "Should we add DMM to the Maker Protocol? - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2141",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 168,
+    "blockCreated": 10133174,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmSwWEPrm1QfREobipTFSTZBLTWHgPoXfMkLC5dpUN5LdY",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP9c2%20Community%20Greenlight%20for%20tBTC%20-%20May%2025%2C%202020.md",
+    "slug": "QmSwWEPr",
+    "content": "# Poll: Should we add tBTC to the Maker Protocol? - May 25, 2020\n\n## Description\n\nIf passed, this poll is to be taken as a signal to domain teams that MKR Token Holders have approved further domain work with the aim of adding tBTC as a collateral asset to the Maker Protocol.\n\n## Review\n\nPlease review the [forum thread](https://forum.makerdao.com/t/2328) and the general governance MIPs [discussion](https://forum.makerdao.com/c/MIPs/14) to inform your position before voting.\n\n## Next Steps\n\nThe poll will run for two weeks.\n\n## Resources\n\n- [MIP9: Community Greenlight](https://github.com/makerdao/mips/blob/master/MIP9/mip9.md#mip9-community-greenlight)\n- [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips)\n- Additional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n- Demos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n- To participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n- To add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll will provide guidance to the Domain Teams when they onboard additional assets.",
+    "title": "Should we add tBTC to the Maker Protocol? - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2328",
+    "voteType": "Plurality Voting"
+  },
+  {
+    "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
+    "pollId": 175,
+    "blockCreated": 10133375,
+    "startDate": "Mon May 25 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "multiHash": "QmZKSj4h6w2cgrWXW6UEigjouvHNAGQPrKW5LCoXpJhRE4",
+    "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP9c2%20Community%20Greenlight%20for%20MANA%20-%20May%2025%2C%202020.md",
+    "slug": "QmZKSj4h",
+    "content": "# Poll: Should we add MANA to the Maker Protocol? - May 25, 2020\n\n## Description\n\nIf passed, this poll is to be taken as a signal to domain teams that MKR Token Holders have approved further domain work with the aim of adding MANA (Decentraland) as a collateral asset to the Maker Protocol.\n\n## Review\n\nPlease review the [forum thread](https://forum.makerdao.com/t/2320) and the general governance MIPs [discussion](https://forum.makerdao.com/c/MIPs/14) to inform your position before voting.\n\n## Next Steps\n\nThe poll will run for two weeks.\n\n## Resources\n\n- [MIP9: Community Greenlight](https://github.com/makerdao/mips/blob/master/MIP9/mip9.md#mip9-community-greenlight)\n- [Maker Improvement Proposals (MIPs)](https://github.com/makerdao/mips)\n- Additional information about the Governance process can be found in the [Governance Risk Framework: Governing MakerDAO](https://community-development.makerdao.com/governance/governance-risk-framework)\n- Demos, help and instructional material for the Governance Dashboard can be found at [Awesome MakerDAO](https://awesome.makerdao.com/#voting).\n- To participate in future Governance calls, please [join us](https://community-development.makerdao.com/governance/governance-and-risk-meetings) every Thursday at 16:00 UTC.\n- To add current and upcoming votes to your calendar, please see the [MakerDAO Public Events Calendar](https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles).\n",
+    "summary": "This poll will provide guidance to the Domain Teams when they onboard additional assets.",
+    "title": "Should we add MANA to the Maker Protocol? - May 25, 2020",
+    "options": {
+      "1": "Yes",
+      "2": "No"
+    },
+    "discussionLink": "https://forum.makerdao.com/t/2320",
+    "voteType": "Plurality Voting"
+  }
+]

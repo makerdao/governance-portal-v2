@@ -72,8 +72,12 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
         winner: rawTally.options?.[key]?.winner ?? false
       };
     })
-    .sort((a, b) => (a.firstChoice.add(a.transfer).gte(b.firstChoice.add(b.transfer)) ? -1 : 1));
-
+    .sort((a, b) => {
+      const valueA = a.firstChoice.add(a.transfer);
+      const valueB = b.firstChoice.add(b.transfer);
+      if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
+      return valueA.gt(valueB) ? -1 : 1;
+    });
   delete rawTally.options;
   return { ...rawTally, results, totalMkrParticipation };
 }

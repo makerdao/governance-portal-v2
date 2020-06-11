@@ -17,6 +17,7 @@ let _cachedProposals: Proposal[];
  * Everytime after that, it returns from the cache.
  */
 export async function getExecutiveProposals(): Promise<Proposal[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/proposals.json');
   if (_cachedProposals) return _cachedProposals;
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
@@ -48,6 +49,7 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
@@ -115,6 +117,7 @@ export async function getPoll(slug: string): Promise<Poll> {
 }
 
 export async function getPostsAndPhotos(): Promise<BlogPost[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/blogPosts.json');
   const posts = await fetch(GOV_BLOG_POSTS_ENDPOINT).then(res => res.json());
   const photoLinks: string[] = await Promise.all(
     posts.map(post => fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json()))

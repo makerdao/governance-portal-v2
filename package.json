@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
+    "update-mocks": "node ./mocks/update",
     "test": "yarn testchain --ci jest --runInBand --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
