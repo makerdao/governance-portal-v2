@@ -29,7 +29,7 @@ const AccountSelect = () => {
   };
 
   return (
-    <Button sx={{ variant: 'buttons.card' }}>
+    <Button sx={{ variant: 'buttons.card' }} onClick={account ? () => {} : connectWithBrowserProvider}>
       <div sx={{ variant: 'cards.tight' }}>
         {account ? (
           <Flex sx={{ flexDirection: 'column' }}>
