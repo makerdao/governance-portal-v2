@@ -10,7 +10,7 @@ import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 
-const PollCard = ({ poll }: { poll: Poll }) => {
+const PollOverviewCard = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
@@ -20,14 +20,12 @@ const PollCard = ({ poll }: { poll: Poll }) => {
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
   return (
-    <Flex
-      px={4}
-      py={3}
-      variant="cards.primary"
+    <div
       sx={{
-        boxShadow: 'faint',
+        display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        variant: 'cards.primary'
       }}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -55,7 +53,7 @@ const PollCard = ({ poll }: { poll: Poll }) => {
               query: { network }
             }}
             as={{
-              pathname: `/polling/${poll.multiHash}`,
+              pathname: `/polling/${poll.slug}`,
               query: { network }
             }}
           >
@@ -84,13 +82,13 @@ const PollCard = ({ poll }: { poll: Poll }) => {
       <Divider my={3} mx={-4} sx={{ color: 'muted' }} />
       <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Link
-          key={poll.multiHash}
+          key={poll.slug}
           href={{
             pathname: '/polling/[poll-hash]',
             query: { network }
           }}
           as={{
-            pathname: `/polling/${poll.multiHash}`,
+            pathname: `/polling/${poll.slug}`,
             query: { network }
           }}
         >
@@ -98,8 +96,8 @@ const PollCard = ({ poll }: { poll: Poll }) => {
         </Link>
         <VotingStatus poll={poll} allUserVotes={allUserVotes} />
       </Flex>
-    </Flex>
+    </div>
   );
 };
 
-export default PollCard;
+export default PollOverviewCard;

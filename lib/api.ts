@@ -79,6 +79,7 @@ export async function getPolls(): Promise<Poll[]> {
         (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
       return {
         ...p,
+        slug: p.multiHash.slice(0, 8),
         startDate: `${p.startDate}`,
         endDate: `${p.endDate}`,
         content,
@@ -99,10 +100,10 @@ export async function getPolls(): Promise<Poll[]> {
   return (_cachedPolls = polls);
 }
 
-export async function getPoll(pollHash: string): Promise<Poll> {
+export async function getPoll(slug: string): Promise<Poll> {
   const polls = await getPolls();
-  const poll = polls.find(poll => poll.multiHash === pollHash);
-  invariant(poll, `poll not found for poll hash ${pollHash}`);
+  const poll = polls.find(poll => poll.slug === slug);
+  invariant(poll, `poll not found for poll slug ${slug}`);
   const content = await markdownToHtml(poll.content);
 
   return {

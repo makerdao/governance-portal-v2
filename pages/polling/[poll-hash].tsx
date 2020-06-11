@@ -71,7 +71,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               <VotingStatus poll={poll} allUserVotes={allUserVotes} />
             </Flex>
           </Flex>
-          <Divider sx={{ color: 'muted' }} />
+          <Divider />
           <Tabs
             hashRoute={true}
             tabTitles={['Poll Detail', 'Vote Breakdown']}
@@ -155,7 +155,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const polls = await getPolls();
-  const paths = polls.map(p => `/polling/${p.multiHash}`);
+  const paths = polls.map(p => `/polling/${p.slug}`);
 
   return {
     paths,

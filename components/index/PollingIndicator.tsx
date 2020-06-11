@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useMemo } from 'react';
-import { Box, NavLink, Badge, jsx } from 'theme-ui';
+import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -90,7 +90,7 @@ export default ({ polls }: { polls: Poll[] }) => {
   }
 
   return (
-    <Box py="5" mx="auto" sx={{ maxWidth: 8, textAlign: 'center' }}>
+    <Container sx={{ maxWidth: 8, textAlign: 'center' }}>
       {account && !unvotedPolls ? (
         <Skeleton height="39px" />
       ) : (
@@ -104,6 +104,6 @@ export default ({ polls }: { polls: Poll[] }) => {
           <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
         </Link>
       )}
-    </Box>
+    </Container>
   );
 };

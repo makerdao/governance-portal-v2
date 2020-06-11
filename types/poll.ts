@@ -11,6 +11,7 @@ type Poll = {
   startDate: string;
   discussionLink: string | null;
   voteType: VoteTypes;
+  slug: string;
 };
 
 export default Poll;

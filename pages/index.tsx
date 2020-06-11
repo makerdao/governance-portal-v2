@@ -10,6 +10,7 @@ import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
+import StackLayout from '../components/layouts/Stack';
 import SystemStats from '../components/index/SystemStats';
 import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
@@ -44,6 +45,157 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         backgroundPosition: '0 0'
       }}
     >
+      <Head>
+        <title>Maker Governance Portal</title>
+      </Head>
+
+      <PrimaryLayout>
+        <StackLayout gap={6}>
+          <section>
+            <StackLayout gap={5}>
+              <Container
+                pt={[4, 6]}
+                sx={{
+                  maxWidth: 'title',
+                  textAlign: 'center'
+                }}
+              >
+                <StackLayout gap={3}>
+                  <Heading as="h1" sx={{ fontSize: [7, 8] }}>
+                    Maker Governance
+                  </Heading>
+                  <Text
+                    as="p"
+                    sx={{
+                      fontSize: [3, 5],
+                      px: [4, 'inherit']
+                    }}
+                  >
+                    Join a decentralized community protecting the integrity of the Maker Protocol through
+                    research, discussion, and on-chain voting.
+                  </Text>
+                </StackLayout>
+              </Container>
+
+              <PollingIndicator polls={polls} />
+            </StackLayout>
+          </section>
+
+          <section>
+            <SystemStats />
+          </section>
+
+          <section>
+            <Container
+              sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page' }}
+            >
+              <IntroCard
+                title="Introduction to Governance"
+                linkText="Get started"
+                linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
+                icon={<Icon name="govIntro" size="5" />}
+              >
+                A guide to outlining the basics of getting started with voting.
+              </IntroCard>
+              <IntroCard
+                title="Governance Forum"
+                linkText="Go to forum"
+                linkDest="https://forum.makerdao.com/c/governance/"
+                icon={<Icon name="govForum" size="5" />}
+              >
+                Get the latest updates and take part in current discussions.
+              </IntroCard>
+              <IntroCard
+                title="Governance Calls"
+                linkText="View gov calls"
+                linkDest="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
+                icon={<Icon name="govCalls" size="5" />}
+              >
+                Weekly calls to present research and coordinate around current issues.
+              </IntroCard>
+            </Container>
+          </section>
+
+          <section>
+            <StackLayout>
+              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
+                <StackLayout gap={3}>
+                  <Heading as="h2">Executive Votes</Heading>
+                  <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
+                    Executive Votes are conducted to make changes to the system. The governing proposal
+                    represents the current state of the system.
+                  </Text>
+                </StackLayout>
+              </Container>
+
+              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
+                <StackLayout>
+                  {proposals.map(proposal => (
+                    <ExecutiveCard
+                      isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
+                      key={proposal.key}
+                      proposal={proposal}
+                    />
+                  ))}
+                </StackLayout>
+              </Container>
+            </StackLayout>
+          </section>
+
+          <section>
+            <StackLayout>
+              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
+                <StackLayout gap={3}>
+                  <Heading as="h2">Polling Votes</Heading>
+                  <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
+                    Polls are conducted to establish a rough consensus of community sentiment before Executive
+                    Votes are conducted.
+                  </Text>
+                </StackLayout>
+              </Container>
+
+              <Container sx={{ maxWidth: 'column' }}>
+                <StackLayout>
+                  {recentPolls.map(poll => (
+                    <PollPreviewCard key={poll.pollId} poll={poll} />
+                  ))}
+                </StackLayout>
+              </Container>
+            </StackLayout>
+          </section>
+
+          <section sx={{ py: 5 }}>
+            <Container
+              sx={{
+                textAlign: 'center',
+                maxWidth: 'page',
+                position: ['relative']
+              }}
+            >
+              <div
+                sx={{
+                  height: '100%',
+                  width: '100%',
+                  position: 'absolute',
+                  zIndex: -1,
+                  mt: t => `-${t.space[5]}px`,
+                  bg: 'background'
+                }}
+              />
+              <StackLayout>
+                <Heading as="h2">Recent Governance Blog Posts</Heading>
+                <Container
+                  sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page' }}
+                >
+                  {blogPosts.map(post => (
+                    <BlogPosts blogPost={post} />
+                  ))}
+                </Container>
+              </StackLayout>
+            </Container>
+          </section>
+        </StackLayout>
+      </PrimaryLayout>
       <Global
         styles={theme => ({
           body: {
@@ -51,120 +203,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           }
         })}
       />
-      <PrimaryLayout>
-        <Head>
-          <title>Maker Governance Portal</title>
-        </Head>
-        <Container>
-          <Container
-            as="section"
-            sx={{
-              textAlign: 'center'
-            }}
-          >
-            <Box pt={[4, 6]} mx="auto" sx={{ maxWidth: 'title' }}>
-              <Heading as="h1" sx={{ fontSize: [7, 8] }}>
-                Maker Governance
-              </Heading>
-              <Text
-                mx="auto"
-                mt="3"
-                as="p"
-                sx={{
-                  fontSize: [3, 5],
-                  px: [4, 'inherit'],
-                  lineHeight: 'body'
-                }}
-              >
-                Join a decentralized community protecting the integrity of the Maker Protocol through
-                research, discussion, and on-chain voting.
-              </Text>
-            </Box>
-          </Container>
-          <PollingIndicator polls={polls} />
-          <div sx={{ pb: 5 }}>
-            <SystemStats />
-          </div>
-          <Flex
-            sx={{ justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page', border: 'none' }}
-            mx="auto"
-            mb="6"
-          >
-            <IntroCard
-              title="Introduction to Governance"
-              linkText="Get started"
-              linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
-              icon={<Icon name="govIntro" size="5" />}
-            >
-              A guide to outlining the basics of getting started with voting.
-            </IntroCard>
-            <IntroCard
-              title="Governance Forum"
-              linkText="Go to forum"
-              linkDest="https://forum.makerdao.com/c/governance/"
-              icon={<Icon name="govForum" size="5" />}
-            >
-              Get the latest updates and take part in current discussions.
-            </IntroCard>
-            <IntroCard
-              title="Governance Calls"
-              linkText="View gov calls"
-              linkDest="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
-              icon={<Icon name="govCalls" size="5" />}
-            >
-              Weekly calls to present research and coordinate around current issues.
-            </IntroCard>
-          </Flex>
-          <Container
-            pb="5"
-            sx={{
-              textAlign: 'center'
-            }}
-            as="section"
-          >
-            <Box mx="auto" sx={{ maxWidth: 'title' }}>
-              <Heading as="h2" mb="3">
-                Executive Votes
-              </Heading>
-              <Text mx="auto" as="p" sx={{ fontSize: [3, 5], lineHeight: 'body' }}>
-                Executive Votes are conducted to make changes to the system. The governing proposal represents
-                the current state of the system.
-              </Text>
-            </Box>
-            <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 'column' }}>
-              {proposals.map(proposal => (
-                <ExecutiveCard
-                  isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
-                  key={proposal.key}
-                  proposal={proposal}
-                />
-              ))}
-            </Box>
-          </Container>
-          <Container
-            as="section"
-            sx={{
-              textAlign: 'center'
-            }}
-          >
-            <Box mx="auto" sx={{ maxWidth: 'title' }}>
-              <Heading as="h2">Polling Votes</Heading>
-              <Text mx="auto" mt="3" as="p" sx={{ fontSize: [3, 5], lineHeight: 'body' }}>
-                Polls are conducted to establish a rough consensus of community sentiment before Executive
-                Votes are conducted.
-              </Text>
-            </Box>
-            <Box mx="auto" sx={{ textAlign: 'left', maxWidth: 'column' }}>
-              <Container py="4">
-                {recentPolls.map(poll => (
-                  <PollPreviewCard key={poll.pollId} poll={poll} />
-                ))}
-              </Container>
-            </Box>
-          </Container>
-          <BlogPosts blogPosts={blogPosts} />
-        </Container>
-      </PrimaryLayout>
     </div>
   );
 };

@@ -41,7 +41,7 @@ const PollingOverview = ({ polls }: Props) => {
     if (loader?.current) {
       const options = {
         root: null,
-        rootMargin: '80px'
+        rootMargin: '800px'
       };
       // Create observer
       const observer = new IntersectionObserver(loadMore, options);

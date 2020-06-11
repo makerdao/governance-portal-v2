@@ -1,6 +1,7 @@
+/** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
+import { NavLink, Text, Flex, Badge, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import { parsePollTally, fetchJson } from '../../lib/utils';
@@ -24,38 +25,39 @@ const PollCard = ({ poll }: Props) => {
   );
 
   return (
-    <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>
-      <Flex
-        sx={{
-          width: '100%',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}
-      >
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <Text
-            sx={{
-              fontSize: [2, 3],
-              color: 'mutedAlt',
-              textTransform: 'uppercase'
-            }}
-          >
-            Posted{' '}
-            {new Date(poll.startDate).toLocaleString('default', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-          </Text>
-          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-        </Flex>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        variant: 'cards.primary'
+      }}
+    >
+      <Flex sx={{ justifyContent: 'space-between' }}>
+        <Text
+          sx={{
+            fontSize: [2, 3],
+            color: 'mutedAlt',
+            textTransform: 'uppercase'
+          }}
+        >
+          Posted{' '}
+          {new Date(poll.startDate).toLocaleString('default', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </Text>
+        <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+      </Flex>
+      <Flex>
         <Link
           href={{
             pathname: '/polling/[poll-hash]',
             query: { network }
           }}
           as={{
-            pathname: `/polling/${poll.multiHash}`,
+            pathname: `/polling/${poll.slug}`,
             query: { network }
           }}
         >
@@ -70,68 +72,69 @@ const PollCard = ({ poll }: Props) => {
             {poll.title}
           </Text>
         </Link>
-        <Text
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: [3, 4],
-            opacity: 0.8
+      </Flex>
+
+      <Text
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          fontSize: [3, 4],
+          opacity: 0.8
+        }}
+      >
+        {poll.summary}
+      </Text>
+      <Flex>
+        <Link
+          key={poll.slug}
+          href={{
+            pathname: '/polling/[poll-hash]',
+            query: { network }
+          }}
+          as={{
+            pathname: `/polling/${poll.slug}`,
+            query: { network }
           }}
         >
-          {poll.summary}
-        </Text>
-        <Flex>
-          <Link
-            key={poll.multiHash}
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/polling/${poll.multiHash}`,
-              query: { network }
-            }}
-          >
-            <NavLink variant="buttons.outline">View Proposal</NavLink>
-          </Link>
-          <Flex sx={{ alignItems: 'cetner' }}>
-            {tally ? (
-              hasPollEnded ? (
-                <Badge
-                  mx="3"
-                  variant="primary"
-                  sx={{
-                    borderColor: '#098C7D',
-                    color: '#098C7D',
-                    textTransform: 'uppercase',
-                    alignSelf: 'center'
-                  }}
-                >
-                  Winning Option: {tally.winningOption}
-                </Badge>
-              ) : (
-                <Badge
-                  mx="3"
-                  variant="primary"
-                  sx={{
-                    borderColor: 'text',
-                    textTransform: 'uppercase',
-                    alignSelf: 'center'
-                  }}
-                >
-                  Leading Option: {tally.winningOption}
-                </Badge>
-              )
+          <NavLink variant="buttons.outline">View Proposal</NavLink>
+        </Link>
+        <Flex sx={{ alignItems: 'cetner' }}>
+          {tally ? (
+            hasPollEnded ? (
+              <Badge
+                mx="3"
+                variant="primary"
+                sx={{
+                  borderColor: '#098C7D',
+                  color: '#098C7D',
+                  textTransform: 'uppercase',
+                  alignSelf: 'center'
+                }}
+              >
+                Winning Option: {tally.winningOption}
+              </Badge>
             ) : (
-              <Box m="auto" ml="3" sx={{ width: '300px' }}>
-                <Skeleton />
-              </Box>
-            )}
-          </Flex>
+              <Badge
+                mx="3"
+                variant="primary"
+                sx={{
+                  borderColor: 'text',
+                  textTransform: 'uppercase',
+                  alignSelf: 'center'
+                }}
+              >
+                Leading Option: {tally.winningOption}
+              </Badge>
+            )
+          ) : (
+            <Box m="auto" ml="3" sx={{ width: '300px' }}>
+              <Skeleton />
+            </Box>
+          )}
         </Flex>
       </Flex>
-    </Flex>
+    </div>
   );
 };
 

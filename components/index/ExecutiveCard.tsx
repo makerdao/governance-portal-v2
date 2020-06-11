@@ -1,6 +1,7 @@
+/** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box } from 'theme-ui';
+import { NavLink, Text, Flex, Badge, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import getMaker, { getNetwork } from '../../lib/maker';
@@ -21,10 +22,16 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
   );
 
   return (
-    <Flex p="4" mx="auto" my="3" variant="cards.primary" sx={{ boxShadow: 'faint', height: '210px' }}>
+    <div
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        variant: 'cards.primary'
+      }}
+    >
       <Flex
         sx={{
-          width: '100%',
           flexDirection: 'column',
           justifyContent: 'space-between'
         }}
@@ -107,6 +114,6 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
           )}
         </Flex>
       </Flex>
-    </Flex>
+    </div>
   );
 }

@@ -46,7 +46,7 @@ const TabbedLayout = ({ tabTitles, tabPanels, hashRoute }: Props) => {
             </Tab>
           ))}
         </TabList>
-        <Divider sx={{ color: 'muted' }} />
+        <Divider />
         <TabPanels>
           {tabPanels.map((tabPanel, i) => (
             <TabPanel key={i}>{tabPanel}</TabPanel>

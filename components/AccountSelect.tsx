@@ -1,4 +1,5 @@
-import { Box, Select } from 'theme-ui';
+/** @jsx jsx */
+import { Button, Flex, Divider, jsx } from 'theme-ui';
 import Router from 'next/router';
 
 import useAccountsStore from '../stores/accounts';
@@ -7,7 +8,7 @@ import { getNetwork } from '../lib/maker';
 const formatAddress = (address: string) => address.slice(0, 7) + '...' + address.slice(-4);
 
 const AccountSelect = () => {
-  const currentAccount = useAccountsStore(state => state.currentAccount);
+  const account = useAccountsStore(state => state.currentAccount);
   const connectWithBrowserProvider = useAccountsStore(state => state.connectWithBrowserProvider);
 
   const network = getNetwork();
@@ -28,21 +29,25 @@ const AccountSelect = () => {
   };
 
   return (
-    <Box>
-      <Select value={'Connect wallet'} onChange={handleChange} sx={{ width: '6', fontSize: '2' }}>
-        {currentAccount ? (
-          <option defaultValue={formatAddress(currentAccount.address)}>
-            {formatAddress(currentAccount.address)}
-          </option>
+    <Button sx={{ variant: 'buttons.card' }}>
+      <div sx={{ variant: 'cards.tight' }}>
+        {account ? (
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Flex sx={{ justifyContent: 'space-between' }}>
+              <span>MetaMask</span>
+              <span>{formatAddress(account.address)}</span>
+            </Flex>
+            <Divider mx={-2} />
+            <Flex sx={{ justifyContent: 'space-between' }}>
+              <span>Polling Balance</span>
+              <span>333 MKR</span>
+            </Flex>
+          </Flex>
         ) : (
-          <>
-            <option>Connect wallet</option>
-            <option>MetaMask</option>
-          </>
+          <span>Connect wallet</span>
         )}
-        <option>{switchLabel}</option>
-      </Select>
-    </Box>
+      </div>
+    </Button>
   );
 };
 
