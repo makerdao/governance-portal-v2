@@ -88,7 +88,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   ])
                   .sort(([, valueA], [, valueB]) => (valueB === 0 ? -1 : valueB.minus(valueA).toNumber()))
                   .map(([optionName, value]) => (
-                    <div>
+                    <div key={optionName}>
                       <Text sx={{ color: 'textMuted', width: '20%' }}>
                         {tally ? optionName : <Skeleton />}
                       </Text>
