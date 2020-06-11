@@ -81,20 +81,22 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 <Text as="h3" sx={{ pb: 2 }}>
                   Vote Breakdown
                 </Text>
-                {Object.entries(poll.options || {})
-                  .map(([optionId, optionName]) => [
-                    optionName,
-                    tally?.options[optionId]?.firstChoice.div(tally.totalMkrParticipation).toBigNumber() || 0
-                  ])
-                  .sort(([, valueA], [, valueB]) => (valueB === 0 ? -1 : valueB.minus(valueA).toNumber()))
-                  .map(([optionName, value]) => (
-                    <div key={optionName}>
-                      <Text sx={{ color: 'textMuted', width: '20%' }}>
-                        {tally ? optionName : <Skeleton />}
-                      </Text>
-                      {tally ? <Progress sx={{ my: 2 }} max={1} value={value} /> : <Skeleton />}
-                    </div>
-                  ))}
+                {Object.keys(poll.options).map((_, i) => (
+                  <div key={i}>
+                    <Text sx={{ color: 'textMuted', width: '20%' }}>
+                      {tally ? tally.results[i].optionName : <Skeleton />}
+                    </Text>
+                    {tally ? (
+                      <Progress
+                        sx={{ my: 2 }}
+                        max={tally.totalMkrParticipation.toBigNumber()}
+                        value={tally.results[i].firstChoice.toBigNumber()}
+                      />
+                    ) : (
+                      <Skeleton />
+                    )}
+                  </div>
+                ))}
               </div>
             ]}
           />
@@ -132,7 +134,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }) {
 
   if (isFallback || (!isDefaultNetwork() && !_poll))
     return (
-      <PrimaryLayout>
+      <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );

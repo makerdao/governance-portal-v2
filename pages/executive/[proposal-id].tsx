@@ -58,7 +58,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
 
   if (isFallback || (!isDefaultNetwork() && !_proposal))
     return (
-      <PrimaryLayout>
+      <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );

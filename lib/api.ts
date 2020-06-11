@@ -62,15 +62,17 @@ export async function getPolls(): Promise<Poll[]> {
             5000, // reject if it takes longer than this to fetch
             backoffRetry(3, () => fetch(p.url))
           ).then(response => response?.text()));
+        invariant(typeof document === 'string' && document.length > 0);
       } catch (err) {
-        console.log(`unable to fetch poll content from ${p.url} for poll ${p.pollId}`);
+        console.log(`unable to fetch valid poll document from ${p.url} for poll ${p.pollId}`);
       }
 
-      const pollMeta = matter(document || '').data;
-      const content = matter(document || '')?.content || '';
+      const pollMeta = matter(document).data;
+      const content = matter(document).content || '';
       const summary = pollMeta?.summary || '';
       const title = pollMeta?.title || '';
-      const options = pollMeta?.options || null;
+      const options = pollMeta.options;
+      delete options[0]; // delete abstain option
       const discussionLink =
         pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
           ? pollMeta.discussion_link

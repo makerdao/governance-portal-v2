@@ -1,6 +1,8 @@
 import CurrencyObject from './currency';
 
-type Option = {
+type Result = {
+  optionId: string;
+  optionName: string;
   firstChoice: CurrencyObject;
   transfer: CurrencyObject;
   winner: boolean;
@@ -12,7 +14,7 @@ type PollTally = {
   winningOption: string;
   rounds: number;
   totalMkrParticipation: CurrencyObject;
-  options: { [optionId: string]: Option };
+  results: Result[];
 };
 
 export default PollTally;
