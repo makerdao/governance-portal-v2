@@ -3,7 +3,7 @@ import { jsx } from 'theme-ui';
 import { Flex } from 'theme-ui';
 
 type Props = {
-  gap: number;
+  gap?: number;
 };
 
 /**
