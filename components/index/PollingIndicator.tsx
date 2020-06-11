@@ -90,7 +90,7 @@ export default ({ polls }: { polls: Poll[] }) => {
   }
 
   return (
-    <Container sx={{ maxWidth: 8, textAlign: 'center' }}>
+    <Container sx={{ textAlign: 'center' }}>
       {account && !unvotedPolls ? (
         <Skeleton height="39px" />
       ) : (
