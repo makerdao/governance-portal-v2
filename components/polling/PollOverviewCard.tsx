@@ -1,10 +1,11 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Divider, Box, jsx } from 'theme-ui';
+import { Text, Flex, Divider, Box, Button, jsx } from 'theme-ui';
 
 import useAccountsStore from '../../stores/accounts';
 import getMaker, { getNetwork } from '../../lib/maker';
+import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
@@ -20,16 +21,15 @@ const PollOverviewCard = ({ poll }: { poll: Poll }) => {
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
   return (
-    <div
+    <Flex
       sx={{
-        display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         variant: 'cards.primary'
       }}
     >
-      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between' }}>
-        <Flex mb={2} sx={{ justifyContent: 'space-between' }}>
+      <Stack gap={2}>
+        <Flex sx={{ justifyContent: 'space-between' }}>
           <Text
             sx={{
               fontSize: [2, 3],
@@ -46,7 +46,7 @@ const PollOverviewCard = ({ poll }: { poll: Poll }) => {
           </Text>
           <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
         </Flex>
-        <Box mb={2}>
+        <Box>
           <Link
             href={{
               pathname: '/polling/[poll-hash]',
@@ -72,31 +72,32 @@ const PollOverviewCard = ({ poll }: { poll: Poll }) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [3, 4],
-            color: 'primaryText',
             opacity: 0.8
           }}
         >
           {poll.summary}
         </Text>
-      </Flex>
-      <Divider my={3} mx={-4} sx={{ color: 'muted' }} />
-      <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link
-          key={poll.slug}
-          href={{
-            pathname: '/polling/[poll-hash]',
-            query: { network }
-          }}
-          as={{
-            pathname: `/polling/${poll.slug}`,
-            query: { network }
-          }}
-        >
-          <NavLink variant={hasVoted ? 'buttons.outline' : 'buttons.primary'}>View Details</NavLink>
-        </Link>
-        <VotingStatus poll={poll} allUserVotes={allUserVotes} />
-      </Flex>
-    </div>
+        <div>
+          <Divider mt={0} mx={-4} />
+        </div>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <Link
+            key={poll.slug}
+            href={{
+              pathname: '/polling/[poll-hash]',
+              query: { network }
+            }}
+            as={{
+              pathname: `/polling/${poll.slug}`,
+              query: { network }
+            }}
+          >
+            <Button variant={hasVoted ? 'outline' : 'primary'}>View Details</Button>
+          </Link>
+          <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+        </Flex>
+      </Stack>
+    </Flex>
   );
 };
 

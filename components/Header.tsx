@@ -15,7 +15,6 @@ const Header = () => {
     <header
       sx={{
         py: 3,
-        px: 4,
         display: 'flex',
         alignItems: 'center',
         width: '100%',

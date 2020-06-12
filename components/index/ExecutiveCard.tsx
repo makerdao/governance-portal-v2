@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box, jsx } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import getMaker, { getNetwork } from '../../lib/maker';
@@ -79,7 +79,7 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
               query: { network }
             }}
           >
-            <NavLink variant="buttons.primary">Vote on proposal</NavLink>
+            <Button>Vote on proposal</Button>
           </Link>
           {mkrSupport ? (
             <>

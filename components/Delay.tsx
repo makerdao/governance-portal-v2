@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 /**
  * Hides children until timer is up
  */
-const Delay = ({ children, wait = 250 }: React.PropsWithChildren<{ wait?: number }>) => {
+const Delay = ({ children, wait = 100 }: React.PropsWithChildren<{ wait?: number }>) => {
   const [waiting, setWaiting] = useState(true);
 
   useEffect(() => {

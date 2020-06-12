@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Text, Flex, Badge, Box, jsx } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import { parsePollTally, fetchJson } from '../../lib/utils';
@@ -97,7 +97,7 @@ const PollCard = ({ poll }: Props) => {
             query: { network }
           }}
         >
-          <NavLink variant="buttons.outline">View Proposal</NavLink>
+          <Button variant="outline">View Proposal</Button>
         </Link>
         <Flex sx={{ alignItems: 'cetner' }}>
           {tally ? (

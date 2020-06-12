@@ -15,8 +15,6 @@ const WrapLayout = ({ children, gap = 4, justifyContent }: React.PropsWithChildr
         flexDirection: 'row',
         flexWrap: 'wrap',
         '& > *:not(:last-child)': {
-          // this is more specific than the owl selector so it can override theme-ui's class-based margin: 0
-          // while still allowing breakpoints and without preventing !important overrides from children *sigh*
           mr: gap
         }
       }}

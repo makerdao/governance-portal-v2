@@ -13,10 +13,10 @@ const FooterContainer = props => (
   <Container
     as="footer"
     sx={{
+      px: [4, 0, 0],
       fontSize: '1.5rem',
       pt: 5,
       pb: 3,
-      px: 4,
       width: '100%',
       backgroundColor: '#FFFFFF'
     }}
@@ -411,7 +411,6 @@ export default function Footer({ shorten = false } = {}) {
       <footer
         sx={{
           py: 3,
-          px: 4,
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',

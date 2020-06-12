@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { Flex, Container, jsx } from 'theme-ui';
 
 import Header from '../Header';
 import Footer from '../Footer';
@@ -10,14 +10,14 @@ type Props = {
 
 const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Props>) => {
   return (
-    <div
+    <Flex
       sx={{
-        display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
         maxWidth: 'page',
         mx: 'auto',
-        variant: 'layout.root'
+        variant: 'layout.root',
+        px: [0, 4]
       }}
     >
       <Header />
@@ -28,19 +28,10 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
           variant: 'layout.main'
         }}
       >
-        <div
-          sx={{
-            mx: 'auto',
-            px: [0, 4],
-            maxWidth: 'page',
-            variant: 'layout.container'
-          }}
-        >
-          {children}
-        </div>
+        <Container sx={{}}>{children}</Container>
       </main>
       <Footer shorten={shortenFooter || false} />
-    </div>
+    </Flex>
   );
 };
 

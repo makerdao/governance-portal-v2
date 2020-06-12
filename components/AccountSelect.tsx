@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Button, Flex, Divider, jsx } from 'theme-ui';
+import { Button, Flex, Divider, Card, jsx } from 'theme-ui';
 import Router from 'next/router';
 
 import useAccountsStore from '../stores/accounts';
@@ -29,8 +29,8 @@ const AccountSelect = () => {
   };
 
   return (
-    <Button sx={{ variant: 'buttons.card' }} onClick={account ? () => {} : connectWithBrowserProvider}>
-      <div sx={{ variant: 'cards.tight' }}>
+    <Button variant="card" onClick={account ? () => {} : connectWithBrowserProvider}>
+      <Card variant="tight">
         {account ? (
           <Flex sx={{ flexDirection: 'column' }}>
             <Flex sx={{ justifyContent: 'space-between' }}>
@@ -46,7 +46,7 @@ const AccountSelect = () => {
         ) : (
           <span>Connect wallet</span>
         )}
-      </div>
+      </Card>
     </Button>
   );
 };
