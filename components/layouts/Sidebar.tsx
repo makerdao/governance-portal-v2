@@ -17,7 +17,10 @@ const SidebarLayout = ({ children }: React.PropsWithChildren<Props>) => {
           'auto', // default to a stacked layout on small & medium screens
           'auto',
           '1fr 256px' // use columns for larger screens
-        ]
+        ],
+        '& > *': {
+          minWidth: 0
+        }
       }}
     >
       {children}

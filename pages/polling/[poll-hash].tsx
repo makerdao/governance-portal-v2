@@ -11,6 +11,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from '@reach/tooltip';
 
 import CountdownTimer from '../../components/CountdownTimer';
+import Delay from '../../components/Delay';
 import useAccountsStore from '../../stores/accounts';
 import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
@@ -45,16 +46,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
       <SidebarLayout>
         <div>
           <Flex sx={{ justifyContent: 'space-between' }}>
-            <Link
-              href={{
-                pathname: '/polling/[poll-hash]',
-                query: { network }
-              }}
-              as={{
-                pathname: `/polling/${poll.ctx.prevPollSlug}`,
-                query: { network }
-              }}
-            >
+            <Link href={{ pathname: '/polling', query: { network } }}>
               <NavLink p={2}>
                 <Flex sx={{ alignItems: 'center' }}>
                   <Icon name="chevron_left" size="2" mr={2} /> Back to all polls
@@ -64,6 +56,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <Flex>
               {poll.ctx.prevPollSlug && (
                 <Link
+                  scroll={false}
                   href={{
                     pathname: '/polling/[poll-hash]',
                     query: { network }
@@ -82,6 +75,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               )}
               {poll.ctx.nextPollSlug && (
                 <Link
+                  scroll={false}
                   href={{
                     pathname: '/polling/[poll-hash]',
                     query: { network }
@@ -145,7 +139,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     <div key={i}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
                         <Text sx={{ color: 'textMuted', width: '20%' }}>
-                          {tally ? tally.results[i].optionName : <Skeleton />}
+                          {tally ? (
+                            tally.results[i].optionName
+                          ) : (
+                            <Delay>
+                              <Skeleton />
+                            </Delay>
+                          )}
                         </Text>
                         <Text sx={{ color: 'textMuted', width: tally ? 'unset' : '30%' }}>
                           {tally ? (
@@ -154,13 +154,16 @@ const PollView = ({ poll }: { poll: Poll }) => {
                               .toBigNumber()
                               .toFormat(2)} MKR Voting`
                           ) : (
-                            <Skeleton />
+                            <Delay>
+                              <Skeleton />
+                            </Delay>
                           )}
                         </Text>
                       </Flex>
 
                       {tally ? (
                         <Tooltip
+                          sx={{ mt: -1 }}
                           label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}
                         >
                           <Box my={1} py={1}>
@@ -171,7 +174,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                           </Box>
                         </Tooltip>
                       ) : (
-                        <Skeleton />
+                        <Delay>
+                          <Skeleton />
+                        </Delay>
                       )}
                     </div>
                   ))}
