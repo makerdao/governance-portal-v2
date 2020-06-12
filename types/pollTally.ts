@@ -11,7 +11,7 @@ type Result = {
 
 type PollTally = {
   winner: string | null;
-  winningOption: string;
+  winningOptionName: string;
   rounds: number;
   totalMkrParticipation: CurrencyObject;
   results: Result[];

@@ -112,7 +112,7 @@ const PollCard = ({ poll }: Props) => {
                   alignSelf: 'center'
                 }}
               >
-                Winning Option: {tally.winningOption}
+                Winning Option: {tally.winningOptionName}
               </Badge>
             ) : (
               <Badge
@@ -124,7 +124,7 @@ const PollCard = ({ poll }: Props) => {
                   alignSelf: 'center'
                 }}
               >
-                Leading Option: {tally.winningOption}
+                Leading Option: {tally.winningOptionName}
               </Badge>
             )
           ) : (

@@ -10,7 +10,8 @@ import { Global } from '@emotion/core';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
-import StackLayout from '../components/layouts/Stack';
+import Stack from '../components/layouts/Stack';
+import Wrap from '../components/layouts/Wrap';
 import SystemStats from '../components/index/SystemStats';
 import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
@@ -50,9 +51,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       </Head>
 
       <PrimaryLayout>
-        <StackLayout gap={6}>
+        <Stack gap={6}>
           <section>
-            <StackLayout gap={5}>
+            <Stack gap={5}>
               <Container
                 pt={[4, 6]}
                 sx={{
@@ -60,7 +61,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   textAlign: 'center'
                 }}
               >
-                <StackLayout gap={3}>
+                <Stack gap={3}>
                   <Heading as="h1" sx={{ fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
@@ -74,11 +75,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                </StackLayout>
+                </Stack>
               </Container>
 
               <PollingIndicator polls={polls} />
-            </StackLayout>
+            </Stack>
           </section>
 
           <section>
@@ -86,9 +87,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Container
-              sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page' }}
-            >
+            <Wrap justifyContent="space-around">
               <IntroCard
                 title="Introduction to Governance"
                 linkText="Get started"
@@ -113,23 +112,23 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               >
                 Weekly calls to present research and coordinate around current issues.
               </IntroCard>
-            </Container>
+            </Wrap>
           </section>
 
           <section>
-            <StackLayout>
+            <Stack>
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <StackLayout gap={3}>
+                <Stack gap={3}>
                   <Heading as="h2">Executive Votes</Heading>
                   <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
                     Executive Votes are conducted to make changes to the system. The governing proposal
                     represents the current state of the system.
                   </Text>
-                </StackLayout>
+                </Stack>
               </Container>
 
               <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
-                <StackLayout>
+                <Stack>
                   {proposals.map(proposal => (
                     <ExecutiveCard
                       isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
@@ -137,31 +136,31 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                       proposal={proposal}
                     />
                   ))}
-                </StackLayout>
+                </Stack>
               </Container>
-            </StackLayout>
+            </Stack>
           </section>
 
           <section>
-            <StackLayout>
+            <Stack>
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <StackLayout gap={3}>
+                <Stack gap={3}>
                   <Heading as="h2">Polling Votes</Heading>
                   <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
                     Polls are conducted to establish a rough consensus of community sentiment before Executive
                     Votes are conducted.
                   </Text>
-                </StackLayout>
+                </Stack>
               </Container>
 
               <Container sx={{ maxWidth: 'column' }}>
-                <StackLayout>
+                <Stack>
                   {recentPolls.map(poll => (
                     <PollPreviewCard key={poll.pollId} poll={poll} />
                   ))}
-                </StackLayout>
+                </Stack>
               </Container>
-            </StackLayout>
+            </Stack>
           </section>
 
           <section sx={{ py: 5 }}>
@@ -182,19 +181,17 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   bg: 'background'
                 }}
               />
-              <StackLayout>
+              <Stack>
                 <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Container
-                  sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', maxWidth: 'page' }}
-                >
+                <Wrap justifyContent="space-around">
                   {blogPosts.map(post => (
                     <BlogPosts key={post.link} blogPost={post} />
                   ))}
-                </Container>
-              </StackLayout>
+                </Wrap>
+              </Stack>
             </Container>
           </section>
-        </StackLayout>
+        </Stack>
       </PrimaryLayout>
       <Global
         styles={theme => ({

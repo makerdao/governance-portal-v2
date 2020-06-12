@@ -59,7 +59,7 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
   const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
 
   if (rawTally?.winner === null) rawTally.winningOption = 'none found';
-  else rawTally.winningOption = poll.options[rawTally.winner];
+  else rawTally.winningOptionName = poll.options[rawTally.winner];
 
   const results = Object.keys(poll.options)
     .map(key => {
@@ -78,6 +78,7 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
       if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
       return valueA.gt(valueB) ? -1 : 1;
     });
+
   delete rawTally.options;
   return { ...rawTally, results, totalMkrParticipation };
 }

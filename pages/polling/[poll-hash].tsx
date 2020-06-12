@@ -83,9 +83,22 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 </Text>
                 {Object.keys(poll.options).map((_, i) => (
                   <div key={i}>
-                    <Text sx={{ color: 'textMuted', width: '20%' }}>
-                      {tally ? tally.results[i].optionName : <Skeleton />}
-                    </Text>
+                    <Flex sx={{ justifyContent: 'space-between' }}>
+                      <Text sx={{ color: 'textMuted', width: '20%' }}>
+                        {tally ? tally.results[i].optionName : <Skeleton />}
+                      </Text>
+                      <Text sx={{ color: 'textMuted', width: tally ? 'unset' : '30%' }}>
+                        {tally ? (
+                          `${tally.results[i].firstChoice
+                            .add(tally.results[i].transfer)
+                            .toBigNumber()
+                            .toFormat(2)} MKR Voting`
+                        ) : (
+                          <Skeleton />
+                        )}
+                      </Text>
+                    </Flex>
+
                     {tally ? (
                       <Progress
                         sx={{ my: 2 }}
