@@ -11,7 +11,7 @@ type Props = {
 const IntroCard = (props: Props) => (
   <Box sx={{ width: 7 }}>
     {props.icon}
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '9rem' }}>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '9rem'] }}>
       <Text
         sx={{
           fontSize: [3, 4],
