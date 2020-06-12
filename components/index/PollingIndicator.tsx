@@ -31,7 +31,9 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
     message =
       unvotedPolls.length > 0
         ? 'Live Governance polls available for voting'
-        : 'Congratulations, you have voted on all current Governance Polls';
+        : activePolls.length > 0
+          ? 'Congratulations, you have voted on all current Governance Polls'
+          : 'There are no live Governance Polls at the moment';
   } else {
     pollsToBeAwareOf = activePolls.length;
     message =
