@@ -1,11 +1,14 @@
 /** @jsx jsx */
 import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
+import Link from 'next/link';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, Progress, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, jsx } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
+import Tooltip from '@reach/tooltip';
 
 import CountdownTimer from '../../components/CountdownTimer';
 import useAccountsStore from '../../stores/accounts';
@@ -40,80 +43,143 @@ const PollView = ({ poll }: { poll: Poll }) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
-        <Card>
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Text
-              sx={{
-                fontSize: [2, 3],
-                color: 'mutedAlt',
-                textTransform: 'uppercase'
+        <div>
+          <Flex sx={{ justifyContent: 'space-between' }}>
+            <Link
+              href={{
+                pathname: '/polling/[poll-hash]',
+                query: { network }
+              }}
+              as={{
+                pathname: `/polling/${poll.ctx.prevPollSlug}`,
+                query: { network }
               }}
             >
-              {new Date(poll.startDate).toLocaleString('default', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </Text>
-            <Heading
-              my="3"
-              sx={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                fontSize: [5, 6]
-              }}
-            >
-              {poll.title}
-            </Heading>
-            <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
-              <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-              <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+              <NavLink p={2}>
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Icon name="chevron_left" size="2" mr={2} /> Back to all polls
+                </Flex>
+              </NavLink>
+            </Link>
+            <Flex>
+              {poll.ctx.prevPollSlug && (
+                <Link
+                  href={{
+                    pathname: '/polling/[poll-hash]',
+                    query: { network }
+                  }}
+                  as={{
+                    pathname: `/polling/${poll.ctx.prevPollSlug}`,
+                    query: { network }
+                  }}
+                >
+                  <NavLink p={2}>
+                    <Flex sx={{ alignItems: 'center' }}>
+                      <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
+                    </Flex>
+                  </NavLink>
+                </Link>
+              )}
+              {poll.ctx.nextPollSlug && (
+                <Link
+                  href={{
+                    pathname: '/polling/[poll-hash]',
+                    query: { network }
+                  }}
+                  as={{
+                    pathname: `/polling/${poll.ctx.nextPollSlug}`,
+                    query: { network }
+                  }}
+                >
+                  <NavLink p={2}>
+                    <Flex sx={{ alignItems: 'center' }}>
+                      Next Poll <Icon name="chevron_right" size={2} ml={2} />
+                    </Flex>
+                  </NavLink>
+                </Link>
+              )}
             </Flex>
           </Flex>
-          <Divider />
-          <Tabs
-            hashRoute={true}
-            tabTitles={['Poll Detail', 'Vote Breakdown']}
-            tabPanels={[
-              <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
-              <div sx={{ pt: 3 }}>
-                <Text as="h3" sx={{ pb: 2 }}>
-                  Vote Breakdown
-                </Text>
-                {Object.keys(poll.options).map((_, i) => (
-                  <div key={i}>
-                    <Flex sx={{ justifyContent: 'space-between' }}>
-                      <Text sx={{ color: 'textMuted', width: '20%' }}>
-                        {tally ? tally.results[i].optionName : <Skeleton />}
-                      </Text>
-                      <Text sx={{ color: 'textMuted', width: tally ? 'unset' : '30%' }}>
-                        {tally ? (
-                          `${tally.results[i].firstChoice
-                            .add(tally.results[i].transfer)
-                            .toBigNumber()
-                            .toFormat(2)} MKR Voting`
-                        ) : (
-                          <Skeleton />
-                        )}
-                      </Text>
-                    </Flex>
+          <Card>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Text
+                sx={{
+                  fontSize: [2, 3],
+                  color: 'mutedAlt',
+                  textTransform: 'uppercase'
+                }}
+              >
+                {new Date(poll.startDate).toLocaleString('default', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </Text>
+              <Heading
+                my="3"
+                sx={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  fontSize: [5, 6]
+                }}
+              >
+                {poll.title}
+              </Heading>
+              <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
+                <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+              </Flex>
+            </Flex>
+            <Divider />
+            <Tabs
+              hashRoute={true}
+              tabTitles={['Poll Detail', 'Vote Breakdown']}
+              tabPanels={[
+                <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
+                <div sx={{ pt: 3 }}>
+                  <Text as="h3" sx={{ pb: 2 }}>
+                    Vote Breakdown
+                  </Text>
+                  {Object.keys(poll.options).map((_, i) => (
+                    <div key={i}>
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        <Text sx={{ color: 'textMuted', width: '20%' }}>
+                          {tally ? tally.results[i].optionName : <Skeleton />}
+                        </Text>
+                        <Text sx={{ color: 'textMuted', width: tally ? 'unset' : '30%' }}>
+                          {tally ? (
+                            `${tally.results[i].firstChoice
+                              .add(tally.results[i].transfer)
+                              .toBigNumber()
+                              .toFormat(2)} MKR Voting`
+                          ) : (
+                            <Skeleton />
+                          )}
+                        </Text>
+                      </Flex>
 
-                    {tally ? (
-                      <Progress
-                        sx={{ my: 2 }}
-                        max={tally.totalMkrParticipation.toBigNumber()}
-                        value={tally.results[i].firstChoice.toBigNumber()}
-                      />
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </div>
-                ))}
-              </div>
-            ]}
-          />
-        </Card>
+                      {tally ? (
+                        <Tooltip
+                          label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}
+                        >
+                          <Box my={1} py={1}>
+                            <Progress
+                              max={tally.totalMkrParticipation.toBigNumber()}
+                              value={tally.results[i].firstChoice.toBigNumber()}
+                            />
+                          </Box>
+                        </Tooltip>
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ]}
+            />
+          </Card>
+        </div>
         <Flex sx={{ flexDirection: 'column' }}>
           <StackLayout>
             <Card variant="compact">Card 1</Card>
@@ -162,6 +228,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const poll = await getPoll(params['poll-hash'] as string);
 
   return {
+    unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
       poll
     }

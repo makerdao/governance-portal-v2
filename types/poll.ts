@@ -12,6 +12,10 @@ type Poll = {
   discussionLink: string | null;
   voteType: VoteTypes;
   slug: string;
+  ctx: {
+    prevPollSlug: string | null;
+    nextPollSlug: string | null;
+  };
 };
 
 export default Poll;

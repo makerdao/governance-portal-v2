@@ -31,7 +31,7 @@ const PollingOverview = ({ polls }: Props) => {
     entries => {
       const target = entries.pop();
       if (target.isIntersecting) {
-        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 10 : numLoadedPolls);
+        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 2 : numLoadedPolls);
       }
     },
     [numLoadedPolls, setNumLoadedPolls]
@@ -43,12 +43,12 @@ const PollingOverview = ({ polls }: Props) => {
         root: null,
         rootMargin: '800px'
       };
+
       // Create observer
       const observer = new IntersectionObserver(loadMore, options);
-
-      // observer the loader
+      // observe the loader
       observer.observe(loader.current);
-      // clean up on willUnMount
+      // clean up
       return () => observer.unobserve(loader.current as HTMLDivElement);
     }
   }, [loader, loadMore]);

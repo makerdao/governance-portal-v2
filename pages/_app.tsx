@@ -5,6 +5,7 @@ import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
 import queryString from 'query-string';
 
+import '@reach/tooltip/styles.css';
 import '@reach/tabs/styles.css';
 import { fetchJson } from '../lib/utils';
 import theme from '../lib/theme';

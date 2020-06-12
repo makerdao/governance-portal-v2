@@ -2952,6 +2952,29 @@
     "@reach/utils" "^0.10.3"
     tslib "^1.11.2"
 
+"@reach/observe-rect@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@reach/observe-rect/-/observe-rect-1.1.0.tgz#4e967a93852b6004c3895d9ed8d4e5b41895afde"
+  integrity sha512-kE+jvoj/OyJV24C03VvLt5zclb9ArJi04wWXMMFwQvdZjdHoBlN4g0ZQFjyy/ejPF1Z/dpUD5dhRdBiUmIGZTA==
+
+"@reach/portal@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.10.3.tgz#2eb408cc246d3eabbbf3b47ca4dc9c381cdb1d88"
+  integrity sha512-t8c+jtDxMLSPRGg93sQd2s6dDNilh5/qdrwmx88ki7l9h8oIXqMxPP3kSkOqZ9cbVR0b2A68PfMhCDOwMGvkoQ==
+  dependencies:
+    "@reach/utils" "^0.10.3"
+    tslib "^1.11.2"
+
+"@reach/rect@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@reach/rect/-/rect-0.10.3.tgz#b4fd7c730d27eaf5fdf04c9a65227cc805787803"
+  integrity sha512-OmnGfG+MdumviJXK5oPcrw2Nd4EgMPKLMCs03GrbkmZJwtXIQJNhQrVg60PQT6HKAKI0+0LobHKxHFT+7Ri7kw==
+  dependencies:
+    "@reach/observe-rect" "^1.1.0"
+    "@reach/utils" "^0.10.3"
+    prop-types "^15.7.2"
+    tslib "^1.11.2"
+
 "@reach/tabs@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@reach/tabs/-/tabs-0.10.3.tgz#392461762b33af2476d26b3018e1489260532b85"
@@ -2963,6 +2986,19 @@
     prop-types "^15.7.2"
     tslib "^1.11.2"
 
+"@reach/tooltip@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@reach/tooltip/-/tooltip-0.10.3.tgz#0f34630aceaba7da7ad2dd23f92cc0d484e7113f"
+  integrity sha512-tbj569uSJ+O86fAvR62lK8Tb00aTQxah6dFKgf06lskCGUoYzeFxkZTds9b+TRjzz9G1v68McQHwuAZUH0XrGA==
+  dependencies:
+    "@reach/auto-id" "^0.10.3"
+    "@reach/portal" "^0.10.3"
+    "@reach/rect" "^0.10.3"
+    "@reach/utils" "^0.10.3"
+    "@reach/visually-hidden" "^0.10.2"
+    prop-types "^15.7.2"
+    tslib "^1.11.2"
+
 "@reach/utils@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.10.3.tgz#e30f9b172d131161953df7dd01553c57ca4e78f8"
@@ -2971,6 +3007,13 @@
     "@types/warning" "^3.0.0"
     tslib "^1.11.2"
     warning "^4.0.3"
+
+"@reach/visually-hidden@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@reach/visually-hidden/-/visually-hidden-0.10.2.tgz#cbe391c78be2139be9583bae5666ab58eb82f682"
+  integrity sha512-RWC2CZsEB6sUOMnBCiuemyesMVNOOKJP53j4RgbdaJ2zGFL6N+bh/E5bfZnAiVhjJ0G0laViE9s7iROaRWNFew==
+  dependencies:
+    tslib "^1.11.2"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
