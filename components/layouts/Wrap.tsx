@@ -14,8 +14,9 @@ const WrapLayout = ({ children, gap = 4, justifyContent }: React.PropsWithChildr
         alignItems: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
-        '& > *:not(:last-child)': {
-          mr: gap
+        '& > *': {
+          flex: 'auto',
+          margin: gap
         }
       }}
     >
