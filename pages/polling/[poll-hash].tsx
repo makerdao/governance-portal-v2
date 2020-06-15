@@ -18,7 +18,7 @@ import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
-import StackLayout from '../../components/layouts/Stack';
+import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
@@ -48,7 +48,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
               <NavLink p={2}>
-                <Flex sx={{ alignItems: 'center' }}>
+                <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                   <Icon name="chevron_left" size="2" mr={2} /> Back to all polls
                 </Flex>
               </NavLink>
@@ -67,7 +67,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   }}
                 >
                   <NavLink p={2}>
-                    <Flex sx={{ alignItems: 'center' }}>
+                    <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
                     </Flex>
                   </NavLink>
@@ -86,7 +86,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   }}
                 >
                   <NavLink p={2}>
-                    <Flex sx={{ alignItems: 'center' }}>
+                    <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                       Next Poll <Icon name="chevron_right" size={2} ml={2} />
                     </Flex>
                   </NavLink>
@@ -186,10 +186,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
           </Card>
         </div>
         <Flex sx={{ flexDirection: 'column' }}>
-          <StackLayout>
+          <Stack>
             <Card variant="compact">Card 1</Card>
             <Card variant="compact">Card 2</Card>
-          </StackLayout>
+          </Stack>
         </Flex>
       </SidebarLayout>
     </PrimaryLayout>

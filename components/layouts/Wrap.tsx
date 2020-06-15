@@ -1,28 +1,28 @@
-/** @jsx jsx */
-import { Flex, jsx } from 'theme-ui';
+import React from 'react';
+import { Flex } from 'theme-ui';
+import { styledClone } from '../../lib/utils';
 
 type Props = {
+  children: React.ReactNode;
   gap?: number | number[];
   justifyContent?: string;
 };
 
-const WrapLayout = ({ children, gap = 4, justifyContent }: React.PropsWithChildren<Props>) => {
-  return (
+const WrapLayout = React.forwardRef<any, Props>(
+  ({ children, gap = 4, justifyContent = 'flex-start', ...props }, ref) => (
     <Flex
+      ref={ref}
       sx={{
-        justifyContent: justifyContent || 'flex-start',
+        justifyContent: justifyContent,
         alignItems: 'center',
         flexDirection: 'row',
-        flexWrap: 'wrap',
-        '& > *': {
-          flex: 'auto',
-          margin: gap
-        }
+        flexWrap: 'wrap'
       }}
+      {...props}
     >
-      {children}
+      {React.Children.map(children, child => styledClone(child, { sx: { m: gap, flex: 'auto' } }))}
     </Flex>
-  );
-};
+  )
+);
 
 export default WrapLayout;

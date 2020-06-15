@@ -1,31 +1,22 @@
-/** @jsx jsx */
-import { Flex, jsx } from 'theme-ui';
+import React from 'react';
+import { Flex } from 'theme-ui';
+import { styledClone } from '../../lib/utils';
 
-type Props = {
-  gap?: number | number[];
-};
-
-/**
- * Usage note: children should not specify their own margins
- */
-const StackLayout = ({ children, gap = 4 }: React.PropsWithChildren<Props>) => {
-  return (
+const StackLayout = React.forwardRef<any, { children: React.ReactNode; gap?: number | number[] }>(
+  ({ children, gap = 4, ...props }, ref) => (
     <Flex
+      ref={ref}
       sx={{
         width: '100%',
         flexDirection: 'column',
         alignItems: 'stretch',
-        flexWrap: 'nowrap',
-        '& > *:not(:last-child)': {
-          // this is more specific than the owl selector so it can override theme-ui's class-based margin: 0
-          // while still allowing breakpoints and without preventing !important overrides from children *sigh*
-          mb: gap
-        }
+        flexWrap: 'nowrap'
       }}
+      {...props}
     >
-      {children}
+      {React.Children.map(children, child => styledClone(child, { sx: { mb: gap } }))}
     </Flex>
-  );
-};
+  )
+);
 
 export default StackLayout;

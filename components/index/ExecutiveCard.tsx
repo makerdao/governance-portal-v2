@@ -13,7 +13,7 @@ type Props = {
   isHat: boolean;
 };
 
-export default function ExecutiveCard({ proposal, isHat }: Props) {
+export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(
@@ -29,6 +29,7 @@ export default function ExecutiveCard({ proposal, isHat }: Props) {
         justifyContent: 'space-between',
         variant: 'cards.primary'
       }}
+      {...props}
     >
       <Flex
         sx={{

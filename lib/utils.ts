@@ -1,6 +1,9 @@
 import remark from 'remark';
 import html from 'remark-html';
 import invariant from 'tiny-invariant';
+import { cloneElement } from 'react';
+import { jsx } from 'theme-ui';
+import { css } from '@theme-ui/css';
 
 import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
@@ -129,4 +132,16 @@ export function slugify(string: string) {
     .replace(/\-\-+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '');
+}
+
+export function styledClone(child, props) {
+  if ('css' in child.props) {
+    const { sx, ...componentProps } = props;
+    return cloneElement(child, {
+      ...componentProps,
+      css: theme => [child.props.css(theme), css(sx)(theme)]
+    });
+  } else {
+    return jsx(child.type, { key: child.key, ...child.props, ...props });
+  }
 }

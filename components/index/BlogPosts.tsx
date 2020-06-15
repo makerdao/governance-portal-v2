@@ -1,12 +1,12 @@
-import { Heading, Container, Text, Box, Image, Flex, Card, Link as ExternalLink } from 'theme-ui';
+import { Text, Box, Image, Flex, Card, Link as ExternalLink } from 'theme-ui';
 import BlogPost from '../../types/blogPost';
 
 type Props = {
   blogPost: BlogPost;
 };
 
-export default ({ blogPost }: Props) => (
-  <Box sx={{ width: 7 }}>
+export default ({ blogPost, ...props }: Props) => (
+  <Box sx={{ maxWidth: 7 }} {...props}>
     <ExternalLink target="_blank" variant="card" href={blogPost.link}>
       <Card key={blogPost.title} sx={{ p: 0, borderRadius: 'medium' }}>
         <Image

@@ -13,7 +13,7 @@ type Props = {
   poll: Poll;
 };
 
-const PollCard = ({ poll }: Props) => {
+const PollCard = ({ poll, ...props }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
@@ -32,6 +32,7 @@ const PollCard = ({ poll }: Props) => {
         justifyContent: 'space-between',
         variant: 'cards.primary'
       }}
+      {...props}
     >
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Text

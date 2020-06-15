@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, Box, Flex, jsx } from 'theme-ui';
+import { Heading, Container, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
@@ -173,7 +173,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             >
               <div
                 sx={{
-                  height: '100%',
+                  height: '85%',
                   width: '100%',
                   position: 'absolute',
                   zIndex: -1,

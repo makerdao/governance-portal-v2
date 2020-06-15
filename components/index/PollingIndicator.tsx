@@ -32,8 +32,8 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
       unvotedPolls.length > 0
         ? 'Live Governance polls available for voting'
         : activePolls.length > 0
-          ? 'Congratulations, you have voted on all current Governance Polls'
-          : 'There are no live Governance Polls at the moment';
+        ? 'Congratulations, you have voted on all current Governance Polls'
+        : 'There are no live Governance Polls at the moment';
   } else {
     pollsToBeAwareOf = activePolls.length;
     message =
@@ -71,7 +71,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
   );
 };
 
-export default ({ polls }: { polls: Poll[] }) => {
+export default ({ polls, ...props }: { polls: Poll[] }) => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 
@@ -92,9 +92,9 @@ export default ({ polls }: { polls: Poll[] }) => {
   }
 
   return (
-    <Container sx={{ textAlign: 'center' }}>
+    <Container sx={{ textAlign: 'center' }} {...props}>
       {account && !unvotedPolls ? (
-        <Skeleton height="39px" />
+        <Skeleton height="39px" width="400px" />
       ) : (
         <Link
           passHref

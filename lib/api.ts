@@ -64,7 +64,9 @@ export async function getPolls(): Promise<Poll[]> {
             5000, // reject if it takes longer than this to fetch
             backoffRetry(3, () => fetch(p.url))
           ).then(response => response?.text()));
-        invariant(typeof document === 'string' && document.length > 0);
+        invariant(
+          typeof document === 'string' && document.length > 0 && matter(document).data.options?.length > 0
+        );
       } catch (err) {
         console.log(`unable to fetch valid poll document from ${p.url} for poll ${p.pollId}`);
       }

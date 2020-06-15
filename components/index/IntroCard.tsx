@@ -9,7 +9,7 @@ type Props = {
 };
 
 const IntroCard = (props: Props) => (
-  <Box sx={{ width: 7 }}>
+  <Box sx={{ maxWidth: 7 }} {...props}>
     {props.icon}
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '9rem'] }}>
       <Text

@@ -11,7 +11,7 @@ import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 
-const PollOverviewCard = ({ poll }: { poll: Poll }) => {
+const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
@@ -27,6 +27,7 @@ const PollOverviewCard = ({ poll }: { poll: Poll }) => {
         justifyContent: 'space-between',
         variant: 'cards.primary'
       }}
+      {...props}
     >
       <Stack gap={2}>
         <Flex sx={{ justifyContent: 'space-between' }}>

@@ -2,7 +2,7 @@
 import { slugify } from '../lib/utils';
 
 import { jsx } from 'theme-ui';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { Flex, Divider, SxStyleProp } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import Router from 'next/router';
@@ -17,7 +17,7 @@ const TabbedLayout = ({ tabTitles, tabPanels, hashRoute }: Props) => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const [, hash] = location.href.split('#');
     if (hashRoute && hash) {
       tabTitles.forEach((title, i) => {
