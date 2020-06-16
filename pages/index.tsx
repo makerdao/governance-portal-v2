@@ -51,9 +51,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       </Head>
 
       <PrimaryLayout>
-        <Stack gap={6}>
+        <Stack gap={4}>
           <section>
-            <Stack gap={5}>
+            <Stack gap={4}>
               <Container
                 pt={[4, 6]}
                 sx={{
@@ -183,7 +183,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               />
               <Stack>
                 <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Wrap breakpoints={[true, false]} sx={{ px: [3, 5] }}>
+                <Wrap breakpoints={[true, false]} sx={{ px: [3, 4] }}>
                   {blogPosts.map(post => (
                     <BlogPostCard key={post.link} blogPost={post} />
                   ))}
