@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, jsx } from 'theme-ui';
+import { Heading, Container, Flex, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
@@ -17,7 +17,7 @@ import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
-import BlogPosts from '../components/index/BlogPosts';
+import BlogPostCard from '../components/index/BlogPostCard';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
@@ -183,9 +183,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               />
               <Stack>
                 <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Wrap justifyContent="space-around">
+                <Wrap breakpoints={[true, false]} sx={{ px: [3, 5] }}>
                   {blogPosts.map(post => (
-                    <BlogPosts key={post.link} blogPost={post} />
+                    <BlogPostCard key={post.link} blogPost={post} />
                   ))}
                 </Wrap>
               </Stack>

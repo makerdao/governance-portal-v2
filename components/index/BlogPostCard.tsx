@@ -6,8 +6,8 @@ type Props = {
 };
 
 export default ({ blogPost, ...props }: Props) => (
-  <Box sx={{ maxWidth: 7 }} {...props}>
-    <ExternalLink target="_blank" variant="card" href={blogPost.link}>
+  <Box {...props}>
+    <ExternalLink target="_blank" variant="card" href={blogPost.link} sx={{ display: 'block' }}>
       <Card key={blogPost.title} sx={{ p: 0, borderRadius: 'medium' }}>
         <Image
           src={blogPost.photoHref}
