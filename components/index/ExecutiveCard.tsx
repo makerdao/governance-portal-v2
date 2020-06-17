@@ -27,7 +27,8 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        variant: 'cards.primary'
+        variant: 'cards.primary',
+        mx: [4, 0]
       }}
       {...props}
     >

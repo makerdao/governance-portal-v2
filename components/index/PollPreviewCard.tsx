@@ -30,7 +30,8 @@ const PollCard = ({ poll, ...props }: Props) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        variant: 'cards.primary'
+        variant: 'cards.primary',
+        mx: [4, 0]
       }}
       {...props}
     >
@@ -122,7 +123,8 @@ const PollCard = ({ poll, ...props }: Props) => {
                 sx={{
                   borderColor: 'text',
                   textTransform: 'uppercase',
-                  alignSelf: 'center'
+                  alignSelf: 'center',
+                  overflow: 'hidden'
                 }}
               >
                 Leading Option: {tally.winningOptionName}
