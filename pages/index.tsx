@@ -74,7 +74,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Grid gap={5} sx={{ px: [3, 0] }} columns={[1, 3]}>
+            <Grid gap={5} sx={{ px: [5, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Introduction to Governance"
                 linkText="Get started"
