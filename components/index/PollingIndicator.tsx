@@ -38,7 +38,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
     pollsToBeAwareOf = activePolls.length;
     message =
       activePolls.length > 0
-        ? 'Live polls in the Maker Governance system'
+        ? 'New polling votes'
         : 'There are no live Governance Polls at the moment';
   }
 
