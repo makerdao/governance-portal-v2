@@ -2652,10 +2652,10 @@
     debug "^4.1.1"
     ramda "^0.25.0"
 
-"@makerdao/dai-plugin-mcd@1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.5.7.tgz#a0be9e6233b6617e8e94536bc4644720f26ab61d"
-  integrity sha512-BglbgRZYX4uwsDEwlkrNpelj41AV9cSzWgHrKoUSvH+ftnbZDuPb6MlNmZ69oCOO80tl6wdzhyMWAruMnrPGBg==
+"@makerdao/dai-plugin-mcd@1.5.9":
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.5.9.tgz#d56260e3462596583c8a498ae5edc38f33f2b365"
+  integrity sha512-cYhH00HsQuSI45cirdRcRAkhHLkFivew4m3CSkzlNqRXhB1syfXrkU5by5C6dz/ttiGZz9WXAnBCwtDNkkR9nw==
   dependencies:
     "@makerdao/currency" "^0.9.9"
     "@makerdao/services-core" "^0.9.9"
