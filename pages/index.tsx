@@ -51,9 +51,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       </Head>
 
       <PrimaryLayout>
-        <Stack gap={5}>
+        <Stack gap={[5, 6]}>
           <section>
-            <Stack gap={4}>
+            <Stack gap={[4, 6]}>
               <Container
                 pt={[4, 6]}
                 sx={{
