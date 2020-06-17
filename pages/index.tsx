@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Heading, Container, Text, jsx } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import { Global } from '@emotion/core';
@@ -54,24 +53,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
-              <Container
-                pt={[4, 6]}
-                sx={{
-                  maxWidth: 'title',
-                  textAlign: 'center'
-                }}
-              >
+              <Container pt={[4, 6]} sx={{ maxWidth: 'title', textAlign: 'center' }}>
                 <Stack gap={3}>
                   <Heading as="h1" sx={{ fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
-                  <Text
-                    as="p"
-                    sx={{
-                      fontSize: [3, 5],
-                      px: [4, 'inherit']
-                    }}
-                  >
+                  <Text as="p" sx={{ fontSize: [3, 5], px: [4, 'inherit'] }}>
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
@@ -87,12 +74,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Wrap justifyContent="space-around">
+            <Grid gap={5} sx={{ px: [3, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Introduction to Governance"
                 linkText="Get started"
                 linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
-                icon={<Icon name="govIntro" size="5" />}
+                icon="govIntro"
               >
                 A guide to outlining the basics of getting started with voting.
               </IntroCard>
@@ -100,7 +87,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 title="Governance Forum"
                 linkText="Go to forum"
                 linkDest="https://forum.makerdao.com/c/governance/"
-                icon={<Icon name="govForum" size="5" />}
+                icon="govForum"
               >
                 Get the latest updates and take part in current discussions.
               </IntroCard>
@@ -108,11 +95,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 title="Governance Calls"
                 linkText="View gov calls"
                 linkDest="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
-                icon={<Icon name="govCalls" size="5" />}
+                icon="govCalls"
               >
                 Weekly calls to present research and coordinate around current issues.
               </IntroCard>
-            </Wrap>
+            </Grid>
           </section>
 
           <section>
@@ -183,11 +170,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               />
               <Stack>
                 <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Wrap breakpoints={[true, false]} sx={{ px: [3, 4] }}>
+                <Grid gap={4} columns={[1, 3]} sx={{ px: [3, 4] }}>
                   {blogPosts.map(post => (
                     <BlogPostCard key={post.link} blogPost={post} />
                   ))}
-                </Wrap>
+                </Grid>
               </Stack>
             </Container>
           </section>

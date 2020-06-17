@@ -1,41 +1,28 @@
 import { Box, Link as ExternalLink, Text, Flex } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 type Props = {
   title: string;
   linkText: string;
   linkDest?: string;
-  icon?: React.ReactNode;
+  icon?: string;
   children: React.ReactNode;
 };
 
-const IntroCard = (props: Props) => (
-  <Box sx={{ maxWidth: 7 }} {...props}>
-    {props.icon}
+const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }: Props) => (
+  <Box {...otherProps}>
+    <Icon name={icon} size="5" />
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '9rem'] }}>
-      <Text
-        sx={{
-          fontSize: [3, 4],
-          textAlign: 'left'
-        }}
-      >
-        {props.title}
-      </Text>
-      <Text
-        sx={{
-          fontSize: [3, 4],
-          opacity: 0.8,
-          whiteSpace: 'initial'
-        }}
-        my="3"
-      >
-        {props.children}
+      <Text sx={{ fontSize: [3, 4], textAlign: 'left' }}>{title}</Text>
+      <Text sx={{ fontSize: [3, 4], opacity: 0.8, whiteSpace: 'initial' }} my="3">
+        {children}
       </Text>
       <ExternalLink
         sx={{ color: 'primary', fontSize: '3', fontWeight: 'semiBold' }}
-        href={props.linkDest}
+        href={linkDest}
         target="_blank"
       >
-        {props.linkText}
+        {linkText}
       </ExternalLink>
     </Flex>
   </Box>
