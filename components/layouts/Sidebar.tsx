@@ -7,21 +7,21 @@ type Props = {};
 /**
  * Expects two children: the first one is the main content, the second one is the sidebar
  */
-const SidebarLayout = ({ children }: React.PropsWithChildren<Props>) => {
+const SidebarLayout = ({ children, ...otherProps }: React.PropsWithChildren<Props>) => {
   return (
     <Grid
-      py={4}
       gap={4}
-      sx={{
+      sx={theme => ({
         gridTemplateColumns: [
           'auto', // default to a stacked layout on small & medium screens
           'auto',
-          '1fr 256px' // use columns for larger screens
+          `1fr ${theme.sizes.sidebar}px` // use columns for larger screens
         ],
         '& > *': {
           minWidth: 0
         }
-      }}
+      })}
+      {...otherProps}
     >
       {children}
     </Grid>

@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Checkbox, Label, Box, Flex, Input } from 'theme-ui';
+import { Card, Heading, Checkbox, Label, Box, Flex, Input, jsx } from 'theme-ui';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -7,7 +8,7 @@ import { getPolls } from '../lib/api';
 import { isActivePoll } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout from '../components/layouts/Sidebar';
-import StackLayout from '../components/layouts/Stack';
+import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
 
@@ -57,7 +58,6 @@ const PollingOverview = ({ polls }: Props) => {
     () =>
       polls
         .filter(poll => {
-          if (new Date(poll.startDate).getTime() > Date.now()) return false; // filter polls that haven't started yet
           if (filterInactivePolls && !isActivePoll(poll)) return false;
           const [startDate, endDate] = dateFilter;
           if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
@@ -73,63 +73,71 @@ const PollingOverview = ({ polls }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <Heading as="h1">Polling Votes</Heading>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-        <Box>
-          <Label>
-            <Checkbox checked={filterInactivePolls} onChange={() => setFilterInactivePolls(b => !b)} />
-            Show only active polls
-          </Label>
-        </Box>
+      <Stack gap={3}>
+        <Heading as="h1">Polling Votes</Heading>
+        <Box sx={theme => ({ mr: theme.sizes.sidebar, pr: 4 })}>
+          <Box>
+            <Label>
+              <Checkbox checked={filterInactivePolls} onChange={() => setFilterInactivePolls(b => !b)} />
+              Show only active polls
+            </Label>
+          </Box>
 
-        <Flex sx={{ flexWrap: 'wrap' }}>
-          <Label sx={{ whiteSpace: 'nowrap', alignItems: 'center' }}>
-            Show only polls starting after
-            <Input
-              mx="3"
-              type="date"
-              onChange={e => setDateFilter([new Date(e.target.value), dateFilter[1]])}
-            />
-          </Label>
-          <Label sx={{ whiteSpace: 'nowrap', alignItems: 'center' }}>
-            Show only polls starting before
-            <Input
-              ml="3"
-              type="date"
-              onChange={e => setDateFilter([dateFilter[0], new Date(e.target.value)])}
-            />
-          </Label>
-        </Flex>
-      </Flex>
-      <SidebarLayout>
-        <Box sx={{ minWidth: '0px' }}>
-          {activePolls.length > 0 && (
-            <Heading mb={3} as="h3">
-              Active Polls
-            </Heading>
-          )}
-          <StackLayout>
-            {activePolls.map(poll => (
-              <PollOverviewCard key={poll.multiHash} poll={poll} />
-            ))}
-          </StackLayout>
-          {historicalPolls.length > 0 && (
-            <Heading mb={3} mt={4} as="h3">
-              Historical Polls
-            </Heading>
-          )}
-          <StackLayout>
-            {historicalPolls.map(poll => (
-              <PollOverviewCard key={poll.multiHash} poll={poll} />
-            ))}
-          </StackLayout>
-          <div ref={loader} />
+          <Flex sx={{ flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            <Label sx={{ width: 'auto', whiteSpace: 'nowrap', alignItems: 'center' }}>
+              Show only polls starting after
+              <Input
+                sx={{ ml: 3, minWidth: 6 }}
+                type="date"
+                onChange={e => setDateFilter([new Date(e.target.value), dateFilter[1]])}
+              />
+            </Label>
+            <Label sx={{ width: 'auto', whiteSpace: 'nowrap', alignItems: 'center' }}>
+              Show only polls starting before
+              <Input
+                sx={{ ml: 3, minWidth: 6 }}
+                type="date"
+                onChange={e => setDateFilter([dateFilter[0], new Date(e.target.value)])}
+              />
+            </Label>
+          </Flex>
         </Box>
-        <StackLayout>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
-        </StackLayout>
-      </SidebarLayout>
+        <SidebarLayout>
+          <Box sx={{ minWidth: '0px' }}>
+            <Stack>
+              <div>
+                {activePolls.length > 0 && (
+                  <Heading mb={3} as="h3">
+                    Active Polls
+                  </Heading>
+                )}
+                <Stack>
+                  {activePolls.map(poll => (
+                    <PollOverviewCard key={poll.multiHash} poll={poll} />
+                  ))}
+                </Stack>
+              </div>
+              <div>
+                {historicalPolls.length > 0 && (
+                  <Heading mb={3} mt={4} as="h3">
+                    Historical Polls
+                  </Heading>
+                )}
+                <Stack>
+                  {historicalPolls.map(poll => (
+                    <PollOverviewCard key={poll.multiHash} poll={poll} />
+                  ))}
+                </Stack>
+              </div>
+            </Stack>
+            <div ref={loader} />
+          </Box>
+          <Stack>
+            <Card variant="compact">Card 1</Card>
+            <Card variant="compact">Card 2</Card>
+          </Stack>
+        </SidebarLayout>
+      </Stack>
     </PrimaryLayout>
   );
 };

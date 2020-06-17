@@ -7,13 +7,13 @@ import useAccountsStore from '../../stores/accounts';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 
-const VotingStatus = ({ poll, allUserVotes }: { poll: Poll; allUserVotes?: PollVote[] }) => {
+const VotingStatus = ({ poll, allUserVotes, ...otherProps }: { poll: Poll; allUserVotes?: PollVote[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
 
   if (!account) return null;
   if (!allUserVotes)
     return (
-      <Box sx={{ width: 6 }}>
+      <Box sx={{ width: 6 }} {...otherProps}>
         <Skeleton />
       </Box>
     );
@@ -26,6 +26,7 @@ const VotingStatus = ({ poll, allUserVotes }: { poll: Poll; allUserVotes?: PollV
         alignItems: 'cetner',
         color: hasVoted ? 'primary' : 'text'
       }}
+      {...otherProps}
     >
       {hasVoted ? (
         <Flex sx={{ alignItems: 'center' }}>

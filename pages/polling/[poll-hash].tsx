@@ -121,7 +121,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 {poll.title}
               </Heading>
               <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
-                <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                 <VotingStatus poll={poll} allUserVotes={allUserVotes} />
               </Flex>
             </Flex>

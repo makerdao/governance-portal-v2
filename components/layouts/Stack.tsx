@@ -14,7 +14,7 @@ const StackLayout = React.forwardRef<any, { children: React.ReactNode; gap?: num
       }}
       {...props}
     >
-      {React.Children.map(children, child => styledClone(child, { sx: { mb: gap } }))}
+      {React.Children.map(children, (child, i) => styledClone(child, { sx: { mt: i == 0 ? null : gap } }))}
     </Flex>
   )
 );

@@ -65,7 +65,7 @@ export async function getPolls(): Promise<Poll[]> {
             backoffRetry(3, () => fetch(p.url))
           ).then(response => response?.text()));
         invariant(
-          typeof document === 'string' && document.length > 0 && matter(document).data.options?.length > 0
+          typeof document === 'string' && document.length > 0 && matter(document).data?.options?.length > 0
         );
       } catch (err) {
         console.log(`unable to fetch valid poll document from ${p.url} for poll ${p.pollId}`);
@@ -99,6 +99,7 @@ export async function getPolls(): Promise<Poll[]> {
   ).then(polls =>
     (polls as any[])
       .filter(p => !!p.summary && !!p.options)
+      .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
       // newest to oldest
       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   );

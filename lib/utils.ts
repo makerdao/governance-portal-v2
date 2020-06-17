@@ -2,7 +2,7 @@ import remark from 'remark';
 import html from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
-import { jsx } from 'theme-ui';
+import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
 
 import { MKR } from './maker';
@@ -134,14 +134,18 @@ export function slugify(string: string) {
     .replace(/-+$/, '');
 }
 
-export function styledClone(child, props) {
-  if ('css' in child.props) {
-    const { sx, ...componentProps } = props;
-    return cloneElement(child, {
-      ...componentProps,
-      css: theme => [child.props.css(theme), css(sx)(theme)]
+/** Add sx styles to the passed in component. Provided styles override component styles if there's a clash. */
+export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp }): React.ReactNode {
+  if ('css' in component.props) {
+    return cloneElement(component, {
+      css: theme => [component.props.css(theme), css(stylesToMerge)(theme)]
     });
   } else {
-    return jsx(child.type, { key: child.key, ...child.props, ...props });
+    const { sx, ...componentProps } = component.props;
+    return jsx(component.type, {
+      key: component.key,
+      ...componentProps,
+      css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
+    });
   }
 }

@@ -78,8 +78,8 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
         >
           {poll.summary}
         </Text>
-        <div>
-          <Divider mt={0} mx={-4} />
+        <div sx={{ pb: 2, pt: 3 }}>
+          <Divider my={0} mx={-4} />
         </div>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Link

@@ -10,7 +10,6 @@ import getMaker, { isDefaultNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
 import Stack from '../components/layouts/Stack';
-import Wrap from '../components/layouts/Wrap';
 import SystemStats from '../components/index/SystemStats';
 import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
@@ -28,30 +27,31 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
-  const recentPolls = useMemo(
-    () => polls.filter(poll => new Date(poll.startDate).getTime() <= Date.now()).slice(0, 4),
-    [polls]
-  );
+  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
 
   const { data: hat } = useSWR<string>(`/executive/hat`, () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
   return (
-    <div
-      sx={{
-        background: 'url(/assets/heroVisualTransparent.png) no-repeat',
-        backgroundSize: '100%',
-        backgroundPosition: '0 0'
-      }}
-    >
+    <div>
       <Head>
         <title>Maker Governance Portal</title>
       </Head>
-
+      <div
+        sx={{
+          height: '700px',
+          width: '100vw',
+          zIndex: -1,
+          position: 'absolute',
+          background: 'url(/assets/heroVisual.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center'
+        }}
+      />
       <PrimaryLayout>
         <Stack gap={[5, 6]}>
-          <section>
+          <section sx={{}}>
             <Stack gap={[4, 6]}>
               <Container pt={[4, 6]} sx={{ maxWidth: 'title', textAlign: 'center' }}>
                 <Stack gap={3}>
