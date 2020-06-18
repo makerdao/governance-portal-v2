@@ -3,12 +3,15 @@ import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import { Card, Flex, jsx } from 'theme-ui';
+import useSWR from 'swr';
+import { Card, Flex, Text, Heading, Divider, Box, Grid, jsx } from 'theme-ui';
 
+import Stack from '../../components/layouts/Stack';
+import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { isDefaultNetwork } from '../../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 
@@ -17,16 +20,113 @@ type Props = {
 };
 
 const ProposalView = ({ proposal }: Props) => {
+  const { data: rawStateDiff } = useSWR(
+    `/api/executive/state-diff?network=${getNetwork()}&address=${proposal.source}`
+  );
+
+  const { hasBeenCast, decodedDiff } = rawStateDiff || {};
+  const groupedDiff = decodedDiff
+    ? decodedDiff.reduce((groups, diff) => {
+        const keys = diff.keys
+          ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
+          : [];
+
+        const parsedDiff = {
+          from: diff.from,
+          to: diff.to,
+          name: diff.name,
+          keys
+        };
+
+        groups[diff.address.label] = groups[diff.address.label]
+          ? groups[diff.address.label].concat([parsedDiff])
+          : [
+              {
+                from: diff.from,
+                to: diff.to,
+                name: diff.name,
+                keys
+              }
+            ];
+        return groups;
+      }, {})
+    : undefined;
+
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
         <Card sx={{ boxShadow: 'faint' }}>
-          <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+          <Flex>
+            <Heading
+              my="3"
+              sx={{
+                whiteSpace: 'nowrap',
+                overflowX: ['scroll', 'hidden'],
+                overflowY: 'hidden',
+                textOverflow: [null, 'ellipsis'],
+                fontSize: [5, 6]
+              }}
+            >
+              {proposal.title}
+            </Heading>
+          </Flex>
+          <Divider />
+          <Tabs
+            tabTitles={['Proposal Details', 'On-Chain Effects']}
+            tabPanels={[
+              <div dangerouslySetInnerHTML={{ __html: proposal.content }} />,
+              <div sx={{ pt: 3 }}>
+                <Text as="h3" sx={{ pb: 2 }}>
+                  Effects
+                </Text>
+                {rawStateDiff ? (
+                  <Stack gap={3}>
+                    <Text>Showing {hasBeenCast ? 'archival' : 'simulated future'} effects </Text>
+                    <Stack gap={3}>
+                      {Object.entries(groupedDiff).map(([label, diffs]) => (
+                        <div>
+                          <Text as="h4">{label}</Text>
+                          <Flex
+                            sx={{
+                              maxWidth: 'min-content',
+                              border: 'light',
+                              p: 3,
+                              overflowX: 'scroll'
+                            }}
+                          >
+                            <Grid gap={0} pr={2}>
+                              {diffs.map(diff => (
+                                <code sx={{ width: 6 }}>
+                                  {diff.name}
+                                  {diff.keys.map(key => `[${key}]`)}
+                                </code>
+                              ))}
+                            </Grid>
+                            <Grid gap={0} columns="repeat(3, fit-content(18ch))" sx={{ columnGap: 3 }}>
+                              {diffs.map(diff => (
+                                <>
+                                  <code> {diff.from}</code>
+                                  <code> {'=>'}</code>
+                                  <code> {diff.to}</code>
+                                </>
+                              ))}
+                            </Grid>
+                          </Flex>
+                        </div>
+                      ))}
+                    </Stack>
+                  </Stack>
+                ) : (
+                  <div>loading</div>
+                )}
+              </div>
+            ]}
+          />
         </Card>
-        <Flex sx={{ flexDirection: 'column' }}>
+        <Stack>
           <Card variant="compact">Card 1</Card>
           <Card variant="compact">Card 2</Card>
-        </Flex>
+        </Stack>
       </SidebarLayout>
     </PrimaryLayout>
   );

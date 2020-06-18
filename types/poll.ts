@@ -13,8 +13,8 @@ type Poll = {
   voteType: VoteTypes;
   slug: string;
   ctx: {
-    prevPollSlug: string | null;
-    nextPollSlug: string | null;
+    prev: Poll | null;
+    next: Poll | null;
   };
 };
 

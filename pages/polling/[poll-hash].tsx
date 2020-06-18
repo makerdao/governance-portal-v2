@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
 import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -15,7 +15,7 @@ import Delay from '../../components/Delay';
 import useAccountsStore from '../../stores/accounts';
 import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally, fetchJson } from '../../lib/utils';
+import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
@@ -41,11 +41,21 @@ const PollView = ({ poll }: { poll: Poll }) => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`,
     async url => parsePollTally(await fetchJson(url), poll)
   );
+
+  useEffect(() => {
+    [poll.ctx.prev, poll.ctx.next].forEach(_poll => {
+      if (_poll && isActivePoll(_poll)) {
+        // prefetch tallies before || after this one
+        mutate(`/api/polling/tally/${_poll.pollId}?network=${network}`);
+      }
+    });
+  }, []);
+
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
         <div>
-          <Flex sx={{ justifyContent: 'space-between' }}>
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
               <NavLink p={2}>
                 <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
@@ -53,8 +63,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 </Flex>
               </NavLink>
             </Link>
-            <Flex>
-              {poll.ctx.prevPollSlug && (
+            <Flex sx={{ justifyContent: ['space-between', null] }}>
+              {poll.ctx.prev.slug && (
                 <Link
                   scroll={false}
                   href={{
@@ -62,7 +72,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     query: { network }
                   }}
                   as={{
-                    pathname: `/polling/${poll.ctx.prevPollSlug}`,
+                    pathname: `/polling/${poll.ctx.prev.slug}`,
                     query: { network }
                   }}
                 >
@@ -73,7 +83,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </NavLink>
                 </Link>
               )}
-              {poll.ctx.nextPollSlug && (
+              {poll.ctx.next.slug && (
                 <Link
                   scroll={false}
                   href={{
@@ -81,7 +91,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     query: { network }
                   }}
                   as={{
-                    pathname: `/polling/${poll.ctx.nextPollSlug}`,
+                    pathname: `/polling/${poll.ctx.next.slug}`,
                     query: { network }
                   }}
                 >
@@ -113,8 +123,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 my="3"
                 sx={{
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
+                  overflowX: ['scroll', 'hidden'],
+                  overflowY: 'hidden',
+                  textOverflow: [null, 'ellipsis'],
                   fontSize: [5, 6]
                 }}
               >
@@ -127,7 +138,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
             </Flex>
             <Divider />
             <Tabs
-              hashRoute={true}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
                 <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
@@ -185,12 +195,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Stack>
-            <Card variant="compact">Card 1</Card>
-            <Card variant="compact">Card 2</Card>
-          </Stack>
-        </Flex>
+        <Stack>
+          <Card variant="compact">Card 1</Card>
+          <Card variant="compact">Card 2</Card>
+        </Stack>
       </SidebarLayout>
     </PrimaryLayout>
   );

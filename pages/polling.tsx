@@ -75,7 +75,7 @@ const PollingOverview = ({ polls }: Props) => {
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
         <Heading as="h1">Polling Votes</Heading>
-        <Box sx={theme => ({ mr: theme.sizes.sidebar, pr: 4 })}>
+        <Box sx={theme => ({ mr: [null, null, theme.sizes.sidebar], pr: [null, 4] })}>
           <Box>
             <Label>
               <Checkbox checked={filterInactivePolls} onChange={() => setFilterInactivePolls(b => !b)} />
@@ -105,24 +105,22 @@ const PollingOverview = ({ polls }: Props) => {
         <SidebarLayout>
           <Box sx={{ minWidth: '0px' }}>
             <Stack>
-              <div>
-                {activePolls.length > 0 && (
+              {activePolls.length > 0 && (
+                <div>
                   <Heading mb={3} as="h3">
                     Active Polls
                   </Heading>
-                )}
-                <Stack>
-                  {activePolls.map(poll => (
-                    <PollOverviewCard key={poll.multiHash} poll={poll} />
-                  ))}
-                </Stack>
-              </div>
+                  <Stack>
+                    {activePolls.map(poll => (
+                      <PollOverviewCard key={poll.multiHash} poll={poll} />
+                    ))}
+                  </Stack>
+                </div>
+              )}
               <div>
-                {historicalPolls.length > 0 && (
-                  <Heading mb={3} mt={4} as="h3">
-                    Historical Polls
-                  </Heading>
-                )}
+                <Heading mb={3} mt={4} as="h3">
+                  Historical Polls
+                </Heading>
                 <Stack>
                   {historicalPolls.map(poll => (
                     <PollOverviewCard key={poll.multiHash} poll={poll} />

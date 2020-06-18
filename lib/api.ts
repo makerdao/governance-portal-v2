@@ -111,17 +111,14 @@ export async function getPoll(slug: string): Promise<Poll> {
   const polls = await getPolls();
   const pollIndex = polls.findIndex(poll => poll.slug === slug);
   invariant(pollIndex > -1, `poll not found for poll slug ${slug}`);
-  const [prevPollSlug, nextPollSlug] = [
-    polls?.[pollIndex - 1]?.slug || null,
-    polls?.[pollIndex + 1]?.slug || null
-  ];
+  const [prev, next] = [polls?.[pollIndex - 1] || null, polls?.[pollIndex + 1] || null];
 
   return {
     ...polls[pollIndex],
     content: await markdownToHtml(polls[pollIndex].content),
     ctx: {
-      prevPollSlug,
-      nextPollSlug
+      prev,
+      next
     }
   };
 }

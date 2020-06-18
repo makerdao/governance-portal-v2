@@ -13,7 +13,7 @@ type Props = {
   hashRoute?: boolean;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels, hashRoute }: Props) => {
+const TabbedLayout = ({ tabTitles, tabPanels, hashRoute = true }: Props) => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
 
