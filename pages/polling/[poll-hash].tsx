@@ -12,10 +12,9 @@ import Tooltip from '@reach/tooltip';
 
 import CountdownTimer from '../../components/CountdownTimer';
 import Delay from '../../components/Delay';
-import useAccountsStore from '../../stores/accounts';
-import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
+import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
@@ -34,12 +33,6 @@ function prefetchTally(poll, getEndpoint) {
 }
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? [`/user/voting-for`, account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
-  );
-
   const network = getNetwork();
 
   const getEndpoint = poll =>
@@ -136,7 +129,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </Heading>
               <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
                 <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
-                <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+                <VotingStatus poll={poll} />
               </Flex>
             </Flex>
             <Divider />

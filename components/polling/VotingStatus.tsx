@@ -2,13 +2,20 @@
 import { Text, Flex, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import { Icon } from '@makerdao/dai-ui-icons';
+import useSWR from 'swr';
 
+import { isActivePoll } from '../../lib/utils';
+import getMaker from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 
-const VotingStatus = ({ poll, allUserVotes, ...otherProps }: { poll: Poll; allUserVotes?: PollVote[] }) => {
+const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
+  const { data: allUserVotes } = useSWR<PollVote[]>(
+    account?.address ? [`/user/voting-for`, account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
+  );
 
   if (!account) return null;
   if (!allUserVotes)
@@ -19,7 +26,6 @@ const VotingStatus = ({ poll, allUserVotes, ...otherProps }: { poll: Poll; allUs
     );
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
   return (
     <Text
       sx={{
@@ -30,10 +36,10 @@ const VotingStatus = ({ poll, allUserVotes, ...otherProps }: { poll: Poll; allUs
     >
       {hasVoted ? (
         <Flex sx={{ alignItems: 'center' }}>
-          {hasPollEnded ? null : <Icon name="checkmark" color="primary" sx={{ mr: 2 }} />} You voted in this
-          poll
+          <Icon name="checkmark" color="primary" sx={{ mr: 2 }} />
+          {isActivePoll(poll) ? `You're currently voting on this poll` : `You voted in this poll`}
         </Flex>
-      ) : hasPollEnded ? (
+      ) : isActivePoll(poll) ? (
         'You did not vote in this poll'
       ) : (
         'You have not yet voted'

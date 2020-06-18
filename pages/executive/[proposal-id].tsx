@@ -56,9 +56,9 @@ const ProposalView = ({ proposal }: Props) => {
                 {stateDiff ? (
                   <Stack gap={3}>
                     <Text>
-                      Showing{' '}
-                      {stateDiff.hasBeenCast ? 'effects resulting from this spell' : 'simulated future'}{' '}
-                      effects{' '}
+                      {stateDiff.hasBeenCast
+                        ? 'effects resulting from this spell'
+                        : 'simulated future effects'}{' '}
                     </Text>
                     <Stack gap={3}>
                       {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (

@@ -1,4 +1,3 @@
-// placeholder, not currently being used
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
@@ -7,6 +6,7 @@ import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from '../../../lib/cons
 import { fetchJson } from '../../../lib/utils';
 import withApiHandler from '../_lib/with-api-handler';
 
+// TODO grab these from dai.js
 const dsPause = '0xbE286431454714F511008713973d3B053A2d38f3';
 const dsPauseProxy = '0xBE8E3e3618f7474F8cB1d074A26afFef007E98FB';
 
@@ -14,7 +14,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const spellAddress: string = req.query.address as string;
   invariant(spellAddress, 'spell address required');
   const network = req.query.network as string;
-  invariant(!network || network === SupportedNetworks.MAINNET, `Unsupported netowrk ${network}`);
+  invariant(!network || network === SupportedNetworks.MAINNET, `Unsupported network ${network}`);
 
   const provider = new ethers.providers.AlchemyProvider();
   const encoder = new ethers.utils.Interface([
@@ -25,15 +25,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   ]);
 
   async function ethCall(method) {
-    return encoder.decodeFunctionResult(
-      method,
-      await provider.send('eth_call', [
-        {
-          to: spellAddress,
-          data: encoder.encodeFunctionData(method)
-        }
-      ])
-    );
+    const calldata = [
+      {
+        to: spellAddress,
+        data: encoder.encodeFunctionData(method)
+      }
+    ];
+    return encoder.decodeFunctionResult(method, await provider.send('eth_call', calldata));
   }
 
   const [hasBeenCast] = await ethCall('done');

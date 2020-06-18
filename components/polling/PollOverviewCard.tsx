@@ -1,24 +1,16 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import useSWR from 'swr';
 import { Text, Flex, Divider, Box, Button, jsx } from 'theme-ui';
 
 import { isActivePoll } from '../../lib/utils';
-import useAccountsStore from '../../stores/accounts';
-import getMaker, { getNetwork } from '../../lib/maker';
+import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
-import PollVote from '../../types/pollVote';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? [`/user/voting-for`, account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
-  );
 
   return (
     <Flex
@@ -95,7 +87,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           >
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
-          <VotingStatus poll={poll} allUserVotes={allUserVotes} />
+          <VotingStatus poll={poll} />
         </Flex>
       </Stack>
     </Flex>
