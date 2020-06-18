@@ -158,7 +158,6 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   );
 
   const { hasBeenCast, decodedDiff = [] } = rawStateDiff;
-
   const groupedDiff: { [key: string]: any } = decodedDiff.reduce((groups, diff) => {
     const keys = diff.keys
       ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
@@ -173,14 +172,7 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
 
     groups[diff.address.label] = groups[diff.address.label]
       ? groups[diff.address.label].concat([parsedDiff])
-      : [
-          {
-            from: diff.from,
-            to: diff.to,
-            name: diff.name,
-            keys
-          }
-        ];
+      : [parsedDiff];
     return groups;
   }, {});
 

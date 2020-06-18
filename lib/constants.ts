@@ -14,7 +14,7 @@ export const GOV_BLOG_POSTS_ENDPOINT =
 
 export const DEFAULT_NETWORK = SupportedNetworks.MAINNET;
 
-export const ETHERSCAN_PREFIXES: { [key in SupportedNetworks.MAINNET | SupportedNetworks.KOVAN]: string } = {
+export const ETHERSCAN_PREFIXES = {
   [SupportedNetworks.MAINNET]: '',
   [SupportedNetworks.KOVAN]: 'kovan.'
 };

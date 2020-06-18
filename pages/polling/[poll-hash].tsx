@@ -26,6 +26,13 @@ import PollVote from '../../types/pollVote';
 import PollTally from '../../types/pollTally';
 import Skeleton from 'react-loading-skeleton';
 
+function prefetchTally(poll, getEndpoint) {
+  if (typeof window !== 'undefined' && poll) {
+    const tallyPromise = fetchJson(getEndpoint(poll)).then(rawTally => parsePollTally(rawTally, poll));
+    mutate(getEndpoint(poll), tallyPromise, false);
+  }
+}
+
 const PollView = ({ poll }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
@@ -34,26 +41,18 @@ const PollView = ({ poll }: { poll: Poll }) => {
   );
 
   const network = getNetwork();
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
-  const { data: tally } = useSWR<PollTally>(
-    hasPollEnded
+
+  const getEndpoint = poll =>
+    new Date(poll.endDate).getTime() < new Date().getTime()
       ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`,
-    async url => parsePollTally(await fetchJson(url), poll)
+      : `/api/polling/tally/${poll.pollId}?network=${network}`;
+
+  const { data: tally } = useSWR<PollTally>(getEndpoint(poll), async url =>
+    parsePollTally(await fetchJson(url), poll)
   );
 
-  [poll.ctx.prev, poll.ctx.next].forEach(_poll => {
-    if (_poll) {
-      // prefetch tallies before || after this one
-      if (isActivePoll(_poll)) {
-        const url = `/api/polling/tally/${_poll.pollId}?network=${network}`;
-        mutate(url, async () => parsePollTally(await fetchJson(url), _poll));
-      } else {
-        const url = `/api/polling/tally/cache-no-revalidate/${_poll.pollId}?network=${network}`;
-        mutate(url, async () => parsePollTally(await fetchJson(url), _poll));
-      }
-    }
-  });
+  // prefetch tallies before and/or after this one
+  [poll.ctx.prev, poll.ctx.next].forEach(_poll => prefetchTally(_poll, getEndpoint));
 
   return (
     <PrimaryLayout shortenFooter={true}>
