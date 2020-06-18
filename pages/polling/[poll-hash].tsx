@@ -42,15 +42,15 @@ const PollView = ({ poll }: { poll: Poll }) => {
     async url => parsePollTally(await fetchJson(url), poll)
   );
 
-  [poll.ctx.prev, poll.ctx.next].forEach(async _poll => {
+  [poll.ctx.prev, poll.ctx.next].forEach(_poll => {
     if (_poll) {
       // prefetch tallies before || after this one
       if (isActivePoll(_poll)) {
         const url = `/api/polling/tally/${_poll.pollId}?network=${network}`;
-        mutate(url, parsePollTally(await fetchJson(url), _poll));
+        mutate(url, async () => parsePollTally(await fetchJson(url), _poll));
       } else {
         const url = `/api/polling/tally/cache-no-revalidate/${_poll.pollId}?network=${network}`;
-        mutate(url, parsePollTally(await fetchJson(url), _poll));
+        mutate(url, async () => parsePollTally(await fetchJson(url), _poll));
       }
     }
   });
