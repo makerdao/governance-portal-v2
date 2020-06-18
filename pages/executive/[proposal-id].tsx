@@ -25,7 +25,7 @@ const ProposalView = ({ proposal }: Props) => {
   );
 
   const { hasBeenCast, decodedDiff } = rawStateDiff || {};
-  const groupedDiff = decodedDiff
+  const groupedDiff: { [key: string]: any } = decodedDiff
     ? decodedDiff.reduce((groups, diff) => {
         const keys = diff.keys
           ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))

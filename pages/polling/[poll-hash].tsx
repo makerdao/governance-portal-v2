@@ -64,7 +64,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </NavLink>
             </Link>
             <Flex sx={{ justifyContent: ['space-between', null] }}>
-              {poll.ctx.prev.slug && (
+              {poll.ctx?.prev?.slug && (
                 <Link
                   scroll={false}
                   href={{
@@ -83,7 +83,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </NavLink>
                 </Link>
               )}
-              {poll.ctx.next.slug && (
+              {poll.ctx?.next?.slug && (
                 <Link
                   scroll={false}
                   href={{
