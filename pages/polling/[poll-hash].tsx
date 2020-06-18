@@ -44,9 +44,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   useEffect(() => {
     [poll.ctx.prev, poll.ctx.next].forEach(_poll => {
-      if (_poll && isActivePoll(_poll)) {
+      if (_poll) {
         // prefetch tallies before || after this one
-        mutate(`/api/polling/tally/${_poll.pollId}?network=${network}`);
+        if (isActivePoll(_poll)) {
+          mutate(`/api/polling/tally/${_poll.pollId}?network=${network}`);
+        } else {
+          mutate(`/api/polling/tally/cache-no-revalidate/${_poll.pollId}?network=${network}`);
+        }
       }
     });
   }, []);

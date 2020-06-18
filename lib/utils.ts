@@ -9,6 +9,7 @@ import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
 import Poll from '../types/poll';
+import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 
 export function bigNumberKFormat(num: CurrencyObject) {
@@ -148,4 +149,40 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp 
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
   }
+}
+
+export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
+  invariant(
+    rawStateDiff?.hasBeenCast !== undefined && rawStateDiff?.decodedDiff !== undefined,
+    'invalid or undefined raw state diff'
+  );
+
+  const { hasBeenCast, decodedDiff = [] } = rawStateDiff;
+
+  const groupedDiff: { [key: string]: any } = decodedDiff.reduce((groups, diff) => {
+    const keys = diff.keys
+      ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
+      : [];
+
+    const parsedDiff = {
+      from: diff.from,
+      to: diff.to,
+      name: diff.name,
+      keys
+    };
+
+    groups[diff.address.label] = groups[diff.address.label]
+      ? groups[diff.address.label].concat([parsedDiff])
+      : [
+          {
+            from: diff.from,
+            to: diff.to,
+            name: diff.name,
+            keys
+          }
+        ];
+    return groups;
+  }, {});
+
+  return { hasBeenCast, groupedDiff };
 }

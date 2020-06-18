@@ -3,6 +3,7 @@ import Link from 'next/link';
 import useSWR from 'swr';
 import { Text, Flex, Divider, Box, Button, jsx } from 'theme-ui';
 
+import { isActivePoll } from '../../lib/utils';
 import useAccountsStore from '../../stores/accounts';
 import getMaker, { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
@@ -19,7 +20,6 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
   );
 
-  const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
   return (
     <Flex
       sx={{
@@ -93,7 +93,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
               query: { network }
             }}
           >
-            <Button variant={hasVoted ? 'outline' : 'primary'}>View Details</Button>
+            <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
           <VotingStatus poll={poll} allUserVotes={allUserVotes} />
         </Flex>

@@ -12,6 +12,7 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 
@@ -20,37 +21,10 @@ type Props = {
 };
 
 const ProposalView = ({ proposal }: Props) => {
-  const { data: rawStateDiff } = useSWR(
-    `/api/executive/state-diff?network=${getNetwork()}&address=${proposal.source}`
+  const { data: stateDiff } = useSWR(
+    `/api/executive/state-diff?network=${getNetwork()}&address=${proposal.source}`,
+    async url => parseSpellStateDiff(await fetchJson(url))
   );
-
-  const { hasBeenCast, decodedDiff } = rawStateDiff || {};
-  const groupedDiff: { [key: string]: any } = decodedDiff
-    ? decodedDiff.reduce((groups, diff) => {
-        const keys = diff.keys
-          ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
-          : [];
-
-        const parsedDiff = {
-          from: diff.from,
-          to: diff.to,
-          name: diff.name,
-          keys
-        };
-
-        groups[diff.address.label] = groups[diff.address.label]
-          ? groups[diff.address.label].concat([parsedDiff])
-          : [
-              {
-                from: diff.from,
-                to: diff.to,
-                name: diff.name,
-                keys
-              }
-            ];
-        return groups;
-      }, {})
-    : undefined;
 
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -79,18 +53,20 @@ const ProposalView = ({ proposal }: Props) => {
                 <Text as="h3" sx={{ pb: 2 }}>
                   Effects
                 </Text>
-                {rawStateDiff ? (
+                {stateDiff ? (
                   <Stack gap={3}>
-                    <Text>Showing {hasBeenCast ? 'archival' : 'simulated future'} effects </Text>
+                    <Text>
+                      Showing{' '}
+                      {stateDiff.hasBeenCast ? 'effects resulting from this spell' : 'simulated future'}{' '}
+                      effects{' '}
+                    </Text>
                     <Stack gap={3}>
-                      {Object.entries(groupedDiff).map(([label, diffs]) => (
+                      {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
                         <div>
                           <Text as="h4">{label}</Text>
                           <Flex
                             sx={{
                               maxWidth: 'min-content',
-                              border: 'light',
-                              p: 3,
                               overflowX: 'scroll'
                             }}
                           >
