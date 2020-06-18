@@ -42,18 +42,18 @@ const PollView = ({ poll }: { poll: Poll }) => {
     async url => parsePollTally(await fetchJson(url), poll)
   );
 
-  useEffect(() => {
-    [poll.ctx.prev, poll.ctx.next].forEach(_poll => {
-      if (_poll) {
-        // prefetch tallies before || after this one
-        if (isActivePoll(_poll)) {
-          mutate(`/api/polling/tally/${_poll.pollId}?network=${network}`);
-        } else {
-          mutate(`/api/polling/tally/cache-no-revalidate/${_poll.pollId}?network=${network}`);
-        }
+  [poll.ctx.prev, poll.ctx.next].forEach(async _poll => {
+    if (_poll) {
+      // prefetch tallies before || after this one
+      if (isActivePoll(_poll)) {
+        const url = `/api/polling/tally/${_poll.pollId}?network=${network}`;
+        mutate(url, parsePollTally(await fetchJson(url), _poll));
+      } else {
+        const url = `/api/polling/tally/cache-no-revalidate/${_poll.pollId}?network=${network}`;
+        mutate(url, parsePollTally(await fetchJson(url), _poll));
       }
-    });
-  }, []);
+    }
+  });
 
   return (
     <PrimaryLayout shortenFooter={true}>
