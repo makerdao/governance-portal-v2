@@ -38,6 +38,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const [usr] = await ethCall('action');
 
   let trace;
+  let executedOn: number | null = null;
 
   if (hasBeenCast) {
     const pauseExecSelector = `${ethers.utils
@@ -54,7 +55,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       .map(() => '0')
       .join('')}${usr.replace('0x', '')}`;
 
-    const [{ transactionHash }] = await provider.getLogs({
+    const [{ transactionHash, blockNumber }] = await provider.getLogs({
       address: dsPause,
       fromBlock: 0,
       toBlock: 'latest',
@@ -63,6 +64,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
     invariant(transactionHash, `Unable to find cast transaction for spell ${spellAddress}`);
     trace = await provider.send('trace_replayTransaction', [transactionHash, ['vmTrace', 'stateDiff']]);
+    executedOn = blockNumber;
   } else {
     const [fax] = await ethCall('sig');
 
@@ -82,5 +84,5 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   });
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-  res.status(200).json({ hasBeenCast, decodedDiff });
+  res.status(200).json({ hasBeenCast, executedOn, decodedDiff });
 });

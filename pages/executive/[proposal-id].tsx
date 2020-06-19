@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Box, Grid, jsx } from 'theme-ui';
+import { Card, Flex, Text, Heading, Divider, Grid, jsx } from 'theme-ui';
 
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
@@ -15,6 +15,7 @@ import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
+import Bignumber from 'bignumber.js';
 
 type Props = {
   proposal: Proposal;
@@ -50,15 +51,17 @@ const ProposalView = ({ proposal }: Props) => {
             tabPanels={[
               <div dangerouslySetInnerHTML={{ __html: proposal.content }} />,
               <div sx={{ pt: 3 }}>
-                <Text as="h3" sx={{ pb: 2 }}>
+                <Text as="h1" sx={{ pb: 2 }}>
                   Effects
                 </Text>
                 {stateDiff ? (
                   <Stack gap={3}>
                     <Text>
                       {stateDiff.hasBeenCast
-                        ? 'effects resulting from this spell'
-                        : 'simulated future effects'}{' '}
+                        ? `Effects resulting from this spell's execution on block ${new Bignumber(
+                            stateDiff.executedOn
+                          ).toFormat()}`
+                        : `Projected effects if this spell were to be executed now`}{' '}
                     </Text>
                     <Stack gap={3}>
                       {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
@@ -70,20 +73,33 @@ const ProposalView = ({ proposal }: Props) => {
                               overflowX: 'scroll'
                             }}
                           >
-                            <Grid gap={0} pr={2}>
+                            <Grid gap={0} pr={3} sx={{ fontSize: 3 }} columns="max-content">
                               {diffs.map(diff => (
-                                <code sx={{ width: 6 }}>
+                                <code>
                                   {diff.name}
-                                  {diff.keys.map(key => `[${key}]`)}
+                                  {diff.keys ? diff.keys.map(key => `[${key}]`) : ''}
+                                  {diff.field ? `.${diff.field}` : ``}
                                 </code>
                               ))}
                             </Grid>
-                            <Grid gap={0} columns="repeat(3, fit-content(18ch))" sx={{ columnGap: 3 }}>
+                            <Grid
+                              gap={0}
+                              columns="repeat(3, fit-content(18ch))"
+                              sx={{ columnGap: 3, fontSize: 3 }}
+                            >
                               {diffs.map(diff => (
                                 <>
-                                  <code> {diff.from}</code>
-                                  <code> {'=>'}</code>
-                                  <code> {diff.to}</code>
+                                  <code>
+                                    {new Bignumber(diff.from).toFormat(
+                                      diff.from.toString().split('.')?.[1]?.length || 0
+                                    )}
+                                  </code>
+                                  <code>{'=>'}</code>
+                                  <code>
+                                    {new Bignumber(diff.to).toFormat(
+                                      diff.to.toString().split('.')?.[1]?.length || 0
+                                    )}
+                                  </code>
                                 </>
                               ))}
                             </Grid>

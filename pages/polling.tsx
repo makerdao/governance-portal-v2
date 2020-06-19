@@ -32,7 +32,7 @@ const PollingOverview = ({ polls }: Props) => {
     entries => {
       const target = entries.pop();
       if (target.isIntersecting) {
-        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 2 : numLoadedPolls);
+        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 5 : numLoadedPolls);
       }
     },
     [numLoadedPolls, setNumLoadedPolls]
@@ -78,7 +78,11 @@ const PollingOverview = ({ polls }: Props) => {
         <Box sx={theme => ({ mr: [null, null, theme.sizes.sidebar], pr: [null, 4] })}>
           <Box>
             <Label>
-              <Checkbox checked={filterInactivePolls} onChange={() => setFilterInactivePolls(b => !b)} />
+              <Checkbox
+                checked={filterInactivePolls}
+                onChange={() => setFilterInactivePolls(b => !b)}
+                sx={{ mr: 3, minWidth: 6 }}
+              />
               Show only active polls
             </Label>
           </Box>

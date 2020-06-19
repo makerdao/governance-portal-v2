@@ -15,12 +15,12 @@ import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
   const units = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-  let typeIndex = Math.floor(num.toFixed(0).length / 3) - 1;
+  let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
   typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
-  const noUnit = typeIndex <= 0; // if the number is smaller than 100,000
-  const value = noUnit ? num : num.div(Math.pow(1000, typeIndex));
+  const noUnit = typeIndex < 0; // if the number is smaller than 1,000
+  const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
   invariant(value, 'bigNumberKFormat value undefined');
-  return `${value.toBigNumber().toFixed(0)} ${noUnit ? '' : units[typeIndex - 1]}`;
+  return `${value.toBigNumber().toFixed(2)} ${noUnit ? '' : units[typeIndex]}`;
 }
 
 export async function markdownToHtml(markdown: string) {
@@ -157,16 +157,17 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
     'invalid or undefined raw state diff'
   );
 
-  const { hasBeenCast, decodedDiff = [] } = rawStateDiff;
+  const { hasBeenCast, executedOn, decodedDiff = [] } = rawStateDiff;
   const groupedDiff: { [key: string]: any } = decodedDiff.reduce((groups, diff) => {
     const keys = diff.keys
       ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
-      : [];
+      : null;
 
     const parsedDiff = {
       from: diff.from,
       to: diff.to,
       name: diff.name,
+      field: diff.field,
       keys
     };
 
@@ -176,5 +177,5 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
     return groups;
   }, {});
 
-  return { hasBeenCast, groupedDiff };
+  return { hasBeenCast, executedOn, groupedDiff };
 }

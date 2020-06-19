@@ -3,18 +3,20 @@ type ContractDiff = {
     from: number | string;
     to: number | string;
     name: string;
-    keys: string[];
+    field: string | null;
+    keys: string[] | null;
   }[];
 };
 
 type SpellStateDiff =
   | {
       hasBeenCast: true;
-      executedAt: Date;
+      executedOn: number;
       groupedDiff: ContractDiff;
     }
   | {
       hasBeenCast: false;
+      executedOn: null;
       groupedDiff: ContractDiff;
     };
 
