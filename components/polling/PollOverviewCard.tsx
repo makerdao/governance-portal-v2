@@ -52,7 +52,9 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           >
             <Text
               sx={{
-                fontSize: [3, 4]
+                fontSize: [3, 4],
+                whiteSpace: 'nowrap',
+                overflowX: 'auto'
               }}
             >
               {poll.title}

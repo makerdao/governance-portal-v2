@@ -40,13 +40,11 @@ const PollingOverview = ({ polls }: Props) => {
 
   useEffect(() => {
     if (loader?.current) {
-      const options = {
-        root: null,
-        rootMargin: '800px'
-      };
-
       // Create observer
-      const observer = new IntersectionObserver(loadMore, options);
+      const observer = new IntersectionObserver(loadMore, {
+        root: null,
+        rootMargin: '600px'
+      });
       // observe the loader
       observer.observe(loader.current);
       // clean up
@@ -81,7 +79,7 @@ const PollingOverview = ({ polls }: Props) => {
               <Checkbox
                 checked={filterInactivePolls}
                 onChange={() => setFilterInactivePolls(b => !b)}
-                sx={{ mr: 3, minWidth: 6 }}
+                sx={{ mr: 3 }}
               />
               Show only active polls
             </Label>
@@ -107,7 +105,7 @@ const PollingOverview = ({ polls }: Props) => {
           </Flex>
         </Box>
         <SidebarLayout>
-          <Box sx={{ minWidth: '0px' }}>
+          <Box>
             <Stack>
               {activePolls.length > 0 && (
                 <div>

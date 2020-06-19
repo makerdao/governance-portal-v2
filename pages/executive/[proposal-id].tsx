@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Grid, jsx } from 'theme-ui';
+import { Card, Flex, Text, Heading, Divider, Grid, Box, jsx } from 'theme-ui';
 
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
@@ -65,46 +65,33 @@ const ProposalView = ({ proposal }: Props) => {
                     </Text>
                     <Stack gap={3}>
                       {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
-                        <div>
-                          <Text as="h4">{label}</Text>
-                          <Flex
-                            sx={{
-                              maxWidth: 'min-content',
-                              overflowX: 'scroll'
-                            }}
-                          >
-                            <Grid gap={0} pr={3} sx={{ fontSize: 3 }} columns="max-content">
-                              {diffs.map(diff => (
-                                <code>
+                        <Box>
+                          <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</Text>
+                          <Grid columns="max-content 1fr" sx={{ rowGap: 0, overflowX: 'scroll' }}>
+                            {diffs.map(diff => (
+                              <>
+                                <Text sx={{ fontWeight: 'semibold', fontSize: 3 }}>
                                   {diff.name}
                                   {diff.keys ? diff.keys.map(key => `[${key}]`) : ''}
                                   {diff.field ? `.${diff.field}` : ``}
-                                </code>
-                              ))}
-                            </Grid>
-                            <Grid
-                              gap={0}
-                              columns="repeat(3, fit-content(18ch))"
-                              sx={{ columnGap: 3, fontSize: 3 }}
-                            >
-                              {diffs.map(diff => (
-                                <>
-                                  <code>
+                                </Text>
+                                <Grid columns="18ch 3ch 18ch">
+                                  <Text>
                                     {new Bignumber(diff.from).toFormat(
                                       diff.from.toString().split('.')?.[1]?.length || 0
                                     )}
-                                  </code>
-                                  <code>{'=>'}</code>
-                                  <code>
+                                  </Text>
+                                  <Text>{'=>'}</Text>
+                                  <Text>
                                     {new Bignumber(diff.to).toFormat(
                                       diff.to.toString().split('.')?.[1]?.length || 0
                                     )}
-                                  </code>
-                                </>
-                              ))}
-                            </Grid>
-                          </Flex>
-                        </div>
+                                  </Text>
+                                </Grid>
+                              </>
+                            ))}
+                          </Grid>
+                        </Box>
                       ))}
                     </Stack>
                   </Stack>

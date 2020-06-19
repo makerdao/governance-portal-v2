@@ -14,7 +14,8 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? [`/user/voting-for`, account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
+    { refreshInterval: 0 }
   );
 
   if (!account) return null;

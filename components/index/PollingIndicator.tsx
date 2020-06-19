@@ -37,9 +37,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
   } else {
     pollsToBeAwareOf = activePolls.length;
     message =
-      activePolls.length > 0
-        ? 'New polling votes'
-        : 'There are no live Governance Polls at the moment';
+      activePolls.length > 0 ? 'New polling votes' : 'There are no live Governance Polls at the moment';
   }
 
   return (
@@ -77,7 +75,8 @@ export default ({ polls, ...props }: { polls: Poll[] }) => {
 
   const { data: votingFor } = useSWR<PollVote[]>(
     account?.address ? [`/user/voting-for`, account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address))
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
+    { refreshInterval: 0 }
   );
 
   const unvotedPolls = votingFor
