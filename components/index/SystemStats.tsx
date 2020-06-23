@@ -54,7 +54,7 @@ export default function(props) {
             </div>
 
             <div>
-              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
               <Text mt={2} variant="h2">
                 {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
               </Text>
@@ -97,7 +97,7 @@ export default function(props) {
           </Flex>
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
             <Text sx={{ fontSize: 3 }}>
               {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
             </Text>

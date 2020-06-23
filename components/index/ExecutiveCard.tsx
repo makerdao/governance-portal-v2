@@ -70,7 +70,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
           <Button>Vote on proposal</Button>
         </Link>
         {mkrSupport ? (
-          <Flex sx={{ flex: 1, ml: 3, flexDirection: ['column', 'column', 'row'], alignItems: 'flex-start' }}>
+          <Flex sx={{ flex: 1, ml: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
             <Badge
               variant="primary"
               sx={{

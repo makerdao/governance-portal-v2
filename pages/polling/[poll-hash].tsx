@@ -52,13 +52,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
         <div>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
-              <NavLink p={2}>
+              <NavLink p={2} sx={{ justifySelf: 'left' }}>
                 <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                   <Icon name="chevron_left" size="2" mr={2} /> Back to all polls
                 </Flex>
               </NavLink>
             </Link>
-            <Flex sx={{ justifyContent: ['space-between', null] }}>
+            <Flex sx={{ justifyContent: 'space-between' }}>
               {poll.ctx?.prev?.slug && (
                 <Link
                   scroll={false}
@@ -71,7 +71,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     query: { network }
                   }}
                 >
-                  <NavLink p={2}>
+                  <NavLink>
                     <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
                     </Flex>
@@ -90,7 +90,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     query: { network }
                   }}
                 >
-                  <NavLink p={2}>
+                  <NavLink>
                     <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
                       Next Poll <Icon name="chevron_right" size={2} ml={2} />
                     </Flex>
