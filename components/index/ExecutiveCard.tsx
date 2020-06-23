@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
+import Stack from '../layouts/Stack';
 import getMaker, { getNetwork } from '../../lib/maker';
 import CurrencyObject from '../../types/currency';
 import Proposal from '../../types/proposal';
@@ -17,27 +18,45 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(
-    [`/executive/mkr-support`, proposal.source],
+    [`/executive/mkr-support`, proposal.address],
     (_, spellAddress) => getMaker().then(maker => maker.service('chief').getApprovalCount(spellAddress))
   );
 
   return (
-    <div
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        variant: 'cards.primary',
-        mx: [4, 0]
-      }}
-      {...props}
-    >
-      <Flex
-        sx={{
-          flexDirection: 'column',
-          justifyContent: 'space-between'
+    <Stack gap={2} sx={{ variant: 'cards.primary' }} {...props}>
+      <Link
+        href={{
+          pathname: '/executive/[proposal-id]',
+          query: { network }
+        }}
+        as={{
+          pathname: `/executive/${proposal.key}`,
+          query: { network }
         }}
       >
+        <Text
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            fontSize: [3, 4]
+          }}
+        >
+          {proposal.title}
+        </Text>
+      </Link>
+      <Text
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          fontSize: [3, 4],
+          opacity: 0.8
+        }}
+      >
+        {proposal.proposalBlurb}
+      </Text>
+      <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
         <Link
           href={{
             pathname: '/executive/[proposal-id]',
@@ -48,74 +67,39 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
             query: { network }
           }}
         >
-          <Text
-            sx={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: [3, 4]
-            }}
-          >
-            {proposal.title}
-          </Text>
+          <Button>Vote on proposal</Button>
         </Link>
-        <Text
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: [3, 4],
-            opacity: 0.8
-          }}
-        >
-          {proposal.proposal_blurb}
-        </Text>
-        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-          <Link
-            href={{
-              pathname: '/executive/[proposal-id]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/executive/${proposal.key}`,
-              query: { network }
-            }}
-          >
-            <Button>Vote on proposal</Button>
-          </Link>
-          {mkrSupport ? (
-            <>
+        {mkrSupport ? (
+          <Flex sx={{ flex: 1, ml: 3, flexDirection: ['column', 'column', 'row'], alignItems: 'flex-start' }}>
+            <Badge
+              variant="primary"
+              sx={{
+                textTransform: 'uppercase'
+              }}
+            >
+              {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
+            </Badge>
+            {isHat ? (
               <Badge
                 variant="primary"
                 sx={{
-                  borderColor: 'text',
-                  textTransform: 'uppercase',
-                  alignSelf: 'center'
+                  mt: [3, 3, 0],
+                  ml: [0, 0, 3],
+                  borderColor: 'primaryAlt',
+                  color: 'primaryAlt',
+                  textTransform: 'uppercase'
                 }}
               >
-                {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
+                Governing proposal
               </Badge>
-              {isHat ? (
-                <Badge
-                  variant="primary"
-                  sx={{
-                    borderColor: '#098C7D',
-                    color: '#098C7D',
-                    textTransform: 'uppercase',
-                    alignSelf: 'center'
-                  }}
-                >
-                  Governing proposal
-                </Badge>
-              ) : null}
-            </>
-          ) : (
-            <Box m="auto" ml="3" sx={{ width: '200px' }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Flex>
+            ) : null}
+          </Flex>
+        ) : (
+          <Box m="auto" ml="3" sx={{ width: '200px' }}>
+            <Skeleton />
+          </Box>
+        )}
       </Flex>
-    </div>
+    </Stack>
   );
 }

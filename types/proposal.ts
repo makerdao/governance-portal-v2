@@ -1,9 +1,9 @@
 type Proposal = {
+  address: string;
   key: string;
   content: string;
-  source: string;
   about: string;
-  proposal_blurb: string;
+  proposalBlurb: string;
   title: string;
 };
 

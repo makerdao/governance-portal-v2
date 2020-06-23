@@ -21,32 +21,31 @@ import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
-import PollVote from '../../types/pollVote';
 import PollTally from '../../types/pollTally';
 import Skeleton from 'react-loading-skeleton';
 
-function prefetchTally(poll, getEndpoint) {
+// if the poll has ended, always fetch its tally from the server's cache
+const getURL = poll =>
+  new Date(poll.endDate).getTime() < new Date().getTime()
+    ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
+    : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`;
+
+function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getEndpoint(poll)).then(rawTally => parsePollTally(rawTally, poll));
-    mutate(getEndpoint(poll), tallyPromise, false);
+    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parsePollTally(rawTally, poll));
+    mutate(getURL(poll), tallyPromise, false);
   }
 }
 
 const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
 
-  const getEndpoint = poll =>
-    new Date(poll.endDate).getTime() < new Date().getTime()
-      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`;
-
-  const { data: tally } = useSWR<PollTally>(getEndpoint(poll), async url =>
+  const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
   );
 
-  // prefetch tallies before and/or after this one
-  [poll.ctx.prev, poll.ctx.next].forEach(_poll => prefetchTally(_poll, getEndpoint));
-
+  // prepopulate the local tally cache for polls before and/or after this one
+  [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>

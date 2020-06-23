@@ -1,43 +1,58 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NavLink, Heading } from 'theme-ui';
+import useSWR from 'swr';
+import { NavLink, Heading, Flex, Badge } from 'theme-ui';
 import ErrorPage from 'next/error';
 
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal from '../types/proposal';
+import SpellData from '../types/spellData';
 
-type Props = {
-  proposals: Proposal[];
+const SpellRow = ({ proposal }: { proposal: Proposal }) => {
+  const { data: spellData } = useSWR<SpellData>(
+    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
+  );
+
+  return (
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+      <Link
+        key={proposal.key}
+        href={{
+          pathname: '/executive/[proposal-id]',
+          query: { network: getNetwork() }
+        }}
+        as={{
+          pathname: `/executive/${proposal.key}`,
+          query: { network: getNetwork() }
+        }}
+      >
+        <NavLink>{proposal.key}</NavLink>
+      </Link>
+      {typeof spellData === 'undefined' ? (
+        <div>loading</div>
+      ) : (
+        <Badge bg="background" variant={spellData.hasBeenCast ? 'primary' : 'notice'}>
+          {spellData.hasBeenCast ? 'This spell has been cast' : 'This spell has not yet been cast'}
+        </Badge>
+      )}
+    </Flex>
+  );
 };
 
-const ExecutiveOverview = ({ proposals }: Props) => {
-  const network = getNetwork();
+const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Heading as="h1">Executive Proposals</Heading>
-
       {proposals.map(proposal => (
-        <Link
-          key={proposal.key}
-          href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
-          }}
-          as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
-          }}
-        >
-          <NavLink>{proposal.key}</NavLink>
-        </Link>
+        <SpellRow proposal={proposal} />
       ))}
     </PrimaryLayout>
   );
 };
 
-export default function ExecutiveOverviewPage({ proposals: prefetchedProposals }: Props) {
+export default function ExecutiveOverviewPage({ proposals: prefetchedProposals }: { proposals: Proposal[] }) {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
 

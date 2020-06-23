@@ -23,7 +23,7 @@ type Props = {
 
 const ProposalView = ({ proposal }: Props) => {
   const { data: stateDiff } = useSWR(
-    `/api/executive/state-diff?network=${getNetwork()}&address=${proposal.source}`,
+    `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
@@ -57,11 +57,13 @@ const ProposalView = ({ proposal }: Props) => {
                 {stateDiff ? (
                   <Stack gap={3}>
                     <Text>
-                      {stateDiff.hasBeenCast
-                        ? `Effects resulting from this spell's execution on block ${new Bignumber(
-                            stateDiff.executedOn
-                          ).toFormat()}`
-                        : `Projected effects if this spell were to be executed now`}{' '}
+                      {Object.keys(stateDiff.groupedDiff).length > 0
+                        ? stateDiff.hasBeenCast
+                          ? `Effects resulting from this spell's execution on block ${new Bignumber(
+                              stateDiff.executedOn
+                            ).toFormat()}`
+                          : `Simulated effects if this spell were to be executed now`
+                        : `This spell has no on-chain effects`}
                     </Text>
                     <Stack gap={3}>
                       {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (

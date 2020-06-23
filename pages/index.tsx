@@ -118,7 +118,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 <Stack>
                   {proposals.map(proposal => (
                     <ExecutiveCard
-                      isHat={hat ? hat.toLowerCase() === proposal.source.toLowerCase() : false}
+                      isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                       key={proposal.key}
                       proposal={proposal}
                     />

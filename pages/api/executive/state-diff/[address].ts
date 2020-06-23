@@ -2,19 +2,21 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
-import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from '../../../lib/constants';
-import { fetchJson } from '../../../lib/utils';
-import withApiHandler from '../_lib/with-api-handler';
-
-// TODO grab these from dai.js
-const dsPause = '0xbE286431454714F511008713973d3B053A2d38f3';
-const dsPauseProxy = '0xBE8E3e3618f7474F8cB1d074A26afFef007E98FB';
+import { getConnectedMakerObj } from '../../_lib/utils';
+import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from '../../../../lib/constants';
+import { fetchJson } from '../../../../lib/utils';
+import withApiHandler from '../../_lib/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
-  invariant(spellAddress, 'spell address required');
+  invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
+
   const network = req.query.network as string;
-  invariant(!network || network === SupportedNetworks.MAINNET, `Unsupported network ${network}`);
+  invariant(!network || network === SupportedNetworks.MAINNET, `unsupported network ${network}`);
+
+  const maker = await getConnectedMakerObj(SupportedNetworks.MAINNET);
+
+  const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
 
   const provider = new ethers.providers.AlchemyProvider();
   const encoder = new ethers.utils.Interface([
@@ -56,7 +58,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       .join('')}${usr.replace('0x', '')}`;
 
     const [{ transactionHash, blockNumber }] = await provider.getLogs({
-      address: dsPause,
+      address: MCD_PAUSE,
       fromBlock: 0,
       toBlock: 'latest',
       topics: [pauseExecSelector, spellAddressBytes32, usrBytes32]
@@ -70,8 +72,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
     trace = await provider.send('trace_call', [
       {
-        from: dsPause,
-        to: dsPauseProxy,
+        from: MCD_PAUSE,
+        to: MCD_PAUSE_PROXY,
         data: encoder.encodeFunctionData('exec', [usr, fax])
       },
       ['vmTrace', 'stateDiff']
@@ -83,6 +85,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     body: JSON.stringify({ trace })
   });
 
-  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
   res.status(200).json({ hasBeenCast, executedOn, decodedDiff });
 });

@@ -1,49 +1,21 @@
-// @ts-ignore
-import Maker from '@makerdao/dai';
-// @ts-ignore
-import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 
-import withApiHandler from '../../_lib/with-api-handler';
-import { networkToRpc, isSupportedNetwork } from '../../../../lib/maker';
-import { DEFAULT_NETWORK, SupportedNetworks } from '../../../../lib/constants';
+import withApiHandler from '../../_lib/withApiHandler';
+import { getConnectedMakerObj } from '../../_lib/utils';
+import { isSupportedNetwork } from '../../../../lib/maker';
+import { DEFAULT_NETWORK } from '../../../../lib/constants';
 import { backoffRetry } from '../../../../lib/utils';
-
-const cachedMakerObjs = {};
-async function getConnectedMakerObj(network: SupportedNetworks) {
-  if (cachedMakerObjs[network]) {
-    return cachedMakerObjs[network];
-  }
-
-  const makerObj = await Maker.create('http', {
-    plugins: [[GovernancePlugin, { network }]],
-    provider: {
-      url: networkToRpc(network),
-      type: 'HTTP'
-    },
-    web3: {
-      pollingInterval: null
-    },
-    log: false,
-    multicall: true
-  });
-
-  cachedMakerObjs[network] = makerObj;
-  return makerObj;
-}
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
     const pollId = req.query['poll-id'] as string;
-    const network = req.query.network as string;
+    const network = (req.query.network as string) || DEFAULT_NETWORK;
 
     invariant(pollId, 'poll id required');
+    invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-    const maker = await getConnectedMakerObj(
-      isSupportedNetwork(network) ? (network as SupportedNetworks) : DEFAULT_NETWORK
-    );
-
+    const maker = await getConnectedMakerObj(network);
     const tally = await backoffRetry(3, () => maker.service('govPolling').getTallyRankedChoiceIrv(pollId));
 
     const totalMkrParticipation = tally.totalMkrParticipation;

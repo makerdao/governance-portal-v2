@@ -28,6 +28,13 @@ export async function getExecutiveProposals(): Promise<Proposal[]> {
     .map(topic => topic.proposals)
     .flat();
 
+  proposals.forEach(proposal => {
+    proposal.proposalBlurb = proposal.proposal_blurb;
+    proposal.address = proposal.source;
+    delete proposal.proposal_blurb;
+    delete proposal.source;
+  });
+
   return (_cachedProposals = proposals);
 }
 
