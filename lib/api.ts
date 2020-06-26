@@ -60,9 +60,15 @@ export async function getPolls(): Promise<Poll[]> {
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
-  const pollsList = await maker.service('govPolling').getAllWhitelistedPolls();
-  const polls = await Promise.all(
-    uniqBy(pollsList, p => p.multiHash).map(async p => {
+  const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
+  const polls = await parsePollsMetadata(pollList);
+
+  return (_cachedPolls = polls);
+}
+
+export function parsePollsMetadata(pollList): Promise<Poll[]> {
+  return Promise.all(
+    uniqBy(pollList, p => p.multiHash).map(async p => {
       let document = '';
       try {
         document =
@@ -110,8 +116,6 @@ export async function getPolls(): Promise<Poll[]> {
       // newest to oldest
       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   );
-
-  return (_cachedPolls = polls);
 }
 
 export async function getPoll(slug: string): Promise<Poll> {
