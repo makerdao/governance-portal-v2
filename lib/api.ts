@@ -67,21 +67,24 @@ export async function getPolls(): Promise<Poll[]> {
 }
 
 export function parsePollsMetadata(pollList): Promise<Poll[]> {
+  console.log(
+    pollList.sort((a, b) => a.pollId - b.pollId),
+    'poll list'
+  );
+
   return Promise.all(
     uniqBy(pollList, p => p.multiHash).map(async p => {
       let document = '';
       try {
-        document =
-          validUrl.isUri(p.url) &&
-          (await timeoutPromise(
-            5000, // reject if it takes longer than this to fetch
-            backoffRetry(3, () => fetch(p.url))
-          ).then(response => response?.text()));
-        invariant(
-          typeof document === 'string' && document.length > 0 && matter(document).data?.options?.length > 0
-        );
+        document = await timeoutPromise(
+          5000, // reject if it takes longer than this to fetch
+          backoffRetry(3, () => fetch(p.url))
+        ).then(response => response?.text());
+        if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
+          throw new Error();
       } catch (err) {
         console.log(`unable to fetch valid poll document from ${p.url} for poll ${p.pollId}`);
+        return null;
       }
 
       const pollMeta = matter(document).data;
@@ -111,7 +114,7 @@ export function parsePollsMetadata(pollList): Promise<Poll[]> {
     })
   ).then(polls =>
     (polls as any[])
-      .filter(p => !!p.summary && !!p.options)
+      .filter(p => !!p && !!p.summary && !!p.options)
       .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
       // newest to oldest
       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
