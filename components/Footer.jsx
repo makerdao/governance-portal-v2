@@ -258,16 +258,25 @@ class LongFooter extends React.Component {
           gap="2rem"
         >
           <div>
-            <LinkListHeader>{t('Learn')}</LinkListHeader>
+            <LinkListHeader>{t('Resources')}</LinkListHeader>
             <LinkList>
               <li>
                 <Link to="https://makerdao.com/whitepaper">{t('White Paper')}</Link>
               </li>
               <li>
+                <Link to="https://awesome.makerdao.com/#faqs">{t('FAQs')}</Link>
+              </li>
+              <li>
                 <Link to="https://makerdao.com/privacy">{t('Privacy Policy')}</Link>
               </li>
               <li>
-                <Link to="https://makerdao.com/roadmap">{t('Roadmap')}</Link>
+                <Link to="https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4">{t('Brand Assets')}</Link>
+              </li>
+              <li>
+                <Link to="https://makerdao.com/en/feeds/">{t('Feeds')}</Link>
+              </li>
+              <li>
+                <Link to="https://makerdao.statuspage.io/">{t('Service Status')}</Link>
               </li>
             </LinkList>
           </div>
@@ -275,16 +284,13 @@ class LongFooter extends React.Component {
             <LinkListHeader>{t('Products')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to="https://makerdao.com/dai">{t('Dai Stablecoin')}</Link>
+                <Link to="https://oasis.app/">{t('Oasis')}</Link>
               </li>
               <li>
-                <Link to={`https://${t('cdp-portal-subdomain')}.makerdao.com`}>{t('CDP Portal')}</Link>
+                <Link to={`https://migrate.makerdao.com/`}>{t('Migrate')}</Link>
               </li>
               <li>
-                <Link to="https://vote.makerdao.com">{t('Governance')}</Link>
-              </li>
-              <li>
-                <Link to="https://mkr.tools">{t('Platform Data')}</Link>
+                <Link to="https://makerdao.com/en/governance/">{t('Governance')}</Link>
               </li>
             </LinkList>
           </div>
@@ -292,15 +298,15 @@ class LongFooter extends React.Component {
             <LinkListHeader>{t('Developer')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to="https://makerdao.com/documentation/" external>
+                <Link to="https://docs.makerdao.com/" external>
                   {t('Documentation')}
                 </Link>
               </li>
               <li>
-                <Link to="https://github.com/makerdao/dai.js">Dai.js</Link>
+                <Link to="https://docs.makerdao.com/dai.js">Dai.js</Link>
               </li>
               <li>
-                <Link to="https://developer.makerdao.com/dai/1/graphql/">GraphQL API</Link>
+                <Link to="https://github.com/makerdao/developerguides">Developer Guides</Link>
               </li>
             </LinkList>
           </div>
@@ -362,16 +368,13 @@ class LongFooter extends React.Component {
               <Link to="https://chat.makerdao.com/">
                 <Icon name="rocket_chat" />
               </Link>
-              <Link to="https://blog.makerdao.com">
-                <Icon name="medium" />
-              </Link>
-              {/*
+              {/*<div>
                 <Icon
                   name="we_chat"
                   sx={{ cursor: 'pointer' }}
                   onClick={this.toggleWeChatModal}
                 />
-              */}
+              </div>*/}
               <Link to="https://www.youtube.com/MakerDAO">
                 <Icon name="youtube" />
               </Link>
