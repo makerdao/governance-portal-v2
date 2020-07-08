@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { translate } from '@makerdao/i18n-helper';
-import Arrow from "./assets/arrow.svg";
 
 const FooterContainer = props => (
   <Container
@@ -56,54 +55,6 @@ const LinkList = props => (
   >
     {props.children}
   </Box>
-);
-
-const SubscribeButton = props => (
-  <Button
-    sx={{
-      border: 'none',
-      fontSize: '1em',
-      backgroundColor: 'transparent',
-      color: '#9898a6',
-      transition: 'color 0.125s',
-      cursor: 'pointer',
-      display: 'inline',
-      paddingRight: '1rem',
-      ':hover:after': {
-        transform: 'translate(0.3rem)',
-        backgroundColor: '#53546a'
-      },
-      ':focus:after': {
-        transform: 'translate(0.3rem)',
-        backgroundColor: '#53546a'
-      },
-      ':hover': {
-        outline: 'none',
-        color: '#53546a'
-      },
-      ':focus:': {
-        outline: 'none',
-        color: '#53546a'
-      },
-      ':after': {
-        content: '',
-        mask: 'url(${props => props.rightCaret}) center center no-repeat',
-        transition: 'all 0.125s',
-        backgroundColor: '#9898a6',
-        position: 'absolute',
-        height: '1.8rem',
-        width: '1.3rem'
-      },
-      'input:focus': {
-        color: '#53546a',
-        ':after': {
-          backgroundColor: '#53546a'
-        }
-      }
-    }}
-  >
-    {props.children}
-  </Button>
 );
 
 const Icons = props => (
@@ -361,9 +312,13 @@ class LongFooter extends React.Component {
                       borderRadius: '0px 5px 5px 0px',
                       ':hover': { borderColor: '#d5d9e0'},
                       ':hover svg': { transform: 'translate(0.25rem)' },
+                      'svg': {
+                        margin: '0 auto',
+                        transition: 'transform 0.125s'
+                      }
                     }}
                   >
-                  <Arrow />
+                  <Icon name="subscribe_arrow"/>
                 </Button>
             </Flex>
             <Icons gap="20px" mt="1.8rem" columns="repeat(7, 20px)">
