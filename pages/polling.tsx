@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Checkbox, Label, Box, Flex, Input, jsx, Grid, Text, IconButton } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Card, Heading, Checkbox, Label, Box, Flex, jsx } from 'theme-ui';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -12,7 +11,6 @@ import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
-import FilterButton from '../components/FilterButton';
 import DateFilter from '../components/polling/DateFilter';
 
 type Props = {
@@ -56,21 +54,18 @@ const PollingOverview = ({ polls }: Props) => {
     }
   }, [loader, loadMore]);
 
-  const filteredPolls = useMemo(
-    () => {
-      const start = startDate && new Date(startDate);
-      const end = endDate && new Date(endDate);
-      return polls
-        .filter(poll => {
-          if (filterInactivePolls && !isActivePoll(poll)) return false;
-          if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-          if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-          return true;
-        })
-        .slice(0, numLoadedPolls);
-    },
-    [polls, filterInactivePolls, startDate, endDate, numLoadedPolls]
-  );
+  const filteredPolls = useMemo(() => {
+    const start = startDate && new Date(startDate);
+    const end = endDate && new Date(endDate);
+    return polls
+      .filter(poll => {
+        if (filterInactivePolls && !isActivePoll(poll)) return false;
+        if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
+        if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
+        return true;
+      })
+      .slice(0, numLoadedPolls);
+  }, [polls, filterInactivePolls, startDate, endDate, numLoadedPolls]);
 
   const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
   const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
@@ -82,7 +77,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading as="h1" mr={3}>
             Polling Votes
           </Heading>
-          <DateFilter {...{startDate, endDate, setStartDate, setEndDate}} />
+          <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} />
         </Flex>
         <Box sx={theme => ({ mr: [null, null, theme.sizes.sidebar], pr: [null, 4] })}>
           <Box>
@@ -104,7 +99,7 @@ const PollingOverview = ({ polls }: Props) => {
                   <Heading mb={3} as="h3">
                     Active Polls
                   </Heading>
-                  <Stack mb={4}>
+                  <Stack sx={{ mb: 4 }}>
                     {activePolls.map(poll => (
                       <PollOverviewCard key={poll.multiHash} poll={poll} />
                     ))}

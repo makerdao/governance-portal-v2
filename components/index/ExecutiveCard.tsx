@@ -24,27 +24,29 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
 
   return (
     <Stack gap={2} sx={{ variant: 'cards.primary' }} {...props}>
-      <Link
-        href={{
-          pathname: '/executive/[proposal-id]',
-          query: { network }
-        }}
-        as={{
-          pathname: `/executive/${proposal.key}`,
-          query: { network }
-        }}
-      >
-        <Text
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: [3, 4]
+      <div>
+        <Link
+          href={{
+            pathname: '/executive/[proposal-id]',
+            query: { network }
+          }}
+          as={{
+            pathname: `/executive/${proposal.key}`,
+            query: { network }
           }}
         >
-          {proposal.title}
-        </Text>
-      </Link>
+          <Text
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              fontSize: [3, 4]
+            }}
+          >
+            {proposal.title}
+          </Text>
+        </Link>
+      </div>
       <Text
         sx={{
           whiteSpace: 'nowrap',
