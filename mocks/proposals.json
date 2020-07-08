@@ -4,7 +4,7 @@
     "end_timestamp": 1591389900000,
     "date": "2020-06-05T00:00:00.000Z",
     "contract_name": "",
-    "proposal_blurb": "Vote for this proposal to raise the ETH Debt Ceiling by 20 million to 140 million Dai",
+    "proposalBlurb": "Vote for this proposal to raise the ETH Debt Ceiling by 20 million to 140 million Dai",
     "title": "Raise the ETH Debt Ceiling",
     "end_approvals": 101490.22,
     "documents": [],

@@ -67,11 +67,6 @@ export async function getPolls(): Promise<Poll[]> {
 }
 
 export function parsePollsMetadata(pollList): Promise<Poll[]> {
-  console.log(
-    pollList.sort((a, b) => a.pollId - b.pollId),
-    'poll list'
-  );
-
   return Promise.all(
     uniqBy(pollList, p => p.multiHash).map(async p => {
       let document = '';
