@@ -328,11 +328,7 @@ class LongFooter extends React.Component {
             </LinkList>
           </div>
           <Box gridColumn={['1 / 3', '1 / 3', 'unset']}>
-            <Flex
-              sx={{ width: '284px', flexDirection: 'row' }}
-              mt="1.2rem"
-              className={this.state.subscribeState}
-            >
+            <Flex sx={{ width: '284px', flexDirection: 'row' }} mt="1.2rem">
               <Input
                 maxWidth="320px"
                 py="xs"

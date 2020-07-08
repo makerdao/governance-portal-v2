@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -21,7 +21,7 @@ type Props = {
   href?: string;
 };
 
-const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) => {
+const PollingIndicator = forwardRef(({ account, activePolls, unvotedPolls, href }: Props, ref: any) => {
   let message: string | undefined;
   let pollsToBeAwareOf = 0;
 
@@ -42,6 +42,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
 
   return (
     <NavLink
+      ref={ref}
       href={href}
       variant="buttons.outline"
       sx={{
@@ -67,7 +68,7 @@ const PollingIndicator = ({ account, activePolls, unvotedPolls, href }: Props) =
       <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
     </NavLink>
   );
-};
+});
 
 export default ({ polls, ...props }: { polls: Poll[] }) => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
