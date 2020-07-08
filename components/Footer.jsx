@@ -1,13 +1,11 @@
 /** @jsx jsx */
 import { QRCode } from 'react-qr-svg';
 import React from 'react';
-
 import Link from 'next/link';
-
 import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import { translate } from '@makerdao/i18n-helper';
+import Arrow from "./assets/arrow.svg";
 
 const FooterContainer = props => (
   <Container
@@ -30,9 +28,9 @@ const LinkListHeader = props => (
     as="div"
     sx={{
       fontWeight: '500',
-      marginBottom: '0.7rem',
-      color: '#333333',
-      fontSize: 15
+      marginBottom: '0.2rem',
+      color: 'black',
+      fontSize: 14.3
     }}
   >
     {props.children}
@@ -45,14 +43,14 @@ const LinkList = props => (
     sx={{
       paddingLeft: 0,
       listStyle: 'none',
-      lineHeight: '2.4rem',
-      fontSize: 16,
+      lineHeight: '2.1rem',
+      fontSize: 15.3,
       '& a': {
         color: 'footerText',
         fontWeight: '400',
         transition: 'color 0.2s ease-out',
         textDecoration: 'none',
-        ':hover': { color: 'text' }
+        ':hover': { color: 'linkHover' }
       }
     }}
   >
@@ -261,7 +259,7 @@ class LongFooter extends React.Component {
             <LinkListHeader>{t('Resources')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to="https://makerdao.com/whitepaper">{t('White Paper')}</Link>
+                <Link to="https://makerdao.com/whitepaper">{t('Whitepaper')}</Link>
               </li>
               <li>
                 <Link to="https://awesome.makerdao.com/#faqs">{t('FAQs')}</Link>
@@ -290,12 +288,15 @@ class LongFooter extends React.Component {
                 <Link to={`https://migrate.makerdao.com/`}>{t('Migrate')}</Link>
               </li>
               <li>
+                <Link to={`https://makerdao.com/en/ecosystem/`}>{t('Ecosystem')}</Link>
+              </li>
+              <li>
                 <Link to="https://makerdao.com/en/governance/">{t('Governance')}</Link>
               </li>
             </LinkList>
           </div>
           <div>
-            <LinkListHeader>{t('Developer')}</LinkListHeader>
+            <LinkListHeader>{t('Developers')}</LinkListHeader>
             <LinkList>
               <li>
                 <Link to="https://docs.makerdao.com/" external>
@@ -325,36 +326,46 @@ class LongFooter extends React.Component {
             </LinkList>
           </div>
           <Box gridColumn={['1 / 3', '1 / 3', 'unset']}>
-            <Box mt="1.2rem" className={this.state.subscribeState}>
+            <Flex sx={{ width: '284px', flexDirection: 'row' }} mt="1.2rem" className={this.state.subscribeState}>
               <Input
                 maxWidth="320px"
                 py="xs"
                 placeholder="Sign up for our newsletter"
                 sx={{
-                  fontSize: 15
+                  fontSize: 15,
+                  borderRadius: '5px 0px 0px 5px',
+                  '::placeholder': {
+                    color: 'formGrey',
+                    opacity: 1,
+                    fontWeight: '200'
+                  },
+                  ':focus': { borderColor: '#d5d9e0' }
                 }}
-                // defaultValue={<Flex sx={{ flexDirection: 'row', justifyContent: 'space-between'}}>
-                //     <Text>
-                //       Sign up for our newsletter
-                //     </Text>
-                //   </Flex>}
                 name="email"
                 type="email"
                 value={this.state.email}
                 onChange={evt => this.updateEmail(evt)}
                 errorMessage={(this.state.subscribeState === 'failure' || undefined) && this.state.message}
                 successMessage={(this.state.subscribeState === 'success' || undefined) && this.state.message}
-                after={
-                  <SubscribeButton
-                    type="submit"
-                    rightCaret={<Icon name="chevron_right" />}
-                    onClick={this.subscribeEmail}
-                  >
-                    Subscribe
-                  </SubscribeButton>
-                }
               />
-            </Box>
+                <Button
+                    variant="outline"
+                    type="submit"
+                    onClick={this.subscribeEmail}
+                    sx={{
+                      padding: '0px',
+                      width: '44px',
+                      border: '1px solid',
+                      borderColor: '#d5d9e0',
+                      borderLeft: 0,
+                      borderRadius: '0px 5px 5px 0px',
+                      ':hover': { borderColor: '#d5d9e0'},
+                      ':hover svg': { transform: 'translate(0.25rem)' },
+                    }}
+                  >
+                  <Arrow />
+                </Button>
+            </Flex>
             <Icons gap="20px" mt="1.8rem" columns="repeat(7, 20px)">
               <Link to="https://twitter.com/MakerDAO">
                 <Icon name="twitter" />
