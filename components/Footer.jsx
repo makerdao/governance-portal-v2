@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { translate } from '@makerdao/i18n-helper';
-import Arrow from "./assets/arrow.svg";
+import Arrow from './assets/arrow.svg';
 
 const FooterContainer = props => (
   <Container
@@ -268,7 +268,9 @@ class LongFooter extends React.Component {
                 <Link to="https://makerdao.com/privacy">{t('Privacy Policy')}</Link>
               </li>
               <li>
-                <Link to="https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4">{t('Brand Assets')}</Link>
+                <Link to="https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4">
+                  {t('Brand Assets')}
+                </Link>
               </li>
               <li>
                 <Link to="https://makerdao.com/en/feeds/">{t('Feeds')}</Link>
@@ -326,7 +328,11 @@ class LongFooter extends React.Component {
             </LinkList>
           </div>
           <Box gridColumn={['1 / 3', '1 / 3', 'unset']}>
-            <Flex sx={{ width: '284px', flexDirection: 'row' }} mt="1.2rem" className={this.state.subscribeState}>
+            <Flex
+              sx={{ width: '284px', flexDirection: 'row' }}
+              mt="1.2rem"
+              className={this.state.subscribeState}
+            >
               <Input
                 maxWidth="320px"
                 py="xs"
@@ -348,23 +354,23 @@ class LongFooter extends React.Component {
                 errorMessage={(this.state.subscribeState === 'failure' || undefined) && this.state.message}
                 successMessage={(this.state.subscribeState === 'success' || undefined) && this.state.message}
               />
-                <Button
-                    variant="outline"
-                    type="submit"
-                    onClick={this.subscribeEmail}
-                    sx={{
-                      padding: '0px',
-                      width: '44px',
-                      border: '1px solid',
-                      borderColor: '#d5d9e0',
-                      borderLeft: 0,
-                      borderRadius: '0px 5px 5px 0px',
-                      ':hover': { borderColor: '#d5d9e0'},
-                      ':hover svg': { transform: 'translate(0.25rem)' },
-                    }}
-                  >
-                  <Arrow />
-                </Button>
+              <Button
+                variant="outline"
+                type="submit"
+                onClick={this.subscribeEmail}
+                sx={{
+                  padding: '0px',
+                  width: '44px',
+                  border: '1px solid',
+                  borderColor: '#d5d9e0',
+                  borderLeft: 0,
+                  borderRadius: '0px 5px 5px 0px',
+                  ':hover': { borderColor: '#d5d9e0' },
+                  ':hover svg': { transform: 'translate(0.25rem)' }
+                }}
+              >
+                <Arrow />
+              </Button>
             </Flex>
             <Icons gap="20px" mt="1.8rem" columns="repeat(7, 20px)">
               <Link to="https://twitter.com/MakerDAO">
