@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Checkbox, Label, Box, Flex, Input, jsx } from 'theme-ui';
+import { Card, Heading, Checkbox, Label, Box, Flex, Input, jsx, Grid, Text, IconButton } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -11,14 +12,17 @@ import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
+import FilterButton from '../components/FilterButton';
+import DateFilter from '../components/polling/DateFilter';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [dateFilter, setDateFilter] = useState<(Date | null)[]>([null, null]);
-  const [numLoadedPolls, setNumLoadedPolls] = useState<number>(10);
+  const [startDate, setStartDate] = useState<Date | ''>('');
+  const [endDate, setEndDate] = useState<Date | ''>('');
+  const [numLoadedPolls, setNumLoadedPolls] = useState(10);
   const [filterInactivePolls, setFilterInactivePolls] = useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
@@ -53,17 +57,19 @@ const PollingOverview = ({ polls }: Props) => {
   }, [loader, loadMore]);
 
   const filteredPolls = useMemo(
-    () =>
-      polls
+    () => {
+      const start = startDate && new Date(startDate);
+      const end = endDate && new Date(endDate);
+      return polls
         .filter(poll => {
           if (filterInactivePolls && !isActivePoll(poll)) return false;
-          const [startDate, endDate] = dateFilter;
-          if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
-          if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
+          if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
+          if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
           return true;
         })
-        .slice(0, numLoadedPolls),
-    [polls, filterInactivePolls, dateFilter, numLoadedPolls]
+        .slice(0, numLoadedPolls);
+    },
+    [polls, filterInactivePolls, startDate, endDate, numLoadedPolls]
   );
 
   const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
@@ -72,7 +78,12 @@ const PollingOverview = ({ polls }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
-        <Heading as="h1">Polling Votes</Heading>
+        <Flex sx={{ alignItems: 'center' }}>
+          <Heading as="h1" mr={3}>
+            Polling Votes
+          </Heading>
+          <DateFilter {...{startDate, endDate, setStartDate, setEndDate}} />
+        </Flex>
         <Box sx={theme => ({ mr: [null, null, theme.sizes.sidebar], pr: [null, 4] })}>
           <Box>
             <Label>
@@ -84,25 +95,6 @@ const PollingOverview = ({ polls }: Props) => {
               Show only active polls
             </Label>
           </Box>
-
-          <Flex sx={{ flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            <Label sx={{ width: 'auto', whiteSpace: 'nowrap', alignItems: 'center' }}>
-              Show only polls starting after
-              <Input
-                sx={{ ml: 3, minWidth: 6 }}
-                type="date"
-                onChange={e => setDateFilter([new Date(e.target.value), dateFilter[1]])}
-              />
-            </Label>
-            <Label sx={{ width: 'auto', whiteSpace: 'nowrap', alignItems: 'center' }}>
-              Show only polls starting before
-              <Input
-                sx={{ ml: 3, minWidth: 6 }}
-                type="date"
-                onChange={e => setDateFilter([dateFilter[0], new Date(e.target.value)])}
-              />
-            </Label>
-          </Flex>
         </Box>
         <SidebarLayout>
           <Box>
@@ -112,7 +104,7 @@ const PollingOverview = ({ polls }: Props) => {
                   <Heading mb={3} as="h3">
                     Active Polls
                   </Heading>
-                  <Stack>
+                  <Stack mb={4}>
                     {activePolls.map(poll => (
                       <PollOverviewCard key={poll.multiHash} poll={poll} />
                     ))}
@@ -120,7 +112,7 @@ const PollingOverview = ({ polls }: Props) => {
                 </div>
               )}
               <div>
-                <Heading mb={3} mt={4} as="h3">
+                <Heading mb={3} as="h4">
                   Historical Polls
                 </Heading>
                 <Stack>
