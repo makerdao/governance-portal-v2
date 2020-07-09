@@ -1,32 +1,20 @@
+/** @jsx jsx */
+import { jsx } from 'theme-ui';
 import { Button, Box, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useState } from 'react';
+import { Menu, MenuButton, MenuList } from '@reach/menu-button';
 
-type Props = { name: () => string, children: React.ReactNode };
+type Props = { name: () => string; children: React.ReactNode };
 
 export default function({ name, children }: Props) {
-  const [showControls, setShowControls] = useState(false);
   return (
-    <Box sx={{ position: 'relative' }}>
-      <Button
-        variant="outline"
-        sx={{ display: 'flex', alignItems: 'center' }}
-        onClick={() => setShowControls(!showControls)}
-      >
+    <Menu>
+      <MenuButton sx={{ variant: 'buttons.outline' }}>
         {name()}
         <Icon name="chevron_down" size={2} ml={2} />
-      </Button>
-      <Card
-        p={3}
-        sx={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          display: showControls ? 'block' : 'none'
-        }}
-      >
-        {children}
-      </Card>
-    </Box>
+      </MenuButton>
+      <MenuList sx={{ variant: 'cards.primary', p: 3 }}>{children}</MenuList>
+    </Menu>
   );
 }
