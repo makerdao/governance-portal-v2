@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 const displayDate = date => (date ? date.toISOString().substring(0, 10) : '');
 
-export default function({ startDate, endDate, setStartDate, setEndDate }) {
+export default function({ startDate, endDate, setStartDate, setEndDate, ...props }) {
   return (
     <FilterButton
       name={() => {
@@ -13,6 +13,7 @@ export default function({ startDate, endDate, setStartDate, setEndDate }) {
         if (!endDate) return `Date Filter: after ${displayDate(startDate)}`;
         return `Date Filter: ${displayDate(startDate)} - ${displayDate(endDate)}`;
       }}
+      {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
         <Text>After</Text>
@@ -26,7 +27,7 @@ export default function({ startDate, endDate, setStartDate, setEndDate }) {
             <Icon name="close" size="12px" />
           </IconButton>
         </Flex>
-        
+
         <Text>Before</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input

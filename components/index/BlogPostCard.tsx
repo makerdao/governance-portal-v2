@@ -1,5 +1,4 @@
 import { Text, Box, Image, Link as ExternalLink } from 'theme-ui';
-import Stack from '../layouts/Stack';
 import BlogPost from '../../types/blogPost';
 
 type Props = {
