@@ -1,13 +1,14 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { Button, Text, Flex, Badge, Box, jsx } from 'theme-ui';
+import { Button, Text, Flex, Box, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import Stack from '../layouts/Stack';
 import { parsePollTally, fetchJson } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import CountdownTimer from '../CountdownTimer';
+import PollOptionBadge from '../PollOptionBadge';
 import Poll from '../../types/poll';
 
 type Props = {
@@ -94,38 +95,7 @@ const PollCard = ({ poll, ...props }: Props) => {
           >
             <Button variant="outline">View Proposal</Button>
           </Link>
-          <Flex sx={{ alignItems: 'center' }}>
-            {tally ? (
-              hasPollEnded ? (
-                <Badge
-                  mx="3"
-                  variant="primary"
-                  sx={{
-                    borderColor: 'primaryAlt',
-                    color: 'primaryAlt',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  Winning Option: {tally.winningOptionName}
-                </Badge>
-              ) : (
-                <Badge
-                  mx="3"
-                  variant="primary"
-                  sx={{
-                    borderColor: 'text',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                  Leading Option: {tally.winningOptionName}
-                </Badge>
-              )
-            ) : (
-              <Box m="auto" ml="3" sx={{ width: '300px' }}>
-                <Skeleton />
-              </Box>
-            )}
-          </Flex>
+          <PollOptionBadge tally={tally} hasPollEnded={hasPollEnded}/>
         </Flex>
       </Stack>
     </div>
