@@ -94,6 +94,7 @@ export function parsePollsMetadata(pollList): Promise<Poll[]> {
           : null;
       const voteType: VoteTypes =
         (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
+      const category = pollMeta?.category || 'Uncategorized';
       return {
         ...p,
         slug: p.multiHash.slice(0, 8),
@@ -104,7 +105,8 @@ export function parsePollsMetadata(pollList): Promise<Poll[]> {
         title,
         options,
         discussionLink,
-        voteType
+        voteType,
+        category
       };
     })
   ).then(polls =>

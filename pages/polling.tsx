@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Checkbox, Label, Box, Flex, jsx } from 'theme-ui';
+import { Card, Heading, Box, Flex, jsx, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -12,6 +12,7 @@ import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
 import DateFilter from '../components/polling/DateFilter';
+import CategoryFilter from '../components/polling/CategoryFilter';
 
 type Props = {
   polls: Poll[];
@@ -20,25 +21,40 @@ type Props = {
 const PollingOverview = ({ polls }: Props) => {
   const [startDate, setStartDate] = useState<Date | ''>('');
   const [endDate, setEndDate] = useState<Date | ''>('');
-  const [numLoadedPolls, setNumLoadedPolls] = useState(10);
-  const [filterInactivePolls, setFilterInactivePolls] = useState(false);
+  const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
+  const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
+    polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
+  );
   const loader = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
-      setFilterInactivePolls(true);
+      // setFilterInactivePolls(true);
     }
   }, []);
 
-  const loadMore = useCallback(
-    entries => {
-      const target = entries.pop();
-      if (target.isIntersecting) {
-        setNumLoadedPolls(numLoadedPolls < polls.length ? numLoadedPolls + 5 : numLoadedPolls);
-      }
-    },
-    [numLoadedPolls, setNumLoadedPolls]
-  );
+  const filteredPolls = useMemo(() => {
+    const start = startDate && new Date(startDate);
+    const end = endDate && new Date(endDate);
+    return polls.filter(poll => {
+      if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
+      if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
+      return categoryFilter[poll.category];
+    });
+  }, [polls, startDate, endDate, categoryFilter]);
+
+  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
+  const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
+
+  const loadMore = entries => {
+    const target = entries.pop();
+    if (target.isIntersecting) {
+      setNumHistoricalLoaded(
+        numHistoricalLoaded < historicalPolls.length ? numHistoricalLoaded + 5 : numHistoricalLoaded
+      );
+    }
+  };
 
   useEffect(() => {
     if (loader?.current) {
@@ -54,21 +70,9 @@ const PollingOverview = ({ polls }: Props) => {
     }
   }, [loader, loadMore]);
 
-  const filteredPolls = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
-    return polls
-      .filter(poll => {
-        if (filterInactivePolls && !isActivePoll(poll)) return false;
-        if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-        if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-        return true;
-      })
-      .slice(0, numLoadedPolls);
-  }, [polls, filterInactivePolls, startDate, endDate, numLoadedPolls]);
-
-  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
-  const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
+  useEffect(() => {
+    setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
+  }, [filteredPolls]);
 
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -77,47 +81,40 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading as="h1" mr={3}>
             Polling Votes
           </Heading>
-          <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} />
+          <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
+          <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
         </Flex>
-        <Box sx={theme => ({ mr: [null, null, theme.sizes.sidebar], pr: [null, 4] })}>
-          <Box>
-            <Label>
-              <Checkbox
-                checked={filterInactivePolls}
-                onChange={() => setFilterInactivePolls(b => !b)}
-                sx={{ mr: 3 }}
-              />
-              Show only active polls
-            </Label>
-          </Box>
-        </Box>
         <SidebarLayout>
           <Box>
             <Stack>
-              {activePolls.length > 0 && (
-                <div>
-                  <Heading mb={3} as="h3">
-                    Active Polls
-                  </Heading>
-                  <Stack sx={{ mb: 4 }}>
-                    {activePolls.map(poll => (
-                      <PollOverviewCard key={poll.multiHash} poll={poll} />
-                    ))}
-                  </Stack>
-                </div>
-              )}
               <div>
-                <Heading mb={3} as="h4">
-                  Historical Polls
+                <Heading mb={3} as="h3">
+                  Active Polls
                 </Heading>
-                <Stack>
-                  {historicalPolls.map(poll => (
+                <Stack sx={{ mb: 4 }}>
+                  {activePolls.map(poll => (
                     <PollOverviewCard key={poll.multiHash} poll={poll} />
                   ))}
                 </Stack>
               </div>
+              {showHistoricalPolls ? (
+                <div>
+                  <Heading mb={3} as="h4">
+                    Historical Polls
+                  </Heading>
+                  <Stack>
+                    {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
+                      <PollOverviewCard key={poll.multiHash} poll={poll} />
+                    ))}
+                  </Stack>
+                  <div ref={loader} />
+                </div>
+              ) : (
+                <Button onClick={() => setShowHistoricalPolls(true)} variant="outline">
+                  See all ended polls ({historicalPolls.length})
+                </Button>
+              )}
             </Stack>
-            <div ref={loader} />
           </Box>
           <Stack>
             <Card variant="compact">Card 1</Card>
