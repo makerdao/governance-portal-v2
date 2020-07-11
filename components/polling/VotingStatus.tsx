@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Text, Flex, Box, jsx } from 'theme-ui';
+import { Text, Flex, Box, Badge, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -18,34 +18,67 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
     { refreshInterval: 0 }
   );
 
+  //todo: set onBallot properly, don't use a mock value
+  const onBallot = false;
+
   if (!account) return null;
   if (!allUserVotes)
     return (
-      <Box sx={{ width: 6 }} {...otherProps}>
+      <Box sx={{ width: 6, ml: '32px' }} {...otherProps}>
         <Skeleton />
       </Box>
     );
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
   return (
-    <Text
-      sx={{
-        alignItems: 'cetner',
-        color: hasVoted ? 'primary' : 'text'
-      }}
-      {...otherProps}
-    >
+    <Flex sx={{ alignItems: 'center'}}>
       {hasVoted ? (
-        <Flex sx={{ alignItems: 'center' }}>
-          <Icon name="checkmark" color="primary" sx={{ mr: 2 }} />
-          {isActivePoll(poll) ? `You're currently voting on this poll` : `You voted in this poll`}
-        </Flex>
-      ) : isActivePoll(poll) ? (
-        'You did not vote in this poll'
-      ) : (
-        'You have not yet voted'
+      <Badge
+          mx="3"
+          px="14px"
+          variant="primary"
+          sx={{
+          borderColor: 'linkHover',
+          color: 'linkHover',
+          textTransform: 'uppercase'
+          }}
+      >
+          <Flex sx={{ alignItems: 'center' }}>
+              <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
+              You Voted
+          </Flex>
+      </Badge>
+      ) : 
+      onBallot ?
+      (
+      <Badge
+          mx="3"
+          px="14px"
+          variant="primary"
+          sx={{
+          borderColor: 'linkHover',
+          color: 'linkHover',
+          textTransform: 'uppercase'
+          }}
+      >
+          On Your Ballot
+      </Badge>
+      ) :
+      (
+          <Badge
+          mx="3"
+          px="14px"
+          variant="primary"
+          sx={{
+          borderColor: 'badgeGrey',
+          color: 'badgeGrey',
+          textTransform: 'uppercase'
+          }}
+      >
+          {isActivePoll(poll) ? 'You did not vote': 'You have not voted'} 
+      </Badge>
       )}
-    </Text>
+    </Flex>
   );
 };
 
