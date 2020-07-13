@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Box, Flex, jsx, Button } from 'theme-ui';
+import { Card, Heading, Box, Flex, jsx, Button, Link, IconButton } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
@@ -66,7 +67,7 @@ const PollingOverview = ({ polls }: Props) => {
       // observe the loader
       observer.observe(loader.current);
       // clean up
-      return () => observer.unobserve(loader.current as HTMLDivElement);
+      return () => loader?.current && observer.unobserve(loader.current as HTMLDivElement);
     }
   }, [loader, loadMore]);
 
@@ -101,6 +102,9 @@ const PollingOverview = ({ polls }: Props) => {
                 <div>
                   <Heading mb={3} as="h4">
                     Historical Polls
+                    <IconButton onClick={() => setShowHistoricalPolls(false)}>
+                      <Icon name="chevron_down" />
+                    </IconButton>
                   </Heading>
                   <Stack>
                     {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
