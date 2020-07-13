@@ -1,44 +1,52 @@
 import FilterButton from '../FilterButton';
-import { Grid, Flex, Input, IconButton, Text } from 'theme-ui';
+import { Grid, Flex, Input, IconButton, Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { useRef } from 'react';
 
-const displayDate = date => (date ? date.toISOString().substring(0, 10) : '');
+const displayDate = date => {
+  try {
+    return (date ? date.toISOString().substring(0, 10) : '');
+  } catch (_) {
+    return '';
+  }
+}
 
 export default function({ startDate, endDate, setStartDate, setEndDate, ...props }) {
+  const startDateDisplay = displayDate(startDate);
+  const endDateDisplay = displayDate(endDate);
+  const startInput = useRef<HTMLInputElement>(null);
+  const endInput = useRef<HTMLInputElement>(null);
+
+  const reset = () => {
+    setStartDate('');
+    if (startInput.current) startInput.current.value = '';
+    setEndDate('');
+    if (endInput.current) endInput.current.value = '';
+  };
+  
   return (
     <FilterButton
       name={() => {
-        if (!startDate && !endDate) return 'Date Filter';
-        if (!startDate) return `Date Filter: before ${displayDate(endDate)}`;
-        if (!endDate) return `Date Filter: after ${displayDate(startDate)}`;
-        return `Date Filter: ${displayDate(startDate)} - ${displayDate(endDate)}`;
+        if (!startDateDisplay && !endDateDisplay) return 'Date Filter';
+        if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
+        if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
+        return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
       }}
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
         <Text>After</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input
-            type="date"
-            value={displayDate(startDate)}
-            onChange={e => setStartDate(new Date(e.target.value))}
-          />
-          <IconButton onClick={() => setStartDate('')}>
-            <Icon name="close" size="12px" />
-          </IconButton>
+          <Input ref={startInput} type="date" onChange={e => setStartDate(new Date(e.target.value))} />
         </Flex>
 
         <Text>Before</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input
-            type="date"
-            value={displayDate(endDate)}
-            onChange={e => setEndDate(new Date(e.target.value))}
-          />
-          <IconButton onClick={() => setEndDate('')}>
-            <Icon name="close" size="12px" />
-          </IconButton>
+          <Input ref={endInput} type="date" onChange={e => setEndDate(new Date(e.target.value))} />
         </Flex>
+
+        <span/>
+        <Button onClick={reset} variant="smallOutline">reset</Button>
       </Grid>
     </FilterButton>
   );
