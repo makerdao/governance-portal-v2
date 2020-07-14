@@ -9,15 +9,16 @@ type Props = {
   endText: string;
 };
 
+const pad = (val: number): string => val < 10 ? '0' + val : String(val);
+
 const CountdownTimer = ({ endDate, endText }: Props) => {
-  const [_timeLeft, _setTimeLeft] = useState(
+  let [timeLeft, setTimeLeft] = useState(
     Math.floor(new Date(endDate).getTime() / 1000) - Math.floor(new Date().getTime() / 1000)
   );
   useInterval(() => {
-    _setTimeLeft(_endDate => _endDate - 1);
+    setTimeLeft(_endDate => _endDate - 1);
   }, 1000);
 
-  let timeLeft = _timeLeft;
   // const days = Math.floor(timeLeft / (3600 * 24));
   // timeLeft -= days * 3600 * 24;
   const hours = Math.floor(timeLeft / 3600);
@@ -27,7 +28,7 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
 
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      {_timeLeft <= 0 ? (
+      {timeLeft <= 0 ? (
         <>
           <Icon mr="1" name="clock" size="3" sx={{ color: 'secondary' }} />
           <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'secondary' }}>{endText}</Text>
@@ -36,7 +37,7 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
         <>
           <Icon mr="1" name="clock" size="3" sx={{ color: 'primary' }} />
           <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'mutedAlt' }}>
-            {hours}:{minutes}:{seconds} Remaining
+            {hours}:{pad(minutes)}:{pad(seconds)} Remaining
           </Text>
         </>
       )}
