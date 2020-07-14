@@ -90,10 +90,10 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           >
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
-          <VotingStatus poll={poll} />
           {isActivePoll(poll) ? ''
             : (<PollOptionBadge poll={poll} color={'mutedAlt'}/>)
           }
+          <VotingStatus poll={poll} />
         </Flex>
       </Stack>
     </Flex>
