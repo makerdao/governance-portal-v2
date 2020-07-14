@@ -8,6 +8,7 @@ import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
+import PollOptionBadge from '../PollOptionBadge';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
@@ -90,6 +91,9 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
           <VotingStatus poll={poll} />
+          {isActivePoll(poll) ? ''
+            : (<PollOptionBadge poll={poll} color={'mutedAlt'}/>)
+          }
         </Flex>
       </Stack>
     </Flex>

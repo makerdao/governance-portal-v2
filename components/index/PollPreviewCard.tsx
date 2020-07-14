@@ -95,7 +95,7 @@ const PollCard = ({ poll, ...props }: Props) => {
           >
             <Button variant="outline">View Proposal</Button>
           </Link>
-          <PollOptionBadge tally={tally} hasPollEnded={hasPollEnded}/>
+          <PollOptionBadge poll={poll}/>
         </Flex>
       </Stack>
     </div>

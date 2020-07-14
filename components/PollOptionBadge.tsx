@@ -1,7 +1,19 @@
 import { Flex, Box, Badge } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
+import { isActivePoll } from '../lib/utils';
+import { getNetwork } from '../lib/maker';
+import useSWR from 'swr';
+import { parsePollTally, fetchJson } from '../lib/utils';
 
-const PollOptionBadge = ({tally, hasPollEnded, }) => {
+const PollOptionBadge = ({ poll, color }) => {
+  const hasPollEnded=!isActivePoll(poll);
+  const network = getNetwork();
+  const { data: tally } = useSWR(
+    hasPollEnded
+      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
+      : `/api/polling/tally/${poll.pollId}?network=${network}`,
+    async url => parsePollTally(await fetchJson(url), poll)
+  );
 
   return (
     <Flex sx={{ alignItems: 'center' }}>
@@ -9,10 +21,11 @@ const PollOptionBadge = ({tally, hasPollEnded, }) => {
             hasPollEnded ? (
             <Badge
                 mx="3"
+                px="14px"
                 variant="primary"
                 sx={{
-                borderColor: 'primaryAlt',
-                color: 'primaryAlt',
+                borderColor: color ? color : 'primaryAlt',
+                color: color ? color : 'primaryAlt',
                 textTransform: 'uppercase'
                 }}
             >
@@ -21,6 +34,7 @@ const PollOptionBadge = ({tally, hasPollEnded, }) => {
             ) : (
             <Badge
                 mx="3"
+                px="14px"
                 variant="primary"
                 sx={{
                 borderColor: 'text',

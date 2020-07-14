@@ -75,7 +75,7 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
           textTransform: 'uppercase'
           }}
       >
-          {isActivePoll(poll) ? 'You did not vote': 'You have not voted'} 
+          {isActivePoll(poll) ? 'You have not voted': 'You did not vote'} 
       </Badge>
       )}
     </Flex>
