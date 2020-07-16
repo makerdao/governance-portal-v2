@@ -9,6 +9,7 @@ import getMaker from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
+import useBallotStore from '../../stores/ballot';
 
 const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -18,8 +19,8 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
     { refreshInterval: 0 }
   );
 
-  //todo: set onBallot properly, don't use a mock value
-  const onBallot = false;
+  const ballot = useBallotStore(state => state.ballot);
+  const onBallot = !!ballot[poll.pollId]?.option;
 
   if (!account) return null;
   if (!allUserVotes)
@@ -43,10 +44,10 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
           textTransform: 'uppercase'
           }}
       >
-          <Flex sx={{ alignItems: 'center' }}>
-              <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
-              You Voted
-          </Flex>
+        <Flex sx={{ alignItems: 'center' }}>
+            <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
+            You Voted
+        </Flex>
       </Badge>
       ) : 
       onBallot ?
@@ -61,7 +62,10 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
           textTransform: 'uppercase'
           }}
       >
-          On Your Ballot
+        <Flex sx={{ alignItems: 'center' }}>
+            <Icon mr="1" name="ballot" sx={{ color: 'linkHover' }} />
+            On Your Ballot
+        </Flex>
       </Badge>
       ) :
       (
