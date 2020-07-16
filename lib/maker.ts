@@ -95,7 +95,7 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
   (window as any).ethereum.on('chainChanged', handleChainChanged);
 }
 
-let makerSingleton: Promise<Maker> | null = null;
+let makerSingleton: Promise<Maker>;
 function getMaker() {
   if (!makerSingleton) {
     makerSingleton = Maker.create('http', {
@@ -118,7 +118,7 @@ function getMaker() {
   return makerSingleton;
 }
 
-let networkSingleton: SupportedNetworks | null = null;
+let networkSingleton: SupportedNetworks;
 function getNetwork(): SupportedNetworks {
   if (!networkSingleton) networkSingleton = determineNetwork();
   return networkSingleton;
