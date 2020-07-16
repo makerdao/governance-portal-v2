@@ -38,23 +38,6 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
   }
 }
 
-const _network = determineNetwork();
-const _maker = Maker.create('http', {
-  plugins: [
-    [McdPlugin, { prefetch: false }],
-    [GovernancePlugin, { network: _network }]
-  ],
-  provider: {
-    url: networkToRpc(_network),
-    type: 'HTTP'
-  },
-  web3: {
-    pollingInterval: null
-  },
-  log: false,
-  multicall: true
-});
-
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
   if (typeof (global as any).__TESTCHAIN__ !== 'undefined' && (global as any).__TESTCHAIN__) {
@@ -112,12 +95,33 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
   (window as any).ethereum.on('chainChanged', handleChainChanged);
 }
 
+let makerSingleton: Promise<Maker> | null = null;
 function getMaker() {
-  return _maker;
+  if (!makerSingleton) {
+    makerSingleton = Maker.create('http', {
+      plugins: [
+        [McdPlugin, { prefetch: false }],
+        [GovernancePlugin, { network: getNetwork() }]
+      ],
+      provider: {
+        url: networkToRpc(getNetwork()),
+        type: 'HTTP'
+      },
+      web3: {
+        pollingInterval: null
+      },
+      log: false,
+      multicall: true
+    });
+  }
+
+  return makerSingleton;
 }
 
+let networkSingleton: SupportedNetworks | null = null;
 function getNetwork(): SupportedNetworks {
-  return _network;
+  if (!networkSingleton) networkSingleton = determineNetwork();
+  return networkSingleton;
 }
 
 function isDefaultNetwork(): boolean {
