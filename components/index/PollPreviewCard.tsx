@@ -1,11 +1,8 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import useSWR from 'swr';
 import { Button, Text, Flex, Box, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
 
 import Stack from '../layouts/Stack';
-import { parsePollTally, fetchJson } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import CountdownTimer from '../CountdownTimer';
 import PollOptionBadge from '../PollOptionBadge';
@@ -17,14 +14,6 @@ type Props = {
 
 const PollPreviewCard = ({ poll, ...props }: Props) => {
   const network = getNetwork();
-  const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
-
-  const { data: tally } = useSWR(
-    hasPollEnded
-      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`,
-    async url => parsePollTally(await fetchJson(url), poll)
-  );
 
   return (
     <div {...props}>
