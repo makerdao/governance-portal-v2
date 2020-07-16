@@ -46,7 +46,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
           </Badge>
         )
       ) : (
-        <Box ml="16px" mr="16px" sx={{ width: '170px' }}>
+        <Box mx="3" sx={{ width: '170px' }}>
           <Skeleton />
         </Box>
       )}

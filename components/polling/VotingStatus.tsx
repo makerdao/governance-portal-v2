@@ -25,7 +25,7 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   if (!account) return null;
   if (!allUserVotes)
     return (
-      <Box sx={{ width: '160px', ml: '0px' }} {...otherProps}>
+      <Box sx={{ width: '160px' }} {...otherProps}>
         <Skeleton />
       </Box>
     );
@@ -35,7 +35,6 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
     <Flex sx={{ alignItems: 'center'}}>
       {hasVoted ? (
       <Badge
-          ml="0px"
           px="14px"
           variant="primary"
           sx={{
@@ -53,7 +52,6 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
       onBallot ?
       (
       <Badge
-          ml="0px"
           px="14px"
           variant="primary"
           sx={{
@@ -69,8 +67,7 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
       </Badge>
       ) :
       (
-          <Badge
-          ml="0px"
+      <Badge
           px="14px"
           variant="primary"
           sx={{
