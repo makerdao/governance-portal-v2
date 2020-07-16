@@ -15,7 +15,7 @@ type Props = {
   poll: Poll;
 };
 
-const PollCard = ({ poll, ...props }: Props) => {
+const PollPreviewCard = ({ poll, ...props }: Props) => {
   const network = getNetwork();
   const hasPollEnded = new Date(poll.endDate).getTime() < new Date().getTime();
 
@@ -95,11 +95,11 @@ const PollCard = ({ poll, ...props }: Props) => {
           >
             <Button variant="outline">View Proposal</Button>
           </Link>
-          <PollOptionBadge poll={poll}/>
+          <PollOptionBadge poll={poll} />
         </Flex>
       </Stack>
     </div>
   );
 };
 
-export default PollCard;
+export default PollPreviewCard;

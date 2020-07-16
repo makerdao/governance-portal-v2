@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { parsePollTally, fetchJson } from '../lib/utils';
 import Poll from '../types/poll';
 
-const PollOptionBadge = ({ poll, color = 'primaryAlt' }: { poll: Poll; color?: string }) => {
+const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
   const hasPollEnded = !isActivePoll(poll);
   const network = getNetwork();
   const { data: tally } = useSWR(
@@ -17,7 +17,7 @@ const PollOptionBadge = ({ poll, color = 'primaryAlt' }: { poll: Poll; color?: s
   );
 
   return (
-    <Flex sx={{ alignItems: 'center' }}>
+    <Flex sx={{ alignItems: 'center', color: 'primaryAlt' }} {...props}>
       {tally ? (
         hasPollEnded ? (
           <Badge
@@ -25,8 +25,8 @@ const PollOptionBadge = ({ poll, color = 'primaryAlt' }: { poll: Poll; color?: s
             px="14px"
             variant="primary"
             sx={{
-              borderColor: color,
-              color: color,
+              borderColor: 'inherit',
+              color: 'inherit',
               textTransform: 'uppercase'
             }}
           >

@@ -16,8 +16,8 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 
   //todo: remove once done testing, set to true to test out ballot zustand store
   const DEV_TEST_BALLOT_STATE = false;
-  const {ballot, addToBallot, clearBallot, submitBallot} = useBallotStore();
-  if(DEV_TEST_BALLOT_STATE){
+  const { ballot, addToBallot, clearBallot, submitBallot } = useBallotStore();
+  if (DEV_TEST_BALLOT_STATE) {
     console.log('ballot', ballot);
   }
 
@@ -99,18 +99,41 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
           {/* remove once done testing */}
-          {DEV_TEST_BALLOT_STATE ? 
-            (
-            <div><Button onClick={()=>{addToBallot(poll.pollId, 1)}}>Add to Ballot</Button>
-            <Button onClick={()=>{addToBallot(poll.pollId, null)}}>Remove Ballot Vote</Button>
-            <Button onClick={()=>{clearBallot()}}>Clear Entire Ballot</Button>
-            <Button onClick={()=>{submitBallot()}}>Submit Entire Ballot</Button>
-            </div>)
-            : ''
-          }
-          {isActivePoll(poll) ? ''
-            : (<PollOptionBadge poll={poll} color={'mutedAlt'}/>)
-          }
+          {DEV_TEST_BALLOT_STATE ? (
+            <div>
+              <Button
+                onClick={() => {
+                  addToBallot(poll.pollId, 1);
+                }}
+              >
+                Add to Ballot
+              </Button>
+              <Button
+                onClick={() => {
+                  addToBallot(poll.pollId, null);
+                }}
+              >
+                Remove Ballot Vote
+              </Button>
+              <Button
+                onClick={() => {
+                  clearBallot();
+                }}
+              >
+                Clear Entire Ballot
+              </Button>
+              <Button
+                onClick={() => {
+                  submitBallot();
+                }}
+              >
+                Submit Entire Ballot
+              </Button>
+            </div>
+          ) : (
+            ''
+          )}
+          {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'mutedAlt' }} />}
           <VotingStatus poll={poll} />
         </Flex>
       </Stack>
