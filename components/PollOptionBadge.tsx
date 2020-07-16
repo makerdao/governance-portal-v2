@@ -4,9 +4,10 @@ import { isActivePoll } from '../lib/utils';
 import { getNetwork } from '../lib/maker';
 import useSWR from 'swr';
 import { parsePollTally, fetchJson } from '../lib/utils';
+import Poll from '../types/poll';
 
-const PollOptionBadge = ({ poll, color }) => {
-  const hasPollEnded=!isActivePoll(poll);
+const PollOptionBadge = ({ poll, color = 'primaryAlt' }: { poll: Poll; color?: string }) => {
+  const hasPollEnded = !isActivePoll(poll);
   const network = getNetwork();
   const { data: tally } = useSWR(
     hasPollEnded
@@ -17,38 +18,38 @@ const PollOptionBadge = ({ poll, color }) => {
 
   return (
     <Flex sx={{ alignItems: 'center' }}>
-        {tally ? (
-            hasPollEnded ? (
-            <Badge
-                mx="3"
-                px="14px"
-                variant="primary"
-                sx={{
-                borderColor: color ? color : 'primaryAlt',
-                color: color ? color : 'primaryAlt',
-                textTransform: 'uppercase'
-                }}
-            >
-                Winning Option: {tally.winningOptionName}
-            </Badge>
-            ) : (
-            <Badge
-                mx="3"
-                px="14px"
-                variant="primary"
-                sx={{
-                borderColor: 'text',
-                textTransform: 'uppercase'
-                }}
-            >
-                Leading Option: {tally.winningOptionName}
-            </Badge>
-            )
+      {tally ? (
+        hasPollEnded ? (
+          <Badge
+            mx="3"
+            px="14px"
+            variant="primary"
+            sx={{
+              borderColor: color,
+              color: color,
+              textTransform: 'uppercase'
+            }}
+          >
+            Winning Option: {tally.winningOptionName}
+          </Badge>
         ) : (
-            <Box ml="16px" mr="16px" sx={{ width: '170px' }}>
-            <Skeleton />
-            </Box>
-        )}
+          <Badge
+            mx="3"
+            px="14px"
+            variant="primary"
+            sx={{
+              borderColor: 'text',
+              textTransform: 'uppercase'
+            }}
+          >
+            Leading Option: {tally.winningOptionName}
+          </Badge>
+        )
+      ) : (
+        <Box ml="16px" mr="16px" sx={{ width: '170px' }}>
+          <Skeleton />
+        </Box>
+      )}
     </Flex>
   );
 };

@@ -58,17 +58,22 @@ const PollingOverview = ({ polls }: Props) => {
   };
 
   useEffect(() => {
+    let observer;
     if (loader?.current) {
       // Create observer
-      const observer = new IntersectionObserver(loadMore, {
+      observer = new IntersectionObserver(loadMore, {
         root: null,
         rootMargin: '600px'
       });
       // observe the loader
       observer.observe(loader.current);
-      // clean up
-      return () => loader?.current && observer.unobserve(loader.current as HTMLDivElement);
     }
+    return () => {
+      if (observer && loader?.current) {
+        // clean up
+        return observer.unobserve(loader.current as HTMLDivElement);
+      }
+    };
   }, [loader, loadMore]);
 
   useEffect(() => {
