@@ -9,7 +9,7 @@ type Props = {
   endText: string;
 };
 
-const pad = (val: number): string => val < 10 ? '0' + val : String(val);
+const pad = (val: number): string => (val < 10 ? '0' + val : String(val));
 
 const CountdownTimer = ({ endDate, endText }: Props) => {
   let [timeLeft, setTimeLeft] = useState(
@@ -20,11 +20,9 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
   }, 1000);
 
   // const days = Math.floor(timeLeft / (3600 * 24));
-  // timeLeft -= days * 3600 * 24;
   const hours = Math.floor(timeLeft / 3600);
-  timeLeft -= hours * 3600;
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft - minutes * 60;
+  const minutes = Math.floor((timeLeft - hours * 3600) / 60);
+  const seconds = timeLeft - hours * 3600 - minutes * 60;
 
   return (
     <Flex sx={{ alignItems: 'center' }}>
