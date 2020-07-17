@@ -6,7 +6,7 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from '@reach/tooltip';
 
@@ -23,6 +23,21 @@ import VotingStatus from '../../components/polling/VotingStatus';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import Skeleton from 'react-loading-skeleton';
+
+const NavButton = (props) => (
+  <Button
+  variant="outline"
+  sx={{
+  color: 'mutedAlt',
+  borderColor: 'secondaryMuted',
+  borderRadius: 'small',
+  textTransform: 'uppercase',
+  fontSize: 1,
+  px: [2, 3]
+  }}
+  {...props}
+  ></Button>
+);
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -50,12 +65,17 @@ const PollView = ({ poll }: { poll: Poll }) => {
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
         <div>
-          <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
               <NavLink p={2} sx={{ justifySelf: 'left' }}>
-                <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
-                  <Icon name="chevron_left" size="2" mr={2} /> Back to all polls
-                </Flex>
+                  <NavButton>
+                    <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                      <Icon name="chevron_left" size="2" mr={2} />Back to all polls
+                    </Flex>
+                    <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                      Back to all
+                    </Flex>
+                  </NavButton>
               </NavLink>
             </Link>
             <Flex sx={{ justifyContent: 'space-between' }}>
@@ -72,9 +92,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   }}
                 >
                   <NavLink>
-                    <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
-                    </Flex>
+                    <NavButton>
+                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                        <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
+                      </Flex>
+                    </NavButton>
                   </NavLink>
                 </Link>
               )}
@@ -91,9 +113,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   }}
                 >
                   <NavLink>
-                    <Flex sx={{ alignItems: 'center', fontSize: [3, 4], whiteSpace: 'nowrap' }}>
-                      Next Poll <Icon name="chevron_right" size={2} ml={2} />
-                    </Flex>
+                    <NavButton>
+                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                        Next Poll <Icon name="chevron_right" size={2} ml={2} />
+                      </Flex>
+                    </NavButton>
                   </NavLink>
                 </Link>
               )}
