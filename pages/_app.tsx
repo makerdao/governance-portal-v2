@@ -11,9 +11,11 @@ import '@reach/tabs/styles.css';
 import { fetchJson } from '../lib/utils';
 import theme from '../lib/theme';
 import { getNetwork } from '../lib/maker';
+import debug from 'debug';
+const log = debug('govpo/_app');
 
 export function reportWebVitals(metric) {
-  console.log(metric);
+  log(metric);
 }
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
