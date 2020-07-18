@@ -1,40 +1,48 @@
 /** @jsx jsx */
 import { Button, Flex, Divider, Card, jsx } from 'theme-ui';
-import Router from 'next/router';
+import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
+import { InjectedConnector } from '@web3-react/injected-connector';
 
 import useAccountsStore from '../stores/accounts';
-import { getNetwork } from '../lib/maker';
+import getMaker, { getNetwork } from '../lib/maker';
+import { useEffect } from 'react';
 
 const formatAddress = (address: string) => address.slice(0, 7) + '...' + address.slice(-4);
 
+const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 42] });
+
+const WrappedAccountSelect = () => {
+  return <Web3ReactProvider getLibrary={(provider, connector) => ({ provider, connector })}>
+    <AccountSelect />
+  </Web3ReactProvider>;
+};
+
 const AccountSelect = () => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const connectWithBrowserProvider = useAccountsStore(state => state.connectWithBrowserProvider);
+  const web3ReactContext = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = web3ReactContext;
 
-  const network = getNetwork();
-  const otherNetwork = network === 'mainnet' ? 'kovan' : 'mainnet';
-  const switchLabel = `Switch to ${otherNetwork}`;
-
-  const handleChange = (e: { target: { value: string } }) => {
-    if (e.target.value === 'MetaMask') {
-      connectWithBrowserProvider();
-    } else if (e.target.value === switchLabel) {
-      if (Router?.router) {
-        Router.push({
-          pathname: Router.router.pathname,
-          query: { network: otherNetwork }
-        });
+  // FIXME there must be a more direct way to get web3-react & maker to talk to each other
+  useEffect(() => {
+    (async () => {
+      if (!library || !account) return;
+      const maker = await getMaker();
+      const accounts = maker.listAccounts();
+      console.log(accounts);
+      if (accounts.some(a => a.address.toLowerCase() === account.toLowerCase())) {
+        maker.useAccountWithAddress(account);
+      } else {
+        await maker.addAccount({ type: 'web3-react', library, address: account });
       }
-    }
-  };
+    })();
+  }, [library, account]);
 
   return (
-    <Button variant="card" onClick={account ? () => {} : connectWithBrowserProvider}>
+    <Button variant="card" onClick={() => activate(injectedConnector)}>
       {account ? (
         <Flex sx={{ flexDirection: 'column' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <span>MetaMask</span>
-            <span>{formatAddress(account.address)}</span>
+            <span>{formatAddress(account)}</span>
           </Flex>
           <Divider mx={-2} />
           <Flex sx={{ justifyContent: 'space-between' }}>
@@ -49,4 +57,4 @@ const AccountSelect = () => {
   );
 };
 
-export default AccountSelect;
+export default WrappedAccountSelect;

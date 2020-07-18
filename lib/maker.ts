@@ -4,6 +4,9 @@ import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
 
+// TODO this should be moved to dai.js
+import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/provider';
+
 import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
 
 export const ETH = Maker.ETH;
@@ -95,13 +98,22 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
   (window as any).ethereum.on('chainChanged', handleChainChanged);
 }
 
+const Web3ReactPlugin = maker => {
+  maker.service('accounts', true).addAccountType('web3-react', ({ library, address }) => {
+    const { provider, connector } = library;
+    const subprovider = new ProviderSubprovider(provider);
+    return { subprovider, address, connector };
+  });
+};
+
 let makerSingleton: Promise<Maker>;
 function getMaker() {
   if (!makerSingleton) {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork() }]
+        [GovernancePlugin, { network: getNetwork() }],
+        Web3ReactPlugin
       ],
       provider: {
         url: networkToRpc(getNetwork()),
@@ -112,6 +124,9 @@ function getMaker() {
       },
       log: false,
       multicall: true
+    }).then(maker => {
+      if (typeof window !== 'undefined') (window as any).maker = maker;
+      return maker;
     });
   }
 
