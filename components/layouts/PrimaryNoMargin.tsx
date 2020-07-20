@@ -14,22 +14,18 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
       sx={{
         flexDirection: 'column',
         minHeight: '100vh',
-        maxWidth: 'page',
-        mx: 'auto',
+        minWidth: 'page',
+        // mx: 'auto',
+        justifyContent: 'center',
+        alignItems: 'center',
         variant: 'layout.root',
-        px: [0, 4]
+        px: [0, 5]
       }}
+
     >
-      <Header />
-      <Container as='main'
-        sx={{
-          width: '100%',
-          flex: '1 1 auto',
-          variant: 'layout.main'
-        }}
-      >
-        {children}
-      </Container>
+      <Header sx={{px: 0}}/>
+      {children}
+
       <Footer shorten={shortenFooter || false} />
     </Flex>
   );
