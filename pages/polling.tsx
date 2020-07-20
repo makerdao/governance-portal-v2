@@ -1,13 +1,13 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Box, Flex, jsx, Button, Link, IconButton } from 'theme-ui';
+import { Card, Heading, Box, Flex, jsx, Button, Link, IconButton, Text, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll } from '../lib/utils';
-import PrimaryLayout from '../components/layouts/Primary';
+import PrimaryLayout from '../components/layouts/PrimaryNoMargin';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
@@ -24,6 +24,9 @@ const PollingOverview = ({ polls }: Props) => {
   const [endDate, setEndDate] = useState<Date | ''>('');
   const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
+  const [votingWeightTotal, setVotingWeighTotal] = useState(0)
+  const [pollsAdded, setPollsAdded] = useState(0)
+  const [pollsAvailable, setPollsAvailable] = useState(0)
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
@@ -85,7 +88,7 @@ const PollingOverview = ({ polls }: Props) => {
       <Stack gap={3}>
         <Flex sx={{ alignItems: 'center' }}>
           <Heading as="h1" mr={3}>
-            Polling Votes
+            Active Polls
           </Heading>
           <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
           <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
@@ -94,9 +97,6 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Heading mb={3} as="h3">
-                  Active Polls
-                </Heading>
                 <Stack sx={{ mb: 4 }}>
                   {activePolls.map(poll => (
                     <PollOverviewCard key={poll.multiHash} poll={poll} />
@@ -126,8 +126,88 @@ const PollingOverview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack>
-            <Card variant="compact">Card 1</Card>
-            <Card variant="compact">Card 2</Card>
+            <Box>
+              <Heading mb={3} as='h4'>
+                Your Ballot
+              </Heading>
+              <Card variant="compact" p={0}>
+                <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1'}}>
+                  <Text sx={{color: 'onSurface', fontSize: 16, fontWeight: '500'}}>
+                    {`${pollsAdded} of ${pollsAvailable} available polls added to ballot`}
+                  </Text>
+                  <Box sx={{ width: '100%', height: 2, backgroundColor: 'muted', mt: 2}}>
+                  </Box>
+
+                </Box>
+                <Flex p={3} flexDirection='row' sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between'}}>
+                  <Text color="onSurface">
+                    Voting weight for all polls
+                    <Icon name='question' />
+                  </Text>
+                  <Text>
+                    {`${votingWeightTotal.toFixed(2)} MKR`}
+                  </Text>
+                </Flex>
+                <Flex p={3} sx={{ justifyContent: 'center', alignItems: 'center'}}>
+                  <Button disabled={pollsAdded < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
+                </Flex>
+              </Card>
+            </Box>
+            <Box>
+              <Heading mb={3} as='h4'>
+                Resources
+              </Heading>
+              <Card variant="compact">
+                <ExternalLink href="https://https://forum.makerdao.com/c/governance/" target="_blank">
+                  <Flex sx={{ alignItems: 'center'}}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      Governance Forum
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+                <ExternalLink href="https://community-development.makerdao.com/governance/governance" target="_blank">
+                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      Governance FAQs
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+                <ExternalLink href="https://blog.makerdao.com/makerdao-governance-risk-framework/" target="_blank">
+                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      Governance Risk Framework
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+                <ExternalLink href="https://github.com/makerdao/awesome-makerdao#governance" target="_blank">
+                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      Awesome MakerDAO
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+                <ExternalLink href="https://daistats.com/" target="_blank">
+                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      Governance call schedule
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+                <ExternalLink href="https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles" target="_blank">
+                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
+                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+                      MakerDAO events calendar
+                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                    </Text>
+                  </Flex>
+                </ExternalLink>
+              </Card>
+            </Box>
           </Stack>
         </SidebarLayout>
       </Stack>
