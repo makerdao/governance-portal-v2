@@ -7,7 +7,7 @@ import ErrorPage from 'next/error';
 import { isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll } from '../lib/utils';
-import PrimaryLayout from '../components/layouts/PrimaryNoMargin';
+import PrimaryLayoutNoMargin from '../components/layouts/PrimaryNoMargin';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
@@ -84,7 +84,7 @@ const PollingOverview = ({ polls }: Props) => {
   }, [filteredPolls]);
 
   return (
-    <PrimaryLayout shortenFooter={true}>
+    <PrimaryLayoutNoMargin shortenFooter={true}>
       <Stack gap={3}>
         <Flex sx={{ alignItems: 'center' }}>
           <Heading as="h1" mr={3}>
@@ -211,7 +211,7 @@ const PollingOverview = ({ polls }: Props) => {
           </Stack>
         </SidebarLayout>
       </Stack>
-    </PrimaryLayout>
+    </PrimaryLayoutNoMargin>
   );
 };
 
@@ -234,9 +234,9 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
 
   if (!isDefaultNetwork() && !_polls)
     return (
-      <PrimaryLayout>
+      <PrimaryLayoutNoMargin>
         <p>Loading…</p>
-      </PrimaryLayout>
+      </PrimaryLayoutNoMargin>
     );
 
   return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
