@@ -139,7 +139,7 @@ const PollingOverview = ({ polls }: Props) => {
                   </Box>
 
                 </Box>
-                <Flex p={3} flexDirection='row' sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between'}}>
+                <Flex p={3} sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between'}}>
                   <Text color="onSurface">
                     Voting weight for all polls
                     <Icon name='question' />
