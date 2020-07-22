@@ -1,15 +1,14 @@
 import FilterButton from '../FilterButton';
-import { Grid, Flex, Input, IconButton, Text, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import { useRef } from 'react';
 
 const displayDate = date => {
   try {
-    return (date ? date.toISOString().substring(0, 10) : '');
+    return date ? date.toISOString().substring(0, 10) : '';
   } catch (_) {
     return '';
   }
-}
+};
 
 export default function({ startDate, endDate, setStartDate, setEndDate, ...props }) {
   const startDateDisplay = displayDate(startDate);
@@ -23,7 +22,7 @@ export default function({ startDate, endDate, setStartDate, setEndDate, ...props
     setEndDate('');
     if (endInput.current) endInput.current.value = '';
   };
-  
+
   return (
     <FilterButton
       name={() => {
@@ -45,8 +44,10 @@ export default function({ startDate, endDate, setStartDate, setEndDate, ...props
           <Input ref={endInput} type="date" onChange={e => setEndDate(new Date(e.target.value))} />
         </Flex>
 
-        <span/>
-        <Button onClick={reset} variant="smallOutline">reset</Button>
+        <span />
+        <Button onClick={reset} variant="smallOutline">
+          reset
+        </Button>
       </Grid>
     </FilterButton>
   );
