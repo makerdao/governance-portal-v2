@@ -21,7 +21,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
       {tally ? (
         hasPollEnded ? (
           <Badge
-            mx="3"
+            ml="3"
             px="14px"
             variant="primary"
             sx={{
@@ -34,7 +34,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
           </Badge>
         ) : (
           <Badge
-            mx="3"
+            ml="3"
             px="14px"
             variant="primary"
             sx={{
@@ -46,7 +46,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
           </Badge>
         )
       ) : (
-        <Box mx="3" sx={{ width: '170px' }}>
+        <Box ml="3" sx={{ width: '170px' }}>
           <Skeleton />
         </Box>
       )}
