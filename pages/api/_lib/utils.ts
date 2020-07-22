@@ -3,7 +3,7 @@ import GovernancePlugin from '@makerdao/dai-plugin-governance';
 // @ts-ignore
 import McdPlugin from '@makerdao/dai-plugin-mcd';
 
-import { networkToRpc } from '../../../lib/maker';
+import { networkToRpc } from '../../../lib/maker/network';
 import { SupportedNetworks } from '../../../lib/constants';
 
 const cachedMakerObjs = {};
