@@ -11,6 +11,31 @@ import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 import useBallotStore from '../../stores/ballot';
 
+const BadgeContents = ({hasVoted, onBallot, poll}) => {
+  return (
+  <div>
+    {hasVoted ? (
+      <Flex sx={{ alignItems: 'center' }}>
+          <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
+          You Voted
+      </Flex>
+        ) : 
+        onBallot ?
+        (
+          <Flex sx={{ alignItems: 'center' }}>
+          <Icon mr="1" name="ballot" sx={{ color: 'linkHover' }} />
+          On Your Ballot
+          </Flex>
+        ) :
+        (
+        <div>
+          {isActivePoll(poll) ? 'You have not voted': 'You did not vote'} 
+        </div>
+      )}
+    </div>
+    );
+}
+
 const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
@@ -32,56 +57,19 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
   return (
-    <Flex sx={{ alignItems: 'center'}}>
-      {hasVoted ? (
+    <Flex sx={{ alignItems: 'center' }} {...otherProps}>
       <Badge
           ml="3"
           px="14px"
           variant="primary"
           sx={{
-          borderColor: 'linkHover',
-          color: 'linkHover',
-          textTransform: 'uppercase'
+          borderColor: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
+          color: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
+          textTransform: 'uppercase',
           }}
       >
-        <Flex sx={{ alignItems: 'center' }}>
-            <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
-            You Voted
-        </Flex>
+        <BadgeContents hasVoted={hasVoted} onBallot={onBallot} poll={poll}/>
       </Badge>
-      ) : 
-      onBallot ?
-      (
-      <Badge
-          ml="3"
-          px="14px"
-          variant="primary"
-          sx={{
-          borderColor: 'linkHover',
-          color: 'linkHover',
-          textTransform: 'uppercase'
-          }}
-      >
-        <Flex sx={{ alignItems: 'center' }}>
-            <Icon mr="1" name="ballot" sx={{ color: 'linkHover' }} />
-            On Your Ballot
-        </Flex>
-      </Badge>
-      ) :
-      (
-      <Badge
-          ml="3"
-          px="14px"
-          variant="primary"
-          sx={{
-          borderColor: 'badgeGrey',
-          color: 'badgeGrey',
-          textTransform: 'uppercase'
-          }}
-      >
-          {isActivePoll(poll) ? 'You have not voted': 'You did not vote'} 
-      </Badge>
-      )}
     </Flex>
   );
 };

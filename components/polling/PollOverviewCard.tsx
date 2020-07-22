@@ -24,21 +24,8 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
     >
       <Stack gap={2}>
         <Flex sx={{ justifyContent: 'space-between' }}>
-          <Text
-            sx={{
-              fontSize: [2, 3],
-              color: 'mutedAlt',
-              textTransform: 'uppercase'
-            }}
-          >
-            Posted{' '}
-            {new Date(poll.startDate).toLocaleString('default', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric'
-            })}
-          </Text>
           <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+          <VotingStatus sx={{ display: ['block', 'none'] }} poll={poll} />
         </Flex>
         <Box>
           <Link
@@ -91,7 +78,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'mutedAlt' }} />}
-          <VotingStatus poll={poll} />
+          <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
         </Flex>
       </Stack>
     </Flex>
