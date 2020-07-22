@@ -3,28 +3,14 @@ import Maker from '@makerdao/dai';
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
-
-// TODO this should be moved to dai.js
-import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/provider';
+import { Web3ReactPlugin } from './maker/web3react';
 
 import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
+import { networkToRpc } from './maker/network';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
 export const MKR = Maker.MKR;
-
-export function networkToRpc(network: SupportedNetworks) {
-  switch (network) {
-    case SupportedNetworks.MAINNET:
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.KOVAN:
-      return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.TESTNET:
-      return `http://localhost:2000`;
-    default:
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-  }
-}
 
 function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
@@ -97,14 +83,6 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
   (window as any).ethereum.on('chainIdChanged', handleChainChanged);
   (window as any).ethereum.on('chainChanged', handleChainChanged);
 }
-
-const Web3ReactPlugin = maker => {
-  maker.service('accounts', true).addAccountType('web3-react', ({ library, address }) => {
-    const { provider, connector } = library;
-    const subprovider = new ProviderSubprovider(provider);
-    return { subprovider, address, connector };
-  });
-};
 
 let makerSingleton: Promise<Maker>;
 function getMaker() {
