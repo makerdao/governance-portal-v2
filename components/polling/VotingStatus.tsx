@@ -11,9 +11,9 @@ import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 import useBallotStore from '../../stores/ballot';
 
-const BadgeContents = ({hasVoted, onBallot, poll}) => {
+const BadgeContents = ({hasVoted, onBallot, poll, ...otherProps}) => {
   return (
-  <div>
+  <div {...otherProps}>
     {hasVoted ? (
       <Flex sx={{ alignItems: 'center' }}>
           <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
@@ -66,10 +66,17 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
           borderColor: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
           color: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
           textTransform: 'uppercase',
+          display: ['none', 'block']
           }}
       >
         <BadgeContents hasVoted={hasVoted} onBallot={onBallot} poll={poll}/>
       </Badge>
+      <BadgeContents sx={{
+        fontSize: '2',
+        color: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
+        textTransform: 'uppercase',
+        display: ['block', 'none']
+        }} hasVoted={hasVoted} onBallot={onBallot} poll={poll}/>
     </Flex>
   );
 };
