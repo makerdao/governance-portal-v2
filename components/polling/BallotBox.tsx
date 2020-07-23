@@ -45,6 +45,9 @@ export default function ({ ...props }) {
                     borderBottomRightRadius: index === activePolls.length - 1 
                       ? 'small'
                       : null,
+                    backgroundColor: index < ballotLength()
+                      ? 'primary'
+                      : null
                   }}
                 />
               ))
@@ -61,7 +64,7 @@ export default function ({ ...props }) {
           </Text>
         </Flex>
         <Flex p={3} sx={{ justifyContent: 'center', alignItems: 'center'}}>
-          <Button disabled={ballotLength() < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
+          <Button onClick={submitBallot} disabled={ballotLength() < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
         </Flex>
       </Card>
     </Box>
