@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Card, Heading, Box, Flex, jsx, Button, IconButton, Text, Link as ExternalLink } from 'theme-ui';
+import { Heading, Box, Flex, jsx, Button, IconButton } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
