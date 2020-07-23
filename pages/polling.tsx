@@ -7,13 +7,15 @@ import ErrorPage from 'next/error';
 import { isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll } from '../lib/utils';
-import PrimaryLayout from '../components/layouts/PrimaryNoMargin';
+import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
 import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
+import BallotBox from '../components/polling/BallotBox';
+import ResourceBox from '../components/polling/ResourceBox';
 
 type Props = {
   polls: Poll[];
@@ -24,12 +26,10 @@ const PollingOverview = ({ polls }: Props) => {
   const [endDate, setEndDate] = useState<Date | ''>('');
   const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
-  const [votingWeightTotal, setVotingWeighTotal] = useState(0)
-  const [pollsAdded, setPollsAdded] = useState(0)
-  const [pollsAvailable, setPollsAvailable] = useState(0)
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
-    polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
+    polls.map(poll => poll.categoray).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
+
   const loader = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,9 +86,9 @@ const PollingOverview = ({ polls }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center' }}>
+        <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
           <Heading as="h1" mr={3}>
-            Active Polls
+            Filters
           </Heading>
           <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
           <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
@@ -97,7 +97,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Stack sx={{ mb: 4 }}>
+                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                   {activePolls.map(poll => (
                     <PollOverviewCard key={poll.multiHash} poll={poll} />
                   ))}
@@ -125,89 +125,9 @@ const PollingOverview = ({ polls }: Props) => {
               )}
             </Stack>
           </Box>
-          <Stack>
-            <Box>
-              <Heading mb={3} as='h4'>
-                Your Ballot
-              </Heading>
-              <Card variant="compact" p={0}>
-                <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1'}}>
-                  <Text sx={{color: 'onSurface', fontSize: 16, fontWeight: '500'}}>
-                    {`${pollsAdded} of ${pollsAvailable} available polls added to ballot`}
-                  </Text>
-                  <Box sx={{ width: '100%', height: 2, backgroundColor: 'muted', mt: 2}}>
-                  </Box>
-
-                </Box>
-                <Flex p={3} flexDirection='row' sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between'}}>
-                  <Text color="onSurface">
-                    Voting weight for all polls
-                    <Icon name='question' />
-                  </Text>
-                  <Text>
-                    {`${votingWeightTotal.toFixed(2)} MKR`}
-                  </Text>
-                </Flex>
-                <Flex p={3} sx={{ justifyContent: 'center', alignItems: 'center'}}>
-                  <Button disabled={pollsAdded < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
-                </Flex>
-              </Card>
-            </Box>
-            <Box>
-              <Heading mb={3} as='h4'>
-                Resources
-              </Heading>
-              <Card variant="compact">
-                <ExternalLink href="https://https://forum.makerdao.com/c/governance/" target="_blank">
-                  <Flex sx={{ alignItems: 'center'}}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance Forum
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://community-development.makerdao.com/governance/governance" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance FAQs
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://blog.makerdao.com/makerdao-governance-risk-framework/" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance Risk Framework
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://github.com/makerdao/awesome-makerdao#governance" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Awesome MakerDAO
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://daistats.com/" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance call schedule
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      MakerDAO events calendar
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-              </Card>
-            </Box>
+          <Stack gap={3}>
+            <BallotBox activePolls={activePolls} />
+            <ResourceBox />
           </Stack>
         </SidebarLayout>
       </Stack>

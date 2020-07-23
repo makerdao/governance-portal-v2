@@ -1,9 +1,15 @@
 import create from 'zustand';
 
-const [useBallotStore] = create(set => ({
+const [useBallotStore] = create((set, get) => ({
   ballot: {},
   addToBallot: (pollId, option) => {
     set(state => ({ ballot: {...state.ballot, [pollId]: { ...state.ballot[pollId], option }} }));
+  },
+  removeFromBallot: (pollId, option) => {
+    set(state => {
+      const { pollId, ...updatedBallot } = state.ballot
+      return updatedBallot
+    })
   },
   clearBallot: () => {
     set({ ballot: {} });
