@@ -16,6 +16,7 @@ import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
 import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
+import useAccountsStore from '../stores/accounts';
 
 type Props = {
   polls: Poll[];
@@ -83,6 +84,8 @@ const PollingOverview = ({ polls }: Props) => {
     setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
+  const account = useAccountsStore(state => state.currentAccount);
+
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
@@ -137,7 +140,7 @@ const PollingOverview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack gap={3}>
-            <BallotBox activePolls={activePolls} />
+            {account && <BallotBox activePolls={activePolls} />}
             <ResourceBox />
           </Stack>
         </SidebarLayout>
