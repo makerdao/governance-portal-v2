@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Heading, Box, Flex, jsx, Button, IconButton } from 'theme-ui';
+import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
@@ -97,6 +97,17 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
+                <Heading mb={3} as='h4'>
+                  Active Polls
+                </Heading>
+                <Text sx={{
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  color: 'onSurface'
+                }}>
+                  {`${activePolls.length} Polls - Posted ${`date time?`}`}
+                </Text>
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                   {activePolls.map(poll => (
                     <PollOverviewCard key={poll.multiHash} poll={poll} />
