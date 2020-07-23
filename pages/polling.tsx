@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Box, Flex, jsx, Button, Link, IconButton, Text, Link as ExternalLink } from 'theme-ui';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { Card, Heading, Box, Flex, jsx, Button, IconButton, Text, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
@@ -27,7 +27,7 @@ const PollingOverview = ({ polls }: Props) => {
   const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
-    polls.map(poll => poll.categoray).reduce((acc, category) => ({ ...acc, [category]: true }), {})
+    polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
 
   const loader = useRef<HTMLDivElement>(null);
@@ -72,9 +72,9 @@ const PollingOverview = ({ polls }: Props) => {
       observer.observe(loader.current);
     }
     return () => {
-      if (observer && loader?.current) {
+      if (observer) {
         // clean up
-        return observer.unobserve(loader.current as HTMLDivElement);
+        return observer.unobserve(loader.current);
       }
     };
   }, [loader, loadMore]);

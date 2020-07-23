@@ -22,7 +22,7 @@ export default function ({ ...props }) {
           <Text sx={{color: 'onSurface', fontSize: 16, fontWeight: '500'}}>
             {`${ballotLength()} of ${activePolls.length} available polls added to ballot`}
           </Text>
-          <Flex sx={{ width: '100%', height: 2, backgroundColor: 'muted', mt: 2, flexDirection: 'row'}}>
+          <Flex sx={{ width: '100%', height: 2, backgroundColor: 'muted', mt: 2, flexDirection: 'row', borderRadius: 'small' }}>
             {
               activePolls.map((pollId, index) => (
                 <Box
@@ -32,7 +32,19 @@ export default function ({ ...props }) {
                     flex: 1,
                     borderLeft: index === 0
                       ? null
-                      : '1px solid white'
+                      : '1px solid white',
+                    borderTopLeftRadius: index === 0
+                      ? 'small'
+                      : null,
+                    borderBottomLeftRadius: index === 0
+                      ? 'small'
+                      : null,
+                    borderTopRightRadius: index === activePolls.length - 1
+                      ? 'small'
+                      : null,
+                    borderBottomRightRadius: index === activePolls.length - 1 
+                      ? 'small'
+                      : null,
                   }}
                 />
               ))
@@ -42,7 +54,7 @@ export default function ({ ...props }) {
         <Flex p={3}  sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between', flexDirection: 'row'}}>
           <Text color="onSurface">
             Voting weight for all polls
-            <Icon name='question' />
+            <Icon name='question' mt={1} ml={1} />
           </Text>
           <Text>
             {`${votingWeightTotal.toFixed(2)} MKR`}
