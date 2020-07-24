@@ -20,14 +20,14 @@ const generateText = (endTime, endText) => {
   timeLeft -= days * 3600 * 24;
   const hours = Math.floor(timeLeft / 3600);
   timeLeft -= hours * 3600;
-  if (days > 0) return `${days} days, ${hours} hours remaining`;
+  if (days > 0) return `${days}D ${hours}H remaining`;
 
   const minutes = Math.floor(timeLeft / 60);
   timeLeft -= minutes * 60;
   return `${hours}:${pad(minutes)}:${pad(timeLeft)} remaining`;
 };
 
-const CountdownTimer = ({ endDate, endText }: Props) => {
+const CountdownTimer = ({ endDate, endText, ...props }: Props) => {
   let [endTime, setEndTime] = useState<number>();
   let [text, setText] = useState('');
 
@@ -44,7 +44,7 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
   }, 1000);
 
   return (
-    <Flex sx={{ alignItems: 'center' }}>
+    <Flex sx={{ alignItems: 'center' }} {...props}>
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
       <Text
         sx={{ fontSize: 2, textTransform: 'uppercase', color: text !== endText ? 'mutedAlt' : 'secondary' }}
