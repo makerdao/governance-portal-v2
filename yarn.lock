@@ -2968,6 +2968,27 @@
     "@reach/utils" "^0.10.3"
     tslib "^1.11.2"
 
+"@reach/listbox@^0.10.5":
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@reach/listbox/-/listbox-0.10.5.tgz#ae89b7c6e983ec183a00e7a669c476c3d9463f28"
+  integrity sha512-yQr/qJzottO8eUCDPSFYzpcinr9PrXzHNFgVmuRy7B8Fxwj0nDuo2UzZY+uoEAWymju4EiUj4n5+1pPBq7pQXA==
+  dependencies:
+    "@reach/auto-id" "0.10.5"
+    "@reach/descendants" "0.10.5"
+    "@reach/machine" "0.10.5"
+    "@reach/popover" "0.10.5"
+    "@reach/utils" "0.10.5"
+    prop-types "^15.7.2"
+
+"@reach/machine@0.10.5":
+  version "0.10.5"
+  resolved "https://registry.yarnpkg.com/@reach/machine/-/machine-0.10.5.tgz#2a61ebb2fa33ed637f1fa3c574b0ed6b8cb7c68c"
+  integrity sha512-YDjOzwom7WF3bPHx8hLSbtitPiz5m5T/cY6Gggd7dEoRE8U74OjAoVHvWIFbnJ8GCSLa0Bm547R29ITmWzr7pQ==
+  dependencies:
+    "@reach/utils" "0.10.5"
+    "@xstate/fsm" "1.4.0"
+    tslib "^2.0.0"
+
 "@reach/menu-button@^0.10.5":
   version "0.10.5"
   resolved "https://registry.yarnpkg.com/@reach/menu-button/-/menu-button-0.10.5.tgz#b023044fa199bc256572830740049a50fea1d690"
@@ -3724,6 +3745,11 @@
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
+
+"@xstate/fsm@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@xstate/fsm/-/fsm-1.4.0.tgz#6fd082336fde4d026e9e448576189ee5265fa51a"
+  integrity sha512-uTHDeu2xI5E1IFwf37JFQM31RrH7mY7877RqPBS4ZqSNUwoLDuct8AhBWaXGnVizBAYyimVwgCyGa9z/NiRhXA==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"

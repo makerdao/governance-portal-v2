@@ -111,6 +111,10 @@ export function isActivePoll(poll: Poll): boolean {
   return true;
 }
 
+export function isRankedChoicePoll(poll: Poll): boolean {
+  return poll.voteType === 'Ranked Choice IRV';
+}
+
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
   const response = await fetch(url, init);
   const json = await response.json();

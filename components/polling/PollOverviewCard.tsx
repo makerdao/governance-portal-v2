@@ -1,8 +1,10 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
-
-import { isActivePoll } from '../../lib/utils';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
+import map from 'lodash/map';
+import { isActivePoll, isRankedChoicePoll } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
@@ -64,11 +66,37 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
   return (
-    <Stack gap={1} ml={5}>
+    <Stack gap={2} ml={5} sx={{ maxWidth: '256px' }}>
       <Text variant="caps" color="mutedAlt">
         Your Vote
       </Text>
-      <Text>dropdown</Text>
+      {isRankedChoicePoll(poll) ? (
+        <Text>Ranked Choice (TODO)</Text>
+      ) : (
+        <ListboxInput>
+          <ListboxButton
+            sx={{ variant: 'buttons.outline', width: '100%' }}
+            arrow={<Icon name="chevron_down" size={2} />}
+          />
+          <ListboxPopover
+            sx={{
+              variant: 'cards.tight',
+              '&:focus-within': { outline: 'none' }
+            }}
+          >
+            <ListboxList
+              sx={{
+                'li[aria-selected="true"]': { backgroundColor: 'primary' }
+              }}
+            >
+              <ListboxOption value="default">Your choice</ListboxOption>
+              {map(poll.options, (label, id) => (
+                <ListboxOption value={id}>{label}</ListboxOption>
+              ))}
+            </ListboxList>
+          </ListboxPopover>
+        </ListboxInput>
+      )}
       <Button variant="primaryOutline">Add vote to ballot</Button>
     </Stack>
   );
