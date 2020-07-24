@@ -17,7 +17,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 
   return (
     <Flex
-      sx={{ flexDirection: 'column', justifyContent: 'space-between', variant: 'cards.primary' }}
+      sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}
       {...props}
     >
       <Stack gap={2}>
@@ -57,6 +57,11 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
         </Flex>
       </Stack>
+      {bpi > 0 && <Stack gap={1} ml={5}>
+        <Text>Your Vote</Text>
+        <Text>dropdown</Text>
+        <Button>Add vote to ballot</Button>
+      </Stack>}
     </Flex>
   );
 };
