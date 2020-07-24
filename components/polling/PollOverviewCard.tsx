@@ -27,20 +27,18 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
             <VotingStatus poll={poll} />
           </Flex>
         )}
-        <Box>
-          <Link
-            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-          >
-            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
-          </Link>
-        </Box>
+        <Link
+          href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+          as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+        >
+          <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
+        </Link>
         <Text
           sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            fontSize: [3, 4],
+            fontSize: [2, 3],
             opacity: 0.8
           }}
         >
@@ -71,7 +69,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
         Your Vote
       </Text>
       <Text>dropdown</Text>
-      <Button>Add vote to ballot</Button>
+      <Button variant="primaryOutline">Add vote to ballot</Button>
     </Stack>
   );
 };
