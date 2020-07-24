@@ -9,44 +9,28 @@ import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
+import { useBreakpoints } from '../../lib/useBreakpoints';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
+  const bpi = useBreakpoints();
 
   return (
     <Flex
-      sx={{
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        variant: 'cards.primary'
-      }}
+      sx={{ flexDirection: 'column', justifyContent: 'space-between', variant: 'cards.primary' }}
       {...props}
     >
       <Stack gap={2}>
-        <Flex sx={{ justifyContent: 'space-between' }}>
+        {bpi === 0 && <Flex sx={{ justifyContent: 'space-between' }}>
           <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-          <VotingStatus sx={{ display: ['block', 'none'] }} poll={poll} />
-        </Flex>
+          <VotingStatus poll={poll} />
+        </Flex>}
         <Box>
           <Link
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/polling/${poll.slug}`,
-              query: { network }
-            }}
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                whiteSpace: 'nowrap',
-                overflowX: 'auto'
-              }}
-            >
-              {poll.title}
-            </Text>
+            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
           </Link>
         </Box>
         <Text
@@ -60,20 +44,12 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
         >
           {poll.summary}
         </Text>
-        <div sx={{ pb: 2, pt: 3 }}>
-          <Divider my={0} mx={-4} />
-        </div>
+        {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Link
             key={poll.slug}
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/polling/${poll.slug}`,
-              query: { network }
-            }}
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
