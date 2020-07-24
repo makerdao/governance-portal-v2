@@ -18,6 +18,7 @@ const currentBreakpoint = {
   listeners: [],
   observe(callback: (num: number) => void) {
     this.listeners.push(callback);
+    callback(this.value);
   },
   stopObserving(callback) {
     this.listeners.splice(this.listeners.indexOf(callback), 1);
@@ -33,14 +34,13 @@ const currentBreakpoint = {
     const calc = () => {
       const width = window.innerWidth;
       for (const newIndex in breakpoints) {
-        if (width < pxValue(breakpoints[newIndex])) return update(newIndex);
+        if (width < pxValue(breakpoints[newIndex])) return update(parseInt(newIndex));
       }
       return update(breakpoints.length);
     };
 
     window.addEventListener('resize', debounce(calc, 200));
     calc();
-    console.log(`init useBreakpoints at ${this.value}`);
   }
 };
 
@@ -48,7 +48,7 @@ export function useBreakpoints(): number {
   const {
     theme: { breakpoints }
   } = useThemeUI();
-  let [index, setIndex] = useState(currentBreakpoint.value);
+  let [index, setIndex] = useState<number>(currentBreakpoint.value);
 
   useEffect(() => {
     currentBreakpoint.observe(setIndex);
