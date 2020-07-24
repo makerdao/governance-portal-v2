@@ -17,7 +17,7 @@ export default function({ ...props }) {
       <Heading mb={3} as="h4">
         Your Ballot
       </Heading>
-      <Card variant="compact" p={0}>
+      <Card variant="compact" p={[0, 0]}>
         <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
           <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
             {`${ballotLength()} of ${activePolls.length} available polls added to ballot`}
