@@ -27,7 +27,7 @@ const generateText = (endTime, endText) => {
   return `${hours}:${pad(minutes)}:${pad(timeLeft)} remaining`;
 };
 
-const CountdownTimer = ({ endDate, endText, ...props }: Props) => {
+const CountdownTimer = ({ endDate, endText }: Props) => {
   let [endTime, setEndTime] = useState<number>();
   let [text, setText] = useState('');
 
@@ -44,11 +44,9 @@ const CountdownTimer = ({ endDate, endText, ...props }: Props) => {
   }, 1000);
 
   return (
-    <Flex sx={{ alignItems: 'center' }} {...props}>
+    <Flex sx={{ alignItems: 'center', flexDirection: 'row' }}>
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
-      <Text
-        sx={{ fontSize: 2, textTransform: 'uppercase', color: text !== endText ? 'mutedAlt' : 'secondary' }}
-      >
+      <Text variant="caps" color={text !== endText ? 'mutedAlt' : 'secondary'}>
         {text}
       </Text>
     </Flex>

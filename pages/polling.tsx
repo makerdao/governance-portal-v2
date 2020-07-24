@@ -100,15 +100,10 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Heading mb={3} as='h4'>
+                <Heading mb={3} as="h4">
                   Active Polls
                 </Heading>
-                <Text sx={{
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                  textTransform: 'uppercase',
-                  color: 'onSurface'
-                }}>
+                <Text variant="caps" color="onSurface" mb={2}>
                   {`${activePolls.length} Polls - Posted ${`date time?`}`}
                 </Text>
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>

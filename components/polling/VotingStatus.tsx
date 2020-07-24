@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Box, Badge, jsx } from 'theme-ui';
+import { Flex, Box, Badge, jsx, Text } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -11,30 +11,26 @@ import Poll from '../../types/poll';
 import PollVote from '../../types/pollVote';
 import useBallotStore from '../../stores/ballot';
 
-const BadgeContents = ({hasVoted, onBallot, poll, ...otherProps}) => {
+const BadgeContents = ({ hasVoted, onBallot, poll, ...otherProps }) => {
+  const color = hasVoted || onBallot ? 'linkHover' : 'badgeGrey';
+  const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
+  const text = hasVoted
+    ? 'You Voted'
+    : onBallot
+    ? 'On Your Ballot'
+    : isActivePoll(poll)
+    ? 'You have not voted'
+    : 'You did not vote';
+
   return (
-  <div {...otherProps}>
-    {hasVoted ? (
-      <Flex sx={{ alignItems: 'center' }}>
-          <Icon mr="1" name="verified" sx={{ color: 'linkHover' }} />
-          You Voted
-      </Flex>
-        ) : 
-        onBallot ?
-        (
-          <Flex sx={{ alignItems: 'center' }}>
-          <Icon mr="1" name="ballot" sx={{ color: 'linkHover' }} />
-          On Your Ballot
-          </Flex>
-        ) :
-        (
-        <div>
-          {isActivePoll(poll) ? 'You have not voted': 'You did not vote'} 
-        </div>
-      )}
-    </div>
-    );
-}
+    <Flex sx={{ alignItems: 'center' }} {...otherProps}>
+      {icon && <Icon mr="1" name={icon} sx={{ color }} />}
+      <Text variant="caps" color={color}>
+        {text}
+      </Text>
+    </Flex>
+  );
+};
 
 const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -56,28 +52,22 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
     );
 
   const hasVoted = !!allUserVotes?.find(pollVote => pollVote.pollId === poll.pollId);
+  const contents = <BadgeContents hasVoted={hasVoted} onBallot={onBallot} poll={poll} />;
   return (
-    <Flex sx={{ alignItems: 'center' }} {...otherProps}>
+    <Box {...otherProps}>
       <Badge
-          ml="3"
-          px="14px"
-          variant="primary"
-          sx={{
-          borderColor: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
-          color: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
-          textTransform: 'uppercase',
+        ml="3"
+        px="14px"
+        variant="primary"
+        sx={{
+          borderColor: hasVoted || onBallot ? 'linkHover' : 'badgeGrey',
           display: ['none', 'block']
-          }}
+        }}
       >
-        <BadgeContents hasVoted={hasVoted} onBallot={onBallot} poll={poll}/>
+        {contents}
       </Badge>
-      <BadgeContents sx={{
-        fontSize: '2',
-        color: hasVoted || onBallot ? 'linkHover': 'badgeGrey',
-        textTransform: 'uppercase',
-        display: ['block', 'none']
-        }} hasVoted={hasVoted} onBallot={onBallot} poll={poll}/>
-    </Flex>
+      <Box sx={{ display: ['block', 'none'] }}>{contents}</Box>
+    </Box>
   );
 };
 

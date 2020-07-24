@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Text, Flex, Divider, Box, Button, jsx } from 'theme-ui';
+import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 
 import { isActivePoll } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
@@ -10,21 +10,23 @@ import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
 import { useBreakpoints } from '../../lib/useBreakpoints';
+import useAccountsStore from '../../stores/accounts';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
+  const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpoints();
+  const showQuickVote = !!account && bpi > 0 && isActivePoll(poll);
 
   return (
-    <Flex
-      sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}
-      {...props}
-    >
+    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
       <Stack gap={2}>
-        {bpi === 0 && <Flex sx={{ justifyContent: 'space-between' }}>
-          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-          <VotingStatus poll={poll} />
-        </Flex>}
+        {bpi === 0 && (
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+            <VotingStatus poll={poll} />
+          </Flex>
+        )}
         <Box>
           <Link
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
@@ -57,12 +59,20 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
         </Flex>
       </Stack>
-      {bpi > 0 && <Stack gap={1} ml={5}>
-        <Text>Your Vote</Text>
-        <Text>dropdown</Text>
-        <Button>Add vote to ballot</Button>
-      </Stack>}
+      {showQuickVote && <QuickVote poll={poll} />}
     </Flex>
+  );
+};
+
+const QuickVote = ({ poll }: { poll: Poll }) => {
+  return (
+    <Stack gap={1} ml={5}>
+      <Text variant="caps" color="mutedAlt">
+        Your Vote
+      </Text>
+      <Text>dropdown</Text>
+      <Button>Add vote to ballot</Button>
+    </Stack>
   );
 };
 
