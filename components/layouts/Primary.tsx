@@ -16,7 +16,7 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
         minHeight: '100vh',
         mx: 'auto',
         variant: 'layout.root',
-        px: [0, 4]
+        px: [3, 4]
       }}
     >
       <Header />
