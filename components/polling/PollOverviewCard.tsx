@@ -117,9 +117,10 @@ const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choice
     [choiceNum]
   );
 
-  useEffect(() => {
-    if (onChange) onChange(selectedChoices);
-  }, [selectedChoices]);
+  const updateSelection = newChoices => {
+    setSelectedChoices(newChoices);
+    if (onChange) onChange(newChoices);
+  };
 
   return (
     <Box>
@@ -136,11 +137,11 @@ const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choice
           key={choiceNum}
           onChange={value => {
             if (value === 'default') {
-              setSelectedChoices(selectedChoices.slice(0, -1));
+              updateSelection(selectedChoices.slice(0, -1));
             } else {
               const _selectedChoices = [...selectedChoices];
               _selectedChoices[choiceNum - 1] = parseInt(value);
-              setSelectedChoices(_selectedChoices);
+              updateSelection(_selectedChoices);
             }
           }}
         >
