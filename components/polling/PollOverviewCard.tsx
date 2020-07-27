@@ -15,6 +15,7 @@ import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
 import { useBreakpoints } from '../../lib/useBreakpoints';
 import useAccountsStore from '../../stores/accounts';
+import useBallotStore from '../../stores/ballot';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
@@ -67,6 +68,15 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 };
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
+  const addToBallot = useBallotStore(state => state.addToBallot);
+  const [choice, setChoice] = useState<number | number[]>();
+  // TODO disable button if no option chosen
+
+  const submit = () => {
+    // TODO fail if no option chosen
+    addToBallot(poll.pollId, choice);
+  };
+
   return (
     <Stack gap={2} ml={5} sx={{ maxWidth: 7 }}>
       <Text variant="caps" color="mutedAlt">
@@ -75,7 +85,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
       {isRankedChoicePoll(poll) ? (
         <RankedChoiceSelect poll={poll} />
       ) : (
-        <ListboxInput>
+        <ListboxInput onChange={setChoice}>
           <ListboxButton
             sx={{ variant: 'buttons.outline', width: '100%' }}
             arrow={<Icon name="chevron_down" size={2} />}
@@ -99,7 +109,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
           </ListboxPopover>
         </ListboxInput>
       )}
-      <Button variant="primaryOutline">Add vote to ballot</Button>
+      <Button variant="primaryOutline" onClick={submit}>Add vote to ballot</Button>
     </Stack>
   );
 };

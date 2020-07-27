@@ -28,8 +28,7 @@ const PollingOverview = ({ polls }: { polls: Poll[] }) => {
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
   const [inReview, setInReview] = useState(false);
-  const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot)
+  const [ballot, submitBallot] = useBallotStore(({ ballot, submitBallot }) => [ballot, submitBallot]);
 
   const loader = useRef<HTMLDivElement>(null);
 
