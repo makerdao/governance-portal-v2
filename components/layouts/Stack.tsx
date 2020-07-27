@@ -1,8 +1,14 @@
 import React from 'react';
 import { Flex } from 'theme-ui';
 import { styledClone } from '../../lib/utils';
+import { ThemeUICSSProperties } from '@theme-ui/css';
 
-const StackLayout = React.forwardRef<any, { children: React.ReactNode; gap?: number | number[] }>(
+type Props = ThemeUICSSProperties & {
+  children: React.ReactNode; 
+  gap?: number | number[];
+};
+
+const StackLayout = React.forwardRef<any, Props>(
   ({ children, gap = 4, ...props }, ref) => (
     <Flex
       ref={ref}

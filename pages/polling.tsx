@@ -17,6 +17,7 @@ import CategoryFilter from '../components/polling/CategoryFilter';
 import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
+import useAccountsStore from '../stores/accounts';
 
 type Props = {
   polls: Poll[];
@@ -87,6 +88,8 @@ const PollingOverview = ({ polls }: Props) => {
     setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
+  const account = useAccountsStore(state => state.currentAccount);
+
   return (
     <PrimaryLayout shortenFooter={true}>
       {<Stack gap={3}>
@@ -101,15 +104,10 @@ const PollingOverview = ({ polls }: Props) => {
           <Box sx={{ display: inReview ? 'none' : null }}>
             <Stack>
               <div>
-                <Heading mb={3} as='h4'>
+                <Heading mb={3} as="h4">
                   Active Polls
                 </Heading>
-                <Text sx={{
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                  textTransform: 'uppercase',
-                  color: 'onSurface'
-                }}>
+                <Text variant="caps" color="onSurface" mb={2}>
                   {`${activePolls.length} Polls - Posted ${`date time?`}`}
                 </Text>
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
@@ -159,13 +157,13 @@ const PollingOverview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack gap={3}>
-            <BallotBox
+            { account && <BallotBox
               activePolls={activePolls}
               inReview={inReview}
               setInReview={setInReview}
               ballot={ballot}
               submitBallot={submitBallot}
-             />
+             />}
             <ResourceBox inReview={inReview} />
           </Stack>
         </SidebarLayout>

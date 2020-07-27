@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { Text, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -11,34 +11,44 @@ type Props = {
 
 const pad = (val: number): string => (val < 10 ? '0' + val : String(val));
 
+const generateText = (endTime, endText) => {
+  const now = Math.floor(new Date().getTime() / 1000);
+  let timeLeft = endTime - now;
+  if (timeLeft <= 0) return endText;
+
+  const days = Math.floor(timeLeft / 3600 / 24);
+  timeLeft -= days * 3600 * 24;
+  const hours = Math.floor(timeLeft / 3600);
+  timeLeft -= hours * 3600;
+  if (days > 0) return `${days}D ${hours}H remaining`;
+
+  const minutes = Math.floor(timeLeft / 60);
+  timeLeft -= minutes * 60;
+  return `${hours}:${pad(minutes)}:${pad(timeLeft)} remaining`;
+};
+
 const CountdownTimer = ({ endDate, endText }: Props) => {
-  let [timeLeft, setTimeLeft] = useState(
-    Math.floor(new Date(endDate).getTime() / 1000) - Math.floor(new Date().getTime() / 1000)
-  );
+  let [endTime, setEndTime] = useState<number>();
+  let [text, setText] = useState('');
+
+  if (!text) {
+    endTime = Math.floor(new Date(endDate).getTime() / 1000);
+    setEndTime(endTime);
+    text = generateText(endTime, endText);
+    setText(text);
+  }
+
   useInterval(() => {
-    setTimeLeft(_endDate => _endDate - 1);
+    const newText = generateText(endTime, endText);
+    if (newText !== text) setText(newText);
   }, 1000);
 
-  // const days = Math.floor(timeLeft / (3600 * 24));
-  const hours = Math.floor(timeLeft / 3600);
-  const minutes = Math.floor((timeLeft - hours * 3600) / 60);
-  const seconds = timeLeft - hours * 3600 - minutes * 60;
-
   return (
-    <Flex sx={{ alignItems: 'center' }}>
-      {timeLeft <= 0 ? (
-        <>
-          <Icon mr="1" name="clock" size="3" sx={{ color: 'secondary' }} />
-          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'secondary' }}>{endText}</Text>
-        </>
-      ) : (
-        <>
-          <Icon mr="1" name="clock" size="3" sx={{ color: 'primary' }} />
-          <Text sx={{ fontSize: 2, textTransform: 'uppercase', color: 'mutedAlt' }}>
-            {hours}:{pad(minutes)}:{pad(seconds)} Remaining
-          </Text>
-        </>
-      )}
+    <Flex sx={{ alignItems: 'center', flexDirection: 'row' }}>
+      <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
+      <Text variant="caps" color={text !== endText ? 'mutedAlt' : 'secondary'}>
+        {text}
+      </Text>
     </Flex>
   );
 };

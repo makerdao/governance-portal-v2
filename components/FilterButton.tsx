@@ -12,7 +12,7 @@ export default function({ name, children, ...props }: Props) {
         {name()}
         <Icon name="chevron_down" size={2} ml={2} />
       </MenuButton>
-      <MenuList sx={{ variant: 'cards.primary', p: 3 }}>{children}</MenuList>
+      <MenuList sx={{ variant: 'cards.compact' }}>{children}</MenuList>
     </Menu>
   );
 }

@@ -105,9 +105,14 @@ export function getEtherscanLink(
 }
 
 export function isActivePoll(poll: Poll): boolean {
-  const hasStarted = new Date(poll.startDate).getTime() <= Date.now();
-  const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
-  return hasStarted && hasNotEnded;
+  const now = Date.now();
+  if (new Date(poll.endDate).getTime() < now) return false;
+  if (new Date(poll.startDate).getTime() > now) return false;
+  return true;
+}
+
+export function isRankedChoicePoll(poll: Poll): boolean {
+  return poll.voteType === 'Ranked Choice IRV';
 }
 export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
   return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId)

@@ -31,17 +31,7 @@ const AccountSelect = () => {
   return (
     <Button variant="card" onClick={account ? () => {} : connectWithBrowserProvider}>
       {account ? (
-        <Flex sx={{ flexDirection: 'column' }}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <span>MetaMask</span>
-            <span>{formatAddress(account.address)}</span>
-          </Flex>
-          <Divider mx={-2} />
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <span>Polling Balance</span>
-            <span>333 MKR</span>
-          </Flex>
-        </Flex>
+        <span>{formatAddress(account.address)}</span>
       ) : (
         <span>Connect wallet</span>
       )}

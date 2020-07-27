@@ -1,79 +1,57 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Text, Flex, Divider, Box, Button, jsx } from 'theme-ui';
-
-import { isActivePoll } from '../../lib/utils';
+import { Text, Flex, Box, Button, jsx } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
+import map from 'lodash/map';
+import { isActivePoll, isRankedChoicePoll } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
+import { useBreakpoints } from '../../lib/useBreakpoints';
+import useAccountsStore from '../../stores/accounts';
 
 const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
+  const account = useAccountsStore(state => state.currentAccount);
+  const bpi = useBreakpoints();
+  const showQuickVote = !!account && bpi > 0 && isActivePoll(poll);
 
   return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        variant: 'cards.primary'
-      }}
-      {...props}
-    >
+    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
       <Stack gap={2}>
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-          <VotingStatus sx={{ display: ['block', 'none'] }} poll={poll} />
-        </Flex>
-        <Box>
-          <Link
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/polling/${poll.slug}`,
-              query: { network }
-            }}
-          >
-            <Text
-              sx={{
-                fontSize: [3, 4],
-                whiteSpace: 'nowrap',
-                overflowX: 'auto'
-              }}
-            >
-              {poll.title}
-            </Text>
-          </Link>
-        </Box>
+        {bpi === 0 && (
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+            <VotingStatus poll={poll} />
+          </Flex>
+        )}
+        <Link
+          href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+          as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+        >
+          <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
+        </Link>
         <Text
           sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            fontSize: [3, 4],
+            fontSize: [2, 3],
             opacity: 0.8
           }}
         >
           {poll.summary}
         </Text>
-        <div sx={{ pb: 2, pt: 3 }}>
-          <Divider my={0} mx={-4} />
-        </div>
+        {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Link
             key={poll.slug}
-            href={{
-              pathname: '/polling/[poll-hash]',
-              query: { network }
-            }}
-            as={{
-              pathname: `/polling/${poll.slug}`,
-              query: { network }
-            }}
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
             <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
           </Link>
@@ -81,7 +59,46 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
           <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
         </Flex>
       </Stack>
+      {showQuickVote && <QuickVote poll={poll} />}
     </Flex>
+  );
+};
+
+const QuickVote = ({ poll }: { poll: Poll }) => {
+  return (
+    <Stack gap={2} ml={5} sx={{ maxWidth: '256px' }}>
+      <Text variant="caps" color="mutedAlt">
+        Your Vote
+      </Text>
+      {isRankedChoicePoll(poll) ? (
+        <Text>Ranked Choice (TODO)</Text>
+      ) : (
+        <ListboxInput>
+          <ListboxButton
+            sx={{ variant: 'buttons.outline', width: '100%' }}
+            arrow={<Icon name="chevron_down" size={2} />}
+          />
+          <ListboxPopover
+            sx={{
+              variant: 'cards.tight',
+              '&:focus-within': { outline: 'none' }
+            }}
+          >
+            <ListboxList
+              sx={{
+                'li[aria-selected="true"]': { backgroundColor: 'primary' }
+              }}
+            >
+              <ListboxOption value="default">Your choice</ListboxOption>
+              {map(poll.options, (label, id) => (
+                <ListboxOption value={id}>{label}</ListboxOption>
+              ))}
+            </ListboxList>
+          </ListboxPopover>
+        </ListboxInput>
+      )}
+      <Button variant="primaryOutline">Add vote to ballot</Button>
+    </Stack>
   );
 };
 
