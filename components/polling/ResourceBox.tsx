@@ -32,7 +32,7 @@ export default function ({ ...props }) {
             </Text>
           </Flex>
         </ExternalLink>
-        <ExternalLink href="https://github.com/makerdao/awesome-makerdao#governance" target="_blank">
+        <ExternalLink href="https://github.com/makerdao/awesome-makerdao" target="_blank">
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Awesome MakerDAO
@@ -40,7 +40,7 @@ export default function ({ ...props }) {
             </Text>
           </Flex>
         </ExternalLink>
-        <ExternalLink href="https://daistats.com/" target="_blank">
+        <ExternalLink href="(https://community-development.makerdao.com/governance/governance-and-risk-meetings" target="_blank">
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Governance call schedule
