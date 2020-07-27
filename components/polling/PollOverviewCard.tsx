@@ -68,49 +68,67 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 };
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
-  const addToBallot = useBallotStore(state => state.addToBallot);
-  const [choice, setChoice] = useState<number | number[]>();
+  const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
+  const [choice, setChoice] = useState<number | number[] | null>(null);
+  const [editing, setEditing] = useState(false);
   // TODO disable button if no option chosen
 
   const submit = () => {
-    // TODO fail if no option chosen
+    if (choice == null) return;
     addToBallot(poll.pollId, choice);
+    setEditing(false);
   };
 
+  // TODO show icon next to Your Vote for ranked choice
+  const gap = 2;
   return (
-    <Stack gap={2} ml={5} sx={{ maxWidth: 7 }}>
+    <Stack gap={gap} ml={5} sx={{ maxWidth: 7 }}>
       <Text variant="caps" color="mutedAlt">
         Your Vote
       </Text>
-      {isRankedChoicePoll(poll) ? (
-        <RankedChoiceSelect poll={poll} />
+      {!!addedChoice && !editing ? (
+        <ChoiceSummary poll={poll} choice={addedChoice} edit={() => setEditing(true)} />
       ) : (
-        <ListboxInput onChange={setChoice}>
-          <ListboxButton
-            sx={{ variant: 'buttons.outline', width: '100%' }}
-            arrow={<Icon name="chevron_down" size={2} />}
-          />
-          <ListboxPopover
-            sx={{
-              variant: 'cards.tight',
-              '&:focus-within': { outline: 'none' }
-            }}
-          >
-            <ListboxList
-              sx={{
-                'li[aria-selected="true"]': { backgroundColor: 'primary' }
-              }}
-            >
-              <ListboxOption value="default">Your choice</ListboxOption>
-              {map(poll.options, (label, id) => (
-                <ListboxOption value={id}>{label}</ListboxOption>
-              ))}
-            </ListboxList>
-          </ListboxPopover>
-        </ListboxInput>
+        <div>
+          {isRankedChoicePoll(poll) ? (
+            <RankedChoiceSelect poll={poll} onChange={setChoice} />
+          ) : (
+            <SingleSelect {...{ poll, setChoice }} />
+          )}
+          <Button variant="primaryOutline" onClick={submit} mt={gap}>
+            Add vote to ballot
+          </Button>
+        </div>
       )}
-      <Button variant="primaryOutline" onClick={submit}>Add vote to ballot</Button>
     </Stack>
+  );
+};
+
+const SingleSelect = ({ poll, setChoice }) => {
+  return (
+    <ListboxInput onChange={x => setChoice(parseInt(x))}>
+      <ListboxButton
+        sx={{ variant: 'buttons.outline', width: '100%' }}
+        arrow={<Icon name="chevron_down" size={2} />}
+      />
+      <ListboxPopover
+        sx={{
+          variant: 'cards.tight',
+          '&:focus-within': { outline: 'none' }
+        }}
+      >
+        <ListboxList
+          sx={{
+            'li[aria-selected="true"]': { backgroundColor: 'primary' }
+          }}
+        >
+          <ListboxOption value="default">Your choice</ListboxOption>
+          {map(poll.options, (label, id) => (
+            <ListboxOption key={id} value={id}>{label}</ListboxOption>
+          ))}
+        </ListboxList>
+      </ListboxPopover>
+    </ListboxInput>
   );
 };
 
@@ -170,9 +188,11 @@ const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choice
                 'li[aria-selected="true"]': { backgroundColor: 'primary' }
               }}
             >
-              <ListboxOption value="default">Your choice</ListboxOption>
+              <ListboxOption value="default">
+                {getNumberWithOrdinal(selectedChoices.length + 1)} choice
+              </ListboxOption>
               {map(availableChoices, (label, pollId) => (
-                <ListboxOption value={pollId}>{label}</ListboxOption>
+                <ListboxOption key={pollId} value={pollId}>{label}</ListboxOption>
               ))}
             </ListboxList>
           </ListboxPopover>
@@ -194,6 +214,27 @@ const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choice
       )}
     </Box>
   );
+};
+
+const ChoiceSummary = ({ choice: { option }, poll, edit }) => {
+  if (typeof option === 'number') {
+    return (
+      <Box>
+        <Box p={3} bg="background" mb={2}>{poll.options[option]}</Box>
+        <Button
+          onClick={edit}
+          variant="smallOutline"
+          sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center' }}
+        >
+          <Icon name="edit" size={3} mr={1} />
+          Edit choice
+        </Button>
+      </Box>
+    );
+  }
+
+  // TODO ranked choice
+  return null;
 };
 
 export default PollOverviewCard;
