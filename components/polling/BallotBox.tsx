@@ -63,8 +63,26 @@ export default function ({ ...props }) {
             {`${votingWeightTotal.toFixed(2)} MKR`}
           </Text>
         </Flex>
-        <Flex p={3} sx={{ justifyContent: 'center', alignItems: 'center'}}>
-          <Button onClick={submitBallot} disabled={ballotLength() < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
+        <Flex p={3} sx={{ flexDirection: 'column'}}>
+          <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row'}}>
+            <Text color="onSurface">
+              Estimated Gas Cost
+            </Text>
+            <Text>
+              {`Gas Cost`}
+            </Text>
+          </Flex>
+          <Flex pb={4} sx={{ justifyContent: 'space-between', flexDirection: 'row'}}>
+            <Text color="onSurface">
+              Estimated Confirmation Time
+            </Text>
+            <Text>
+              {`Confirm Time`}
+            </Text>
+          </Flex>
+          <Button onClick={submitBallot} disabled={ballotLength() < 1} variant='primary' sx={{width: '100%'}}>
+            Review & Submit Your Ballot
+          </Button>
         </Flex>
       </Card>
     </Box>
