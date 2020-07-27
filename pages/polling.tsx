@@ -19,11 +19,7 @@ import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
 
-type Props = {
-  polls: Poll[];
-};
-
-const PollingOverview = ({ polls }: Props) => {
+const PollingOverview = ({ polls }: { polls: Poll[] }) => {
   const [startDate, setStartDate] = useState<Date | ''>('');
   const [endDate, setEndDate] = useState<Date | ''>('');
   const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
@@ -172,7 +168,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }) {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 

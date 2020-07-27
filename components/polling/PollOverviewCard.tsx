@@ -1,10 +1,12 @@
 /** @jsx jsx */
 import Link from 'next/link';
+import { useState, useMemo, useEffect } from 'react';
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import map from 'lodash/map';
-import { isActivePoll, isRankedChoicePoll } from '../../lib/utils';
+import omitBy from 'lodash/omitBy';
+import { isActivePoll, isRankedChoicePoll, getNumberWithOrdinal } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
@@ -66,12 +68,12 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
   return (
-    <Stack gap={2} ml={5} sx={{ maxWidth: '256px' }}>
+    <Stack gap={2} ml={5} sx={{ maxWidth: 7 }}>
       <Text variant="caps" color="mutedAlt">
         Your Vote
       </Text>
       {isRankedChoicePoll(poll) ? (
-        <Text>Ranked Choice (TODO)</Text>
+        <RankedChoiceSelect poll={poll} />
       ) : (
         <ListboxInput>
           <ListboxButton
@@ -99,6 +101,87 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
       )}
       <Button variant="primaryOutline">Add vote to ballot</Button>
     </Stack>
+  );
+};
+
+const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choices: number[]) => void }) => {
+  const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
+  const [choiceNum, setChoiceNum] = useState<number>(1);
+  const numOptions = Object.keys(poll.options).length;
+
+  const availableChoices = useMemo(
+    () =>
+      omitBy(poll.options, (_, pollId) => {
+        return selectedChoices.findIndex(choice => choice === parseInt(pollId)) > -1;
+      }),
+    [choiceNum]
+  );
+
+  useEffect(() => {
+    if (onChange) onChange(selectedChoices);
+  }, [selectedChoices]);
+
+  return (
+    <Box>
+      <Stack gap={2}>
+        {Array.from({ length: choiceNum - 1 }).map((_, i) => (
+          <Flex sx={{ backgroundColor: 'muted', flexDirection: 'column', py: 1, px: 2 }}>
+            <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
+              {getNumberWithOrdinal(i + 1)} choice
+            </Text>
+            <Text>{poll.options[selectedChoices[i]]}</Text>
+          </Flex>
+        ))}
+        <ListboxInput
+          key={choiceNum}
+          onChange={value => {
+            if (value === 'default') {
+              setSelectedChoices(selectedChoices.slice(0, -1));
+            } else {
+              const _selectedChoices = [...selectedChoices];
+              _selectedChoices[choiceNum - 1] = parseInt(value);
+              setSelectedChoices(_selectedChoices);
+            }
+          }}
+        >
+          <ListboxButton
+            sx={{ variant: 'buttons.outline', width: '100%' }}
+            arrow={<Icon name="chevron_down" size={2} />}
+          />
+          <ListboxPopover
+            sx={{
+              variant: 'cards.tight',
+              '&:focus-within': { outline: 'none' }
+            }}
+          >
+            <ListboxList
+              sx={{
+                'li[aria-selected="true"]': { backgroundColor: 'primary' }
+              }}
+            >
+              <ListboxOption value="default">Your choice</ListboxOption>
+              {map(availableChoices, (label, pollId) => (
+                <ListboxOption value={pollId}>{label}</ListboxOption>
+              ))}
+            </ListboxList>
+          </ListboxPopover>
+        </ListboxInput>
+      </Stack>
+      {numOptions > choiceNum && selectedChoices[choiceNum - 1] !== undefined && (
+        <Text
+          color="primary"
+          onClick={() => setChoiceNum(choiceNum + 1)}
+          sx={{
+            pt: 1,
+            fontSize: 2,
+            cursor: 'pointer',
+            textTransform: 'uppercase'
+          }}
+        >
+          + Add another choice
+        </Text>
+      )}
+    </Box>
   );
 };
 

@@ -4,7 +4,7 @@
     "pollId": 188,
     "blockCreated": 10223278,
     "startDate": "Mon Jun 08 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
-    "endDate": "Thu Jun 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
+    "endDate": "Thu Aug 11 2020 12:00:00 GMT-0400 (Eastern Daylight Time)",
     "multiHash": "QmRHhGfSuhbKm1idGLGPap2vgWASzitLViMVGq8usHmqXi",
     "url": "https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP14%3A%20Inclusion%20Poll%20for%20Protocol%20DAI%20Transfer%20-%20June%208%2C%202020.md",
     "slug": "QmRHhGfS",
@@ -12,11 +12,15 @@
     "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
     "title": "MIP14: Inclusion Poll for Protocol DAI Transfer - June 8, 2020",
     "options": {
-      "1": "Yes",
-      "2": "No"
+      "1": 0,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 1,
+      "5": 2,
+      "6": 4
     },
     "discussionLink": "https://forum.makerdao.com/t/2462",
-    "voteType": "Plurality Voting"
+    "voteType": "Ranked Choice IRV"
   },
   {
     "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",

@@ -143,6 +143,13 @@ export function slugify(string: string) {
     .replace(/-+$/, '');
 }
 
+// https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+export function getNumberWithOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
 /** Add sx styles to the passed in component. Provided styles override component styles if there's a clash. */
 export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp }): React.ReactNode {
   if ('css' in component.props) {
