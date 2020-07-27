@@ -68,7 +68,6 @@ export default function ({ ...props }) {
           <Text>
             {`${votingWeightTotal.toFixed(2)} MKR`}
           </Text>
-          <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
         </Flex>
         <Flex p={3} sx={{ flexDirection: 'column'}}>
           <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row'}}>
@@ -90,6 +89,7 @@ export default function ({ ...props }) {
           <Button
             onClick={inReview ? submitBallot : () => setInReview(true)}
             variant='primary'
+            disabled={!ballotLength()}
             sx={{width: '100%'}}
           >
             {inReview 
