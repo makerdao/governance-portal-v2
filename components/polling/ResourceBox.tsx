@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 export default function ({ ...props }) {
   return (
-    <Box sx={{mt: 4}}>
+    <Box sx={{mt: 4, display: props.inReview ? 'none' : null }}>
       <Heading mb={3} as='h4'>
         Resources
       </Heading>
