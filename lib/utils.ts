@@ -109,6 +109,9 @@ export function isActivePoll(poll: Poll): boolean {
   const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
   return hasStarted && hasNotEnded;
 }
+export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
+  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId)
+}
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
   const response = await fetch(url, init);

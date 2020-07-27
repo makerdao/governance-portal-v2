@@ -6,7 +6,7 @@ import ErrorPage from 'next/error';
 
 import { isDefaultNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
-import { isActivePoll } from '../lib/utils';
+import { isActivePoll, findPollById } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
@@ -16,6 +16,7 @@ import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
 import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
+import useBallotStore from '../stores/ballot';
 
 type Props = {
   polls: Poll[];
@@ -29,6 +30,9 @@ const PollingOverview = ({ polls }: Props) => {
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
+  const [inReview, setInReview] = useState(false);
+  const ballot = useBallotStore(state => state.ballot);
+  const submitBallot = useBallotStore(state => state.submitBallot)
 
   const loader = useRef<HTMLDivElement>(null);
 
@@ -85,8 +89,8 @@ const PollingOverview = ({ polls }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
+      {<Stack gap={3}>
+        <Flex sx={{ alignItems: 'center', display: activePolls.length && !inReview ? null : 'none' }}>
           <Heading as="h1" mr={3}>
             Filters
           </Heading>
@@ -94,7 +98,7 @@ const PollingOverview = ({ polls }: Props) => {
           <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
-          <Box>
+          <Box sx={{ display: inReview ? 'none' : null }}>
             <Stack>
               <div>
                 <Heading mb={3} as='h4'>
@@ -136,12 +140,36 @@ const PollingOverview = ({ polls }: Props) => {
               )}
             </Stack>
           </Box>
+          <Box sx={{ display: inReview ? null : 'none' }}>
+            <Stack>
+              <div>
+                <Heading mb={3} as='h4'>
+                  Review Your Ballot
+                </Heading>
+                <Button mb={3} variant='smallOutline' onClick={() => setInReview(false)}>
+                  Back To All Polls
+                </Button>
+                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                  {Object.keys(ballot).map(pollId => {
+                    const poll = findPollById(activePolls, pollId)
+                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />
+                  })}
+                </Stack>
+              </div>
+            </Stack>
+          </Box>
           <Stack gap={3}>
-            <BallotBox activePolls={activePolls} />
-            <ResourceBox />
+            <BallotBox
+              activePolls={activePolls}
+              inReview={inReview}
+              setInReview={setInReview}
+              ballot={ballot}
+              submitBallot={submitBallot}
+             />
+            <ResourceBox inReview={inReview} />
           </Stack>
         </SidebarLayout>
-      </Stack>
+      </Stack>}
     </PrimaryLayout>
   );
 };
