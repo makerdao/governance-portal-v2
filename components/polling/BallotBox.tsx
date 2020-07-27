@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useBallotStore from '../../stores/ballot';
+import { useRouter } from 'next/router'
 import { Card, Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -9,11 +9,12 @@ export default function ({ ...props }) {
   const activePolls = props.activePolls
   const inReview = props.inReview
   const setInReview = props.setInReview
+  const network = props.network
   const ballotLength = () => {
     return Object.keys(ballot).length
   }
   const [votingWeightTotal, setVotingWeighTotal] = useState(0)
-
+  const router = useRouter()
 
   return (
     <Box>
@@ -37,7 +38,7 @@ export default function ({ ...props }) {
           >
             {activePolls.map((pollId, index) => (
               <Box
-                key={index}
+                key={pollId}
                 backgroundColor="muted"
                 sx={{
                   flex: 1,
@@ -87,9 +88,9 @@ export default function ({ ...props }) {
             </Text>
           </Flex>
           <Button
-            onClick={inReview ? submitBallot : () => setInReview(true)}
+            onClick={inReview ? submitBallot : () => router.push({pathname: '/polling/review', query: network})}
             variant='primary'
-            disabled={!ballotLength()}
+            // disabled={!ballotLength()}
             sx={{width: '100%'}}
           >
             {inReview 

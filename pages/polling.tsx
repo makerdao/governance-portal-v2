@@ -4,7 +4,7 @@ import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 
-import { isDefaultNetwork } from '../lib/maker';
+import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, findPollById } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
@@ -33,8 +33,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
   const [inReview, setInReview] = useState(false);
   const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot)
-
+  const network = getNetwork()
   const loader = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -101,7 +100,7 @@ const PollingOverview = ({ polls }: Props) => {
           <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
-          <Box sx={{ display: inReview ? 'none' : null }}>
+          <Box>
             <Stack>
               <div>
                 <Heading mb={3} as="h4">
@@ -138,33 +137,14 @@ const PollingOverview = ({ polls }: Props) => {
               )}
             </Stack>
           </Box>
-          <Box sx={{ display: inReview ? null : 'none' }}>
-            <Stack>
-              <div>
-                <Heading mb={3} as='h4'>
-                  Review Your Ballot
-                </Heading>
-                <Button mb={3} variant='smallOutline' onClick={() => setInReview(false)}>
-                  Back To All Polls
-                </Button>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(activePolls, pollId)
-                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />
-                  })}
-                </Stack>
-              </div>
-            </Stack>
-          </Box>
           <Stack gap={3}>
             { account && <BallotBox
               activePolls={activePolls}
-              inReview={inReview}
-              setInReview={setInReview}
+              inReview={false}
               ballot={ballot}
-              submitBallot={submitBallot}
+              network={network}
              />}
-            <ResourceBox inReview={inReview} />
+            <ResourceBox />
           </Stack>
         </SidebarLayout>
       </Stack>}
