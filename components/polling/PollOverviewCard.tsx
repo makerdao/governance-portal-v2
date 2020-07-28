@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useState, useMemo, useEffect } from 'react';
-import { Text, Flex, Box, Button, jsx } from 'theme-ui';
+import { useState, useMemo } from 'react';
+import { Text, Flex, Box, Button, Close, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import map from 'lodash/map';
@@ -71,7 +71,6 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
   const [choice, setChoice] = useState<number | number[] | null>(null);
   const [editing, setEditing] = useState(false);
-  // TODO disable button if no option chosen
 
   const submit = () => {
     if (choice == null) return;
@@ -91,11 +90,17 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
       ) : (
         <div>
           {isRankedChoicePoll(poll) ? (
-            <RankedChoiceSelect poll={poll} onChange={setChoice} />
+            <RankedChoiceSelect {...{ poll, setChoice }} />
           ) : (
             <SingleSelect {...{ poll, setChoice }} />
           )}
-          <Button variant="primaryOutline" onClick={submit} mt={gap}>
+          <Button
+            variant="primaryOutline"
+            sx={{ width: 7 }}
+            onClick={submit}
+            mt={gap}
+            disabled={!choice || (Array.isArray(choice) && choice.length === 0)}
+          >
             Add vote to ballot
           </Button>
         </div>
@@ -124,7 +129,9 @@ const SingleSelect = ({ poll, setChoice }) => {
         >
           <ListboxOption value="default">Your choice</ListboxOption>
           {map(poll.options, (label, id) => (
-            <ListboxOption key={id} value={id}>{label}</ListboxOption>
+            <ListboxOption key={id} value={id}>
+              {label}
+            </ListboxOption>
           ))}
         </ListboxList>
       </ListboxPopover>
@@ -132,45 +139,51 @@ const SingleSelect = ({ poll, setChoice }) => {
   );
 };
 
-const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choices: number[]) => void }) => {
+const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice?: (choices: number[]) => void }) => {
   const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
-  const [choiceNum, setChoiceNum] = useState<number>(1);
-  const numOptions = Object.keys(poll.options).length;
+  const [optionCount, setOptionCount] = useState<number>(1);
+  const canAddOption =
+    Object.keys(poll.options).length > optionCount && selectedChoices[optionCount - 1] !== undefined;
 
   const availableChoices = useMemo(
     () =>
       omitBy(poll.options, (_, pollId) => {
         return selectedChoices.findIndex(choice => choice === parseInt(pollId)) > -1;
       }),
-    [choiceNum]
+    [optionCount]
   );
-
-  const updateSelection = newChoices => {
-    setSelectedChoices(newChoices);
-    if (onChange) onChange(newChoices);
-  };
 
   return (
     <Box>
       <Stack gap={2}>
-        {Array.from({ length: choiceNum - 1 }).map((_, i) => (
-          <Flex sx={{ backgroundColor: 'muted', flexDirection: 'column', py: 1, px: 2 }}>
-            <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
-              {getNumberWithOrdinal(i + 1)} choice
-            </Text>
-            <Text>{poll.options[selectedChoices[i]]}</Text>
+        {Array.from({ length: optionCount - 1 }).map((_, index) => (
+          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }}>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
+                {getNumberWithOrdinal(index + 1)} choice
+              </Text>
+              <Text>{poll.options[selectedChoices[index]]}</Text>
+            </Flex>
+            <Close
+              ml="auto"
+              my="auto"
+              sx={{ '> svg': { size: [3] } }}
+              onClick={() => {
+                const newChoices = [...selectedChoices];
+                newChoices.splice(index, 1);
+                setSelectedChoices(newChoices);
+                setOptionCount(optionCount - 1);
+              }}
+            />
           </Flex>
         ))}
         <ListboxInput
-          key={choiceNum}
+          key={optionCount}
           onChange={value => {
-            if (value === 'default') {
-              updateSelection(selectedChoices.slice(0, -1));
-            } else {
-              const _selectedChoices = [...selectedChoices];
-              _selectedChoices[choiceNum - 1] = parseInt(value);
-              updateSelection(_selectedChoices);
-            }
+            const newChoices = [...selectedChoices];
+            newChoices[optionCount - 1] = parseInt(value);
+            setSelectedChoices(newChoices);
+            if (setChoice) setChoice(newChoices);
           }}
         >
           <ListboxButton
@@ -188,20 +201,22 @@ const RankedChoiceSelect = ({ poll, onChange }: { poll: Poll; onChange?: (choice
                 'li[aria-selected="true"]': { backgroundColor: 'primary' }
               }}
             >
-              <ListboxOption value="default">
+              <ListboxOption value="default" sx={{ display: 'none' }}>
                 {getNumberWithOrdinal(selectedChoices.length + 1)} choice
               </ListboxOption>
               {map(availableChoices, (label, pollId) => (
-                <ListboxOption key={pollId} value={pollId}>{label}</ListboxOption>
+                <ListboxOption key={pollId} value={pollId}>
+                  {label}
+                </ListboxOption>
               ))}
             </ListboxList>
           </ListboxPopover>
         </ListboxInput>
       </Stack>
-      {numOptions > choiceNum && selectedChoices[choiceNum - 1] !== undefined && (
+      {canAddOption && (
         <Text
           color="primary"
-          onClick={() => setChoiceNum(choiceNum + 1)}
+          onClick={() => setOptionCount(optionCount + 1)}
           sx={{
             pt: 1,
             fontSize: 2,
@@ -220,7 +235,9 @@ const ChoiceSummary = ({ choice: { option }, poll, edit }) => {
   if (typeof option === 'number') {
     return (
       <Box>
-        <Box p={3} bg="background" mb={2}>{poll.options[option]}</Box>
+        <Box p={3} bg="background" mb={2}>
+          {poll.options[option]}
+        </Box>
         <Button
           onClick={edit}
           variant="smallOutline"
