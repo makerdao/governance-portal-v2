@@ -73,9 +73,10 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
   const [choice, setChoice] = useState<number | number[] | null>(null);
   const [editing, setEditing] = useState(false);
+  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
 
   const submit = () => {
-    invariant(choice !== null);
+    invariant(isChoiceValid);
     addToBallot(poll.pollId, choice);
     setEditing(false);
   };
@@ -101,7 +102,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
             sx={{ width: 7 }}
             onClick={submit}
             mt={gap}
-            disabled={!choice || (Array.isArray(choice) && choice.length === 0)}
+            disabled={!isChoiceValid}
           >
             Add vote to ballot
           </Button>
@@ -129,12 +130,15 @@ const SingleSelect = ({ poll, setChoice }) => {
             'li[aria-selected="true"]': { backgroundColor: 'primary' }
           }}
         >
-          <ListboxOption value="default">Your choice</ListboxOption>
+          <ListboxOption value="default" sx={{ display: 'none' }}>
+            Your choice
+          </ListboxOption>
           {map(poll.options, (label, id) => (
             <ListboxOption key={id} value={id}>
               {label}
             </ListboxOption>
           ))}
+          <ListboxOption value="0">Abstain</ListboxOption>
         </ListboxList>
       </ListboxPopover>
     </ListboxInput>
