@@ -6,7 +6,7 @@ import ErrorPage from 'next/error';
 
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
-import { isActivePoll } from '../lib/utils';
+import { isActivePoll, formatDateWithTime } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
@@ -19,6 +19,7 @@ import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
 import useBreakpoints from '../lib/useBreakpoints';
+import groupBy from 'lodash/groupBy';
 
 type Props = {
   polls: Poll[];
@@ -55,6 +56,9 @@ const PollingOverview = ({ polls }: Props) => {
 
   const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
   const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
+
+  const groupedActivePolls = groupBy(activePolls, 'startDate');
+  const sortedStartDates = Object.keys(groupedActivePolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
 
   const loadMore = entries => {
     const target = entries.pop();
@@ -107,14 +111,18 @@ const PollingOverview = ({ polls }: Props) => {
                 <Heading mb={3} as="h4">
                   Active Polls
                 </Heading>
-                <Text variant="caps" color="onSurface" mb={2}>
-                  {`${activePolls.length} Polls - Posted ${`date time?`}`}
-                </Text>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {activePolls.map(poll => (
-                    <PollOverviewCard key={poll.multiHash} poll={poll} />
+                {sortedStartDates.map(date => (
+                    <div>
+                      <Text variant="caps" color="onSurface" mb={2}>
+                        {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                      </Text>
+                      <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                        {groupedActivePolls[date].map(poll => (
+                          <PollOverviewCard key={poll.multiHash} poll={poll} />
+                        ))}
+                      </Stack>
+                    </div>
                   ))}
-                </Stack>
               </div>
               {showHistoricalPolls ? (
                 <div>

@@ -194,3 +194,19 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
 
   return { hasBeenCast, executedOn, groupedDiff };
 }
+
+export const formatDateWithTime = dateString => {
+  if (!dateString) return;
+  const date = new Date(dateString);
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+    timeZone: 'UTC',
+    timeZoneName: 'short'
+  };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+};
