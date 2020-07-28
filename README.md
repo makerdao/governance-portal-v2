@@ -11,3 +11,5 @@ npm run dev
 yarn
 yarn dev
 ```
+
+Requires node version >= v11.15.0
