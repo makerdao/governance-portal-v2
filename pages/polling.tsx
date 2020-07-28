@@ -6,7 +6,7 @@ import ErrorPage from 'next/error';
 
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
-import { isActivePoll, findPollById } from '../lib/utils';
+import { isActivePoll } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
@@ -31,9 +31,8 @@ const PollingOverview = ({ polls }: Props) => {
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
-  const [inReview, setInReview] = useState(false);
   const ballot = useBallotStore(state => state.ballot);
-  const network = getNetwork()
+  const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -91,8 +90,8 @@ const PollingOverview = ({ polls }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      {<Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', display: activePolls.length && !inReview ? null : 'none' }}>
+      <Stack gap={3}>
+        <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
           <Heading as="h1" mr={3}>
             Filters
           </Heading>
@@ -138,16 +137,12 @@ const PollingOverview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack gap={3}>
-            { account && <BallotBox
-              activePolls={activePolls}
-              inReview={false}
-              ballot={ballot}
-              network={network}
-             />}
+            {account && <BallotBox activePolls={activePolls} ballot={ballot} network={network} />}
             <ResourceBox />
           </Stack>
         </SidebarLayout>
-      </Stack>}
+      </Stack>
+      }
     </PrimaryLayout>
   );
 };

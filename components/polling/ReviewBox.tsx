@@ -5,7 +5,9 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 export default function({ ...props }) {
   const ballot = props.ballot;
+  const submitBallot = props.submitBallot;
   const activePolls = props.activePolls;
+  const inReview = props.inReview;
   const network = props.network;
   const ballotLength = () => {
     return Object.keys(ballot).length;
@@ -16,7 +18,7 @@ export default function({ ...props }) {
   return (
     <Box>
       <Heading mb={3} as="h4">
-        Your Ballot
+        {inReview ? 'Submit Ballot' : 'Your Ballot'}
       </Heading>
       <Card variant="compact" p={[0, 0]}>
         <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
@@ -74,12 +76,14 @@ export default function({ ...props }) {
             <Text>{`Confirm Time`}</Text>
           </Flex>
           <Button
-            onClick={() => router.push({ pathname: '/polling/review', query: network })}
+            onClick={
+              inReview ? submitBallot : () => router.push({ pathname: '/polling/review', query: network })
+            }
             variant="primary"
             disabled={!ballotLength()}
             sx={{ width: '100%' }}
           >
-            Review & Submit Your Ballot
+            {inReview ? `Submit Your Ballot (${ballotLength()} Votes)` : 'Review & Submit Your Ballot'}
           </Button>
         </Flex>
       </Card>

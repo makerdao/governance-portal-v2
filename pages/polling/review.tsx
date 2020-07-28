@@ -12,8 +12,7 @@ import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import PollOverviewCard from '../../components/polling/PollOverviewCard';
 import Poll from '../../types/poll';
-import BallotBox from '../../components/polling/BallotBox';
-import ResourceBox from '../../components/polling/ResourceBox';
+import ReviewBox from '../../components/polling/ReviewBox';
 import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
 
@@ -28,7 +27,7 @@ const PollingReview = ({ polls }: Props) => {
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
   const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot)
+  const submitBallot = useBallotStore(state => state.submitBallot);
 
   const network = getNetwork();
 
@@ -59,30 +58,25 @@ const PollingReview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Heading mb={3} as='h4'>
-                    Review Your Ballot
+                <Heading mb={3} as="h4">
+                  Review Your Ballot
                 </Heading>
                 <Link href={{ pathname: '/polling', query: { network } }}>
-                    <Button mb={3} variant='smallOutline'>
-                        Back To All Polls
-                    </Button>
+                  <Button mb={3} variant="smallOutline">
+                    Back To All Polls
+                  </Button>
                 </Link>
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                   {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(activePolls, pollId)
-                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />
+                    const poll = findPollById(activePolls, pollId);
+                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />;
                   })}
                 </Stack>
               </div>
             </Stack>
           </Box>
           <Stack gap={3}>
-            { account && <BallotBox
-              activePolls={activePolls}
-              inReview={true}
-              ballot={ballot}
-              submitBallot={submitBallot}
-             />}
+            {account && <ReviewBox activePolls={activePolls} ballot={ballot} submitBallot={submitBallot} />}
           </Stack>
         </SidebarLayout>
       </Stack>

@@ -115,7 +115,7 @@ export function isRankedChoicePoll(poll: Poll): boolean {
   return poll.voteType === 'Ranked Choice IRV';
 }
 export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
-  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId)
+  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId);
 }
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
