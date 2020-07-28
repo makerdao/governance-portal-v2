@@ -1,18 +1,19 @@
 import create from 'zustand';
+import { devtools } from 'zustand/middleware';
 
-const [useBallotStore] = create((set, get) => ({
+const [useBallotStore] = create(devtools((set, get) => ({
   ballot: {},
-  addToBallot: (pollId, option) => {
-    set(state => ({ ballot: { ...state.ballot, [pollId]: { ...state.ballot[pollId], option } } }));
+  addToBallot: (pollId, option: number | number[]) => {
+    set(state => ({ ballot: { ...state.ballot, [pollId]: { ...state.ballot[pollId], option } } }), 'addToBallot');
   },
   removeFromBallot: (pollId, option) => {
     set(state => {
       const { pollId, ...updatedBallot } = state.ballot;
       return updatedBallot;
-    });
+    }, 'removeFromBallot');
   },
   clearBallot: () => {
-    set({ ballot: {} });
+    set({ ballot: {} }, 'clearBallot');
   },
   submitBallot: () => {
     set(state => {
@@ -22,8 +23,8 @@ const [useBallotStore] = create((set, get) => ({
           newBallotObj[key] = { ...state.ballot[key], submitted: state.ballot[key].option };
       });
       return { ballot: newBallotObj };
-    });
+    }, 'submitBallot');
   }
-}));
+}), 'BallotStore'));
 
 export default useBallotStore;

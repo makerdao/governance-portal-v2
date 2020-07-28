@@ -5,6 +5,7 @@ import { SWRConfig } from 'swr';
 import { ThemeProvider } from 'theme-ui';
 import queryString from 'query-string';
 
+import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';

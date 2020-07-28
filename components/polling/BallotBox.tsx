@@ -35,7 +35,7 @@ export default function({ ...props }) {
           >
             {activePolls.map((pollId, index) => (
               <Box
-                key={pollId}
+                key={index}
                 backgroundColor="muted"
                 sx={{
                   flex: 1,

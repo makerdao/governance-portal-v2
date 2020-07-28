@@ -18,6 +18,7 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
+import useBreakpoints from '../lib/useBreakpoints';
 
 type Props = {
   polls: Poll[];
@@ -34,6 +35,7 @@ const PollingOverview = ({ polls }: Props) => {
   const ballot = useBallotStore(state => state.ballot);
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
+  const bpi = useBreakpoints();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
@@ -137,12 +139,11 @@ const PollingOverview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack gap={3}>
-            {account && <BallotBox activePolls={activePolls} ballot={ballot} network={network} />}
+            {account && bpi > 0 && <BallotBox activePolls={activePolls} ballot={ballot} network={network} />}
             <ResourceBox />
           </Stack>
         </SidebarLayout>
       </Stack>
-      }
     </PrimaryLayout>
   );
 };
