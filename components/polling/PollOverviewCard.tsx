@@ -23,7 +23,9 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpoints();
-  const showQuickVote = !!account && bpi > 0 && isActivePoll(poll);
+  const canVote = !!account && isActivePoll(poll);
+  const showQuickVote = canVote && bpi > 0;
+  const openVoteSheet = () => alert('todo');
 
   return (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
@@ -53,12 +55,13 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
         </Text>
         {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
+          {canVote && bpi === 0 && <Button variant="primary" mr={2} onClick={openVoteSheet}>Vote</Button>}
           <Link
             key={poll.slug}
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Button variant={isActivePoll(poll) ? 'primary' : 'outline'}>View Details</Button>
+            <Button variant="outline">View Details</Button>
           </Link>
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'mutedAlt' }} />}
           <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
@@ -68,6 +71,8 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
     </Flex>
   );
 };
+
+export default PollOverviewCard;
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
@@ -112,24 +117,19 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
   );
 };
 
+// TODO should this go into the theme?
+const listboxSx = {
+  button: { variant: 'buttons.outline', width: '100%' },
+  popover: { variant: 'cards.tight', '&:focus-within': { outline: 'none' } },
+  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } }
+}
+
 const SingleSelect = ({ poll, setChoice }) => {
   return (
     <ListboxInput onChange={x => setChoice(parseInt(x))}>
-      <ListboxButton
-        sx={{ variant: 'buttons.outline', width: '100%' }}
-        arrow={<Icon name="chevron_down" size={2} />}
-      />
-      <ListboxPopover
-        sx={{
-          variant: 'cards.tight',
-          '&:focus-within': { outline: 'none' }
-        }}
-      >
-        <ListboxList
-          sx={{
-            'li[aria-selected="true"]': { backgroundColor: 'primary' }
-          }}
-        >
+      <ListboxButton sx={listboxSx.button} arrow={<Icon name="chevron_down" size={2} />} />
+      <ListboxPopover sx={listboxSx.popover}>
+        <ListboxList sx={listboxSx.list}>
           <ListboxOption value="default" sx={{ display: 'none' }}>
             Your choice
           </ListboxOption>
@@ -192,21 +192,9 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choic
             if (setChoice) setChoice(newChoices);
           }}
         >
-          <ListboxButton
-            sx={{ variant: 'buttons.outline', width: '100%' }}
-            arrow={<Icon name="chevron_down" size={2} />}
-          />
-          <ListboxPopover
-            sx={{
-              variant: 'cards.tight',
-              '&:focus-within': { outline: 'none' }
-            }}
-          >
-            <ListboxList
-              sx={{
-                'li[aria-selected="true"]': { backgroundColor: 'primary' }
-              }}
-            >
+          <ListboxButton sx={listboxSx.button} arrow={<Icon name="chevron_down" size={2} />} />
+          <ListboxPopover sx={listboxSx.popover}>
+            <ListboxList sx={listboxSx.list}>
               <ListboxOption value="default" sx={{ display: 'none' }}>
                 {getNumberWithOrdinal(selectedChoices.length + 1)} choice
               </ListboxOption>
@@ -279,4 +267,3 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
   );
 };
 
-export default PollOverviewCard;
