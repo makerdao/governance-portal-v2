@@ -7,18 +7,15 @@ export default function ({ ...props }) {
   const ballot = props.ballot;
   const submitBallot = props.submitBallot;
   const activePolls = props.activePolls;
-  const inReview = props.inReview;
-  const network = props.network;
   const ballotLength = () => {
     return Object.keys(ballot).length;
   };
-  const [votingWeightTotal, setVotingWeightTotal] = useState(0);
-  const router = useRouter();
+  const [votingWeightTotal, setVotingWeighTotal] = useState(0);
 
   return (
     <Box>
       <Heading mb={3} as="h4">
-        {inReview ? 'Submit Ballot' : 'Your Ballot'}
+        Submit Ballot
       </Heading>
       <Card variant="compact" p={[0, 0]}>
         <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
@@ -37,7 +34,7 @@ export default function ({ ...props }) {
           >
             {activePolls.map((pollId, index) => (
               <Box
-                key={pollId}
+                key={index}
                 backgroundColor="muted"
                 sx={{
                   flex: 1,
@@ -68,14 +65,12 @@ export default function ({ ...props }) {
         </Flex>
         <Flex p={3} sx={{ flexDirection: 'column' }}>
           <Button
-            onClick={
-              inReview ? submitBallot : () => router.push({ pathname: '/polling/review', query: network })
-            }
+            onClick={submitBallot}
             variant="primary"
-            disabled={!ballotLength()}
+            // disabled={!ballotLength()}
             sx={{ width: '100%' }}
           >
-            {inReview ? `Submit Your Ballot (${ballotLength()} Votes)` : 'Review & Submit Your Ballot'}
+            {`Submit Your Ballot (${ballotLength()} Votes)`}
           </Button>
         </Flex>
       </Card>
