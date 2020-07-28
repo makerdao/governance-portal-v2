@@ -6,6 +6,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
+import invariant from 'tiny-invariant';
+
 import { isActivePoll, isRankedChoicePoll, getNumberWithOrdinal } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
@@ -73,7 +75,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
   const [editing, setEditing] = useState(false);
 
   const submit = () => {
-    if (choice == null) return;
+    invariant(choice !== null);
     addToBallot(poll.pollId, choice);
     setEditing(false);
   };
@@ -142,8 +144,8 @@ const SingleSelect = ({ poll, setChoice }) => {
 const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice?: (choices: number[]) => void }) => {
   const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
   const [optionCount, setOptionCount] = useState<number>(1);
-  const canAddOption =
-    Object.keys(poll.options).length > optionCount && selectedChoices[optionCount - 1] !== undefined;
+  const numOptionsAvailable = Object.keys(poll.options).length;
+  const canAddOption = numOptionsAvailable > optionCount && selectedChoices[optionCount - 1] !== undefined;
 
   const availableChoices = useMemo(
     () =>
@@ -157,7 +159,7 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice?: (choi
     <Box>
       <Stack gap={2}>
         {Array.from({ length: optionCount - 1 }).map((_, index) => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }}>
+          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
                 {getNumberWithOrdinal(index + 1)} choice
@@ -224,19 +226,19 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice?: (choi
             textTransform: 'uppercase'
           }}
         >
-          + Add another choice
+          <span sx={{ mr: 2 }}>+</span> Add another choice
         </Text>
       )}
     </Box>
   );
 };
 
-const ChoiceSummary = ({ choice: { option }, poll, edit }) => {
+const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
   if (typeof option === 'number') {
     return (
-      <Box>
-        <Box p={3} bg="background" mb={2}>
-          {poll.options[option]}
+      <Box {...props}>
+        <Box bg="background" sx={{ p: 3, mb: 2 }}>
+          <Text>{poll.options[option]}</Text>
         </Box>
         <Button
           onClick={edit}
@@ -249,9 +251,28 @@ const ChoiceSummary = ({ choice: { option }, poll, edit }) => {
       </Box>
     );
   }
-
-  // TODO ranked choice
-  return null;
+  return (
+    <Box {...props}>
+      {option.map((id, index) => (
+        <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={index}>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
+              {getNumberWithOrdinal(index + 1)} choice
+            </Text>
+            <Text>{poll.options[id]}</Text>
+          </Flex>
+        </Flex>
+      ))}
+      <Button
+        onClick={edit}
+        variant="smallOutline"
+        sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center' }}
+      >
+        <Icon name="edit" size={3} mr={1} />
+        Edit choice
+      </Button>
+    </Box>
+  );
 };
 
 export default PollOverviewCard;
