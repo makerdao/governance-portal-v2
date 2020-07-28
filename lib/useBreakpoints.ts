@@ -44,7 +44,7 @@ const currentBreakpoint = {
   }
 };
 
-export function useBreakpoints(): number {
+export default function useBreakpoints(): number {
   const {
     theme: { breakpoints }
   } = useThemeUI();

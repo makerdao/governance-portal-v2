@@ -18,6 +18,7 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
+import useBreakpoints from '../lib/useBreakpoints';
 
 const PollingOverview = ({ polls }: { polls: Poll[] }) => {
   const [startDate, setStartDate] = useState<Date | ''>('');
@@ -29,6 +30,7 @@ const PollingOverview = ({ polls }: { polls: Poll[] }) => {
   );
   const [inReview, setInReview] = useState(false);
   const [ballot, submitBallot] = useBallotStore(({ ballot, submitBallot }) => [ballot, submitBallot]);
+  const bpi = useBreakpoints();
 
   const loader = useRef<HTMLDivElement>(null);
 
@@ -63,106 +65,100 @@ const PollingOverview = ({ polls }: { polls: Poll[] }) => {
   useEffect(() => {
     let observer;
     if (loader?.current) {
-      // Create observer
-      observer = new IntersectionObserver(loadMore, {
-        root: null,
-        rootMargin: '600px'
-      });
-      // observe the loader
+      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
       observer.observe(loader.current);
     }
-    return () => {
-      if (observer) {
-        // clean up
-        return observer.unobserve(loader.current);
-      }
-    };
+    return () => observer?.unobserve(loader.current);
   }, [loader, loadMore]);
 
   useEffect(() => {
-    setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
+    setNumHistoricalLoaded(10); // reset infinite scroll if a new filter is applied
   }, [filteredPolls]);
 
   const account = useAccountsStore(state => state.currentAccount);
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      {<Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', display: activePolls.length && !inReview ? null : 'none' }}>
-          <Heading as="h1" mr={3}>
-            Filters
-          </Heading>
-          <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
-          <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
-        </Flex>
-        <SidebarLayout>
-          <Box sx={{ display: inReview ? 'none' : null }}>
-            <Stack>
-              <div>
-                <Heading mb={3} as="h4">
-                  Active Polls
-                </Heading>
-                <Text variant="caps" color="onSurface" mb={2}>
-                  {`${activePolls.length} Polls - Posted ${`date time?`}`}
-                </Text>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {activePolls.map(poll => (
-                    <PollOverviewCard key={poll.multiHash} poll={poll} />
-                  ))}
-                </Stack>
-              </div>
-              {showHistoricalPolls ? (
+      {
+        <Stack gap={3}>
+          <Flex sx={{ alignItems: 'center', display: activePolls.length && !inReview ? null : 'none' }}>
+            <Heading as="h1" mr={3}>
+              Filters
+            </Heading>
+            <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
+            <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
+          </Flex>
+          <SidebarLayout>
+            <Box sx={{ display: inReview ? 'none' : null }}>
+              <Stack>
                 <div>
                   <Heading mb={3} as="h4">
-                    Historical Polls
-                    <IconButton onClick={() => setShowHistoricalPolls(false)}>
-                      <Icon name="chevron_down" />
-                    </IconButton>
+                    Active Polls
                   </Heading>
-                  <Stack>
-                    {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
+                  <Text variant="caps" color="onSurface" mb={2}>
+                    {`${activePolls.length} Polls - Posted ${`date time?`}`}
+                  </Text>
+                  <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                    {activePolls.map(poll => (
                       <PollOverviewCard key={poll.multiHash} poll={poll} />
                     ))}
                   </Stack>
-                  <div ref={loader} />
                 </div>
-              ) : (
-                <Button onClick={() => setShowHistoricalPolls(true)} variant="outline">
-                  See all ended polls ({historicalPolls.length})
-                </Button>
+                {showHistoricalPolls ? (
+                  <div>
+                    <Heading mb={3} as="h4">
+                      Historical Polls
+                      <IconButton onClick={() => setShowHistoricalPolls(false)}>
+                        <Icon name="chevron_down" />
+                      </IconButton>
+                    </Heading>
+                    <Stack>
+                      {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
+                        <PollOverviewCard key={poll.multiHash} poll={poll} />
+                      ))}
+                    </Stack>
+                    <div ref={loader} />
+                  </div>
+                ) : (
+                  <Button onClick={() => setShowHistoricalPolls(true)} variant="outline">
+                    See all ended polls ({historicalPolls.length})
+                  </Button>
+                )}
+              </Stack>
+            </Box>
+            <Box sx={{ display: inReview ? null : 'none' }}>
+              <Stack>
+                <div>
+                  <Heading mb={3} as="h4">
+                    Review Your Ballot
+                  </Heading>
+                  <Button mb={3} variant="smallOutline" onClick={() => setInReview(false)}>
+                    Back To All Polls
+                  </Button>
+                  <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                    {Object.keys(ballot).map(pollId => {
+                      const poll = findPollById(activePolls, pollId);
+                      poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />;
+                    })}
+                  </Stack>
+                </div>
+              </Stack>
+            </Box>
+            <Stack gap={3}>
+              {account && bpi > 0 && (
+                <BallotBox
+                  activePolls={activePolls}
+                  inReview={inReview}
+                  setInReview={setInReview}
+                  ballot={ballot}
+                  submitBallot={submitBallot}
+                />
               )}
+              <ResourceBox inReview={inReview} />
             </Stack>
-          </Box>
-          <Box sx={{ display: inReview ? null : 'none' }}>
-            <Stack>
-              <div>
-                <Heading mb={3} as='h4'>
-                  Review Your Ballot
-                </Heading>
-                <Button mb={3} variant='smallOutline' onClick={() => setInReview(false)}>
-                  Back To All Polls
-                </Button>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(activePolls, pollId)
-                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />
-                  })}
-                </Stack>
-              </div>
-            </Stack>
-          </Box>
-          <Stack gap={3}>
-            { account && <BallotBox
-              activePolls={activePolls}
-              inReview={inReview}
-              setInReview={setInReview}
-              ballot={ballot}
-              submitBallot={submitBallot}
-             />}
-            <ResourceBox inReview={inReview} />
-          </Stack>
-        </SidebarLayout>
-      </Stack>}
+          </SidebarLayout>
+        </Stack>
+      }
     </PrimaryLayout>
   );
 };

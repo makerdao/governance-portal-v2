@@ -15,7 +15,7 @@ import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
-import { useBreakpoints } from '../../lib/useBreakpoints';
+import useBreakpoints from '../../lib/useBreakpoints';
 import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
 
@@ -145,7 +145,7 @@ const SingleSelect = ({ poll, setChoice }) => {
   );
 };
 
-const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice?: (choices: number[]) => void }) => {
+const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choices: number[]) => void }) => {
   const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
   const [optionCount, setOptionCount] = useState<number>(1);
   const numOptionsAvailable = Object.keys(poll.options).length;
