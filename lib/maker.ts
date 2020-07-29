@@ -101,7 +101,7 @@ function getMaker() {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork() }]
+        [GovernancePlugin, { network: getNetwork(), staging: true }] //TODO: set staging to false before releasing to production
       ],
       provider: {
         url: networkToRpc(getNetwork()),
