@@ -63,13 +63,17 @@ const PollingOverview = ({ polls }: Props) => {
   );
 
   const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
-  const sortedStartDatesHistorical = Object.keys(groupedHistoricalPolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
+  const sortedStartDatesHistorical = Object.keys(groupedHistoricalPolls).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
 
   const loadMore = entries => {
     const target = entries.pop();
     if (target.isIntersecting) {
       setNumHistoricalGroupingsLoaded(
-        numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length ? numHistoricalGroupingsLoaded + 3 : numHistoricalGroupingsLoaded
+        numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length
+          ? numHistoricalGroupingsLoaded + 3
+          : numHistoricalGroupingsLoaded
       );
     }
   };
@@ -80,7 +84,7 @@ const PollingOverview = ({ polls }: Props) => {
       // Create observer
       observer = new IntersectionObserver(loadMore, {
         root: null,
-        rootMargin: '600px'
+        rootMargin: '600px',
       });
       // observe the loader
       observer.observe(loader.current);
@@ -175,9 +179,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
-        .then(_setPolls)
-        .catch(setError);
+      getPolls().then(_setPolls).catch(setError);
     }
   }, []);
 
@@ -202,7 +204,7 @@ export async function getStaticProps() {
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls
-    }
+      polls,
+    },
   };
 }
