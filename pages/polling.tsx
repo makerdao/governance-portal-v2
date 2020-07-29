@@ -22,6 +22,7 @@ import useBreakpoints from '../lib/useBreakpoints';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
+import { useRouter } from 'next/router';
 
 type Props = {
   polls: Poll[];
@@ -36,9 +37,11 @@ const PollingOverview = ({ polls }: Props) => {
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
   const ballot = useBallotStore(state => state.ballot);
+  const ballotLength = Object.keys(ballot).length;
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpoints();
+  const router = useRouter();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
@@ -93,18 +96,19 @@ const PollingOverview = ({ polls }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
-        {bpi === 0 && (
+        {bpi === 0 && account && (
           <Button
-            variant="outline"
+            variant={ballotLength ? 'primary' : 'outline'}
             sx={{
               borderRadius: 'round',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}
+            onClick={() => ballotLength && router.push({ pathname: '/polling/review', query: network })}
           >
             <Icon name="ballot" size={3} mr={2} />
-            Your Ballot: N votes
+            Your Ballot: {ballotLength} vote{ballotLength === 1 ? '' : 's'}
           </Button>
         )}
         <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>

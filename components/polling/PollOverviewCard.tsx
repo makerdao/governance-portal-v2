@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { Text, Flex, Box, Button, Close, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
 import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
 import invariant from 'tiny-invariant';
@@ -25,7 +26,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
   const bpi = useBreakpoints();
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
-  const openVoteSheet = () => alert('todo');
+  const [showVoteSheet, setShowVoteSheet] = useState(false);
 
   return (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
@@ -58,7 +59,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
         {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
           {canVote && bpi === 0 && (
-            <Button variant="primary" mr={2} onClick={openVoteSheet}>
+            <Button variant="primary" mr={2} onClick={() => setShowVoteSheet(true)}>
               Vote
             </Button>
           )}
@@ -74,6 +75,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
         </Flex>
       </Stack>
       {showQuickVote && <QuickVote poll={poll} />}
+      {showVoteSheet && <MobileVoteSheet poll={poll} close={() => setShowVoteSheet(false)} />}
     </Flex>
   );
 };
@@ -132,9 +134,9 @@ const listboxSx = {
 
 const ABSTAIN = 0;
 
-const SingleSelect = ({ poll, setChoice }) => {
+const SingleSelect = ({ poll, setChoice, ...props }) => {
   return (
-    <ListboxInput onChange={x => setChoice(parseInt(x))}>
+    <ListboxInput onChange={x => setChoice(parseInt(x))} {...props}>
       <ListboxButton sx={listboxSx.button} arrow={<Icon name="chevron_down" size={2} />} />
       <ListboxPopover sx={listboxSx.popover}>
         <ListboxList sx={listboxSx.list}>
@@ -153,7 +155,8 @@ const SingleSelect = ({ poll, setChoice }) => {
   );
 };
 
-const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choices: number[]) => void }) => {
+type RankedChoiceSelectProps = { poll: Poll; setChoice: (choices: number[]) => void };
+const RankedChoiceSelect = ({ poll, setChoice, ...props }: RankedChoiceSelectProps) => {
   const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
   const [optionCount, setOptionCount] = useState<number>(1);
   const numOptionsAvailable = Object.keys(poll.options).length;
@@ -168,7 +171,7 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choic
   );
 
   return (
-    <Box>
+    <Box {...props}>
       <Stack gap={2}>
         {Array.from({ length: optionCount - 1 }).map((_, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
@@ -274,3 +277,42 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
     </Box>
   );
 };
+
+function MobileVoteSheet({ poll, close }: { poll: Poll; close: () => void }) {
+  const addToBallot = useBallotStore(state => state.addToBallot);
+  const [choice, setChoice] = useState<number | number[] | null>(null);
+  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
+
+  const submit = () => {
+    invariant(isChoiceValid);
+    addToBallot(poll.pollId, choice);
+  };
+
+  return (
+    <DialogOverlay onDismiss={close}>
+      <DialogContent
+        sx={{
+          width: '100vw',
+          position: 'absolute',
+          bottom: 0,
+          mb: 0,
+          borderTopLeftRadius: '12px',
+          borderTopRightRadius: '12px'
+        }}
+      >
+        <Stack gap={2}>
+          <Text variant="subheading">{poll.title}</Text>
+          <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
+          {isRankedChoicePoll(poll) ? (
+            <RankedChoiceSelect {...{ poll, setChoice }} />
+          ) : (
+            <SingleSelect {...{ poll, setChoice }} />
+          )}
+          <Button variant="primary" onClick={submit} disabled={!isChoiceValid}>
+            Add vote to ballot
+          </Button>
+        </Stack>
+      </DialogContent>
+    </DialogOverlay>
+  );
+}
