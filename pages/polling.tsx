@@ -74,20 +74,10 @@ const PollingOverview = ({ polls }: Props) => {
   useEffect(() => {
     let observer;
     if (loader?.current) {
-      // Create observer
-      observer = new IntersectionObserver(loadMore, {
-        root: null,
-        rootMargin: '600px',
-      });
-      // observe the loader
+      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
       observer.observe(loader.current);
     }
-    return () => {
-      if (observer) {
-        // clean up
-        return observer.unobserve(loader.current);
-      }
-    };
+    return () => observer?.unobserve(loader.current);
   }, [loader, loadMore]);
 
   useEffect(() => {
@@ -99,6 +89,20 @@ const PollingOverview = ({ polls }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
+        {bpi === 0 && (
+          <Button
+            variant="outline"
+            sx={{
+              borderRadius: 'round',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Icon name="ballot" size={3} mr={2} />
+            Your Ballot: N votes
+          </Button>
+        )}
         <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
           <Heading as="h1" mr={3}>
             Filters
@@ -190,7 +194,7 @@ export async function getStaticProps() {
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
-    },
+      polls
+    }
   };
 }
