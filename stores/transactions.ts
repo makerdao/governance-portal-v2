@@ -11,6 +11,8 @@ type Store = {
   setPending: (from: string, txObject: any) => void;
   setMined: (from: string, txObject: any) => void;
   setError: (from: string, txObject: any, error: { message: string }) => void;
+  track: (tx: any) => void;
+  getTransaction: (submittedAt: string) => any;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -74,29 +76,37 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   },
 
   track: async (tx, message = null) => {
-    const maker = await getMaker();
-    maker.service('transactionManager').listen(tx, {
-      initialized: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().initTx(from, txObject, message);
-      },
-      pending: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setPending(from, txObject);
-      },
-      mined: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setMined(from, txObject);
-      },
-      error: ({ metadata: { action }, ...txObject }, error) => {
-        const from = action.from;
-        get().setError(from, txObject, error);
-      }
-    });
+    return new Promise(async res => {
+      const maker = await getMaker();
+      maker.service('transactionManager').listen(tx, {
+        initialized: ({ metadata, ...txObject }) => {
+
+          const from = '0x000';
+          res(txObject._timeStampSubmitted)
+          get().initTx(from, txObject, message);
+        },
+        pending: ({ metadata: { action }, ...txObject }) => {
+          const from = '0x000';
+          get().setPending(from, txObject);
+        },
+        mined: ({ metadata: { action }, ...txObject }) => {
+          const from = '0x000';
+          get().setMined(from, txObject);
+        },
+        error: ({ metadata: { action }, ...txObject }, error) => {
+          const from = '0x000';
+          get().setError(from, txObject, error);
+        }
+      }); 
+    })
+    
 
     // noop catch since we handle tx errors via the manager
     tx.catch(() => {});
-  }
+  },
+  getTransaction: (timeStampSubmitted) => {
+    return Object.values(get().transactions).flat().find(tx => tx.submittedAt === timeStampSubmitted)
+  } 
 }));
 
 export default useTransactionsStore;
