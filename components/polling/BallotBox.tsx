@@ -1,8 +1,12 @@
 import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { SupportedNetworks } from '../../lib/constants';
+import Poll from '../../types/poll';
+import Ballot from '../../types/ballot';
 
-export default function ({ ballot, activePolls, network }) {
+type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
+export default function ({ ballot, activePolls, network }: Props): JSX.Element {
   const ballotLength = Object.keys(ballot).length;
   const votingWeightTotal = 0; // TODO
   const router = useRouter();
@@ -24,7 +28,7 @@ export default function ({ ballot, activePolls, network }) {
               backgroundColor: 'muted',
               mt: 2,
               flexDirection: 'row',
-              borderRadius: 'small',
+              borderRadius: 'small'
             }}
           >
             {activePolls.map((pollId, index) => (
@@ -38,7 +42,7 @@ export default function ({ ballot, activePolls, network }) {
                   borderBottomLeftRadius: index === 0 ? 'small' : null,
                   borderTopRightRadius: index === activePolls.length - 1 ? 'small' : null,
                   borderBottomRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                  backgroundColor: index < ballotLength ? 'primary' : null,
+                  backgroundColor: index < ballotLength ? 'primary' : null
                 }}
               />
             ))}
@@ -49,7 +53,7 @@ export default function ({ ballot, activePolls, network }) {
           sx={{
             borderBottom: '1px solid #D4D9E1',
             justifyContent: 'space-between',
-            flexDirection: 'row',
+            flexDirection: 'row'
           }}
         >
           <Flex sx={{ flexDirection: 'row' }}>
