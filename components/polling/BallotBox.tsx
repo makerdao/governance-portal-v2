@@ -1,16 +1,10 @@
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-export default function({ ...props }) {
-  const ballot = props.ballot;
-  const activePolls = props.activePolls;
-  const network = props.network;
-  const ballotLength = () => {
-    return Object.keys(ballot).length;
-  };
-  const [votingWeightTotal, setVotingWeighTotal] = useState(0);
+export default function ({ ballot, activePolls, network }) {
+  const ballotLength = Object.keys(ballot).length;
+  const votingWeightTotal = 0; // TODO
   const router = useRouter();
 
   return (
@@ -21,7 +15,7 @@ export default function({ ...props }) {
       <Card variant="compact" p={[0, 0]}>
         <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
           <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
-            {`${ballotLength()} of ${activePolls.length} available polls added to ballot`}
+            {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
           </Text>
           <Flex
             sx={{
@@ -30,7 +24,7 @@ export default function({ ...props }) {
               backgroundColor: 'muted',
               mt: 2,
               flexDirection: 'row',
-              borderRadius: 'small'
+              borderRadius: 'small',
             }}
           >
             {activePolls.map((pollId, index) => (
@@ -44,7 +38,7 @@ export default function({ ...props }) {
                   borderBottomLeftRadius: index === 0 ? 'small' : null,
                   borderTopRightRadius: index === activePolls.length - 1 ? 'small' : null,
                   borderBottomRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                  backgroundColor: index < ballotLength() ? 'primary' : null
+                  backgroundColor: index < ballotLength ? 'primary' : null,
                 }}
               />
             ))}
@@ -55,7 +49,7 @@ export default function({ ...props }) {
           sx={{
             borderBottom: '1px solid #D4D9E1',
             justifyContent: 'space-between',
-            flexDirection: 'row'
+            flexDirection: 'row',
           }}
         >
           <Flex sx={{ flexDirection: 'row' }}>
@@ -68,7 +62,7 @@ export default function({ ...props }) {
           <Button
             onClick={() => router.push({ pathname: '/polling/review', query: network })}
             variant="primary"
-            disabled={!ballotLength()}
+            disabled={!ballotLength}
             sx={{ width: '100%' }}
           >
             Review & Submit Your Ballot

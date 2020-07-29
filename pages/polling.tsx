@@ -77,7 +77,7 @@ const PollingOverview = ({ polls }: Props) => {
       // Create observer
       observer = new IntersectionObserver(loadMore, {
         root: null,
-        rootMargin: '600px'
+        rootMargin: '600px',
       });
       // observe the loader
       observer.observe(loader.current);
@@ -114,7 +114,7 @@ const PollingOverview = ({ polls }: Props) => {
                   Active Polls
                 </Heading>
                 {sortedStartDates.map(date => (
-                  <div>
+                  <div key={date}>
                     <Text variant="caps" color="onSurface" mb={2}>
                       {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
                     </Text>
@@ -165,9 +165,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
-        .then(_setPolls)
-        .catch(setError);
+      getPolls().then(_setPolls).catch(setError);
     }
   }, []);
 
@@ -192,7 +190,7 @@ export async function getStaticProps() {
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls
-    }
+      polls,
+    },
   };
 }
