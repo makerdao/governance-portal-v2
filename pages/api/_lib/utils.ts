@@ -15,7 +15,7 @@ export async function getConnectedMakerObj(network: SupportedNetworks) {
   const makerObj = await Maker.create('http', {
     plugins: [
       [McdPlugin, { prefetch: false }],
-      [GovernancePlugin, { network }]
+      [GovernancePlugin, { network, staging: true }] //TODO: set staging to false before releasing to production
     ],
     provider: {
       url: networkToRpc(network),
