@@ -46,6 +46,8 @@
     "@makerdao/testchain": "^1.1.5",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.5",

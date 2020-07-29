@@ -31,31 +31,37 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
       <Stack gap={2}>
         {bpi === 0 && (
-          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
             <VotingStatus poll={poll} />
           </Flex>
         )}
-        <Link
-          href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-          as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-        >
-          <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
-        </Link>
+        <Box>
+          <Link
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+          >
+            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
+          </Link>
+        </Box>
         <Text
           sx={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [2, 3],
-            opacity: 0.8
+            opacity: 0.8,
           }}
         >
           {poll.summary}
         </Text>
         {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
-          {canVote && bpi === 0 && <Button variant="primary" mr={2} onClick={openVoteSheet}>Vote</Button>}
+          {canVote && bpi === 0 && (
+            <Button variant="primary" mr={2} onClick={openVoteSheet}>
+              Vote
+            </Button>
+          )}
           <Link
             key={poll.slug}
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
@@ -121,8 +127,8 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
 const listboxSx = {
   button: { variant: 'buttons.outline', width: '100%' },
   popover: { variant: 'cards.tight', '&:focus-within': { outline: 'none' } },
-  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } }
-}
+  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } },
+};
 
 const SingleSelect = ({ poll, setChoice }) => {
   return (
@@ -215,7 +221,7 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choic
             pt: 1,
             fontSize: 2,
             cursor: 'pointer',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
           }}
         >
           <span sx={{ mr: 2 }}>+</span> Add another choice
@@ -266,4 +272,3 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
     </Box>
   );
 };
-

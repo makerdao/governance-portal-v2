@@ -6,8 +6,9 @@
     "jest": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
-  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
@@ -24,5 +25,10 @@
     "react/prop-types": 0,
     "react/display-name": 0,
     "react/react-in-jsx-scope": 0
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }
