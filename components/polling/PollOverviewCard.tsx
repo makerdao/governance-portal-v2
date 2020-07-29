@@ -50,7 +50,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [2, 3],
-            opacity: 0.8,
+            opacity: 0.8
           }}
         >
           {poll.summary}
@@ -127,8 +127,10 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
 const listboxSx = {
   button: { variant: 'buttons.outline', width: '100%' },
   popover: { variant: 'cards.tight', '&:focus-within': { outline: 'none' } },
-  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } },
+  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } }
 };
+
+const ABSTAIN = 0;
 
 const SingleSelect = ({ poll, setChoice }) => {
   return (
@@ -144,7 +146,7 @@ const SingleSelect = ({ poll, setChoice }) => {
               {label}
             </ListboxOption>
           ))}
-          <ListboxOption value="0">Abstain</ListboxOption>
+          <ListboxOption value={String(ABSTAIN)}>Abstain</ListboxOption>
         </ListboxList>
       </ListboxPopover>
     </ListboxInput>
@@ -221,7 +223,7 @@ const RankedChoiceSelect = ({ poll, setChoice }: { poll: Poll; setChoice: (choic
             pt: 1,
             fontSize: 2,
             cursor: 'pointer',
-            textTransform: 'uppercase',
+            textTransform: 'uppercase'
           }}
         >
           <span sx={{ mr: 2 }}>+</span> Add another choice
@@ -236,7 +238,7 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
     return (
       <Box {...props}>
         <Box bg="background" sx={{ p: 3, mb: 2 }}>
-          <Text>{poll.options[option]}</Text>
+          <Text>{option === ABSTAIN ? 'Abstain' : poll.options[option]}</Text>
         </Box>
         <Button
           onClick={edit}

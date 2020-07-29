@@ -3,7 +3,7 @@ import { Flex, Box, Badge, jsx, Text } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
-
+import isNil from 'lodash/isNil';
 import { isActivePoll } from '../../lib/utils';
 import getMaker from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
@@ -35,13 +35,13 @@ const BadgeContents = ({ hasVoted, onBallot, poll, ...otherProps }) => {
 const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? [`/user/voting-for`, account.address] : null,
+    account?.address ? ['/user/voting-for', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
     { refreshInterval: 0 }
   );
 
   const ballot = useBallotStore(state => state.ballot);
-  const onBallot = !!ballot[poll.pollId]?.option;
+  const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   if (!account) return null;
   if (!allUserVotes)
