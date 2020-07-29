@@ -29,7 +29,7 @@ type Props = {
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
 
-  const { data: hat } = useSWR<string>(`/executive/hat`, () =>
+  const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
@@ -63,10 +63,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                       Join a decentralized community protecting the integrity of the Maker Protocol through
                       research, discussion, and on-chain voting.
                     </Text>
+                    <PollingIndicator polls={polls} />
                   </Stack>
                 </Container>
-
-                <PollingIndicator polls={polls} />
               </Stack>
             </section>
 
@@ -135,8 +134,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   <Stack gap={3}>
                     <Heading as="h2">Polling Votes</Heading>
                     <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
-                      Polls are conducted to establish a rough consensus of community sentiment before Executive
-                      Votes are conducted.
+                      Polls are conducted to establish a rough consensus of community sentiment before
+                      Executive Votes are conducted.
                     </Text>
                   </Stack>
                 </Container>

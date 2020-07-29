@@ -6,7 +6,13 @@ type Props = {
 };
 
 export default ({ blogPost, ...otherProps }: Props) => (
-  <ExternalLink target="_blank" variant="card" href={blogPost.link} sx={{ p: 0 }} {...otherProps}>
+  <ExternalLink
+    target="_blank"
+    variant="card"
+    href={blogPost.link}
+    sx={{ p: [0, 0], borderRadius: 'medium' }}
+    {...otherProps}
+  >
     <Box>
       <Image
         src={blogPost.photoHref}
@@ -30,7 +36,7 @@ export default ({ blogPost, ...otherProps }: Props) => (
       >
         {blogPost.title}
       </Text>
-      <Text px={3} pb={3} sx={{ textAlign: 'left' }}>
+      <Text px={3} pb={3} sx={{ textAlign: 'left', color: 'onSecondary' }}>
         {new Date(blogPost.date).toLocaleString('default', {
           month: 'long',
           day: 'numeric',

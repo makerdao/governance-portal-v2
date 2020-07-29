@@ -24,8 +24,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export default function(props) {
-  const { data } = useSWR<CurrencyObject[]>(`/system-stats`, getSystemStats);
+export default function (props) {
+  const { data } = useSWR<CurrencyObject[]>('/system-stats', getSystemStats);
   const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
 
   return (
@@ -36,38 +36,38 @@ export default function(props) {
           <Text sx={{ fontSize: 5 }}>System stats</Text>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <Flex sx={{ alignItems: 'center' }}>
-              <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
                 View more stats
-                <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+                <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'accentBlue' }} />
               </Text>
             </Flex>
           </ExternalLink>
         </Flex>
 
-        <Flex sx={{ mx: -4, p: 4, backgroundColor: 'primaryMuted' }}>
+        <Flex sx={{ mx: 0, px: 5, py: 4, backgroundColor: 'background', borderRadius: 'small' }}>
           <Flex m="auto" sx={{ width: '100%', justifyContent: 'space-between' }}>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
-              <Text mt={2} variant="h2">
+              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
               </Text>
             </div>
 
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
-              <Text mt={2} variant="h2">
+              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
-              <Text mt={2} variant="h2">
+              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>System Surplus</Text>
-              <Text mt={2} variant="h2">
+              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
@@ -76,15 +76,15 @@ export default function(props) {
       </Box>
 
       {/* Mobile */}
-      <Box sx={{ display: ['block', 'none'], backgroundColor: 'primaryMuted', p: 0 }}>
+      <Box sx={{ display: ['block', 'none'], backgroundColor: 'background', p: 0 }}>
         <Grid sx={{ p: 4 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: 'bold', color: 'text' }}>System Stats</Text>
             <ExternalLink href="https://daistats.com/" target="_blank">
               <Flex sx={{ alignItems: 'center' }}>
-                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
                   View more stats
-                  <Icon ml="2" name="chevron_right" size="2" sx={{ color: 'mutedAlt' }} />
+                  <Icon ml="2" name="chevron_right" size="2" sx={{ color: 'accentBlue' }} />
                   {/* change this icon to the diagonal arrow */}
                 </Text>
               </Flex>

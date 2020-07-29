@@ -13,8 +13,8 @@ const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }:
   <Box {...otherProps}>
     <Icon name={icon} size="5" />
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '9rem'] }}>
-      <Text sx={{ fontSize: [3, 4], textAlign: 'left' }}>{title}</Text>
-      <Text sx={{ fontSize: [3, 4], opacity: 0.8, whiteSpace: 'initial' }} my="3">
+      <Text sx={{ fontSize: [5, 5], textAlign: 'left' }}>{title}</Text>
+      <Text sx={{ fontSize: [3, 3], opacity: 0.8, whiteSpace: 'initial' }} my="3">
         {children}
       </Text>
       <ExternalLink
