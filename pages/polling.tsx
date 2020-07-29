@@ -58,7 +58,9 @@ const PollingOverview = ({ polls }: Props) => {
   const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
 
   const groupedActivePolls = groupBy(activePolls, 'startDate');
-  const sortedStartDatesActive = Object.keys(groupedActivePolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
+  const sortedStartDatesActive = Object.keys(groupedActivePolls).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
 
   const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
   const sortedStartDatesHistorical = Object.keys(groupedHistoricalPolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
@@ -115,17 +117,17 @@ const PollingOverview = ({ polls }: Props) => {
                   Active Polls
                 </Heading>
                 {sortedStartDatesActive.map(date => (
-                    <div>
-                      <Text variant="caps" color="onSurface" mb={2}>
-                        {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
-                      </Text>
-                      <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                        {groupedActivePolls[date].map(poll => (
-                          <PollOverviewCard key={poll.multiHash} poll={poll} />
-                        ))}
-                      </Stack>
-                    </div>
-                  ))}
+                  <div>
+                    <Text variant="caps" color="onSurface" mb={2}>
+                      {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                    </Text>
+                    <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                      {groupedActivePolls[date].map(poll => (
+                        <PollOverviewCard key={poll.multiHash} poll={poll} />
+                      ))}
+                    </Stack>
+                  </div>
+                ))}
               </div>
               {showHistoricalPolls ? (
                 <div>
@@ -136,17 +138,17 @@ const PollingOverview = ({ polls }: Props) => {
                     </IconButton>
                   </Heading>
                   {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
-                      <div>
-                        <Text variant="caps" color="onSurface" mb={2}>
-                          {`${groupedHistoricalPolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
-                        </Text>
-                        <Stack sx={{ mb: 4 }}>
-                          {groupedHistoricalPolls[date].map(poll => (
-                            <PollOverviewCard key={poll.multiHash} poll={poll} />
-                          ))}
-                        </Stack>
-                      </div>
-                    ))}
+                    <div>
+                      <Text variant="caps" color="onSurface" mb={2}>
+                        {`${groupedHistoricalPolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                      </Text>
+                      <Stack sx={{ mb: 4 }}>
+                        {groupedHistoricalPolls[date].map(poll => (
+                          <PollOverviewCard key={poll.multiHash} poll={poll} />
+                        ))}
+                      </Stack>
+                    </div>
+                  ))}
                   <div ref={loader} />
                 </div>
               ) : (

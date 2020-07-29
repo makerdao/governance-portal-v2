@@ -10,7 +10,7 @@ export default function({ ...props }) {
   const ballotLength = () => {
     return Object.keys(ballot).length;
   };
-  const [votingWeightTotal, setVotingWeighTotal] = useState(0);
+  const [votingWeightTotal,] = useState(0);
   const router = useRouter();
 
   return (
@@ -65,14 +65,6 @@ export default function({ ...props }) {
           <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
         </Flex>
         <Flex p={3} sx={{ flexDirection: 'column' }}>
-          <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text color="onSurface">Estimated Gas Cost</Text>
-            <Text>{`Gas Cost`}</Text>
-          </Flex>
-          <Flex pb={4} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text color="onSurface">Estimated Confirmation Time</Text>
-            <Text>{`Confirm Time`}</Text>
-          </Flex>
           <Button
             onClick={() => router.push({ pathname: '/polling/review', query: network })}
             variant="primary"
