@@ -28,7 +28,7 @@ type Props = {
 const PollingOverview = ({ polls }: Props) => {
   const [startDate, setStartDate] = useState<Date | ''>('');
   const [endDate, setEndDate] = useState<Date | ''>('');
-  const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
+  const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
@@ -58,13 +58,16 @@ const PollingOverview = ({ polls }: Props) => {
   const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
 
   const groupedActivePolls = groupBy(activePolls, 'startDate');
-  const sortedStartDates = Object.keys(groupedActivePolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
+  const sortedStartDatesActive = Object.keys(groupedActivePolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
+
+  const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
+  const sortedStartDatesHistorical = Object.keys(groupedHistoricalPolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
 
   const loadMore = entries => {
     const target = entries.pop();
     if (target.isIntersecting) {
-      setNumHistoricalLoaded(
-        numHistoricalLoaded < historicalPolls.length ? numHistoricalLoaded + 5 : numHistoricalLoaded
+      setNumHistoricalGroupingsLoaded(
+        numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length ? numHistoricalGroupingsLoaded + 3 : numHistoricalGroupingsLoaded
       );
     }
   };
@@ -89,7 +92,7 @@ const PollingOverview = ({ polls }: Props) => {
   }, [loader, loadMore]);
 
   useEffect(() => {
-    setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
+    setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
   const account = useAccountsStore(state => state.currentAccount);
@@ -111,7 +114,7 @@ const PollingOverview = ({ polls }: Props) => {
                 <Heading mb={3} as="h4">
                   Active Polls
                 </Heading>
-                {sortedStartDates.map(date => (
+                {sortedStartDatesActive.map(date => (
                     <div>
                       <Text variant="caps" color="onSurface" mb={2}>
                         {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
@@ -132,11 +135,18 @@ const PollingOverview = ({ polls }: Props) => {
                       <Icon name="chevron_down" />
                     </IconButton>
                   </Heading>
-                  <Stack>
-                    {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
-                      <PollOverviewCard key={poll.multiHash} poll={poll} />
+                  {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                      <div>
+                        <Text variant="caps" color="onSurface" mb={2}>
+                          {`${groupedHistoricalPolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                        </Text>
+                        <Stack sx={{ mb: 4 }}>
+                          {groupedHistoricalPolls[date].map(poll => (
+                            <PollOverviewCard key={poll.multiHash} poll={poll} />
+                          ))}
+                        </Stack>
+                      </div>
                     ))}
-                  </Stack>
                   <div ref={loader} />
                 </div>
               ) : (
