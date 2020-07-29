@@ -128,7 +128,8 @@ const PollingOverview = ({ polls }: Props) => {
                 {sortedStartDatesActive.map(date => (
                   <div key={date}>
                     <Text variant="caps" color="onSurface" mb={2}>
-                      {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                      {groupedActivePolls[date].length} Poll{groupedActivePolls[date].length === 1 ? '' : 's'}{' '}
+                      - Posted {formatDateWithTime(date)}
                     </Text>
                     <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                       {groupedActivePolls[date].map(poll => (
@@ -149,7 +150,9 @@ const PollingOverview = ({ polls }: Props) => {
                   {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                     <div key={date}>
                       <Text variant="caps" color="onSurface" mb={2}>
-                        {`${groupedHistoricalPolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                        {groupedHistoricalPolls[date].length} Poll
+                        {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                        {formatDateWithTime(date)}
                       </Text>
                       <Stack sx={{ mb: 4 }}>
                         {groupedHistoricalPolls[date].map(poll => (
