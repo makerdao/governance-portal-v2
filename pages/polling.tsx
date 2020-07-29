@@ -20,6 +20,8 @@ import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
 import useBreakpoints from '../lib/useBreakpoints';
 import groupBy from 'lodash/groupBy';
+import partition from 'lodash/partition';
+import sortBy from 'lodash/sortBy';
 
 type Props = {
   polls: Poll[];
@@ -54,18 +56,13 @@ const PollingOverview = ({ polls }: Props) => {
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
-  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
-  const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
+  const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
 
   const groupedActivePolls = groupBy(activePolls, 'startDate');
-  const sortedStartDatesActive = Object.keys(groupedActivePolls).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
+  const sortedStartDatesActive = sortBy(Object.keys(groupedActivePolls), x => -new Date(x));
 
   const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
-  const sortedStartDatesHistorical = Object.keys(groupedHistoricalPolls).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
+  const sortedStartDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   const loadMore = entries => {
     const target = entries.pop();
