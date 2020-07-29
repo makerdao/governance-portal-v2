@@ -25,21 +25,20 @@ const [useBallotStore] = create(
         set({ ballot: {} }, 'clearBallot');
       },
       submitBallot: async () => {
-        let newBallotObj = {};
-        let txObj, ballotTxId;
+        const newBallotObj = {};
         const maker = await getMaker();
         const pollIds: string[] = [];
         const pollOptions: string[] = [];
 
         Object.keys(get().ballot).forEach((key: string) => {
-          if (get().ballot[key].option)
+          if (!isNil(get().ballot[key].option))
             newBallotObj[key] = { ...get().ballot[key], submitted: get().ballot[key].option };
           pollIds.push(key);
           pollOptions.push(get().ballot[key].option);
         });
         console.log(pollIds, pollOptions, 'poll ids poll options');
-        txObj = maker.service('govPolling').vote(pollIds, pollOptions);
-        ballotTxId = await transactionsApi.getState().track(txObj);
+        const txObj = maker.service('govPolling').vote(pollIds, pollOptions);
+        const ballotTxId = await transactionsApi.getState().track(txObj);
 
         console.log('bti', ballotTxId);
         set(() => {
