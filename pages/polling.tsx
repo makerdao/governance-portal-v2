@@ -58,7 +58,9 @@ const PollingOverview = ({ polls }: Props) => {
   const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
 
   const groupedActivePolls = groupBy(activePolls, 'startDate');
-  const sortedStartDates = Object.keys(groupedActivePolls).sort((a,b) => new Date(b).getTime() - new Date(a).getTime());
+  const sortedStartDates = Object.keys(groupedActivePolls).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
 
   const loadMore = entries => {
     const target = entries.pop();
@@ -112,17 +114,17 @@ const PollingOverview = ({ polls }: Props) => {
                   Active Polls
                 </Heading>
                 {sortedStartDates.map(date => (
-                    <div>
-                      <Text variant="caps" color="onSurface" mb={2}>
-                        {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
-                      </Text>
-                      <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                        {groupedActivePolls[date].map(poll => (
-                          <PollOverviewCard key={poll.multiHash} poll={poll} />
-                        ))}
-                      </Stack>
-                    </div>
-                  ))}
+                  <div>
+                    <Text variant="caps" color="onSurface" mb={2}>
+                      {`${groupedActivePolls[date].length} Polls - Posted ${formatDateWithTime(date)}`}
+                    </Text>
+                    <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                      {groupedActivePolls[date].map(poll => (
+                        <PollOverviewCard key={poll.multiHash} poll={poll} />
+                      ))}
+                    </Stack>
+                  </div>
+                ))}
               </div>
               {showHistoricalPolls ? (
                 <div>
