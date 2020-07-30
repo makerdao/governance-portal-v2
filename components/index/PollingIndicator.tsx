@@ -49,7 +49,7 @@ const PollingIndicator = forwardRef(({ account, activePolls, unvotedPolls, href 
         fontSize: [1, 2],
         borderRadius: 'round',
         border: '1px solid',
-        borderColor: 'secondary',
+        borderColor: 'primary',
         color: 'surface',
         alignItems: 'center',
         backgroundColor: 'primary',
@@ -75,7 +75,7 @@ export default ({ polls, ...props }: { polls: Poll[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
 
   const { data: votingFor } = useSWR<PollVote[]>(
-    account?.address ? [`/user/voting-for`, account.address] : null,
+    account?.address ? ['/user/voting-for', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
     { refreshInterval: 0 }
   );
