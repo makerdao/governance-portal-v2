@@ -4,11 +4,11 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
 
-
-export default function({ activePolls}) {
+export default function ({ activePolls }) {
   const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot)
-  const txObj = useBallotStore(state => state.txObj)
+  const submitBallot = useBallotStore(state => state.submitBallot);
+  const txObj = useBallotStore(state => state.txObj);
+  const clearTx = useBallotStore(state => state.clearTx);
   const transaction = useTransactionStore(state => state.getTransaction(txObj._timeStampSubmitted));
   const ballotLength = () => {
     return Object.keys(ballot).length;
@@ -90,7 +90,32 @@ export default function({ activePolls}) {
         return <Default />;
       // Is Init
       case 'initialized':
-        return <Box>Initialized</Box>;
+        return (
+          <Flex
+            sx={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              border: '1px solid #D4D9E1',
+              borderRadius: 'small'
+            }}
+          >
+            <Icon name="pencil" size={5} mt={4} sx={{ paddingTop: '3px' }} />
+            <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis' }}>
+              Please use your [hardware, metamask, etc] wallet to sign this transaction.
+            </Text>
+            <Button
+              mt={3}
+              mb={4}
+              onClick={clearTx}
+              variant="textual"
+              sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
+            >
+              Cancel vote submission
+            </Button>
+          </Flex>
+        );
       // Is Sent
       case 'pending':
         return <Box>Sent</Box>;

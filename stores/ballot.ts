@@ -13,6 +13,7 @@ type Store = {
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
   submitBallot: () => Promise<void>;
+  clearTx: () => void;
 };
 
 const [useBallotStore] = create<Store>(
