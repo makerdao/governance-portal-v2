@@ -4,11 +4,11 @@ import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker from '../lib/maker';
 import { transactionsApi } from './transactions';
-import Tx from '../types/transaction';
 import Ballot from '../types/ballot';
+
 type Store = {
   ballot: Ballot;
-  txObj: {_timeStampSubmitted: 'string'};
+  txObj: { _timeStampSubmitted: 'string' };
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
@@ -50,7 +50,7 @@ const [useBallotStore] = create<Store>(
           pollIds.push(key);
           pollOptions.push(ballot[key].option);
         });
-        
+
         const createTx = maker.service('govPolling').vote(pollIds, pollOptions);
         const txObj = await transactionsApi.getState().track(createTx, null, {
           error: error => {

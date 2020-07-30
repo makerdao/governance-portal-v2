@@ -4,7 +4,6 @@ import invariant from 'tiny-invariant';
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
 import TX from '../types/transaction';
-import { TabsKeyboardActivation } from '@reach/tabs';
 
 type Store = {
   transactions: { [from: string]: TX[] };
@@ -12,7 +11,7 @@ type Store = {
   setPending: (from: string, txObject: any) => void;
   setMined: (from: string, txObject: any) => void;
   setError: (from: string, txObject: any, error: { message: string }) => void;
-  track: (tx: any, message: any, options: any) => object;
+  track: (tx: any, message: any, options: any) => any;
   getTransaction: (submittedAt: string | number) => any;
 };
 
@@ -77,11 +76,11 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   },
 
   track: async (tx, message = null, options = {}) => {
-    return new Promise(async res => {
-      const maker = await getMaker();
+    const maker = await getMaker();
+    return new Promise(res => {
       maker.service('transactionManager').listen(tx, {
         initialized: ({ metadata: { action }, ...txObject }) => {
-          const from = action.from
+          const from = action.from;
           res(txObject);
           get().initTx(from, txObject, message);
           options.initialized && options.initialized();
