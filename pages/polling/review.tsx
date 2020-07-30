@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Heading, Box, jsx, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
 
@@ -21,13 +21,12 @@ type Props = {
 };
 
 const PollingReview = ({ polls }: Props) => {
-  const [startDate, setStartDate] = useState<Date | ''>('');
-  const [endDate, setEndDate] = useState<Date | ''>('');
-  const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
+  const [startDate] = useState<Date | ''>('');
+  const [endDate] = useState<Date | ''>('');
+  const [categoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
   const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot);
 
   const network = getNetwork();
 
@@ -76,7 +75,7 @@ const PollingReview = ({ polls }: Props) => {
             </Stack>
           </Box>
           <Stack gap={3}>
-            {account && <ReviewBox activePolls={activePolls} ballot={ballot} submitBallot={submitBallot} />}
+            {account && <ReviewBox activePolls={activePolls} />}
           </Stack>
         </SidebarLayout>
       </Stack>

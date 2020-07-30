@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
 
-export default function({ ...props }) {
-  const ballotTxId = useBallotStore(state => state.ballotTxId);
-  const transaction = useTransactionStore(state => state.getTransaction(ballotTxId));
-  const ballot = props.ballot;
-  const submitBallot = props.submitBallot;
-  const activePolls = props.activePolls;
+
+export default function({ activePolls}) {
+  const ballot = useBallotStore(state => state.ballot);
+  const submitBallot = useBallotStore(state => state.submitBallot)
+  const txObj = useBallotStore(state => state.txObj)
+  const transaction = useTransactionStore(state => state.getTransaction(txObj._timeStampSubmitted));
   const ballotLength = () => {
     return Object.keys(ballot).length;
   };
-  const [ballotState, setBallotState] = useState(0);
-  const [votingWeightTotal, setVotingWeighTotal] = useState(0);
+  // const [ballotState, setBallotState] = useState(0);
+  const [votingWeightTotal] = useState(0);
+
   const Default = () => (
     <Card variant="compact" p={[0, 0]}>
       <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
@@ -73,23 +73,16 @@ export default function({ ...props }) {
           <Text>{`Confirm Time`}</Text>
         </Flex>  */}
         <Flex p={3} sx={{ flexDirection: 'column' }}>
-          <Button
-            onClick={submitBallot}
-            variant="primary"
-            disabled={!ballotLength()}
-            sx={{ width: '100%' }}
-          >
+          <Button onClick={submitBallot} variant="primary" disabled={!ballotLength()} sx={{ width: '100%' }}>
             {`Submit Your Ballot (${ballotLength()} Votes)`}
           </Button>
         </Flex>
       </Flex>
     </Card>
   );
-  const steps = [
-    // props => <DeployProxy {...props} />,
-    // props => <DepositDai {...props} />,
-    // props => <ConfirmRedeem {...props} />
-  ];
+  // const steps = [
+  //   props => <Default {...props}
+  // ];
 
   const View = () => {
     switch (transaction && transaction.status) {
@@ -103,14 +96,13 @@ export default function({ ...props }) {
         return <Box>Sent</Box>;
       // Is Completed
       case 'mined':
-        <Box>Mined</Box>;
+        return <Box>Mined</Box>;
+
       // Is Failed
       case 'error':
-        <Box>Failed</Box>;
-
+        return <Box>Failed</Box>;
       default:
         return <Default />;
-        break;
     }
   };
 

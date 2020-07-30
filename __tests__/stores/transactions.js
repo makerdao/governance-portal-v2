@@ -30,7 +30,7 @@ test('should call initTx, setPending, and setMined for successful transactions',
     .getToken(ETH)
     .transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
 
-  transactionsApi.getState().track(tx);
+  await transactionsApi.getState().track(tx);
 
   await waitForExpect(() => {
     expect(initTxMock.mock.calls.length).toBe(1);
@@ -46,7 +46,7 @@ test('should initialize a tx properly', async () => {
   const currentAddress = maker.currentAddress();
 
   const message = 'sending ETH';
-  transactionsApi.getState().track(tx, message);
+  await transactionsApi.getState().track(tx, message);
 
   await waitForExpect(() => {
     expect(
@@ -71,7 +71,7 @@ test('should set pending properly', async () => {
     .transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
   const currentAddress = maker.currentAddress();
 
-  transactionsApi.getState().track(tx);
+  await transactionsApi.getState().track(tx);
 
   await waitForExpect(() => {
     expect(
@@ -93,7 +93,7 @@ test('should set mined properly', async () => {
     .transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
   const currentAddress = maker.currentAddress();
 
-  transactionsApi.getState().track(tx);
+  await transactionsApi.getState().track(tx);
 
   await waitForExpect(() => {
     expect(
@@ -108,7 +108,7 @@ test('should set error properly', async () => {
     .transfer(TestAccountProvider.nextAccount().address, ETH(10e18));
   const currentAddress = maker.currentAddress();
 
-  transactionsApi.getState().track(tx);
+  await transactionsApi.getState().track(tx);
 
   await waitForExpect(() => {
     const txState = transactionsApi.getState().transactions[currentAddress][0];
@@ -128,8 +128,8 @@ test('should track multiple txs', async () => {
     .getToken(ETH)
     .transfer(TestAccountProvider.nextAccount().address, ETH(10e18));
 
-  transactionsApi.getState().track(tx1);
-  transactionsApi.getState().track(tx2);
+  await transactionsApi.getState().track(tx1);
+  await transactionsApi.getState().track(tx2);
 
   await waitForExpect(() => {
     expect(transactionsApi.getState().transactions[currentAddress].length).toBe(

@@ -4,11 +4,11 @@ import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker from '../lib/maker';
 import { transactionsApi } from './transactions';
+import Tx from '../types/transaction';
 import Ballot from '../types/ballot';
-
 type Store = {
   ballot: Ballot;
-  ballotTxId: number;
+  txObj: {_timeStampSubmitted: 'string'};
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
@@ -19,8 +19,11 @@ const [useBallotStore] = create<Store>(
   devtools(
     (set, get) => ({
       ballot: {},
-      ballotTxId: 0,
-      addToBallot: (pollId, option) => {
+      txObj: {},
+      clearTx: () => {
+        set({ txObj: {} });
+      },
+      addToBallot: (pollId, option: number | number[]) => {
         set(
           state => ({ ballot: { ...state.ballot, [pollId]: { ...state.ballot[pollId], option } } }),
           'addToBallot'
@@ -47,13 +50,16 @@ const [useBallotStore] = create<Store>(
           pollIds.push(key);
           pollOptions.push(ballot[key].option);
         });
-        console.log(pollIds, pollOptions, 'poll ids poll options');
-        const txObj = maker.service('govPolling').vote(pollIds, pollOptions);
-        const ballotTxId = await transactionsApi.getState().track(txObj);
+        
+        const createTx = maker.service('govPolling').vote(pollIds, pollOptions);
+        const txObj = await transactionsApi.getState().track(createTx, null, {
+          error: error => {
+            error.code === 4001 && get().clearTx({});
+          }
+        });
 
-        console.log('bti', ballotTxId);
         set(() => {
-          return { ballot: newBallotObj, ballotTxId };
+          return { ballot: newBallotObj, txObj };
         }, 'submitBallot');
       }
     }),

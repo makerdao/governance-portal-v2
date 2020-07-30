@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant';
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
 import TX from '../types/transaction';
+import { TabsKeyboardActivation } from '@reach/tabs';
 
 type Store = {
   transactions: { [from: string]: TX[] };
@@ -11,8 +12,8 @@ type Store = {
   setPending: (from: string, txObject: any) => void;
   setMined: (from: string, txObject: any) => void;
   setError: (from: string, txObject: any, error: { message: string }) => void;
-  track: (tx: any) => void;
-  getTransaction: (submittedAt: string) => any;
+  track: (tx: any, message: any, options: any) => object;
+  getTransaction: (submittedAt: string | number) => any;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -75,25 +76,35 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (tx, message = null) => {
-    const maker = await getMaker();
-    maker.service('transactionManager').listen(tx, {
-      initialized: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().initTx(from, txObject, message);
-      },
-      pending: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setPending(from, txObject);
-      },
-      mined: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setMined(from, txObject);
-      },
-      error: ({ metadata: { action }, ...txObject }, error) => {
-        const from = action.from;
-        get().setError(from, txObject, error);
-      }
+  track: async (tx, message = null, options = {}) => {
+    return new Promise(async res => {
+      const maker = await getMaker();
+      maker.service('transactionManager').listen(tx, {
+        initialized: ({ metadata: { action }, ...txObject }) => {
+          const from = action.from
+          res(txObject);
+          get().initTx(from, txObject, message);
+          options.initialized && options.initialized();
+        },
+        pending: ({ metadata: { action }, ...txObject }) => {
+          const from = action.from;
+          res(txObject);
+          get().setPending(from, txObject);
+          options.pending && options.pending();
+        },
+        mined: ({ metadata: { action }, ...txObject }) => {
+          const from = action.from;
+          res(txObject);
+          get().setMined(from, txObject);
+          options.mined && options.mined();
+        },
+        error: ({ metadata: { action }, ...txObject }, error) => {
+          const from = action.from;
+          res(txObject);
+          get().setError(from, txObject, error);
+          options.error && options.error(error);
+        }
+      });
     });
 
     // noop catch since we handle tx errors via the manager
