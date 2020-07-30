@@ -17,15 +17,14 @@ import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import MobileVoteSheet from './MobileVoteSheet';
 
-export default function PollOverviewCard({ poll, ...props }: { poll: Poll }): JSX.Element {
+type Props = { poll: Poll; startMobileVoting: () => void };
+export default function PollOverviewCard({ poll, startMobileVoting, ...props }: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpoints();
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
-  const [showVoteSheet, setShowVoteSheet] = useState(false);
 
   return (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
@@ -58,7 +57,7 @@ export default function PollOverviewCard({ poll, ...props }: { poll: Poll }): JS
         {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
           {canVote && bpi === 0 && (
-            <Button variant="primary" mr={2} onClick={() => setShowVoteSheet(true)}>
+            <Button variant="primary" mr={2} onClick={startMobileVoting}>
               Vote
             </Button>
           )}
@@ -74,7 +73,6 @@ export default function PollOverviewCard({ poll, ...props }: { poll: Poll }): JS
         </Flex>
       </Stack>
       {showQuickVote && <QuickVote poll={poll} />}
-      {showVoteSheet && <MobileVoteSheet poll={poll} close={() => setShowVoteSheet(false)} />}
     </Flex>
   );
 }

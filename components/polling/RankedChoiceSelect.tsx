@@ -1,6 +1,7 @@
+/** @jsx jsx */
+import { Box, Flex, Text, Close, jsx } from 'theme-ui';
 import Poll from '../../types/poll';
 import { useState, useMemo } from 'react';
-import { Box, Flex, Text, Close } from 'theme-ui';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import map from 'lodash/map';

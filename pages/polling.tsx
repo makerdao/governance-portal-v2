@@ -23,6 +23,7 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
+import MobileVoteSheet from '../components/polling/MobileVoteSheet';
 
 type Props = {
   polls: Poll[];
@@ -93,8 +94,13 @@ const PollingOverview = ({ polls }: Props) => {
 
   const account = useAccountsStore(state => state.currentAccount);
 
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
+
   return (
     <PrimaryLayout shortenFooter={true}>
+      {mobileVotingPoll && (
+        <MobileVoteSheet poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
+      )}
       <Stack gap={3}>
         {bpi === 0 && account && (
           <Button
@@ -133,7 +139,11 @@ const PollingOverview = ({ polls }: Props) => {
                     </Text>
                     <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                       {groupedActivePolls[date].map(poll => (
-                        <PollOverviewCard key={poll.multiHash} poll={poll} />
+                        <PollOverviewCard
+                          key={poll.multiHash}
+                          poll={poll}
+                          startMobileVoting={() => setMobileVotingPoll(poll)}
+                        />
                       ))}
                     </Stack>
                   </div>
