@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink } from 'theme-ui';
+import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from '../../lib/constants';
 import Poll from '../../types/poll';
@@ -127,6 +127,7 @@ export default function ({ activePolls, network }: Props): JSX.Element {
 
   const Pending = () => (
     <ReviewBoxCard>
+      <Spinner size={48} mt={4} sx={{ color: 'primary' }} />
       <Text
         mt={3}
         px={4}
@@ -135,7 +136,7 @@ export default function ({ activePolls, network }: Props): JSX.Element {
         Sending Transaction...
       </Text>
       <Text mt={2} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-        {`Submitting ${ballotLength()} ${ballotLength() > 1 ? 'polls' : 'poll'}`}
+        {`Submitting ${ballotLength()} ${ballotLength() === 1 ? 'poll' : 'polls'}`}
       </Text>
     </ReviewBoxCard>
   );
@@ -158,8 +159,9 @@ export default function ({ activePolls, network }: Props): JSX.Element {
         href={`http://www.etherscan.com/${transaction && transaction.hash}`}
         sx={{ p: 0 }}
       >
-        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
+          <Icon name="arrowTopRight" pt={2} />
         </Text>
       </ExternalLink>
       <Link href={{ pathname: '/polling', query: { network } }}>
