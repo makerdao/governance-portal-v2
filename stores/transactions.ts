@@ -79,26 +79,26 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     const maker = await getMaker();
     return new Promise(res => {
       maker.service('transactionManager').listen(tx, {
-        initialized: ({ metadata: { action }, ...txObject }) => {
-          const from = action.from;
+        initialized: ({ ...txObject }) => {
+          const from = '0x000';
           res(txObject);
           get().initTx(from, txObject, message);
           options.initialized && options.initialized();
         },
-        pending: ({ metadata: { action }, ...txObject }) => {
-          const from = action.from;
+        pending: ({ ...txObject }) => {
+          const from = '0x000';
           res(txObject);
           get().setPending(from, txObject);
           options.pending && options.pending();
         },
-        mined: ({ metadata: { action }, ...txObject }) => {
-          const from = action.from;
+        mined: ({ ...txObject }) => {
+          const from = '0x000';
           res(txObject);
           get().setMined(from, txObject);
           options.mined && options.mined();
         },
-        error: ({ metadata: { action }, ...txObject }, error) => {
-          const from = action.from;
+        error: ({ ...txObject }, error) => {
+          const from = '0x000';
           res(txObject);
           get().setError(from, txObject, error);
           options.error && options.error(error);
