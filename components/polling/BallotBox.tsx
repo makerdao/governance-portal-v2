@@ -4,9 +4,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from '../../lib/constants';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
+import useBallotStore from '../../stores/ballot';
+import useTransactionStore from '../../stores/transactions';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
+  const txObj = useBallotStore(state => state.txObj);
+  const transaction = useTransactionStore(state => state.getTransaction(txObj._timeStampSubmitted));
   const ballotLength = Object.keys(ballot).length;
   const votingWeightTotal = 0; // TODO
   const router = useRouter();
@@ -66,7 +70,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
           <Button
             onClick={() => router.push({ pathname: '/polling/review', query: network })}
             variant="primary"
-            disabled={!ballotLength}
+            disabled={!ballotLength || transaction.submittedAt}
             sx={{ width: '100%' }}
           >
             Review & Submit Your Ballot

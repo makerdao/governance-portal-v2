@@ -2,11 +2,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { SupportedNetworks } from '../../lib/constants';
+import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
-import BallotBox from './BallotBox';
 
-export default function ({ activePolls, network }) {
+type Props = { activePolls: Poll[]; network: SupportedNetworks };
+export default function ({ activePolls, network }: Props): JSX.Element {
   const ballot = useBallotStore(state => state.ballot);
   const submitBallot = useBallotStore(state => state.submitBallot);
   const txObj = useBallotStore(state => state.txObj);
@@ -88,7 +90,12 @@ export default function ({ activePolls, network }) {
           <Text>{`Confirm Time`}</Text>
         </Flex>  */}
         <Flex p={3} sx={{ flexDirection: 'column' }}>
-          <Button onClick={submitBallot} variant="primary" disabled={!ballotLength()} sx={{ width: '100%' }}>
+          <Button
+            onClick={submitBallot}
+            variant="primary"
+            disabled={!ballotLength() || transaction.submittedAt}
+            sx={{ width: '100%' }}
+          >
             {`Submit Your Ballot (${ballotLength()} Votes)`}
           </Button>
         </Flex>
@@ -156,7 +163,13 @@ export default function ({ activePolls, network }) {
         </Text>
       </ExternalLink>
       <Link href={{ pathname: '/polling', query: { network } }}>
-        <Button mt={3} mb={4} variant="outline" sx={{ borderColor: 'primary', color: 'primary' }}>
+        <Button
+          mt={3}
+          mb={4}
+          variant="outline"
+          sx={{ borderColor: 'primary', color: 'primary' }}
+          onClick={clearTx}
+        >
           Back To All Polls
         </Button>
       </Link>
@@ -182,7 +195,13 @@ export default function ({ activePolls, network }) {
         </Button>
       </Flex>
       <Link href={{ pathname: '/polling', query: { network } }}>
-        <Button mt={1} mb={4} variant="textual" sx={{ borderColor: 'primary', color: 'secondaryEmphasis' }}>
+        <Button
+          mt={1}
+          mb={4}
+          variant="textual"
+          sx={{ borderColor: 'primary', color: 'secondaryEmphasis' }}
+          onClick={clearTx}
+        >
           Go back
         </Button>
       </Link>
