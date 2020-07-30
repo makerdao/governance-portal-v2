@@ -10,7 +10,7 @@ export default ({ blogPost, ...otherProps }: Props) => (
     target="_blank"
     variant="card"
     href={blogPost.link}
-    sx={{ p: [0, 0], borderRadius: 'medium' }}
+    sx={{ p: 0, borderRadius: 'medium' }}
     {...otherProps}
   >
     <Box>
