@@ -1,12 +1,8 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
-import { Text, Flex, Box, Button, Close, jsx } from 'theme-ui';
+import { useState } from 'react';
+import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import map from 'lodash/map';
-import omitBy from 'lodash/omitBy';
 import invariant from 'tiny-invariant';
 
 import { isActivePoll, isRankedChoicePoll, getNumberWithOrdinal } from '../../lib/utils';
@@ -19,8 +15,11 @@ import PollOptionBadge from '../PollOptionBadge';
 import useBreakpoints from '../../lib/useBreakpoints';
 import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
+import RankedChoiceSelect from './RankedChoiceSelect';
+import SingleSelect from './SingleSelect';
+import MobileVoteSheet from './MobileVoteSheet';
 
-const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
+export default function PollOverviewCard({ poll, ...props }: { poll: Poll }): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpoints();
@@ -78,9 +77,7 @@ const PollOverviewCard = ({ poll, ...props }: { poll: Poll }) => {
       {showVoteSheet && <MobileVoteSheet poll={poll} close={() => setShowVoteSheet(false)} />}
     </Flex>
   );
-};
-
-export default PollOverviewCard;
+}
 
 const QuickVote = ({ poll }: { poll: Poll }) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
@@ -90,7 +87,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
 
   const submit = () => {
     invariant(isChoiceValid);
-    addToBallot(poll.pollId, choice);
+    addToBallot(poll.pollId, choice as number | number[]);
     setEditing(false);
   };
 
@@ -122,117 +119,6 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
         </div>
       )}
     </Stack>
-  );
-};
-
-// TODO should this go into the theme?
-const listboxSx = {
-  button: { variant: 'buttons.outline', width: '100%' },
-  popover: { variant: 'cards.tight', '&:focus-within': { outline: 'none' } },
-  list: { 'li[aria-selected="true"]': { backgroundColor: 'primary' } }
-};
-
-const ABSTAIN = 0;
-
-const SingleSelect = ({ poll, setChoice, ...props }) => {
-  return (
-    <ListboxInput onChange={x => setChoice(parseInt(x))} {...props}>
-      <ListboxButton sx={listboxSx.button} arrow={<Icon name="chevron_down" size={2} />} />
-      <ListboxPopover sx={listboxSx.popover}>
-        <ListboxList sx={listboxSx.list}>
-          <ListboxOption value="default" sx={{ display: 'none' }}>
-            Your choice
-          </ListboxOption>
-          {map(poll.options, (label, id) => (
-            <ListboxOption key={id} value={id}>
-              {label}
-            </ListboxOption>
-          ))}
-          <ListboxOption value={String(ABSTAIN)}>Abstain</ListboxOption>
-        </ListboxList>
-      </ListboxPopover>
-    </ListboxInput>
-  );
-};
-
-type RankedChoiceSelectProps = { poll: Poll; setChoice: (choices: number[]) => void };
-const RankedChoiceSelect = ({ poll, setChoice, ...props }: RankedChoiceSelectProps) => {
-  const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
-  const [optionCount, setOptionCount] = useState<number>(1);
-  const numOptionsAvailable = Object.keys(poll.options).length;
-  const canAddOption = numOptionsAvailable > optionCount && selectedChoices[optionCount - 1] !== undefined;
-
-  const availableChoices = useMemo(
-    () =>
-      omitBy(poll.options, (_, pollId) => {
-        return selectedChoices.findIndex(choice => choice === parseInt(pollId)) > -1;
-      }),
-    [optionCount]
-  );
-
-  return (
-    <Box {...props}>
-      <Stack gap={2}>
-        {Array.from({ length: optionCount - 1 }).map((_, index) => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
-            <Flex sx={{ flexDirection: 'column' }}>
-              <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
-                {getNumberWithOrdinal(index + 1)} choice
-              </Text>
-              <Text>{poll.options[selectedChoices[index]]}</Text>
-            </Flex>
-            <Close
-              ml="auto"
-              my="auto"
-              sx={{ '> svg': { size: [3] } }}
-              onClick={() => {
-                const newChoices = [...selectedChoices];
-                newChoices.splice(index, 1);
-                setSelectedChoices(newChoices);
-                setOptionCount(optionCount - 1);
-              }}
-            />
-          </Flex>
-        ))}
-        <ListboxInput
-          key={optionCount}
-          onChange={value => {
-            const newChoices = [...selectedChoices];
-            newChoices[optionCount - 1] = parseInt(value);
-            setSelectedChoices(newChoices);
-            if (setChoice) setChoice(newChoices);
-          }}
-        >
-          <ListboxButton sx={listboxSx.button} arrow={<Icon name="chevron_down" size={2} />} />
-          <ListboxPopover sx={listboxSx.popover}>
-            <ListboxList sx={listboxSx.list}>
-              <ListboxOption value="default" sx={{ display: 'none' }}>
-                {getNumberWithOrdinal(selectedChoices.length + 1)} choice
-              </ListboxOption>
-              {map(availableChoices, (label, pollId) => (
-                <ListboxOption key={pollId} value={pollId}>
-                  {label}
-                </ListboxOption>
-              ))}
-            </ListboxList>
-          </ListboxPopover>
-        </ListboxInput>
-      </Stack>
-      {canAddOption && (
-        <Text
-          color="primary"
-          onClick={() => setOptionCount(optionCount + 1)}
-          sx={{
-            pt: 1,
-            fontSize: 2,
-            cursor: 'pointer',
-            textTransform: 'uppercase'
-          }}
-        >
-          <span sx={{ mr: 2 }}>+</span> Add another choice
-        </Text>
-      )}
-    </Box>
   );
 };
 
@@ -277,42 +163,3 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, ...props }) => {
     </Box>
   );
 };
-
-function MobileVoteSheet({ poll, close }: { poll: Poll; close: () => void }) {
-  const addToBallot = useBallotStore(state => state.addToBallot);
-  const [choice, setChoice] = useState<number | number[] | null>(null);
-  const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
-
-  const submit = () => {
-    invariant(isChoiceValid);
-    addToBallot(poll.pollId, choice);
-  };
-
-  return (
-    <DialogOverlay onDismiss={close}>
-      <DialogContent
-        sx={{
-          width: '100vw',
-          position: 'absolute',
-          bottom: 0,
-          mb: 0,
-          borderTopLeftRadius: '12px',
-          borderTopRightRadius: '12px'
-        }}
-      >
-        <Stack gap={2}>
-          <Text variant="subheading">{poll.title}</Text>
-          <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
-          {isRankedChoicePoll(poll) ? (
-            <RankedChoiceSelect {...{ poll, setChoice }} />
-          ) : (
-            <SingleSelect {...{ poll, setChoice }} />
-          )}
-          <Button variant="primary" onClick={submit} disabled={!isChoiceValid}>
-            Add vote to ballot
-          </Button>
-        </Stack>
-      </DialogContent>
-    </DialogOverlay>
-  );
-}

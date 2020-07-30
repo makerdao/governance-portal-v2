@@ -21,3 +21,5 @@ export const ETHERSCAN_PREFIXES = {
 
 export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks.MAINNET | SupportedNetworks.KOVAN) =>
   `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;
+
+export const ABSTAIN = 0;
