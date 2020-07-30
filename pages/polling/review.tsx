@@ -74,9 +74,7 @@ const PollingReview = ({ polls }: Props) => {
               </div>
             </Stack>
           </Box>
-          <Stack gap={3}>
-            {account && <ReviewBox activePolls={activePolls} />}
-          </Stack>
+          <Stack gap={3}>{account && <ReviewBox activePolls={activePolls} network={network} />}</Stack>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
@@ -90,9 +88,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
-        .then(_setPolls)
-        .catch(setError);
+      getPolls().then(_setPolls).catch(setError);
     }
   }, []);
 

@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 export default function () {
   return (
-    <Box>
+    <Box mt={4}>
       <Heading mb={3} as="h4">
         Resources
       </Heading>
