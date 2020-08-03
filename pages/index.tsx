@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
 import Stack from '../components/layouts/Stack';
@@ -19,6 +19,7 @@ import BlogPostCard from '../components/index/BlogPostCard';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
+import { initTestchainPolls } from '../lib/utils';
 
 type Props = {
   proposals: Proposal[];
@@ -200,6 +201,10 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
+    async function initTestchain() {
+      if (getNetwork() === 'testnet') await initTestchainPolls();
+    }
+    initTestchain();
     if (!isDefaultNetwork()) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {

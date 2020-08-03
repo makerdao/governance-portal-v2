@@ -12,6 +12,8 @@ import Poll from '../types/poll';
 import Proposal from '../types/proposal';
 import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
+import getMaker from './maker';
+import mockPolls from '../mocks/polls.json';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -214,8 +216,22 @@ export const formatDateWithTime = dateString => {
 };
 
 export async function initTestchainPolls() {
-  // run this when it starts up for the first time
-  // create mock polls on testchain
+  const maker = await getMaker();
+  const pollingService = maker.service('govPolling');
+  const hash = 'dummy hash';
+  const testTx = await pollingService.createPoll(_now(), _now() + 500000, hash, hash);
+
+  if (testTx !== 0) return;
+  console.log('setting up some polls on the testchain...');
+
+  return mockPolls.map(async poll => {
+    const id = await pollingService.createPoll(_now(), _now() + 50000, hash, poll.url);
+    console.log(`created poll #${id}`);
+  });
+}
+
+function _now() {
+  return Math.floor(new Date().getTime() / 1000) + 100;
 }
 
 export async function initTestchainProposals() {
@@ -225,7 +241,6 @@ export async function initTestchainProposals() {
 
 export async function getTestchainPolls() {
   // get all of the testchain polls and return them here
-  // should be triggered again by createPoll
   const polls: Poll[] = [];
   return polls;
 }
