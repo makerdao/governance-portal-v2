@@ -9,6 +9,7 @@ import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
 import Poll from '../types/poll';
+import Proposal from '../types/proposal';
 import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 
@@ -24,9 +25,7 @@ export function bigNumberKFormat(num: CurrencyObject) {
 }
 
 export async function markdownToHtml(markdown: string) {
-  const result = await remark()
-    .use(html)
-    .process(markdown);
+  const result = await remark().use(html).process(markdown);
   return result.toString();
 }
 
@@ -92,8 +91,9 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'address'
 ): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[network] ||
-    ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]}etherscan.io`;
+  const prefix = `https://${
+    ETHERSCAN_PREFIXES[network] || ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]
+  }etherscan.io`;
 
   switch (type) {
     case 'transaction':
@@ -126,6 +126,7 @@ export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<a
   return json;
 }
 
+/* eslint-disable no-useless-escape */
 // https://medium.com/@mhagemann/the-ultimate-way-to-slugify-a-url-string-in-javascript-b8e4a0d849e1
 export function slugify(string: string) {
   const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;';
@@ -142,6 +143,7 @@ export function slugify(string: string) {
     .replace(/^-+/, '')
     .replace(/-+$/, '');
 }
+/* eslint-enable no-useless-escape */
 
 // https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
 export function getNumberWithOrdinal(n) {
@@ -210,3 +212,25 @@ export const formatDateWithTime = dateString => {
   };
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
+
+export async function initTestchainPolls() {
+  // run this when it starts up for the first time
+  // create mock polls on testchain
+}
+
+export async function initTestchainProposals() {
+  // run this when it starts up for the first time
+  // create mock polls on testchain
+}
+
+export async function getTestchainPolls() {
+  // get all of the testchain polls and return them here
+  // should be triggered again by createPoll
+  const polls: Poll[] = [];
+  return polls;
+}
+
+export async function getTestchainProposals() {
+  const proposals: Proposal[] = [];
+  return proposals;
+}

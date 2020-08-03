@@ -3,7 +3,13 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 
-import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
+import {
+  markdownToHtml,
+  timeoutPromise,
+  backoffRetry,
+  getTestchainPolls,
+  getTestchainProposals
+} from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork } from './maker';
 import Poll from '../types/poll';
@@ -17,10 +23,11 @@ let _cachedProposals: Proposal[];
  * Everytime after that, it returns from the cache.
  */
 export async function getExecutiveProposals(): Promise<Proposal[]> {
+  const network = getNetwork();
+  if (network === 'testnet') return getTestchainProposals();
+  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/proposals.json');
   if (_cachedProposals) return _cachedProposals;
-  const network = getNetwork();
-  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
   const proposals = topics
     .filter(proposal => proposal.active)
@@ -56,6 +63,9 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
+  const network = getNetwork();
+  // It tries to load mainnet every time before realizing it's on a different network
+  if (network === 'testnet') return getTestchainPolls();
   if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 

@@ -12,9 +12,9 @@
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.31.5",
-    "@makerdao/dai-plugin-governance": "0.12.11",
-    "@makerdao/dai-plugin-mcd": "1.5.9",
+    "@makerdao/dai": "^0.32.2",
+    "@makerdao/dai-plugin-governance": "0.12.16",
+    "@makerdao/dai-plugin-mcd": "1.5.15",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@makerdao/test-helpers": "^0.3.0",
-    "@makerdao/testchain": "^1.1.5",
+    "@makerdao/testchain": "^1.1.13",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
