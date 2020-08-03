@@ -234,16 +234,11 @@ function _now() {
   return Math.floor(new Date().getTime() / 1000) + 100;
 }
 
-export async function initTestchainProposals() {
-  // run this when it starts up for the first time
-  // create mock polls on testchain
-}
-
-export async function getTestchainPolls() {
-  // get all of the testchain polls and return them here
-  const polls: Poll[] = [];
-  return polls;
-}
+// export async function getTestchainPolls() {
+//   // get all of the testchain polls and return them here
+//   const polls: Poll[] = [];
+//   return polls;
+// }
 
 export async function getTestchainProposals() {
   const proposals: Proposal[] = [];

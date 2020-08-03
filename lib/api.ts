@@ -3,13 +3,7 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 
-import {
-  markdownToHtml,
-  timeoutPromise,
-  backoffRetry,
-  getTestchainPolls,
-  getTestchainProposals
-} from './utils';
+import { markdownToHtml, timeoutPromise, backoffRetry, getTestchainProposals } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork } from './maker';
 import Poll from '../types/poll';
@@ -64,9 +58,7 @@ let _cachedPolls: Poll[];
  */
 export async function getPolls(): Promise<Poll[]> {
   const network = getNetwork();
-  // It tries to load mainnet every time before realizing it's on a different network
-  if (network === 'testnet') return getTestchainPolls();
-  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/polls.json');
+  if (process.env.NEXT_PUBLIC_USE_MOCK || network === 'testnet') return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
