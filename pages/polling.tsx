@@ -85,7 +85,11 @@ const PollingOverview = ({ polls }: Props) => {
       observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
       observer.observe(loader.current);
     }
-    return () => observer?.unobserve(loader.current);
+    return () => {
+      if (loader?.current) {
+        observer?.unobserve(loader.current);
+      }
+    };
   }, [loader, loadMore]);
 
   useEffect(() => {

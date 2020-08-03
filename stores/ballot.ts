@@ -8,60 +8,60 @@ import Ballot from '../types/ballot';
 
 type Store = {
   ballot: Ballot;
-  txObj: { _timeStampSubmitted: 'string' };
+  txId: null | string;
+  clearTx: () => void;
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
-  submitBallot: () => Promise<void>;
-  clearTx: () => void;
+  submitBallot: () => Promise<string>;
 };
 
 const [useBallotStore] = create<Store>(
   devtools(
     (set, get) => ({
       ballot: {},
-      txObj: {},
+      txId: null,
+
       clearTx: () => {
-        set({ txObj: {} });
+        set({ txId: null });
       },
+
       addToBallot: (pollId, option: number | number[]) => {
         set(
           state => ({ ballot: { ...state.ballot, [pollId]: { ...state.ballot[pollId], option } } }),
           'addToBallot'
         );
       },
+
       removeFromBallot: pollId => {
         set(state => {
           return omit(state.ballot, pollId);
         }, 'removeFromBallot');
       },
+
       clearBallot: () => {
         set({ ballot: {} }, 'clearBallot');
       },
+
       submitBallot: async () => {
-        const newBallotObj = {};
+        const newBallot = {};
         const maker = await getMaker();
-        const pollIds: string[] = [];
-        const pollOptions: string[] = [];
         const ballot = get().ballot;
 
+        const pollIds: string[] = [];
+        const pollOptions: string[] = [];
         Object.keys(ballot).forEach((key: string) => {
-          if (!isNil(ballot[key].option))
-            newBallotObj[key] = { ...ballot[key], submitted: ballot[key].option };
-          pollIds.push(key);
-          pollOptions.push(ballot[key].option);
-        });
-
-        const createTx = maker.service('govPolling').vote(pollIds, pollOptions);
-        const txObj = await transactionsApi.getState().track(createTx, null, {
-          error: error => {
-            error.code === 4001 && get().clearTx({});
+          if (!isNil(ballot[key].option)) {
+            newBallot[key] = { ...ballot[key], submittedBallot: ballot[key].option };
+            pollIds.push(key);
+            pollOptions.push(ballot[key].option);
           }
         });
 
-        set(() => {
-          return { ballot: newBallotObj, txObj };
-        }, 'submitBallot');
+        const voteTxCreator = () => maker.service('govPolling').vote(pollIds, pollOptions);
+        const txId = await transactionsApi.getState().track(voteTxCreator);
+
+        set({ ballot: newBallot, txId }, 'submitBallot');
       }
     }),
     'BallotStore'

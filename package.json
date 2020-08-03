@@ -38,6 +38,7 @@
     "swr": "^0.2.0",
     "theme-ui": "^0.3.1",
     "tiny-invariant": "^1.1.0",
+    "uuid": "^8.3.0",
     "valid-url": "^1.0.9",
     "zustand": "^2.2.3"
   },

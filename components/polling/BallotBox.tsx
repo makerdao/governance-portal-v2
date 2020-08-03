@@ -1,16 +1,19 @@
 import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+
 import { SupportedNetworks } from '../../lib/constants';
+import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
+import { getEtherscanLink } from '../../lib/utils';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
-  const txObj = useBallotStore(state => state.txObj);
-  const transaction = useTransactionStore(state => state.getTransaction(txObj._timeStampSubmitted));
+  const voteTxId = useBallotStore(state => state.txId);
+  const transaction = useTransactionStore(state => (voteTxId ? state.getTransaction(voteTxId) : null));
   const ballotLength = Object.keys(ballot).length;
   const votingWeightTotal = 0; // TODO
   const router = useRouter();
@@ -20,7 +23,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
       <Heading mb={3} as="h4">
         Your Ballot
       </Heading>
-      {transaction && transaction.submittedAt ? (
+      {transaction && transaction?.hash ? (
         <Card variant="compact" p={[0, 0]} sx={{ justifyContent: 'center' }}>
           <Flex sx={{ justifyContent: 'center', flexDirection: 'column' }}>
             <Spinner size={48} mt={4} sx={{ color: 'notice', alignSelf: 'center' }} />
@@ -33,7 +36,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
             </Text>
             <ExternalLink
               target="_blank"
-              href={`http://www.etherscan.com/${transaction && transaction.hash}`}
+              href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
               sx={{ p: 0 }}
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
@@ -59,7 +62,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
                 borderRadius: 'small'
               }}
             >
-              {activePolls.map((pollId, index) => (
+              {activePolls.map((_, index) => (
                 <Box
                   key={index}
                   backgroundColor="muted"

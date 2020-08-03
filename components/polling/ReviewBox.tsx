@@ -2,26 +2,34 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import shallow from 'zustand/shallow';
 
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
 
-type Props = { activePolls: Poll[] };
-export default function ({ activePolls }: Props): JSX.Element {
-  const ballot = useBallotStore(state => state.ballot);
-  const submitBallot = useBallotStore(state => state.submitBallot);
-  const txObj = useBallotStore(state => state.txObj);
-  const clearTx = useBallotStore(state => state.clearTx);
-  const transaction = useTransactionStore(state => state.getTransaction(txObj._timeStampSubmitted));
-  const ballotLength = () => {
-    return Object.keys(ballot).length;
-  };
+export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element {
+  const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
+    state => ({
+      clearTx: state.clearTx,
+      voteTxId: state.txId,
+      ballot: state.ballot,
+      submitBallot: state.submitBallot
+    }),
+    shallow
+  );
+
+  const transaction = useTransactionStore(
+    state => (voteTxId ? state.getTransaction(voteTxId) : null),
+    shallow
+  );
+  const ballotLength = Object.keys(ballot).length;
+
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={[0, 0]}>
+    <Card variant="compact" p={0}>
       <Flex
         sx={{
           justifyContent: 'center',
@@ -38,7 +46,7 @@ export default function ({ activePolls }: Props): JSX.Element {
     <ReviewBoxCard>
       <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
         <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
-          {`${ballotLength()} of ${activePolls.length} available polls added to ballot`}
+          {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
         </Text>
         <Flex
           sx={{
@@ -50,7 +58,7 @@ export default function ({ activePolls }: Props): JSX.Element {
             borderRadius: 'small'
           }}
         >
-          {activePolls.map((pollId, index) => (
+          {activePolls.map((_, index) => (
             <Box
               key={index}
               backgroundColor="muted"
@@ -61,7 +69,7 @@ export default function ({ activePolls }: Props): JSX.Element {
                 borderBottomLeftRadius: index === 0 ? 'small' : null,
                 borderTopRightRadius: index === activePolls.length - 1 ? 'small' : null,
                 borderBottomRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                backgroundColor: index < ballotLength() ? 'primary' : null
+                backgroundColor: index < ballotLength ? 'primary' : null
               }}
             />
           ))}
@@ -94,10 +102,10 @@ export default function ({ activePolls }: Props): JSX.Element {
           <Button
             onClick={submitBallot}
             variant="primary"
-            disabled={!ballotLength() || transaction.submittedAt}
+            disabled={!ballotLength || !!voteTxId}
             sx={{ width: '100%' }}
           >
-            {`Submit Your Ballot (${ballotLength()} Votes)`}
+            Submit Your Ballot ({ballotLength}) Votes
           </Button>
         </Flex>
       </Flex>
@@ -137,7 +145,7 @@ export default function ({ activePolls }: Props): JSX.Element {
         Sending Transaction...
       </Text>
       <Text mt={2} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-        {`Submitting ${ballotLength()} ${ballotLength() === 1 ? 'poll' : 'polls'}`}
+        Submitting ${ballotLength} ${ballotLength === 1 ? 'poll' : 'polls'}
       </Text>
     </ReviewBoxCard>
   );
@@ -193,8 +201,8 @@ export default function ({ activePolls }: Props): JSX.Element {
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button onClick={submitBallot} variant="primary" disabled={!ballotLength()} sx={{ width: '100%' }}>
-          {`Submit Your Ballot (${ballotLength()} Votes)`}
+        <Button onClick={submitBallot} variant="primary" disabled={!ballotLength} sx={{ width: '100%' }}>
+          {`Submit Your Ballot (${ballotLength} Votes)`}
         </Button>
       </Flex>
       <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
@@ -212,7 +220,7 @@ export default function ({ activePolls }: Props): JSX.Element {
   );
 
   const View = () => {
-    switch (transaction && transaction.status) {
+    switch (transaction?.status || 'default') {
       // Is Init
       case 'initialized':
         return <Initialized />;
