@@ -61,13 +61,16 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   setError: (txId, error) => {
     const status = 'error';
     set(state => {
-      const transaction = state.transactions.find(tx => tx.id === txId);
-      invariant(transaction, `Unable to find tx id ${txId}`);
-      const errorType = transaction.hash ? 'failed' : 'not sent';
-      transaction.status = status;
-      transaction.error = error?.message ? parseTxError(error.message) : null;
-      transaction.errorType = errorType;
-      return state;
+      const transactionIndex = state.transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      state.transactions[transactionIndex] = {
+        ...state.transactions[transactionIndex],
+        status,
+        error: error?.message ? parseTxError(error.message) : null,
+        errorType: state.transactions[transactionIndex].hash ? 'failed' : 'not sent'
+      };
+
+      return { transactions: [...state.transactions] };
     });
   },
 

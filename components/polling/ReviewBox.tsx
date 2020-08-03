@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
+import invariant from 'tiny-invariant';
 
+import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
@@ -20,10 +22,13 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
     shallow
   );
 
-  const transaction = useTransactionStore(
-    state => (voteTxId ? state.getTransaction(voteTxId) : null),
-    shallow
-  );
+  const transaction = useTransactionStore(state => {
+    if (!voteTxId) return null;
+    const tx = state.transactions.find(tx => tx.id === voteTxId);
+    invariant(tx, `Unable to find tx id ${voteTxId}`);
+    return tx;
+  }, shallow);
+
   const ballotLength = Object.keys(ballot).length;
 
   const [votingWeightTotal] = useState(0);
@@ -163,16 +168,18 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
       <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
         Votes will update once the blockchain has confirmed the transaction.
       </Text>
-      <ExternalLink
-        target="_blank"
-        href={`http://www.etherscan.com/${transaction && transaction.hash}`}
-        sx={{ p: 0 }}
-      >
-        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-          View on Etherscan
-          <Icon name="arrowTopRight" pt={2} />
-        </Text>
-      </ExternalLink>
+      {transaction?.hash && (
+        <ExternalLink
+          target="_blank"
+          href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
+          sx={{ p: 0 }}
+        >
+          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+            View on Etherscan
+            <Icon name="arrowTopRight" pt={2} />
+          </Text>
+        </ExternalLink>
+      )}
       <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
         <Button
           mt={3}
