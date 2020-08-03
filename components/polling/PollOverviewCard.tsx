@@ -7,6 +7,7 @@ import invariant from 'tiny-invariant';
 
 import { isActivePoll, isRankedChoicePoll, getNumberWithOrdinal } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
+import { ABSTAIN } from '../../lib/constants';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
@@ -18,7 +19,7 @@ import useBallotStore from '../../stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 
-type Props = { poll: Poll; startMobileVoting: () => void };
+type Props = { poll: Poll; startMobileVoting?: () => void };
 export default function PollOverviewCard({ poll, startMobileVoting, ...props }: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -103,7 +104,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
           {isRankedChoicePoll(poll) ? (
             <RankedChoiceSelect {...{ poll, setChoice }} />
           ) : (
-            <SingleSelect {...{ poll, setChoice }} />
+            <SingleSelect {...{ poll, choice, setChoice }} />
           )}
           <Button
             variant="primaryOutline"

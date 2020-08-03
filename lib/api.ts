@@ -1,4 +1,4 @@
-import uniqBy from 'lodash.uniqby';
+import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';

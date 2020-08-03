@@ -2,13 +2,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { SupportedNetworks } from '../../lib/constants';
+
+import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
 
-type Props = { activePolls: Poll[]; network: SupportedNetworks };
-export default function ({ activePolls, network }: Props): JSX.Element {
+type Props = { activePolls: Poll[] };
+export default function ({ activePolls }: Props): JSX.Element {
   const ballot = useBallotStore(state => state.ballot);
   const submitBallot = useBallotStore(state => state.submitBallot);
   const txObj = useBallotStore(state => state.txObj);
@@ -164,7 +165,7 @@ export default function ({ activePolls, network }: Props): JSX.Element {
           <Icon name="arrowTopRight" pt={2} />
         </Text>
       </ExternalLink>
-      <Link href={{ pathname: '/polling', query: { network } }}>
+      <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
         <Button
           mt={3}
           mb={4}
@@ -196,7 +197,7 @@ export default function ({ activePolls, network }: Props): JSX.Element {
           {`Submit Your Ballot (${ballotLength()} Votes)`}
         </Button>
       </Flex>
-      <Link href={{ pathname: '/polling', query: { network } }}>
+      <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
         <Button
           mt={1}
           mb={4}
