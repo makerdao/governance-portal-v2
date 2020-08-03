@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState } from 'react';
 import { Text, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -27,9 +27,9 @@ const generateText = (endTime, endText) => {
   return `${hours}:${pad(minutes)}:${pad(timeLeft)} remaining`;
 };
 
-const CountdownTimer = ({ endDate, endText }: Props) => {
-  let [endTime, setEndTime] = useState<number>();
-  let [text, setText] = useState('');
+const CountdownTimer = ({ endDate, endText }: Props): JSX.Element => {
+  let [endTime, setEndTime] = useState<number>(); // eslint-disable-line prefer-const
+  let [text, setText] = useState(''); // eslint-disable-line prefer-const
 
   if (!text) {
     endTime = Math.floor(new Date(endDate).getTime() / 1000);
@@ -44,7 +44,7 @@ const CountdownTimer = ({ endDate, endText }: Props) => {
   }, 1000);
 
   return (
-    <Flex sx={{ alignItems: 'center', flexDirection: 'row' }}>
+    <Flex sx={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'nowrap' }}>
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
       <Text variant="caps" color={text !== endText ? 'mutedAlt' : 'secondary'}>
         {text}
