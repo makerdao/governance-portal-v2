@@ -16,39 +16,11 @@ import ReviewBox from '../../components/polling/ReviewBox';
 import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
 
-type Props = {
-  polls: Poll[];
-};
-
-const PollingReview = ({ polls }: Props) => {
-  const [startDate] = useState<Date | ''>('');
-  const [endDate] = useState<Date | ''>('');
-  const [categoryFilter] = useState<{ [category: string]: boolean }>(
-    polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
-  );
+const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const ballot = useBallotStore(state => state.ballot);
-
-  const network = getNetwork();
-
-  useEffect(() => {
-    if (location.href.includes('pollFilter=active')) {
-      // setFilterInactivePolls(true);
-    }
-  }, []);
-
-  const filteredPolls = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
-    return polls.filter(poll => {
-      if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-      if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      return categoryFilter[poll.category];
-    });
-  }, [polls, startDate, endDate, categoryFilter]);
-
-  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
-
   const account = useAccountsStore(state => state.currentAccount);
+
+  const activePolls = polls.filter(poll => isActivePoll(poll));
 
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -60,28 +32,28 @@ const PollingReview = ({ polls }: Props) => {
                 <Heading mb={3} as="h4">
                   Review Your Ballot
                 </Heading>
-                <Link href={{ pathname: '/polling', query: { network } }}>
+                <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
                   <Button mb={3} variant="smallOutline">
                     Back To All Polls
                   </Button>
                 </Link>
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                   {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(activePolls, pollId);
-                    poll && <PollOverviewCard key={poll && poll.multiHash} poll={poll} />;
+                    const poll = findPollById(polls, pollId);
+                    poll && <PollOverviewCard key={poll.multiHash} poll={poll} />;
                   })}
                 </Stack>
               </div>
             </Stack>
           </Box>
-          <Stack gap={3}>{account && <ReviewBox activePolls={activePolls} network={network} />}</Stack>
+          <Stack gap={3}>{account && <ReviewBox activePolls={activePolls} />}</Stack>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }) {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
