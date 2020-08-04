@@ -1,5 +1,4 @@
 import Maker from '@makerdao/dai';
-// @ts-ignore
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
@@ -17,7 +16,7 @@ export function networkToRpc(network: SupportedNetworks) {
     case SupportedNetworks.KOVAN:
       return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
     case SupportedNetworks.TESTNET:
-      return `http://localhost:2000`;
+      return 'http://localhost:2000';
     default:
       return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
   }
@@ -96,7 +95,7 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
 }
 
 let makerSingleton: Promise<Maker>;
-function getMaker() {
+function getMaker(): Promise<Maker> {
   if (!makerSingleton) {
     makerSingleton = Maker.create('http', {
       plugins: [
@@ -112,6 +111,9 @@ function getMaker() {
       },
       log: false,
       multicall: true
+    }).then(maker => {
+      if (typeof window !== 'undefined') (window as any).maker = maker;
+      return maker;
     });
   }
 

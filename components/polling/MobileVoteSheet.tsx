@@ -13,6 +13,7 @@ import { keyframes } from '@emotion/core';
 import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { getNetwork } from '../../lib/maker';
+import shallow from 'zustand/shallow';
 
 const pop = keyframes`
   from, to {
@@ -30,20 +31,41 @@ enum ViewState {
   NEXT
 }
 
-type Props = { poll: Poll; close: () => void; ballotCount: number; activePollCount: number };
-export default function MobileVoteSheet({ poll, close, ballotCount, activePollCount }: Props): JSX.Element {
-  const addToBallot = useBallotStore(state => state.addToBallot);
+type Props = {
+  poll: Poll;
+  setPoll: (poll: Poll) => void;
+  close: () => void;
+  ballotCount: number;
+  activePolls: Poll[];
+};
+export default function MobileVoteSheet({
+  poll,
+  setPoll,
+  close,
+  ballotCount,
+  activePolls
+}: Props): JSX.Element {
+  const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
   const [choice, setChoice] = useState<number | number[] | null>(null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(ViewState.INPUT);
   const router = useRouter();
   const network = getNetwork();
+  const total = activePolls.length;
 
   const submit = () => {
     invariant(isChoiceValid);
     addToBallot(poll.pollId, choice as number | number[]);
     setViewState(ViewState.ADDING);
     setTimeout(() => setViewState(ViewState.NEXT), 1800);
+  };
+
+  const goToNextPoll = () => {
+    setChoice(null);
+    const nextPoll = activePolls.find(p => !ballot[p.pollId]);
+    invariant(nextPoll);
+    setPoll(nextPoll);
+    setViewState(ViewState.INPUT);
   };
 
   return (
@@ -64,7 +86,7 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
         {viewState == ViewState.NEXT ? (
           <Stack gap={2}>
             <Text variant="caps">
-              {ballotCount} of {activePollCount} available polls added to ballot
+              {ballotCount} of {total} available polls added to ballot
             </Text>
             <Flex
               sx={{
@@ -74,7 +96,7 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
                 my: 2
               }}
             >
-              {range(activePollCount).map(i => (
+              {range(total).map(i => (
                 <Box
                   key={i}
                   sx={{
@@ -82,14 +104,18 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
                     borderLeft: i === 0 ? null : '2px solid white',
                     borderTopLeftRadius: i === 0 ? 'small' : null,
                     borderBottomLeftRadius: i === 0 ? 'small' : null,
-                    borderTopRightRadius: i === activePollCount - 1 ? 'small' : null,
-                    borderBottomRightRadius: i === activePollCount - 1 ? 'small' : null,
+                    borderTopRightRadius: i === total - 1 ? 'small' : null,
+                    borderBottomRightRadius: i === total - 1 ? 'small' : null,
                     backgroundColor: i < ballotCount ? 'primary' : 'muted'
                   }}
                 />
               ))}
             </Flex>
-            {ballotCount < activePollCount && <Button variant="outline">Next Poll</Button>}
+            {ballotCount < total && (
+              <Button variant="outline" onClick={goToNextPoll}>
+                Next Poll
+              </Button>
+            )}
             <Button
               variant="primary"
               onClick={() => router.push({ pathname: '/polling/review', query: network })}
