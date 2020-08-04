@@ -104,7 +104,7 @@ const QuickVote = ({ poll }: { poll: Poll }) => {
           {isRankedChoicePoll(poll) ? (
             <RankedChoiceSelect {...{ poll, setChoice }} />
           ) : (
-            <SingleSelect {...{ poll, choice, setChoice }} />
+            <SingleSelect {...{ poll, setChoice }} />
           )}
           <Button
             variant="primaryOutline"

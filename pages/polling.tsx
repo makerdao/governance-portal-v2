@@ -103,7 +103,12 @@ const PollingOverview = ({ polls }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       {mobileVotingPoll && (
-        <MobileVoteSheet poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
+        <MobileVoteSheet
+          ballotCount={ballotLength}
+          activePollCount={activePolls.length}
+          poll={mobileVotingPoll}
+          close={() => setMobileVotingPoll(null)}
+        />
       )}
       <Stack gap={3}>
         {bpi === 0 && account && (
