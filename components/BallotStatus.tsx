@@ -13,7 +13,6 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
-  console.log('account', account);
   return (
     <Flex
       sx={{

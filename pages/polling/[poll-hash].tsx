@@ -20,6 +20,7 @@ import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
+import SystemStats from '../../components/polling/SystemStatsVertical';
 import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
@@ -205,8 +206,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
           </Card>
         </div>
         <Stack gap={3}>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
+          <Card variant="compact">Voting</Card>
+          <SystemStats />
           <ResourceBox />
         </Stack>
       </SidebarLayout>
