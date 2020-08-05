@@ -5,6 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import invariant from 'tiny-invariant';
 
+import useBreakpoints from '../../lib/useBreakpoints';
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
@@ -29,16 +30,16 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
     return tx;
   }, shallow);
 
+  const bpi = useBreakpoints();
   const ballotLength = Object.keys(ballot).length;
 
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={[0, 0]}>
+    <Card variant="compact" p={0}>
       <Flex
         sx={{
-          justifyContent: 'center',
-          // alignItems: 'center',
+          justifyContent: ['center'],
           flexDirection: 'column'
         }}
       >
@@ -49,7 +50,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
 
   const Default = () => (
     <ReviewBoxCard>
-      <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
+      <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1', width: '100%' }}>
         <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
           {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
         </Text>
@@ -85,7 +86,8 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
         sx={{
           borderBottom: '1px solid #D4D9E1',
           justifyContent: 'space-between',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          width: '100%'
         }}
       >
         <Flex sx={{ flexDirection: 'row' }}>
@@ -94,26 +96,20 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
         </Flex>
         <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
       </Flex>
-      <Flex p={3} sx={{ flexDirection: 'column' }}>
-        {/* <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color='onSurface'>Estimated Gas Cost</Text>
-          <Text>{`Gas Cost`}</Text>
+      {bpi > 2 && (
+        <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
+          <Flex p={3} sx={{ flexDirection: 'column' }}>
+            <Button
+              onClick={submitBallot}
+              variant="primary"
+              disabled={!ballotLength || !!voteTxId}
+              sx={{ width: '100%' }}
+            >
+              Submit Your Ballot ({ballotLength}) Votes
+            </Button>
+          </Flex>
         </Flex>
-        <Flex pb={4} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color='onSurface'>Estimated Confirmation Time</Text>
-          <Text>{`Confirm Time`}</Text>
-        </Flex>  */}
-        {/*<Flex p={0} m={0} sx={{ flexDirection: 'column' }}>*/}
-        <Button
-          onClick={submitBallot}
-          variant="primary"
-          disabled={!ballotLength || !!voteTxId}
-          sx={{ width: '100%' }}
-        >
-          Submit Your Ballot ({ballotLength}) Votes
-        </Button>
-        {/*</Flex>*/}
-      </Flex>
+      )}
     </ReviewBoxCard>
   );
 
@@ -249,9 +245,11 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
 
   return (
     <Box>
-      <Heading mb={3} as="h4">
-        Submit Ballot
-      </Heading>
+      {bpi > 2 && (
+        <Heading mb={3} as="h4">
+          Submit Ballot
+        </Heading>
+      )}
       <View />
     </Box>
   );

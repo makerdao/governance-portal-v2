@@ -142,7 +142,7 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
           )}
           <Button
             variant="primaryOutline"
-            sx={{ width: 7 }}
+            sx={{ width: '100%' }}
             onClick={submit}
             mt={gap}
             disabled={!isChoiceValid}
