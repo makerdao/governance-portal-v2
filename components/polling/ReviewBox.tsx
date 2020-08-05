@@ -178,7 +178,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
         >
           <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
-            <Icon name="arrowTopRight" pt={2} />
+            <Icon name="arrowTopRight" pt={2} color="#447AFB" />
           </Text>
         </ExternalLink>
       )}

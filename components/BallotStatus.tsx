@@ -31,7 +31,7 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
       disabled={txId ? true : ballotLength ? false : true}
     >
       <Icon
-        name={ballotLength ? 'voteWhite' : 'vote'}
+        name={'ballot'}
         size={3}
         sx={{ color: ballotLength ? 'white' : 'textMuted', display: txId ? 'none' : null }}
       />
