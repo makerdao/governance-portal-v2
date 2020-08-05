@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { Text, Flex, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballot';
+import useAccountsStore from '../stores/accounts';
 
 type Props = {
   network: string;
@@ -9,15 +10,15 @@ type Props = {
 
 const BallotStatus = ({ network }: Props): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
+  const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
-
+  console.log('account', account);
   return (
     <Flex
       sx={{
         width: '193px',
         height: '36px',
-        ml: 5,
         mr: 3,
         borderRadius: 'round',
         justifyContent: 'center',
@@ -25,7 +26,7 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
         flexDirection: 'row',
         border: txId ? '1px solid #F9A606' : ballotLength ? null : '1px solid #D4D9E1',
         backgroundColor: txId ? 'white' : ballotLength ? 'primary' : 'white',
-        display: ['none', 'none', 'flex', 'flex']
+        display: account ? ['none', 'none', 'flex', 'flex'] : 'none !important'
       }}
       onClick={() => router.push({ pathname: '/polling/review', query: network })}
       disabled={txId ? true : ballotLength ? false : true}
