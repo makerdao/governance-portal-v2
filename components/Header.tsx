@@ -5,9 +5,10 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
+import BallotStatus from './BallotStatus';
 import { useState } from 'react';
 
-const Header = () => {
+const Header = (): JSX.Element => {
   const network = getNetwork();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -51,6 +52,7 @@ const Header = () => {
         <Link href={{ pathname: '/module', query: { network } }}>
           <NavLink p={2}>Module</NavLink>
         </Link>
+        <BallotStatus network={network} />
         <AccountSelect />
       </Menu>
     </header>
