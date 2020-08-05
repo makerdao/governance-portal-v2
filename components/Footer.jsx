@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { QRCode } from 'react-qr-svg';
+// import { QRCode } from 'react-qr-svg';
 import React from 'react';
 import Link from 'next/link';
 import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { translate } from '@makerdao/i18n-helper';
+import url from 'url';
 
 const FooterContainer = props => (
   <Container
@@ -80,8 +81,6 @@ const Icons = props => (
   </Flex>
 );
 
-const url = require('url');
-
 const withInternalLink = (InternalLinkComponent, host) => {
   class InternalLink extends React.Component {
     constructor(props) {
@@ -155,7 +154,7 @@ class LongFooter extends React.Component {
         if (httpRequest.status === 200) {
           this.setState({
             email: '',
-            message: `Thank you. You'll hear from us soon.`,
+            message: "Thank you. You'll hear from us soon.",
             subscribeState: 'success'
           });
         } else {
@@ -238,10 +237,10 @@ class LongFooter extends React.Component {
                 <Link to="https://oasis.app/">{t('Oasis')}</Link>
               </li>
               <li>
-                <Link to={`https://migrate.makerdao.com/`}>{t('Migrate')}</Link>
+                <Link to={'https://migrate.makerdao.com/'}>{t('Migrate')}</Link>
               </li>
               <li>
-                <Link to={`https://makerdao.com/en/ecosystem/`}>{t('Ecosystem')}</Link>
+                <Link to={'https://makerdao.com/en/ecosystem/'}>{t('Ecosystem')}</Link>
               </li>
               <li>
                 <Link to="https://makerdao.com/en/governance/">{t('Governance')}</Link>
@@ -279,7 +278,7 @@ class LongFooter extends React.Component {
             </LinkList>
           </div>
           <Box gridColumn={['1 / 3', '1 / 3', 'unset']}>
-            <Flex sx={{ width: '284px', flexDirection: 'row'}} mt="1.2rem">
+            <Flex sx={{ width: '284px', flexDirection: 'row' }} mt="1.2rem">
               <Input
                 maxWidth="320px"
                 py="xs"
@@ -301,28 +300,28 @@ class LongFooter extends React.Component {
                 errorMessage={(this.state.subscribeState === 'failure' || undefined) && this.state.message}
                 successMessage={(this.state.subscribeState === 'success' || undefined) && this.state.message}
               />
-                <Button
-                    variant="outline"
-                    type="submit"
-                    onClick={this.subscribeEmail}
-                    sx={{
-                      padding: '0px',
-                      paddingTop: '4px',
-                      width: '44px',
-                      border: '1px solid',
-                      borderColor: '#d5d9e0',
-                      borderLeft: 0,
-                      borderRadius: '0px 5px 5px 0px',
-                      ':hover': { borderColor: '#d5d9e0'},
-                      ':hover svg': { transform: 'translate(0.25rem)' },
-                      'svg': {
-                        margin: '0 auto',
-                        transition: 'transform 0.125s'
-                      }
-                    }}
-                  >
-                  <Icon name="subscribe_arrow"/>
-                </Button>
+              <Button
+                variant="outline"
+                type="submit"
+                onClick={this.subscribeEmail}
+                sx={{
+                  padding: '0px',
+                  paddingTop: '4px',
+                  width: '44px',
+                  border: '1px solid',
+                  borderColor: '#d5d9e0',
+                  borderLeft: 0,
+                  borderRadius: '0px 5px 5px 0px',
+                  ':hover': { borderColor: '#d5d9e0' },
+                  ':hover svg': { transform: 'translate(0.25rem)' },
+                  svg: {
+                    margin: '0 auto',
+                    transition: 'transform 0.125s'
+                  }
+                }}
+              >
+                <Icon name="subscribe_arrow" />
+              </Button>
             </Flex>
             <Icons gap="20px" mt="1.8rem" columns="repeat(7, 20px)">
               <Link to="https://twitter.com/MakerDAO">
@@ -339,7 +338,7 @@ class LongFooter extends React.Component {
               </Link>
               {/*<div>
                 <Icon
-                  name="we_chat"
+                  name='we_chat'
                   sx={{ cursor: 'pointer' }}
                   onClick={this.toggleWeChatModal}
                 />
@@ -377,7 +376,7 @@ class LongFooter extends React.Component {
   }
 }
 
-export default function Footer({ shorten = false } = {}) {
+export default function Footer({ shorten = false } = {}): JSX.Element {
   if (shorten) {
     return (
       <footer

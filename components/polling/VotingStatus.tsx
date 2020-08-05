@@ -32,7 +32,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, ...otherProps }) => {
   );
 };
 
-const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }) => {
+const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,

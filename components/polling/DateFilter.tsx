@@ -9,8 +9,13 @@ const displayDate = date => {
     return '';
   }
 };
-
-export default function({ startDate, endDate, setStartDate, setEndDate, ...props }) {
+type Props = {
+  startDate: number;
+  endDate: number;
+  setStartDate: (date: string) => void;
+  setEndDate: (date: string) => void;
+};
+export default function ({ startDate, endDate, setStartDate, setEndDate, ...props }: Props): JSX.Element {
   const startDateDisplay = displayDate(startDate);
   const endDateDisplay = displayDate(endDate);
   const startInput = useRef<HTMLInputElement>(null);

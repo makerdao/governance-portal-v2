@@ -49,8 +49,8 @@ const ProposalView = ({ proposal }: Props) => {
           <Tabs
             tabTitles={['Proposal Details', 'On-Chain Effects']}
             tabPanels={[
-              <div dangerouslySetInnerHTML={{ __html: proposal.content }} />,
-              <div sx={{ pt: 3 }}>
+              <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
+              <div key={2} sx={{ pt: 3 }}>
                 <Text as="h1" sx={{ pb: 2 }}>
                   Effects
                 </Text>
@@ -62,12 +62,12 @@ const ProposalView = ({ proposal }: Props) => {
                           ? `Effects resulting from this spell's execution on block ${new Bignumber(
                               stateDiff.executedOn
                             ).toFormat()}`
-                          : `Simulated effects if this spell were to be executed now`
-                        : `This spell has no on-chain effects`}
+                          : 'Simulated effects if this spell were to be executed now'
+                        : 'This spell has no on-chain effects'}
                     </Text>
                     <Stack gap={3}>
                       {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
-                        <Box>
+                        <Box key={label}>
                           <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</Text>
                           <Grid columns="max-content 1fr" sx={{ rowGap: 0, overflowX: 'scroll' }}>
                             {diffs.map(diff => (
@@ -75,7 +75,7 @@ const ProposalView = ({ proposal }: Props) => {
                                 <Text sx={{ fontWeight: 'semibold', fontSize: 3 }}>
                                   {diff.name}
                                   {diff.keys ? diff.keys.map(key => `[${key}]`) : ''}
-                                  {diff.field ? `.${diff.field}` : ``}
+                                  {diff.field ? `.${diff.field}` : ''}
                                 </Text>
                                 <Grid columns="18ch 3ch 18ch">
                                   <Text>

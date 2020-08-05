@@ -148,8 +148,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <Tabs
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
-                <div sx={{ pt: 3 }}>
+                <div key={1} dangerouslySetInnerHTML={{ __html: poll.content }} />,
+                <div key={2} sx={{ pt: 3 }}>
                   <Text as="h3" sx={{ pb: 2 }}>
                     Vote Breakdown
                   </Text>
@@ -212,7 +212,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   );
 };
 
-export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }) {
+export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();

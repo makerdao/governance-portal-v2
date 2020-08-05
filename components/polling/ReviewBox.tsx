@@ -96,11 +96,11 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
       </Flex>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
         {/* <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color="onSurface">Estimated Gas Cost</Text>
+          <Text color='onSurface'>Estimated Gas Cost</Text>
           <Text>{`Gas Cost`}</Text>
         </Flex>
         <Flex pb={4} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color="onSurface">Estimated Confirmation Time</Text>
+          <Text color='onSurface'>Estimated Confirmation Time</Text>
           <Text>{`Confirm Time`}</Text>
         </Flex>  */}
         {/*<Flex p={0} m={0} sx={{ flexDirection: 'column' }}>*/}

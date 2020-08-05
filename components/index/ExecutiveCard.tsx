@@ -14,11 +14,11 @@ type Props = {
   isHat: boolean;
 };
 
-export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
+export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX.Element {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(
-    [`/executive/mkr-support`, proposal.address],
+    ['/executive/mkr-support', proposal.address],
     (_, spellAddress) => getMaker().then(maker => maker.service('chief').getApprovalCount(spellAddress))
   );
 

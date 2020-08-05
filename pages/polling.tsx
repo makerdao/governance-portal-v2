@@ -207,7 +207,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
@@ -232,7 +232,14 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export async function getStaticProps() {
+type StaticProps = {
+  unstable_revalidate: number;
+  props: {
+    polls: Poll[];
+  };
+};
+
+export async function getStaticProps(): StaticProps {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 

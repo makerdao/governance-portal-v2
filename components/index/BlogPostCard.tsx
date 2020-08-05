@@ -5,7 +5,7 @@ type Props = {
   blogPost: BlogPost;
 };
 
-export default ({ blogPost, ...otherProps }: Props) => (
+export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
   <ExternalLink
     target="_blank"
     variant="card"

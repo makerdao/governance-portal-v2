@@ -193,7 +193,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   );
 };
 
-export default function Index({ proposals: prefetchedProposals, polls: prefetchedPolls, blogPosts }: Props) {
+export default function Index({
+  proposals: prefetchedProposals,
+  polls: prefetchedPolls,
+  blogPosts
+}: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>();
   const [_proposals, _setProposals] = useState<Proposal[]>();
@@ -235,7 +239,16 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
   );
 }
 
-export async function getStaticProps() {
+type StaticProps = {
+  unstable_revalidate: number;
+  props: {
+    proposals: Proposal[];
+    polls: Poll[];
+    blogPosts: BlogPost[];
+  };
+};
+
+export async function getStaticProps(): StaticProps {
   // fetch polls, proposals, blog posts at build-time
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),

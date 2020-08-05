@@ -45,23 +45,25 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <Heading as="h1">Executive Proposals</Heading>
-      {proposals.map(proposal => (
-        <SpellRow proposal={proposal} />
+      {proposals.map((proposal, index) => (
+        <SpellRow key={index} proposal={proposal} />
       ))}
     </PrimaryLayout>
   );
 };
 
-export default function ExecutiveOverviewPage({ proposals: prefetchedProposals }: { proposals: Proposal[] }) {
+export default function ExecutiveOverviewPage({
+  proposals: prefetchedProposals
+}: {
+  proposals: Proposal[];
+}): JSX.Element {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getExecutiveProposals()
-        .then(_setProposals)
-        .catch(setError);
+      getExecutiveProposals().then(_setProposals).catch(setError);
     }
   }, []);
 
@@ -81,7 +83,14 @@ export default function ExecutiveOverviewPage({ proposals: prefetchedProposals }
   );
 }
 
-export async function getStaticProps() {
+type StaticProps = {
+  unstable_revalidate: 'number';
+  props: {
+    proposals: Proposal[];
+  };
+};
+
+export async function getStaticProps(): StaticProps {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
 

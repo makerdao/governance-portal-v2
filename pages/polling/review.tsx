@@ -20,7 +20,7 @@ import useAccountsStore from '../../stores/accounts';
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const account = useAccountsStore(state => state.currentAccount);
-  const ballotLength = Object.keys(ballot).length;
+  // const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -56,7 +56,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
@@ -81,7 +81,13 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls:
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export async function getStaticProps() {
+type StaticProps = {
+  unstable_revalidate: number;
+  props: {
+    polls: Poll[];
+  };
+};
+export async function getStaticProps(): StaticProps {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 

@@ -1,7 +1,7 @@
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-export default function () {
+export default function (): JSX.Element {
   return (
     <Box mt={4}>
       <Heading mb={3} as="h4">
