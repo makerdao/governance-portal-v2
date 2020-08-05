@@ -20,6 +20,7 @@ import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
+import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import Skeleton from 'react-loading-skeleton';
@@ -203,9 +204,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <Stack>
+        <Stack gap={3}>
           <Card variant="compact">Card 1</Card>
           <Card variant="compact">Card 2</Card>
+          <ResourceBox />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
+import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
 import { Heading, Box, jsx, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
@@ -81,14 +82,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls:
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-type StaticProps = {
-  unstable_revalidate: number;
-  props: {
-    polls: Poll[];
-  };
-};
-
-export async function getStaticProps(): StaticProps {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 
@@ -98,4 +92,4 @@ export async function getStaticProps(): StaticProps {
       polls
     }
   };
-}
+};

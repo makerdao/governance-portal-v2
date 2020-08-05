@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { NavLink, Heading, Flex, Badge } from 'theme-ui';
@@ -83,14 +84,7 @@ export default function ExecutiveOverviewPage({
   );
 }
 
-type StaticProps = {
-  unstable_revalidate: 'number';
-  props: {
-    proposals: Proposal[];
-  };
-};
-
-export async function getStaticProps(): StaticProps {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
 
@@ -100,4 +94,4 @@ export async function getStaticProps(): StaticProps {
       proposals
     }
   };
-}
+};

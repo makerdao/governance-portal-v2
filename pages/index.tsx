@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
@@ -239,16 +240,7 @@ export default function Index({
   );
 }
 
-type StaticProps = {
-  unstable_revalidate: number;
-  props: {
-    proposals: Proposal[];
-    polls: Poll[];
-    blogPosts: BlogPost[];
-  };
-};
-
-export async function getStaticProps(): StaticProps {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls, proposals, blog posts at build-time
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
@@ -264,4 +256,4 @@ export async function getStaticProps(): StaticProps {
       blogPosts
     }
   };
-}
+};

@@ -3,7 +3,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-
+import { GetStaticProps } from 'next';
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, formatDateWithTime } from '../lib/utils';
@@ -232,14 +232,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): 
   return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-type StaticProps = {
-  unstable_revalidate: number;
-  props: {
-    polls: Poll[];
-  };
-};
-
-export async function getStaticProps(): StaticProps {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 
@@ -249,4 +242,4 @@ export async function getStaticProps(): StaticProps {
       polls
     }
   };
-}
+};
