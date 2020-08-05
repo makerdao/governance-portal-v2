@@ -120,6 +120,7 @@ function getMaker() {
 
 let networkSingleton: SupportedNetworks;
 function getNetwork(): SupportedNetworks {
+  console.log('network singleton:', networkSingleton);
   if (!networkSingleton) networkSingleton = determineNetwork();
   return networkSingleton;
 }
@@ -132,5 +133,9 @@ function isSupportedNetwork(_network: string): _network is SupportedNetworks {
   return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
 }
 
+function isTestnet(): boolean {
+  return getNetwork() === 'testnet';
+}
+
 export default getMaker;
-export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName };
+export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName, isTestnet };

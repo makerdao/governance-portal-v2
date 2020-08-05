@@ -9,11 +9,10 @@ import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
 import Poll from '../types/poll';
-import Proposal from '../types/proposal';
 import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
-import getMaker from './maker';
-import mockPolls from '../mocks/polls.json';
+import getMaker, { getNetwork } from './maker';
+import { addToCache } from './api';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -215,32 +214,12 @@ export const formatDateWithTime = dateString => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
-export async function initTestchainPolls() {
+export async function createTestPoll(voteType: 'Plurality Voting' | 'Ranked Choice IRV' = 'Ranked Choice IRV') {
   const maker = await getMaker();
-  const pollingService = maker.service('govPolling');
-  const hash = 'dummy hash';
-  const testTx = await pollingService.createPoll(_now(), _now() + 500000, hash, hash);
-
-  if (testTx !== 0) return;
-  console.log('setting up some polls on the testchain...');
-
-  return mockPolls.map(async poll => {
-    const id = await pollingService.createPoll(_now(), _now() + 50000, hash, poll.url);
-    console.log(`created poll #${id}`);
-  });
-}
-
-function _now() {
-  return Math.floor(new Date().getTime() / 1000) + 100;
-}
-
-// export async function getTestchainPolls() {
-//   // get all of the testchain polls and return them here
-//   const polls: Poll[] = [];
-//   return polls;
-// }
-
-export async function getTestchainProposals() {
-  const proposals: Proposal[] = [];
-  return proposals;
+  // todo: pass dates through and display on mock
+  const startDate = Math.floor(new Date().getTime() / 1000) + 100;
+  const endDate = startDate + 50000;
+  const pollId: number = await maker.service('govPolling').createPoll(startDate, endDate, 'hash', 'https://dai-dai-dai.now.sh/');
+  const pollInfo: Partial<Poll> = { pollId, voteType };
+  return await addToCache(pollInfo);
 }

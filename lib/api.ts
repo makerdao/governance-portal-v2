@@ -3,9 +3,9 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 
-import { markdownToHtml, timeoutPromise, backoffRetry, getTestchainProposals } from './utils';
+import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
-import getMaker, { getNetwork } from './maker';
+import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
 import Proposal from '../types/proposal';
 import BlogPost from '../types/blogPost';
@@ -17,10 +17,9 @@ let _cachedProposals: Proposal[];
  * Everytime after that, it returns from the cache.
  */
 export async function getExecutiveProposals(): Promise<Proposal[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
-  if (network === 'testnet') return getTestchainProposals();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/proposals.json');
   if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
   const proposals = topics
@@ -57,9 +56,15 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
-  const network = getNetwork();
-  if (process.env.NEXT_PUBLIC_USE_MOCK || network === 'testnet') return require('../mocks/polls.json');
-  if (_cachedPolls) return _cachedPolls;
+  const mockPolls = require('../mocks/polls.json');
+  if (process.env.NEXT_PUBLIC_USE_MOCK) return mockPolls;
+  console.log(isTestnet());
+  if (isTestnet() && !_cachedPolls) {
+    _cachedPolls = [mockPolls[mockPolls.length - 1]];
+    console.log('CACHED POLLS?:', _cachedPolls);
+  }
+  console.log('CACHED POLLS:', _cachedPolls);
+  if (_cachedPolls  || isTestnet()) return _cachedPolls;
 
   const maker = await getMaker();
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
@@ -118,6 +123,21 @@ export function parsePollsMetadata(pollList): Promise<Poll[]> {
       // newest to oldest
       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   );
+}
+
+// This is used to display mocked data for polls from the testchain
+export async function addToCache(createdPollInfo: Partial<Poll>) {
+  const pollMocks = require('../mocks/polls.json');
+  const mock: Poll = createdPollInfo.voteType === 'Ranked Choice IRV'
+    ? pollMocks[0]
+    : pollMocks[1]
+  const poll: Poll = {
+    ...mock,
+    ...createdPollInfo
+  }
+
+  _cachedPolls.push(poll);
+  return await getPolls();
 }
 
 export async function getPoll(slug: string): Promise<Poll> {

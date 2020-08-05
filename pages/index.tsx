@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork, isTestnet } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
 import Stack from '../components/layouts/Stack';
@@ -19,7 +19,7 @@ import BlogPostCard from '../components/index/BlogPostCard';
 import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
-import { initTestchainPolls } from '../lib/utils';
+import { createTestPoll } from '../lib/utils';
 
 type Props = {
   proposals: Proposal[];
@@ -193,6 +193,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   );
 };
 
+declare global {
+  interface Window {
+    createTestPoll: Function
+  }
+}
+
 export default function Index({ proposals: prefetchedProposals, polls: prefetchedPolls, blogPosts }: Props) {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>();
@@ -201,10 +207,6 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    async function initTestchain() {
-      if (getNetwork() === 'testnet') await initTestchainPolls();
-    }
-    initTestchain();
     if (!isDefaultNetwork()) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
@@ -213,13 +215,15 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
         })
         .catch(setError);
     }
+    // set createTestPoll as property of `window` for use in browser  
+    window.createTestPoll = createTestPoll;
   }, []);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_proposals))
+  if (!isDefaultNetwork() && !isTestnet() && (!_polls || !_proposals))
     return (
       <PrimaryLayout>
         <p>Loading…</p>
