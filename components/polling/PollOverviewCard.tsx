@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
+import isNil from 'lodash/isNil';
 
 import { isActivePoll, isRankedChoicePoll, getNumberWithOrdinal } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
@@ -32,6 +33,9 @@ export default function PollOverviewCard({
   const bpi = useBreakpoints();
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
+  const ballot = useBallotStore(state => state.ballot);
+  const onBallot = !isNil(ballot[poll.pollId]?.option);
+
   return (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
       <Stack gap={2}>
@@ -65,7 +69,22 @@ export default function PollOverviewCard({
         </Text>
         {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
-          {canVote && bpi === 0 && (
+          {canVote && bpi === 0 && onBallot ? (
+            <Button
+              variant="outline"
+              mr={2}
+              onClick={startMobileVoting}
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                alignItems: 'center'
+              }}
+            >
+              <Icon name="edit" size={3} mr={2} />
+              Edit Choices
+            </Button>
+          ) : (
             <Button variant="primary" mr={2} onClick={startMobileVoting}>
               Vote
             </Button>
@@ -79,7 +98,7 @@ export default function PollOverviewCard({
               variant="outline"
               sx={{
                 display: reviewing ? 'none' : null,
-                border: '1px solid #231536',
+                borderColor: 'secondaryAlt',
                 color: 'secondaryAlt'
               }}
             >
@@ -177,7 +196,7 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) =>
         sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', mt: 3 }}
       >
         <Icon name="edit" size={3} mr={1} />
-        Edit choice
+        Edit choices
       </Button>
     </Box>
   );
