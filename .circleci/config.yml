@@ -30,6 +30,7 @@ jobs:
           command: |
             source /home/circleci/setup-env.sh
             yarn test:ci
+            yarn build
             npm i --no-save codecov
             ./node_modules/.bin/codecov
 
