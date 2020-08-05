@@ -47,10 +47,14 @@ const Header = (): JSX.Element => {
           <NavLink p={2}>Polling</NavLink>
         </Link>
         <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={2}>Executive</NavLink>
+          <NavLink p={2} sx={{ ml: [0, 5] }}>
+            Executive
+          </NavLink>
         </Link>
         <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={2}>Module</NavLink>
+          <NavLink p={2} sx={{ ml: [0, 5] }}>
+            Module
+          </NavLink>
         </Link>
         <BallotStatus network={network} />
         <AccountSelect />

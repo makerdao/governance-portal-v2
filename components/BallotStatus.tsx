@@ -24,7 +24,8 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
         alignItems: 'center',
         flexDirection: 'row',
         border: txId ? '1px solid #F9A606' : ballotLength ? null : '1px solid #D4D9E1',
-        backgroundColor: txId ? 'white' : ballotLength ? 'primary' : 'white'
+        backgroundColor: txId ? 'white' : ballotLength ? 'primary' : 'white',
+        display: ['none', 'none', 'flex', 'flex']
       }}
       onClick={() => router.push({ pathname: '/polling/review', query: network })}
       disabled={txId ? true : ballotLength ? false : true}
