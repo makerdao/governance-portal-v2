@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { Heading, Box, jsx, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
+import invariant from 'tiny-invariant';
 
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls } from '../../lib/api';
@@ -40,13 +41,14 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
                   {Object.keys(ballot).map(pollId => {
                     const poll = findPollById(polls, pollId);
-                    poll && <PollOverviewCard key={poll.multiHash} poll={poll} />;
+                    invariant(poll !== undefined, 'Unkown poll found on voter ballot');
+                    return <PollOverviewCard key={poll.multiHash} poll={poll} />;
                   })}
                 </Stack>
               </div>
             </Stack>
           </Box>
-          <Stack gap={3}>{account && <ReviewBox activePolls={activePolls} />}</Stack>
+          <Stack gap={3}>{!!account && <ReviewBox activePolls={activePolls} />}</Stack>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
