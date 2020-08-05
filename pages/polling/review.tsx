@@ -87,6 +87,7 @@ type StaticProps = {
     polls: Poll[];
   };
 };
+
 export async function getStaticProps(): StaticProps {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
