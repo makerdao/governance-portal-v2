@@ -33,19 +33,8 @@ export default function PollOverviewCard({
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
   return (
-    <Flex
-      sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary', p: 4 }}
-      {...props}
-    >
-      <Flex
-        sx={{
-          width: '100%',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          flexWrap: 'nowrap'
-        }}
-        {...props}
-      >
+    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
+      <Stack gap={2}>
         {bpi === 0 && (
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
@@ -57,7 +46,9 @@ export default function PollOverviewCard({
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
+            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto', lineHeight: '1' }}>
+              {poll.title}
+            </Text>
           </Link>
         </Box>
         <Text
@@ -72,11 +63,7 @@ export default function PollOverviewCard({
         >
           {poll.summary}
         </Text>
-        {bpi > 0 && (
-          <Box sx={{ mt: 2, mb: 3 }}>
-            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-          </Box>
-        )}
+        {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
         <Flex sx={{ alignItems: 'center' }}>
           {canVote && bpi === 0 && (
             <Button variant="primary" mr={2} onClick={startMobileVoting}>
@@ -102,7 +89,7 @@ export default function PollOverviewCard({
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'mutedAlt' }} />}
           <VotingStatus sx={{ display: reviewing ? 'none' : ['none', 'block'] }} poll={poll} />
         </Flex>
-      </Flex>
+      </Stack>
       {showQuickVote && <QuickVote poll={poll} sending={sending} />}
     </Flex>
   );
@@ -120,7 +107,6 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
     setEditing(false);
   };
 
-  // TODO show icon next to Your Vote for ranked choice
   const gap = 2;
   return (
     <Stack gap={gap} ml={5} sx={{ maxWidth: 7 }}>

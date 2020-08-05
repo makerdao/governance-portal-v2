@@ -27,7 +27,7 @@ const generateText = (endTime, endText) => {
   return `${hours}:${pad(minutes)}:${pad(timeLeft)} remaining`;
 };
 
-const CountdownTimer = ({ endDate, endText }: Props): JSX.Element => {
+const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
   let [endTime, setEndTime] = useState<number>(); // eslint-disable-line prefer-const
   let [text, setText] = useState(''); // eslint-disable-line prefer-const
 
@@ -44,7 +44,7 @@ const CountdownTimer = ({ endDate, endText }: Props): JSX.Element => {
   }, 1000);
 
   return (
-    <Flex sx={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'nowrap' }}>
+    <Flex sx={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'nowrap' }} {...props}>
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
       <Text variant="caps" color={text !== endText ? 'mutedAlt' : 'secondary'}>
         {text}
