@@ -114,7 +114,7 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
         <Text variant="caps" color="mutedAlt">
           Your Vote
         </Text>
-        <Icon color="#7E7E88" name="stackedVotes" size={3} ml={2} />
+        {isRankedChoicePoll(poll) && <Icon name="stackedVotes" size={3} ml={2} />}
       </Flex>
 
       {!!addedChoice && !editing ? (

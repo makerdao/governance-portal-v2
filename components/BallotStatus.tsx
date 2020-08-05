@@ -2,12 +2,10 @@ import { useRouter } from 'next/router';
 import { Text, Button, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballot';
-import useAccountsStore from '../stores/accounts';
 import { getNetwork } from '../lib/maker';
 
 const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
-  const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
   const network = getNetwork();
@@ -30,7 +28,7 @@ const BallotStatus = (props: any): JSX.Element => {
       {...props}
     >
       <Icon
-        name={'ballot'}
+        name="ballot"
         size={3}
         sx={{ color: ballotLength ? 'white' : 'textMuted', display: txId ? 'none' : null }}
       />
