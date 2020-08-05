@@ -1,33 +1,33 @@
 import { useRouter } from 'next/router';
-import { Text, Flex, Spinner } from 'theme-ui';
+import { Text, Button, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
+import { getNetwork } from '../lib/maker';
 
-type Props = {
-  network: string;
-};
-
-const BallotStatus = ({ network }: Props): JSX.Element => {
+const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
+  const network = getNetwork();
+
   return (
-    <Flex
+    <Button
+      variant={ballotLength && !txId ? 'primary' : 'outline'}
       sx={{
-        width: '193px',
-        height: '36px',
-        mr: 3,
         borderRadius: 'round',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         border: txId ? '1px solid #F9A606' : ballotLength ? null : '1px solid #D4D9E1',
-        backgroundColor: txId ? 'white' : ballotLength ? 'primary' : 'white',
-        display: account ? ['none', 'none', 'flex', 'flex'] : 'none !important'
+        display: 'flex'
       }}
-      onClick={() => router.push({ pathname: '/polling/review', query: network })}
+      onClick={() => {
+        if (txId || !ballotLength) return;
+        router.push({ pathname: '/polling/review', query: network });
+      }}
+      {...props}
     >
       <Icon
         name={'ballot'}
@@ -45,7 +45,7 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
       >
         {txId ? 'Vote Pending' : `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`}
       </Text>
-    </Flex>
+    </Button>
   );
 };
 

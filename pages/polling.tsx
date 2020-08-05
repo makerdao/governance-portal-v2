@@ -22,8 +22,8 @@ import useBreakpoints from '../lib/useBreakpoints';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
-import { useRouter } from 'next/router';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
+import BallotStatus from '../components/BallotStatus';
 
 type Props = {
   polls: Poll[];
@@ -42,7 +42,6 @@ const PollingOverview = ({ polls }: Props) => {
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpoints();
-  const router = useRouter();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
@@ -112,21 +111,7 @@ const PollingOverview = ({ polls }: Props) => {
         />
       )}
       <Stack gap={3}>
-        {bpi === 0 && account && (
-          <Button
-            variant={ballotLength ? 'primary' : 'outline'}
-            sx={{
-              borderRadius: 'round',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onClick={() => ballotLength && router.push({ pathname: '/polling/review', query: network })}
-          >
-            <Icon name="ballot" size={3} mr={2} />
-            Your Ballot: {ballotLength} vote{ballotLength === 1 ? '' : 's'}
-          </Button>
-        )}
+        {bpi === 0 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
           <Heading as="h1" mr={3}>
             Filters
