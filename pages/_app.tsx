@@ -31,7 +31,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     });
 
     // if the network is specified in the url, set as global
-    console.log('hello im here lol');
     (global as any).__TESTNET__ = !!window.location.search.includes('testnet');
   }, []);
 

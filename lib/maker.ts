@@ -122,7 +122,6 @@ function getMaker(): Promise<Maker> {
 
 let networkSingleton: SupportedNetworks;
 function getNetwork(): SupportedNetworks {
-  console.log('network singleton:', networkSingleton);
   if (!networkSingleton) networkSingleton = determineNetwork();
   return networkSingleton;
 }
