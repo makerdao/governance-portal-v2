@@ -30,8 +30,8 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, setStartDate] = useState<Date | ''>('');
-  const [endDate, setEndDate] = useState<Date | ''>('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(

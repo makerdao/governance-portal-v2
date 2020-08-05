@@ -10,10 +10,10 @@ const displayDate = date => {
   }
 };
 type Props = {
-  startDate: number;
-  endDate: number;
-  setStartDate: (date: string) => void;
-  setEndDate: (date: string) => void;
+  startDate: Date | null;
+  endDate: Date | null;
+  setStartDate: (date: Date | null) => void;
+  setEndDate: (date: Date | null) => void;
 };
 export default function ({ startDate, endDate, setStartDate, setEndDate, ...props }: Props): JSX.Element {
   const startDateDisplay = displayDate(startDate);
@@ -22,9 +22,9 @@ export default function ({ startDate, endDate, setStartDate, setEndDate, ...prop
   const endInput = useRef<HTMLInputElement>(null);
 
   const reset = () => {
-    setStartDate('');
+    setStartDate(null);
     if (startInput.current) startInput.current.value = '';
-    setEndDate('');
+    setEndDate(null);
     if (endInput.current) endInput.current.value = '';
   };
 

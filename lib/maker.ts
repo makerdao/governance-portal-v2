@@ -1,4 +1,5 @@
 import Maker from '@makerdao/dai';
+// @ts-ignore
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';

@@ -21,8 +21,8 @@ type Props = {
   href?: string;
 };
 
-const PollingIndicator = forwardRef(
-  ({ account, activePolls, unvotedPolls, href }: Props, ref): JSX.Element => {
+const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
+  ({ account, activePolls, unvotedPolls, href }, ref): JSX.Element => {
     let message: string | undefined;
     let pollsToBeAwareOf = 0;
 

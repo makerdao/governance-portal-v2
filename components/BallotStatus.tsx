@@ -28,7 +28,6 @@ const BallotStatus = ({ network }: Props): JSX.Element => {
         display: account ? ['none', 'none', 'flex', 'flex'] : 'none !important'
       }}
       onClick={() => router.push({ pathname: '/polling/review', query: network })}
-      disabled={txId ? true : ballotLength ? false : true}
     >
       <Icon
         name={'ballot'}
