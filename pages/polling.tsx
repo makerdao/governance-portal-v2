@@ -105,8 +105,9 @@ const PollingOverview = ({ polls }: Props) => {
       {mobileVotingPoll && (
         <MobileVoteSheet
           ballotCount={ballotLength}
-          activePollCount={activePolls.length}
+          activePolls={activePolls}
           poll={mobileVotingPoll}
+          setPoll={setMobileVotingPoll}
           close={() => setMobileVotingPoll(null)}
         />
       )}
