@@ -376,7 +376,7 @@ class LongFooter extends React.Component {
   }
 }
 
-export default function Footer({ shorten = false } = {}): JSX.Element {
+export default ({ shorten = false }: { shorten: boolean }): JSX.Element => {
   if (shorten) {
     return (
       <footer
@@ -410,4 +410,4 @@ export default function Footer({ shorten = false } = {}): JSX.Element {
   } else {
     return <LongFooter />;
   }
-}
+};
