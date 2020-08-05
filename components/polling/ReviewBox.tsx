@@ -34,11 +34,11 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={0}>
+    <Card variant="compact" p={[0, 0]}>
       <Flex
         sx={{
           justifyContent: 'center',
-          alignItems: 'center',
+          // alignItems: 'center',
           flexDirection: 'column'
         }}
       >
@@ -103,23 +103,25 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
           <Text color="onSurface">Estimated Confirmation Time</Text>
           <Text>{`Confirm Time`}</Text>
         </Flex>  */}
-        <Flex p={3} sx={{ flexDirection: 'column' }}>
-          <Button
-            onClick={submitBallot}
-            variant="primary"
-            disabled={!ballotLength || !!voteTxId}
-            sx={{ width: '100%' }}
-          >
-            Submit Your Ballot ({ballotLength}) Votes
-          </Button>
-        </Flex>
+        {/*<Flex p={0} m={0} sx={{ flexDirection: 'column' }}>*/}
+        <Button
+          onClick={submitBallot}
+          variant="primary"
+          disabled={!ballotLength || !!voteTxId}
+          sx={{ width: '100%' }}
+        >
+          Submit Your Ballot ({ballotLength}) Votes
+        </Button>
+        {/*</Flex>*/}
       </Flex>
     </ReviewBoxCard>
   );
 
   const Initialized = () => (
     <ReviewBoxCard>
-      <Icon name="pencil" size={5} mt={4} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="pencil" size={4} mt={4} />
+      </Flex>
       <Text
         mt={3}
         px={4}

@@ -17,11 +17,10 @@ import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
-  const ballot = useBallotStore(state => state.ballot);
+  const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const account = useAccountsStore(state => state.currentAccount);
-
+  const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
-
   return (
     <PrimaryLayout shortenFooter={true}>
       <Stack gap={3}>
@@ -37,11 +36,15 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     Back To All Polls
                   </Button>
                 </Link>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(polls, pollId);
-                    poll && <PollOverviewCard key={poll.multiHash} poll={poll} />;
-                  })}
+                <Stack sx={{ mb: 4, display: ballotLength ? null : 'none' }}>
+                  <Box>
+                    {Object.keys(ballot).map(pollId => {
+                      const poll = activePolls.find(elem => elem.pollId === parseInt(pollId));
+                      if (poll) {
+                        return <PollOverviewCard key={pollId} poll={poll} reviewing={true} sending={txId} />;
+                      }
+                    })}
+                  </Box>
                 </Stack>
               </div>
             </Stack>
