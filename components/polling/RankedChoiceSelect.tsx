@@ -38,7 +38,6 @@ export default function RankedChoiceSelect({
     [numConfirmed]
   );
 
-  console.log(choice[numConfirmed], availableChoices);
   return (
     <Box {...props}>
       <Stack gap={2}>
