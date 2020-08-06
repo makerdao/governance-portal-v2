@@ -41,7 +41,9 @@ export default function PollOverviewCard({ poll, startMobileVoting, ...props }: 
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text sx={{ fontSize: [3, 4], whiteSpace: 'nowrap', overflowX: 'auto' }}>{poll.title}</Text>
+            <Text variant="microHeading" sx={{ fontSize: [3, 5], whiteSpace: 'nowrap', overflowX: 'auto' }}>
+              {poll.title}
+            </Text>
           </Link>
         </Box>
         <Text
@@ -50,7 +52,7 @@ export default function PollOverviewCard({ poll, startMobileVoting, ...props }: 
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: [2, 3],
-            opacity: 0.8
+            color: 'onSecondary'
           }}
         >
           {poll.summary}

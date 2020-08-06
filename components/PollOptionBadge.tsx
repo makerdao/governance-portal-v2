@@ -22,12 +22,10 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
         hasPollEnded ? (
           <Badge
             ml="3"
-            px="14px"
             variant="primary"
             sx={{
               borderColor: 'inherit',
-              color: 'inherit',
-              textTransform: 'uppercase'
+              color: 'inherit'
             }}
           >
             Winning Option: {tally.winningOptionName}
@@ -35,7 +33,6 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
         ) : (
           <Badge
             ml="3"
-            px="14px"
             variant="primary"
             sx={{
               borderColor: 'text',

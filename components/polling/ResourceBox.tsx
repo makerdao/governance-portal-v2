@@ -3,8 +3,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 export default function () {
   return (
-    <Box mt={4}>
-      <Heading mb={3} as="h4">
+    <Box mt={5}>
+      <Heading mb={3} variant="microHeading">
         Resources
       </Heading>
       <Card variant="compact">
@@ -12,7 +12,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Governance Forum
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
@@ -20,7 +20,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Governance FAQs
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
@@ -28,7 +28,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Governance Risk Framework
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
@@ -36,7 +36,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Awesome MakerDAO
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
@@ -47,7 +47,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               Governance call schedule
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>
@@ -58,7 +58,7 @@ export default function () {
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
               MakerDAO events calendar
-              <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
+              <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </Flex>
         </ExternalLink>

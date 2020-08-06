@@ -48,6 +48,7 @@ const PollPreviewCard = ({ poll, ...props }: Props) => {
           >
             <Text
               sx={{
+                variant: 'microHeading',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
