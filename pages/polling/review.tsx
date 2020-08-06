@@ -19,6 +19,7 @@ import Poll from '../../types/poll';
 import ReviewBox from '../../components/polling/ReviewBox';
 import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
+import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const bpi = useBreakpointIndex();
@@ -30,6 +31,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
@@ -48,6 +50,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
+      {mobileVotingPoll && (
+        <MobileVoteSheet editingOnly poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
+      )}
       <Stack gap={3} sx={{ mb: 4 }}>
         <Heading mb={3} as="h4">
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
@@ -72,25 +77,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                       poll={poll}
                       reviewing={true}
                       sending={txId}
-                      sx={
-                        index === 0
-                          ? {
-                              borderBottomLeftRadius: '0 !important',
-                              borderBottomRightRadius: '0 !important',
-                              borderBottom: '0 !important'
-                            }
-                          : index === ballotLength - 1
-                          ? {
-                              borderTopLeftRadius: '0 !important',
-                              borderTopRightRadius: '0 !important',
-                              mt: '0 !important'
-                            }
-                          : {
-                              borderRadius: '0 !important',
-                              borderBottom: '0 !important',
-                              mt: '0 !important'
-                            }
-                      }
+                      startMobileVoting={() => setMobileVotingPoll(poll)}
+                      sx={cardStyles(index, ballotLength)}
                     />
                   );
                 })}
@@ -112,7 +100,26 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
+const cardStyles = (index, ballotLength) =>
+  index === 0
+    ? {
+        borderBottomLeftRadius: '0 !important',
+        borderBottomRightRadius: '0 !important',
+        borderBottom: '0 !important'
+      }
+    : index === ballotLength - 1
+    ? {
+        borderTopLeftRadius: '0 !important',
+        borderTopRightRadius: '0 !important',
+        mt: '0 !important'
+      }
+    : {
+        borderRadius: '0 !important',
+        borderBottom: '0 !important',
+        mt: '0 !important'
+      };
+
+export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 

@@ -24,17 +24,19 @@ enum ViewState {
 
 type Props = {
   poll: Poll;
-  setPoll: (poll: Poll) => void;
   close: () => void;
-  ballotCount: number;
-  activePolls: Poll[];
+  setPoll?: (poll: Poll) => void;
+  ballotCount?: number;
+  activePolls?: Poll[];
+  editingOnly?: boolean;
 };
 export default function MobileVoteSheet({
   poll,
   setPoll,
   close,
-  ballotCount,
-  activePolls
+  ballotCount = 0,
+  activePolls = [],
+  editingOnly
 }: Props): JSX.Element {
   const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
   const [choice, setChoice] = useState<number | number[] | null>(null);
@@ -47,14 +49,17 @@ export default function MobileVoteSheet({
   const submit = () => {
     invariant(isChoiceValid);
     addToBallot(poll.pollId, choice as number | number[]);
-    setViewState(ViewState.ADDING);
-    // setTimeout(() => setViewState(ViewState.NEXT), 1800);
+    if (editingOnly) {
+      close();
+    } else {
+      setViewState(ViewState.ADDING);
+    }
   };
 
   const goToNextPoll = () => {
     setChoice(null);
     const nextPoll = activePolls.find(p => !ballot[p.pollId]);
-    invariant(nextPoll);
+    invariant(nextPoll && setPoll);
     setPoll(nextPoll);
     setViewState(ViewState.INPUT);
   };
@@ -130,7 +135,7 @@ export default function MobileVoteSheet({
               onClick={submit}
               disabled={!isChoiceValid || viewState == ViewState.ADDING}
             >
-              Add vote to ballot
+              {editingOnly ? 'Update vote' : 'Add vote to ballot'}
             </Button>
           </Stack>
         )}
