@@ -2,27 +2,19 @@
 import { Text, Button, jsx, Box, Flex } from 'theme-ui';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { isRankedChoicePoll } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import { keyframes } from '@emotion/core';
 import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { getNetwork } from '../../lib/maker';
-
-const pop = keyframes`
-  from, to {
-    transform: scale(1);
-  }
-
-  25% {
-    transform: scale(1.2);
-  }
-`;
+import shallow from 'zustand/shallow';
+import lottie from 'lottie-web';
+import ballotAnimation from './ballotAnimation.json';
 
 enum ViewState {
   INPUT,
@@ -30,20 +22,46 @@ enum ViewState {
   NEXT
 }
 
-type Props = { poll: Poll; close: () => void; ballotCount: number; activePollCount: number };
-export default function MobileVoteSheet({ poll, close, ballotCount, activePollCount }: Props): JSX.Element {
-  const addToBallot = useBallotStore(state => state.addToBallot);
-  const [choice, setChoice] = useState<number | number[] | null>(null);
+type Props = {
+  poll: Poll;
+  close: () => void;
+  setPoll?: (poll: Poll) => void;
+  ballotCount?: number;
+  activePolls?: Poll[];
+  editingOnly?: boolean;
+};
+export default function MobileVoteSheet({
+  poll,
+  setPoll,
+  close,
+  ballotCount = 0,
+  activePolls = [],
+  editingOnly
+}: Props): JSX.Element {
+  const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
+  const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(ViewState.INPUT);
   const router = useRouter();
   const network = getNetwork();
+  const total = activePolls.length;
 
   const submit = () => {
     invariant(isChoiceValid);
     addToBallot(poll.pollId, choice as number | number[]);
-    setViewState(ViewState.ADDING);
-    setTimeout(() => setViewState(ViewState.NEXT), 1800);
+    if (editingOnly) {
+      close();
+    } else {
+      setViewState(ViewState.ADDING);
+    }
+  };
+
+  const goToNextPoll = () => {
+    setChoice(null);
+    const nextPoll = activePolls.find(p => !ballot[p.pollId]);
+    invariant(nextPoll && setPoll);
+    setPoll(nextPoll);
+    setViewState(ViewState.INPUT);
   };
 
   return (
@@ -64,7 +82,7 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
         {viewState == ViewState.NEXT ? (
           <Stack gap={2}>
             <Text variant="caps">
-              {ballotCount} of {activePollCount} available polls added to ballot
+              {ballotCount} of {total} available polls added to ballot
             </Text>
             <Flex
               sx={{
@@ -74,7 +92,7 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
                 my: 2
               }}
             >
-              {range(activePollCount).map(i => (
+              {range(total).map(i => (
                 <Box
                   key={i}
                   sx={{
@@ -82,14 +100,18 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
                     borderLeft: i === 0 ? null : '2px solid white',
                     borderTopLeftRadius: i === 0 ? 'small' : null,
                     borderBottomLeftRadius: i === 0 ? 'small' : null,
-                    borderTopRightRadius: i === activePollCount - 1 ? 'small' : null,
-                    borderBottomRightRadius: i === activePollCount - 1 ? 'small' : null,
+                    borderTopRightRadius: i === total - 1 ? 'small' : null,
+                    borderBottomRightRadius: i === total - 1 ? 'small' : null,
                     backgroundColor: i < ballotCount ? 'primary' : 'muted'
                   }}
                 />
               ))}
             </Flex>
-            {ballotCount < activePollCount && <Button variant="outline">Next Poll</Button>}
+            {ballotCount < total && (
+              <Button variant="outline" onClick={goToNextPoll}>
+                Next Poll
+              </Button>
+            )}
             <Button
               variant="primary"
               onClick={() => router.push({ pathname: '/polling/review', query: network })}
@@ -102,31 +124,18 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
             <Text variant="subheading">{poll.title}</Text>
             <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
             {viewState == ViewState.ADDING ? (
-              <Stack gap={2} sx={{ alignItems: 'center' }}>
-                <Text variant="subheading" color="primary">
-                  Added to Ballot
-                </Text>
-                <div
-                  sx={{
-                    backgroundImage: 'url(/assets/success-end.png)',
-                    backgroundSize: 'cover',
-                    height: '80px',
-                    width: '80px',
-                    animation: `${pop} 1s ease 0s normal 1`
-                  }}
-                />
-              </Stack>
+              <AddingView done={() => setViewState(ViewState.NEXT)} />
             ) : isRankedChoicePoll(poll) ? (
-              <RankedChoiceSelect {...{ poll, setChoice }} />
+              <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
             ) : (
-              <SingleSelect {...{ poll, setChoice }} />
+              <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
             )}
             <Button
               variant="primary"
               onClick={submit}
               disabled={!isChoiceValid || viewState == ViewState.ADDING}
             >
-              Add vote to ballot
+              {editingOnly ? 'Update vote' : 'Add vote to ballot'}
             </Button>
           </Stack>
         )}
@@ -134,3 +143,22 @@ export default function MobileVoteSheet({ poll, close, ballotCount, activePollCo
     </DialogOverlay>
   );
 }
+
+const AddingView = ({ done }: { done: () => void }) => {
+  useEffect(() => {
+    const animation = lottie.loadAnimation({
+      container: document.getElementById('ballot-animation-container') as HTMLElement,
+      loop: false,
+      autoplay: true,
+      animationData: ballotAnimation
+    });
+
+    animation.addEventListener('complete', () => setTimeout(done, 200));
+  }, []);
+
+  return (
+    <Stack gap={2} sx={{ alignItems: 'center' }}>
+      <div sx={{ height: '160px', width: '100%' }} id="ballot-animation-container" />
+    </Stack>
+  );
+};

@@ -21,56 +21,58 @@ type Props = {
   href?: string;
 };
 
-const PollingIndicator = forwardRef(({ account, activePolls, unvotedPolls, href }: Props, ref: any) => {
-  let message: string | undefined;
-  let pollsToBeAwareOf = 0;
+const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
+  ({ account, activePolls, unvotedPolls, href }, ref): JSX.Element => {
+    let message: string | undefined;
+    let pollsToBeAwareOf = 0;
 
-  if (account) {
-    invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
-    pollsToBeAwareOf = unvotedPolls.length;
-    message =
-      unvotedPolls.length > 0
-        ? 'Live Governance polls available for voting'
-        : activePolls.length > 0
-        ? 'Congratulations, you have voted on all current Governance Polls'
-        : 'There are no live Governance Polls at the moment';
-  } else {
-    pollsToBeAwareOf = activePolls.length;
-    message =
-      activePolls.length > 0 ? 'New polling votes' : 'There are no live Governance Polls at the moment';
+    if (account) {
+      invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
+      pollsToBeAwareOf = unvotedPolls.length;
+      message =
+        unvotedPolls.length > 0
+          ? 'Live Governance polls available for voting'
+          : activePolls.length > 0
+          ? 'Congratulations, you have voted on all current Governance Polls'
+          : 'There are no live Governance Polls at the moment';
+    } else {
+      pollsToBeAwareOf = activePolls.length;
+      message =
+        activePolls.length > 0 ? 'New polling votes' : 'There are no live Governance Polls at the moment';
+    }
+
+    return (
+      <NavLink
+        ref={ref}
+        href={href}
+        variant="buttons.outline"
+        sx={{
+          fontSize: [1, 2],
+          borderRadius: 'round',
+          border: '1px solid',
+          borderColor: 'primary',
+          color: 'surface',
+          alignItems: 'center',
+          backgroundColor: 'primary',
+          display: 'inline-flex',
+          '&:hover': {
+            '> svg': { color: 'primary' }
+          }
+        }}
+      >
+        {pollsToBeAwareOf > 0 && (
+          <Badge mr="3" variant="circle">
+            {pollsToBeAwareOf}
+          </Badge>
+        )}
+        <Box pb="2px">{message}</Box>
+        <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
+      </NavLink>
+    );
   }
+);
 
-  return (
-    <NavLink
-      ref={ref}
-      href={href}
-      variant="buttons.outline"
-      sx={{
-        fontSize: [1, 2],
-        borderRadius: 'round',
-        border: '1px solid',
-        borderColor: 'primary',
-        color: 'surface',
-        alignItems: 'center',
-        backgroundColor: 'primary',
-        display: 'inline-flex',
-        '&:hover': {
-          '> svg': { color: 'primary' }
-        }
-      }}
-    >
-      {pollsToBeAwareOf > 0 && (
-        <Badge mr="3" variant="circle">
-          {pollsToBeAwareOf}
-        </Badge>
-      )}
-      <Box pb="2px">{message}</Box>
-      <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
-    </NavLink>
-  );
-});
-
-export default ({ polls, ...props }: { polls: Poll[] }) => {
+export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 

@@ -1,9 +1,13 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useEffect, useState, useMemo } from 'react';
-import { Heading, Box, jsx, Button } from 'theme-ui';
+import { GetStaticProps } from 'next';
+import { useEffect, useState } from 'react';
+import { Heading, Box, jsx, Button, Flex } from 'theme-ui';
 import ErrorPage from 'next/error';
+import invariant from 'tiny-invariant';
+import shallow from 'zustand/shallow';
 
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls } from '../../lib/api';
 import { isActivePoll, findPollById } from '../../lib/utils';
@@ -15,45 +19,107 @@ import Poll from '../../types/poll';
 import ReviewBox from '../../components/polling/ReviewBox';
 import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
+import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
-  const ballot = useBallotStore(state => state.ballot);
-  const account = useAccountsStore(state => state.currentAccount);
+  const bpi = useBreakpointIndex();
+  const [ballot, txId, submitBallot] = useBallotStore(
+    state => [state.ballot, state.txId, state.submitBallot],
+    shallow
+  );
 
+  const account = useAccountsStore(state => state.currentAccount);
+  const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
+
+  const SubmitButton = props => (
+    <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
+      <Flex sx={{ flexDirection: 'column' }}>
+        <Button
+          onClick={submitBallot}
+          variant="primary"
+          disabled={!ballotLength || !!txId}
+          sx={{ width: '100%' }}
+        >
+          Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
+        </Button>
+      </Flex>
+    </Flex>
+  );
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <Stack gap={3}>
+      {mobileVotingPoll && (
+        <MobileVoteSheet editingOnly poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
+      )}
+      <Stack gap={3} sx={{ mb: 4 }}>
+        <Heading mb={3} as="h4">
+          {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
+        </Heading>
         <SidebarLayout>
-          <Box>
-            <Stack>
-              <div>
-                <Heading mb={3} as="h4">
-                  Review Your Ballot
-                </Heading>
-                <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-                  <Button mb={3} variant="smallOutline">
-                    Back To All Polls
-                  </Button>
-                </Link>
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {Object.keys(ballot).map(pollId => {
-                    const poll = findPollById(polls, pollId);
-                    poll && <PollOverviewCard key={poll.multiHash} poll={poll} />;
-                  })}
-                </Stack>
-              </div>
+          <Stack gap={2}>
+            <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+              <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                Back To All Polls
+              </Button>
+            </Link>
+            <Stack gap={3}>
+              {bpi <= 2 && <SubmitButton />}
+              {bpi <= 2 && !!account && <ReviewBox activePolls={activePolls} />}
+              <Stack sx={{ display: activePolls.length ? null : 'none' }}>
+                {Object.keys(ballot).map((pollId, index) => {
+                  const poll = findPollById(polls, pollId);
+                  invariant(poll !== undefined, 'Unknown poll found on voter ballot');
+                  return (
+                    <PollOverviewCard
+                      key={poll.multiHash}
+                      poll={poll}
+                      reviewing={true}
+                      sending={txId}
+                      startMobileVoting={() => setMobileVotingPoll(poll)}
+                      sx={cardStyles(index, ballotLength)}
+                    />
+                  );
+                })}
+              </Stack>
+              {bpi <= 2 && <SubmitButton />}
             </Stack>
-          </Box>
-          <Stack gap={3}>{account && <ReviewBox activePolls={activePolls} />}</Stack>
+          </Stack>
+          {bpi === 3 && !!account && (
+            <Box>
+              <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
+                Submit Ballot
+              </Heading>
+              <ReviewBox activePolls={activePolls} />
+            </Box>
+          )}
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls: Poll[] }) {
+const cardStyles = (index, ballotLength) =>
+  index === 0
+    ? {
+        borderBottomLeftRadius: '0 !important',
+        borderBottomRightRadius: '0 !important',
+        borderBottom: '0 !important'
+      }
+    : index === ballotLength - 1
+    ? {
+        borderTopLeftRadius: '0 !important',
+        borderTopRightRadius: '0 !important',
+        mt: '0 !important'
+      }
+    : {
+        borderRadius: '0 !important',
+        borderBottom: '0 !important',
+        mt: '0 !important'
+      };
+
+export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
@@ -78,7 +144,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: { polls:
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 
@@ -88,4 +154,4 @@ export async function getStaticProps() {
       polls
     }
   };
-}
+};

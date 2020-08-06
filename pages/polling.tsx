@@ -1,8 +1,10 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
+import { GetStaticProps } from 'next';
 
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
@@ -18,20 +20,19 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
-import useBreakpoints from '../lib/useBreakpoints';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
-import { useRouter } from 'next/router';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
+import BallotStatus from '../components/BallotStatus';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, setStartDate] = useState<Date | ''>('');
-  const [endDate, setEndDate] = useState<Date | ''>('');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
@@ -41,8 +42,7 @@ const PollingOverview = ({ polls }: Props) => {
   const ballotLength = Object.keys(ballot).length;
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
-  const bpi = useBreakpoints();
-  const router = useRouter();
+  const bpi = useBreakpointIndex();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
@@ -105,27 +105,14 @@ const PollingOverview = ({ polls }: Props) => {
       {mobileVotingPoll && (
         <MobileVoteSheet
           ballotCount={ballotLength}
-          activePollCount={activePolls.length}
+          activePolls={activePolls}
           poll={mobileVotingPoll}
+          setPoll={setMobileVotingPoll}
           close={() => setMobileVotingPoll(null)}
         />
       )}
       <Stack gap={3}>
-        {bpi === 0 && account && (
-          <Button
-            variant={ballotLength ? 'primary' : 'outline'}
-            sx={{
-              borderRadius: 'round',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            onClick={() => ballotLength && router.push({ pathname: '/polling/review', query: network })}
-          >
-            <Icon name="ballot" size={3} mr={2} />
-            Your Ballot: {ballotLength} vote{ballotLength === 1 ? '' : 's'}
-          </Button>
-        )}
+        {bpi === 0 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
           <Heading variant="microHeading" mr={3}>
             Filters
@@ -152,6 +139,8 @@ const PollingOverview = ({ polls }: Props) => {
                           key={poll.multiHash}
                           poll={poll}
                           startMobileVoting={() => setMobileVotingPoll(poll)}
+                          reviewing={false}
+                          sending={null}
                         />
                       ))}
                     </Stack>
@@ -175,7 +164,12 @@ const PollingOverview = ({ polls }: Props) => {
                       </Text>
                       <Stack sx={{ mb: 4 }}>
                         {groupedHistoricalPolls[date].map(poll => (
-                          <PollOverviewCard key={poll.multiHash} poll={poll} />
+                          <PollOverviewCard
+                            key={poll.multiHash}
+                            poll={poll}
+                            reviewing={false}
+                            sending={null}
+                          />
                         ))}
                       </Stack>
                     </div>
@@ -203,7 +197,7 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
@@ -228,7 +222,7 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
   return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 
@@ -238,4 +232,4 @@ export async function getStaticProps() {
       polls
     }
   };
-}
+};

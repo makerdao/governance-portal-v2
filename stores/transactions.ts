@@ -13,7 +13,6 @@ type Store = {
   setMined: (txId: string) => void;
   setError: (txId: string, error?: { message: string }) => void;
   track: (txCreator: () => Promise<any>, message?: string) => any;
-  getTransaction: (txId: string) => TX;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -39,38 +38,43 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
 
   setPending: (txId, hash) => {
     const status = 'pending';
-    set(state => {
-      const transaction = state.transactions.find(tx => tx.id === txId);
-      invariant(transaction, `Unable to find tx id ${txId}`);
-      transaction.status = status;
-      transaction.hash = hash;
-      return state;
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
+        status,
+        hash
+      };
+      return { transactions };
     });
   },
 
   setMined: txId => {
     const status = 'mined';
-    set(state => {
-      const transaction = state.transactions.find(tx => tx.id === txId);
-      invariant(transaction, `Unable to find tx id ${txId}`);
-      transaction.status = status;
-      return state;
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
+        status
+      };
+      return { transactions };
     });
   },
 
   setError: (txId, error) => {
     const status = 'error';
-    set(state => {
-      const transactionIndex = state.transactions.findIndex(tx => tx.id === txId);
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
       invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
-      state.transactions[transactionIndex] = {
-        ...state.transactions[transactionIndex],
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
         status,
         error: error?.message ? parseTxError(error.message) : null,
-        errorType: state.transactions[transactionIndex].hash ? 'failed' : 'not sent'
+        errorType: transactions[transactionIndex].hash ? 'failed' : 'not sent'
       };
-
-      return { transactions: [...state.transactions] };
+      return { transactions };
     });
   },
 
@@ -98,14 +102,16 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
 
     return txId;
-  },
-
-  getTransaction: txId => {
-    const tx = get().transactions.find(tx => tx.id === txId);
-    invariant(tx, `Unable to find tx id ${txId}`);
-    return tx;
   }
 }));
 
+const transactionsSelectors = {
+  getTransaction: (state, txId) => {
+    const tx = state.transactions.find(tx => tx.id === txId);
+    invariant(tx, `Unable to find tx id ${txId}`);
+    return tx;
+  }
+};
+
 export default useTransactionsStore;
-export { transactionsApi };
+export { transactionsApi, transactionsSelectors };

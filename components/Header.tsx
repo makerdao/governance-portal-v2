@@ -5,11 +5,16 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
+import BallotStatus from './BallotStatus';
 import { useState } from 'react';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import useAccountsStore from '../stores/accounts';
 
-const Header = () => {
+const Header = (): JSX.Element => {
   const network = getNetwork();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const bpi = useBreakpointIndex();
+  const account = useAccountsStore(state => state.currentAccount);
 
   return (
     <header
@@ -31,14 +36,14 @@ const Header = () => {
       <IconButton
         aria-label="Maker home"
         ml="auto"
-        sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
+        sx={{ display: [null, null, null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
       >
         <Icon name="menu" sx={{ height: '28px', width: '24px' }} />
       </IconButton>
       <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
         <Link href={{ pathname: '/', query: { network } }}>
-          <NavLink p={2} sx={{ display: [null, 'none'] }}>
+          <NavLink p={2} sx={{ display: [null, null, null, 'none'] }}>
             Home
           </NavLink>
         </Link>
@@ -46,11 +51,16 @@ const Header = () => {
           <NavLink p={2}>Polling</NavLink>
         </Link>
         <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={2}>Executive</NavLink>
+          <NavLink p={2} sx={{ ml: [0, 0, 0, 5] }}>
+            Executive
+          </NavLink>
         </Link>
         <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={2}>Module</NavLink>
+          <NavLink p={2} sx={{ ml: [0, 0, 0, 5], mr: [0, 0, 0, 5] }}>
+            ES Module
+          </NavLink>
         </Link>
+        {bpi > 2 && account && <BallotStatus mr={3} />}
         <AccountSelect />
       </Menu>
     </header>
@@ -60,7 +70,7 @@ const Header = () => {
 const Menu = ({ children, shown, hide }) => {
   return (
     <>
-      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'flex'] }}>
+      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'none', 'none', 'flex'] }}>
         {children}
       </Box>
       {shown && (

@@ -5,12 +5,12 @@ import { TX_NOT_ENOUGH_FUNDS } from '../../lib/errors';
 
 waitForExpect.defaults.interval = 1;
 
-let maker, transactionsApi, ETH;
+let maker, transactionsApi, transactionsSelectors, ETH;
 beforeEach(async () => {
   jest.resetModules();
   maker = await require('../../lib/maker').default();
   ({ ETH } = require('../../lib/maker'));
-  ({ transactionsApi } = require('../../stores/transactions'));
+  ({ transactionsApi, transactionsSelectors } = require('../../stores/transactions'));
 });
 
 test('should call initTx, setPending, and setMined for successful transactions', async () => {
@@ -40,12 +40,12 @@ test('should initialize a tx properly', async () => {
   const txId = await transactionsApi.getState().track(txCreator, message);
 
   await waitForExpect(() => {
-    expect(transactionsApi.getState().getTransaction(txId).status).toBe('initialized');
-    expect(transactionsApi.getState().getTransaction(txId).message).toBe(message);
+    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe('initialized');
+    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).message).toBe(message);
   });
 
-  expect(transactionsApi.getState().getTransaction(txId).submittedAt).toBeDefined();
-  expect(transactionsApi.getState().getTransaction(txId).from).toBe(currentAddress);
+  expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).submittedAt).toBeDefined();
+  expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).from).toBe(currentAddress);
 });
 
 test('should set pending properly', async () => {
@@ -53,10 +53,10 @@ test('should set pending properly', async () => {
   const txId = await transactionsApi.getState().track(txCreator);
 
   await waitForExpect(() => {
-    expect(transactionsApi.getState().getTransaction(txId).status).toBe('pending');
+    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe('pending');
   });
 
-  expect(transactionsApi.getState().getTransaction(txId).hash).toBeDefined();
+  expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).hash).toBeDefined();
 });
 
 test('should set mined properly', async () => {
@@ -64,7 +64,7 @@ test('should set mined properly', async () => {
   const txId = await transactionsApi.getState().track(txCreator);
 
   await waitForExpect(() => {
-    expect(transactionsApi.getState().getTransaction(txId).status).toBe('mined');
+    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe('mined');
   });
 });
 
@@ -73,7 +73,7 @@ test('should set error properly', async () => {
   const txId = await transactionsApi.getState().track(txCreator);
 
   await waitForExpect(() => {
-    const txState = transactionsApi.getState().getTransaction(txId);
+    const txState = transactionsSelectors.getTransaction(transactionsApi.getState(), txId);
     expect(txState.status).toBe('error');
     expect(txState.error).toBe(TX_NOT_ENOUGH_FUNDS);
     expect(txState.errorType).toBe('not sent');

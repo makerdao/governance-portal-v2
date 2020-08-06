@@ -1,19 +1,23 @@
 import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import shallow from 'zustand/shallow';
 
 import { SupportedNetworks } from '../../lib/constants';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
 import useBallotStore from '../../stores/ballot';
-import useTransactionStore from '../../stores/transactions';
+import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
   const voteTxId = useBallotStore(state => state.txId);
-  const transaction = useTransactionStore(state => (voteTxId ? state.getTransaction(voteTxId) : null));
+  const transaction = useTransactionStore(
+    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
+    shallow
+  );
   const ballotLength = Object.keys(ballot).length;
   const votingWeightTotal = 0; // TODO
   const router = useRouter();
@@ -41,14 +45,14 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
                 View on Etherscan
-                <Icon name="arrowTopRight" pt={2} />
+                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
               </Text>
             </ExternalLink>
           </Flex>
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
+          <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
             <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
               {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
             </Text>
@@ -82,7 +86,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
           <Flex
             p={3}
             sx={{
-              borderBottom: '1px solid #D4D9E1',
+              borderBottom: '1px solid secondaryMuted',
               justifyContent: 'space-between',
               flexDirection: 'row'
             }}

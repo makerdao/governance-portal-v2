@@ -3,15 +3,15 @@ import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-import invariant from 'tiny-invariant';
 
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
-import useTransactionStore from '../../stores/transactions';
+import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 
-export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element {
+export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -22,23 +22,21 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
     shallow
   );
 
-  const transaction = useTransactionStore(state => {
-    if (!voteTxId) return null;
-    const tx = state.transactions.find(tx => tx.id === voteTxId);
-    invariant(tx, `Unable to find tx id ${voteTxId}`);
-    return tx;
-  }, shallow);
+  const transaction = useTransactionStore(
+    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
+    shallow
+  );
 
+  const bpi = useBreakpointIndex();
   const ballotLength = Object.keys(ballot).length;
 
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={0}>
+    <Card variant="compact" p={0} sx={{ p: 0, borderRadius: 'medium' }}>
       <Flex
         sx={{
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: ['center'],
           flexDirection: 'column'
         }}
       >
@@ -49,7 +47,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
 
   const Default = () => (
     <ReviewBoxCard>
-      <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
+      <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted', width: '100%' }}>
         <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
           {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
         </Text>
@@ -83,9 +81,10 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
       <Flex
         p={3}
         sx={{
-          borderBottom: '1px solid #D4D9E1',
+          borderBottom: '1px solid secondaryMuted',
           justifyContent: 'space-between',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          width: '100%'
         }}
       >
         <Flex sx={{ flexDirection: 'row' }}>
@@ -94,32 +93,28 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
         </Flex>
         <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
       </Flex>
-      <Flex p={3} sx={{ flexDirection: 'column' }}>
-        {/* <Flex pb={3} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color="onSurface">Estimated Gas Cost</Text>
-          <Text>{`Gas Cost`}</Text>
+      {bpi > 2 && (
+        <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
+          <Flex p={3} sx={{ flexDirection: 'column' }}>
+            <Button
+              onClick={submitBallot}
+              variant="primary"
+              disabled={!ballotLength || !!voteTxId}
+              sx={{ width: '100%' }}
+            >
+              Submit Your Ballot ({ballotLength}) Votes
+            </Button>
+          </Flex>
         </Flex>
-        <Flex pb={4} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text color="onSurface">Estimated Confirmation Time</Text>
-          <Text>{`Confirm Time`}</Text>
-        </Flex>  */}
-        <Flex p={3} sx={{ flexDirection: 'column' }}>
-          <Button
-            onClick={submitBallot}
-            variant="primary"
-            disabled={!ballotLength || !!voteTxId}
-            sx={{ width: '100%' }}
-          >
-            Submit Your Ballot ({ballotLength}) Votes
-          </Button>
-        </Flex>
-      </Flex>
+      )}
     </ReviewBoxCard>
   );
 
   const Initialized = () => (
     <ReviewBoxCard>
-      <Icon name="pencil" size={5} mt={4} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="pencil" size={4} mt={4} />
+      </Flex>
       <Text
         mt={3}
         px={4}
@@ -176,7 +171,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
         >
           <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
-            <Icon name="arrowTopRight" pt={2} />
+            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>
         </ExternalLink>
       )}
@@ -246,10 +241,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
   };
 
   return (
-    <Box>
-      <Heading mb={3} as="h4">
-        Submit Ballot
-      </Heading>
+    <Box {...props}>
       <View />
     </Box>
   );

@@ -9,7 +9,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }: Props) => (
+const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }: Props): JSX.Element => (
   <Box {...otherProps}>
     <Icon name={icon} size="5" />
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '9rem'] }}>

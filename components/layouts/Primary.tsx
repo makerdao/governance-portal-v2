@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Flex, Container, jsx } from 'theme-ui';
+import { Box, Flex, jsx } from 'theme-ui';
 
 import Header from '../Header';
 import Footer from '../Footer';
@@ -20,7 +20,8 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
       }}
     >
       <Header />
-      <Box as='main'
+      <Box
+        as="main"
         sx={{
           width: '100%',
           flex: '1 1 auto',

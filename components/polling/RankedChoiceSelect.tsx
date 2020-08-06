@@ -1,64 +1,74 @@
 /** @jsx jsx */
+import { useMemo, useState } from 'react';
 import { Box, Flex, Text, Close, jsx } from 'theme-ui';
-import Poll from '../../types/poll';
-import { useState, useMemo } from 'react';
-import { getNumberWithOrdinal } from '../../lib/utils';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
+import { Icon } from '@makerdao/dai-ui-icons';
 import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
-import Stack from '../layouts/Stack';
-import { Icon } from '@makerdao/dai-ui-icons';
 
-type RankedChoiceSelectProps = { poll: Poll; setChoice: (choices: number[]) => void };
+import { getNumberWithOrdinal } from '../../lib/utils';
+import Poll from '../../types/poll';
+import Stack from '../layouts/Stack';
+
+type RankedChoiceSelectProps = {
+  poll: Poll;
+  choice: number[] | null;
+  setChoice: (choices: number[]) => void;
+};
+
 export default function RankedChoiceSelect({
   poll,
   setChoice,
+  choice: _choice,
   ...props
 }: RankedChoiceSelectProps): JSX.Element {
-  const [selectedChoices, setSelectedChoices] = useState<number[]>([]);
-  const [optionCount, setOptionCount] = useState<number>(1);
-  const numOptionsAvailable = Object.keys(poll.options).length;
-  const canAddOption = numOptionsAvailable > optionCount && selectedChoices[optionCount - 1] !== undefined;
+  const choice = _choice || [];
+  const [numConfirmed, setNumConfirmed] = useState(choice.length > 0 ? choice.length - 1 : 0);
+  const totalNumOptions = Object.keys(poll.options).length;
+  const canAddOption = totalNumOptions > numConfirmed + 1 && choice[numConfirmed] !== undefined;
 
   const availableChoices = useMemo(
     () =>
-      omitBy(poll.options, (_, pollId) => {
-        return selectedChoices.findIndex(choice => choice === parseInt(pollId)) > -1;
-      }),
-    [optionCount]
+      omitBy(
+        poll.options,
+        (_, optionId) =>
+          choice.findIndex(_choice => _choice === parseInt(optionId)) > -1 &&
+          parseInt(optionId) !== choice[numConfirmed]
+      ),
+    [numConfirmed]
   );
 
   return (
     <Box {...props}>
       <Stack gap={2}>
-        {Array.from({ length: optionCount - 1 }).map((_, index) => (
+        {Array.from({ length: numConfirmed }).map((_, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
                 {getNumberWithOrdinal(index + 1)} choice
               </Text>
-              <Text>{poll.options[selectedChoices[index]]}</Text>
+              <Text>{poll.options[choice[index]]}</Text>
             </Flex>
             <Close
               ml="auto"
               my="auto"
               sx={{ '> svg': { size: [3] } }}
               onClick={() => {
-                const newChoices = [...selectedChoices];
-                newChoices.splice(index, 1);
-                setSelectedChoices(newChoices);
-                setOptionCount(optionCount - 1);
+                const newChoice = [...choice];
+                newChoice.splice(index, 1);
+                setNumConfirmed(numConfirmed - 1);
+                setChoice(newChoice);
               }}
             />
           </Flex>
         ))}
         <ListboxInput
-          key={optionCount}
+          defaultValue={choice[numConfirmed] ? choice[numConfirmed].toString() : 'default'}
+          key={numConfirmed}
           onChange={value => {
-            const newChoices = [...selectedChoices];
-            newChoices[optionCount - 1] = parseInt(value);
-            setSelectedChoices(newChoices);
-            if (setChoice) setChoice(newChoices);
+            const newChoice = [...choice];
+            newChoice[numConfirmed] = parseInt(value);
+            setChoice(newChoice);
           }}
         >
           <ListboxButton
@@ -68,10 +78,10 @@ export default function RankedChoiceSelect({
           <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
             <ListboxList sx={{ variant: 'listboxes.default.list' }}>
               <ListboxOption value="default" sx={{ display: 'none' }}>
-                {getNumberWithOrdinal(selectedChoices.length + 1)} choice
+                {getNumberWithOrdinal(numConfirmed + 1)} choice
               </ListboxOption>
-              {map(availableChoices, (label, pollId) => (
-                <ListboxOption key={pollId} value={pollId}>
+              {map(availableChoices, (label, optionId) => (
+                <ListboxOption key={optionId} value={optionId}>
                   {label}
                 </ListboxOption>
               ))}
@@ -82,7 +92,7 @@ export default function RankedChoiceSelect({
       {canAddOption && (
         <Text
           color="primary"
-          onClick={() => setOptionCount(optionCount + 1)}
+          onClick={() => setNumConfirmed(numConfirmed + 1)}
           sx={{
             pt: 1,
             fontSize: 2,

@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { QRCode } from 'react-qr-svg';
+// import { QRCode } from 'react-qr-svg';
 import React from 'react';
 import Link from 'next/link';
 import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { translate } from '@makerdao/i18n-helper';
+import url from 'url';
 
 const FooterContainer = props => (
   <Container
@@ -79,9 +80,6 @@ const Icons = props => (
     {props.children}
   </Flex>
 );
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const url = require('url');
 
 const withInternalLink = (InternalLinkComponent, host) => {
   class InternalLink extends React.Component {
@@ -293,7 +291,7 @@ class LongFooter extends React.Component {
                     opacity: 1,
                     fontWeight: '200'
                   },
-                  ':focus': { borderColor: '#d5d9e0' }
+                  ':focus': { borderColor: 'secondary' }
                 }}
                 name="email"
                 type="email"
@@ -311,10 +309,10 @@ class LongFooter extends React.Component {
                   paddingTop: '4px',
                   width: '44px',
                   border: '1px solid',
-                  borderColor: '#d5d9e0',
+                  borderColor: 'secondary',
                   borderLeft: 0,
                   borderRadius: '0px 5px 5px 0px',
-                  ':hover': { borderColor: '#d5d9e0' },
+                  ':hover': { borderColor: 'secondary' },
                   ':hover svg': { transform: 'translate(0.25rem)' },
                   svg: {
                     margin: '0 auto',
@@ -340,7 +338,7 @@ class LongFooter extends React.Component {
               </Link>
               {/*<div>
                 <Icon
-                  name="we_chat"
+                  name='we_chat'
                   sx={{ cursor: 'pointer' }}
                   onClick={this.toggleWeChatModal}
                 />
@@ -378,7 +376,7 @@ class LongFooter extends React.Component {
   }
 }
 
-export default function Footer({ shorten = false } = {}) {
+export default ({ shorten = false }) => {
   if (shorten) {
     return (
       <footer
@@ -412,4 +410,4 @@ export default function Footer({ shorten = false } = {}) {
   } else {
     return <LongFooter />;
   }
-}
+};

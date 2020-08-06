@@ -14,7 +14,7 @@ type Props = {
   isHat: boolean;
 };
 
-export default function ExecutiveCard({ proposal, isHat, ...props }: Props) {
+export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX.Element {
   const network = getNetwork();
 
   const { data: mkrSupport } = useSWR<CurrencyObject>(
