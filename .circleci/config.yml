@@ -19,7 +19,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
   test:
     docker:
-      - image: makerdao/dapptools-node
+      - image: levity/dapptools-node-latest
     steps:
       - checkout
       - restore_cache:
