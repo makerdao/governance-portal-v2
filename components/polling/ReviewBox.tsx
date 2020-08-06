@@ -12,7 +12,7 @@ import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore from '../../stores/transactions';
 
-export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element {
+export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -36,7 +36,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={0}>
+    <Card variant="compact" p={0} sx={{ p: 0, borderRadius: 'medium' }}>
       <Flex
         sx={{
           justifyContent: ['center'],
@@ -244,12 +244,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
   };
 
   return (
-    <Box>
-      {bpi > 2 && (
-        <Heading mb={3} as="h4">
-          Submit Ballot
-        </Heading>
-      )}
+    <Box {...props}>
       <View />
     </Box>
   );

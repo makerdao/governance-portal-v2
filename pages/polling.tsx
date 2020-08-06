@@ -1,9 +1,11 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { GetStaticProps } from 'next';
+
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, formatDateWithTime } from '../lib/utils';
@@ -18,7 +20,6 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';

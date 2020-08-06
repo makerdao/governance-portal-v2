@@ -36,14 +36,14 @@ const Header = (): JSX.Element => {
       <IconButton
         aria-label="Maker home"
         ml="auto"
-        sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
+        sx={{ display: [null, null, null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
       >
         <Icon name="menu" sx={{ height: '28px', width: '24px' }} />
       </IconButton>
       <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
         <Link href={{ pathname: '/', query: { network } }}>
-          <NavLink p={2} sx={{ display: [null, 'none'] }}>
+          <NavLink p={2} sx={{ display: [null, null, null, 'none'] }}>
             Home
           </NavLink>
         </Link>
@@ -51,16 +51,16 @@ const Header = (): JSX.Element => {
           <NavLink p={2}>Polling</NavLink>
         </Link>
         <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={2} sx={{ ml: [0, 5] }}>
+          <NavLink p={2} sx={{ ml: [0, 0, 0, 5] }}>
             Executive
           </NavLink>
         </Link>
         <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={2} sx={{ ml: [0, 5], mr: [0, 5] }}>
+          <NavLink p={2} sx={{ ml: [0, 0, 0, 5], mr: [0, 0, 0, 5] }}>
             ES Module
           </NavLink>
         </Link>
-        {bpi > 0 && account && <BallotStatus mr={3} />}
+        {bpi > 2 && account && <BallotStatus mr={3} />}
         <AccountSelect />
       </Menu>
     </header>
@@ -70,7 +70,7 @@ const Header = (): JSX.Element => {
 const Menu = ({ children, shown, hide }) => {
   return (
     <>
-      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'flex'] }}>
+      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'none', 'none', 'flex'] }}>
         {children}
       </Box>
       {shown && (

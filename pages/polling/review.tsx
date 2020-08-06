@@ -48,58 +48,66 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <Stack gap={3}>
+      <Stack gap={3} sx={{ mb: 4 }}>
+        <Heading mb={3} as="h4">
+          {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
+        </Heading>
         <SidebarLayout>
-          <Box>
-            <Stack>
-              <div>
-                <Heading mb={3} as="h4">
-                  {bpi < 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
-                </Heading>
-                <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-                  <Button mb={3} variant="smallOutline">
-                    Back To All Polls
-                  </Button>
-                </Link>
-                {bpi < 2 && <SubmitButton sx={{ mb: 3 }} />}
-                <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                  {Object.keys(ballot).map((pollId, index) => {
-                    const poll = findPollById(polls, pollId);
-                    invariant(poll !== undefined, 'Unknown poll found on voter ballot');
-                    return (
-                      <PollOverviewCard
-                        key={poll.multiHash}
-                        poll={poll}
-                        reviewing={true}
-                        sending={txId}
-                        sx={
-                          index === 0
-                            ? {
-                                borderBottomLeftRadius: '0 !important',
-                                borderBottomRightRadius: '0 !important',
-                                borderBottom: '0 !important'
-                              }
-                            : index === ballotLength - 1
-                            ? {
-                                borderTopLeftRadius: '0 !important',
-                                borderTopRightRadius: '0 !important',
-                                mt: '0 !important'
-                              }
-                            : {
-                                borderRadius: '0 !important',
-                                borderBottom: '0 !important',
-                                mt: '0 !important'
-                              }
-                        }
-                      />
-                    );
-                  })}
-                </Stack>
-              </div>
+          <Stack gap={2}>
+            <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+              <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                Back To All Polls
+              </Button>
+            </Link>
+            <Stack gap={3}>
+              {bpi <= 2 && <SubmitButton />}
+              {bpi <= 2 && !!account && <ReviewBox activePolls={activePolls} />}
+              <Stack sx={{ display: activePolls.length ? null : 'none' }}>
+                {Object.keys(ballot).map((pollId, index) => {
+                  const poll = findPollById(polls, pollId);
+                  invariant(poll !== undefined, 'Unknown poll found on voter ballot');
+                  return (
+                    <PollOverviewCard
+                      key={poll.multiHash}
+                      poll={poll}
+                      reviewing={true}
+                      sending={txId}
+                      sx={
+                        index === 0
+                          ? {
+                              borderBottomLeftRadius: '0 !important',
+                              borderBottomRightRadius: '0 !important',
+                              borderBottom: '0 !important'
+                            }
+                          : index === ballotLength - 1
+                          ? {
+                              borderTopLeftRadius: '0 !important',
+                              borderTopRightRadius: '0 !important',
+                              mt: '0 !important'
+                            }
+                          : {
+                              borderRadius: '0 !important',
+                              borderBottom: '0 !important',
+                              mt: '0 !important'
+                            }
+                      }
+                    />
+                  );
+                })}
+              </Stack>
+              {bpi <= 2 && <SubmitButton />}
             </Stack>
-          </Box>
-          <Stack gap={3}>{!!account && <ReviewBox activePolls={activePolls} />}</Stack>
-          {bpi < 2 && <SubmitButton />}
+          </Stack>
+          {bpi === 3 && !!account && (
+            <Box>
+              {bpi > 2 && (
+                <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
+                  Submit Ballot
+                </Heading>
+              )}
+              <ReviewBox activePolls={activePolls} />
+            </Box>
+          )}
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
