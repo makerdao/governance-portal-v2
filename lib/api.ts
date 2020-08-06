@@ -140,7 +140,9 @@ export async function getPostsAndPhotos(): Promise<BlogPost[]> {
   if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/blogPosts.json');
   const posts = await fetch(GOV_BLOG_POSTS_ENDPOINT).then(res => res.json());
   const photoLinks: string[] = await Promise.all(
-    posts.map(post => fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json()))
+    posts.map(post =>
+      fetch(post._links['wp:featuredmedia'][0].href.replace(/(?<!:)\/\//, '/')).then(res => res.json())
+    )
   ).then(photosMeta => (photosMeta as any).map(photoMeta => photoMeta.media_details.sizes.large.source_url));
 
   return posts.map((post, index) => ({
