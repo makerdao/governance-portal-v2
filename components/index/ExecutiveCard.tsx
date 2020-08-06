@@ -23,7 +23,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
   );
 
   return (
-    <Stack gap={2} sx={{ variant: 'cards.primary' }} {...props}>
+    <Stack gap={1} sx={{ variant: 'cards.primary' }} {...props}>
       <div>
         <Link
           href={{
@@ -36,6 +36,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           }}
         >
           <Text
+            variant="microHeading"
             sx={{
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -52,7 +53,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontSize: [3, 4],
+          fontSize: 3,
           opacity: 0.8
         }}
       >
@@ -69,10 +70,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             query: { network }
           }}
         >
-          <Button>Vote on proposal</Button>
+          <Button sx={{ mt: 2 }}>Vote on proposal</Button>
         </Link>
         {mkrSupport ? (
-          <Flex sx={{ flex: 1, ml: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          <Flex sx={{ mt: 2, flex: 1, ml: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
             <Badge
               variant="primary"
               sx={{

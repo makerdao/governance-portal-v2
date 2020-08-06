@@ -10,7 +10,7 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
     target="_blank"
     variant="card"
     href={blogPost.link}
-    sx={{ p: 0, borderRadius: 'medium' }}
+    sx={{ p: [0, 0], borderRadius: 'medium' }}
     {...otherProps}
   >
     <Box>
@@ -25,18 +25,19 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
       />
 
       <Text
-        p={3}
+        px={3}
+        pt={3}
         sx={{
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontSize: 3,
+          fontSize: 4,
           textAlign: 'left'
         }}
       >
         {blogPost.title}
       </Text>
-      <Text px={3} pb={3} sx={{ textAlign: 'left', color: 'onSecondary' }}>
+      <Text p={3} sx={{ textAlign: 'left', color: 'onSecondary' }}>
         {new Date(blogPost.date).toLocaleString('default', {
           month: 'long',
           day: 'numeric',

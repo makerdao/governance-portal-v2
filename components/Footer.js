@@ -381,7 +381,7 @@ export default ({ shorten = false }) => {
     return (
       <footer
         sx={{
-          py: 3,
+          py: 4,
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',

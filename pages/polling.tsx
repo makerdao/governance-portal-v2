@@ -114,7 +114,7 @@ const PollingOverview = ({ polls }: Props) => {
       <Stack gap={3}>
         {bpi === 0 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
-          <Heading as="h1" mr={3}>
+          <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
           <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
@@ -124,7 +124,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Heading mb={3} as="h4">
+                <Heading mb={3} mt={4} as="h4">
                   Active Polls
                 </Heading>
                 {sortedStartDatesActive.map(date => (
@@ -177,7 +177,11 @@ const PollingOverview = ({ polls }: Props) => {
                   <div ref={loader} />
                 </div>
               ) : (
-                <Button onClick={() => setShowHistoricalPolls(true)} variant="outline">
+                <Button
+                  onClick={() => setShowHistoricalPolls(true)}
+                  variant="outline"
+                  sx={{ py: 3, mt: [0, 0] }}
+                >
                   See all ended polls ({historicalPolls.length})
                 </Button>
               )}

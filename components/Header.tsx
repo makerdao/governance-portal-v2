@@ -28,8 +28,8 @@ const Header = (): JSX.Element => {
       }}
     >
       <Link href={{ pathname: '/', query: { network } }}>
-        <IconButton aria-label="Maker home" sx={{ width: 5, height: 5, p: 0 }}>
-          <Icon name="maker" size="5" sx={{ cursor: 'pointer' }} />
+        <IconButton aria-label="Maker home" sx={{ width: 4, height: 4, p: 0 }}>
+          <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
 

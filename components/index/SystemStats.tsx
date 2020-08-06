@@ -38,7 +38,7 @@ export default function (): JSX.Element {
             <Flex sx={{ alignItems: 'center' }}>
               <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
                 View more stats
-                <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'accentBlue' }} />
+                <Icon ml={2} name="arrowTopRight" size="2" />
               </Text>
             </Flex>
           </ExternalLink>
@@ -84,8 +84,7 @@ export default function (): JSX.Element {
               <Flex sx={{ alignItems: 'center' }}>
                 <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
                   View more stats
-                  <Icon ml="2" name="chevron_right" size="2" sx={{ color: 'accentBlue' }} />
-                  {/* change this icon to the diagonal arrow */}
+                  <Icon ml="2" name="arrowTopRight" size="2" />
                 </Text>
               </Flex>
             </ExternalLink>
