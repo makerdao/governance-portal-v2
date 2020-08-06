@@ -100,11 +100,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
           </Stack>
           {bpi === 3 && !!account && (
             <Box>
-              {bpi > 2 && (
-                <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
-                  Submit Ballot
-                </Heading>
-              )}
+              <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
+                Submit Ballot
+              </Heading>
               <ReviewBox activePolls={activePolls} />
             </Box>
           )}

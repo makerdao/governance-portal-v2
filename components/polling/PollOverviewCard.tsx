@@ -73,28 +73,28 @@ export default function PollOverviewCard({
           </div>
         )}
         <Flex sx={{ alignItems: 'center' }}>
-          {canVote && bpi === 0 && onBallot ? (
-            <Button
-              variant="outline"
-              mr={2}
-              onClick={startMobileVoting}
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                alignItems: 'center'
-              }}
-            >
-              <Icon name="edit" size={3} mr={2} />
-              Edit Choices
-            </Button>
-          ) : (
-            bpi === 0 && (
+          {canVote &&
+            bpi === 0 &&
+            (onBallot ? (
+              <Button
+                variant="outline"
+                mr={2}
+                onClick={startMobileVoting}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'nowrap',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name="edit" size={3} mr={2} />
+                Edit Choices
+              </Button>
+            ) : (
               <Button variant="primary" mr={2} onClick={startMobileVoting}>
                 Vote
               </Button>
-            )
-          )}
+            ))}
           <Link
             key={poll.slug}
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
