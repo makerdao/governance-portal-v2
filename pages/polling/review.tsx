@@ -7,7 +7,7 @@ import ErrorPage from 'next/error';
 import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
 
-import useBreakpoints from '../../lib/useBreakpoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls } from '../../lib/api';
 import { isActivePoll, findPollById } from '../../lib/utils';
@@ -21,7 +21,7 @@ import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
-  const bpi = useBreakpoints();
+  const bpi = useBreakpointIndex();
   const [ballot, txId, submitBallot] = useBallotStore(
     state => [state.ballot, state.txId, state.submitBallot],
     shallow

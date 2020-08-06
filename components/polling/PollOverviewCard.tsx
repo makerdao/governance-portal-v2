@@ -14,7 +14,7 @@ import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './VotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
-import useBreakpoints from '../../lib/useBreakpoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
@@ -30,7 +30,7 @@ export default function PollOverviewCard({
 }: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
-  const bpi = useBreakpoints();
+  const bpi = useBreakpointIndex();
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
   const ballot = useBallotStore(state => state.ballot);

@@ -18,7 +18,7 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
-import useBreakpoints from '../lib/useBreakpoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
@@ -41,7 +41,7 @@ const PollingOverview = ({ polls }: Props) => {
   const ballotLength = Object.keys(ballot).length;
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
-  const bpi = useBreakpoints();
+  const bpi = useBreakpointIndex();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {

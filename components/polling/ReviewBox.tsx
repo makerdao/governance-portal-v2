@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import invariant from 'tiny-invariant';
 
-import useBreakpoints from '../../lib/useBreakpoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
@@ -30,7 +30,7 @@ export default function ({ activePolls }: { activePolls: Poll[] }): JSX.Element 
     return tx;
   }, shallow);
 
-  const bpi = useBreakpoints();
+  const bpi = useBreakpointIndex();
   const ballotLength = Object.keys(ballot).length;
 
   const [votingWeightTotal] = useState(0);

@@ -7,13 +7,13 @@ import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
 import BallotStatus from './BallotStatus';
 import { useState } from 'react';
-import useBreakpoints from '../lib/useBreakpoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from '../stores/accounts';
 
 const Header = (): JSX.Element => {
   const network = getNetwork();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const bpi = useBreakpoints();
+  const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
 
   return (
