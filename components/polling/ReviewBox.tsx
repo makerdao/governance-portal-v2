@@ -33,7 +33,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
   const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={0} sx={{ p: 0, borderRadius: 'medium' }}>
+    <Card variant="compact" p={0} sx={{ p: 0 }}>
       <Flex
         sx={{
           justifyContent: ['center'],

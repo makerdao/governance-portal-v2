@@ -205,11 +205,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <Stack gap={3}>
-          <Card variant="compact">Voting</Card>
-          <SystemStats />
-          <ResourceBox />
-        </Stack>
+        <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }}>
+          <Stack gap={3}>
+            <Card variant="compact">Voting</Card>
+            <SystemStats />
+            <ResourceBox />
+          </Stack>
+        </Box>
       </SidebarLayout>
     </PrimaryLayout>
   );

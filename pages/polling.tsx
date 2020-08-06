@@ -187,10 +187,14 @@ const PollingOverview = ({ polls }: Props) => {
               )}
             </Stack>
           </Box>
-          <Stack gap={3}>
-            {account && bpi > 0 && <BallotBox activePolls={activePolls} ballot={ballot} network={network} />}
-            <ResourceBox />
-          </Stack>
+          <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }}>
+            <Stack gap={3}>
+              {account && bpi > 0 && (
+                <BallotBox activePolls={activePolls} ballot={ballot} network={network} />
+              )}
+              <ResourceBox />
+            </Stack>
+          </Box>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
