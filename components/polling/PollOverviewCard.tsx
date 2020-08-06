@@ -122,7 +122,7 @@ export default function PollOverviewCard({
 
 const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
-  const [choice, setChoice] = useState<number | number[] | null>(null);
+  const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
   const [editing, setEditing] = useState(false);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
 

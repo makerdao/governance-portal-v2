@@ -31,7 +31,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
-  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>

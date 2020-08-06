@@ -12,7 +12,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
   return (
     <ListboxInput
       onChange={x => setChoice(parseInt(x))}
-      defaultValue={choice ? choice.toString() : 'default'}
+      defaultValue={choice !== null ? choice.toString() : 'default'}
       {...props}
     >
       <ListboxButton

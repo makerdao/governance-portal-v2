@@ -39,7 +39,7 @@ export default function MobileVoteSheet({
   editingOnly
 }: Props): JSX.Element {
   const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
-  const [choice, setChoice] = useState<number | number[] | null>(null);
+  const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(ViewState.INPUT);
   const router = useRouter();
