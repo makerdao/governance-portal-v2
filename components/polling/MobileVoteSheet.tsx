@@ -2,28 +2,19 @@
 import { Text, Button, jsx, Box, Flex } from 'theme-ui';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { isRankedChoicePoll } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import { keyframes } from '@emotion/core';
 import range from 'lodash/range';
 import { useRouter } from 'next/router';
 import { getNetwork } from '../../lib/maker';
 import shallow from 'zustand/shallow';
-
-const pop = keyframes`
-  from, to {
-    transform: scale(1);
-  }
-
-  25% {
-    transform: scale(1.2);
-  }
-`;
+import lottie from 'lottie-web';
+import ballotAnimation from './ballotAnimation.json';
 
 enum ViewState {
   INPUT,
@@ -57,7 +48,7 @@ export default function MobileVoteSheet({
     invariant(isChoiceValid);
     addToBallot(poll.pollId, choice as number | number[]);
     setViewState(ViewState.ADDING);
-    setTimeout(() => setViewState(ViewState.NEXT), 1800);
+    // setTimeout(() => setViewState(ViewState.NEXT), 1800);
   };
 
   const goToNextPoll = () => {
@@ -128,20 +119,7 @@ export default function MobileVoteSheet({
             <Text variant="subheading">{poll.title}</Text>
             <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
             {viewState == ViewState.ADDING ? (
-              <Stack gap={2} sx={{ alignItems: 'center' }}>
-                <Text variant="subheading" color="primary">
-                  Added to Ballot
-                </Text>
-                <div
-                  sx={{
-                    backgroundImage: 'url(/assets/success-end.png)',
-                    backgroundSize: 'cover',
-                    height: '80px',
-                    width: '80px',
-                    animation: `${pop} 1s ease 0s normal 1`
-                  }}
-                />
-              </Stack>
+              <AddingView done={() => setViewState(ViewState.NEXT)} />
             ) : isRankedChoicePoll(poll) ? (
               <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
             ) : (
@@ -160,3 +138,22 @@ export default function MobileVoteSheet({
     </DialogOverlay>
   );
 }
+
+const AddingView = ({ done }: { done: () => void }) => {
+  useEffect(() => {
+    const animation = lottie.loadAnimation({
+      container: document.getElementById('ballot-animation-container') as HTMLElement,
+      loop: false,
+      autoplay: true,
+      animationData: ballotAnimation
+    });
+
+    animation.addEventListener('complete', () => setTimeout(done, 200));
+  }, []);
+
+  return (
+    <Stack gap={2} sx={{ alignItems: 'center' }}>
+      <div sx={{ height: '160px', width: '100%' }} id="ballot-animation-container" />
+    </Stack>
+  );
+};

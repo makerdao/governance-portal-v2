@@ -29,6 +29,7 @@
     "ethers": "^5.0.8",
     "gray-matter": "^4.0.2",
     "lodash": "^4.7.0",
+    "lottie-web": "^5.7.1",
     "next": "^9.4.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -66,7 +67,7 @@
     }
   },
   "lint-staged": {
-    "./{components,lib,pages,stores,types}/**/*.{j,t}s*": [
+    "./{components,lib,pages,stores,types}/**/*.{js,ts,jsx,tsx}": [
       "prettier --single-quote --write",
       "eslint"
     ]
