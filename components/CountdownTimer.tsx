@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import { useState } from 'react';
-import { Text, Flex } from 'theme-ui';
+import { Text, Flex, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from '../lib/useInterval';

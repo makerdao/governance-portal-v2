@@ -85,9 +85,11 @@ export default function PollOverviewCard({
               Edit Choices
             </Button>
           ) : (
-            <Button variant="primary" mr={2} onClick={startMobileVoting}>
-              Vote
-            </Button>
+            bpi === 0 && (
+              <Button variant="primary" mr={2} onClick={startMobileVoting}>
+                Vote
+              </Button>
+            )
           )}
           <Link
             key={poll.slug}
