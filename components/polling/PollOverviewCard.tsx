@@ -67,7 +67,11 @@ export default function PollOverviewCard({
         >
           {poll.summary}
         </Text>
-        {bpi > 0 && <CountdownTimer endText="Poll ended" endDate={poll.endDate} />}
+        {bpi > 0 && (
+          <div>
+            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+          </div>
+        )}
         <Flex sx={{ alignItems: 'center' }}>
           {canVote && bpi === 0 && onBallot ? (
             <Button
@@ -143,9 +147,9 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
       ) : (
         <div>
           {isRankedChoicePoll(poll) ? (
-            <RankedChoiceSelect {...{ poll, setChoice }} />
+            <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
           ) : (
-            <SingleSelect {...{ poll, setChoice }} />
+            <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
           )}
           <Button
             variant="primaryOutline"

@@ -1,19 +1,23 @@
 import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import shallow from 'zustand/shallow';
 
 import { SupportedNetworks } from '../../lib/constants';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
 import useBallotStore from '../../stores/ballot';
-import useTransactionStore from '../../stores/transactions';
+import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
   const voteTxId = useBallotStore(state => state.txId);
-  const transaction = useTransactionStore(state => (voteTxId ? state.getTransaction(voteTxId) : null));
+  const transaction = useTransactionStore(
+    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
+    shallow
+  );
   const ballotLength = Object.keys(ballot).length;
   const votingWeightTotal = 0; // TODO
   const router = useRouter();

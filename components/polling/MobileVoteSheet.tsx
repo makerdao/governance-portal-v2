@@ -143,9 +143,9 @@ export default function MobileVoteSheet({
                 />
               </Stack>
             ) : isRankedChoicePoll(poll) ? (
-              <RankedChoiceSelect {...{ poll, setChoice }} />
+              <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
             ) : (
-              <SingleSelect {...{ poll, setChoice }} />
+              <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
             )}
             <Button
               variant="primary"

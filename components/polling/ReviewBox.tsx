@@ -3,14 +3,13 @@ import Link from 'next/link';
 import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-import invariant from 'tiny-invariant';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
-import useTransactionStore from '../../stores/transactions';
+import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 
 export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
@@ -23,12 +22,10 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     shallow
   );
 
-  const transaction = useTransactionStore(state => {
-    if (!voteTxId) return null;
-    const tx = state.transactions.find(tx => tx.id === voteTxId);
-    invariant(tx, `Unable to find tx id ${voteTxId}`);
-    return tx;
-  }, shallow);
+  const transaction = useTransactionStore(
+    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
+    shallow
+  );
 
   const bpi = useBreakpointIndex();
   const ballotLength = Object.keys(ballot).length;
