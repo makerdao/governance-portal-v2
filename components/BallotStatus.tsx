@@ -18,7 +18,7 @@ const BallotStatus = (props: any): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        border: txId ? '1px solid #F9A606' : ballotLength ? null : '1px solid #D4D9E1',
+        border: txId ? '1px solid mutedOrange' : ballotLength ? null : '1px solid secondaryMuted',
         display: 'flex'
       }}
       onClick={() => {

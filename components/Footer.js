@@ -291,7 +291,7 @@ class LongFooter extends React.Component {
                     opacity: 1,
                     fontWeight: '200'
                   },
-                  ':focus': { borderColor: '#d5d9e0' }
+                  ':focus': { borderColor: 'secondary' }
                 }}
                 name="email"
                 type="email"
@@ -309,10 +309,10 @@ class LongFooter extends React.Component {
                   paddingTop: '4px',
                   width: '44px',
                   border: '1px solid',
-                  borderColor: '#d5d9e0',
+                  borderColor: 'secondary',
                   borderLeft: 0,
                   borderRadius: '0px 5px 5px 0px',
-                  ':hover': { borderColor: '#d5d9e0' },
+                  ':hover': { borderColor: 'secondary' },
                   ':hover svg': { transform: 'translate(0.25rem)' },
                   svg: {
                     margin: '0 auto',

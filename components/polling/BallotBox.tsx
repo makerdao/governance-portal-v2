@@ -41,14 +41,14 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
                 View on Etherscan
-                <Icon name="arrowTopRight" pt={2} color={'#447AFB'} />
+                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
               </Text>
             </ExternalLink>
           </Flex>
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
+          <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
             <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
               {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
             </Text>
@@ -82,7 +82,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
           <Flex
             p={3}
             sx={{
-              borderBottom: '1px solid #D4D9E1',
+              borderBottom: '1px solid secondaryMuted',
               justifyContent: 'space-between',
               flexDirection: 'row'
             }}
