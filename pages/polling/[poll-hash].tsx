@@ -205,7 +205,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <StickyColumn>
+        <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
             <Card variant="compact">Voting</Card>
             <SystemStats />

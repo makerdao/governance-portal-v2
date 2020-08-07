@@ -87,7 +87,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
             </Stack>
           </Stack>
           {bpi === 3 && !!account && (
-            <StickyColumn>
+            <StickyColumn sx={{ pt: 3 }}>
               <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
               </Heading>
