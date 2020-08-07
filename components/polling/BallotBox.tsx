@@ -4,12 +4,14 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
 import { SupportedNetworks } from '../../lib/constants';
-import { getNetwork } from '../../lib/maker';
+import getMaker, { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
+import useAccountsStore from '../../stores/accounts';
+import useSWR from 'swr';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
@@ -19,7 +21,13 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
     shallow
   );
   const ballotLength = Object.keys(ballot).length;
-  const votingWeightTotal = 0; // TODO
+  const account = useAccountsStore(state => state.currentAccount);
+  const { data: votingWeightTotal } = useSWR(
+    account?.address ? ['/user/polling-voting-weight', account.address] : null,
+    (_, address) => {
+      return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
+    }
+  );
   const router = useRouter();
 
   return (
@@ -95,7 +103,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               <Text color="onSurface">Voting weight for all polls</Text>
               <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
             </Flex>
-            <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
+            <Text>{votingWeightTotal ? `${votingWeightTotal.toFixed(2)} MKR` : '--'}</Text>
           </Flex>
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
