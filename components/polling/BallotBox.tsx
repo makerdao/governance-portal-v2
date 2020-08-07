@@ -12,6 +12,7 @@ import useTransactionStore, { transactionsSelectors } from '../../stores/transac
 import { getEtherscanLink } from '../../lib/utils';
 import useAccountsStore from '../../stores/accounts';
 import useSWR from 'swr';
+import Tooltip from '@reach/tooltip';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
@@ -22,14 +23,37 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
   );
   const ballotLength = Object.keys(ballot).length;
   const account = useAccountsStore(state => state.currentAccount);
-  const { data: votingWeightTotal } = useSWR(
+  const { data: votingWeight } = useSWR(
     account?.address ? ['/user/polling-voting-weight', account.address] : null,
     (_, address) => {
       return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
     }
   );
+  const votingWeightDescription = votingWeight
+    ? `
+  ${
+    votingWeight.proxyChiefBalance.gte(0.005)
+      ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString()
+      : ''
+  }
+  ${votingWeight.mkrBalance.gte(0.005) ? 'Connected wallet: ' + votingWeight.mkrBalance.toString() : ''}
+  ${
+    votingWeight.chiefBalance.gte(0.005)
+      ? 'Connected wallet chief: ' + votingWeight.chiefBalance.toString()
+      : ''
+  }
+  ${
+    votingWeight.linkedMkrBalance.gte(0.005)
+      ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString()
+      : ''
+  }
+  ${
+    votingWeight.linkedChiefBalance.gte(0.005)
+      ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString()
+      : ''
+  }`
+    : '';
   const router = useRouter();
-
   return (
     <Box>
       <Heading mb={3} as="h4">
@@ -100,10 +124,15 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
             }}
           >
             <Flex sx={{ flexDirection: 'row' }}>
-              <Text color="onSurface">Voting weight for all polls</Text>
-              <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+              <Text color="onSurface">Voting weight</Text>
+              <Tooltip
+                sx={{ mt: -1 }}
+                label={votingWeightDescription} //FIX, not showing up
+              >
+                <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+              </Tooltip>
             </Flex>
-            <Text>{votingWeightTotal ? `${votingWeightTotal.toFixed(2)} MKR` : '--'}</Text>
+            <Text>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
           </Flex>
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
