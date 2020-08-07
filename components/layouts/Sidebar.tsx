@@ -1,11 +1,10 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import { Grid } from 'theme-ui';
+import { Grid, Box, jsx } from 'theme-ui';
 
 /**
  * Expects two children: the first one is the main content, the second one is the sidebar
  */
-const SidebarLayout = ({ children, ...otherProps }: React.PropsWithChildren<any>) => {
+const SidebarLayout = ({ children, ...props }: React.PropsWithChildren<any>) => {
   return (
     <Grid
       gap={4}
@@ -20,10 +19,18 @@ const SidebarLayout = ({ children, ...otherProps }: React.PropsWithChildren<any>
           minWidth: 0
         }
       })}
-      {...otherProps}
+      {...props}
     >
       {children}
     </Grid>
+  );
+};
+
+export const StickyColumn = ({ children }: React.PropsWithChildren<{ isSticky?: boolean[] }>) => {
+  return (
+    <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }}>
+      <Box sx={{ maxHeight: [null, null, null, '100vh'], overflowY: 'scroll' }}>{children}</Box>
+    </Box>
   );
 };
 

@@ -10,7 +10,7 @@ import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, formatDateWithTime } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
-import SidebarLayout from '../components/layouts/Sidebar';
+import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
@@ -187,14 +187,16 @@ const PollingOverview = ({ polls }: Props) => {
               )}
             </Stack>
           </Box>
-          <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }}>
-            <Stack gap={3}>
-              {account && bpi > 0 && (
-                <BallotBox activePolls={activePolls} ballot={ballot} network={network} />
-              )}
-              <ResourceBox />
-            </Stack>
-          </Box>
+          <StickyColumn>
+            <Box>
+              <Stack gap={3}>
+                {account && bpi > 0 && (
+                  <BallotBox activePolls={activePolls} ballot={ballot} network={network} />
+                )}
+                <ResourceBox />
+              </Stack>
+            </Box>
+          </StickyColumn>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>

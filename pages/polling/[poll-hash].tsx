@@ -16,7 +16,7 @@ import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
+import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
@@ -205,13 +205,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }}>
+        <StickyColumn>
           <Stack gap={3}>
             <Card variant="compact">Voting</Card>
             <SystemStats />
             <ResourceBox />
           </Stack>
-        </Box>
+        </StickyColumn>
       </SidebarLayout>
     </PrimaryLayout>
   );

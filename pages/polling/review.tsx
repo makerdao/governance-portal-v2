@@ -12,7 +12,7 @@ import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls } from '../../lib/api';
 import { isActivePoll, findPollById } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
+import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import PollOverviewCard from '../../components/polling/PollOverviewCard';
 import Poll from '../../types/poll';
@@ -87,12 +87,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
             </Stack>
           </Stack>
           {bpi === 3 && !!account && (
-            <Box sx={{ position: 'sticky', top: 0, height: 'min-content' }}>
+            <StickyColumn>
               <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
               </Heading>
               <ReviewBox activePolls={activePolls} />
-            </Box>
+            </StickyColumn>
           )}
         </SidebarLayout>
       </Stack>

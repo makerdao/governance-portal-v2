@@ -1,9 +1,9 @@
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-export default function (): JSX.Element {
+export default function (props): JSX.Element {
   return (
-    <Box mt={5}>
+    <Box {...props}>
       <Heading mb={3} variant="microHeading">
         Resources
       </Heading>
