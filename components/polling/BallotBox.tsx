@@ -29,10 +29,11 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
       return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
     }
   );
+
   const votingWeightDescription = votingWeight
     ? `
   ${
-    votingWeight.proxyChiefBalance.gte(0.005)
+    votingWeight.proxyChiefBalance?.gte(0.005)
       ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString()
       : ''
   }
@@ -43,17 +44,18 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
       : ''
   }
   ${
-    votingWeight.linkedMkrBalance.gte(0.005)
+    votingWeight.linkedMkrBalance?.gte(0.005)
       ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString()
       : ''
   }
   ${
-    votingWeight.linkedChiefBalance.gte(0.005)
+    votingWeight.linkedChiefBalance?.gte(0.005)
       ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString()
       : ''
   }`
     : '';
   const router = useRouter();
+
   return (
     <Box>
       <Heading mb={3} as="h4">
@@ -125,11 +127,10 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
           >
             <Flex sx={{ flexDirection: 'row' }}>
               <Text color="onSurface">Voting weight</Text>
-              <Tooltip
-                sx={{ mt: -1 }}
-                label={votingWeightDescription} //FIX, not showing up
-              >
-                <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+              <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
+                <Box>
+                  <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+                </Box>
               </Tooltip>
             </Flex>
             <Text>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
