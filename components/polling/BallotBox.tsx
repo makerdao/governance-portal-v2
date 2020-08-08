@@ -29,31 +29,26 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
       return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
     }
   );
+  let votingWeightDescription = '';
+  if (votingWeight) {
+    votingWeightDescription += votingWeight.proxyChiefBalance?.gte(0.005)
+      ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString() + '; '
+      : '';
+    votingWeightDescription += votingWeight.mkrBalance.gte(0.005)
+      ? 'Connected wallet: ' + votingWeight.mkrBalance.toString() + '; '
+      : '';
+    votingWeightDescription += votingWeight.chiefBalance.gte(0.005)
+      ? 'Connected wallet chief: ' + votingWeight.chiefBalance.toString() + '; '
+      : '';
+    votingWeightDescription += votingWeight.linkedMkrBalance?.gte(0.005)
+      ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString() + '; '
+      : '';
+    votingWeightDescription += votingWeight.linkedChiefBalance?.gte(0.005)
+      ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString() + '; '
+      : '';
+  }
+  votingWeightDescription = votingWeightDescription.slice(0, -2);
 
-  const votingWeightDescription = votingWeight
-    ? `
-  ${
-    votingWeight.proxyChiefBalance?.gte(0.005)
-      ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString()
-      : ''
-  }
-  ${votingWeight.mkrBalance.gte(0.005) ? 'Connected wallet: ' + votingWeight.mkrBalance.toString() : ''}
-  ${
-    votingWeight.chiefBalance.gte(0.005)
-      ? 'Connected wallet chief: ' + votingWeight.chiefBalance.toString()
-      : ''
-  }
-  ${
-    votingWeight.linkedMkrBalance?.gte(0.005)
-      ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString()
-      : ''
-  }
-  ${
-    votingWeight.linkedChiefBalance?.gte(0.005)
-      ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString()
-      : ''
-  }`
-    : '';
   const router = useRouter();
 
   return (
@@ -127,11 +122,13 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
           >
             <Flex sx={{ flexDirection: 'row' }}>
               <Text color="onSurface">Voting weight</Text>
-              <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
-                <Box>
-                  <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
-                </Box>
-              </Tooltip>
+              {votingWeightDescription ? (
+                <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
+                  <Box>
+                    <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+                  </Box>
+                </Tooltip>
+              ) : null}
             </Flex>
             <Text>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
           </Flex>
