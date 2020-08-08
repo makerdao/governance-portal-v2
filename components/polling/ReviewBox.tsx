@@ -10,6 +10,7 @@ import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
+import VotingWeight from './VotingWeight';
 
 export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
@@ -78,21 +79,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
           ))}
         </Flex>
       </Box>
-      <Flex
-        p={3}
-        sx={{
-          borderBottom: '1px solid secondaryMuted',
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          width: '100%'
-        }}
-      >
-        <Flex sx={{ flexDirection: 'row' }}>
-          <Text color="onSurface">Voting weight for all polls</Text>
-          <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
-        </Flex>
-        <Text>{`${votingWeightTotal.toFixed(2)} MKR`}</Text>
-      </Flex>
+      <VotingWeight />
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
           <Flex p={3} sx={{ flexDirection: 'column' }}>

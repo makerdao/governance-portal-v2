@@ -2,17 +2,14 @@ import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-
 import { SupportedNetworks } from '../../lib/constants';
-import getMaker, { getNetwork } from '../../lib/maker';
+import { getNetwork } from '../../lib/maker';
 import Poll from '../../types/poll';
 import Ballot from '../../types/ballot';
 import useBallotStore from '../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
-import useAccountsStore from '../../stores/accounts';
-import useSWR from 'swr';
-import Tooltip from '@reach/tooltip';
+import VotingWeight from './VotingWeight';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
@@ -22,32 +19,6 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
     shallow
   );
   const ballotLength = Object.keys(ballot).length;
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: votingWeight } = useSWR(
-    account?.address ? ['/user/polling-voting-weight', account.address] : null,
-    (_, address) => {
-      return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
-    }
-  );
-  let votingWeightDescription = '';
-  if (votingWeight) {
-    votingWeightDescription += votingWeight.proxyChiefBalance?.gte(0.005)
-      ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.mkrBalance.gte(0.005)
-      ? 'Connected wallet: ' + votingWeight.mkrBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.chiefBalance.gte(0.005)
-      ? 'Connected wallet chief: ' + votingWeight.chiefBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedMkrBalance?.gte(0.005)
-      ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedChiefBalance?.gte(0.005)
-      ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString() + '; '
-      : '';
-  }
-  votingWeightDescription = votingWeightDescription.slice(0, -2);
 
   const router = useRouter();
 
@@ -112,26 +83,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               ))}
             </Flex>
           </Box>
-          <Flex
-            p={3}
-            sx={{
-              borderBottom: '1px solid secondaryMuted',
-              justifyContent: 'space-between',
-              flexDirection: 'row'
-            }}
-          >
-            <Flex sx={{ flexDirection: 'row' }}>
-              <Text color="onSurface">Voting weight</Text>
-              {votingWeightDescription ? (
-                <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
-                  <Box>
-                    <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
-                  </Box>
-                </Tooltip>
-              ) : null}
-            </Flex>
-            <Text>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
-          </Flex>
+          <VotingWeight />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => router.push({ pathname: '/polling/review', query: network })}
