@@ -3,9 +3,9 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 
-import { markdownToHtml, timeoutPromise, backoffRetry, getTestchainProposals } from './utils';
+import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
-import getMaker, { getNetwork } from './maker';
+import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
 import Proposal from '../types/proposal';
 import BlogPost from '../types/blogPost';
@@ -17,10 +17,9 @@ let _cachedProposals: Proposal[];
  * Everytime after that, it returns from the cache.
  */
 export async function getExecutiveProposals(): Promise<Proposal[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
-  if (network === 'testnet') return getTestchainProposals();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/proposals.json');
   if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
   const proposals = topics
@@ -57,8 +56,7 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
-  const network = getNetwork();
-  if (process.env.NEXT_PUBLIC_USE_MOCK || network === 'testnet') return require('../mocks/polls.json');
+  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();

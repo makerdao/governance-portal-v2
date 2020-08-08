@@ -219,28 +219,18 @@ export async function initTestchainPolls() {
   const maker = await getMaker();
   const pollingService = maker.service('govPolling');
   const hash = 'dummy hash';
-  const testTx = await pollingService.createPoll(_now(), _now() + 500000, hash, hash);
 
+  // This detects whether the mock polls have been deployed yet
+  const testTx = await pollingService.createPoll(now(), now() + 500000, hash, hash);
   if (testTx !== 0) return;
-  console.log('setting up some polls on the testchain...');
 
+  console.log('setting up some polls on the testchain...');
   return mockPolls.map(async poll => {
-    const id = await pollingService.createPoll(_now(), _now() + 50000, hash, poll.url);
+    const id = await pollingService.createPoll(now(), now() + 50000, hash, poll.url);
     console.log(`created poll #${id}`);
   });
 }
 
-function _now() {
-  return Math.floor(new Date().getTime() / 1000) + 100;
-}
-
-// export async function getTestchainPolls() {
-//   // get all of the testchain polls and return them here
-//   const polls: Poll[] = [];
-//   return polls;
-// }
-
-export async function getTestchainProposals() {
-  const proposals: Proposal[] = [];
-  return proposals;
+function now() {
+  return Math.floor(new Date().getTime());
 }
