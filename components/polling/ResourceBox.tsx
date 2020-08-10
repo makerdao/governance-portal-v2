@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 export default function (props): JSX.Element {
   return (
     <Box {...props}>
-      <Heading mb={3} variant="microHeading">
+      <Heading mb={2} as="h3" variant="microHeading">
         Resources
       </Heading>
       <Card variant="compact">

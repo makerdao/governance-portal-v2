@@ -24,15 +24,15 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export default function (): JSX.Element {
+export default function (props): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats', getSystemStats);
   const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
 
   return (
     <>
-      <Box mt={4} sx={{ display: ['none', 'block'] }}>
-        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
-          <Heading as="h4" sx={{ fontSize: '20px' }}>
+      <Box sx={{ display: ['none', 'block'] }} {...props}>
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2 }}>
+          <Heading as="h3" variant="microHeading">
             System Stats
           </Heading>
           <ExternalLink href="https://daistats.com/" target="_blank">
