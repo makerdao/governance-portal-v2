@@ -51,7 +51,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundPosition: 'center center'
         }}
       />
-      <PrimaryLayout>
+      <PrimaryLayout sxAlt={{ maxWidth: 'page' }}>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>

@@ -6,18 +6,21 @@ import Footer from '../Footer';
 
 type Props = {
   shortenFooter?: boolean;
+  sxAlt?: {
+    maxWidth: string;
+  };
 };
 
-const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Props>) => {
+const PrimaryLayout = ({ children, shortenFooter, sxAlt }: React.PropsWithChildren<Props>) => {
   return (
     <Flex
       sx={{
-        maxWidth: 'page',
         flexDirection: 'column',
         minHeight: '100vh',
         mx: 'auto',
         variant: 'layout.root',
-        px: [3, 4]
+        px: [3, 4],
+        ...sxAlt
       }}
     >
       <Header />
