@@ -4,8 +4,10 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Grid, Box, jsx } from 'theme-ui';
+import { Card, Flex, Text, Heading, Divider, Link as ExternalLink, jsx } from 'theme-ui';
+import { ethers } from 'ethers';
 
+import OnChainFx from '../../components/executive/OnChainFx';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
@@ -27,6 +29,72 @@ const ProposalView = ({ proposal }: Props) => {
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
+  if ('content' in proposal) {
+    return (
+      <PrimaryLayout shortenFooter={true}>
+        <SidebarLayout>
+          <Card sx={{ boxShadow: 'faint' }}>
+            <Flex>
+              <Heading
+                my="3"
+                sx={{
+                  whiteSpace: 'nowrap',
+                  overflowX: ['scroll', 'hidden'],
+                  overflowY: 'hidden',
+                  textOverflow: [null, 'ellipsis'],
+                  fontSize: [5, 6]
+                }}
+              >
+                {proposal.title}
+              </Heading>
+            </Flex>
+            <Divider />
+            <Tabs
+              tabTitles={['Proposal Details', 'On-Chain Effects']}
+              tabPanels={[
+                <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
+                <div key={2} sx={{ pt: 3 }}>
+                  <Text as="h1" sx={{ pb: 2 }}>
+                    Effects
+                  </Text>
+                  {stateDiff ? (
+                    <Stack gap={3}>
+                      <Text>
+                        {Object.keys(stateDiff.groupedDiff).length > 0 ? (
+                          <>
+                            {stateDiff.hasBeenCast
+                              ? `Effects resulting from this spell's execution on block ${new Bignumber(
+                                  stateDiff.executedOn
+                                ).toFormat()}. `
+                              : 'Simulated effects if this spell were to be executed now.'}
+                            Please check the{' '}
+                            <ExternalLink target="_blank" href="https://docs.makerdao.com">
+                              MCD Docs
+                            </ExternalLink>{' '}
+                            for definitions.
+                          </>
+                        ) : (
+                          'This spell has no on-chain effects.'
+                        )}
+                      </Text>
+                      <OnChainFx stateDiff={stateDiff} />
+                    </Stack>
+                  ) : (
+                    <div>loading</div>
+                  )}
+                </div>
+              ]}
+            />
+          </Card>
+          <Stack>
+            <Card variant="compact">Card 1</Card>
+            <Card variant="compact">Card 2</Card>
+          </Stack>
+        </SidebarLayout>
+      </PrimaryLayout>
+    );
+  }
+
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
@@ -42,60 +110,38 @@ const ProposalView = ({ proposal }: Props) => {
                 fontSize: [5, 6]
               }}
             >
-              {proposal.title}
+              {proposal.address}
             </Heading>
           </Flex>
           <Divider />
           <Tabs
-            tabTitles={['Proposal Details', 'On-Chain Effects']}
+            tabTitles={['On-Chain Effects']}
             tabPanels={[
-              <div dangerouslySetInnerHTML={{ __html: proposal.content }} />,
-              <div sx={{ pt: 3 }}>
+              <div key={2} sx={{ pt: 3 }}>
                 <Text as="h1" sx={{ pb: 2 }}>
                   Effects
                 </Text>
                 {stateDiff ? (
                   <Stack gap={3}>
                     <Text>
-                      {Object.keys(stateDiff.groupedDiff).length > 0
-                        ? stateDiff.hasBeenCast
-                          ? `Effects resulting from this spell's execution on block ${new Bignumber(
-                              stateDiff.executedOn
-                            ).toFormat()}`
-                          : `Simulated effects if this spell were to be executed now`
-                        : `This spell has no on-chain effects`}
+                      {Object.keys(stateDiff.groupedDiff).length > 0 ? (
+                        <>
+                          {stateDiff.hasBeenCast
+                            ? `Effects resulting from this spell's execution on block ${new Bignumber(
+                                stateDiff.executedOn
+                              ).toFormat()}. `
+                            : 'Simulated effects if this spell were to be executed now.'}
+                          Please check the{' '}
+                          <ExternalLink target="_blank" href="https://docs.makerdao.com">
+                            MCD Docs
+                          </ExternalLink>{' '}
+                          for definitions.
+                        </>
+                      ) : (
+                        'This spell has no on-chain effects.'
+                      )}
                     </Text>
-                    <Stack gap={3}>
-                      {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
-                        <Box>
-                          <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</Text>
-                          <Grid columns="max-content 1fr" sx={{ rowGap: 0, overflowX: 'scroll' }}>
-                            {diffs.map(diff => (
-                              <>
-                                <Text sx={{ fontWeight: 'semibold', fontSize: 3 }}>
-                                  {diff.name}
-                                  {diff.keys ? diff.keys.map(key => `[${key}]`) : ''}
-                                  {diff.field ? `.${diff.field}` : ``}
-                                </Text>
-                                <Grid columns="18ch 3ch 18ch">
-                                  <Text>
-                                    {new Bignumber(diff.from).toFormat(
-                                      diff.from.toString().split('.')?.[1]?.length || 0
-                                    )}
-                                  </Text>
-                                  <Text>{'=>'}</Text>
-                                  <Text>
-                                    {new Bignumber(diff.to).toFormat(
-                                      diff.to.toString().split('.')?.[1]?.length || 0
-                                    )}
-                                  </Text>
-                                </Grid>
-                              </>
-                            ))}
-                          </Grid>
-                        </Box>
-                      ))}
-                    </Stack>
+                    <OnChainFx stateDiff={stateDiff} />
                   </Stack>
                 ) : (
                   <div>loading</div>
@@ -118,6 +164,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
+  console.log(isFallback, 'isFallback');
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
@@ -151,7 +198,11 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
   invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
-  const proposal = await getExecutiveProposal(params['proposal-id'] as string);
+  const proposalId = params['proposal-id'] as string;
+
+  const proposal: Proposal = ethers.utils.isAddress(proposalId)
+    ? { address: proposalId, key: proposalId }
+    : await getExecutiveProposal(proposalId);
 
   return {
     props: {

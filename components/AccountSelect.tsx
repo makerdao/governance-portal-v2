@@ -26,25 +26,13 @@ const AccountSelect = () => {
   return (
     <Menu>
       <MenuButton sx={{ variant: 'buttons.card' }}>
-        {account ? (
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Flex sx={{ justifyContent: 'space-between' }}>
-              <span>MetaMask</span>
-              <span>{formatAddress(account)}</span>
-            </Flex>
-            <Divider mx={-2} />
-            <Flex sx={{ justifyContent: 'space-between' }}>
-              <span>Polling Balance</span>
-              <span>333 MKR</span>
-            </Flex>
-          </Flex>
-        ) : (
-          <>Connect wallet</>
-        )}
+        {account ? <span>{formatAddress(account.address)}</span> : <span>Connect wallet</span>}
       </MenuButton>
       <MenuList sx={{ variant: 'cards.primary', p: 0 }}>
         {connectors.map(([name, connector]) => (
-          <MenuItem key={name} onSelect={() => activate(connector)}>{name}</MenuItem>
+          <MenuItem key={name} onSelect={() => activate(connector)}>
+            {name}
+          </MenuItem>
         ))}
       </MenuList>
     </Menu>

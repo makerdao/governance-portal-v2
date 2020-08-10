@@ -19,7 +19,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
   test:
     docker:
-      - image: makerdao/dapptools-node
+      - image: levity/dapptools-node-latest
     steps:
       - checkout
       - restore_cache:
@@ -30,6 +30,7 @@ jobs:
           command: |
             source /home/circleci/setup-env.sh
             yarn test:ci
+            yarn build
             npm i --no-save codecov
             ./node_modules/.bin/codecov
 

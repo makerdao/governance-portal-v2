@@ -1,103 +1,117 @@
 import create from 'zustand';
 import invariant from 'tiny-invariant';
+import { v4 as uuidv4 } from 'uuid';
 
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
 import TX from '../types/transaction';
 
 type Store = {
-  transactions: { [from: string]: TX[] };
-  initTx: (from: string, txObject: any, message: string | null) => void;
-  setPending: (from: string, txObject: any) => void;
-  setMined: (from: string, txObject: any) => void;
-  setError: (from: string, txObject: any, error: { message: string }) => void;
+  transactions: TX[];
+  initTx: (txId: string, from: string, message: string | null) => void;
+  setPending: (txId: string, hash: string) => void;
+  setMined: (txId: string) => void;
+  setError: (txId: string, error?: { message: string }) => void;
+  track: (txCreator: () => Promise<any>, message?: string) => any;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
-  transactions: {},
+  transactions: [],
 
-  initTx: (from, txObject, message) => {
-    const pastTxs = get().transactions[from];
-    const submittedAt = txObject._timeStampSubmitted;
+  initTx: (txId, from, message) => {
     const status = 'initialized';
     set({
-      transactions: {
-        [from]: (pastTxs || []).concat([
-          {
-            submittedAt,
-            status,
-            message,
-            hash: null,
-            error: null,
-            errorType: null
-          }
-        ])
-      }
+      transactions: get().transactions.concat([
+        {
+          from,
+          id: txId,
+          status,
+          message,
+          submittedAt: new Date(),
+          hash: null,
+          error: null,
+          errorType: null
+        }
+      ])
     });
   },
 
-  setPending: (from, txObject) => {
-    const submittedAt = txObject._timeStampSubmitted;
+  setPending: (txId, hash) => {
     const status = 'pending';
-    set(state => {
-      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
-      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
-      transaction.status = status;
-      transaction.hash = txObject.hash;
-      return state;
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
+        status,
+        hash
+      };
+      return { transactions };
     });
   },
 
-  setMined: (from, txObject) => {
-    const submittedAt = txObject._timeStampSubmitted;
+  setMined: txId => {
     const status = 'mined';
-    set(state => {
-      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
-      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
-      transaction.status = status;
-      return state;
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
+        status
+      };
+      return { transactions };
     });
   },
 
-  setError: (from, txObject, error) => {
-    const submittedAt = txObject._timeStampSubmitted;
+  setError: (txId, error) => {
     const status = 'error';
-    set(state => {
-      const transaction = state.transactions[from].find(tx => tx.submittedAt === submittedAt);
-      invariant(transaction, `Unable to find tx from ${from} submitted at ${submittedAt}`);
-      const errorType = transaction.hash ? 'failed' : 'not sent';
-      transaction.status = status;
-      transaction.error = parseTxError(error.message);
-      transaction.errorType = errorType;
-      return state;
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      transactions[transactionIndex] = {
+        ...transactions[transactionIndex],
+        status,
+        error: error?.message ? parseTxError(error.message) : null,
+        errorType: transactions[transactionIndex].hash ? 'failed' : 'not sent'
+      };
+      return { transactions };
     });
   },
 
-  track: async (tx, message = null) => {
+  track: async (txCreator, message = '') => {
     const maker = await getMaker();
-    maker.service('transactionManager').listen(tx, {
-      initialized: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().initTx(from, txObject, message);
+    const txPromise = txCreator();
+    // noop catch since we handle tx errors via the manager
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    txPromise.catch(() => {});
+
+    const from = maker.currentAddress();
+    const txId = uuidv4();
+
+    get().initTx(txId, from, message);
+    maker.service('transactionManager').listen(txPromise, {
+      pending: ({ hash }) => {
+        get().setPending(txId, hash);
       },
-      pending: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setPending(from, txObject);
+      mined: () => {
+        get().setMined(txId);
       },
-      mined: ({ metadata: { action }, ...txObject }) => {
-        const from = action.from;
-        get().setMined(from, txObject);
-      },
-      error: ({ metadata: { action }, ...txObject }, error) => {
-        const from = action.from;
-        get().setError(from, txObject, error);
+      error: (_, error) => {
+        get().setError(txId, error);
       }
     });
 
-    // noop catch since we handle tx errors via the manager
-    tx.catch(() => {});
+    return txId;
   }
 }));
 
+const transactionsSelectors = {
+  getTransaction: (state, txId): TX => {
+    const tx = state.transactions.find(tx => tx.id === txId);
+    invariant(tx, `Unable to find tx id ${txId}`);
+    return tx;
+  }
+};
+
 export default useTransactionsStore;
-export { transactionsApi };
+export { transactionsApi, transactionsSelectors };

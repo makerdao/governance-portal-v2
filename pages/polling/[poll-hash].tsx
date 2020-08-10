@@ -16,26 +16,28 @@ import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
+import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
+import SystemStats from '../../components/polling/SystemStatsVertical';
+import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import Skeleton from 'react-loading-skeleton';
 
-const NavButton = (props) => (
+const NavButton = props => (
   <Button
-  variant="outline"
-  sx={{
-  color: 'mutedAlt',
-  borderColor: 'secondaryMuted',
-  borderRadius: 'small',
-  textTransform: 'uppercase',
-  fontSize: 1,
-  px: [2, 3]
-  }}
-  {...props}
+    variant="outline"
+    sx={{
+      color: 'mutedAlt',
+      borderColor: 'secondaryMuted',
+      borderRadius: '4px',
+      textTransform: 'uppercase',
+      fontSize: 1,
+      px: [2, 3]
+    }}
+    {...props}
   ></Button>
 );
 
@@ -65,33 +67,28 @@ const PollView = ({ poll }: { poll: Poll }) => {
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
         <div>
-          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
-              <NavLink p={2} sx={{ justifySelf: 'left' }}>
-                  <NavButton>
-                    <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size="2" mr={2} />Back to all polls
-                    </Flex>
-                    <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      Back to all
-                    </Flex>
-                  </NavButton>
+              <NavLink p={0}>
+                <NavButton>
+                  <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    <Icon name="chevron_left" size="2" mr={2} />
+                    Back to all polls
+                  </Flex>
+                  <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    Back to all
+                  </Flex>
+                </NavButton>
               </NavLink>
             </Link>
             <Flex sx={{ justifyContent: 'space-between' }}>
               {poll.ctx?.prev?.slug && (
                 <Link
                   scroll={false}
-                  href={{
-                    pathname: '/polling/[poll-hash]',
-                    query: { network }
-                  }}
-                  as={{
-                    pathname: `/polling/${poll.ctx.prev.slug}`,
-                    query: { network }
-                  }}
+                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+                  as={{ pathname: `/polling/${poll.ctx.prev.slug}`, query: { network } }}
                 >
-                  <NavLink>
+                  <NavLink p={0}>
                     <NavButton>
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                         <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
@@ -103,16 +100,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
               {poll.ctx?.next?.slug && (
                 <Link
                   scroll={false}
-                  href={{
-                    pathname: '/polling/[poll-hash]',
-                    query: { network }
-                  }}
-                  as={{
-                    pathname: `/polling/${poll.ctx.next.slug}`,
-                    query: { network }
-                  }}
+                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+                  as={{ pathname: `/polling/${poll.ctx.next.slug}`, query: { network } }}
                 >
-                  <NavLink>
+                  <NavLink p={0} ml={2}>
                     <NavButton>
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                         Next Poll <Icon name="chevron_right" size={2} ml={2} />
@@ -159,8 +150,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <Tabs
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div dangerouslySetInnerHTML={{ __html: poll.content }} />,
-                <div sx={{ pt: 3 }}>
+                <div key={1} dangerouslySetInnerHTML={{ __html: poll.content }} />,
+                <div key={2} sx={{ pt: 3 }}>
                   <Text as="h3" sx={{ pb: 2 }}>
                     Vote Breakdown
                   </Text>
@@ -214,16 +205,19 @@ const PollView = ({ poll }: { poll: Poll }) => {
             />
           </Card>
         </div>
-        <Stack>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
-        </Stack>
+        <StickyColumn sx={{ pt: 3 }}>
+          <Stack gap={3}>
+            <Card variant="compact">Voting</Card>
+            <SystemStats />
+            <ResourceBox />
+          </Stack>
+        </StickyColumn>
       </SidebarLayout>
     </PrimaryLayout>
   );
 };
 
-export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }) {
+export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();

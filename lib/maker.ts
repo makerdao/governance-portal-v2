@@ -85,12 +85,12 @@ if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'u
 }
 
 let makerSingleton: Promise<Maker>;
-function getMaker() {
+function getMaker(): Promise<Maker> {
   if (!makerSingleton) {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork() }],
+        [GovernancePlugin, { network: getNetwork(), staging: true }], //TODO: set staging to false before releasing to production
         Web3ReactPlugin
       ],
       provider: {
@@ -125,5 +125,9 @@ function isSupportedNetwork(_network: string): _network is SupportedNetworks {
   return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
 }
 
+function isTestnet(): boolean {
+  return getNetwork() === 'testnet';
+}
+
 export default getMaker;
-export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName };
+export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName, isTestnet };

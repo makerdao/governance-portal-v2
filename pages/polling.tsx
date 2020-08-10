@@ -1,36 +1,48 @@
 /** @jsx jsx */
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { Card, Heading, Box, Flex, jsx, Button, Link, IconButton, Text, Link as ExternalLink } from 'theme-ui';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
+import { GetStaticProps } from 'next';
 
-import { isDefaultNetwork } from '../lib/maker';
+import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
-import { isActivePoll } from '../lib/utils';
-import PrimaryLayoutNoMargin from '../components/layouts/PrimaryNoMargin';
-import SidebarLayout from '../components/layouts/Sidebar';
+import { isActivePoll, formatDateWithTime } from '../lib/utils';
+import PrimaryLayout from '../components/layouts/Primary';
+import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import Poll from '../types/poll';
 import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
+import BallotBox from '../components/polling/BallotBox';
+import ResourceBox from '../components/polling/ResourceBox';
+import useBallotStore from '../stores/ballot';
+import useAccountsStore from '../stores/accounts';
+import groupBy from 'lodash/groupBy';
+import partition from 'lodash/partition';
+import sortBy from 'lodash/sortBy';
+import MobileVoteSheet from '../components/polling/MobileVoteSheet';
+import BallotStatus from '../components/BallotStatus';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, setStartDate] = useState<Date | ''>('');
-  const [endDate, setEndDate] = useState<Date | ''>('');
-  const [numHistoricalLoaded, setNumHistoricalLoaded] = useState(10);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
-  const [votingWeightTotal, setVotingWeighTotal] = useState(0)
-  const [pollsAdded, setPollsAdded] = useState(0)
-  const [pollsAvailable, setPollsAvailable] = useState(0)
   const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
     polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
   );
+  const ballot = useBallotStore(state => state.ballot);
+  const ballotLength = Object.keys(ballot).length;
+  const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
+  const bpi = useBreakpointIndex();
 
   useEffect(() => {
     if (location.href.includes('pollFilter=active')) {
@@ -48,14 +60,21 @@ const PollingOverview = ({ polls }: Props) => {
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
-  const activePolls = filteredPolls.filter(poll => isActivePoll(poll));
-  const historicalPolls = filteredPolls.filter(poll => !isActivePoll(poll));
+  const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
+
+  const groupedActivePolls = groupBy(activePolls, 'startDate');
+  const sortedStartDatesActive = sortBy(Object.keys(groupedActivePolls), x => -new Date(x));
+
+  const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
+  const sortedStartDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   const loadMore = entries => {
     const target = entries.pop();
     if (target.isIntersecting) {
-      setNumHistoricalLoaded(
-        numHistoricalLoaded < historicalPolls.length ? numHistoricalLoaded + 5 : numHistoricalLoaded
+      setNumHistoricalGroupingsLoaded(
+        numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length
+          ? numHistoricalGroupingsLoaded + 3
+          : numHistoricalGroupingsLoaded
       );
     }
   };
@@ -63,32 +82,40 @@ const PollingOverview = ({ polls }: Props) => {
   useEffect(() => {
     let observer;
     if (loader?.current) {
-      // Create observer
-      observer = new IntersectionObserver(loadMore, {
-        root: null,
-        rootMargin: '600px'
-      });
-      // observe the loader
+      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
       observer.observe(loader.current);
     }
     return () => {
-      if (observer && loader?.current) {
-        // clean up
-        return observer.unobserve(loader.current as HTMLDivElement);
+      if (loader?.current) {
+        observer?.unobserve(loader.current);
       }
     };
   }, [loader, loadMore]);
 
   useEffect(() => {
-    setNumHistoricalLoaded(10); // reset inifite scroll if a new filter is applied
+    setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
+  const account = useAccountsStore(state => state.currentAccount);
+
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
+
   return (
-    <PrimaryLayoutNoMargin shortenFooter={true}>
+    <PrimaryLayout shortenFooter={true}>
+      {mobileVotingPoll && (
+        <MobileVoteSheet
+          ballotCount={ballotLength}
+          activePolls={activePolls}
+          poll={mobileVotingPoll}
+          setPoll={setMobileVotingPoll}
+          close={() => setMobileVotingPoll(null)}
+        />
+      )}
       <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center' }}>
-          <Heading as="h1" mr={3}>
-            Active Polls
+        {bpi === 0 && account && <BallotStatus />}
+        <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
+          <Heading variant="microHeading" mr={3}>
+            Filters
           </Heading>
           <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
           <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
@@ -97,11 +124,28 @@ const PollingOverview = ({ polls }: Props) => {
           <Box>
             <Stack>
               <div>
-                <Stack sx={{ mb: 4 }}>
-                  {activePolls.map(poll => (
-                    <PollOverviewCard key={poll.multiHash} poll={poll} />
-                  ))}
-                </Stack>
+                <Heading mb={3} mt={4} as="h4">
+                  Active Polls
+                </Heading>
+                {sortedStartDatesActive.map(date => (
+                  <div key={date}>
+                    <Text variant="caps" color="onSurface" mb={2}>
+                      {groupedActivePolls[date].length} Poll{groupedActivePolls[date].length === 1 ? '' : 's'}{' '}
+                      - Posted {formatDateWithTime(date)}
+                    </Text>
+                    <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                      {groupedActivePolls[date].map(poll => (
+                        <PollOverviewCard
+                          key={poll.multiHash}
+                          poll={poll}
+                          startMobileVoting={() => setMobileVotingPoll(poll)}
+                          reviewing={false}
+                          sending={null}
+                        />
+                      ))}
+                    </Stack>
+                  </div>
+                ))}
               </div>
               {showHistoricalPolls ? (
                 <div>
@@ -111,120 +155,60 @@ const PollingOverview = ({ polls }: Props) => {
                       <Icon name="chevron_down" />
                     </IconButton>
                   </Heading>
-                  <Stack>
-                    {historicalPolls.slice(0, numHistoricalLoaded).map(poll => (
-                      <PollOverviewCard key={poll.multiHash} poll={poll} />
-                    ))}
-                  </Stack>
+                  {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                    <div key={date}>
+                      <Text variant="caps" color="onSurface" mb={2}>
+                        {groupedHistoricalPolls[date].length} Poll
+                        {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                        {formatDateWithTime(date)}
+                      </Text>
+                      <Stack sx={{ mb: 4 }}>
+                        {groupedHistoricalPolls[date].map(poll => (
+                          <PollOverviewCard
+                            key={poll.multiHash}
+                            poll={poll}
+                            reviewing={false}
+                            sending={null}
+                          />
+                        ))}
+                      </Stack>
+                    </div>
+                  ))}
                   <div ref={loader} />
                 </div>
               ) : (
-                <Button onClick={() => setShowHistoricalPolls(true)} variant="outline">
+                <Button
+                  onClick={() => setShowHistoricalPolls(true)}
+                  variant="outline"
+                  sx={{ py: 3, mt: [0, 0] }}
+                >
                   See all ended polls ({historicalPolls.length})
                 </Button>
               )}
             </Stack>
           </Box>
-          <Stack>
-            <Box>
-              <Heading mb={3} as='h4'>
-                Your Ballot
-              </Heading>
-              <Card variant="compact" p={0}>
-                <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1'}}>
-                  <Text sx={{color: 'onSurface', fontSize: 16, fontWeight: '500'}}>
-                    {`${pollsAdded} of ${pollsAvailable} available polls added to ballot`}
-                  </Text>
-                  <Box sx={{ width: '100%', height: 2, backgroundColor: 'muted', mt: 2}}>
-                  </Box>
-
-                </Box>
-                <Flex p={3} sx={{ borderBottom: '1px solid #D4D9E1', justifyContent: 'space-between'}}>
-                  <Text color="onSurface">
-                    Voting weight for all polls
-                    <Icon name='question' />
-                  </Text>
-                  <Text>
-                    {`${votingWeightTotal.toFixed(2)} MKR`}
-                  </Text>
-                </Flex>
-                <Flex p={3} sx={{ justifyContent: 'center', alignItems: 'center'}}>
-                  <Button disabled={pollsAdded < 1} variant='primary' sx={{width: '100%'}}>Submit Your Ballot</Button>
-                </Flex>
-              </Card>
-            </Box>
-            <Box>
-              <Heading mb={3} as='h4'>
-                Resources
-              </Heading>
-              <Card variant="compact">
-                <ExternalLink href="https://https://forum.makerdao.com/c/governance/" target="_blank">
-                  <Flex sx={{ alignItems: 'center'}}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance Forum
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://community-development.makerdao.com/governance/governance" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance FAQs
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://blog.makerdao.com/makerdao-governance-risk-framework/" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance Risk Framework
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://github.com/makerdao/awesome-makerdao#governance" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Awesome MakerDAO
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://daistats.com/" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      Governance call schedule
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-                <ExternalLink href="https://calendar.google.com/calendar/embed?src=makerdao.com_3efhm2ghipksegl009ktniomdk%40group.calendar.google.com&ctz=America%2FLos_Angeles" target="_blank">
-                  <Flex sx={{ alignItems: 'center', pt: 3 }}>
-                    <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
-                      MakerDAO events calendar
-                      <Icon ml={2} name="chevron_right" size={2} sx={{ color: 'mutedAlt' }} />
-                    </Text>
-                  </Flex>
-                </ExternalLink>
-              </Card>
-            </Box>
-          </Stack>
+          <StickyColumn sx={{ pt: 3 }}>
+            <Stack gap={3}>
+              {account && bpi > 0 && (
+                <BallotBox activePolls={activePolls} ballot={ballot} network={network} />
+              )}
+              <ResourceBox />
+            </Stack>
+          </StickyColumn>
         </SidebarLayout>
       </Stack>
-    </PrimaryLayoutNoMargin>
+    </PrimaryLayout>
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
+export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
-        .then(_setPolls)
-        .catch(setError);
+      getPolls().then(_setPolls).catch(setError);
     }
   }, []);
 
@@ -234,15 +218,15 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props) {
 
   if (!isDefaultNetwork() && !_polls)
     return (
-      <PrimaryLayoutNoMargin>
+      <PrimaryLayout>
         <p>Loading…</p>
-      </PrimaryLayoutNoMargin>
+      </PrimaryLayout>
     );
 
   return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
 
@@ -252,4 +236,4 @@ export async function getStaticProps() {
       polls
     }
   };
-}
+};

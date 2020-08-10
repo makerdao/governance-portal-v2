@@ -18,7 +18,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
 
-  const provider = new ethers.providers.AlchemyProvider();
+  const provider = new ethers.providers.AlchemyProvider(network, process.env.ALCHEMY_KEY);
   const encoder = new ethers.utils.Interface([
     'function sig() returns (bytes)',
     'function action() returns (address)',
@@ -57,7 +57,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       .map(() => '0')
       .join('')}${usr.replace('0x', '')}`;
 
-    const [{ transactionHash, blockNumber }] = await provider.getLogs({
+    const [{ transactionHash, blockNumber }] = await new ethers.providers.InfuraProvider(
+      network,
+      process.env.INFURA_KEY
+    ).getLogs({
       address: MCD_PAUSE,
       fromBlock: 0,
       toBlock: 'latest',

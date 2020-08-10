@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Button, Text, Flex, Box, jsx } from 'theme-ui';
+import { Button, Text, Flex, jsx } from 'theme-ui';
 
 import Stack from '../layouts/Stack';
 import { getNetwork } from '../../lib/maker';
@@ -12,7 +12,7 @@ type Props = {
   poll: Poll;
 };
 
-const PollPreviewCard = ({ poll, ...props }: Props) => {
+const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
   const network = getNetwork();
 
   return (
@@ -48,6 +48,7 @@ const PollPreviewCard = ({ poll, ...props }: Props) => {
           >
             <Text
               sx={{
+                variant: 'microHeading',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',

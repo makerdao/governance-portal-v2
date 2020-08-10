@@ -10,7 +10,7 @@ type Props = {
   max?: CurrencyObject;
 };
 
-const MKRInput = ({ placeholder = '0.00', ...props }: Props) => {
+const MKRInput = ({ placeholder = '0.00', ...props }: Props): JSX.Element => {
   const { onChange, min, max } = props;
   const [currentValueStr, setCurrentValueStr] = useState('');
 

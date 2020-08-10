@@ -1,8 +1,10 @@
 export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
 
 type TX = {
-  submittedAt: string;
+  from: string;
   status: TxStatus;
+  id: string;
+  submittedAt: Date;
   message: null | string;
   hash: null | string;
   error: null | string;

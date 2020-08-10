@@ -1,12 +1,13 @@
 /** @jsx jsx */
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
+import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '../lib/api';
 import PrimaryLayout from '../components/layouts/Primary';
 import Stack from '../components/layouts/Stack';
@@ -16,12 +17,13 @@ import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
 import BlogPostCard from '../components/index/BlogPostCard';
-import Proposal from '../types/proposal';
+import { CMSProposal } from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
+import { initTestchainPolls } from '../lib/utils';
 
 type Props = {
-  proposals: Proposal[];
+  proposals: CMSProposal[];
   polls: Poll[];
   blogPosts: BlogPost[];
 };
@@ -29,7 +31,7 @@ type Props = {
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
 
-  const { data: hat } = useSWR<string>(`/executive/hat`, () =>
+  const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
@@ -62,10 +64,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
+                  <PollingIndicator polls={polls} />
                 </Stack>
               </Container>
-
-              <PollingIndicator polls={polls} />
             </Stack>
           </section>
 
@@ -191,14 +192,22 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   );
 };
 
-export default function Index({ proposals: prefetchedProposals, polls: prefetchedPolls, blogPosts }: Props) {
+export default function Index({
+  proposals: prefetchedProposals,
+  polls: prefetchedPolls,
+  blogPosts
+}: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>();
-  const [_proposals, _setProposals] = useState<Proposal[]>();
+  const [_proposals, _setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
+    async function initTestchain() {
+      if (getNetwork() === 'testnet') await initTestchainPolls();
+    }
+    initTestchain();
     if (!isDefaultNetwork()) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
@@ -222,14 +231,14 @@ export default function Index({ proposals: prefetchedProposals, polls: prefetche
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])}
+      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
       polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
   );
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls, proposals, blog posts at build-time
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
@@ -245,4 +254,4 @@ export async function getStaticProps() {
       blogPosts
     }
   };
-}
+};

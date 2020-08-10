@@ -1,4 +1,4 @@
-type Proposal = {
+export type CMSProposal = {
   address: string;
   key: string;
   content: string;
@@ -6,5 +6,12 @@ type Proposal = {
   proposalBlurb: string;
   title: string;
 };
+
+export type RawAddressProposal = {
+  address: string;
+  key: string;
+};
+
+type Proposal = CMSProposal | RawAddressProposal;
 
 export default Proposal;

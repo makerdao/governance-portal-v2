@@ -1,26 +1,26 @@
-import uniqBy from 'lodash.uniqby';
+import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
-import getMaker, { getNetwork } from './maker';
+import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
-import Proposal from '../types/proposal';
+import Proposal, { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 
-let _cachedProposals: Proposal[];
+let _cachedProposals: CMSProposal[];
 /**
  * The first time this method is called, it fetches fresh proposals and caches them.
  * Everytime after that, it returns from the cache.
  */
-export async function getExecutiveProposals(): Promise<Proposal[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/proposals.json');
-  if (_cachedProposals) return _cachedProposals;
+export async function getExecutiveProposals(): Promise<CMSProposal[]> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
+  if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
   const proposals = topics
     .filter(proposal => proposal.active)
@@ -38,7 +38,7 @@ export async function getExecutiveProposals(): Promise<Proposal[]> {
   return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(proposalId: string): Promise<Proposal> {
+export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal> {
   const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
@@ -56,7 +56,7 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/polls.json');
+  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
@@ -138,7 +138,9 @@ export async function getPostsAndPhotos(): Promise<BlogPost[]> {
   if (process.env.NEXT_PUBLIC_USE_MOCK) return require('../mocks/blogPosts.json');
   const posts = await fetch(GOV_BLOG_POSTS_ENDPOINT).then(res => res.json());
   const photoLinks: string[] = await Promise.all(
-    posts.map(post => fetch(post._links['wp:featuredmedia'][0].href).then(res => res.json()))
+    posts.map(post =>
+      fetch(post._links['wp:featuredmedia'][0].href.replace(/(?<!:)\/\//, '/')).then(res => res.json())
+    )
   ).then(photosMeta => (photosMeta as any).map(photoMeta => photoMeta.media_details.sizes.large.source_url));
 
   return posts.map((post, index) => ({

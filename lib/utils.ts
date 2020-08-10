@@ -9,8 +9,11 @@ import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
 import Poll from '../types/poll';
+import Proposal from '../types/proposal';
 import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
+import getMaker from './maker';
+import mockPolls from '../mocks/polls.json';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -24,9 +27,7 @@ export function bigNumberKFormat(num: CurrencyObject) {
 }
 
 export async function markdownToHtml(markdown: string) {
-  const result = await remark()
-    .use(html)
-    .process(markdown);
+  const result = await remark().use(html).process(markdown);
   return result.toString();
 }
 
@@ -92,8 +93,9 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'address'
 ): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[network] ||
-    ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]}etherscan.io`;
+  const prefix = `https://${
+    ETHERSCAN_PREFIXES[network] || ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]
+  }etherscan.io`;
 
   switch (type) {
     case 'transaction':
@@ -105,9 +107,17 @@ export function getEtherscanLink(
 }
 
 export function isActivePoll(poll: Poll): boolean {
-  const hasStarted = new Date(poll.startDate).getTime() <= Date.now();
-  const hasNotEnded = new Date(poll.endDate).getTime() >= Date.now();
-  return hasStarted && hasNotEnded;
+  const now = Date.now();
+  if (new Date(poll.endDate).getTime() < now) return false;
+  if (new Date(poll.startDate).getTime() > now) return false;
+  return true;
+}
+
+export function isRankedChoicePoll(poll: Poll): boolean {
+  return poll.voteType === 'Ranked Choice IRV';
+}
+export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
+  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId);
 }
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
@@ -118,6 +128,7 @@ export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<a
   return json;
 }
 
+/* eslint-disable no-useless-escape */
 // https://medium.com/@mhagemann/the-ultimate-way-to-slugify-a-url-string-in-javascript-b8e4a0d849e1
 export function slugify(string: string) {
   const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;';
@@ -133,6 +144,14 @@ export function slugify(string: string) {
     .replace(/\-\-+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '');
+}
+/* eslint-enable no-useless-escape */
+
+// https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+export function getNumberWithOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
 /** Add sx styles to the passed in component. Provided styles override component styles if there's a clash. */
@@ -178,4 +197,44 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   }, {});
 
   return { hasBeenCast, executedOn, groupedDiff };
+}
+
+export const formatDateWithTime = dateString => {
+  if (!dateString) return;
+  const date = new Date(dateString);
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+    timeZone: 'UTC',
+    timeZoneName: 'short'
+  };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+};
+
+export async function initTestchainPolls() {
+  const maker = await getMaker();
+  const pollingService = maker.service('govPolling');
+  const hash = 'dummy hash';
+
+  // This detects whether the mock polls have been deployed yet
+  const testTx = await pollingService.createPoll(now(), now() + 500000, hash, hash);
+  if (testTx !== 0) return;
+
+  console.log('setting up some polls on the testchain...');
+  return mockPolls.map(async poll => {
+    const id = await pollingService.createPoll(now(), now() + 50000, hash, poll.url);
+    console.log(`created poll #${id}`);
+  });
+}
+
+function now() {
+  return Math.floor(new Date().getTime());
+}
+
+export function formatAddress(address: string) {
+  return address.slice(0, 7) + '...' + address.slice(-4);
 }

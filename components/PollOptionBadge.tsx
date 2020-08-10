@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { parsePollTally, fetchJson } from '../lib/utils';
 import Poll from '../types/poll';
 
-const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
+const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
   const network = getNetwork();
   const { data: tally } = useSWR(
@@ -22,12 +22,10 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
         hasPollEnded ? (
           <Badge
             ml="3"
-            px="14px"
             variant="primary"
             sx={{
               borderColor: 'inherit',
-              color: 'inherit',
-              textTransform: 'uppercase'
+              color: 'inherit'
             }}
           >
             Winning Option: {tally.winningOptionName}
@@ -35,7 +33,6 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }) => {
         ) : (
           <Badge
             ml="3"
-            px="14px"
             variant="primary"
             sx={{
               borderColor: 'text',
