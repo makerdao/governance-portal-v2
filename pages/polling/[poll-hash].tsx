@@ -20,6 +20,7 @@ import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
+import VoteBox from '../../components/polling/VoteBox';
 import SystemStats from '../../components/polling/SystemStatsVertical';
 import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
@@ -207,7 +208,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
         </div>
         <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
-            <Card variant="compact">Voting</Card>
+            <VoteBox poll={poll} />
             <SystemStats />
             <ResourceBox />
           </Stack>

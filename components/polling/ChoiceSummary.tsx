@@ -1,12 +1,12 @@
 /** @jsx jsx */
-import Link from 'next/link';
-import { useState } from 'react';
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import { ABSTAIN } from '../../lib/constants';
 
 const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) => {
+  console.log(poll);
+  const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof option === 'number';
   return (
     <Box {...props}>
@@ -28,8 +28,13 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) =>
       )}
       <Button
         onClick={edit}
-        variant="smallOutline"
-        sx={{ display: sending ? 'none' : 'inline-flex', flexDirection: 'row', alignItems: 'center' }}
+        variant={props.showHeader ? 'smallOutline' : 'outline'}
+        sx={{
+          display: sending ? 'none' : 'inline-flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          ...voteBoxStyle
+        }}
       >
         <Icon name="edit" size={3} mr={1} />
         Edit choice{isSingleSelect ? '' : 's'}

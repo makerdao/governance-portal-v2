@@ -12,7 +12,16 @@ import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 
-const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) => {
+const QuickVote = ({
+  poll,
+  sending,
+  showHeader,
+  ...props
+}: {
+  poll: Poll;
+  sending: null | string;
+  showHeader: boolean;
+}) => {
   const [addToBallot, addedChoice] = useBallotStore(state => [state.addToBallot, state.ballot[poll.pollId]]);
   const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
   const [editing, setEditing] = useState(false);
@@ -24,10 +33,10 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
     setEditing(false);
   };
 
-  const gap = 2;
+  const gap = 3;
   return (
-    <Stack gap={gap} ml={5} sx={{ maxWidth: 7 }}>
-      <Flex sx={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+    <Stack gap={gap} {...props}>
+      <Flex sx={{ flexDirection: 'row', justifyContent: 'flex-start', display: showHeader ? null : 'none' }}>
         <Text variant="caps" color="mutedAlt">
           Your Vote
         </Text>
@@ -35,7 +44,13 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
       </Flex>
 
       {!!addedChoice && !editing ? (
-        <ChoiceSummary sending={sending} poll={poll} choice={addedChoice} edit={() => setEditing(true)} />
+        <ChoiceSummary
+          sending={sending}
+          poll={poll}
+          choice={addedChoice}
+          edit={() => setEditing(true)}
+          showHeader={showHeader}
+        />
       ) : (
         <div>
           {isRankedChoicePoll(poll) ? (
@@ -44,7 +59,7 @@ const QuickVote = ({ poll, sending }: { poll: Poll; sending: null | string }) =>
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
           )}
           <Button
-            variant="primaryOutline"
+            variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={submit}
             mt={gap}
