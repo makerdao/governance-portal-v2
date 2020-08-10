@@ -1,37 +1,48 @@
 /** @jsx jsx */
-import { Button, jsx } from 'theme-ui';
-// import Router from 'next/router';
+import { jsx } from 'theme-ui';
+import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 
-import useAccountsStore from '../stores/accounts';
-import { formatAddress } from '../lib/utils';
-// import { getNetwork } from '../lib/maker';
+import { getLibrary, connectors } from '../lib/maker/web3react';
+import { syncMakerAccount } from '../lib/maker/web3react/hooks';
+import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
+import theme from '../lib/theme';
 
-const AccountSelect = (): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const connectWithBrowserProvider = useAccountsStore(state => state.connectWithBrowserProvider);
+const formatAddress = (address: string) => address.slice(0, 7) + '...' + address.slice(-4);
 
-  // const network = getNetwork();
-  // const otherNetwork = network === 'mainnet' ? 'kovan' : 'mainnet';
-  // const switchLabel = `Switch to ${otherNetwork}`;
+const WrappedAccountSelect = () => (
+  <Web3ReactProvider getLibrary={getLibrary}>
+    <AccountSelect />
+  </Web3ReactProvider>
+);
 
-  // const handleChange = (e: { target: { value: string } }) => {
-  //   if (e.target.value === 'MetaMask') {
-  //     connectWithBrowserProvider();
-  //   } else if (e.target.value === switchLabel) {
-  //     if (Router?.router) {
-  //       Router.push({
-  //         pathname: Router.router.pathname,
-  //         query: { network: otherNetwork }
-  //       });
-  //     }
-  //   }
-  // };
+const AccountSelect = () => {
+  const web3ReactContext = useWeb3React();
+  const { connector, library, chainId, account, activate, deactivate, active, error } = web3ReactContext;
+
+  // FIXME there must be a more direct way to get web3-react & maker to talk to each other
+  syncMakerAccount(library, account);
 
   return (
-    <Button variant="card" onClick={account ? () => null : connectWithBrowserProvider}>
-      {account ? <span>{formatAddress(account.address)}</span> : <span>Connect wallet</span>}
-    </Button>
+    <Menu>
+      <MenuButton sx={{ variant: 'buttons.card' }}>
+        {account ? <span>{formatAddress(account)}</span> : <span>Connect wallet</span>}
+      </MenuButton>
+      <MenuList
+        sx={{
+          variant: 'cards.primary',
+          p: [0, 0],
+          zIndex: theme.layout.modal.zIndex + 1, // otherwise will be hidden behind mobile menu
+          position: 'relative'
+        }}
+      >
+        {connectors.map(([name, connector]) => (
+          <MenuItem key={name} onSelect={() => activate(connector)}>
+            {name}
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
   );
 };
 
-export default AccountSelect;
+export default WrappedAccountSelect;

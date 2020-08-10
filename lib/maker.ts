@@ -3,25 +3,14 @@ import Maker from '@makerdao/dai';
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import Router from 'next/router';
+import { Web3ReactPlugin } from './maker/web3react';
 
 import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
+import { networkToRpc } from './maker/network';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
 export const MKR = Maker.MKR;
-
-export function networkToRpc(network: SupportedNetworks) {
-  switch (network) {
-    case SupportedNetworks.MAINNET:
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.KOVAN:
-      return `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`;
-    case SupportedNetworks.TESTNET:
-      return 'http://localhost:2000';
-    default:
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`;
-  }
-}
 
 function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
@@ -101,7 +90,8 @@ function getMaker(): Promise<Maker> {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork(), staging: true }] //TODO: set staging to false before releasing to production
+        [GovernancePlugin, { network: getNetwork(), staging: true }], //TODO: set staging to false before releasing to production
+        Web3ReactPlugin
       ],
       provider: {
         url: networkToRpc(getNetwork()),
