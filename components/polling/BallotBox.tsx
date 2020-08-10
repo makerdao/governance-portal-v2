@@ -52,7 +52,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
+          <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
             <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
               {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
             </Text>
@@ -83,7 +83,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               ))}
             </Flex>
           </Box>
-          <VotingWeight />
+          <VotingWeight sx={{ borderBottom: '1px solid #D4D9E1' }} />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => router.push({ pathname: '/polling/review', query: network })}

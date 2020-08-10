@@ -23,7 +23,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, ...otherProps }) => {
     : 'You did not vote';
 
   return (
-    <Flex sx={{ alignItems: 'center' }} {...otherProps}>
+    <Flex sx={{ alignItems: 'center', justifyContent: 'center' }} {...otherProps}>
       {icon && <Icon mr="1" name={icon} sx={{ color }} />}
       <Text variant="caps" color={color}>
         {text}
@@ -56,7 +56,6 @@ const VotingStatus = ({ poll, ...otherProps }: { poll: Poll }): JSX.Element | nu
   return (
     <Box {...otherProps}>
       <Badge
-        ml="3"
         px="14px"
         variant="primary"
         sx={{

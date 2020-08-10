@@ -5,7 +5,7 @@ import useSWR from 'swr';
 import useAccountsStore from '../../stores/accounts';
 import getMaker from '../../lib/maker';
 
-export default function (): JSX.Element {
+export default function (props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: votingWeight } = useSWR(
     account?.address ? ['/user/polling-voting-weight', account.address] : null,
@@ -36,8 +36,9 @@ export default function (): JSX.Element {
   return (
     <Flex
       p={3}
+      {...props}
       sx={{
-        borderBottom: '1px solid secondaryMuted',
+        ...props.sx,
         justifyContent: 'space-between',
         flexDirection: 'row'
       }}
