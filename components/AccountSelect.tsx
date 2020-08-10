@@ -1,11 +1,9 @@
 /** @jsx jsx */
-import { Flex, Divider, jsx } from 'theme-ui';
+import { jsx } from 'theme-ui';
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 
-import getMaker from '../lib/maker';
 import { getLibrary, connectors } from '../lib/maker/web3react';
 import { syncMakerAccount } from '../lib/maker/web3react/hooks';
-import { useEffect } from 'react';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
 import theme from '../lib/theme';
 
@@ -31,7 +29,7 @@ const AccountSelect = () => {
       <MenuButton sx={{ variant: 'buttons.card' }}>
         {account ? <span>{formatAddress(account)}</span> : <span>Connect wallet</span>}
       </MenuButton>
-      <MenuList sx={{ variant: 'cards.primary', p: 0, zIndex: mobileMenuZIndex + 1 }}>
+      <MenuList sx={{ variant: 'cards.primary', p: [0, 0], zIndex: mobileMenuZIndex + 1 }}>
         {connectors.map(([name, connector]) => (
           <MenuItem key={name} onSelect={() => activate(connector)}>
             {name}
