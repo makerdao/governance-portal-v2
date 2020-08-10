@@ -2,6 +2,7 @@
 import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/provider';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { networkToRpc } from '../network';
 import { SupportedNetworks } from '../../constants';
@@ -27,6 +28,13 @@ export const connectors: Array<[string, AbstractConnector]> = [
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true,
       pollingInterval: POLLING_INTERVAL
+    })
+  ],
+  [
+    'WalletLink',
+    new WalletLinkConnector({
+      url: networkToRpc(SupportedNetworks.MAINNET),
+      appName: 'vote.makerdao.com'
     })
   ]
 ];
