@@ -12,6 +12,7 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
   return (
     <Flex
       sx={{
+        maxWidth: 'page',
         flexDirection: 'column',
         minHeight: '100vh',
         mx: 'auto',
@@ -20,14 +21,7 @@ const PrimaryLayout = ({ children, shortenFooter }: React.PropsWithChildren<Prop
       }}
     >
       <Header />
-      <Box
-        as="main"
-        sx={{
-          width: '100%',
-          flex: '1 1 auto',
-          variant: 'layout.main'
-        }}
-      >
+      <Box as="main" sx={{ width: '100%', flex: '1 1 auto', variant: 'layout.main' }}>
         {children}
       </Box>
       <Footer shorten={shortenFooter || false} />
