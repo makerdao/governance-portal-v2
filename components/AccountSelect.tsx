@@ -26,7 +26,7 @@ const AccountSelect = () => {
   return (
     <Menu>
       <MenuButton sx={{ variant: 'buttons.card' }}>
-        {account ? <span>{formatAddress(account.address)}</span> : <span>Connect wallet</span>}
+        {account ? <span>{formatAddress(account)}</span> : <span>Connect wallet</span>}
       </MenuButton>
       <MenuList sx={{ variant: 'cards.primary', p: 0 }}>
         {connectors.map(([name, connector]) => (
