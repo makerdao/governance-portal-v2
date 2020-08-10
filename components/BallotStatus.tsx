@@ -1,28 +1,47 @@
 import { useRouter } from 'next/router';
 import { Text, Button, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import shallow from 'zustand/shallow';
+
+import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
+import TX from '../types/transaction';
 import useBallotStore from '../stores/ballot';
 import { getNetwork } from '../lib/maker';
 
+function renderButtonText(transaction: TX | null, ballotLength: number): string {
+  const defaultText = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
+  if (!transaction) return defaultText;
+  return (
+    {
+      pending: 'Vote Pending',
+      mined: 'Vote Sent Successfully'
+    }[transaction.status] || defaultText
+  );
+}
+
 const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
+  const transaction = useTransactionStore(
+    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
+    shallow
+  );
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
   const network = getNetwork();
 
   return (
     <Button
-      variant={ballotLength && !txId ? 'primary' : 'outline'}
+      variant={ballotLength && !transaction ? 'primary' : 'outline'}
       sx={{
         borderRadius: 'round',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        border: txId ? '1px solid mutedOrange' : ballotLength ? null : '1px solid secondaryMuted',
+        border: transaction ? '1px solid mutedOrange' : ballotLength ? null : '1px solid secondaryMuted',
         display: 'flex'
       }}
       onClick={() => {
-        if (txId || !ballotLength) return;
+        if (transaction || !ballotLength) return;
         router.push({ pathname: '/polling/review', query: network });
       }}
       {...props}
@@ -30,18 +49,24 @@ const BallotStatus = (props: any): JSX.Element => {
       <Icon
         name="ballot"
         size={3}
-        sx={{ color: ballotLength ? 'white' : 'textMuted', display: txId ? 'none' : null }}
+        sx={{ color: ballotLength ? 'white' : 'textMuted', display: transaction ? 'none' : null }}
       />
-      <Spinner size={16} sx={{ color: 'mutedOrange', alignSelf: 'center', display: txId ? null : 'none' }} />
+      <Spinner
+        size={16}
+        sx={{
+          color: 'mutedOrange',
+          alignSelf: 'center',
+          display: transaction && transaction.status === 'pending' ? null : 'none'
+        }}
+      />
       <Text
         sx={{
-          color: txId ? 'mutedOrange' : ballotLength ? 'white' : 'textMuted',
+          color: transaction ? 'mutedOrange' : ballotLength ? 'white' : 'textMuted',
           fontWeight: ballotLength ? '600' : 'normal',
-          fontSize: '13px',
           ml: 2
         }}
       >
-        {txId ? 'Vote Pending' : `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`}
+        {renderButtonText(transaction, ballotLength)}
       </Text>
     </Button>
   );

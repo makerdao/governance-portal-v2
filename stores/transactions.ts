@@ -106,7 +106,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
 }));
 
 const transactionsSelectors = {
-  getTransaction: (state, txId) => {
+  getTransaction: (state, txId): TX => {
     const tx = state.transactions.find(tx => tx.id === txId);
     invariant(tx, `Unable to find tx id ${txId}`);
     return tx;

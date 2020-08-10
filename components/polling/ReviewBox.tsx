@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Card, Heading, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -99,8 +99,8 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Initialized = () => (
     <ReviewBoxCard>
-      <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name="pencil" size={4} mt={4} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+        <Icon name="pencil" size={4} />
       </Flex>
       <Text
         mt={3}
@@ -123,7 +123,9 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Pending = () => (
     <ReviewBoxCard>
-      <Spinner size={48} mt={4} sx={{ color: 'primary' }} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+        <Spinner size={48} sx={{ color: 'primary' }} />
+      </Flex>
       <Text
         mt={3}
         px={4}
@@ -139,7 +141,9 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Mined = () => (
     <ReviewBoxCard>
-      <Icon name="reviewCheck" size={5} mt={4} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+        <Icon name="reviewCheck" size={5} />
+      </Flex>
       <Text
         mt={3}
         px={4}
@@ -178,7 +182,9 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Error = () => (
     <ReviewBoxCard>
-      <Icon name="reviewFailed" size={5} mt={4} />
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+        <Icon name="reviewFailed" size={5} />
+      </Flex>
       <Text
         mt={3}
         px={4}

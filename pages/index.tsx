@@ -17,13 +17,13 @@ import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
 import BlogPostCard from '../components/index/BlogPostCard';
-import Proposal from '../types/proposal';
+import { CMSProposal } from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
 import { initTestchainPolls } from '../lib/utils';
 
 type Props = {
-  proposals: Proposal[];
+  proposals: CMSProposal[];
   polls: Poll[];
   blogPosts: BlogPost[];
 };
@@ -199,7 +199,7 @@ export default function Index({
 }: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, _setPolls] = useState<Poll[]>();
-  const [_proposals, _setProposals] = useState<Proposal[]>();
+  const [_proposals, _setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
 
   // fetch poll contents at run-time if on any network other than the default
@@ -231,7 +231,7 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])}
+      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
       polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
