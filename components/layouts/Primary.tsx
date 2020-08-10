@@ -11,7 +11,7 @@ type Props = {
   };
 };
 
-const PrimaryLayout = ({ children, shortenFooter, sxAlt }: React.PropsWithChildren<Props>) => {
+const PrimaryLayout = ({ children, shortenFooter, ...props }: React.PropsWithChildren<Props>) => {
   return (
     <Flex
       sx={{
@@ -19,9 +19,9 @@ const PrimaryLayout = ({ children, shortenFooter, sxAlt }: React.PropsWithChildr
         minHeight: '100vh',
         mx: 'auto',
         variant: 'layout.root',
-        px: [3, 4],
-        ...sxAlt
+        px: [3, 4]
       }}
+      {...props}
     >
       <Header />
       <Box as="main" sx={{ width: '100%', flex: '1 1 auto', variant: 'layout.main' }}>
