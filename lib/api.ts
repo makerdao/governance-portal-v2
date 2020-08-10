@@ -7,16 +7,16 @@ import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
-import Proposal from '../types/proposal';
+import Proposal, { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 
-let _cachedProposals: Proposal[];
+let _cachedProposals: CMSProposal[];
 /**
  * The first time this method is called, it fetches fresh proposals and caches them.
  * Everytime after that, it returns from the cache.
  */
-export async function getExecutiveProposals(): Promise<Proposal[]> {
+export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
@@ -38,7 +38,7 @@ export async function getExecutiveProposals(): Promise<Proposal[]> {
   return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(proposalId: string): Promise<Proposal> {
+export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal> {
   const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);

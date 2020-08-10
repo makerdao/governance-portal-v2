@@ -3,9 +3,8 @@ import { Button, jsx } from 'theme-ui';
 // import Router from 'next/router';
 
 import useAccountsStore from '../stores/accounts';
+import { formatAddress } from '../lib/utils';
 // import { getNetwork } from '../lib/maker';
-
-const formatAddress = (address: string) => address.slice(0, 7) + '...' + address.slice(-4);
 
 const AccountSelect = (): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
