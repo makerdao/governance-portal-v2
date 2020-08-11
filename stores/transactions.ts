@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
-import TX from '../types/transaction';
+import TX, { TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 
 type Store = {
   transactions: TX[];
@@ -41,11 +41,14 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     set(({ transactions }) => {
       const transactionIndex = transactions.findIndex(tx => tx.id === txId);
       invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
-      transactions[transactionIndex] = {
-        ...transactions[transactionIndex],
+      const prevState = transactions[transactionIndex] as TXInitialized;
+      const nextState: TXPending = {
+        ...prevState,
         status,
         hash
       };
+
+      transactions[transactionIndex] = nextState;
       return { transactions };
     });
   },
@@ -55,10 +58,13 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     set(({ transactions }) => {
       const transactionIndex = transactions.findIndex(tx => tx.id === txId);
       invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
-      transactions[transactionIndex] = {
-        ...transactions[transactionIndex],
+      const prevState = transactions[transactionIndex] as TXPending;
+      const nextState: TXMined = {
+        ...prevState,
         status
       };
+
+      transactions[transactionIndex] = nextState;
       return { transactions };
     });
   },
@@ -68,12 +74,16 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     set(({ transactions }) => {
       const transactionIndex = transactions.findIndex(tx => tx.id === txId);
       invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
-      transactions[transactionIndex] = {
-        ...transactions[transactionIndex],
+      const prevState = transactions[transactionIndex] as TX;
+      const nextState: TXError = {
+        ...prevState,
         status,
         error: error?.message ? parseTxError(error.message) : null,
         errorType: transactions[transactionIndex].hash ? 'failed' : 'not sent'
       };
+
+      transactions[transactionIndex] = nextState;
+
       return { transactions };
     });
   },

@@ -33,7 +33,7 @@ export type TXError = {
   submittedAt: Date;
   message: null | string;
   hash: null | string;
-  error: string;
+  error: null | string;
   errorType: string;
 };
 
