@@ -51,8 +51,8 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll }): JSX.Element | null =>
   const transaction = useTransactionStore(state =>
     txId ? transactionsSelectors.getTransaction(state, txId) : null
   );
-  const isMined = transaction && transaction.status === 'mined';
-  const isPending = transaction && transaction.status === 'pending';
+  const isMined = transaction?.status === 'mined';
+  const isPending = transaction?.status === 'pending';
 
   if (!account) return null;
   if (!allUserVotes)

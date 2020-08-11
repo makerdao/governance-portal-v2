@@ -9,6 +9,7 @@ import invariant from 'tiny-invariant';
 import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from '@reach/tooltip';
+import Skeleton from 'react-loading-skeleton';
 
 import CountdownTimer from '../../components/CountdownTimer';
 import Delay from '../../components/Delay';
@@ -20,14 +21,14 @@ import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
-import VoteBox from '../../components/polling/VoteBox';
-import SystemStats from '../../components/polling/SystemStatsVertical';
+import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
+import SystemStats from '../../components/polling/[poll-hash]/SystemStatsVertical';
 import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
-import Skeleton from 'react-loading-skeleton';
+import useAccountsStore from '../../stores/accounts';
 
-const NavButton = props => (
+const NavButton = ({ children, ...props }) => (
   <Button
     variant="outline"
     sx={{
@@ -39,7 +40,9 @@ const NavButton = props => (
       px: [2, 3]
     }}
     {...props}
-  ></Button>
+  >
+    {children}
+  </Button>
 );
 
 // if the poll has ended, always fetch its tally from the server's cache
@@ -57,6 +60,7 @@ function prefetchTally(poll) {
 
 const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
+  const account = useAccountsStore(state => state.currentAccount);
 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
@@ -208,7 +212,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
         </div>
         <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
-            <VoteBox poll={poll} />
+            {!!account && <VoteBox poll={poll} />}
             <SystemStats />
             <ResourceBox />
           </Stack>
@@ -225,7 +229,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork() && query['poll-hash']) {
+    if ((!isDefaultNetwork() && query['poll-hash']) || !prefetchedPoll) {
       getPoll(query['poll-hash'] as string)
         .then(_setPoll)
         .catch(setError);
@@ -251,8 +255,12 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
-  invariant(params?.['poll-hash'], 'getStaticProps poll hash not found in params');
-  const poll = await getPoll(params['poll-hash'] as string);
+  const pollSlug = params?.['poll-hash'] as string;
+  invariant(pollSlug, 'getStaticProps poll hash not found in params');
+
+  const pollExists = !!(await getPolls()).find(poll => poll.slug === pollSlug);
+  if (!pollExists) return { unstable_revalidate: 30, props: { poll: null } };
+  const poll = await getPoll(pollSlug);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds

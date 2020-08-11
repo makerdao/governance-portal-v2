@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
 import AccountSelect from './AccountSelect';
-import BallotStatus from './BallotStatus';
+import BallotStatus from './polling/BallotStatus';
 import { useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from '../stores/accounts';

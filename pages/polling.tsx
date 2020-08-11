@@ -24,7 +24,7 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
-import BallotStatus from '../components/BallotStatus';
+import BallotStatus from '../components/polling/BallotStatus';
 
 type Props = {
   polls: Poll[];

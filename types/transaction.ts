@@ -1,14 +1,40 @@
 export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
 
-type TX = {
+export type TXInitialized = {
+  status: 'initialized';
+  id: string;
+  submittedAt: Date;
+  message: null | string;
+  hash: null;
+  error: null;
+  errorType: null;
+};
+
+export type TXPending = {
   from: string;
-  status: TxStatus;
+  status: 'pending';
+  id: string;
+  submittedAt: Date;
+  message: null | string;
+  hash: string;
+  error: null;
+  errorType: null;
+};
+
+export type TXMined = Omit<TXPending, 'status'> & {
+  status: 'mined';
+};
+
+export type TXError = {
+  status: 'error';
   id: string;
   submittedAt: Date;
   message: null | string;
   hash: null | string;
-  error: null | string;
-  errorType: null | string;
+  error: string;
+  errorType: string;
 };
+
+type TX = TXInitialized | TXPending | TXMined | TXError;
 
 export default TX;

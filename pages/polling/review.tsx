@@ -16,7 +16,7 @@ import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import PollOverviewCard from '../../components/polling/PollOverviewCard';
 import Poll from '../../types/poll';
-import ReviewBox from '../../components/polling/ReviewBox';
+import ReviewBox from '../../components/polling/review/ReviewBox';
 import useBallotStore from '../../stores/ballot';
 import useAccountsStore from '../../stores/accounts';
 import MobileVoteSheet from '../../components/polling/MobileVoteSheet';

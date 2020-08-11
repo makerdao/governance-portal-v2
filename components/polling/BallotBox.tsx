@@ -27,7 +27,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
       <Heading mb={3} as="h4">
         Your Ballot
       </Heading>
-      {transaction && transaction?.hash ? (
+      {transaction?.hash && transaction.status === 'pending' ? (
         <Card variant="compact" p={[0, 0]} sx={{ justifyContent: 'center' }}>
           <Flex sx={{ justifyContent: 'center', flexDirection: 'column' }}>
             <Spinner size={48} mt={4} sx={{ color: 'notice', alignSelf: 'center' }} />
@@ -52,7 +52,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <Box p={3} sx={{ borderBottom: '1px solid #D4D9E1' }}>
+          <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
             <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
               {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
             </Text>
@@ -83,7 +83,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               ))}
             </Flex>
           </Box>
-          <VotingWeight sx={{ borderBottom: '1px solid #D4D9E1' }} />
+          <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted' }} />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => router.push({ pathname: '/polling/review', query: network })}
