@@ -46,16 +46,13 @@ export default function PollOverviewCard({
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text variant="microHeading" sx={{ fontSize: [3, 5], whiteSpace: 'nowrap', overflowX: 'auto' }}>
+            <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
               {poll.title}
             </Text>
           </Link>
         </Box>
         <Text
           sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
             fontSize: [2, 3],
             color: 'onSecondary'
           }}
