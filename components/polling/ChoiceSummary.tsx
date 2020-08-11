@@ -5,7 +5,6 @@ import { getNumberWithOrdinal } from '../../lib/utils';
 import { ABSTAIN } from '../../lib/constants';
 
 const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) => {
-  console.log(poll);
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof option === 'number';
   return (

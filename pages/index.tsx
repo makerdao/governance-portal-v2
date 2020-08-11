@@ -42,6 +42,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       </Head>
       <div
         sx={{
+          top: 0,
           height: '700px',
           width: '100vw',
           zIndex: -1,

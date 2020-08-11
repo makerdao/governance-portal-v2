@@ -5,9 +5,7 @@ import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 import { getLibrary, connectors } from '../lib/maker/web3react';
 import { syncMakerAccount } from '../lib/maker/web3react/hooks';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
-import theme from '../lib/theme';
-
-const formatAddress = (address: string) => address.slice(0, 7) + '...' + address.slice(-4);
+import { formatAddress } from '../lib/utils';
 
 const WrappedAccountSelect = () => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -28,12 +26,12 @@ const AccountSelect = () => {
         {account ? <span>{formatAddress(account)}</span> : <span>Connect wallet</span>}
       </MenuButton>
       <MenuList
-        sx={{
+        sx={theme => ({
           variant: 'cards.primary',
           p: [0, 0],
           zIndex: theme.layout.modal.zIndex + 1, // otherwise will be hidden behind mobile menu
           position: 'relative'
-        }}
+        })}
       >
         {connectors.map(([name, connector]) => (
           <MenuItem key={name} onSelect={() => activate(connector)}>

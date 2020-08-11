@@ -164,7 +164,6 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  console.log(isFallback, 'isFallback');
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {

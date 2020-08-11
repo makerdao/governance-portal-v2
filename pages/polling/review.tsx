@@ -53,7 +53,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       {mobileVotingPoll && (
         <MobileVoteSheet editingOnly poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
       )}
-      <Stack gap={3} sx={{ mb: 4 }}>
+      <Stack gap={3}>
         <Heading mb={3} as="h4">
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
         </Heading>

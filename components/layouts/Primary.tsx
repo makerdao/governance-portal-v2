@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { Box, Flex, jsx } from 'theme-ui';
 
-import Header from '../Header';
 import Footer from '../Footer';
 
 type Props = {
@@ -13,17 +12,7 @@ type Props = {
 
 const PrimaryLayout = ({ children, shortenFooter, ...props }: React.PropsWithChildren<Props>) => {
   return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        minHeight: '100vh',
-        mx: 'auto',
-        variant: 'layout.root',
-        px: [3, 4]
-      }}
-      {...props}
-    >
-      <Header />
+    <Flex sx={{ mx: 'auto', width: '100%', flexDirection: 'column', minHeight: '100vh' }} {...props}>
       <Box as="main" sx={{ width: '100%', flex: '1 1 auto', variant: 'layout.main' }}>
         {children}
       </Box>

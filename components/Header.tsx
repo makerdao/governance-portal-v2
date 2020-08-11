@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from '../stores/accounts';
 
-const Header = (): JSX.Element => {
+const Header = (props): JSX.Element => {
   const network = getNetwork();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
@@ -26,6 +26,7 @@ const Header = (): JSX.Element => {
         width: '100%',
         variant: 'styles.header'
       }}
+      {...props}
     >
       <Link href={{ pathname: '/', query: { network } }}>
         <IconButton aria-label="Maker home" sx={{ width: 4, height: 4, p: 0 }}>
