@@ -139,8 +139,7 @@ const PollingOverview = ({ polls }: Props) => {
                           key={poll.multiHash}
                           poll={poll}
                           startMobileVoting={() => setMobileVotingPoll(poll)}
-                          reviewing={false}
-                          sending={null}
+                          reviewPage={false}
                         />
                       ))}
                     </Stack>
@@ -164,12 +163,7 @@ const PollingOverview = ({ polls }: Props) => {
                       </Text>
                       <Stack sx={{ mb: 4 }}>
                         {groupedHistoricalPolls[date].map(poll => (
-                          <PollOverviewCard
-                            key={poll.multiHash}
-                            poll={poll}
-                            reviewing={false}
-                            sending={null}
-                          />
+                          <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
                         ))}
                       </Stack>
                     </div>

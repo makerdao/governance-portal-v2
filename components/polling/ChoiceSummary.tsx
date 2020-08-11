@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import { ABSTAIN } from '../../lib/constants';
 
-const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) => {
+const ChoiceSummary = ({ choice: { option }, poll, edit, voteIsPending, ...props }) => {
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof option === 'number';
   return (
@@ -29,7 +29,7 @@ const ChoiceSummary = ({ choice: { option }, poll, edit, sending, ...props }) =>
         onClick={edit}
         variant={props.showHeader ? 'smallOutline' : 'outline'}
         sx={{
-          display: sending ? 'none' : 'inline-flex',
+          display: voteIsPending ? 'none' : 'inline-flex',
           flexDirection: 'row',
           alignItems: 'center',
           ...voteBoxStyle

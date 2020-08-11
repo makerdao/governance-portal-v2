@@ -134,7 +134,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
         Sending Transaction...
       </Text>
       <Text mt={2} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-        Submitting ${ballotLength} ${ballotLength === 1 ? 'poll' : 'polls'}
+        Submitting {ballotLength} {ballotLength === 1 ? 'poll' : 'polls'}
       </Text>
     </ReviewBoxCard>
   );
@@ -151,7 +151,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
       >
         Transaction Sent!
       </Text>
-      <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+      <Text sx={{ p: 4, mt: 3, textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
         Votes will update once the blockchain has confirmed the transaction.
       </Text>
       {transaction?.hash && (
@@ -160,7 +160,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
           href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
           sx={{ p: 0 }}
         >
-          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          <Text sx={{ p: 4, mt: 3, textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
             <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>

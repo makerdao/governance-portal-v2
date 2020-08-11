@@ -36,7 +36,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               px={4}
               sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
             >
-              Transaction Sent. Votes pending.
+              Transaction Sent. Vote{ballotLength === 1 ? '' : 's'} pending.
             </Text>
             <ExternalLink
               target="_blank"

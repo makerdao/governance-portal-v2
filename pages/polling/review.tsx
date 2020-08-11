@@ -76,8 +76,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                       <PollOverviewCard
                         key={poll.multiHash}
                         poll={poll}
-                        reviewing={true}
-                        sending={txId}
+                        reviewPage={true}
                         startMobileVoting={() => setMobileVotingPoll(poll)}
                         sx={cardStyles(index, ballotLength)}
                       />

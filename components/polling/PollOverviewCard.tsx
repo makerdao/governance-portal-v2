@@ -16,12 +16,11 @@ import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
 import QuickVote from './QuickVote';
 
-type Props = { poll: Poll; startMobileVoting?: () => void; reviewing: boolean; sending: null | string };
+type Props = { poll: Poll; startMobileVoting?: () => void; reviewPage: boolean };
 export default function PollOverviewCard({
   poll,
   startMobileVoting,
-  reviewing,
-  sending,
+  reviewPage,
   ...props
 }: Props): JSX.Element {
   const network = getNetwork();
@@ -95,7 +94,7 @@ export default function PollOverviewCard({
             <Button
               variant="outline"
               sx={{
-                display: reviewing ? 'none' : null,
+                display: reviewPage ? 'none' : null,
                 borderColor: 'secondaryAlt',
                 color: 'secondaryAlt'
               }}
@@ -104,12 +103,10 @@ export default function PollOverviewCard({
             </Button>
           </Link>
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'mutedAlt' }} />}
-          <VotingStatus sx={{ display: reviewing ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
+          <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
         </Flex>
       </Stack>
-      {showQuickVote && (
-        <QuickVote poll={poll} sending={sending} showHeader={true} sx={{ maxWidth: 7, ml: 5 }} />
-      )}
+      {showQuickVote && <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7, ml: 5 }} />}
     </Flex>
   );
 }

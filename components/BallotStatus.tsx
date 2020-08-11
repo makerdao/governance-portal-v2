@@ -8,17 +8,6 @@ import TX from '../types/transaction';
 import useBallotStore from '../stores/ballot';
 import { getNetwork } from '../lib/maker';
 
-function renderButtonText(transaction: TX | null, ballotLength: number): string {
-  const defaultText = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
-  if (!transaction) return defaultText;
-  return (
-    {
-      pending: 'Vote Pending',
-      mined: 'Vote Sent Successfully'
-    }[transaction.status] || defaultText
-  );
-}
-
 const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const transaction = useTransactionStore(
@@ -56,19 +45,53 @@ const BallotStatus = (props: any): JSX.Element => {
         sx={{
           color: 'mutedOrange',
           alignSelf: 'center',
-          display: transaction && transaction.status === 'pending' ? null : 'none'
+          display: transaction && transaction.status === 'pending' ? null : 'none',
+          mr: 2
         }}
       />
-      <Text
-        sx={{
-          color: transaction ? 'mutedOrange' : ballotLength ? 'white' : 'textMuted',
-          fontWeight: ballotLength ? '600' : 'normal',
-          ml: 2
-        }}
-      >
-        {renderButtonText(transaction, ballotLength)}
-      </Text>
+      <StatusText {...{ transaction, ballotLength }} />
     </Button>
+  );
+};
+
+const StatusText = ({
+  transaction,
+  ballotLength
+}: {
+  transaction: TX | null;
+  ballotLength: number;
+}): JSX.Element => {
+  const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
+  const text =
+    transaction === null
+      ? DEFAULT_TEXT
+      : transaction.status === 'pending'
+      ? 'Vote Pending'
+      : transaction.status === 'mined'
+      ? 'Vote Sent Successfully'
+      : DEFAULT_TEXT;
+
+  const DEFAULT_COLOR = 'white';
+  const color =
+    transaction === null
+      ? ballotLength === 0
+        ? 'textMuted'
+        : DEFAULT_COLOR
+      : transaction.status === 'pending'
+      ? 'mutedOrange'
+      : transaction.status === 'mined'
+      ? 'primary'
+      : DEFAULT_COLOR;
+
+  return (
+    <Text
+      sx={{
+        color,
+        fontWeight: ballotLength === 0 ? 'normal' : '600'
+      }}
+    >
+      {text || DEFAULT_TEXT}
+    </Text>
   );
 };
 
