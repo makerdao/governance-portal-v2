@@ -58,34 +58,36 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
         </Heading>
         <SidebarLayout>
-          <Stack gap={2}>
-            <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-              <Button variant="smallOutline" sx={{ width: 'max-content' }}>
-                Back To All Polls
-              </Button>
-            </Link>
-            <Stack gap={3}>
-              {bpi <= 2 && <SubmitButton />}
-              {bpi <= 2 && !!account && <ReviewBox activePolls={activePolls} />}
-              <Stack sx={{ display: activePolls.length ? null : 'none' }}>
-                {Object.keys(ballot).map((pollId, index) => {
-                  const poll = findPollById(polls, pollId);
-                  invariant(poll !== undefined, 'Unknown poll found on voter ballot');
-                  return (
-                    <PollOverviewCard
-                      key={poll.multiHash}
-                      poll={poll}
-                      reviewing={true}
-                      sending={txId}
-                      startMobileVoting={() => setMobileVotingPoll(poll)}
-                      sx={cardStyles(index, ballotLength)}
-                    />
-                  );
-                })}
+          <Box>
+            <Stack gap={2}>
+              <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+                <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                  Back To All Polls
+                </Button>
+              </Link>
+              <Stack gap={3}>
+                {bpi <= 2 && <SubmitButton />}
+                {bpi <= 2 && !!account && <ReviewBox activePolls={activePolls} />}
+                <Stack sx={{ display: activePolls.length ? null : 'none' }}>
+                  {Object.keys(ballot).map((pollId, index) => {
+                    const poll = findPollById(polls, pollId);
+                    invariant(poll !== undefined, 'Unknown poll found on voter ballot');
+                    return (
+                      <PollOverviewCard
+                        key={poll.multiHash}
+                        poll={poll}
+                        reviewing={true}
+                        sending={txId}
+                        startMobileVoting={() => setMobileVotingPoll(poll)}
+                        sx={cardStyles(index, ballotLength)}
+                      />
+                    );
+                  })}
+                </Stack>
+                {bpi <= 2 && <SubmitButton />}
               </Stack>
-              {bpi <= 2 && <SubmitButton />}
             </Stack>
-          </Stack>
+          </Box>
           {bpi === 3 && !!account && (
             <StickyColumn sx={{ pt: 3 }}>
               <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>

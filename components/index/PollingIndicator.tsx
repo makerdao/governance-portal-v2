@@ -61,7 +61,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
         }}
       >
         {pollsToBeAwareOf > 0 && (
-          <Badge mr="3" variant="circle">
+          <Badge mr="3" variant="circle" p="3px">
             {pollsToBeAwareOf}
           </Badge>
         )}
