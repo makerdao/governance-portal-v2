@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
-import { getConnectedMakerObj } from '../../_lib/utils';
+import { getConnectedMakerObj, getTrace } from '../../_lib/utils';
 import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from '../../../../lib/constants';
 import { fetchJson } from '../../../../lib/utils';
 import withApiHandler from '../../_lib/withApiHandler';
@@ -11,14 +11,20 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const spellAddress: string = req.query.address as string;
   invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-  const network = req.query.network as string;
-  invariant(!network || network === SupportedNetworks.MAINNET, `unsupported network ${network}`);
+  invariant(
+    !req.query.network || req.query.network === SupportedNetworks.MAINNET,
+    `unsupported network ${req.query.network}`
+  );
 
-  const maker = await getConnectedMakerObj(SupportedNetworks.MAINNET);
+  const network = SupportedNetworks.MAINNET;
+  const maker = await getConnectedMakerObj(network);
 
   const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
+  const provider = ethers.getDefaultProvider(network, {
+    infura: process.env.INFURA_KEY,
+    alchemy: process.env.ALCHEMY_KEY
+  });
 
-  const provider = new ethers.providers.AlchemyProvider(network, process.env.ALCHEMY_KEY);
   const encoder = new ethers.utils.Interface([
     'function sig() returns (bytes)',
     'function action() returns (address)',
@@ -27,13 +33,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   ]);
 
   async function ethCall(method) {
-    const calldata = [
-      {
-        to: spellAddress,
-        data: encoder.encodeFunctionData(method)
-      }
-    ];
-    return encoder.decodeFunctionResult(method, await provider.send('eth_call', calldata));
+    const calldata = {
+      to: spellAddress,
+      data: encoder.encodeFunctionData(method)
+    };
+
+    return encoder.decodeFunctionResult(method, await provider.call(calldata));
   }
 
   const [hasBeenCast] = await ethCall('done');
@@ -68,21 +73,23 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     });
 
     invariant(transactionHash, `Unable to find cast transaction for spell ${spellAddress}`);
-    trace = await provider.send('trace_replayTransaction', [transactionHash, ['vmTrace', 'stateDiff']]);
+    trace = await getTrace('trace_replayTransaction', transactionHash, network);
     executedOn = blockNumber;
   } else {
     const [fax] = await ethCall('sig');
 
-    trace = await provider.send('trace_call', [
+    trace = await getTrace(
+      'trace_call',
       {
         from: MCD_PAUSE,
         to: MCD_PAUSE_PROXY,
         data: encoder.encodeFunctionData('exec', [usr, fax])
       },
-      ['vmTrace', 'stateDiff']
-    ]);
+      network
+    );
   }
 
+  invariant(trace, `Unable to fetch trace for spell ${spellAddress}`);
   const decodedDiff = await fetchJson(ETH_TX_STATE_DIFF_ENDPOINT(SupportedNetworks.MAINNET), {
     method: 'POST',
     body: JSON.stringify({ trace })
