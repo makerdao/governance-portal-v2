@@ -1,6 +1,7 @@
 export type TxStatus = 'initialized' | 'pending' | 'mined' | 'error';
 
 export type TXInitialized = {
+  from: string;
   status: 'initialized';
   id: string;
   submittedAt: Date;
@@ -26,6 +27,7 @@ export type TXMined = Omit<TXPending, 'status'> & {
 };
 
 export type TXError = {
+  from: string;
   status: 'error';
   id: string;
   submittedAt: Date;
