@@ -27,7 +27,7 @@ export default function (props): JSX.Element {
         </Heading>
         <Text sx={{ fontSize: '16px', color: 'textMuted', mt: 1, fontWeight: 'normal' }}>{poll.summary}</Text>
 
-        {showQuickVote && <QuickVote poll={poll} sending={txId} showHeader={false} />}
+        {showQuickVote && <QuickVote poll={poll} showHeader={false} />}
         {isActivePoll(poll) ? '' : <VotingStatus sx={{ mt: 3, mx: 3, textAlign: 'center' }} poll={poll} />}
       </Card>
     </Box>
