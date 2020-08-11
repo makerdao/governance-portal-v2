@@ -3,10 +3,10 @@ import { Text, Button, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
-import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
-import TX from '../types/transaction';
-import useBallotStore from '../stores/ballot';
-import { getNetwork } from '../lib/maker';
+import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
+import TX from '../../types/transaction';
+import useBallotStore from '../../stores/ballot';
+import { getNetwork } from '../../lib/maker';
 
 const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);

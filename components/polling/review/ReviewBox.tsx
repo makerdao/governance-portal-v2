@@ -5,12 +5,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getEtherscanLink } from '../../lib/utils';
-import { getNetwork } from '../../lib/maker';
-import Poll from '../../types/poll';
-import useBallotStore from '../../stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
-import VotingWeight from './VotingWeight';
+import { getEtherscanLink } from '../../../lib/utils';
+import { getNetwork } from '../../../lib/maker';
+import Poll from '../../../types/poll';
+import { TXMined } from '../../../types/transaction';
+import useBallotStore from '../../../stores/ballot';
+import useTransactionStore, { transactionsSelectors } from '../../../stores/transactions';
+import VotingWeight from '../VotingWeight';
 
 export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
@@ -30,8 +31,6 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const bpi = useBreakpointIndex();
   const ballotLength = Object.keys(ballot).length;
-
-  const [votingWeightTotal] = useState(0);
 
   const ReviewBoxCard = props => (
     <Card variant="compact" p={0} sx={{ p: 0 }}>
@@ -151,21 +150,19 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
       >
         Transaction Sent!
       </Text>
-      <Text sx={{ p: 4, mt: 3, textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
+      <Text sx={{ p: 3, pb: 1, textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
         Votes will update once the blockchain has confirmed the transaction.
       </Text>
-      {transaction?.hash && (
-        <ExternalLink
-          target="_blank"
-          href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
-          sx={{ p: 0 }}
-        >
-          <Text sx={{ p: 4, mt: 3, textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-            View on Etherscan
-            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-          </Text>
-        </ExternalLink>
-      )}
+      <ExternalLink
+        target="_blank"
+        href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
+        sx={{ p: 0 }}
+      >
+        <Text sx={{ px: 3, textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          View on Etherscan
+          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+        </Text>
+      </ExternalLink>
       <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
         <Button
           mt={3}
