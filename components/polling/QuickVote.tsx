@@ -1,19 +1,36 @@
 /** @jsx jsx */
-import { useState } from 'react';
-import { Text, Flex, Button, jsx } from 'theme-ui';
+import { useState, useEffect } from 'react';
+import { Text, Flex, Button, Box, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
+import Tooltip from '@reach/tooltip';
+import useSWR from 'swr';
 
-import { isRankedChoicePoll } from '../../lib/utils';
+import getMaker from '../../lib/maker';
+import PollVote from '../../types/pollVote';
+import { isRankedChoicePoll, extractCurrentPollVote } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import Poll from '../../types/poll';
+import Account from '../../types/account';
 import useBallotStore from '../../stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 
-const QuickVote = ({ poll, showHeader, ...props }: { poll: Poll; showHeader: boolean }) => {
+type Props = {
+  poll: Poll;
+  showHeader: boolean;
+  account?: Account;
+};
+
+const QuickVote = ({ poll, showHeader, account, ...props }: Props) => {
+  const { data: allUserVotes } = useSWR<PollVote[]>(
+    account?.address ? ['/user/voting-for', account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
+    { refreshInterval: 0 }
+  );
+
   const [addToBallot, addedChoice, txId] = useBallotStore(
     state => [state.addToBallot, state.ballot[poll.pollId], state.txId],
     shallow
@@ -22,6 +39,13 @@ const QuickVote = ({ poll, showHeader, ...props }: { poll: Poll; showHeader: boo
   const [editing, setEditing] = useState(false);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const voteIsPending = txId !== null;
+  const currentVote = extractCurrentPollVote(poll, allUserVotes);
+
+  useEffect(() => {
+    if (!choice) setChoice(currentVote);
+  }, [allUserVotes]);
+
+  console.log(addedChoice, currentVote, 'addedChoice');
 
   const submit = () => {
     invariant(isChoiceValid);
@@ -39,11 +63,11 @@ const QuickVote = ({ poll, showHeader, ...props }: { poll: Poll; showHeader: boo
         {isRankedChoicePoll(poll) && <Icon name="stackedVotes" size={3} ml={2} />}
       </Flex>
 
-      {!!addedChoice && !editing ? (
+      {(!!addedChoice || currentVote !== null) && !editing ? (
         <ChoiceSummary
           voteIsPending={voteIsPending}
           poll={poll}
-          choice={addedChoice}
+          choice={addedChoice?.option ?? currentVote}
           edit={() => setEditing(true)}
           showHeader={showHeader}
         />

@@ -4,17 +4,17 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import { ABSTAIN } from '../../lib/constants';
 
-const ChoiceSummary = ({ choice: { option }, poll, edit, voteIsPending, ...props }) => {
+const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
-  const isSingleSelect = typeof option === 'number';
+  const isSingleSelect = typeof choice === 'number';
   return (
     <Box {...props}>
       {isSingleSelect ? (
         <Box bg="background" sx={{ p: 3, mb: 2 }}>
-          <Text>{option === ABSTAIN ? 'Abstain' : poll.options[option]}</Text>
+          <Text>{choice === ABSTAIN ? 'Abstain' : poll.options[choice]}</Text>
         </Box>
       ) : (
-        option.map((id, index) => (
+        choice.map((id, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>

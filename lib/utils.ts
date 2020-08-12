@@ -14,6 +14,7 @@ import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from '../mocks/polls.json';
+import PollVote from '../types/pollVote';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -116,6 +117,22 @@ export function isActivePoll(poll: Poll): boolean {
 export function isRankedChoicePoll(poll: Poll): boolean {
   return poll.voteType === 'Ranked Choice IRV';
 }
+
+export function extractCurrentPollVote(
+  poll: Poll,
+  allUserVotes: PollVote[] | undefined
+): number[] | number | null {
+  const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
+
+  if (poll.voteType === 'Ranked Choice IRV') {
+    return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
+  } else if (poll.voteType === 'Plurality Voting') {
+    return currentVote?.option !== undefined ? currentVote.option : null;
+  }
+
+  return null;
+}
+
 export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
   return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId);
 }

@@ -35,7 +35,6 @@ export default function (props): JSX.Element {
 
   return (
     <Flex
-      p={3}
       {...props}
       sx={{
         ...props.sx,

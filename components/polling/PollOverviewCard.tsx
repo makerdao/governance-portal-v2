@@ -106,7 +106,9 @@ export default function PollOverviewCard({
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
         </Flex>
       </Stack>
-      {showQuickVote && <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7, ml: 5 }} />}
+      {showQuickVote && (
+        <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7, ml: 5 }} />
+      )}
     </Flex>
   );
 }

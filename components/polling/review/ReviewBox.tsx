@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -12,6 +12,7 @@ import { TXMined } from '../../../types/transaction';
 import useBallotStore from '../../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../../stores/transactions';
 import VotingWeight from '../VotingWeight';
+import TxIndicators from '../../TxIndicators';
 
 export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
@@ -45,8 +46,8 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     </Card>
   );
 
-  const Default = () => (
-    <ReviewBoxCard>
+  const Default = props => (
+    <ReviewBoxCard {...props}>
       <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted', width: '100%' }}>
         <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
           {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
@@ -96,10 +97,10 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     </ReviewBoxCard>
   );
 
-  const Initialized = () => (
-    <ReviewBoxCard>
+  const Initializing = props => (
+    <ReviewBoxCard {...props}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-        <Icon name="pencil" size={4} />
+        <TxIndicators.Pending sx={{ width: 6 }} />
       </Flex>
       <Text
         mt={3}
@@ -120,28 +121,10 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     </ReviewBoxCard>
   );
 
-  const Pending = () => (
-    <ReviewBoxCard>
+  const Sent = props => (
+    <ReviewBoxCard {...props}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-        <Spinner size={48} sx={{ color: 'primary' }} />
-      </Flex>
-      <Text
-        mt={3}
-        px={4}
-        sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-      >
-        Sending Transaction...
-      </Text>
-      <Text mt={2} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-        Submitting {ballotLength} {ballotLength === 1 ? 'poll' : 'polls'}
-      </Text>
-    </ReviewBoxCard>
-  );
-
-  const Mined = () => (
-    <ReviewBoxCard>
-      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-        <Icon name="reviewCheck" size={5} />
+        <TxIndicators.Success sx={{ width: 6 }} />
       </Flex>
       <Text
         mt={3}
@@ -177,10 +160,10 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     </ReviewBoxCard>
   );
 
-  const Error = () => (
-    <ReviewBoxCard>
+  const Error = props => (
+    <ReviewBoxCard {...props}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
-        <Icon name="reviewFailed" size={5} />
+        <TxIndicators.Failed sx={{ width: 6 }} />
       </Flex>
       <Text
         mt={3}
@@ -211,28 +194,16 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
     </ReviewBoxCard>
   );
 
-  const View = () => {
-    switch (transaction?.status || 'default') {
-      // Is Init
-      case 'initialized':
-        return <Initialized />;
-      // Is Sent
-      case 'pending':
-        return <Pending />;
-      // Is Completed
-      case 'mined':
-        return <Mined />;
-      // Is Failed
-      case 'error':
-        return <Error />;
-      default:
-        return <Default />;
-    }
-  };
+  const isInitialized = transaction?.status === 'initialized';
+  const isPendingOrMined = transaction?.status === 'pending' || transaction?.status === 'mined';
+  const hasFailed = transaction?.status === 'error';
 
-  return (
-    <Box {...props}>
-      <View />
-    </Box>
-  );
+  const view = useMemo(() => {
+    if (isInitialized) return <Initializing />;
+    if (isPendingOrMined) return <Sent />;
+    if (hasFailed) return <Error />;
+    return <Default />;
+  }, [isInitialized, isPendingOrMined, hasFailed]);
+
+  return <Box {...props}>{view}</Box>;
 }

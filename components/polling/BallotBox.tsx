@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink } from 'theme-ui';
+import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { SupportedNetworks } from '../../lib/constants';
@@ -83,7 +83,9 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
               ))}
             </Flex>
           </Box>
-          <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted' }} />
+          <Divider />
+          <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
+          <Divider />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => router.push({ pathname: '/polling/review', query: network })}

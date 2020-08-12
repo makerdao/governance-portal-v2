@@ -24,7 +24,7 @@ export default function ({ poll, ...props }: { poll: Poll }): JSX.Element {
           {poll.title}
         </Heading>
         <Text sx={{ fontSize: '16px', color: 'textMuted', mt: 1, fontWeight: 'normal' }}>{poll.summary}</Text>
-        {showQuickVote && <QuickVote poll={poll} showHeader={false} />}
+        {showQuickVote && <QuickVote poll={poll} showHeader={false} account={account} />}
         {isActivePoll(poll) ? '' : <VotingStatus sx={{ mt: 3, mx: 3, textAlign: 'center' }} poll={poll} />}
       </Card>
     </Box>

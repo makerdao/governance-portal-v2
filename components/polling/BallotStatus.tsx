@@ -40,15 +40,17 @@ const BallotStatus = (props: any): JSX.Element => {
         size={3}
         sx={{ color: ballotLength ? 'white' : 'textMuted', display: transaction ? 'none' : null }}
       />
-      <Spinner
-        size={16}
-        sx={{
-          color: 'mutedOrange',
-          alignSelf: 'center',
-          display: transaction && transaction.status === 'pending' ? null : 'none',
-          mr: 2
-        }}
-      />
+      {transaction?.status === 'pending' && (
+        <Spinner
+          size={16}
+          sx={{
+            color: 'mutedOrange',
+            alignSelf: 'center',
+            display: transaction && transaction.status === 'pending' ? null : 'none',
+            mr: 2
+          }}
+        />
+      )}
       <StatusText {...{ transaction, ballotLength }} />
     </Button>
   );

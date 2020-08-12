@@ -102,7 +102,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 };
 
 const cardStyles = (index, ballotLength) =>
-  index === 0
+  ballotLength === 1
+    ? {}
+    : index === 0
     ? {
         borderBottomLeftRadius: '0 !important',
         borderBottomRightRadius: '0 !important',

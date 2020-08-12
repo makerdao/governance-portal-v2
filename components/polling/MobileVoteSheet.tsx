@@ -14,10 +14,10 @@ import { useRouter } from 'next/router';
 import { getNetwork } from '../../lib/maker';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
-import ballotAnimation from './ballotAnimation.json';
 import VotingStatus from './VotingStatus';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
+import ballotAnimation from '../../lib/animation/ballotSuccess.json';
 
 enum ViewState {
   START,
