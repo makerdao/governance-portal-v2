@@ -126,7 +126,7 @@ function isSupportedNetwork(_network: string): _network is SupportedNetworks {
 }
 
 function isTestnet(): boolean {
-  return getNetwork() === 'testnet';
+  return getNetwork() === 'testnet' || !!process.env.TESTNET;
 }
 
 export default getMaker;
