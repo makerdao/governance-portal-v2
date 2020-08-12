@@ -57,7 +57,11 @@ export default function MobileVoteSheet({
     invariant(isChoiceValid);
     addToBallot(poll.pollId, choice as number | number[]);
     if (editingOnly) {
-      close();
+      if (close) {
+        close();
+      } else {
+        setViewState(ViewState.START);
+      }
     } else {
       setViewState(ViewState.ADDING);
     }
