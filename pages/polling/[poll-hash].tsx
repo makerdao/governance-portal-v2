@@ -27,6 +27,7 @@ import ResourceBox from '../../components/polling/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';
+import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
 
 const NavButton = ({ children, ...props }) => (
   <Button
@@ -70,6 +71,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
   [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
   return (
     <PrimaryLayout shortenFooter={true}>
+      <MobileVoteSheet
+        ballotCount={0} //fix
+        activePolls={[]} //fix
+        poll={poll}
+        setPoll={() => null} //fix
+        withStart
+      />
       <SidebarLayout>
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>

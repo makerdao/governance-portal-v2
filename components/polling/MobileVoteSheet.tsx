@@ -15,8 +15,12 @@ import { getNetwork } from '../../lib/maker';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 import ballotAnimation from './ballotAnimation.json';
+import VotingStatus from './VotingStatus';
+import { Icon } from '@makerdao/dai-ui-icons';
+import isNil from 'lodash/isNil';
 
 enum ViewState {
+  START,
   INPUT,
   ADDING,
   NEXT
@@ -24,11 +28,12 @@ enum ViewState {
 
 type Props = {
   poll: Poll;
-  close: () => void;
+  close?: () => void;
   setPoll?: (poll: Poll) => void;
   ballotCount?: number;
   activePolls?: Poll[];
   editingOnly?: boolean;
+  withStart?: boolean;
 };
 export default function MobileVoteSheet({
   poll,
@@ -36,15 +41,17 @@ export default function MobileVoteSheet({
   close,
   ballotCount = 0,
   activePolls = [],
-  editingOnly
+  editingOnly,
+  withStart
 }: Props): JSX.Element {
   const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
   const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
-  const [viewState, setViewState] = useState<ViewState>(ViewState.INPUT);
+  const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
   const network = getNetwork();
   const total = activePolls.length;
+  const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   const submit = () => {
     invariant(isChoiceValid);
@@ -64,84 +71,128 @@ export default function MobileVoteSheet({
     setViewState(ViewState.INPUT);
   };
 
-  return (
-    <DialogOverlay onDismiss={close}>
-      <DialogContent
+  if (viewState == ViewState.START)
+    return (
+      <Flex
         sx={{
+          position: 'fixed',
+          bottom: '0',
+          left: '0',
           width: '100vw',
-          position: 'absolute',
-          bottom: 0,
           mb: 0,
           borderTopLeftRadius: '12px',
           borderTopRightRadius: '12px',
+          border: '1px solid #D4D9E1',
           px: 3,
-          py: 4
+          py: 4,
+          backgroundColor: 'white',
+          justifyContent: 'space-between',
+          flexDirection: 'row'
         }}
-        aria-label="Vote Form"
       >
-        {viewState == ViewState.NEXT ? (
-          <Stack gap={2}>
-            <Text variant="caps">
-              {ballotCount} of {total} available polls added to ballot
-            </Text>
-            <Flex
-              sx={{
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                height: '4px',
-                my: 2
-              }}
-            >
-              {range(total).map(i => (
-                <Box
-                  key={i}
-                  sx={{
-                    flex: 1,
-                    borderLeft: i === 0 ? null : '2px solid white',
-                    borderTopLeftRadius: i === 0 ? 'small' : null,
-                    borderBottomLeftRadius: i === 0 ? 'small' : null,
-                    borderTopRightRadius: i === total - 1 ? 'small' : null,
-                    borderBottomRightRadius: i === total - 1 ? 'small' : null,
-                    backgroundColor: i < ballotCount ? 'primary' : 'muted'
-                  }}
-                />
-              ))}
-            </Flex>
-            {ballotCount < total && (
-              <Button variant="outline" onClick={goToNextPoll}>
-                Next Poll
-              </Button>
-            )}
-            <Button
-              variant="primary"
-              onClick={() => router.push({ pathname: '/polling/review', query: network })}
-            >
-              Review &amp; Submit Ballot
-            </Button>
-          </Stack>
+        <VotingStatus poll={poll} />
+        {onBallot ? (
+          <Button
+            variant="outline"
+            mr={2}
+            onClick={() => setViewState(ViewState.INPUT)}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'nowrap',
+              alignItems: 'center'
+            }}
+          >
+            <Icon name="edit" size={3} mr={2} />
+            Edit Choices
+          </Button>
         ) : (
-          <Stack gap={2}>
-            <Text variant="subheading">{poll.title}</Text>
-            <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
-            {viewState == ViewState.ADDING ? (
-              <AddingView done={() => setViewState(ViewState.NEXT)} />
-            ) : isRankedChoicePoll(poll) ? (
-              <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
-            ) : (
-              <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
-            )}
-            <Button
-              variant="primary"
-              onClick={submit}
-              disabled={!isChoiceValid || viewState == ViewState.ADDING}
-            >
-              {editingOnly ? 'Update vote' : 'Add vote to ballot'}
-            </Button>
-          </Stack>
+          <Button variant="primary" onClick={() => setViewState(ViewState.INPUT)}>
+            Vote
+          </Button>
         )}
-      </DialogContent>
-    </DialogOverlay>
-  );
+      </Flex>
+    );
+  else
+    return (
+      <DialogOverlay onDismiss={close ? close : () => setViewState(ViewState.START)}>
+        <DialogContent
+          sx={{
+            width: '100vw',
+            position: 'absolute',
+            bottom: 0,
+            mb: 0,
+            borderTopLeftRadius: '12px',
+            borderTopRightRadius: '12px',
+            border: '1px solid #D4D9E1',
+            px: 3,
+            py: 4
+          }}
+          aria-label="Vote Form"
+        >
+          {viewState == ViewState.NEXT ? (
+            <Stack gap={2}>
+              <Text variant="caps">
+                {ballotCount} of {total} available polls added to ballot
+              </Text>
+              <Flex
+                sx={{
+                  flexDirection: 'row',
+                  flexWrap: 'nowrap',
+                  height: '4px',
+                  my: 2
+                }}
+              >
+                {range(total).map(i => (
+                  <Box
+                    key={i}
+                    sx={{
+                      flex: 1,
+                      borderLeft: i === 0 ? null : '2px solid white',
+                      borderTopLeftRadius: i === 0 ? 'small' : null,
+                      borderBottomLeftRadius: i === 0 ? 'small' : null,
+                      borderTopRightRadius: i === total - 1 ? 'small' : null,
+                      borderBottomRightRadius: i === total - 1 ? 'small' : null,
+                      backgroundColor: i < ballotCount ? 'primary' : 'muted'
+                    }}
+                  />
+                ))}
+              </Flex>
+              {ballotCount < total && (
+                <Button variant="outline" onClick={goToNextPoll}>
+                  Next Poll
+                </Button>
+              )}
+              <Button
+                variant="primary"
+                onClick={() => router.push({ pathname: '/polling/review', query: network })}
+              >
+                Review &amp; Submit Ballot
+              </Button>
+            </Stack>
+          ) : (
+            <Stack gap={2}>
+              <Text variant="subheading">{poll.title}</Text>
+              <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
+              {viewState == ViewState.ADDING ? (
+                <AddingView done={() => setViewState(ViewState.NEXT)} />
+              ) : isRankedChoicePoll(poll) ? (
+                <RankedChoiceSelect {...{ poll, setChoice }} choice={choice as number[] | null} />
+              ) : (
+                <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
+              )}
+              <Button
+                variant="primary"
+                onClick={submit}
+                disabled={!isChoiceValid || viewState == ViewState.ADDING}
+              >
+                {editingOnly ? 'Update vote' : 'Add vote to ballot'}
+              </Button>
+            </Stack>
+          )}
+        </DialogContent>
+      </DialogOverlay>
+    );
 }
 
 const AddingView = ({ done }: { done: () => void }) => {
