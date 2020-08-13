@@ -88,13 +88,14 @@ export default function MobileVoteSheet({
           borderTopRightRadius: '12px',
           border: '1px solid #D4D9E1',
           px: 3,
-          py: 4,
+          py: '14px',
           backgroundColor: 'white',
+          alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'row'
         }}
       >
-        <VotingStatus poll={poll} />
+        <VotingStatus poll={poll} desktopStyle />
         {onBallot ? (
           <Button
             variant="outline"
@@ -104,14 +105,19 @@ export default function MobileVoteSheet({
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'nowrap',
-              alignItems: 'center'
+              alignItems: 'center',
+              borderRadius: 'small'
             }}
           >
             <Icon name="edit" size={3} mr={2} />
             Edit Choices
           </Button>
         ) : (
-          <Button variant="primary" onClick={() => setViewState(ViewState.INPUT)}>
+          <Button
+            sx={{ width: '110px', borderRadius: 'small' }}
+            variant="primary"
+            onClick={() => setViewState(ViewState.INPUT)}
+          >
             Vote
           </Button>
         )}

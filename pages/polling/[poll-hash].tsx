@@ -15,7 +15,7 @@ import CountdownTimer from '../../components/CountdownTimer';
 import Delay from '../../components/Delay';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally, fetchJson } from '../../lib/utils';
+import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
@@ -28,6 +28,8 @@ import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';
 import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import useBallotStore from '../../stores/ballot';
 
 const NavButton = ({ children, ...props }) => (
   <Button
@@ -59,25 +61,42 @@ function prefetchTally(poll) {
   }
 }
 
-const PollView = ({ poll }: { poll: Poll }) => {
+const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
+  const bpi = useBreakpointIndex();
+  const ballot = useBallotStore(state => state.ballot);
+  const ballotLength = Object.keys(ballot).length;
+  const [_polls, _setPolls] = useState<Poll[]>();
 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
   );
 
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      getPolls().then(_setPolls);
+    } else {
+      _setPolls(prefetchedPolls);
+    }
+  }, []);
+
+  const activePolls = _polls ? _polls.filter(isActivePoll) : [];
+
+  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
   // prepopulate the local tally cache for polls before and/or after this one
   [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
   return (
     <PrimaryLayout shortenFooter={true}>
-      <MobileVoteSheet
-        ballotCount={0} //fix
-        activePolls={[]} //fix
-        poll={poll}
-        setPoll={() => null} //fix
-        withStart
-      />
+      {bpi === 0 && account && (
+        <MobileVoteSheet
+          ballotCount={ballotLength}
+          activePolls={activePolls}
+          setPoll={setMobileVotingPoll}
+          poll={mobileVotingPoll}
+          withStart
+        />
+      )}
       <SidebarLayout>
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -156,7 +175,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </Heading>
               <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
                 <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
-                <VotingStatus poll={poll} />
+                <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
               </Flex>
             </Flex>
             <Divider />
@@ -230,7 +249,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
   );
 };
 
-export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX.Element {
+export default function PollPage({
+  poll: prefetchedPoll,
+  polls
+}: {
+  poll?: Poll;
+  polls: Poll[];
+}): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -258,21 +283,22 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
     );
 
   const poll = isDefaultNetwork() ? prefetchedPoll : _poll;
-  return <PollView poll={poll as Poll} />;
+  return <PollView poll={poll as Poll} polls={polls} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
-
-  const pollExists = !!(await getPolls()).find(poll => poll.slug === pollSlug);
+  const polls = await getPolls();
+  const pollExists = !!polls.find(poll => poll.slug === pollSlug);
   if (!pollExists) return { unstable_revalidate: 30, props: { poll: null } };
   const poll = await getPoll(pollSlug);
 
   return {
     unstable_revalidate: 30, // allow revalidation every 30 seconds
     props: {
+      polls,
       poll
     }
   };

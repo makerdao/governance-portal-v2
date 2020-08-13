@@ -38,7 +38,14 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
   );
 };
 
-const VotingStatus = ({ poll, ...props }: { poll: Poll }): JSX.Element | null => {
+const VotingStatus = ({
+  poll,
+  desktopStyle,
+  ...props
+}: {
+  poll: Poll;
+  desktopStyle?: boolean;
+}): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
@@ -79,12 +86,12 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll }): JSX.Element | null =>
         variant="primary"
         sx={{
           borderColor: hasVoted || onBallot ? 'linkHover' : 'badgeGrey',
-          display: ['none', 'block']
+          display: desktopStyle ? 'block' : ['none', 'block']
         }}
       >
         {contents}
       </Badge>
-      <Box sx={{ display: ['block', 'none'] }}>{contents}</Box>
+      <Box sx={{ display: desktopStyle ? 'none' : ['block', 'none'] }}>{contents}</Box>
     </Box>
   );
 };
