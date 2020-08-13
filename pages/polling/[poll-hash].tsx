@@ -88,7 +88,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
   return (
     <PrimaryLayout shortenFooter={true}>
-      {bpi === 0 && account && (
+      {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet
           ballotCount={ballotLength}
           activePolls={activePolls}
