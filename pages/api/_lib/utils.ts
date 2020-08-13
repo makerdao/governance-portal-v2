@@ -45,11 +45,15 @@ export async function getTrace(
     ]);
     return trace;
   } catch (err) {
-    console.log("Alchemy trace failed. Falling back to Maker's tracing node.");
-    const trace = await new ethers.providers.JsonRpcProvider(process.env.TRACING_RPC_NODE).send(method, [
-      parameters,
-      ['vmTrace', 'stateDiff']
-    ]);
-    return trace;
+    if (process.env.TRACING_RPC_NODE) {
+      console.log("Alchemy trace failed. Falling back to Maker's tracing node.");
+      const trace = await new ethers.providers.JsonRpcProvider(process.env.TRACING_RPC_NODE).send(method, [
+        parameters,
+        ['vmTrace', 'stateDiff']
+      ]);
+      return trace;
+    } else {
+      throw new Error('Failed to fetch transaction trace');
+    }
   }
 }
