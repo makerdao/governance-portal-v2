@@ -12,7 +12,7 @@ async function getSystemStats(): Promise<CurrencyObject[]> {
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
-    maker.getToken(DAI).totalSupply(),
+    maker.service('mcd:systemData').getTotalDai(),
     DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
 }
@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
 
 export default function (): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats', getSystemStats);
-  const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
+  const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
 
   return (
     <>
@@ -54,9 +54,9 @@ export default function (): JSX.Element {
             </div>
 
             <div>
-              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
+              <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
               <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
-                {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
+                {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
@@ -96,10 +96,8 @@ export default function (): JSX.Element {
           </Flex>
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total ERC20 Dai</Text>
-            <Text sx={{ fontSize: 3 }}>
-              {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
-            </Text>
+            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+            <Text sx={{ fontSize: 3 }}>{data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}</Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>

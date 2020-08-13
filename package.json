@@ -14,7 +14,7 @@
   "dependencies": {
     "@makerdao/dai": "^0.32.2",
     "@makerdao/dai-plugin-governance": "0.12.19",
-    "@makerdao/dai-plugin-mcd": "1.5.15",
+    "@makerdao/dai-plugin-mcd": "1.5.16",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
