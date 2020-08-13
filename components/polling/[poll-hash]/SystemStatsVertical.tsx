@@ -12,7 +12,7 @@ async function getSystemStats(): Promise<CurrencyObject[]> {
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
-    maker.getToken(DAI).totalSupply(),
+    maker.service('mcd:systemData').getTotalDai(),
     DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
 }
@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
 
 export default function (props): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats', getSystemStats);
-  const [savingsRate, systemSurplus, totalDaiSupply, debtCeiling] = data || [];
+  const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function (props): JSX.Element {
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
             <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
-              {data ? `${bigNumberKFormat(totalDaiSupply)} DAI` : <Skeleton />}
+              {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
             </Text>
           </Flex>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
