@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Link as ExternalLink, jsx } from 'theme-ui';
+import { Card, Flex, Text, Heading, Divider, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
@@ -71,7 +71,11 @@ const ProposalView = ({ proposal }: Props) => {
                             <ExternalLink target="_blank" href="https://docs.makerdao.com">
                               MCD Docs
                             </ExternalLink>{' '}
-                            for definitions.
+                            for definitions. NOTE:{' '}
+                            <strong>
+                              on-chain effects is temporarily only checking the VAT for changes. The rest of
+                              the MCD contracts will be added in soon.
+                            </strong>
                           </>
                         ) : (
                           'This spell has no on-chain effects.'
@@ -80,7 +84,9 @@ const ProposalView = ({ proposal }: Props) => {
                       <OnChainFx stateDiff={stateDiff} />
                     </Stack>
                   ) : (
-                    <div>loading</div>
+                    <Flex sx={{ alignItems: 'center' }}>
+                      loading <Spinner size={20} ml={2} />
+                    </Flex>
                   )}
                 </div>
               ]}
@@ -135,7 +141,11 @@ const ProposalView = ({ proposal }: Props) => {
                           <ExternalLink target="_blank" href="https://docs.makerdao.com">
                             MCD Docs
                           </ExternalLink>{' '}
-                          for definitions.
+                          for definitions. NOTE:{' '}
+                          <strong>
+                            on-chain effects is temporarily only checking the VAT for changes. The rest of the
+                            MCD contracts will be added in soon.
+                          </strong>
                         </>
                       ) : (
                         'This spell has no on-chain effects.'
@@ -144,7 +154,9 @@ const ProposalView = ({ proposal }: Props) => {
                     <OnChainFx stateDiff={stateDiff} />
                   </Stack>
                 ) : (
-                  <div>loading</div>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    loading <Spinner size={20} ml={2} />
+                  </Flex>
                 )}
               </div>
             ]}
