@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Card, Box, Flex, Button, Text, Link as ExternalLink, Spinner } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -34,7 +34,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
   const ballotLength = Object.keys(ballot).length;
 
   const ReviewBoxCard = props => (
-    <Card variant="compact" p={0} sx={{ p: 0 }}>
+    <Card variant="compact" p={[0, 0]}>
       <Flex
         sx={{
           justifyContent: ['center'],
@@ -79,19 +79,19 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
           ))}
         </Flex>
       </Box>
-      <VotingWeight />
+      <Divider />
+      <VotingWeight sx={{ px: 3, py: [1, 2] }} />
+      <Divider />
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
-          <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Button
-              onClick={submitBallot}
-              variant="primary"
-              disabled={!ballotLength || !!voteTxId}
-              sx={{ width: '100%' }}
-            >
-              Submit Your Ballot ({ballotLength}) Votes
-            </Button>
-          </Flex>
+          <Button
+            onClick={submitBallot}
+            variant="primary"
+            disabled={!ballotLength || !!voteTxId}
+            sx={{ width: '100%' }}
+          >
+            Submit Your Ballot ({ballotLength}) Votes
+          </Button>
         </Flex>
       )}
     </ReviewBoxCard>
