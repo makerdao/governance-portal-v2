@@ -4,15 +4,21 @@ type Store = {
   pollFilters: {
     startDate: null | Date;
     endDate: null | Date;
-    categories: null | { [category: string]: boolean };
+    categoryFilter: null | { [category: string]: boolean };
+    showHistorical: boolean;
   };
+  setStartDate: (startDate: Date | null) => void;
+  setEndDate: (endDate: Date | null) => void;
+  setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
+  setShowHistorical: (showHistorical: boolean) => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
   pollFilters: {
     startDate: null,
     endDate: null,
-    categories: null
+    categoryFilter: null,
+    showHistorical: false
   },
 
   setStartDate: startDate => {
@@ -23,8 +29,12 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ pollFilters: { ...get().pollFilters, endDate } });
   },
 
-  setCategoryFilter: categories => {
-    set({ pollFilters: { ...get().pollFilters, categories } });
+  setCategoryFilter: categoryFilter => {
+    set({ pollFilters: { ...get().pollFilters, categoryFilter } });
+  },
+
+  setShowHistorical: showHistorical => {
+    set({ pollFilters: { ...get().pollFilters, showHistorical } });
   }
 }));
 

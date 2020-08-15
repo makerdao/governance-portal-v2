@@ -1,6 +1,9 @@
-import FilterButton from '../FilterButton';
-import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import { useRef } from 'react';
+import { Grid, Flex, Input, Text, Button } from 'theme-ui';
+import shallow from 'zustand/shallow';
+
+import FilterButton from '../FilterButton';
+import useUiFiltersStore from '../../stores/uiFilters';
 
 const displayDate = date => {
   try {
@@ -9,13 +12,13 @@ const displayDate = date => {
     return '';
   }
 };
-type Props = {
-  startDate: Date | null;
-  endDate: Date | null;
-  setStartDate: (date: Date | null) => void;
-  setEndDate: (date: Date | null) => void;
-};
-export default function ({ startDate, endDate, setStartDate, setEndDate, ...props }: Props): JSX.Element {
+
+export default function (props): JSX.Element {
+  const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(
+    state => [state.pollFilters.startDate, state.setStartDate, state.pollFilters.endDate, state.setEndDate],
+    shallow
+  );
+
   const startDateDisplay = displayDate(startDate);
   const endDateDisplay = displayDate(endDate);
   const startInput = useRef<HTMLInputElement>(null);

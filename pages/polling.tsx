@@ -5,6 +5,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { GetStaticProps } from 'next';
+import shallow from 'zustand/shallow';
 
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
@@ -20,6 +21,7 @@ import BallotBox from '../components/polling/BallotBox';
 import ResourceBox from '../components/polling/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
+import useUiFiltersStore from '../stores/uiFilters';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import sortBy from 'lodash/sortBy';
@@ -31,13 +33,26 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const [showHistoricalPolls, setShowHistoricalPolls] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState<{ [category: string]: boolean }>(
-    polls.map(poll => poll.category).reduce((acc, category) => ({ ...acc, [category]: true }), {})
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    setCategoryFilter,
+    showHistorical,
+    setShowHistorical
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.setCategoryFilter,
+      state.pollFilters.showHistorical,
+      state.setShowHistorical
+    ],
+    shallow
   );
+
+  const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
   const network = getNetwork();
@@ -56,7 +71,8 @@ const PollingOverview = ({ polls }: Props) => {
     return polls.filter(poll => {
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      return categoryFilter[poll.category];
+      // if no category filter is set for this type, show it. Otherwise do whatever the bool in the filter obj says.
+      return categoryFilter?.[poll.category] === undefined ? true : categoryFilter[poll.category];
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -113,12 +129,12 @@ const PollingOverview = ({ polls }: Props) => {
       )}
       <Stack gap={3}>
         {bpi === 0 && account && <BallotStatus />}
-        <Flex sx={{ alignItems: 'center', display: activePolls.length ? null : 'none' }}>
+        <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter {...{ categoryFilter, setCategoryFilter }} />
-          <DateFilter {...{ startDate, endDate, setStartDate, setEndDate }} sx={{ ml: 3 }} />
+          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.category)))} />
+          <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
           <Box>
@@ -146,11 +162,11 @@ const PollingOverview = ({ polls }: Props) => {
                   </div>
                 ))}
               </div>
-              {showHistoricalPolls ? (
+              {showHistorical ? (
                 <div>
                   <Heading mb={3} as="h4">
                     Historical Polls
-                    <IconButton onClick={() => setShowHistoricalPolls(false)}>
+                    <IconButton onClick={() => setShowHistorical(false)}>
                       <Icon name="chevron_down" />
                     </IconButton>
                   </Heading>
@@ -171,11 +187,7 @@ const PollingOverview = ({ polls }: Props) => {
                   <div ref={loader} />
                 </div>
               ) : (
-                <Button
-                  onClick={() => setShowHistoricalPolls(true)}
-                  variant="outline"
-                  sx={{ py: 3, mt: [0, 0] }}
-                >
+                <Button onClick={() => setShowHistorical(true)} variant="outline" sx={{ py: 3, mt: [0, 0] }}>
                   See all ended polls ({historicalPolls.length})
                 </Button>
               )}
