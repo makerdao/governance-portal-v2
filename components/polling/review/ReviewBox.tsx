@@ -13,6 +13,7 @@ import useBallotStore from '../../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../../stores/transactions';
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
+import PollBar from '../PollBar';
 
 export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
@@ -48,37 +49,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Default = props => (
     <ReviewBoxCard {...props}>
-      <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted', width: '100%' }}>
-        <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
-          {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
-        </Text>
-        <Flex
-          sx={{
-            width: '100%',
-            height: 2,
-            backgroundColor: 'muted',
-            mt: 2,
-            flexDirection: 'row',
-            borderRadius: 'small'
-          }}
-        >
-          {activePolls.map((_, index) => (
-            <Box
-              key={index}
-              backgroundColor="muted"
-              sx={{
-                flex: 1,
-                borderLeft: index === 0 ? null : '1px solid white',
-                borderTopLeftRadius: index === 0 ? 'small' : null,
-                borderBottomLeftRadius: index === 0 ? 'small' : null,
-                borderTopRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                borderBottomRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                backgroundColor: index < ballotLength ? 'primary' : null
-              }}
-            />
-          ))}
-        </Flex>
-      </Box>
+      <PollBar ballot={ballot} polls={activePolls} />
       <Divider />
       <VotingWeight sx={{ px: 3, py: [1, 2] }} />
       <Divider />

@@ -10,6 +10,7 @@ import useBallotStore from '../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 import VotingWeight from './VotingWeight';
+import PollBar from './PollBar';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
 export default function ({ ballot, activePolls, network }: Props): JSX.Element {
@@ -52,37 +53,8 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
-            <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>
-              {`${ballotLength} of ${activePolls.length} available polls added to ballot`}
-            </Text>
-            <Flex
-              sx={{
-                width: '100%',
-                height: 2,
-                backgroundColor: 'muted',
-                mt: 2,
-                flexDirection: 'row',
-                borderRadius: 'small'
-              }}
-            >
-              {activePolls.map((_, index) => (
-                <Box
-                  key={index}
-                  backgroundColor="muted"
-                  sx={{
-                    flex: 1,
-                    borderLeft: index === 0 ? null : '1px solid white',
-                    borderTopLeftRadius: index === 0 ? 'small' : null,
-                    borderBottomLeftRadius: index === 0 ? 'small' : null,
-                    borderTopRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                    borderBottomRightRadius: index === activePolls.length - 1 ? 'small' : null,
-                    backgroundColor: index < ballotLength ? 'primary' : null
-                  }}
-                />
-              ))}
-            </Flex>
-          </Box>
+          <PollBar polls={activePolls} ballot={ballot} />
+
           <Divider />
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
           <Divider />

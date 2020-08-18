@@ -45,7 +45,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props) => {
     if (!choice) setChoice(currentVote);
   }, [allUserVotes]);
 
-  console.log(addedChoice, currentVote, 'addedChoice');
+  // console.log(addedChoice, currentVote, 'addedChoice');
 
   const submit = () => {
     invariant(isChoiceValid);
