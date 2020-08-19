@@ -128,7 +128,7 @@ const PollingOverview = ({ polls }: Props) => {
         />
       )}
       <Stack gap={3}>
-        {bpi === 0 && account && <BallotStatus />}
+        {bpi <= 1 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3}>
             Filters

@@ -17,14 +17,15 @@ const Header = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
 
   return (
-    <header
+    <Box
+      as="header"
+      py={3}
+      px={[2, 0]}
+      variant="styles.header"
       sx={{
-        py: 3,
-        px: [3, 0],
         display: 'flex',
         alignItems: 'center',
-        width: '100%',
-        variant: 'styles.header'
+        width: '100%'
       }}
       {...props}
     >
@@ -34,65 +35,70 @@ const Header = (props): JSX.Element => {
         </IconButton>
       </Link>
 
+      <Link href={{ pathname: '/polling', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5, 'auto'] }}>
+          Polling
+        </NavLink>
+      </Link>
+
+      <Link href={{ pathname: '/executive', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5] }}>
+          Executive
+        </NavLink>
+      </Link>
+
+      <Link href={{ pathname: '/module', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5], mr: [0, 'auto', 5] }}>
+          ES Module
+        </NavLink>
+      </Link>
+
+      {bpi > 1 && account && <BallotStatus mr={3} />}
+      {bpi > 0 && <AccountSelect />}
+
       <IconButton
         aria-label="Maker home"
         ml="auto"
-        sx={{ display: [null, null, null, 'none'], height: '28px', width: '24px', p: 0 }}
+        sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
       >
         <Icon name="menu" sx={{ height: '28px', width: '24px' }} />
       </IconButton>
-      <Menu shown={showMobileMenu} hide={() => setShowMobileMenu(false)}>
-        <Link href={{ pathname: '/', query: { network } }}>
-          <NavLink p={2} sx={{ display: [null, null, null, 'none'] }}>
-            Home
-          </NavLink>
-        </Link>
-        <Link href={{ pathname: '/polling', query: { network } }}>
-          <NavLink p={2}>Polling</NavLink>
-        </Link>
-        <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={2} sx={{ ml: [0, 0, 0, 5] }}>
-            Executive
-          </NavLink>
-        </Link>
-        <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={2} sx={{ ml: [0, 0, 0, 5], mr: [0, 0, 0, 5] }}>
-            ES Module
-          </NavLink>
-        </Link>
-        {bpi > 2 && account && <BallotStatus mr={3} />}
-        <AccountSelect />
-      </Menu>
-    </header>
+      {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} {...{ network }} />}
+    </Box>
   );
 };
 
-const Menu = ({ children, shown, hide }) => {
+const MobileMenu = ({ hide, network }) => {
   return (
-    <>
-      <Box ml="auto" sx={{ alignItems: 'center', display: ['none', 'none', 'none', 'flex'] }}>
-        {children}
-      </Box>
-      {shown && (
-        <Container variant="modal">
-          <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
-          <Flex
-            sx={{
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              justifyContent: 'space-between',
-              height: '50vh',
-              '> a': {
-                fontSize: 7
-              }
-            }}
-          >
-            {children}
-          </Flex>
-        </Container>
-      )}
-    </>
+    <Container variant="modal">
+      <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      <Flex
+        sx={{
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          height: '50vh',
+          '> a': {
+            fontSize: 7
+          }
+        }}
+      >
+        <Link href={{ pathname: '/', query: { network } }}>
+          <NavLink>Home</NavLink>
+        </Link>
+        <Link href={{ pathname: '/polling', query: { network } }}>
+          <NavLink>Polling</NavLink>
+        </Link>
+        <Link href={{ pathname: '/executive', query: { network } }}>
+          <NavLink>Executive</NavLink>
+        </Link>
+        <Link href={{ pathname: '/module', query: { network } }}>
+          <NavLink>ES Module</NavLink>
+        </Link>
+        <AccountSelect />
+      </Flex>
+    </Container>
   );
 };
 

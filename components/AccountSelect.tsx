@@ -13,7 +13,7 @@ const WrappedAccountSelect = () => (
   </Web3ReactProvider>
 );
 
-const AccountSelect = () => {
+const AccountSelect = props => {
   const web3ReactContext = useWeb3React();
   const { connector, library, chainId, account, activate, deactivate, active, error } = web3ReactContext;
 
@@ -22,7 +22,10 @@ const AccountSelect = () => {
 
   return (
     <Menu>
-      <MenuButton sx={{ variant: 'buttons.card' }}>
+      <MenuButton
+        sx={{ variant: 'buttons.card', borderRadius: 'round', height: '36px', px: [2, 3] }}
+        {...props}
+      >
         {account ? <span>{formatAddress(account)}</span> : <span>Connect wallet</span>}
       </MenuButton>
       <MenuList
