@@ -5,6 +5,7 @@ import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
 import { Global } from '@emotion/core';
 
 import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
@@ -21,6 +22,7 @@ import { CMSProposal } from '../types/proposal';
 import Poll from '../types/poll';
 import BlogPost from '../types/blogPost';
 import { initTestchainPolls } from '../lib/utils';
+import { isActivePoll } from '../lib/utils';
 
 type Props = {
   proposals: CMSProposal[];
@@ -30,6 +32,7 @@ type Props = {
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
+  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
 
   const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
@@ -148,6 +151,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     <PollPreviewCard key={poll.pollId} poll={poll} />
                   ))}
                 </Stack>
+                {activePolls.length > 4 && (
+                  <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+                    <Text sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>View all polls</Text>
+                  </Link>
+                )}
               </Container>
             </Stack>
           </section>
