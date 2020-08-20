@@ -31,23 +31,6 @@ import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useBallotStore from '../../stores/ballot';
 
-const NavButton = ({ children, ...props }) => (
-  <Button
-    variant="outline"
-    sx={{
-      color: 'mutedAlt',
-      borderColor: 'secondaryMuted',
-      borderRadius: '4px',
-      textTransform: 'uppercase',
-      fontSize: 1,
-      px: [2, 3]
-    }}
-    {...props}
-  >
-    {children}
-  </Button>
-);
-
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
   new Date(poll.endDate).getTime() < new Date().getTime()
@@ -102,7 +85,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
               <NavLink p={0}>
-                <NavButton>
+                <Button variant="mutedOutline">
                   <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                     <Icon name="chevron_left" size="2" mr={2} />
                     Back to all polls
@@ -110,7 +93,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
                     Back to all
                   </Flex>
-                </NavButton>
+                </Button>
               </NavLink>
             </Link>
             <Flex sx={{ justifyContent: 'space-between' }}>
@@ -121,11 +104,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   as={{ pathname: `/polling/${poll.ctx.prev.slug}`, query: { network } }}
                 >
                   <NavLink p={0}>
-                    <NavButton>
+                    <Button variant="mutedOutline">
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                         <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
                       </Flex>
-                    </NavButton>
+                    </Button>
                   </NavLink>
                 </Link>
               )}
@@ -136,11 +119,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   as={{ pathname: `/polling/${poll.ctx.next.slug}`, query: { network } }}
                 >
                   <NavLink p={0} ml={2}>
-                    <NavButton>
+                    <Button variant="mutedOutline">
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                         Next Poll <Icon name="chevron_right" size={2} ml={2} />
                       </Flex>
-                    </NavButton>
+                    </Button>
                   </NavLink>
                 </Link>
               )}

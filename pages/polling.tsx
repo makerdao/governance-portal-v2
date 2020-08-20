@@ -171,10 +171,12 @@ const PollingOverview = ({ polls }: Props) => {
                 {showHistorical ? (
                   <div>
                     <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
-                      Historical Polls
-                      <IconButton onClick={() => setShowHistorical(false)}>
-                        <Icon name="chevron_down" />
-                      </IconButton>
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        Ended Polls
+                        <Button onClick={() => setShowHistorical(false)} variant="mutedOutline">
+                          Hide ended polls
+                        </Button>
+                      </Flex>
                     </Heading>
                     {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                       <div key={date}>
