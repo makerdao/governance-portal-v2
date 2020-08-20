@@ -4,7 +4,7 @@ import Ballot from '../../types/ballot';
 type Props = { ballot: Ballot; polls: Poll[] };
 export default function ({ ballot, polls }: Props): JSX.Element {
   const ballotSubmitted = Object.keys(ballot).filter(vote => typeof ballot[vote].submitted !== 'undefined');
-  const activePollsNotVoted = polls.filter(poll => !ballotSubmitted.includes(poll.pollId));
+  const activePollsNotVoted = polls.filter(poll => !ballotSubmitted.includes(poll.pollId.toString()));
   return (
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }}>
       <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: '500' }}>

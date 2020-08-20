@@ -89,7 +89,7 @@ const PollingOverview = ({ polls }: Props) => {
     if (target.isIntersecting) {
       setNumHistoricalGroupingsLoaded(
         numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length
-          ? numHistoricalGroupingsLoaded + 3
+          ? numHistoricalGroupingsLoaded + 2
           : numHistoricalGroupingsLoaded
       );
     }
