@@ -11,6 +11,7 @@ type Store = {
   setEndDate: (endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
   setShowHistorical: (showHistorical: boolean) => void;
+  resetPollFilters: () => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
@@ -35,6 +36,17 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
 
   setShowHistorical: showHistorical => {
     set({ pollFilters: { ...get().pollFilters, showHistorical } });
+  },
+
+  resetPollFilters: () => {
+    set({
+      pollFilters: {
+        startDate: null,
+        endDate: null,
+        categoryFilter: null,
+        showHistorical: false
+      }
+    });
   }
 }));
 

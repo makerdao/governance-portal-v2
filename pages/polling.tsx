@@ -37,17 +37,17 @@ const PollingOverview = ({ polls }: Props) => {
     startDate,
     endDate,
     categoryFilter,
-    setCategoryFilter,
     showHistorical,
-    setShowHistorical
+    setShowHistorical,
+    resetPollFilters
   ] = useUiFiltersStore(
     state => [
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
-      state.setCategoryFilter,
       state.pollFilters.showHistorical,
-      state.setShowHistorical
+      state.setShowHistorical,
+      state.resetPollFilters
     ],
     shallow
   );
@@ -138,60 +138,98 @@ const PollingOverview = ({ polls }: Props) => {
         </Flex>
         <SidebarLayout>
           <Box>
-            <Stack>
-              <div>
-                <Heading mb={3} mt={4} as="h4">
-                  Active Polls
-                </Heading>
-                {sortedStartDatesActive.map(date => (
-                  <div key={date}>
-                    <Text variant="caps" color="onSurface" mb={2}>
-                      {groupedActivePolls[date].length} Poll{groupedActivePolls[date].length === 1 ? '' : 's'}{' '}
-                      - Posted {formatDateWithTime(date)}
-                    </Text>
-                    <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
-                      {groupedActivePolls[date].map(poll => (
-                        <PollOverviewCard
-                          key={poll.multiHash}
-                          poll={poll}
-                          startMobileVoting={() => setMobileVotingPoll(poll)}
-                          reviewPage={false}
-                        />
-                      ))}
-                    </Stack>
-                  </div>
-                ))}
-              </div>
-              {showHistorical ? (
+            {filteredPolls.length > 0 ? (
+              <Stack>
                 <div>
-                  <Heading mb={3} as="h4">
-                    Historical Polls
-                    <IconButton onClick={() => setShowHistorical(false)}>
-                      <Icon name="chevron_down" />
-                    </IconButton>
+                  <Heading
+                    mb={3}
+                    mt={4}
+                    as="h4"
+                    sx={{ display: sortedStartDatesActive.length > 0 ? null : 'none' }}
+                  >
+                    Active Polls
                   </Heading>
-                  {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                  {sortedStartDatesActive.map(date => (
                     <div key={date}>
                       <Text variant="caps" color="onSurface" mb={2}>
-                        {groupedHistoricalPolls[date].length} Poll
-                        {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
-                        {formatDateWithTime(date)}
+                        {groupedActivePolls[date].length} Poll
+                        {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted {formatDateWithTime(date)}
                       </Text>
-                      <Stack sx={{ mb: 4 }}>
-                        {groupedHistoricalPolls[date].map(poll => (
-                          <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
+                      <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                        {groupedActivePolls[date].map(poll => (
+                          <PollOverviewCard
+                            key={poll.multiHash}
+                            poll={poll}
+                            startMobileVoting={() => setMobileVotingPoll(poll)}
+                            reviewPage={false}
+                          />
                         ))}
                       </Stack>
                     </div>
                   ))}
-                  <div ref={loader} />
                 </div>
-              ) : (
-                <Button onClick={() => setShowHistorical(true)} variant="outline" sx={{ py: 3, mt: [0, 0] }}>
-                  See all ended polls ({historicalPolls.length})
+                {showHistorical ? (
+                  <div>
+                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
+                      Historical Polls
+                      <IconButton onClick={() => setShowHistorical(false)}>
+                        <Icon name="chevron_down" />
+                      </IconButton>
+                    </Heading>
+                    {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                      <div key={date}>
+                        <Text variant="caps" color="onSurface" mb={2}>
+                          {groupedHistoricalPolls[date].length} Poll
+                          {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                          {formatDateWithTime(date)}
+                        </Text>
+                        <Stack sx={{ mb: 4 }}>
+                          {groupedHistoricalPolls[date].map(poll => (
+                            <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
+                          ))}
+                        </Stack>
+                      </div>
+                    ))}
+                    <div ref={loader} />
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => setShowHistorical(true)}
+                    variant="outline"
+                    sx={{ py: 3, mt: 0, display: historicalPolls.length > 0 ? null : 'none' }}
+                  >
+                    See all ended polls ({historicalPolls.length})
+                  </Button>
+                )}
+              </Stack>
+            ) : (
+              <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
+                <Flex
+                  sx={{
+                    borderRadius: '50%',
+                    backgroundColor: 'muted',
+                    p: 2,
+                    width: '111px',
+                    height: '111px',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Box m={'auto'}>
+                    <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
+                  </Box>
+                </Flex>
+                <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
+                  No polls found
+                </Text>
+                <Button
+                  variant={'textual'}
+                  sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
+                  onClick={resetPollFilters}
+                >
+                  Clear filters
                 </Button>
-              )}
-            </Stack>
+              </Flex>
+            )}
           </Box>
           <StickyColumn sx={{ pt: 3 }}>
             <Stack gap={3}>

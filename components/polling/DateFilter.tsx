@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
@@ -26,10 +26,13 @@ export default function (props): JSX.Element {
 
   const reset = () => {
     setStartDate(null);
-    if (startInput.current) startInput.current.value = '';
     setEndDate(null);
-    if (endInput.current) endInput.current.value = '';
   };
+
+  useEffect(() => {
+    if (startInput.current && startDate === null) startInput.current.value = '';
+    if (endInput.current && endDate === null) endInput.current.value = '';
+  }, [startDate, endDate]);
 
   return (
     <FilterButton
