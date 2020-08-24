@@ -12,8 +12,8 @@ import { getEtherscanLink } from '../../lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
 
-type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks };
-export default function ({ ballot, activePolls, network }: Props): JSX.Element {
+type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
+export default function ({ ballot, activePolls, network, polls }: Props): JSX.Element {
   const voteTxId = useBallotStore(state => state.txId);
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
@@ -53,7 +53,7 @@ export default function ({ ballot, activePolls, network }: Props): JSX.Element {
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <PollBar polls={activePolls} ballot={ballot} />
+          <PollBar polls={polls} activePolls={activePolls} ballot={ballot} />
 
           <Divider />
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />

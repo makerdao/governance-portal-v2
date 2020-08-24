@@ -15,7 +15,14 @@ import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
 
-export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JSX.Element {
+export default function ({
+  activePolls,
+  polls,
+  ...props
+}: {
+  activePolls: Poll[];
+  polls: Poll[];
+}): JSX.Element {
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -49,7 +56,7 @@ export default function ({ activePolls, ...props }: { activePolls: Poll[] }): JS
 
   const Default = props => (
     <ReviewBoxCard {...props}>
-      <PollBar ballot={ballot} polls={activePolls} />
+      <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
       <Divider />
       <VotingWeight sx={{ px: 3, py: [1, 2] }} />
       <Divider />

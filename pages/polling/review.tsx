@@ -67,7 +67,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               </Link>
               <Stack gap={3}>
                 {bpi <= 2 && <SubmitButton />}
-                {bpi <= 2 && !!account && <ReviewBox activePolls={activePolls} />}
+                {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? null : 'none' }}>
                   {Object.keys(ballot).map((pollId, index) => {
                     const poll = findPollById(polls, pollId);
@@ -92,7 +92,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
               </Heading>
-              <ReviewBox activePolls={activePolls} />
+              <ReviewBox polls={polls} activePolls={activePolls} />
             </StickyColumn>
           )}
         </SidebarLayout>

@@ -236,7 +236,7 @@ const PollingOverview = ({ polls }: Props) => {
           <StickyColumn sx={{ pt: 3 }}>
             <Stack gap={3}>
               {account && bpi > 0 && (
-                <BallotBox activePolls={activePolls} ballot={ballot} network={network} />
+                <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
               )}
               <ResourceBox />
             </Stack>
