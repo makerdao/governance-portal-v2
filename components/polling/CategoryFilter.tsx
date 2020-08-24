@@ -14,7 +14,7 @@ export default function ({ categories, ...props }: { categories: string[] }) {
     <FilterButton name={() => 'Poll Type'} {...props}>
       <Flex sx={{ flexDirection: 'column' }}>
         {categories.map(category => (
-          <Flex key={category}>
+          <Flex key={category || 'undefined'}>
             <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
               <Checkbox
                 sx={{ width: 3, height: 3 }}

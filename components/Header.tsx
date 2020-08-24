@@ -54,15 +54,15 @@ const Header = (props): JSX.Element => {
       </Link>
 
       {bpi > 1 && account && <BallotStatus mr={3} />}
-      <AccountSelect sx={{ display: ['none', 'block'] }} />
+      <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
 
       <IconButton
         aria-label="Show menu"
-        ml="auto"
+        ml="3"
         sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
       >
-        <Icon name="menu" sx={{ height: '28px', width: '24px' }} />
+        <Icon name="menu" sx={{ width: '18px' }} />
       </IconButton>
       {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} {...{ network }} />}
     </Box>
@@ -96,7 +96,6 @@ const MobileMenu = ({ hide, network }) => {
         <Link href={{ pathname: '/module', query: { network } }}>
           <NavLink>ES Module</NavLink>
         </Link>
-        <AccountSelect />
       </Flex>
     </Container>
   );
