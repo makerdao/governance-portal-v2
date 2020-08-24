@@ -7,9 +7,9 @@ import { syncMakerAccount } from '../lib/maker/web3react/hooks';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
 import { formatAddress } from '../lib/utils';
 
-const WrappedAccountSelect = () => (
+const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
-    <AccountSelect />
+    <AccountSelect {...props} />
   </Web3ReactProvider>
 );
 
@@ -23,6 +23,7 @@ const AccountSelect = props => {
   return (
     <Menu>
       <MenuButton
+        aria-label="Connect wallet"
         sx={{ variant: 'buttons.card', borderRadius: 'round', height: '36px', px: [2, 3] }}
         {...props}
       >

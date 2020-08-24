@@ -54,10 +54,10 @@ const Header = (props): JSX.Element => {
       </Link>
 
       {bpi > 1 && account && <BallotStatus mr={3} />}
-      {bpi > 0 && <AccountSelect />}
+      <AccountSelect sx={{ display: ['none', 'block'] }} />
 
       <IconButton
-        aria-label="Maker home"
+        aria-label="Show menu"
         ml="auto"
         sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
         onClick={() => setShowMobileMenu(true)}
