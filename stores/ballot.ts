@@ -50,14 +50,16 @@ const [useBallotStore] = create<Store>(
         const pollOptions: string[] = [];
         Object.keys(ballot).forEach((key: string) => {
           if (!isNil(ballot[key].option)) {
-            newBallot[key] = { ...ballot[key], submittedBallot: ballot[key].option };
+            newBallot[key] = { ...ballot[key], submittedOption: ballot[key].option };
             pollIds.push(key);
             pollOptions.push(ballot[key].option);
           }
         });
 
         const voteTxCreator = () => maker.service('govPolling').vote(pollIds, pollOptions);
-        const txId = await transactionsApi.getState().track(voteTxCreator);
+        const txId = await transactionsApi.getState().track(voteTxCreator, '', {
+          mined: () => get().clearBallot()
+        });
 
         set({ ballot: newBallot, txId }, 'submitBallot');
       }

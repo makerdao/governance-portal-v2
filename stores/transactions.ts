@@ -6,13 +6,19 @@ import { parseTxError } from '../lib/errors';
 import getMaker from '../lib/maker';
 import TX, { TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 
+type Hooks = {
+  pending?: () => void;
+  mined?: () => void;
+  error?: () => void;
+};
+
 type Store = {
   transactions: TX[];
   initTx: (txId: string, from: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
   setError: (txId: string, error?: { message: string }) => void;
-  track: (txCreator: () => Promise<any>, message?: string) => any;
+  track: (txCreator: () => Promise<any>, message?: string, hooks?: Hooks) => any;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -88,7 +94,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (txCreator, message = '') => {
+  track: async (txCreator, message = '', hooks) => {
     const maker = await getMaker();
     const txPromise = txCreator();
     // noop catch since we handle tx errors via the manager
@@ -102,12 +108,15 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     maker.service('transactionManager').listen(txPromise, {
       pending: ({ hash }) => {
         get().setPending(txId, hash);
+        if (typeof hooks?.pending === 'function') hooks.pending();
       },
       mined: () => {
         get().setMined(txId);
+        if (typeof hooks?.mined === 'function') hooks.mined();
       },
       error: (_, error) => {
         get().setError(txId, error);
+        if (typeof hooks?.error === 'function') hooks.error();
       }
     });
 
