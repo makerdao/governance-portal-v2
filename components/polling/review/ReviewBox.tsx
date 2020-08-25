@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+/** @jsx jsx */
+import { useMemo } from 'react';
 import Link from 'next/link';
-import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -14,6 +15,12 @@ import useTransactionStore, { transactionsSelectors } from '../../../stores/tran
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
+
+const ReviewBoxCard = ({ children, ...props }) => (
+  <Card variant="compact" p={[0, 0]} {...props}>
+    <Flex sx={{ justifyContent: ['center'], flexDirection: 'column' }}>{children}</Flex>
+  </Card>
+);
 
 export default function ({
   activePolls,
@@ -41,19 +48,6 @@ export default function ({
   const bpi = useBreakpointIndex();
   const ballotLength = Object.keys(ballot).length;
 
-  const ReviewBoxCard = props => (
-    <Card variant="compact" p={[0, 0]}>
-      <Flex
-        sx={{
-          justifyContent: ['center'],
-          flexDirection: 'column'
-        }}
-      >
-        {props.children}
-      </Flex>
-    </Card>
-  );
-
   const Default = props => (
     <ReviewBoxCard {...props}>
       <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
@@ -68,7 +62,7 @@ export default function ({
             disabled={!ballotLength || !!voteTxId}
             sx={{ width: '100%' }}
           >
-            Submit Your Ballot ({ballotLength}) Votes
+            Submit Your Ballot
           </Button>
         </Flex>
       )}
@@ -100,15 +94,11 @@ export default function ({
   );
 
   const Sent = props => (
-    <ReviewBoxCard {...props}>
-      <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 4 }}>
+    <ReviewBoxCard {...props} sx={{ p: [3, 4] }}>
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
         <TxIndicators.Success sx={{ width: 6 }} />
       </Flex>
-      <Text
-        mt={3}
-        px={4}
-        sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
-      >
+      <Text px={4} sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}>
         Transaction Sent!
       </Text>
       <Text sx={{ p: 3, pb: 1, textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
@@ -125,13 +115,7 @@ export default function ({
         </Text>
       </ExternalLink>
       <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-        <Button
-          mt={3}
-          mb={4}
-          variant="outline"
-          sx={{ borderColor: 'primary', color: 'primary' }}
-          onClick={clearTx}
-        >
+        <Button mt={3} variant="outline" sx={{ borderColor: 'primary', color: 'primary' }} onClick={clearTx}>
           Back To All Polls
         </Button>
       </Link>
@@ -155,7 +139,7 @@ export default function ({
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
         <Button onClick={submitBallot} variant="primary" disabled={!ballotLength} sx={{ width: '100%' }}>
-          {`Submit Your Ballot (${ballotLength} Votes)`}
+          Submit Your Ballot
         </Button>
       </Flex>
       <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
