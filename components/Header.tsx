@@ -36,19 +36,19 @@ const Header = (props): JSX.Element => {
       </Link>
 
       <Link href={{ pathname: '/polling', query: { network } }}>
-        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5, 'auto'] }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}>
           Polling
         </NavLink>
       </Link>
 
       <Link href={{ pathname: '/executive', query: { network } }}>
-        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5] }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}>
           Executive
         </NavLink>
       </Link>
 
       <Link href={{ pathname: '/module', query: { network } }}>
-        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 5], mr: [0, 'auto', 5] }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}>
           ES Module
         </NavLink>
       </Link>
