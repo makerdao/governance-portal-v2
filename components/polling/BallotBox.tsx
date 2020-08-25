@@ -14,14 +14,17 @@ import PollBar from './PollBar';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function ({ ballot, activePolls, network, polls }: Props): JSX.Element {
-  const voteTxId = useBallotStore(state => state.txId);
+  const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
     shallow
   );
   const ballotLength = Object.keys(ballot).length;
-
   const router = useRouter();
+  const startReview = () => {
+    clearTx();
+    router.push({ pathname: '/polling/review', query: network });
+  };
 
   return (
     <Box>
@@ -59,12 +62,7 @@ export default function ({ ballot, activePolls, network, polls }: Props): JSX.El
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
           <Divider />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Button
-              onClick={() => router.push({ pathname: '/polling/review', query: network })}
-              variant="primary"
-              disabled={!ballotLength}
-              sx={{ width: '100%' }}
-            >
+            <Button onClick={startReview} variant="primary" disabled={!ballotLength} sx={{ width: '100%' }}>
               Review & Submit Your Ballot
             </Button>
           </Flex>
