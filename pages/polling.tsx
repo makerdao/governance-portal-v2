@@ -120,6 +120,7 @@ const PollingOverview = ({ polls }: Props) => {
     <PrimaryLayout shortenFooter={true}>
       {mobileVotingPoll && (
         <MobileVoteSheet
+          account={account}
           ballotCount={ballotLength}
           activePolls={activePolls}
           poll={mobileVotingPoll}
