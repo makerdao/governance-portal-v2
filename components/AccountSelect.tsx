@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Box, Flex, Text } from 'theme-ui';
+import { jsx, Box, Flex, Text, Spinner } from 'theme-ui';
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 
@@ -8,6 +8,9 @@ import { syncMakerAccount } from '../lib/maker/web3react/hooks';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
 import { formatAddress } from '../lib/utils';
 import { useEffect, useRef } from 'react';
+import useBallotStore from '../stores/ballot';
+import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
+import shallow from 'zustand/shallow';
 
 const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -21,7 +24,24 @@ const AccountSelect = props => {
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
-
+  const txId = useBallotStore(state => state.txId);
+  const transaction = useTransactionStore(
+    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
+    shallow
+  );
+  {
+    transaction?.status === 'pending' && (
+      <Spinner
+        size={16}
+        sx={{
+          color: 'mutedOrange',
+          alignSelf: 'center',
+          display: transaction && transaction.status === 'pending' ? null : 'none',
+          mr: 2
+        }}
+      />
+    );
+  }
   return (
     <Menu>
       <MenuButton
@@ -30,10 +50,25 @@ const AccountSelect = props => {
         {...props}
       >
         {account ? (
-          <Flex sx={{ alignItems: 'center', mr: 2 }}>
-            <AccountIcon account={account} sx={{ mr: 2 }} />
-            <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
-          </Flex>
+          transaction?.status === 'pending' ? (
+            <Box>
+              <Spinner
+                size={16}
+                sx={{
+                  color: 'mutedOrange',
+                  alignSelf: 'center',
+                  // display: transaction && transaction.status === 'pending' ? null : 'none',
+                  mr: 2
+                }}
+              />
+              <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
+            </Box>
+          ) : (
+            <Flex sx={{ alignItems: 'center', mr: 2 }}>
+              <AccountIcon account={account} sx={{ mr: 2 }} />
+              <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
+            </Flex>
+          )
         ) : (
           <Box mx={2}>Connect wallet</Box>
         )}

@@ -14,7 +14,6 @@ import useAccountsStore from '../stores/accounts';
 const Header = (props): JSX.Element => {
   const network = getNetwork();
   const router = useRouter();
-  console.log(router.pathname, 'pathname');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
