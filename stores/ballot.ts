@@ -34,7 +34,7 @@ const [useBallotStore] = create<Store>(
       },
 
       removeFromBallot: pollId => {
-        set(state => omit(state.ballot, pollId), 'removeFromBallot');
+        set(state => ({ ballot: omit(state.ballot, pollId) }), 'removeFromBallot');
       },
 
       clearBallot: () => {

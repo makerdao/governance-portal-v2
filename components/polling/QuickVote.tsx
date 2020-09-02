@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Text, Flex, Button, Box, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
+import isEqual from 'lodash/isEqual';
+import isNil from 'lodash/isNil';
 import shallow from 'zustand/shallow';
 import Tooltip from '@reach/tooltip';
 import useSWR from 'swr';
@@ -42,8 +44,8 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
     { refreshInterval: 0 }
   );
 
-  const [addToBallot, addedChoice, txId] = useBallotStore(
-    state => [state.addToBallot, state.ballot[poll.pollId], state.txId],
+  const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
+    state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],
     shallow
   );
   const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
@@ -56,11 +58,13 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
     if (!choice) setChoice(currentVote);
   }, [allUserVotes]);
 
-  // console.log(addedChoice, currentVote, 'addedChoice');
-
   const submit = () => {
     invariant(isChoiceValid);
-    addToBallot(poll.pollId, choice as number | number[]);
+    if (currentVote && isEqual(currentVote, choice)) {
+      removeFromBallot(poll.pollId);
+    } else {
+      addToBallot(poll.pollId, choice as number | number[]);
+    }
     setEditing(false);
   };
 

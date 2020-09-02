@@ -1,22 +1,27 @@
 /** @jsx jsx */
-import { Text, Button, jsx, Box, Flex } from 'theme-ui';
-import Poll from '../../types/poll';
-import useBallotStore from '../../stores/ballot';
 import { useState, useEffect } from 'react';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { Text, Button, Box, Flex, jsx } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { isRankedChoicePoll } from '../../lib/utils';
+import range from 'lodash/range';
+import isNil from 'lodash/isNil';
+import isEqual from 'lodash/isEqual';
+import shallow from 'zustand/shallow';
+import lottie from 'lottie-web';
+import useSWR from 'swr';
+
+import Account from '../../types/account';
+import Poll from '../../types/poll';
+import PollVote from '../../types/pollVote';
+import useBallotStore from '../../stores/ballot';
+import { isRankedChoicePoll, extractCurrentPollVote } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
-import range from 'lodash/range';
 import { useRouter } from 'next/router';
-import { getNetwork } from '../../lib/maker';
-import shallow from 'zustand/shallow';
-import lottie from 'lottie-web';
+import getMaker, { getNetwork } from '../../lib/maker';
 import VotingStatus from './VotingStatus';
-import { Icon } from '@makerdao/dai-ui-icons';
-import isNil from 'lodash/isNil';
 import ballotAnimation from '../../lib/animation/ballotSuccess.json';
 
 enum ViewState {
@@ -27,6 +32,7 @@ enum ViewState {
 }
 
 type Props = {
+  account?: Account;
   poll: Poll;
   close?: () => void;
   setPoll?: (poll: Poll) => void;
@@ -36,6 +42,7 @@ type Props = {
   withStart?: boolean;
 };
 export default function MobileVoteSheet({
+  account,
   poll,
   setPoll,
   close,
@@ -44,7 +51,16 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const [addToBallot, ballot] = useBallotStore(state => [state.addToBallot, state.ballot], shallow);
+  const { data: allUserVotes } = useSWR<PollVote[]>(
+    account?.address ? ['/user/voting-for', account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
+    { refreshInterval: 0 }
+  );
+  const currentVote = extractCurrentPollVote(poll, allUserVotes);
+  const [addToBallot, removeFromBallot, ballot] = useBallotStore(
+    state => [state.addToBallot, state.removeFromBallot, state.ballot],
+    shallow
+  );
   const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
@@ -55,7 +71,12 @@ export default function MobileVoteSheet({
 
   const submit = () => {
     invariant(isChoiceValid);
-    addToBallot(poll.pollId, choice as number | number[]);
+    if (currentVote && isEqual(currentVote, choice)) {
+      removeFromBallot(poll.pollId);
+      addToBallot(poll.pollId, choice as number | number[]);
+    } else {
+      addToBallot(poll.pollId, choice as number | number[]);
+    }
     if (editingOnly) {
       if (close) {
         close();
