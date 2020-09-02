@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -12,6 +13,8 @@ import useAccountsStore from '../stores/accounts';
 
 const Header = (props): JSX.Element => {
   const network = getNetwork();
+  const router = useRouter();
+  console.log(router.pathname, 'pathname');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
@@ -53,7 +56,7 @@ const Header = (props): JSX.Element => {
         </NavLink>
       </Link>
 
-      {bpi > 1 && account && <BallotStatus mr={3} />}
+      {bpi > 1 && account && router.pathname === '/polling' && <BallotStatus mr={3} />}
       <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
 
       <IconButton
