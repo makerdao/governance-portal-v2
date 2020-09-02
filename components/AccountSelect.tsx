@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react';
 import useBallotStore from '../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
 import shallow from 'zustand/shallow';
+// import Modal from './Modal'
 
 const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -29,19 +30,6 @@ const AccountSelect = props => {
     state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
     shallow
   );
-  {
-    transaction?.status === 'pending' && (
-      <Spinner
-        size={16}
-        sx={{
-          color: 'mutedOrange',
-          alignSelf: 'center',
-          display: transaction && transaction.status === 'pending' ? null : 'none',
-          mr: 2
-        }}
-      />
-    );
-  }
   return (
     <Menu>
       <MenuButton
