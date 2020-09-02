@@ -28,7 +28,7 @@ export default function ({ ballot, activePolls, network, polls }: Props): JSX.El
 
   return (
     <Box>
-      <Heading mb={3} as="h4">
+      <Heading mb={3} mt={4} variant="microHeading">
         Your Ballot
       </Heading>
       {transaction?.hash && transaction.status === 'pending' ? (

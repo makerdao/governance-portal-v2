@@ -45,29 +45,29 @@ export default function (): JSX.Element {
         </Flex>
 
         <Flex sx={{ mx: 0, px: 5, py: 4, backgroundColor: 'background', borderRadius: 'small' }}>
-          <Flex m="auto" sx={{ width: '100%', justifyContent: 'space-between' }}>
+          <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
-              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
+              <Text mt={3} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
               </Text>
             </div>
 
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
-              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
+              <Text mt={3} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
-              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
+              <Text mt={3} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>System Surplus</Text>
-              <Text mt={2} variant="h2" sx={{ fontSize: 5 }}>
+              <Text mt={3} variant="h2" sx={{ fontSize: 5 }}>
                 {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>

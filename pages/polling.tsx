@@ -156,7 +156,7 @@ const PollingOverview = ({ polls }: Props) => {
                         {groupedActivePolls[date].length} Poll
                         {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted {formatDateWithTime(date)}
                       </Text>
-                      <Stack sx={{ mb: 4, display: activePolls.length ? null : 'none' }}>
+                      <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
                         {groupedActivePolls[date].map(poll => (
                           <PollOverviewCard
                             key={poll.multiHash}
@@ -199,9 +199,9 @@ const PollingOverview = ({ polls }: Props) => {
                   <Button
                     onClick={() => setShowHistorical(true)}
                     variant="outline"
-                    sx={{ py: 3, mt: 0, display: historicalPolls.length > 0 ? null : 'none' }}
+                    sx={{ py: 3, display: historicalPolls.length > 0 ? null : 'none' }}
                   >
-                    See all ended polls ({historicalPolls.length})
+                    View ended polls ({historicalPolls.length})
                   </Button>
                 )}
               </Stack>
