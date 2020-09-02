@@ -23,7 +23,7 @@ import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/VotingStatus';
 import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
 import SystemStats from '../../components/polling/[poll-hash]/SystemStatsVertical';
-import ResourceBox from '../../components/polling/ResourceBox';
+import ResourceBox from '../../components/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';

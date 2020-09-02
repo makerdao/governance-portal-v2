@@ -1,15 +1,20 @@
+/** @jsx jsx */
+import { NavLink, Heading, Flex, Badge, Box, jsx } from 'theme-ui';
 import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import useSWR from 'swr';
-import { NavLink, Heading, Flex, Badge } from 'theme-ui';
 import ErrorPage from 'next/error';
 
+import ResourceBox from '../components/ResourceBox';
+import Stack from '../components/layouts/Stack';
+import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
 import { getExecutiveProposals } from '../lib/api';
 import { getNetwork, isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal from '../types/proposal';
 import SpellData from '../types/spellData';
+import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 
 const SpellRow = ({ proposal }: { proposal: Proposal }) => {
   const { data: spellData } = useSWR<SpellData>(
@@ -45,10 +50,23 @@ const SpellRow = ({ proposal }: { proposal: Proposal }) => {
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   return (
     <PrimaryLayout shortenFooter={true}>
-      <Heading as="h1">Executive Proposals</Heading>
-      {proposals.map((proposal, index) => (
-        <SpellRow key={index} proposal={proposal} />
-      ))}
+      <SidebarLayout>
+        <Box>
+          <Stack gap={3}>
+            <Heading as="h1">Executive Proposals</Heading>
+            <Stack gap={3}>
+              {proposals.map((proposal, index) => (
+                <ExecutiveOverviewCard key={index} proposal={proposal} />
+              ))}
+            </Stack>
+          </Stack>
+        </Box>
+        <StickyColumn>
+          <Stack gap={3}>
+            <ResourceBox />
+          </Stack>
+        </StickyColumn>
+      </SidebarLayout>
     </PrimaryLayout>
   );
 };

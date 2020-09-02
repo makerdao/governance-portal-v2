@@ -7,11 +7,6 @@ export type CMSProposal = {
   title: string;
 };
 
-export type RawAddressProposal = {
-  address: string;
-  key: string;
-};
-
-type Proposal = CMSProposal | RawAddressProposal;
+type Proposal = CMSProposal;
 
 export default Proposal;
