@@ -8,6 +8,11 @@ export type CMSProposal = {
   date: string;
 };
 
-type Proposal = CMSProposal;
+export type RawAddressProposal = {
+  address: string;
+  key: string;
+};
+
+type Proposal = CMSProposal | RawAddressProposal;
 
 export default Proposal;
