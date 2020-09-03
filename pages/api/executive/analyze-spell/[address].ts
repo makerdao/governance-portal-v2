@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { isSupportedNetwork } from '../../../../lib/maker';
+import { getConnectedMakerObj } from '../../_lib/utils';
 import { DEFAULT_NETWORK } from '../../../../lib/constants';
 import withApiHandler from '../../_lib/withApiHandler';
 
@@ -13,22 +14,18 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const provider = ethers.getDefaultProvider(network);
-  const encoder = new ethers.utils.Interface(['function eta() returns (uint256)']);
+  const maker = await getConnectedMakerObj(network);
 
-  async function ethCall(method) {
-    return encoder.decodeFunctionResult(
-      method,
-      await provider.call({
-        to: spellAddress,
-        data: encoder.encodeFunctionData(method)
-      })
-    );
-  }
-
-  const [eta] = await ethCall('eta');
-  const hasBeenCast = eta.gt(0);
+  const [eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+    maker.service('spell').getEta(spellAddress),
+    maker.service('spell').getScheduledDate(spellAddress).catch(), // this fails if the spell has not been scheduled
+    maker.service('spell').getExecutionDate(spellAddress).catch(), // this fails if the spell has not been executed
+    maker.service('chief').getApprovalCount(spellAddress)
+  ]);
+  const hasBeenCast = !!eta;
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-  res.status(200).json({ hasBeenCast });
+  res
+    .status(200)
+    .json({ hasBeenCast, eta, datePassed, dateExecuted, mkrSupport: mkrSupport.toBigNumber().toString() });
 });

@@ -9,7 +9,6 @@ import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
 import Poll from '../types/poll';
-import Proposal from '../types/proposal';
 import SpellStateDiff from '../types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
@@ -225,7 +224,7 @@ export const formatDateWithTime = dateString => {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: false,
+    hourCycle: 'h23',
     timeZone: 'UTC',
     timeZoneName: 'short'
   };

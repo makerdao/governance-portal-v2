@@ -20,7 +20,7 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
-import VotingStatus from '../../components/polling/VotingStatus';
+import VotingStatus from '../../components/polling/PollVotingStatus';
 import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
 import SystemStats from '../../components/polling/[poll-hash]/SystemStatsVertical';
 import ResourceBox from '../../components/ResourceBox';

@@ -5,6 +5,7 @@ export type CMSProposal = {
   about: string;
   proposalBlurb: string;
   title: string;
+  date: string;
 };
 
 type Proposal = CMSProposal;
