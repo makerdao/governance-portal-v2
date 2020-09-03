@@ -41,7 +41,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
     );
   const canVote = !!account;
 
-  if ('content' in proposal) {
+  if ('about' in proposal) {
     return (
       <Card sx={{ p: [0, 0] }} {...props}>
         <Flex px={4} py={spellData?.hasBeenCast ? 3 : 4} sx={{ justifyContent: 'space-between' }}>
@@ -54,7 +54,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
             <Box>
               <Link
                 href={{ pathname: '/executive/[proposal-id]', query: { network } }}
-                as={{ pathname: `/polling/${proposal.key}`, query: { network } }}
+                as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
               >
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {proposal.title}
@@ -143,7 +143,9 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
   }
   return (
     <Card sx={{ p: [0, 0] }} {...props}>
-      <Text>spell address {proposal.address}</Text>
+      <Box sx={{ p: 3 }}>
+        <Text>spell address {proposal.address}</Text>
+      </Box>
     </Card>
   );
 }

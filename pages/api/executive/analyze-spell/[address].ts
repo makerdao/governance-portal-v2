@@ -18,8 +18,16 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const [eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
     maker.service('spell').getEta(spellAddress),
-    maker.service('spell').getScheduledDate(spellAddress).catch(), // this fails if the spell has not been scheduled
-    maker.service('spell').getExecutionDate(spellAddress).catch(), // this fails if the spell has not been executed
+    maker
+      .service('spell')
+      .getScheduledDate(spellAddress)
+      /* tslint:disable:no-empty */
+      .catch(_ => _), // this fails if the spell has not been scheduled
+    maker
+      .service('spell')
+      .getExecutionDate(spellAddress)
+      /* tslint:disable:no-empty */
+      .catch(_ => _), // this fails if the spell has not been executed
     maker.service('chief').getApprovalCount(spellAddress)
   ]);
   const hasBeenCast = !!eta;
