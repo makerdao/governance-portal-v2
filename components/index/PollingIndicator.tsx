@@ -45,9 +45,9 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
       <NavLink
         ref={ref}
         href={href}
-        variant="buttons.outline"
         sx={{
-          fontSize: [1, 2],
+          fontSize: 2,
+          px: '3',
           borderRadius: 'round',
           border: '1px solid',
           borderColor: 'primary',
@@ -56,7 +56,9 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
           backgroundColor: 'primary',
           display: 'inline-flex',
           '&:hover': {
-            '> svg': { color: 'primary' }
+            backgroundColor: 'primaryEmphasis',
+            color: 'surface'
+            // '> svg': { color: 'primary' }
           }
         }}
       >

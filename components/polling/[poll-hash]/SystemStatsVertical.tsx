@@ -46,31 +46,31 @@ export default function (props): JSX.Element {
         </Flex>
         <Card variant="compact">
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Savings Rate</Text>
+            <Text sx={{ fontSize: 3, color: 'text' }}>Dai Savings Rate</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
               {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
             </Text>
           </Flex>
           {/* <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>DSR Spread</Text>
+            <Text sx={{ fontSize: 3, color: 'text' }}>DSR Spread</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
               {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
             </Text>
           </Flex> */}
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Total Dai</Text>
+            <Text sx={{ fontSize: 3, color: 'text' }}>Total Dai</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
               {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
             </Text>
           </Flex>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>Dai Debt Ceiling</Text>
+            <Text sx={{ fontSize: 3, color: 'text' }}>Dai Debt Ceiling</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
               {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
             </Text>
           </Flex>
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-            <Text sx={{ fontSize: 3, color: 'mutedAlt' }}>System Surplus</Text>
+            <Text sx={{ fontSize: 3, color: 'text' }}>System Surplus</Text>
             <Text variant="h2" sx={{ fontSize: 3 }}>
               {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
             </Text>

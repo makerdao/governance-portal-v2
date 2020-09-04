@@ -74,7 +74,7 @@ export default function ({ ballot, polls, activePolls, ...props }: Props): JSX.E
       {edits > 0 && (
         <Box mt={2} mb={-2}>
           <Text sx={{ color: 'onSurface', fontWeight: 'semiBold' }}>
-            <strong sx={{ color: 'mutedAlt', fontWeight: 'bold' }}>and {edits}</strong> vote edit
+            <strong sx={{ color: 'text', fontWeight: 'bold' }}>and {edits}</strong> vote edit
             {edits > 1 && 's'} added to ballot.
           </Text>
         </Box>

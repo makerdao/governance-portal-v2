@@ -135,7 +135,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               <Text
                 sx={{
                   fontSize: [2, 3],
-                  color: 'mutedAlt',
+                  color: 'text',
                   textTransform: 'uppercase'
                 }}
               >
