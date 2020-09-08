@@ -22,7 +22,7 @@ import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/PollVotingStatus';
 import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
-import SystemStats from '../../components/polling/[poll-hash]/SystemStatsVertical';
+import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import ResourceBox from '../../components/ResourceBox';
 import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
@@ -224,7 +224,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
             {!!account && <VoteBox poll={poll} />}
-            <SystemStats />
+            <SystemStatsSidebar
+              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+            />
             <ResourceBox />
           </Stack>
         </StickyColumn>

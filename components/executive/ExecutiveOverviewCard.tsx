@@ -129,7 +129,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
             <Flex p={3} sx={{ justifyContent: 'center' }}>
               <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
                 Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                {spellData.dateExecuted ? (
+                {typeof spellData.dateExecuted === 'string' ? (
                   <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
                 ) : (
                   <>Available for execution on {formatDateWithTime(spellData.eta)}.</>

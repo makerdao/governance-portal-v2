@@ -1,72 +1,87 @@
 /** @jsx jsx */
-import { NavLink, Heading, Flex, Badge, Box, jsx } from 'theme-ui';
+import { NavLink, Heading, Flex, Badge, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
 import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import Link from 'next/link';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
+import Skeleton from 'react-loading-skeleton';
 
+import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
 import { getExecutiveProposals } from '../lib/api';
-import { getNetwork, isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal from '../types/proposal';
-import SpellData from '../types/spellData';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
-
-const SpellRow = ({ proposal }: { proposal: Proposal }) => {
-  const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
-  );
-
-  return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-      <Link
-        key={proposal.key}
-        href={{
-          pathname: '/executive/[proposal-id]',
-          query: { network: getNetwork() }
-        }}
-        as={{
-          pathname: `/executive/${proposal.key}`,
-          query: { network: getNetwork() }
-        }}
-      >
-        <NavLink>{proposal.key}</NavLink>
-      </Link>
-      {typeof spellData === 'undefined' ? (
-        <div>loading</div>
-      ) : (
-        <Badge bg="background" variant={spellData.hasBeenCast ? 'primary' : 'notice'}>
-          {spellData.hasBeenCast ? 'This spell has been cast' : 'This spell has not yet been cast'}
-        </Badge>
-      )}
-    </Flex>
-  );
-};
+import useAccountsStore from '../stores/accounts';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+  const account = useAccountsStore(state => state.currentAccount);
+
+  const { data: lockedMkr } = useSWR(
+    account?.address ? ['/user/mkr-locked', account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
+  );
+
   return (
     <PrimaryLayout shortenFooter={true}>
-      <SidebarLayout>
-        <Box>
-          <Stack gap={3}>
-            <Heading as="h1">Executive Proposals</Heading>
+      <Stack>
+        {account && (
+          <Flex sx={{ alignItems: 'center' }}>
+            <Flex>
+              <Text>In voting contract: </Text>
+              {lockedMkr ? (
+                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
+              ) : (
+                <Box sx={{ width: 6 }}>
+                  <Skeleton />
+                </Box>
+              )}
+            </Flex>
+            <Button variant="mutedOutline" ml={3}>
+              Deposit
+            </Button>
+            <Button variant="mutedOutline" ml={3}>
+              Withdraw
+            </Button>
+          </Flex>
+        )}
+
+        <Flex sx={{ alignItems: 'center' }}>
+          <Heading variant="microHeading" mr={3}>
+            Filters
+          </Heading>
+        </Flex>
+
+        <SidebarLayout>
+          <Box>
             <Stack gap={3}>
-              {proposals.map((proposal, index) => (
-                <ExecutiveOverviewCard key={index} proposal={proposal} />
-              ))}
+              <Heading as="h1">Executive Proposals</Heading>
+              <Stack gap={3}>
+                {proposals.map((proposal, index) => (
+                  <ExecutiveOverviewCard key={index} proposal={proposal} />
+                ))}
+              </Stack>
+              <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                <Divider />
+                <Button variant="mutedOutline">View more polls</Button>
+                <Divider />
+              </Grid>
             </Stack>
-          </Stack>
-        </Box>
-        <StickyColumn>
-          <Stack gap={3}>
-            <ResourceBox />
-          </Stack>
-        </StickyColumn>
-      </SidebarLayout>
+          </Box>
+          <StickyColumn>
+            <Stack gap={3}>
+              <SystemStatsSidebar
+                fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+              />
+              <ResourceBox />
+            </Stack>
+          </StickyColumn>
+        </SidebarLayout>
+      </Stack>
     </PrimaryLayout>
   );
 };
