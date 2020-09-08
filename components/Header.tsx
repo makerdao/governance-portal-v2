@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -13,7 +12,6 @@ import useAccountsStore from '../stores/accounts';
 
 const Header = (props): JSX.Element => {
   const network = getNetwork();
-  const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
@@ -28,7 +26,6 @@ const Header = (props): JSX.Element => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
         width: '100%'
       }}
       {...props}
@@ -38,38 +35,37 @@ const Header = (props): JSX.Element => {
           <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
-      <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/polling', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}>
-            Polling
-          </NavLink>
-        </Link>
 
-        <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}>
-            Executive
-          </NavLink>
-        </Link>
+      <Link href={{ pathname: '/polling', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}>
+          Polling
+        </NavLink>
+      </Link>
 
-        <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}>
-            ES Module
-          </NavLink>
-        </Link>
+      <Link href={{ pathname: '/executive', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}>
+          Executive
+        </NavLink>
+      </Link>
 
-        {bpi > 1 && account && router.pathname === '/polling' && <BallotStatus mr={3} />}
-        <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
+      <Link href={{ pathname: '/module', query: { network } }}>
+        <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}>
+          ES Module
+        </NavLink>
+      </Link>
 
-        <IconButton
-          aria-label="Show menu"
-          ml="3"
-          sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
-          onClick={() => setShowMobileMenu(true)}
-        >
-          <Icon name="menu" sx={{ width: '18px' }} />
-        </IconButton>
-        {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} {...{ network }} />}
-      </Flex>
+      {bpi > 1 && account && <BallotStatus mr={3} />}
+      <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
+
+      <IconButton
+        aria-label="Show menu"
+        ml="3"
+        sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
+        onClick={() => setShowMobileMenu(true)}
+      >
+        <Icon name="menu" sx={{ width: '18px' }} />
+      </IconButton>
+      {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} {...{ network }} />}
     </Box>
   );
 };
