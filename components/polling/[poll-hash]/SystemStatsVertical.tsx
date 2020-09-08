@@ -13,6 +13,7 @@ async function getSystemStats(): Promise<CurrencyObject[]> {
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
     maker.service('mcd:systemData').getTotalDai(),
+    // @ts-ignore
     DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
 }

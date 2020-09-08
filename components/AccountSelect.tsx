@@ -23,7 +23,9 @@ const AccountSelect = props => {
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
-  const pending = useTransactionStore(state => state.transactions.findIndex(tx => tx.status === 'pending'));
+  const pending = useTransactionStore(
+    state => state.transactions.findIndex(tx => tx.status === 'pending') > -1
+  );
 
   const [showDialog, setShowDialog] = React.useState(false);
   const open = () => setShowDialog(true);
@@ -46,8 +48,8 @@ const AccountSelect = props => {
         onClick={open}
       >
         {account ? (
-          pending < 0 ? (
-            <Box>
+          pending ? (
+            <Flex sx={{ display: 'inline-flex' }}>
               <Spinner
                 size={16}
                 sx={{
@@ -58,7 +60,7 @@ const AccountSelect = props => {
                 }}
               />
               <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
-            </Box>
+            </Flex>
           ) : (
             <Flex sx={{ alignItems: 'center', mr: 2 }}>
               <AccountIcon account={account} sx={{ mr: 2 }} />
