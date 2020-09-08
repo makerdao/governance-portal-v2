@@ -84,7 +84,7 @@ const AccountSelect = props => {
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
             {connectors.map(([name, connector]) => (
-              <Box sx={{ width: '100%', px: 3 }} key={name} onSelect={() => activate(connector)}>
+              <Box sx={{ width: '100%', px: 3 }} key={name} onClick={() => activate(connector)}>
                 {name}
               </Box>
             ))}
