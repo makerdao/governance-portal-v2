@@ -1,5 +1,7 @@
 /** @jsx jsx */
-import { jsx, Box, Flex, Text } from 'theme-ui';
+import React from 'react';
+import { jsx, Box, Flex, Text, Spinner, Button, IconButton } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 
@@ -8,6 +10,11 @@ import { syncMakerAccount } from '../lib/maker/web3react/hooks';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
 import { formatAddress } from '../lib/utils';
 import { useEffect, useRef } from 'react';
+import useBallotStore from '../stores/ballot';
+import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
+import shallow from 'zustand/shallow';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -21,38 +28,82 @@ const AccountSelect = props => {
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
+  const txId = useBallotStore(state => state.txId);
+  const transaction = useTransactionStore(
+    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
+    shallow
+  );
+
+  const [showDialog, setShowDialog] = React.useState(false);
+  const open = () => setShowDialog(true);
+  const close = () => setShowDialog(false);
+  const bpi = useBreakpointIndex();
 
   return (
-    <Menu>
-      <MenuButton
+    <Box>
+      <Button
         aria-label="Connect wallet"
-        sx={{ variant: 'buttons.card', borderRadius: 'round', height: '36px', px: [2, 3], py: 0 }}
+        sx={{
+          variant: 'buttons.card',
+          borderRadius: 'round',
+          height: '36px',
+          px: [2, 3],
+          py: 0,
+          alignSelf: 'flex-end'
+        }}
         {...props}
+        onClick={open}
       >
         {account ? (
-          <Flex sx={{ alignItems: 'center', mr: 2 }}>
-            <AccountIcon account={account} sx={{ mr: 2 }} />
-            <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
-          </Flex>
+          transaction?.status === 'pending' ? (
+            <Box>
+              <Spinner
+                size={16}
+                sx={{
+                  color: 'mutedOrange',
+                  alignSelf: 'center',
+                  // display: transaction && transaction.status === 'pending' ? null : 'none',
+                  mr: 2
+                }}
+              />
+              <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
+            </Box>
+          ) : (
+            <Flex sx={{ alignItems: 'center', mr: 2 }}>
+              <AccountIcon account={account} sx={{ mr: 2 }} />
+              <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
+            </Flex>
+          )
         ) : (
           <Box mx={2}>Connect wallet</Box>
         )}
-      </MenuButton>
-      <MenuList
-        sx={theme => ({
-          variant: 'cards.primary',
-          p: [0, 0],
-          zIndex: theme.layout.modal.zIndex + 1, // otherwise will be hidden behind mobile menu
-          position: 'relative'
-        })}
-      >
-        {connectors.map(([name, connector]) => (
-          <MenuItem key={name} onSelect={() => activate(connector)}>
-            {name}
-          </MenuItem>
-        ))}
-      </MenuList>
-    </Menu>
+      </Button>
+      <DialogOverlay style={{ background: 'hsla(0, 100%, 100%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
+        <DialogContent
+          sx={bpi === 0 ? { variant: 'dialog.mobile' } : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)' }}
+        >
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text>{account ? 'Accounts' : 'Select a Wallet'}</Text>
+            <IconButton
+              aria-label="close"
+              ml="3"
+              sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
+              onClick={close}
+            >
+              <Icon name="close" sx={{ width: '18px' }} />
+            </IconButton>
+          </Flex>
+          <Flex sx={{ flexDirection: 'column' }}>
+            {connectors.map(([name, connector]) => (
+              <Box sx={{ width: '100%', px: 3 }} key={name} onSelect={() => activate(connector)}>
+                {name}
+              </Box>
+            ))}
+          </Flex>
+          <Button onClick={close}>Close</Button>
+        </DialogContent>
+      </DialogOverlay>
+    </Box>
   );
 };
 
