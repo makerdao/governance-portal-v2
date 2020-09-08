@@ -9,11 +9,6 @@ import { syncMakerAccount } from '../lib/maker/web3react/hooks';
 import { MenuButton, MenuList, MenuItem, Menu } from '@reach/menu-button';
 import { formatAddress } from '../lib/utils';
 import { useEffect, useRef } from 'react';
-import useBallotStore from '../stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '../stores/transactions';
-import shallow from 'zustand/shallow';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -35,19 +30,11 @@ const AccountSelect = props => {
   const bpi = useBreakpointIndex();
 
   return (
-    <Box>
-      <Button
+    <Menu>
+      <MenuButton
         aria-label="Connect wallet"
-        sx={{
-          variant: 'buttons.card',
-          borderRadius: 'round',
-          height: '36px',
-          px: [2, 3],
-          py: 0,
-          alignSelf: 'flex-end'
-        }}
+        sx={{ variant: 'buttons.card', borderRadius: 'round', height: '36px', px: [2, 3], py: 0 }}
         {...props}
-        onClick={open}
       >
         {account ? (
           pending < 0 ? (

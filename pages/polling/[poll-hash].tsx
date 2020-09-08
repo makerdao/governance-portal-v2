@@ -73,6 +73,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
     <PrimaryLayout shortenFooter={true}>
       {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet
+          account={account}
           ballotCount={ballotLength}
           activePolls={activePolls}
           setPoll={setMobileVotingPoll}
@@ -134,7 +135,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               <Text
                 sx={{
                   fontSize: [2, 3],
-                  color: 'mutedAlt',
+                  color: 'text',
                   textTransform: 'uppercase'
                 }}
               >

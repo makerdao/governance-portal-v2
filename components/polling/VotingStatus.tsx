@@ -14,7 +14,7 @@ import useBallotStore from '../../stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
-  const color = hasVoted || onBallot ? 'linkHover' : 'badgeGrey';
+  const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
     ? 'You voted'
@@ -85,7 +85,7 @@ const VotingStatus = ({
         px="14px"
         variant="primary"
         sx={{
-          borderColor: hasVoted || onBallot ? 'linkHover' : 'badgeGrey',
+          borderColor: hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey',
           display: desktopStyle ? 'block' : ['none', 'block']
         }}
       >

@@ -46,13 +46,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       <div
         sx={{
           top: 0,
-          height: '700px',
+          left: 0,
+          pt: '100%',
           width: '100vw',
           zIndex: -1,
           position: 'absolute',
-          background: 'url(/assets/heroVisual.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center'
+          backgroundImage: 'url(/assets/heroVisual.svg)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'top center',
+          backgroundRepeat: 'no-repeat'
         }}
       />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
@@ -61,10 +63,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Stack gap={[4, 6]}>
               <Container pt={[4, 6]} sx={{ maxWidth: 'title', textAlign: 'center' }}>
                 <Stack gap={3}>
-                  <Heading as="h1" sx={{ fontSize: [7, 8] }}>
+                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
-                  <Text as="p" sx={{ fontSize: [3, 5], px: [4, 'inherit'] }}>
+                  <Text as="p" mb="3" sx={{ color: 'textSecondary', fontSize: [3, 5], px: [4, 'inherit'] }}>
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
@@ -79,17 +81,17 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Grid gap={5} sx={{ px: [5, 0] }} columns={[1, 3]}>
+            <Grid gap={6} sx={{ px: [5, 0] }} columns={[1, 3]}>
               <IntroCard
-                title="Introduction to Governance"
+                title="Intro to Governance"
                 linkText="Get started"
                 linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
                 icon="govIntro"
               >
-                A guide to outlining the basics of getting started with voting.
+                A guide outlining the basics of getting started with Maker Governance.
               </IntroCard>
               <IntroCard
-                title="Governance Forum"
+                title="Maker Forum"
                 linkText="Go to forum"
                 linkDest="https://forum.makerdao.com/c/governance/"
                 icon="govForum"
@@ -97,12 +99,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 Get the latest updates and take part in current discussions.
               </IntroCard>
               <IntroCard
-                title="Governance Calls"
-                linkText="View gov calls"
-                linkDest="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
+                title="Community Tools"
+                linkText="View community tools"
+                linkDest="https://community-development.makerdao.com/governance/governance-tools"
                 icon="govCalls"
               >
-                Weekly calls to present research and coordinate around current issues.
+                Use tools from the community to stay informed on the state of the system.
               </IntroCard>
             </Grid>
           </section>
@@ -112,7 +114,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
                 <Stack gap={3}>
                   <Heading as="h2">Executive Votes</Heading>
-                  <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
+                  <Text
+                    sx={{ fontWeight: 400, color: 'textSecondary', px: [4, 'inherit'], fontSize: [3, 5] }}
+                  >
                     Executive Votes are conducted to make changes to the system. The governing proposal
                     represents the current state of the system.
                   </Text>
@@ -138,7 +142,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
                 <Stack gap={3}>
                   <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ px: [4, 'inherit'], fontSize: [3, 5] }}>
+                  <Text as="p" sx={{ color: 'textSecondary', px: [4, 'inherit'], fontSize: [3, 5] }}>
                     Polls are conducted to establish a rough consensus of community sentiment before Executive
                     Votes are conducted.
                   </Text>

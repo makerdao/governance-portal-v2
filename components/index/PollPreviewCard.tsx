@@ -22,7 +22,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
           <Text
             sx={{
               fontSize: [2, 3],
-              color: 'mutedAlt',
+              color: 'text',
               textTransform: 'uppercase'
             }}
           >

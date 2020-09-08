@@ -47,7 +47,7 @@ const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
   return (
     <Flex sx={{ alignItems: 'center', flexDirection: 'row', flexWrap: 'nowrap' }} {...props}>
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
-      <Text variant="caps" color={text !== endText ? 'mutedAlt' : 'secondary'}>
+      <Text variant="caps" color={text !== endText ? 'text' : 'secondary'}>
         {text}
       </Text>
     </Flex>

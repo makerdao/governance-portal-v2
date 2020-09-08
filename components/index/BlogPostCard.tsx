@@ -10,7 +10,7 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
     target="_blank"
     variant="card"
     href={blogPost.link}
-    sx={{ p: [0, 0], borderRadius: 'medium' }}
+    sx={{ p: [0, 0], borderRadius: 'medium', ':hover': { borderColor: 'onSecondary' } }}
     {...otherProps}
   >
     <Box>
@@ -20,7 +20,8 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
           objectFit: 'cover',
           height: 7,
           width: '100%',
-          backgroundColor: 'silver'
+          backgroundColor: 'silver',
+          borderRadius: '5px 5px 0px 0px'
         }}
       />
 

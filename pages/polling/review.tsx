@@ -51,7 +51,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       {mobileVotingPoll && (
-        <MobileVoteSheet editingOnly poll={mobileVotingPoll} close={() => setMobileVotingPoll(null)} />
+        <MobileVoteSheet
+          account={account}
+          editingOnly
+          poll={mobileVotingPoll}
+          close={() => setMobileVotingPoll(null)}
+        />
       )}
       <Stack gap={3}>
         <Heading mb={3} as="h4">

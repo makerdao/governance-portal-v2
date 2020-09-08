@@ -44,13 +44,13 @@ const LinkList = props => (
       paddingLeft: 0,
       listStyle: 'none',
       lineHeight: '2.1rem',
-      fontSize: 15.3,
+      fontSize: 14,
       '& a': {
         color: 'footerText',
         fontWeight: '400',
         transition: 'color 0.2s ease-out',
         textDecoration: 'none',
-        ':hover': { color: 'linkHover' }
+        ':hover': { color: 'greenLinkHover' }
       }
     }}
   >
@@ -381,7 +381,8 @@ export default ({ shorten = false }) => {
     return (
       <footer
         sx={{
-          py: 4,
+          pt: 4,
+          pb: 3,
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
@@ -389,17 +390,17 @@ export default ({ shorten = false }) => {
         }}
       >
         <Link href="/terms">
-          <NavLink variant="footer" p={2}>
+          <NavLink variant="footer" p={1} sx={{ fontWeight: 400 }}>
             Terms
           </NavLink>
         </Link>
         <Link href="/privacy-policy">
-          <NavLink variant="footer" p={2}>
+          <NavLink variant="footer" p={2} sx={{ fontWeight: 400 }}>
             Privacy Policy
           </NavLink>
         </Link>
         <Link href="/status">
-          <NavLink variant="footer" p={2}>
+          <NavLink variant="footer" p={2} sx={{ fontWeight: 400 }}>
             Status
           </NavLink>
         </Link>
