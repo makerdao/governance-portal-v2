@@ -56,7 +56,7 @@ const Header = (props): JSX.Element => {
           </NavLink>
         </Link>
 
-        {bpi > 1 && account && router.pathname === '/polling' && <BallotStatus mr={3} />}
+        {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
 
         <IconButton

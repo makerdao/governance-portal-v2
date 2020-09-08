@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Flex, Text, Spinner, Button, IconButton } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 import dynamic from 'next/dynamic';
 
@@ -28,11 +27,7 @@ const AccountSelect = props => {
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
-  const txId = useBallotStore(state => state.txId);
-  const transaction = useTransactionStore(
-    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
-    shallow
-  );
+  const pending = useTransactionStore(state => state.transactions.findIndex(tx => tx.status === 'pending'));
 
   const [showDialog, setShowDialog] = React.useState(false);
   const open = () => setShowDialog(true);
@@ -55,7 +50,7 @@ const AccountSelect = props => {
         onClick={open}
       >
         {account ? (
-          transaction?.status === 'pending' ? (
+          pending < 0 ? (
             <Box>
               <Spinner
                 size={16}
@@ -84,14 +79,12 @@ const AccountSelect = props => {
         >
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text>{account ? 'Accounts' : 'Select a Wallet'}</Text>
-            <IconButton
+            <Close
               aria-label="close"
               ml="3"
-              sx={{ display: [null, 'none'], height: '28px', width: '24px', p: 0 }}
+              sx={{ display: [null, 'none'], height: '18px', width: '18px', p: 0 }}
               onClick={close}
-            >
-              <Icon name="close" sx={{ width: '18px' }} />
-            </IconButton>
+            />
           </Flex>
           <Flex sx={{ flexDirection: 'column' }}>
             {connectors.map(([name, connector]) => (
