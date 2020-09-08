@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
+import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -18,7 +18,7 @@ import Poll from '../types/poll';
 import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
 import BallotBox from '../components/polling/BallotBox';
-import ResourceBox from '../components/polling/ResourceBox';
+import ResourceBox from '../components/ResourceBox';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';

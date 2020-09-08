@@ -29,7 +29,7 @@ const ProposalView = ({ proposal }: Props) => {
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
-  if ('content' in proposal) {
+  if ('about' in proposal) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <SidebarLayout>

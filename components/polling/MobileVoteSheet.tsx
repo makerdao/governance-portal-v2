@@ -21,7 +21,7 @@ import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
 import getMaker, { getNetwork } from '../../lib/maker';
-import VotingStatus from './VotingStatus';
+import VotingStatus from './PollVotingStatus';
 import ballotAnimation from '../../lib/animation/ballotSuccess.json';
 
 enum ViewState {
