@@ -127,7 +127,8 @@ const AccountSelect = props => {
             <AccountBox
               account={account}
               accountName={accountName}
-              change={() => (connector ? activate(connector) : true)}
+              // This needs to be the change function for the wallet select dropdown
+              change={() => true}
             />
           )}
           {account && txs?.length > 0 && <TransactionBox txs={txs} />}
@@ -141,6 +142,7 @@ const AccountSelect = props => {
               >
                 Close
               </Button>
+              {/*
               <Button
                 variant="outline"
                 sx={{
@@ -154,7 +156,7 @@ const AccountSelect = props => {
                 onClick={() => deactivate()}
               >
                 Disconnect wallet
-              </Button>
+              </Button> */}
             </>
           )}
         </DialogContent>
