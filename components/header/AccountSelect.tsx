@@ -12,6 +12,7 @@ import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { AbstractConnector } from '@web3-react/abstract-connector';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
@@ -35,6 +36,7 @@ const AccountSelect = props => {
 
   const [showDialog, setShowDialog] = React.useState(false);
   const [accountName, setAccountName] = React.useState('');
+  const [selectedConnector, setSelectedConnector] = React.useState<AbstractConnector | undefined>(undefined);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
@@ -48,7 +50,10 @@ const AccountSelect = props => {
           height: '36px',
           px: [2, 3],
           py: 0,
-          alignSelf: 'flex-end'
+          alignSelf: 'flex-end',
+          '&:hover': {
+            color: 'white'
+          }
         }}
         {...props}
         onClick={open}
@@ -107,7 +112,8 @@ const AccountSelect = props => {
                   }}
                   key={name}
                   onClick={() => {
-                    setAccountName(name);
+                    // setAccountName(name);
+                    // setSelectedConnector(selectedConnector);
                     activate(connector);
                   }}
                 >
@@ -117,7 +123,13 @@ const AccountSelect = props => {
               ))}
             </Flex>
           )}
-          {account && <AccountBox account={account} accountName={accountName} />}
+          {account && (
+            <AccountBox
+              account={account}
+              accountName={accountName}
+              change={() => selectedConnector && activate(selectedConnector)}
+            />
+          )}
           {account && txs?.length > 0 && <TransactionBox txs={txs} />}
           {account && (
             <>

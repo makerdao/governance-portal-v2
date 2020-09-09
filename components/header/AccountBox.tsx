@@ -3,7 +3,7 @@ import { formatAddress } from '../../lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountIcon from './AccountIcon';
 
-const AccountBox = ({ account, accountName }) => (
+const AccountBox = ({ account, accountName, change }) => (
   <>
     <Flex sx={{ flexDirection: 'column', border: '1px solid #D4D9E1', borderRadius: 'medium' }}>
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -14,7 +14,14 @@ const AccountBox = ({ account, accountName }) => (
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
           </Flex>
         </Flex>
-        <Button variant="smallOutline" sx={{ mr: 4, borderRadius: 'small' }}>
+        <Button
+          variant="smallOutline"
+          sx={{ mr: 4, borderRadius: 'small' }}
+          onClick={() => {
+            console.log('hi');
+            change();
+          }}
+        >
           <Text variant="caps" color="onSurface">
             CHANGE WALLET
           </Text>
