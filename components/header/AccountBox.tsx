@@ -14,14 +14,7 @@ const AccountBox = ({ account, accountName, change }) => (
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
           </Flex>
         </Flex>
-        <Button
-          variant="smallOutline"
-          sx={{ mr: 4, borderRadius: 'small' }}
-          onClick={() => {
-            console.log('hi');
-            change();
-          }}
-        >
+        <Button variant="smallOutline" sx={{ mr: 4, borderRadius: 'small' }} onClick={change}>
           <Text variant="caps" color="onSurface">
             CHANGE WALLET
           </Text>

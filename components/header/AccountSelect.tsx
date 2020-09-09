@@ -25,7 +25,7 @@ const WrappedAccountSelect = (props): JSX.Element => (
 
 const AccountSelect = props => {
   const web3ReactContext = useWeb3React();
-  const { library, account, activate } = web3ReactContext;
+  const { library, account, activate, deactivate, connector } = web3ReactContext;
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
@@ -112,8 +112,8 @@ const AccountSelect = props => {
                   }}
                   key={name}
                   onClick={() => {
-                    // setAccountName(name);
-                    // setSelectedConnector(selectedConnector);
+                    setAccountName(name);
+                    setSelectedConnector(connector);
                     activate(connector);
                   }}
                 >
@@ -127,7 +127,7 @@ const AccountSelect = props => {
             <AccountBox
               account={account}
               accountName={accountName}
-              change={() => selectedConnector && activate(selectedConnector)}
+              change={() => (connector ? activate(connector) : true)}
             />
           )}
           {account && txs?.length > 0 && <TransactionBox txs={txs} />}
@@ -151,6 +151,7 @@ const AccountSelect = props => {
                   border: '1px solid #D4D9E1',
                   borderRadius: 'medium'
                 }}
+                onClick={() => deactivate()}
               >
                 Disconnect wallet
               </Button>
