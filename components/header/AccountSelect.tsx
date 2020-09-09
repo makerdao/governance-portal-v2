@@ -33,6 +33,7 @@ const AccountSelect = props => {
   ]);
 
   const [showDialog, setShowDialog] = React.useState(false);
+  const [accountName, setAccountName] = React.useState('');
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
@@ -84,8 +85,10 @@ const AccountSelect = props => {
           }
         >
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
-            <Text>{account ? 'Accounts' : 'Select a Wallet'}</Text>
-            <Close aria-label="close" ml="3" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
+            <Text sx={{ fontSize: '20', color: 'onBackgroundAlt' }}>
+              {account ? 'Accounts' : 'Select a Wallet'}
+            </Text>
+            <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
           </Flex>
           {!account && (
             <Flex sx={{ flexDirection: 'column' }}>
@@ -100,14 +103,17 @@ const AccountSelect = props => {
                     mb: 2
                   }}
                   key={name}
-                  onClick={() => activate(connector)}
+                  onClick={() => {
+                    setAccountName(name);
+                    activate(connector);
+                  }}
                 >
                   {name}
                 </Box>
               ))}
             </Flex>
           )}
-          {account && <AccountBox account={account} />}
+          {account && <AccountBox account={account} accountName={accountName} />}
           {account && txs?.length > 0 && <TransactionBox txs={txs} />}
           {account && (
             <>

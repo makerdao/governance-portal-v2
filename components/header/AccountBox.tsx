@@ -3,12 +3,12 @@ import { formatAddress } from '../../lib/utils';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountIcon from './AccountIcon';
 
-const AccountBox = ({ account }) => (
+const AccountBox = ({ account, accountName }) => (
   <>
     <Flex sx={{ flexDirection: 'column', border: '1px solid #D4D9E1', borderRadius: 'medium' }}>
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Flex sx={{ flexDirection: 'column', ml: 3, py: 3 }}>
-          <Text>Connected with</Text>
+          <Text>{`Connected with ${accountName}`}</Text>
           <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 2 }}>
             <AccountIcon account={account} sx={{ mr: 2 }} />
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
