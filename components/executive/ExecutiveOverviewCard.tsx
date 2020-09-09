@@ -20,7 +20,7 @@ export default function ExecutiveOverviewCard({
   ...props
 }: {
   proposal: Proposal;
-  openVote: (propsal: Proposal) => void;
+  openVote: (proposal: Proposal) => void;
 }): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
 
