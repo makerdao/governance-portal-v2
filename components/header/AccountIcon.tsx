@@ -6,12 +6,12 @@ import dynamic from 'next/dynamic';
 
 const ICON_SIZE = 22;
 
-type AccountIconProps = { account: string; mr: number };
+type AccountIconProps = { account: string };
 
 export default dynamic(
   async () => {
     const { default: jazzicon } = await import('jazzicon');
-    return ({ account, mr, ...props }: AccountIconProps) => {
+    return ({ account, ...props }: AccountIconProps) => {
       const iconParent = useRef<HTMLDivElement>(null);
 
       useEffect(() => {
@@ -21,7 +21,11 @@ export default dynamic(
         parent.appendChild(jazzicon(ICON_SIZE, parseInt(account.slice(2, 10), 16)));
       }, [account]);
 
-      return <Box {...props} ref={iconParent} sx={{ height: ICON_SIZE, mr }}></Box>;
+      return (
+        <Box {...props}>
+          <Box ref={iconParent} sx={{ height: ICON_SIZE }} />
+        </Box>
+      );
     };
   },
   { ssr: false }

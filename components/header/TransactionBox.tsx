@@ -1,5 +1,10 @@
-import { jsx, Flex, Text, Spinner, Button, Link as ExternalLink } from 'theme-ui';
+/** @jsx jsx */
+
+import { Flex, Text, Spinner, Button, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+
+import { formatAddress, getEtherscanLink } from '../../lib/utils';
+import { getNetwork } from '../../lib/maker';
 
 const TransactionRow = ({ tx, index }) => {
   return (
@@ -25,7 +30,7 @@ const TransactionRow = ({ tx, index }) => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{`${tx.message}`}</Text>
       </Flex>
-      <ExternalLink href={`https://etherscan.io/tx/${tx.hash}`} target="_blank">
+      <ExternalLink href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')} target="_blank">
         <Button
           variant="smallOutline"
           sx={{ color: 'accentBlue', borderColor: 'accentBlue', borderRadius: 'small' }}

@@ -44,10 +44,11 @@ const AccountSelect = props => {
   const walletOptions = connectors.map(([name, connector]) => (
     <Flex
       sx={{
+        cursor: 'pointer',
         width: '100%',
-        py: 3,
-        px: 3,
-        border: '1px solid #D4D9E1',
+        p: 3,
+        border: '1px solid',
+        borderColor: 'secondaryMuted',
         borderRadius: 'medium',
         mb: 2,
         flexDirection: 'row',
