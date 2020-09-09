@@ -37,9 +37,34 @@ const AccountSelect = props => {
   const [showDialog, setShowDialog] = React.useState(false);
   const [accountName, setAccountName] = React.useState('');
   const [selectedConnector, setSelectedConnector] = React.useState<AbstractConnector | undefined>(undefined);
+  const [changeWallet, setChangeWallet] = React.useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
+  const walletOptions = connectors.map(([name, connector]) => (
+    <Flex
+      sx={{
+        width: '100%',
+        py: 3,
+        px: 3,
+        border: '1px solid #D4D9E1',
+        borderRadius: 'medium',
+        mb: 2,
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}
+      key={name}
+      onClick={() => {
+        setAccountName(name);
+        setSelectedConnector(connector);
+        setChangeWallet(false);
+        activate(connector);
+      }}
+    >
+      <Icon name={name} />
+      <Text sx={{ ml: 3 }}>{name}</Text>
+    </Flex>
+  ));
   return (
     <Box>
       <Button
@@ -83,66 +108,62 @@ const AccountSelect = props => {
         )}
       </Button>
       <DialogOverlay style={{ background: 'hsla(0, 100%, 100%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
-        <DialogContent
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile' }
-              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
-          }
-        >
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
-            <Text sx={{ fontSize: '20', color: 'onBackgroundAlt' }}>
-              {account ? 'Accounts' : 'Select a Wallet'}
-            </Text>
-            <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
-          </Flex>
-          {!account && (
-            <Flex sx={{ flexDirection: 'column' }}>
-              {connectors.map(([name, connector]) => (
-                <Flex
-                  sx={{
-                    width: '100%',
-                    py: 3,
-                    px: 3,
-                    border: '1px solid #D4D9E1',
-                    borderRadius: 'medium',
-                    mb: 2,
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}
-                  key={name}
-                  onClick={() => {
-                    setAccountName(name);
-                    setSelectedConnector(connector);
-                    activate(connector);
-                  }}
-                >
-                  <Icon name={name} />
-                  <Text sx={{ ml: 3 }}>{name}</Text>
-                </Flex>
-              ))}
-            </Flex>
-          )}
-          {account && (
-            <AccountBox
-              account={account}
-              accountName={accountName}
-              // This needs to be the change function for the wallet select dropdown
-              change={() => true}
-            />
-          )}
-          {account && txs?.length > 0 && <TransactionBox txs={txs} />}
-          {account && (
-            <>
-              <Button
-                variant="primaryOutline"
-                color="primary"
-                sx={{ width: '100%', textAlign: 'center', borderRadius: 'small', py: 3, mt: 4 }}
-                onClick={close}
-              >
-                Close
+        {changeWallet ? (
+          <DialogContent
+            aria-label="Change Wallet"
+            sx={
+              bpi === 0
+                ? { variant: 'dialog.mobile' }
+                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+            }
+          >
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Button variant="textual" color="primary" onClick={() => setChangeWallet(false)}>
+                Back
               </Button>
-              {/*
+              <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
+            </Flex>
+            {walletOptions}
+          </DialogContent>
+        ) : (
+          <DialogContent
+            aria-label="Wallet Info"
+            sx={
+              bpi === 0
+                ? { variant: 'dialog.mobile' }
+                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+            }
+          >
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
+              <Text sx={{ fontSize: '20', color: 'onBackgroundAlt' }}>
+                {account ? 'Accounts' : 'Select a Wallet'}
+              </Text>
+              <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
+            </Flex>
+            {!account && <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>}
+            {account && (
+              <AccountBox
+                account={account}
+                accountName={accountName}
+                // This needs to be the change function for the wallet select dropdown
+                change={() => {
+                  console.log('changed');
+                  setChangeWallet(true);
+                }}
+              />
+            )}
+            {account && txs?.length > 0 && <TransactionBox txs={txs} />}
+            {account && (
+              <>
+                <Button
+                  variant="primaryOutline"
+                  color="primary"
+                  sx={{ width: '100%', textAlign: 'center', borderRadius: 'small', py: 3, mt: 4 }}
+                  onClick={close}
+                >
+                  Close
+                </Button>
+                {/*
               <Button
                 variant="outline"
                 sx={{
@@ -157,9 +178,10 @@ const AccountSelect = props => {
               >
                 Disconnect wallet
               </Button> */}
-            </>
-          )}
-        </DialogContent>
+              </>
+            )}
+          </DialogContent>
+        )}
       </DialogOverlay>
     </Box>
   );
