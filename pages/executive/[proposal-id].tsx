@@ -4,10 +4,11 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
+import { Button, Card, Flex, Text, Heading, Divider, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
+import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
@@ -18,6 +19,7 @@ import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 import Bignumber from 'bignumber.js';
+import ResourceBox from '../../components/ResourceBox';
 
 type Props = {
   proposal: Proposal;
@@ -28,11 +30,15 @@ const ProposalView = ({ proposal }: Props) => {
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
+  const [showDialog, setShowDialog] = useState(false);
+  const open = () => setShowDialog(true);
+  const close = () => setShowDialog(false);
 
   if ('about' in proposal) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <SidebarLayout>
+          <VoteModal showDialog={showDialog} close={close} />
           <Card sx={{ boxShadow: 'faint' }}>
             <Flex>
               <Heading
@@ -93,8 +99,14 @@ const ProposalView = ({ proposal }: Props) => {
             />
           </Card>
           <Stack>
-            <Card variant="compact">Card 1</Card>
-            <Card variant="compact">Card 2</Card>
+            <Card variant="compact">
+              Your Vote{' '}
+              <Button variant="primary" onClick={open}>
+                Vote
+              </Button>
+            </Card>
+            <Card variant="compact">Supporters</Card>
+            <ResourceBox />
           </Stack>
         </SidebarLayout>
       </PrimaryLayout>
@@ -104,6 +116,7 @@ const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
+        <VoteModal showDialog={showDialog} close={close} />
         <Card sx={{ boxShadow: 'faint' }}>
           <Flex>
             <Heading
@@ -163,8 +176,14 @@ const ProposalView = ({ proposal }: Props) => {
           />
         </Card>
         <Stack>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
+          <Card variant="compact">
+            Your Vote{' '}
+            <Button variant="primary" onClick={open}>
+              Vote
+            </Button>
+          </Card>
+          <Card variant="compact">Supporters</Card>
+          <ResourceBox />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
