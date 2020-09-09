@@ -135,10 +135,14 @@ const AccountSelect = props => {
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
-              <Text sx={{ fontSize: '20', color: 'onBackgroundAlt' }}>
-                {account ? 'Accounts' : 'Select a Wallet'}
+              <Text variant="microHeading" color="onBackgroundAlt">
+                {account ? 'Account' : 'Select a Wallet'}
               </Text>
-              <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
+              <Close
+                aria-label="close"
+                sx={{ height: 4, width: 4, p: 0, position: 'relative', top: '-4px', left: '8px' }}
+                onClick={close}
+              />
             </Flex>
             {!account && <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>}
             {account && (
@@ -155,14 +159,6 @@ const AccountSelect = props => {
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
             {account && (
               <>
-                <Button
-                  variant="primaryOutline"
-                  color="primary"
-                  sx={{ width: '100%', textAlign: 'center', borderRadius: 'small', py: 3, mt: 4 }}
-                  onClick={close}
-                >
-                  Close
-                </Button>
                 {/*
               <Button
                 variant="outline"
