@@ -1,15 +1,19 @@
 /** @jsx jsx */
-import React, { useEffect, useRef } from 'react';
-import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
-import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
-import dynamic from 'next/dynamic';
 
-import { getLibrary, connectors } from '../lib/maker/web3react';
-import { syncMakerAccount } from '../lib/maker/web3react/hooks';
-import { formatAddress } from '../lib/utils';
-import useTransactionStore from '../stores/transactions';
+import React from 'react';
+import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
+
+import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
+
+import { getLibrary, connectors } from '../../lib/maker/web3react';
+import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
+import { formatAddress } from '../../lib/utils';
+import useTransactionStore from '../../stores/transactions';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import AccountBox from './AccountBox';
+import TransactionBox from './TransactionBox';
+import AccountIcon from './AccountIcon';
 
 const WrappedAccountSelect = props => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -23,15 +27,15 @@ const AccountSelect = props => {
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
-  const pending = useTransactionStore(
-    state => state.transactions.findIndex(tx => tx.status === 'pending') > -1
-  );
+  const [pending, txs] = useTransactionStore(state => [
+    state.transactions.findIndex(tx => tx.status === 'pending') > -1,
+    state.transactions
+  ]);
 
   const [showDialog, setShowDialog] = React.useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
-
   return (
     <Box>
       <Button
@@ -73,49 +77,67 @@ const AccountSelect = props => {
       </Button>
       <DialogOverlay style={{ background: 'hsla(0, 100%, 100%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
         <DialogContent
-          sx={bpi === 0 ? { variant: 'dialog.mobile' } : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)' }}
+          sx={
+            bpi === 0
+              ? { variant: 'dialog.mobile' }
+              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px' }
+          }
         >
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
             <Text>{account ? 'Accounts' : 'Select a Wallet'}</Text>
-            <Close
-              aria-label="close"
-              ml="3"
-              sx={{ display: [null, 'none'], height: '18px', width: '18px', p: 0 }}
-              onClick={close}
-            />
+            <Close aria-label="close" ml="3" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
           </Flex>
-          <Flex sx={{ flexDirection: 'column' }}>
-            {connectors.map(([name, connector]) => (
-              <Box sx={{ width: '100%', px: 3 }} key={name} onClick={() => activate(connector)}>
-                {name}
-              </Box>
-            ))}
-          </Flex>
-          <Button onClick={close}>Close</Button>
+          {!account && (
+            <Flex sx={{ flexDirection: 'column' }}>
+              {connectors.map(([name, connector]) => (
+                <Box
+                  sx={{
+                    width: '100%',
+                    py: 3,
+                    px: 3,
+                    border: '1px solid #D4D9E1',
+                    borderRadius: 'medium',
+                    mb: 2
+                  }}
+                  key={name}
+                  onClick={() => activate(connector)}
+                >
+                  {name}
+                </Box>
+              ))}
+            </Flex>
+          )}
+          {account && <AccountBox account={account} />}
+          {account && txs?.length > 0 && <TransactionBox txs={txs} />}
+          {account && (
+            <>
+              <Button
+                variant="primaryOutline"
+                color="primary"
+                sx={{ width: '100%', textAlign: 'center', borderRadius: 'small', py: 3, mt: 4 }}
+                onClick={close}
+              >
+                Close
+              </Button>
+              <Button
+                variant="outline"
+                sx={{
+                  width: '100%',
+                  my: 3,
+                  py: 3,
+                  px: 3,
+                  border: '1px solid #D4D9E1',
+                  borderRadius: 'medium'
+                }}
+              >
+                Disconnect wallet
+              </Button>
+            </>
+          )}
         </DialogContent>
       </DialogOverlay>
     </Box>
   );
 };
-
-type AccountIconProps = { account: string };
-const AccountIcon = dynamic(
-  async () => {
-    const { default: jazzicon } = await import('jazzicon');
-    return ({ account, ...props }: AccountIconProps) => {
-      const iconParent = useRef<HTMLDivElement>(null);
-
-      useEffect(() => {
-        if (!account || !iconParent.current || typeof window === 'undefined') return;
-        const parent: HTMLDivElement = iconParent.current;
-        if (parent.firstChild) parent.removeChild(parent.firstChild);
-        parent.appendChild(jazzicon(22, parseInt(account.slice(2, 10), 16)));
-      }, [account]);
-
-      return <Box {...props} ref={iconParent}></Box>;
-    };
-  },
-  { ssr: false }
-);
 
 export default WrappedAccountSelect;
