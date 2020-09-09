@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 
@@ -15,7 +16,7 @@ import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
 
-const WrappedAccountSelect = props => (
+const WrappedAccountSelect = (props): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
     <AccountSelect {...props} />
   </Web3ReactProvider>
@@ -23,7 +24,7 @@ const WrappedAccountSelect = props => (
 
 const AccountSelect = props => {
   const web3ReactContext = useWeb3React();
-  const { connector, library, chainId, account, activate, deactivate, active, error } = web3ReactContext;
+  const { library, account, activate } = web3ReactContext;
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
@@ -81,7 +82,7 @@ const AccountSelect = props => {
           sx={
             bpi === 0
               ? { variant: 'dialog.mobile' }
-              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px' }
+              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
           }
         >
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
@@ -93,14 +94,16 @@ const AccountSelect = props => {
           {!account && (
             <Flex sx={{ flexDirection: 'column' }}>
               {connectors.map(([name, connector]) => (
-                <Box
+                <Flex
                   sx={{
                     width: '100%',
                     py: 3,
                     px: 3,
                     border: '1px solid #D4D9E1',
                     borderRadius: 'medium',
-                    mb: 2
+                    mb: 2,
+                    flexDirection: 'row',
+                    alignItems: 'center'
                   }}
                   key={name}
                   onClick={() => {
@@ -108,8 +111,9 @@ const AccountSelect = props => {
                     activate(connector);
                   }}
                 >
-                  {name}
-                </Box>
+                  <Icon name={name} />
+                  <Text sx={{ ml: 3 }}>{name}</Text>
+                </Flex>
               ))}
             </Flex>
           )}
