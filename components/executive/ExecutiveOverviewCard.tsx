@@ -14,7 +14,14 @@ import { formatDateWithTime } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import useAccountsStore from '../../stores/accounts';
 
-export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal: Proposal }): JSX.Element {
+export default function ExecutiveOverviewCard({
+  proposal,
+  openVote,
+  ...props
+}: {
+  proposal: Proposal;
+  openVote: () => void;
+}): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
 
   const { data: spellData } = useSWR<SpellData>(
@@ -108,7 +115,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>
-                <Button variant="primaryOutline" sx={{ width: '100%' }}>
+                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVote}>
                   {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
                 </Button>
               </Box>
@@ -116,7 +123,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
           </Stack>
           {canVote && bpi > 0 && (
             <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
-              <Button variant="primaryOutline" sx={{ width: '100%' }}>
+              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVote}>
                 {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
               </Button>
             </Flex>
