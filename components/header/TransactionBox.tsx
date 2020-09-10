@@ -28,7 +28,7 @@ const TransactionRow = ({ tx, index }) => {
           />
         )}
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
-        <Text sx={{ ml: 3 }}>{`${tx.message}`}</Text>
+        <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
       <ExternalLink href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')} target="_blank">
         <Button
