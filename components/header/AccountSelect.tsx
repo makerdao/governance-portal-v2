@@ -92,7 +92,6 @@ const AccountSelect = props => {
                 sx={{
                   color: 'mutedOrange',
                   alignSelf: 'center',
-                  // display: transaction && transaction.status === 'pending' ? null : 'none',
                   mr: 2
                 }}
               />
