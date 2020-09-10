@@ -21,7 +21,8 @@ const Header = (props): JSX.Element => {
   return (
     <Box
       as="header"
-      py={3}
+      pt={4}
+      pb={5}
       px={[2, 0]}
       variant="styles.header"
       sx={{

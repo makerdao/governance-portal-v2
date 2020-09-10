@@ -38,12 +38,12 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
   const statsMap = {
     'mkr needed to pass': (
       <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'text' }}>MKR needed to pass</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {data ? (
             `${mkrOnHat.toBigNumber().toFormat(2)} MKR`
           ) : (
-            <Box sx={{ width: 5 }}>
+            <Box sx={{ width: 6 }}>
               <Skeleton />
             </Box>
           )}
@@ -53,12 +53,12 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
 
     'savings rate': (
       <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'text' }}>Dai Savings Rate</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {data ? (
             `${savingsRate.toFixed(2)}%`
           ) : (
-            <Box sx={{ width: 5 }}>
+            <Box sx={{ width: 6 }}>
               <Skeleton />
             </Box>
           )}
@@ -68,12 +68,12 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
 
     'total dai': (
       <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'text' }}>Total Dai</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {data ? (
             `${bigNumberKFormat(totalDai)} DAI`
           ) : (
-            <Box sx={{ width: 5 }}>
+            <Box sx={{ width: 6 }}>
               <Skeleton />
             </Box>
           )}
@@ -83,12 +83,12 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
 
     'debt ceiling': (
       <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'text' }}>Dai Debt Ceiling</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {data ? (
             `${bigNumberKFormat(debtCeiling)} DAI`
           ) : (
-            <Box sx={{ width: 5 }}>
+            <Box sx={{ width: 6 }}>
               <Skeleton />
             </Box>
           )}
@@ -98,12 +98,12 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
 
     'system surplus': (
       <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-        <Text sx={{ fontSize: 3, color: 'text' }}>System Surplus</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {data ? (
             `${systemSurplus.toBigNumber().toFormat(0)} DAI`
           ) : (
-            <Box sx={{ width: 5 }}>
+            <Box sx={{ width: 6 }}>
               <Skeleton />
             </Box>
           )}
@@ -115,7 +115,7 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }} {...props}>
-        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2 }}>
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 4 }}>
           <Heading as="h3" variant="microHeading">
             System Stats
           </Heading>
@@ -129,7 +129,7 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
           </ExternalLink>
         </Flex>
         <Card variant="compact">
-          <Stack gap={2}>{fields.map(field => statsMap[field])}</Stack>
+          <Stack gap={3}>{fields.map(field => statsMap[field])}</Stack>
         </Card>
       </Box>
     </>
