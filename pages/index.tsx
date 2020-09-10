@@ -93,7 +93,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <IntroCard
                 title="Maker Forum"
                 linkText="Go to forum"
-                linkDest="https://forum.makerdao.com/c/governance/"
+                linkDest="https://forum.makerdao.com"
                 icon="govForum"
               >
                 Get the latest updates and take part in current discussions.

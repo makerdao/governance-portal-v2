@@ -33,14 +33,14 @@ export default function PollOverviewCard({
 
   return (
     <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
-      <Stack gap={2}>
+      <Stack gap={3}>
         {bpi === 0 && (
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
             <VotingStatus poll={poll} />
           </Flex>
         )}
-        <Box>
+        <Box sx={{ cursor: 'pointer' }}>
           <Link
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
@@ -49,15 +49,17 @@ export default function PollOverviewCard({
               {poll.title}
             </Text>
           </Link>
+          <Text
+            sx={{
+              fontSize: [2, 3],
+              color: 'textSecondary',
+              mt: 1
+            }}
+          >
+            {poll.summary}
+          </Text>
         </Box>
-        <Text
-          sx={{
-            fontSize: [2, 3],
-            color: 'onSecondary'
-          }}
-        >
-          {poll.summary}
-        </Text>
+
         {bpi > 0 && (
           <div>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
@@ -96,7 +98,8 @@ export default function PollOverviewCard({
               sx={{
                 display: reviewPage ? 'none' : null,
                 borderColor: 'secondaryAlt',
-                color: 'secondaryAlt'
+                color: 'secondaryAlt',
+                borderRadius: 'small'
               }}
             >
               View Details

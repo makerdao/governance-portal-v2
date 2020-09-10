@@ -133,10 +133,10 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
           <Card>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text
+                variant="caps"
                 sx={{
-                  fontSize: [2, 3],
-                  color: 'text',
-                  textTransform: 'uppercase'
+                  fontSize: [2],
+                  color: 'textMuted'
                 }}
               >
                 {new Date(poll.startDate).toLocaleString('default', {
@@ -168,7 +168,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               tabPanels={[
                 <div key={1} dangerouslySetInnerHTML={{ __html: poll.content }} />,
                 <div key={2} sx={{ pt: 3 }}>
-                  <Text as="h3" sx={{ pb: 2 }}>
+                  <Text as="h3" sx={{ pb: 0 }}>
                     Vote Breakdown
                   </Text>
                   {Object.keys(poll.options).map((_, i) => (
@@ -204,6 +204,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         >
                           <Box my={1} py={1}>
                             <Progress
+                              sx={{ backgroundColor: 'muted', mb: '3' }}
                               max={tally.totalMkrParticipation.toBigNumber()}
                               value={tally.results[i].firstChoice.toBigNumber()}
                             />
