@@ -152,7 +152,6 @@ const AccountSelect = props => {
                 accountName={accountName}
                 // This needs to be the change function for the wallet select dropdown
                 change={() => {
-                  console.log('changed');
                   setChangeWallet(true);
                 }}
               />
