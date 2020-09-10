@@ -97,7 +97,7 @@ export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
 
   return (
     <Container sx={{ textAlign: 'center' }} {...props}>
-      {account && activePolls.length > 0 && !unvotedPolls ? (
+      {account && !unvotedPolls ? (
         <Skeleton height="39px" width="400px" />
       ) : (
         <Link

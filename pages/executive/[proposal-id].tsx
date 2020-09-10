@@ -29,7 +29,7 @@ const ProposalView = ({ proposal }: Props) => {
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
-  if ('content' in proposal) {
+  if ('about' in proposal) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <SidebarLayout>
@@ -50,7 +50,7 @@ const ProposalView = ({ proposal }: Props) => {
             </Flex>
             <Divider />
             <Tabs
-              tabTitles={['Proposal Details', 'On-Chain Effects']}
+              tabTitles={['Proposal Detail', 'On-Chain Effects']}
               tabPanels={[
                 <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
                 <div key={2} sx={{ pt: 3 }}>

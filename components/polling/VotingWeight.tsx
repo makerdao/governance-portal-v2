@@ -9,9 +9,7 @@ export default function (props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: votingWeight } = useSWR(
     account?.address ? ['/user/polling-voting-weight', account.address] : null,
-    (_, address) => {
-      return getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address));
-    }
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
   );
   let votingWeightDescription = '';
   if (votingWeight) {

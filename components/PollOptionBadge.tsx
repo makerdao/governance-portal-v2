@@ -1,5 +1,6 @@
 import { Flex, Box, Badge } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
+
 import { isActivePoll } from '../lib/utils';
 import { getNetwork } from '../lib/maker';
 import useSWR from 'swr';

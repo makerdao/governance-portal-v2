@@ -7,7 +7,7 @@ import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
-import Proposal, { CMSProposal } from '../types/proposal';
+import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 

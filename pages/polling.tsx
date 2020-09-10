@@ -1,12 +1,16 @@
 /** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Heading, Box, Flex, jsx, Button, IconButton, Text } from 'theme-ui';
+import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { GetStaticProps } from 'next';
 import shallow from 'zustand/shallow';
+import sortBy from 'lodash/sortBy';
+import groupBy from 'lodash/groupBy';
+import partition from 'lodash/partition';
 
+import Poll from '../types/poll';
 import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, formatDateWithTime } from '../lib/utils';
@@ -14,17 +18,14 @@ import PrimaryLayout from '../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
-import Poll from '../types/poll';
 import DateFilter from '../components/polling/DateFilter';
 import CategoryFilter from '../components/polling/CategoryFilter';
 import BallotBox from '../components/polling/BallotBox';
-import ResourceBox from '../components/polling/ResourceBox';
+import ResourceBox from '../components/ResourceBox';
+import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import useBallotStore from '../stores/ballot';
 import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
-import groupBy from 'lodash/groupBy';
-import partition from 'lodash/partition';
-import sortBy from 'lodash/sortBy';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
 import BallotStatus from '../components/polling/BallotStatus';
 
@@ -239,6 +240,9 @@ const PollingOverview = ({ polls }: Props) => {
               {account && bpi > 0 && (
                 <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
               )}
+              <SystemStatsSidebar
+                fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              />
               <ResourceBox />
             </Stack>
           </StickyColumn>

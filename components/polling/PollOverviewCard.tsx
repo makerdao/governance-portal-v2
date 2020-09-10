@@ -8,7 +8,7 @@ import { isActivePoll } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
-import VotingStatus from './VotingStatus';
+import VotingStatus from './PollVotingStatus';
 import Poll from '../../types/poll';
 import PollOptionBadge from '../PollOptionBadge';
 import { useBreakpointIndex } from '@theme-ui/match-media';
