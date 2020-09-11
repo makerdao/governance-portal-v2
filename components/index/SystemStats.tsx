@@ -26,7 +26,7 @@ if (typeof window !== 'undefined') {
 }
 
 export default function (): JSX.Element {
-  const { data } = useSWR<CurrencyObject[]>('/system-stats', getSystemStats);
+  const { data } = useSWR<CurrencyObject[]>('/system-stats-index', getSystemStats);
   const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
 
   return (
