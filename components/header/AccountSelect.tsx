@@ -6,13 +6,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 
-import { getLibrary, connectors } from '../../lib/maker/web3react';
+import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
 import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
@@ -25,7 +24,7 @@ const WrappedAccountSelect = (props): JSX.Element => (
 
 const AccountSelect = props => {
   const web3ReactContext = useWeb3React();
-  const { library, account, activate, deactivate, connector } = web3ReactContext;
+  const { library, account, activate, connector } = web3ReactContext;
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(library, account);
@@ -35,12 +34,12 @@ const AccountSelect = props => {
   ]);
 
   const [showDialog, setShowDialog] = React.useState(false);
-  const [accountName, setAccountName] = React.useState('');
-  const [selectedConnector, setSelectedConnector] = React.useState<AbstractConnector | undefined>(undefined);
+  const [accountName, setAccountName] = React.useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = React.useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
+
   const walletOptions = connectors.map(([name, connector]) => (
     <Flex
       sx={{
@@ -56,16 +55,17 @@ const AccountSelect = props => {
       }}
       key={name}
       onClick={() => {
-        setAccountName(name);
-        setSelectedConnector(connector);
-        setChangeWallet(false);
-        activate(connector);
+        activate(connector).then(() => {
+          setAccountName(name);
+          setChangeWallet(false);
+        });
       }}
     >
       <Icon name={name} />
       <Text sx={{ ml: 3 }}>{name}</Text>
     </Flex>
   ));
+
   return (
     <Box>
       <Button
@@ -145,14 +145,11 @@ const AccountSelect = props => {
               />
             </Flex>
             {!account && <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>}
-            {account && (
+            {account && connector && (
               <AccountBox
-                account={account}
-                accountName={accountName}
+                {...{ account, accountName, connector }}
                 // This needs to be the change function for the wallet select dropdown
-                change={() => {
-                  setChangeWallet(true);
-                }}
+                change={() => setChangeWallet(true)}
               />
             )}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}

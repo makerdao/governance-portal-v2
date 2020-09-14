@@ -1,11 +1,21 @@
 import { Flex, Text, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { ConnectorName } from '../../lib/maker/web3react';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 
 import { formatAddress, getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import AccountIcon from './AccountIcon';
 
-const AccountBox = ({ account, accountName, change }) => (
+type Props = {
+  account: string;
+  accountName: ConnectorName | undefined;
+  change: () => void;
+  connector: AbstractConnector;
+};
+
+const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Element => (
   <Flex
     sx={{
       flexDirection: 'column',
@@ -33,43 +43,55 @@ const AccountBox = ({ account, accountName, change }) => (
     <Flex
       sx={{
         flexDirection: 'row',
+        alignItems: 'stretch',
         borderTop: '1px solid',
         borderTopColor: 'secondaryMuted',
         width: '100%',
-        cursor: 'copy'
+        variant: 'text.smallText',
+        color: 'onSurface'
       }}
     >
       <Flex
-        sx={{ width: '50%', justifyContent: 'center', alignItems: 'center', py: 2 }}
+        sx={{ justifyContent: 'center', alignItems: 'center', p: 2, cursor: 'copy', flex: 1 }}
         onClick={() => navigator.clipboard.writeText(account)}
       >
         <Icon name="copy" sx={{ pr: 1 }} />
-        <Text variant="smallText" color="onSurface">
-          Copy Address
-        </Text>
+        Copy Address
       </Flex>
       <ExternalLink
         href={getEtherscanLink(getNetwork(), account, 'address')}
         target="_blank"
-        sx={{ width: '50%', height: '100%' }}
+        sx={{
+          whiteSpace: 'nowrap',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderLeft: '1px solid',
+          borderColor: 'secondaryMuted',
+          color: 'onSurface',
+          p: 2,
+          flex: 1
+        }}
       >
+        View on Etherscan
+        <Icon name="arrowTopRight" color="accentBlue" size={2} sx={{ ml: 1 }} />
+      </ExternalLink>
+      {accountName === 'WalletConnect' && (
         <Flex
+          onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
           sx={{
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'baseline',
-            flexDirection: 'row',
             borderLeft: '1px solid',
             borderColor: 'secondaryMuted',
-            py: 2
+            justifyContent: 'center',
+            alignItems: 'center',
+            cursor: 'pointer',
+            p: 2
           }}
         >
-          <Text variant="smallText" color="onSurface">
-            View on Etherscan
-          </Text>
-          <Icon name="arrowTopRight" color="accentBlue" size={2} sx={{ ml: 1 }} />
+          Disconnect
         </Flex>
-      </ExternalLink>
+      )}
     </Flex>
   </Flex>
 );
