@@ -19,7 +19,9 @@ export const getLibrary = (provider, connector) => ({ provider, connector });
 
 const POLLING_INTERVAL = 12000;
 
-export const connectors: Array<[string, AbstractConnector]> = [
+export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'WalletLink';
+
+export const connectors: Array<[ConnectorName, AbstractConnector]> = [
   ['MetaMask', new InjectedConnector({ supportedChainIds: [1, 42] })],
   [
     'WalletConnect',
