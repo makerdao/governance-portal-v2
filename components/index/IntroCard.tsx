@@ -12,11 +12,13 @@ type Props = {
 const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }: Props): JSX.Element => (
   <Box {...otherProps}>
     <Icon name={icon} size="5" />
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '8rem'] }}>
-      <Text sx={{ fontSize: 5, textAlign: 'left' }}>{title}</Text>
-      <Text sx={{ fontSize: 3, color: 'textSecondary', whiteSpace: 'initial' }} my="1">
-        {children}
-      </Text>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '7.5rem'] }}>
+      <Box>
+        <Text sx={{ fontSize: 5, textAlign: 'left' }}>{title}</Text>
+        <Text sx={{ fontSize: 3, color: 'textSecondary', whiteSpace: 'initial' }} my="1">
+          {children}
+        </Text>
+      </Box>
       <ExternalLink
         sx={{
           color: 'primary',

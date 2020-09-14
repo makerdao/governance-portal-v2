@@ -8,7 +8,7 @@ export default function (props): JSX.Element {
         Resources
       </Heading>
       <Card variant="compact">
-        <ExternalLink href="https://https://forum.makerdao.com" target="_blank">
+        <ExternalLink href="https://forum.makerdao.com" target="_blank">
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
               Maker Forum

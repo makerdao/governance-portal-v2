@@ -118,7 +118,7 @@ const PollingOverview = ({ polls }: Props) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
 
   return (
-    <PrimaryLayout shortenFooter={true}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}
