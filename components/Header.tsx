@@ -5,7 +5,7 @@ import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui'
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
-import AccountSelect from './AccountSelect';
+import AccountSelect from './header/AccountSelect';
 import BallotStatus from './polling/BallotStatus';
 import { useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
