@@ -153,25 +153,6 @@ const AccountSelect = props => {
               />
             )}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
-            {account && (
-              <>
-                {/*
-              <Button
-                variant="outline"
-                sx={{
-                  width: '100%',
-                  my: 3,
-                  py: 3,
-                  px: 3,
-                  border: '1px solid #D4D9E1',
-                  borderRadius: 'medium'
-                }}
-                onClick={() => deactivate()}
-              >
-                Disconnect wallet
-              </Button> */}
-              </>
-            )}
           </DialogContent>
         )}
       </DialogOverlay>
