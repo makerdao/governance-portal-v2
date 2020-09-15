@@ -18,10 +18,12 @@ import Proposal from '../types/proposal';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
 
+
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [showDialog, setShowDialog] = React.useState(false);
-  const open = () => setShowDialog(true);
+  const [proposal, setProposal] = React.useState({})
+  const open = (proposal: Proposal) => {setProposal(proposal); setShowDialog(true);}
   const close = () => setShowDialog(false);
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
@@ -30,7 +32,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <VoteModal showDialog={showDialog} close={close} />
+      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
@@ -44,17 +46,17 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Button variant="mutedOutline" ml={3}>
+            <Button variant='mutedOutline' ml={3}>
               Deposit
             </Button>
-            <Button variant="mutedOutline" ml={3}>
+            <Button variant='mutedOutline' ml={3}>
               Withdraw
             </Button>
           </Flex>
         )}
 
         <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3}>
+          <Heading variant='microHeading' mr={3}>
             Filters
           </Heading>
         </Flex>
@@ -62,15 +64,15 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as="h1">Executive Proposals</Heading>
+              <Heading as='h1'>Executive Proposals</Heading>
               <Stack gap={3}>
                 {proposals.map((proposal, index) => (
                   <ExecutiveOverviewCard key={index} proposal={proposal} openVote={open} />
                 ))}
               </Stack>
-              <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+              <Grid columns='1fr max-content 1fr' sx={{ alignItems: 'center' }}>
                 <Divider />
-                <Button variant="mutedOutline">View more polls</Button>
+                <Button variant='mutedOutline'>View more polls</Button>
                 <Divider />
               </Grid>
             </Stack>
@@ -105,7 +107,7 @@ export default function ExecutiveOverviewPage({
   }, []);
 
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+    return <ErrorPage statusCode={404} title='Error fetching proposals' />;
   }
 
   if (!isDefaultNetwork() && !_proposals)

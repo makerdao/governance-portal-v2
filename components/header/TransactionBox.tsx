@@ -27,16 +27,16 @@ const TransactionRow = ({ tx, index }) => {
             }}
           />
         )}
-        {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
+        {tx.status === 'mined' && <Icon name='checkmark' color='primary' />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')} target="_blank">
+      <ExternalLink href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')} target='_blank'>
         <Button
-          variant="smallOutline"
+          variant='smallOutline'
           sx={{ color: 'accentBlue', borderColor: 'accentBlue', borderRadius: 'small' }}
         >
           View
-          <Icon name="arrowTopRight" color="accentBlue" sx={{ ml: 1, width: 2, height: 2 }} />
+          <Icon name='arrowTopRight' color='accentBlue' sx={{ ml: 1, width: 2, height: 2, alignSelf: 'center', justifyContent: 'center' }} />
         </Button>
       </ExternalLink>
     </Flex>

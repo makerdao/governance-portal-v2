@@ -38,11 +38,11 @@ const ProposalView = ({ proposal }: Props) => {
     return (
       <PrimaryLayout shortenFooter={true}>
         <SidebarLayout>
-          <VoteModal showDialog={showDialog} close={close} />
+          <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
           <Card sx={{ boxShadow: 'faint' }}>
             <Flex>
               <Heading
-                my="3"
+                my='3'
                 sx={{
                   whiteSpace: 'nowrap',
                   overflowX: ['scroll', 'hidden'],
@@ -60,7 +60,7 @@ const ProposalView = ({ proposal }: Props) => {
               tabPanels={[
                 <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
                 <div key={2} sx={{ pt: 3 }}>
-                  <Text as="h1" sx={{ pb: 2 }}>
+                  <Text as='h1' sx={{ pb: 2 }}>
                     Effects
                   </Text>
                   {stateDiff ? (
@@ -74,7 +74,7 @@ const ProposalView = ({ proposal }: Props) => {
                                 ).toFormat()}. `
                               : 'Simulated effects if this spell were to be executed now.'}
                             Please check the{' '}
-                            <ExternalLink target="_blank" href="https://docs.makerdao.com">
+                            <ExternalLink target='_blank' href='https://docs.makerdao.com'>
                               MCD Docs
                             </ExternalLink>{' '}
                             for definitions. NOTE:{' '}
@@ -99,13 +99,13 @@ const ProposalView = ({ proposal }: Props) => {
             />
           </Card>
           <Stack>
-            <Card variant="compact">
+            <Card variant='compact'>
               Your Vote{' '}
-              <Button variant="primary" onClick={open}>
+              <Button variant='primary' onClick={open}>
                 Vote
               </Button>
             </Card>
-            <Card variant="compact">Supporters</Card>
+            <Card variant='compact'>Supporters</Card>
             <ResourceBox />
           </Stack>
         </SidebarLayout>
@@ -116,11 +116,11 @@ const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
-        <VoteModal showDialog={showDialog} close={close} />
+        <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
         <Card sx={{ boxShadow: 'faint' }}>
           <Flex>
             <Heading
-              my="3"
+              my='3'
               sx={{
                 whiteSpace: 'nowrap',
                 overflowX: ['scroll', 'hidden'],
@@ -137,7 +137,7 @@ const ProposalView = ({ proposal }: Props) => {
             tabTitles={['On-Chain Effects']}
             tabPanels={[
               <div key={2} sx={{ pt: 3 }}>
-                <Text as="h1" sx={{ pb: 2 }}>
+                <Text as='h1' sx={{ pb: 2 }}>
                   Effects
                 </Text>
                 {stateDiff ? (
@@ -151,7 +151,7 @@ const ProposalView = ({ proposal }: Props) => {
                               ).toFormat()}. `
                             : 'Simulated effects if this spell were to be executed now.'}
                           Please check the{' '}
-                          <ExternalLink target="_blank" href="https://docs.makerdao.com">
+                          <ExternalLink target='_blank' href='https://docs.makerdao.com'>
                             MCD Docs
                           </ExternalLink>{' '}
                           for definitions. NOTE:{' '}
@@ -176,13 +176,13 @@ const ProposalView = ({ proposal }: Props) => {
           />
         </Card>
         <Stack>
-          <Card variant="compact">
+          <Card variant='compact'>
             Your Vote{' '}
-            <Button variant="primary" onClick={open}>
+            <Button variant='primary' onClick={open}>
               Vote
             </Button>
           </Card>
-          <Card variant="compact">Supporters</Card>
+          <Card variant='compact'>Supporters</Card>
           <ResourceBox />
         </Stack>
       </SidebarLayout>
@@ -209,7 +209,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     return (
       <ErrorPage
         statusCode={404}
-        title="Executive proposal either does not exist, or could not be fetched at this time"
+        title='Executive proposal either does not exist, or could not be fetched at this time'
       />
     );
   }

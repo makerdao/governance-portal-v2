@@ -41,7 +41,7 @@ const BallotStatus = (props: any): JSX.Element => {
       {...props}
     >
       <Icon
-        name="ballot"
+        name='ballot'
         size={3}
         sx={{
           color: ballotLength ? 'white' : 'textMuted',
@@ -76,8 +76,6 @@ const StatusText = ({
   const text =
     transaction === null
       ? DEFAULT_TEXT
-      : transaction.status === 'pending'
-      ? 'Vote Pending'
       : transaction.status === 'mined'
       ? 'Vote Sent Successfully'
       : DEFAULT_TEXT;
@@ -89,7 +87,7 @@ const StatusText = ({
         ? 'textMuted'
         : DEFAULT_COLOR
       : transaction.status === 'pending'
-      ? 'mutedOrange'
+      ? 'textMuted'
       : transaction.status === 'mined'
       ? 'primary'
       : DEFAULT_COLOR;
