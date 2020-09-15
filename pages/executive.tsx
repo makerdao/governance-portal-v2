@@ -67,7 +67,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               </Stack>
               <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                 <Divider />
-                <Button variant="mutedOutline">View more polls</Button>
+                <Button variant="mutedOutline">View more proposals</Button>
                 <Divider />
               </Grid>
             </Stack>
