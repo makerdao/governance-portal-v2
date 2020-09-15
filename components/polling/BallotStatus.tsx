@@ -20,7 +20,11 @@ const BallotStatus = (props: any): JSX.Element => {
 
   return (
     <Button
-      variant={ballotLength && !transaction ? 'primary' : 'outline'}
+      variant={
+        ballotLength && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+          ? 'primary'
+          : 'outline'
+      }
       sx={{
         borderRadius: 'round',
         justifyContent: 'center',
@@ -39,7 +43,11 @@ const BallotStatus = (props: any): JSX.Element => {
       <Icon
         name="ballot"
         size={3}
-        sx={{ color: ballotLength ? 'white' : 'textMuted', display: transaction ? 'none' : null, mr: 2 }}
+        sx={{
+          color: ballotLength ? 'white' : 'textMuted',
+          display: transaction?.status === 'pending' || transaction?.status === 'mined' ? 'none' : null,
+          mr: 2
+        }}
       />
       {transaction?.status === 'pending' && (
         <Spinner
