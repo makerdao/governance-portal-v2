@@ -115,7 +115,7 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
             <Text sx={{mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px'}}>Proposal will update once the blockchain has confirmed the tx.</Text>
             \<ExternalLink
               target="_blank"
-              // href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')}
+              href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')}
               sx={{ p: 0 }}
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
