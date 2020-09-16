@@ -57,8 +57,8 @@ const [useBallotStore] = create<Store>(
         });
 
         const voteTxCreator = () => maker.service('govPolling').vote(pollIds, pollOptions);
-        const txId = await transactionsApi.getState().track(voteTxCreator, '', {
-          mined: () => get().clearBallot()
+        const txId = await transactionsApi.getState().track(voteTxCreator, `Voting on ${ballot.length} polls`, {
+          mined: (txId) => {get().clearBallot(); transactionsApi.getState().setMessage(txId, `Voted on ${ballot.length} polls`)}
         });
 
         set({ ballot: newBallot, txId }, 'submitBallot');
