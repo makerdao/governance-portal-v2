@@ -7,8 +7,12 @@ type Store = {
     categoryFilter: null | { [category: string]: boolean };
     showHistorical: boolean;
   };
-  setStartDate: (startDate: Date | null) => void;
-  setEndDate: (endDate: Date | null) => void;
+  executiveFilters: {
+    startDate: null | Date;
+    endDate: null | Date;
+  };
+  setStartDate: (type: 'poll' | 'executive', startDate: Date | null) => void;
+  setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
   setShowHistorical: (showHistorical: boolean) => void;
   resetPollFilters: () => void;
@@ -22,12 +26,19 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     showHistorical: false
   },
 
-  setStartDate: startDate => {
-    set({ pollFilters: { ...get().pollFilters, startDate } });
+  executiveFilters: {
+    startDate: null,
+    endDate: null
   },
 
-  setEndDate: endDate => {
-    set({ pollFilters: { ...get().pollFilters, endDate } });
+  setStartDate: (type, startDate) => {
+    if (type === 'poll') set({ pollFilters: { ...get().pollFilters, startDate } });
+    else if (type === 'executive') set({ executiveFilters: { ...get().executiveFilters, startDate } });
+  },
+
+  setEndDate: (type, endDate) => {
+    if (type === 'poll') set({ pollFilters: { ...get().pollFilters, endDate } });
+    else if (type === 'executive') set({ executiveFilters: { ...get().executiveFilters, endDate } });
   },
 
   setCategoryFilter: categoryFilter => {

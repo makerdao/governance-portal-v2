@@ -25,8 +25,8 @@ export default function (props): JSX.Element {
   const endInput = useRef<HTMLInputElement>(null);
 
   const reset = () => {
-    setStartDate(null);
-    setEndDate(null);
+    setStartDate('poll', null);
+    setEndDate('poll', null);
   };
 
   useEffect(() => {
@@ -47,12 +47,16 @@ export default function (props): JSX.Element {
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
         <Text>After</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input ref={startInput} type="date" onChange={e => setStartDate(new Date(e.target.value))} />
+          <Input
+            ref={startInput}
+            type="date"
+            onChange={e => setStartDate('poll', new Date(e.target.value))}
+          />
         </Flex>
 
         <Text>Before</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input ref={endInput} type="date" onChange={e => setEndDate(new Date(e.target.value))} />
+          <Input ref={endInput} type="date" onChange={e => setEndDate('poll', new Date(e.target.value))} />
         </Flex>
 
         <span />

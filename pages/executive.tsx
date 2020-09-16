@@ -1,11 +1,14 @@
 /** @jsx jsx */
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { GetStaticProps } from 'next';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
+import shallow from 'zustand/shallow';
+
+import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
@@ -14,21 +17,40 @@ import VoteModal from '../components/executive/VoteModal';
 import { getExecutiveProposals } from '../lib/api';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
-import Proposal from '../types/proposal';
+import Proposal, { CMSProposal } from '../types/proposal';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
-
+import useUiFiltersStore from '../stores/uiFilters';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [showDialog, setShowDialog] = React.useState(false);
-  const [proposal, setProposal] = React.useState({})
-  const open = (proposal: Proposal) => {setProposal(proposal); setShowDialog(true);}
+  const [proposal, setProposal] = React.useState({});
+  const open = (proposal: Proposal) => {
+    setProposal(proposal);
+    setShowDialog(true);
+  };
   const close = () => setShowDialog(false);
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
   );
+
+  const [startDate, endDate] = useUiFiltersStore(
+    state => [state.executiveFilters.startDate, state.executiveFilters.endDate],
+    shallow
+  );
+
+  const filteredProposals = useMemo(() => {
+    const start = startDate && new Date(startDate);
+    const end = endDate && new Date(endDate);
+    return proposals.filter(proposal => {
+      if ((start || end) && !('date' in proposal)) return false;
+      if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
+      if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
+      return true;
+    });
+  }, [proposals, startDate, endDate]);
 
   return (
     <PrimaryLayout shortenFooter={true}>
@@ -46,31 +68,36 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Button variant='mutedOutline' ml={3}>
+            <Button variant="mutedOutline" ml={3}>
               Deposit
             </Button>
-            <Button variant='mutedOutline' ml={3}>
+            <Button variant="mutedOutline" ml={3}>
               Withdraw
             </Button>
           </Flex>
         )}
 
         <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant='microHeading' mr={3}>
+          <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
+          <DateFilter />
         </Flex>
 
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as='h1'>Executive Proposals</Heading>
+              <Heading as="h1">Executive Proposals</Heading>
               <Stack gap={3}>
-                {proposals.map((proposal, index) => (
-                  <ExecutiveOverviewCard key={index} proposal={proposal} openVoteModal={() => open(proposal)} />
+                {filteredProposals.map((proposal, index) => (
+                  <ExecutiveOverviewCard
+                    key={index}
+                    proposal={proposal}
+                    openVoteModal={() => open(proposal)}
+                  />
                 ))}
               </Stack>
-              <Grid columns='1fr max-content 1fr' sx={{ alignItems: 'center' }}>
+              <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                 <Divider />
                 <Button variant="mutedOutline">View more proposals</Button>
                 <Divider />
@@ -107,7 +134,7 @@ export default function ExecutiveOverviewPage({
   }, []);
 
   if (error) {
-    return <ErrorPage statusCode={404} title='Error fetching proposals' />;
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
   if (!isDefaultNetwork() && !_proposals)
