@@ -32,7 +32,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
+      <VoteModal showDialog={showDialog} close={close} proposal={proposal} lockedMkr={lockedMkr} />
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
