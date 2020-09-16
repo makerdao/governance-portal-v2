@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Button, Card, Flex, Text, Heading, Divider, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
+import { Box, Button, Card, Flex, Text, Heading, Divider, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
@@ -13,32 +13,45 @@ import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
+import ResourceBox from '../../components/ResourceBox';
+import useAccountsStore from '../../stores/accounts';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 import Bignumber from 'bignumber.js';
-import ResourceBox from '../../components/ResourceBox';
 
 type Props = {
   proposal: Proposal;
 };
 
 const ProposalView = ({ proposal }: Props) => {
+  const account = useAccountsStore(state => state.currentAccount)
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
+  );
+  const { data: lockedMkr } = useSWR(
+    account?.address ? ['/api/executive/', account.address] : null,
+    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
   );
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
 
+
+
   if ('about' in proposal) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <SidebarLayout>
-          <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
+          <VoteModal
+            proposal={proposal}
+            showDialog={showDialog}
+            close={close}
+            lockedMkr={lockedMkr}
+          />
           <Card sx={{ boxShadow: 'faint' }}>
             <Flex>
               <Heading
@@ -99,12 +112,16 @@ const ProposalView = ({ proposal }: Props) => {
             />
           </Card>
           <Stack>
-            <Card variant='compact'>
-              Your Vote{' '}
-              <Button variant='primary' onClick={open}>
-                Vote
-              </Button>
-            </Card>
+            <Box>
+              <Text sx={{fontSize: '20px'}}>Your Vote</Text>
+              <Card variant='compact' sx={{mt: 2}}>
+                <Text sx={{fontSize: '20px', color:'onBackgroundAlt', fontWeight: 'medium'}}>{proposal.title}</Text>
+                <Button variant='primary' onClick={open} sx={{width: '100%', mt: 3}}>
+                  Vote for this proposal
+                </Button>
+              </Card>
+            </Box>
+            
             <Card variant='compact'>Supporters</Card>
             <ResourceBox />
           </Stack>
@@ -116,7 +133,7 @@ const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
-        <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
+        <VoteModal proposal={proposal} showDialog={showDialog} close={close} lockedMkr={lockedMkr} />
         <Card sx={{ boxShadow: 'faint' }}>
           <Flex>
             <Heading
@@ -177,7 +194,7 @@ const ProposalView = ({ proposal }: Props) => {
         </Card>
         <Stack>
           <Card variant='compact'>
-            Your Vote{' '}
+            {proposal.address}
             <Button variant='primary' onClick={open}>
               Vote
             </Button>
