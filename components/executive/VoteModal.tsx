@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import useSWR from 'swr';
 import { Grid, Button, Flex, Close, Text, Textarea, Box, Label, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -12,11 +12,10 @@ import useTransactionStore, {transactionsApi, transactionsSelectors} from '../..
 import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import shallow from 'zustand/shallow';
-// import ProposalPage from '../../pages/executive/[proposal-id]';
 
 const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
-  const [pending, setPending] = useState(false)
-  const [mined, setMined] = useState(false)
+  // const [pending, setPending] = useState(false)
+  // const [mined, setMined] = useState(false)
   const [txId, setTxId] = useState(null)
   const bpi = useBreakpointIndex()
   const { data: spellData } = useSWR<SpellData>(
@@ -24,7 +23,7 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
   )
 
   const [track, tx] = useTransactionStore(state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null], shallow)
-  
+
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6)
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0
   const afterVote = lockedMkr && spellData ? lockedMkr.toBigNumber().plus(new Bignumber (spellData.mkrSupport)).toFormat(3) : 0
@@ -38,25 +37,14 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
     const maker = await getMaker()
     const voteTxCreator = () => maker.service('chief').vote(proposal.address)
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
-      pending: () => setPending(true),
-      mined: (txId) => {setPending(false); setMined(true); transactionsApi.getState().setMessage(txId, 'Voted on executive proposal')}
+      mined: (txId) => {transactionsApi.getState().setMessage(txId, 'Voted on executive proposal')}
     })
     setTxId(txId)
   }
   
     ;
-
-  return (
-    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
-      <DialogContent
-        aria-label='Executive Vote'
-        sx={bpi === 0 ?
-          { variant: 'dialog.mobile' }
-            : { borderRadius: '8px', boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '50em', p: 4 }
-        }
-      >
-        {!pending && !mined &&
-        <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    const Default = () => (
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Close aria-label='close' sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }} onClick={close} />
         
           <Text variant='heading' sx={{fontSize: '24px'}}>Confirm Vote</Text>
@@ -87,28 +75,29 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
               Submit Vote
             </Button>
           </Box>
-        </Flex>}
-        {
-          pending && <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Close aria-label='close' sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }} onClick={close} />
-        
-          <Text variant='heading' sx={{fontSize: '24px'}}>Sign Transaction</Text>
-          <Flex sx={{flexDirection: 'column', alignItems: 'center'}}>
-            <Spinner
-                size={'60px'}
-                sx={{
-                  color: 'primary',
-                  alignSelf: 'center',
-                }}
-             />
-            <Text sx={{mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px'}}>Please use your wallet to sign this transaction.</Text>
-            <Button variant='textual' sx={{mt: 3, color: 'muted', fontSize: '14px'}}>Cancel vote submission</Button>
-          </Flex>
-          
         </Flex>
-        }
-        {
-          mined && <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    );
+  const Pending = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close aria-label='close' sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }} onClick={close} />
+    
+      <Text variant='heading' sx={{fontSize: '24px'}}>Sign Transaction</Text>
+      <Flex sx={{flexDirection: 'column', alignItems: 'center'}}>
+        <Spinner
+            size={'60px'}
+            sx={{
+              color: 'primary',
+              alignSelf: 'center',
+            }}
+          />
+        <Text sx={{mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px'}}>Please use your wallet to sign this transaction.</Text>
+        <Button variant='textual' sx={{mt: 3, color: 'muted', fontSize: '14px'}}>Cancel vote submission</Button>
+      </Flex>
+      
+    </Flex>
+  )
+  const Mined = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Close aria-label='close' sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }} onClick={close} />
         
           <Text variant='heading' sx={{fontSize: '24px'}}>Transaction Sent!</Text>
@@ -116,7 +105,7 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
             <Icon name="reviewCheck" size={5} />
             <Text variant='heading' sx={{fontSize: '18px', mt: 3}}>Transaction Sent!</Text>
             <Text sx={{mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px'}}>Proposal will update once the blockchain has confirmed the tx.</Text>
-            \<ExternalLink
+            <ExternalLink
               target="_blank"
               href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
               sx={{ p: 0 }}
@@ -128,11 +117,31 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
             </ExternalLink>
             <Button onClick={close} sx={{mt: 5, borderColor: 'primary', width: '100%', color: 'primary'}} variant="outline">
               Close
-              </Button>
+            </Button>
     
         </Flex>
           </Flex>
+  )
+  const isPending = tx?.status === 'pending';
+  const isMined = tx?.status === 'mined';
+  const hasFailed = tx?.status === 'error';
+  const view = useMemo(() => {
+    if (isPending) return <Pending />;
+    if (isMined) return <Mined />;
+    // if (hasFailed) return <Error />;
+    return <Default />;
+  }, [isPending, isMined, hasFailed]);
+
+  return (
+    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
+      <DialogContent
+        aria-label='Executive Vote'
+        sx={bpi === 0 ?
+          { variant: 'dialog.mobile' }
+            : { borderRadius: '8px', boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '50em', p: 4 }
         }
+      >
+        {view}
       </DialogContent>
     </DialogOverlay>
   );
