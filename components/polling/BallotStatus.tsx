@@ -72,7 +72,9 @@ const StatusText = ({
   console.log('transaction');
   const color =
     transaction === null
-      ? ballotLength === 0 || transaction?.status === 'pending' || transaction?.status === 'mined'
+      ? ballotLength === 0 ||
+        ((transaction as unknown) as TX).status === 'pending' ||
+        ((transaction as unknown) as TX).status === 'mined'
         ? 'textMuted'
         : DEFAULT_COLOR
       : 'textMuted';
