@@ -108,7 +108,11 @@ const AccountSelect = props => {
           <Box mx={2}>Connect wallet</Box>
         )}
       </Button>
-      <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
+      <DialogOverlay
+        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
+        isOpen={showDialog}
+        onDismiss={close}
+      >
         {changeWallet ? (
           <DialogContent
             aria-label="Change Wallet"
@@ -153,8 +157,8 @@ const AccountSelect = props => {
                 change={() => setChangeWallet(true)}
               />
             )}
+            {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 2 }} />}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
-            <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
           </DialogContent>
         )}
       </DialogOverlay>

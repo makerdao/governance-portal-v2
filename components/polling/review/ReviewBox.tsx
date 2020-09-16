@@ -52,7 +52,7 @@ export default function ({
     <ReviewBoxCard {...props}>
       <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
       <Divider />
-      <VotingWeight sx={{ px: 3, py: [1, 2] }} />
+      <VotingWeight sx={{ mx: 3, py: [1, 2] }} />
       <Divider />
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
