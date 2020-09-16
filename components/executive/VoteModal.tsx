@@ -10,6 +10,8 @@ import SpellData from '../../types/spellData'
 import getMaker, { getNetwork } from '../../lib/maker'
 import useTransactionStore, {transactionsApi, transactionsSelectors} from '../../stores/transactions'
 import { getEtherscanLink } from '../../lib/utils';
+import { TXMined } from '../../types/transaction';
+import shallow from 'zustand/shallow';
 // import ProposalPage from '../../pages/executive/[proposal-id]';
 
 const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
@@ -20,7 +22,8 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
   )
-  const [track, tx] = useTransactionStore(state => [state.track, txId && transactionsSelectors.getTransaction(state, txId)])
+
+  const [track, tx] = useTransactionStore(state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null], shallow)
   
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6)
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0
@@ -115,7 +118,7 @@ const VoteModal = ({ showDialog, close, proposal, lockedMkr }) => {
             <Text sx={{mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px'}}>Proposal will update once the blockchain has confirmed the tx.</Text>
             \<ExternalLink
               target="_blank"
-              href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')}
+              href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
               sx={{ p: 0 }}
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
