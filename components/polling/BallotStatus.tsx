@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Text, Button, Spinner } from 'theme-ui';
+import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -21,12 +21,11 @@ const BallotStatus = (props: any): JSX.Element => {
   return (
     <Button
       variant={
-        transaction?.status == 'pending' || transaction?.status !== 'mined'
-          ? 'outline'
-          : ballotLength
-          ? 'primary'
-          : 'outline'
+        ballotLength ? 'primary' :
+        transaction == null || transaction?.status == 'pending' || transaction?.status == 'mined' || ballotLength === 0 ?
+          'outline' : 'primary'
       }
+
       sx={{
         borderRadius: 'round',
         justifyContent: 'center',
@@ -36,19 +35,16 @@ const BallotStatus = (props: any): JSX.Element => {
         display: 'flex',
         height: '36px'
       }}
+      
       onClick={() => {
         if (transaction || !ballotLength) return;
         router.push({ pathname: '/polling/review', query: network });
       }}
       {...props}
-      disabled={
-        ballotLength > 0
-          ? false
-          : transaction === null || transaction?.status === 'pending' || transaction?.status === 'mined'
-      }
+      disabled={ballotLength > 0 ? false : (transaction === null || transaction?.status === 'pending' || transaction?.status === 'mined')}
     >
       <Icon
-        name="ballot"
+        name='ballot'
         size={3}
         sx={{
           color: ballotLength && transaction?.status !== 'pending' ? 'white' : 'textMuted',
@@ -69,13 +65,12 @@ const StatusText = ({
 }): JSX.Element => {
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
   const DEFAULT_COLOR = 'white';
-  console.log('transaction');
   const color =
-    transaction === null
-      ? ballotLength === 0 || transaction?.status === 'pending' || transaction?.status === 'mined'
-        ? 'textMuted'
-        : DEFAULT_COLOR
-      : 'textMuted';
+    transaction == null || transaction?.status === 'pending' || transaction?.status === 'mined' || ballotLength === 0
+      ? 'textMuted'
+        ? DEFAULT_COLOR
+        : 'textMuted'
+      : DEFAULT_COLOR
 
   return (
     <Text
