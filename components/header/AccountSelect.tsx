@@ -15,7 +15,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
-import VotingWeight from '../polling/VotingWeight';
+import VotingWeight from './VotingWeight';
 
 const WrappedAccountSelect = (props): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -154,7 +154,7 @@ const AccountSelect = props => {
               />
             )}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
-            <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
+            {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 2 }} />}
           </DialogContent>
         )}
       </DialogOverlay>
