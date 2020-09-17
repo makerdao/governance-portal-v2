@@ -21,11 +21,10 @@ const BallotStatus = (props: any): JSX.Element => {
   return (
     <Button
       variant={
-        ballotLength ? 'primary' :
-        transaction == null || transaction?.status == 'pending' || transaction?.status == 'mined' || ballotLength === 0 ?
-          'outline' : 'primary'
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+          ? 'primary'
+          : 'outline'
       }
-
       sx={{
         borderRadius: 'round',
         justifyContent: 'center',
@@ -35,19 +34,25 @@ const BallotStatus = (props: any): JSX.Element => {
         display: 'flex',
         height: '36px'
       }}
-      
       onClick={() => {
         if (transaction || !ballotLength) return;
         router.push({ pathname: '/polling/review', query: network });
       }}
       {...props}
-      disabled={ballotLength > 0 ? false : (transaction === null || transaction?.status === 'pending' || transaction?.status === 'mined')}
+      disabled={
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+          ? false
+          : true
+      }
     >
       <Icon
-        name='ballot'
+        name="ballot"
         size={3}
         sx={{
-          color: ballotLength && transaction?.status !== 'pending' ? 'white' : 'textMuted',
+          color:
+            ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+              ? 'white'
+              : 'textMuted',
           mr: 2
         }}
       />
@@ -66,11 +71,9 @@ const StatusText = ({
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
   const DEFAULT_COLOR = 'white';
   const color =
-    transaction == null || transaction?.status === 'pending' || transaction?.status === 'mined' || ballotLength === 0
-      ? 'textMuted'
-        ? DEFAULT_COLOR
-        : 'textMuted'
-      : DEFAULT_COLOR
+    ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+      ? DEFAULT_COLOR
+      : 'textMuted';
 
   return (
     <Text
