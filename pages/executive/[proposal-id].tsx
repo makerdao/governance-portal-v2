@@ -4,7 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Divider, Spinner, jsx } from 'theme-ui';
+import { Card, Flex, Text, Heading, Spinner, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
@@ -22,21 +22,6 @@ type Props = {
   proposal: Proposal;
 };
 
-const markdownStyles = {
-  h1: {
-    fontSize: [5, 6],
-    fontWeight: 500
-  },
-  h2: {
-    fontSize: [4, 5],
-    fontWeight: 500
-  },
-  h3: {
-    fontSize: [3, 4],
-    fontWeight: 500
-  }
-};
-
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>/, '');
@@ -49,10 +34,7 @@ const ProposalView = ({ proposal }: Props) => {
   );
 
   const onChainFxTab = (
-    <div key={2} sx={{ pt: 3 }}>
-      <Text as="h1" sx={{ pb: 2 }}>
-        Effects
-      </Text>
+    <div key={2} sx={{ p: [3, 4] }}>
       {stateDiff ? (
         <OnChainFx stateDiff={stateDiff} />
       ) : (
@@ -66,17 +48,18 @@ const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
-        <Card sx={{ boxShadow: 'faint' }}>
-          <Heading mb="3" sx={{ fontSize: [5, 6] }}>
+        <Card sx={{ p: [0, 0] }}>
+          <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
             {'title' in proposal ? proposal.title : proposal.address}
           </Heading>
           {'about' in proposal ? (
             <Tabs
+              tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Proposal Detail', 'On-Chain Effects']}
               tabPanels={[
                 <div
                   key={1}
-                  sx={markdownStyles}
+                  sx={{ variant: 'markdown.default', p: [3, 4] }}
                   dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                 />,
                 onChainFxTab

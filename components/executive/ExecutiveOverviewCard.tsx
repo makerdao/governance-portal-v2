@@ -56,7 +56,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
                 href={{ pathname: '/executive/[proposal-id]', query: { network } }}
                 as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
               >
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
                   {proposal.title}
                 </Text>
               </Link>
