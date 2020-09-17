@@ -12,14 +12,8 @@ export default function (props): JSX.Element {
 
   return (
     <>
-      <Flex
-        {...props}
-        sx={{
-          ...props.sx,
-          justifyContent: 'space-between'
-        }}
-      >
-        <Text color="onSurface" sx={{ paddingTop: '5px', fontSize: 'small' }}>
+      <Flex {...props} sx={{ justifyContent: 'space-between' }}>
+        <Text color="onSurface" sx={{ paddingTop: '20px', fontSize: 'small' }}>
           POLLING VOTING WEIGHT
         </Text>
       </Flex>
