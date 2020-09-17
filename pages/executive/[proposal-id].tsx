@@ -22,6 +22,26 @@ type Props = {
   proposal: Proposal;
 };
 
+const markdownStyles = {
+  h1: {
+    fontSize: [5, 6],
+    fontWeight: 500
+  },
+  h2: {
+    fontSize: [4, 5],
+    fontWeight: 500
+  },
+  h3: {
+    fontSize: [3, 4],
+    fontWeight: 500
+  }
+};
+
+const editMarkdown = content => {
+  // hide the duplicate proposal title
+  return content.replace(/^<h1>.*<\/h1>/, '');
+};
+
 const ProposalView = ({ proposal }: Props) => {
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
@@ -43,63 +63,28 @@ const ProposalView = ({ proposal }: Props) => {
     </div>
   );
 
-  if ('about' in proposal) {
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <SidebarLayout>
-          <Card sx={{ boxShadow: 'faint' }}>
-            <Flex>
-              <Heading
-                my="3"
-                sx={{
-                  whiteSpace: 'nowrap',
-                  overflowX: ['scroll', 'hidden'],
-                  overflowY: 'hidden',
-                  textOverflow: [null, 'ellipsis'],
-                  fontSize: [5, 6]
-                }}
-              >
-                {proposal.title}
-              </Heading>
-            </Flex>
-            <Divider />
-            <Tabs
-              tabTitles={['Proposal Detail', 'On-Chain Effects']}
-              tabPanels={[
-                <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
-                onChainFxTab
-              ]}
-            />
-          </Card>
-          <Stack>
-            <Card variant="compact">Card 1</Card>
-            <Card variant="compact">Card 2</Card>
-          </Stack>
-        </SidebarLayout>
-      </PrimaryLayout>
-    );
-  }
-
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
         <Card sx={{ boxShadow: 'faint' }}>
-          <Flex>
-            <Heading
-              my="3"
-              sx={{
-                whiteSpace: 'nowrap',
-                overflowX: ['scroll', 'hidden'],
-                overflowY: 'hidden',
-                textOverflow: [null, 'ellipsis'],
-                fontSize: [5, 6]
-              }}
-            >
-              {proposal.address}
-            </Heading>
-          </Flex>
-          <Divider />
-          <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+          <Heading mb="3" sx={{ fontSize: [5, 6] }}>
+            {'title' in proposal ? proposal.title : proposal.address}
+          </Heading>
+          {'about' in proposal ? (
+            <Tabs
+              tabTitles={['Proposal Detail', 'On-Chain Effects']}
+              tabPanels={[
+                <div
+                  key={1}
+                  sx={markdownStyles}
+                  dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                />,
+                onChainFxTab
+              ]}
+            />
+          ) : (
+            <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+          )}
         </Card>
         <Stack>
           <Card variant="compact">Card 1</Card>
