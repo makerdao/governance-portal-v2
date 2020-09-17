@@ -15,7 +15,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
-import VotingWeight from '../polling/VotingWeight';
+import VotingWeight from './VotingWeight';
 
 const WrappedAccountSelect = (props): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
