@@ -74,12 +74,15 @@ const AccountSelect = props => {
         sx={{
           variant: 'buttons.card',
           borderRadius: 'round',
-          height: '36px',
+          color: 'textSecondary',
+          height: '40px',
           px: [2, 3],
           py: 0,
           alignSelf: 'flex-end',
           '&:hover': {
-            color: 'white'
+            color: 'text',
+            borderColor: 'onSecondary',
+            backgroundColor: 'white'
           }
         }}
         {...props}

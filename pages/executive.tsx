@@ -27,7 +27,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>

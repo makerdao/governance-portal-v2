@@ -21,7 +21,7 @@ const Header = (props): JSX.Element => {
   return (
     <Box
       as="header"
-      pt={4}
+      pt={3}
       pb={5}
       px={[2, 0]}
       variant="styles.header"
@@ -58,7 +58,7 @@ const Header = (props): JSX.Element => {
         </Link>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
+        <AccountSelect sx={{ ml: ['auto', 3, 0] }} />
 
         <IconButton
           aria-label="Show menu"

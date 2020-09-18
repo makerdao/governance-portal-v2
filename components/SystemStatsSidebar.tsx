@@ -119,11 +119,15 @@ export default function ({ fields = [], ...props }: { fields: StatField[] }): JS
           <Heading as="h3" variant="microHeading">
             System Stats
           </Heading>
-          <ExternalLink href="https://daistats.com/" target="_blank">
+          <ExternalLink
+            href="https://daistats.com/"
+            target="_blank"
+            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+          >
             <Flex sx={{ alignItems: 'center' }}>
-              <Text sx={{ color: 'accentBlue', fontSize: 3 }}>
+              <Text>
                 See all stats
-                <Icon ml={2} name="arrowTopRight" size={2} sx={{ color: 'accentBlue' }} />
+                <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>
             </Flex>
           </ExternalLink>
