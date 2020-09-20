@@ -31,10 +31,14 @@ import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
-import Bignumber from 'bignumber.js';
 
 type Props = {
   proposal: Proposal;
+};
+
+const editMarkdown = content => {
+  // hide the duplicate proposal title
+  return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
@@ -46,153 +50,41 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
-
-  if ('about' in proposal) {
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <SidebarLayout>
-          <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
-          <Card sx={{ boxShadow: 'faint' }}>
-            <Flex>
-              <Heading
-                my="3"
-                sx={{
-                  whiteSpace: 'nowrap',
-                  overflowX: ['scroll', 'hidden'],
-                  overflowY: 'hidden',
-                  textOverflow: [null, 'ellipsis'],
-                  fontSize: [5, 6]
-                }}
-              >
-                {proposal.title}
-              </Heading>
-            </Flex>
-            <Divider />
-            <Tabs
-              tabTitles={['Proposal Detail', 'On-Chain Effects']}
-              tabPanels={[
-                <div key={1} dangerouslySetInnerHTML={{ __html: proposal.content }} />,
-                <div key={2} sx={{ pt: 3 }}>
-                  <Text as="h1" sx={{ pb: 2 }}>
-                    Effects
-                  </Text>
-                  {stateDiff ? (
-                    <Stack gap={3}>
-                      <Text>
-                        {Object.keys(stateDiff.groupedDiff).length > 0 ? (
-                          <>
-                            {stateDiff.hasBeenCast
-                              ? `Effects resulting from this spell's execution on block ${new Bignumber(
-                                  stateDiff.executedOn
-                                ).toFormat()}. `
-                              : 'Simulated effects if this spell were to be executed now.'}
-                            Please check the{' '}
-                            <ExternalLink target="_blank" href="https://docs.makerdao.com">
-                              MCD Docs
-                            </ExternalLink>{' '}
-                            for definitions. NOTE:{' '}
-                            <strong>
-                              on-chain effects is temporarily only checking the VAT for changes. The rest of
-                              the MCD contracts will be added in soon.
-                            </strong>
-                          </>
-                        ) : (
-                          'This spell has no on-chain effects.'
-                        )}
-                      </Text>
-                      <OnChainFx stateDiff={stateDiff} />
-                    </Stack>
-                  ) : (
-                    <Flex sx={{ alignItems: 'center' }}>
-                      ƒ loading <Spinner size={20} ml={2} />
-                    </Flex>
-                  )}
-                </div>
-              ]}
-            />
-          </Card>
-          <Stack>
-            <Box>
-              <Text sx={{ fontSize: 5 }}>Your Vote</Text>
-              <Card variant="compact" sx={{ mt: 2 }}>
-                <Text sx={{ fontSize: 5, color: 'onBackgroundAlt', fontWeight: 'medium' }}>
-                  {proposal.title}
-                </Text>
-                <Button variant="primary" onClick={open} sx={{ width: '100%', mt: 3 }}>
-                  Vote for this proposal
-                </Button>
-              </Card>
-            </Box>
-
-            <Card variant="compact">Supporters</Card>
-            <ResourceBox />
-          </Stack>
-        </SidebarLayout>
-      </PrimaryLayout>
-    );
-  }
+  const onChainFxTab = (
+    <div key={2} sx={{ p: [3, 4] }}>
+      {stateDiff ? (
+        <OnChainFx stateDiff={stateDiff} />
+      ) : (
+        <Flex sx={{ alignItems: 'center' }}>
+          loading <Spinner size={20} ml={2} />
+        </Flex>
+      )}
+    </div>
+  );
 
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
-        <VoteModal proposal={proposal} showDialog={showDialog} close={close} />
-        <Card sx={{ boxShadow: 'faint' }}>
-          <Flex>
-            <Heading
-              my="3"
-              sx={{
-                whiteSpace: 'nowrap',
-                overflowX: ['scroll', 'hidden'],
-                overflowY: 'hidden',
-                textOverflow: [null, 'ellipsis'],
-                fontSize: [5, 6]
-              }}
-            >
-              {proposal.address}
-            </Heading>
-          </Flex>
-          <Divider />
-          <Tabs
-            tabTitles={['On-Chain Effects']}
-            tabPanels={[
-              <div key={2} sx={{ pt: 3 }}>
-                <Text as="h1" sx={{ pb: 2 }}>
-                  Effects
-                </Text>
-                {stateDiff ? (
-                  <Stack gap={3}>
-                    <Text>
-                      {Object.keys(stateDiff.groupedDiff).length > 0 ? (
-                        <>
-                          {stateDiff.hasBeenCast
-                            ? `Effects resulting from this spell's execution on block ${new Bignumber(
-                                stateDiff.executedOn
-                              ).toFormat()}. `
-                            : 'Simulated effects if this spell were to be executed now.'}
-                          Please check the{' '}
-                          <ExternalLink target="_blank" href="https://docs.makerdao.com">
-                            MCD Docs
-                          </ExternalLink>{' '}
-                          for definitions. NOTE:{' '}
-                          <strong>
-                            on-chain effects is temporarily only checking the VAT for changes. The rest of the
-                            MCD contracts will be added in soon.
-                          </strong>
-                        </>
-                      ) : (
-                        'This spell has no on-chain effects.'
-                      )}
-                    </Text>
-                    <OnChainFx stateDiff={stateDiff} />
-                  </Stack>
-                ) : (
-                  <Flex sx={{ alignItems: 'center' }}>
-                    loading <Spinner size={20} ml={2} />
-                  </Flex>
-                )}
-              </div>
-            ]}
-          />
+        <Card sx={{ p: [0, 0] }}>
+          <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
+            {'title' in proposal ? proposal.title : proposal.address}
+          </Heading>
+          {'about' in proposal ? (
+            <Tabs
+              tabListStyles={{ pl: [3, 4] }}
+              tabTitles={['Proposal Detail', 'On-Chain Effects']}
+              tabPanels={[
+                <div
+                  key={1}
+                  sx={{ variant: 'markdown.default', p: [3, 4] }}
+                  dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                />,
+                onChainFxTab
+              ]}
+            />
+          ) : (
+            <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+          )}
         </Card>
         <Stack>
           <Card variant="compact">

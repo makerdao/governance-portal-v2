@@ -7,15 +7,14 @@ import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import Transaction, { TXPending } from '../../types/transaction';
 
-
 type Props = {
   tx: Transaction;
   index: number;
-}
+};
 
 type MainProps = {
-  txs: [Transaction]
-}
+  txs: Transaction[];
+};
 const TransactionRow = ({ tx, index }: Props): JSX.Element => {
   return (
     <Flex
@@ -40,7 +39,10 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink href={getEtherscanLink(getNetwork(), (tx as TXPending).hash, 'transaction')} target="_blank">
+      <ExternalLink
+        href={getEtherscanLink(getNetwork(), (tx as TXPending).hash, 'transaction')}
+        target="_blank"
+      >
         <Button
           variant="smallOutline"
           sx={{ color: 'accentBlue', borderColor: 'accentBlue', borderRadius: 'small' }}

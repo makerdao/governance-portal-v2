@@ -44,6 +44,11 @@ function prefetchTally(poll) {
   }
 }
 
+const editMarkdown = content => {
+  // hide the duplicate proposal title
+  return content.replace(/^<h1>.*<\/h1>/, '');
+};
+
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -130,8 +135,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               )}
             </Flex>
           </Flex>
-          <Card>
-            <Flex sx={{ flexDirection: 'column' }}>
+          <Card sx={{ p: [0, 0] }}>
+            <Flex sx={{ flexDirection: 'column', p: [3, 4], pb: 3 }}>
               <Text
                 variant="caps"
                 sx={{
@@ -145,32 +150,24 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   year: 'numeric'
                 })}
               </Text>
-              <Heading
-                my="2"
-                sx={{
-                  whiteSpace: 'nowrap',
-                  overflowX: ['scroll', 'hidden'],
-                  overflowY: 'hidden',
-                  textOverflow: [null, 'ellipsis'],
-                  fontSize: [5, 6]
-                }}
-              >
+              <Heading my="2" sx={{ fontSize: [5, 6] }}>
                 {poll.title}
               </Heading>
-              <Flex mb={3} sx={{ justifyContent: 'space-between' }}>
+              <Flex sx={{ justifyContent: 'space-between' }}>
                 <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                 <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
               </Flex>
             </Flex>
-            <Divider />
             <Tabs
+              tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div key={1} dangerouslySetInnerHTML={{ __html: poll.content }} />,
-                <div key={2} sx={{ pt: 3 }}>
-                  <Text as="h3" sx={{ pb: 0 }}>
-                    Vote Breakdown
-                  </Text>
+                <div
+                  key={1}
+                  sx={{ variant: 'markdown.default', p: [3, 4] }}
+                  dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                />,
+                <div key={2} sx={{ p: [3, 4] }}>
                   {Object.keys(poll.options).map((_, i) => (
                     <div key={i}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
