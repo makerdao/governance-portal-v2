@@ -10,10 +10,11 @@ import Router from 'next/router';
 type Props = {
   tabTitles: string[];
   tabPanels: React.ReactNode[];
+  tabListStyles?: SxStyleProp;
   hashRoute?: boolean;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels, hashRoute = true }: Props) => {
+const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props) => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
 
@@ -39,14 +40,14 @@ const TabbedLayout = ({ tabTitles, tabPanels, hashRoute = true }: Props) => {
       }}
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
-        <TabList sx={{ display: 'block', bg: 'inherit' }}>
-          {tabTitles.map(tabTitle => (
-            <Tab key={tabTitle} sx={getTabStyles({ isActive: activeTab === tabTitle })}>
+        <TabList sx={{ display: 'block', bg: 'inherit', ...tabListStyles }}>
+          {tabTitles.map((tabTitle, index) => (
+            <Tab key={tabTitle} sx={getTabStyles({ isActive: activeTab === tabTitle, isFirst: index === 0 })}>
               {tabTitle}
             </Tab>
           ))}
         </TabList>
-        <Divider />
+        <Divider sx={{ m: 0 }} />
         <TabPanels>
           {tabPanels.map((tabPanel, i) => (
             <TabPanel key={i}>{tabPanel}</TabPanel>
@@ -60,17 +61,20 @@ const TabbedLayout = ({ tabTitles, tabPanels, hashRoute = true }: Props) => {
 const baseTabStyles: SxStyleProp = {
   flex: 1,
   appearance: 'none',
-  margin: 0,
-  py: 2,
+  mx: 3,
+  p: 0,
+  pb: 2,
   fontSize: 3,
   fontWeight: 500,
   border: 'none !important',
-  bg: 'inherit'
+  bg: 'inherit',
+  outline: 'none'
 };
 
-const getTabStyles = ({ isActive }) => ({
+const getTabStyles = ({ isActive, isFirst }) => ({
   ...baseTabStyles,
-  ...(isActive ? { color: 'primary' } : {})
+  ...(isActive ? { color: 'primary' } : {}),
+  ...(isFirst ? { ml: 0 } : {})
 });
 
 export default TabbedLayout;

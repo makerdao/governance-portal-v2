@@ -63,7 +63,7 @@ export default function ExecutiveOverviewCard({
                 href={{ pathname: '/executive/[proposal-id]', query: { network } }}
                 as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
               >
-                <Text variant='microHeading' sx={{ fontSize: [3, 5] }}>
+                <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
                   {proposal.title}
                 </Text>
               </Link>
@@ -80,7 +80,7 @@ export default function ExecutiveOverviewCard({
               <Flex>
                 {hasVotedFor && (
                   <Badge
-                    variant='primary'
+                    variant="primary"
                     sx={{
                       color: 'primary',
                       borderColor: 'primary',
@@ -91,7 +91,7 @@ export default function ExecutiveOverviewCard({
                     }}
                   >
                     <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                      <Icon name='verified' size={3} />
+                      <Icon name="verified" size={3} />
                     </Flex>
                     Your Vote
                   </Badge>
@@ -102,7 +102,7 @@ export default function ExecutiveOverviewCard({
                   </Box>
                 ) : (
                   <Badge
-                    variant='primary'
+                    variant="primary"
                     sx={{
                       borderColor: 'text',
                       textTransform: 'uppercase'
@@ -115,7 +115,7 @@ export default function ExecutiveOverviewCard({
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>
-                <Button variant='primaryOutline' sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
+                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
                   {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
                 </Button>
               </Box>
@@ -123,7 +123,7 @@ export default function ExecutiveOverviewCard({
           </Stack>
           {canVote && bpi > 0 && (
             <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
-              <Button variant='primaryOutline' sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
+              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
                 {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
               </Button>
             </Flex>
