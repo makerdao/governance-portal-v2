@@ -16,11 +16,11 @@ import useAccountsStore from '../../stores/accounts';
 
 export default function ExecutiveOverviewCard({
   proposal,
-  openVote,
+  openVoteModal,
   ...props
 }: {
   proposal: Proposal;
-  openVote: (proposal: Proposal) => void;
+  openVoteModal: () => void;
 }): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
 
@@ -115,7 +115,7 @@ export default function ExecutiveOverviewCard({
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>
-                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
+                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVoteModal}>
                   {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
                 </Button>
               </Box>
@@ -123,7 +123,7 @@ export default function ExecutiveOverviewCard({
           </Stack>
           {canVote && bpi > 0 && (
             <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
-              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => openVote(proposal)}>
+              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVoteModal}>
                 {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
               </Button>
             </Flex>

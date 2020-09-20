@@ -5,15 +5,11 @@ import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
 import {
-  Box,
   Button,
   Card,
   Flex,
-  Text,
   Heading,
-  Divider,
   Spinner,
-  Link as ExternalLink,
   jsx
 } from 'theme-ui';
 import { ethers } from 'ethers';
@@ -25,9 +21,8 @@ import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
-import useAccountsStore from '../../stores/accounts';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
@@ -42,14 +37,9 @@ const editMarkdown = content => {
 };
 
 const ProposalView = ({ proposal }: Props) => {
-  const account = useAccountsStore(state => state.currentAccount);
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
-  );
-  const { data: lockedMkr } = useSWR(
-    account?.address ? ['/api/executive/', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
   );
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
@@ -70,6 +60,7 @@ const ProposalView = ({ proposal }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true}>
       <SidebarLayout>
+        <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
         <Card sx={{ p: [0, 0] }}>
           <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
             {'title' in proposal ? proposal.title : proposal.address}
@@ -107,7 +98,7 @@ const ProposalView = ({ proposal }: Props) => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }) {
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
