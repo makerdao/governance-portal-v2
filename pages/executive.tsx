@@ -32,7 +32,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <VoteModal showDialog={showDialog} close={close} proposal={proposal} lockedMkr={lockedMkr} />
+      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
@@ -67,7 +67,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               <Heading as='h1'>Executive Proposals</Heading>
               <Stack gap={3}>
                 {proposals.map((proposal, index) => (
-                  <ExecutiveOverviewCard key={index} proposal={proposal} openVote={open} />
+                  <ExecutiveOverviewCard key={index} proposal={proposal} openVoteModal={() => open(proposal)} />
                 ))}
               </Stack>
               <Grid columns='1fr max-content 1fr' sx={{ alignItems: 'center' }}>
@@ -122,7 +122,7 @@ export default function ExecutiveOverviewPage({
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
 
