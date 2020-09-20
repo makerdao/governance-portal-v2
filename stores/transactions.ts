@@ -8,13 +8,14 @@ import TX, { TXMined, TXPending, TXInitialized, TXError } from '../types/transac
 
 type Hooks = {
   pending?: () => void;
-  mined?: () => void;
+  mined?: (txId: string) => void;
   error?: () => void;
 };
 
 type Store = {
   transactions: TX[];
   initTx: (txId: string, from: string, message: string | null) => void;
+  setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
   setError: (txId: string, error?: { message: string }) => void;
@@ -40,6 +41,19 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
         }
       ])
     });
+  },
+  setMessage: (txId, message) => {
+    set(({ transactions }) => {
+      const transactionIndex = transactions.findIndex(tx => tx.id === txId);
+      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      const prevState = transactions[transactionIndex];
+      const nextState = {
+        ...prevState,
+        message
+      }
+      transactions[transactionIndex] = nextState
+      return { transactions }
+    })
   },
 
   setPending: (txId, hash) => {
@@ -112,7 +126,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       },
       mined: () => {
         get().setMined(txId);
-        if (typeof hooks?.mined === 'function') hooks.mined();
+        if (typeof hooks?.mined === 'function') hooks.mined(txId);
       },
       error: (_, error) => {
         get().setError(txId, error);

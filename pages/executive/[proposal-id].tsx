@@ -4,14 +4,28 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Card, Flex, Text, Heading, Spinner, jsx } from 'theme-ui';
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Text,
+  Heading,
+  Divider,
+  Spinner,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
+import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
+import ResourceBox from '../../components/ResourceBox';
+
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
@@ -27,12 +41,15 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
-const ProposalView = ({ proposal }: Props) => {
+const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
+  const [showDialog, setShowDialog] = useState(false);
+  const open = () => setShowDialog(true);
+  const close = () => setShowDialog(false);
   const onChainFxTab = (
     <div key={2} sx={{ p: [3, 4] }}>
       {stateDiff ? (
@@ -70,8 +87,14 @@ const ProposalView = ({ proposal }: Props) => {
           )}
         </Card>
         <Stack>
-          <Card variant="compact">Card 1</Card>
-          <Card variant="compact">Card 2</Card>
+          <Card variant="compact">
+            {proposal.address}
+            <Button variant="primary" onClick={open}>
+              Vote
+            </Button>
+          </Card>
+          <Card variant="compact">Supporters</Card>
+          <ResourceBox />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
@@ -85,7 +108,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   const { query, isFallback } = useRouter();
 
   // fetch proposal contents at run-time if on any network other than the default
-  useEffect(() => {
+  useEffect((): void => {
     if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
         .then(_setProposal)

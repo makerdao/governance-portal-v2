@@ -1,16 +1,16 @@
 /** @jsx jsx */
-import { NavLink, Heading, Flex, Badge, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
+import React from 'react';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
 import { useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import Link from 'next/link';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
-
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
+import VoteModal from '../components/executive/VoteModal';
 import { getExecutiveProposals } from '../lib/api';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
@@ -18,9 +18,13 @@ import Proposal from '../types/proposal';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
 
+
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-
+  const [showDialog, setShowDialog] = React.useState(false);
+  const [proposal, setProposal] = React.useState({})
+  const open = (proposal: Proposal) => {setProposal(proposal); setShowDialog(true);}
+  const close = () => setShowDialog(false);
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
@@ -28,6 +32,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
+      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
@@ -41,17 +46,17 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Button variant="mutedOutline" ml={3}>
+            <Button variant='mutedOutline' ml={3}>
               Deposit
             </Button>
-            <Button variant="mutedOutline" ml={3}>
+            <Button variant='mutedOutline' ml={3}>
               Withdraw
             </Button>
           </Flex>
         )}
 
         <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3}>
+          <Heading variant='microHeading' mr={3}>
             Filters
           </Heading>
         </Flex>
@@ -59,13 +64,13 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as="h1">Executive Proposals</Heading>
+              <Heading as='h1'>Executive Proposals</Heading>
               <Stack gap={3}>
                 {proposals.map((proposal, index) => (
-                  <ExecutiveOverviewCard key={index} proposal={proposal} />
+                  <ExecutiveOverviewCard key={index} proposal={proposal} openVoteModal={() => open(proposal)} />
                 ))}
               </Stack>
-              <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+              <Grid columns='1fr max-content 1fr' sx={{ alignItems: 'center' }}>
                 <Divider />
                 <Button variant="mutedOutline">View more proposals</Button>
                 <Divider />
@@ -102,7 +107,7 @@ export default function ExecutiveOverviewPage({
   }, []);
 
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+    return <ErrorPage statusCode={404} title='Error fetching proposals' />;
   }
 
   if (!isDefaultNetwork() && !_proposals)
@@ -117,7 +122,7 @@ export default function ExecutiveOverviewPage({
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
 

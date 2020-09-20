@@ -3,10 +3,19 @@
 import { Flex, Text, Spinner, Button, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { formatAddress, getEtherscanLink } from '../../lib/utils';
+import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
+import Transaction, { TXPending } from '../../types/transaction';
 
-const TransactionRow = ({ tx, index }) => {
+type Props = {
+  tx: Transaction;
+  index: number;
+};
+
+type MainProps = {
+  txs: Transaction[];
+};
+const TransactionRow = ({ tx, index }: Props): JSX.Element => {
   return (
     <Flex
       sx={{
@@ -30,20 +39,27 @@ const TransactionRow = ({ tx, index }) => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink href={getEtherscanLink(getNetwork(), tx.hash, 'transaction')} target="_blank">
+      <ExternalLink
+        href={getEtherscanLink(getNetwork(), (tx as TXPending).hash, 'transaction')}
+        target="_blank"
+      >
         <Button
           variant="smallOutline"
           sx={{ color: 'accentBlue', borderColor: 'accentBlue', borderRadius: 'small' }}
         >
           View
-          <Icon name="arrowTopRight" color="accentBlue" sx={{ ml: 1, width: 2, height: 2 }} />
+          <Icon
+            name="arrowTopRight"
+            color="accentBlue"
+            sx={{ ml: 1, width: 2, height: 2, alignSelf: 'center', justifyContent: 'center' }}
+          />
         </Button>
       </ExternalLink>
     </Flex>
   );
 };
 
-export default ({ txs }) => {
+export default ({ txs }: MainProps): JSX.Element => {
   return (
     <>
       <Text sx={{ mt: 4, mb: 3 }}>Transactions</Text>
