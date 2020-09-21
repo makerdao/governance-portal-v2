@@ -4,10 +4,11 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-
 import { Button, Card, Flex, Heading, Spinner, Box, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
+import Link from 'next/link';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
@@ -31,7 +32,8 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
-const ProposalView = ({ proposal }: Props) => {
+const ProposalView = ({ proposal }: Props): JSX.Element => {
+  const network = getNetwork();
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
@@ -43,9 +45,8 @@ const ProposalView = ({ proposal }: Props) => {
   });
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
-  const [showDialog, setShowDialog] = useState(false);
-  const open = () => setShowDialog(true);
-  const close = () => setShowDialog(false);
+  const [voting, setVoting] = useState(false);
+  const close = () => setVoting(false);
 
   const onChainFxTab = (
     <div key={2} sx={{ p: [3, 4] }}>
@@ -61,34 +62,43 @@ const ProposalView = ({ proposal }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
-      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
+      {voting && <VoteModal close={close} proposal={proposal} />}
       <SidebarLayout>
-        <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
-        <Card sx={{ p: [0, 0] }}>
-          <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
-            {'title' in proposal ? proposal.title : proposal.address}
-          </Heading>
-          {'about' in proposal ? (
-            <Tabs
-              tabListStyles={{ pl: [3, 4] }}
-              tabTitles={['Proposal Detail', 'On-Chain Effects']}
-              tabPanels={[
-                <div
-                  key={1}
-                  sx={{ variant: 'markdown.default', p: [3, 4] }}
-                  dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                />,
-                onChainFxTab
-              ]}
-            />
-          ) : (
-            <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
-          )}
-        </Card>
-        <Stack>
+        <Box>
+          <Link href={{ pathname: '/executive', query: { network } }}>
+            <Button variant="mutedOutline" mb={2}>
+              <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                <Icon name="chevron_left" size="2" mr={2} />
+                Back to executive proposals
+              </Flex>
+            </Button>
+          </Link>
+          <Card sx={{ p: [0, 0] }}>
+            <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
+              {'title' in proposal ? proposal.title : proposal.address}
+            </Heading>
+            {'about' in proposal ? (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['Proposal Detail', 'On-Chain Effects']}
+                tabPanels={[
+                  <div
+                    key={1}
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                  />,
+                  onChainFxTab
+                ]}
+              />
+            ) : (
+              <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+            )}
+          </Card>
+        </Box>
+        <Stack gap={3}>
           <Card variant="compact">
             {proposal.address}
-            <Button variant="primary" onClick={open}>
+            <Button variant="primary" onClick={() => setVoting(true)}>
               Vote
             </Button>
           </Card>

@@ -13,16 +13,12 @@ import getMaker, { getNetwork } from '../../lib/maker';
 import { formatDateWithTime } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import useAccountsStore from '../../stores/accounts';
+import VoteModal from './VoteModal';
+import { useState } from 'react';
 
-export default function ExecutiveOverviewCard({
-  proposal,
-  openVoteModal,
-  ...props
-}: {
-  proposal: Proposal;
-  openVoteModal: () => void;
-}): JSX.Element {
+export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal: Proposal }): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
+  const [voting, setVoting] = useState(false);
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
@@ -115,7 +111,7 @@ export default function ExecutiveOverviewCard({
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>
-                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVoteModal}>
+                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => setVoting(true)}>
                   {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
                 </Button>
               </Box>
@@ -123,12 +119,13 @@ export default function ExecutiveOverviewCard({
           </Stack>
           {canVote && bpi > 0 && (
             <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
-              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={openVoteModal}>
+              <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => setVoting(true)}>
                 {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
               </Button>
             </Flex>
           )}
         </Flex>
+        {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
         {spellData !== undefined && spellData.hasBeenCast && (
           <>

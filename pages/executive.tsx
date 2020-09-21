@@ -10,7 +10,6 @@ import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
-import VoteModal from '../components/executive/VoteModal';
 import { getExecutiveProposals } from '../lib/api';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
@@ -20,13 +19,6 @@ import useAccountsStore from '../stores/accounts';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-  const [showDialog, setShowDialog] = React.useState(false);
-  const [proposal, setProposal] = React.useState({});
-  const open = (proposal: Proposal) => {
-    setProposal(proposal);
-    setShowDialog(true);
-  };
-  const close = () => setShowDialog(false);
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
@@ -34,7 +26,6 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
-      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
@@ -68,12 +59,8 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             <Stack gap={3}>
               <Heading as="h1">Executive Proposals</Heading>
               <Stack gap={3}>
-                {proposals.map((proposal, index) => (
-                  <ExecutiveOverviewCard
-                    key={index}
-                    proposal={proposal}
-                    openVoteModal={() => open(proposal)}
-                  />
+                {proposals.map(proposal => (
+                  <ExecutiveOverviewCard key={proposal.address} proposal={proposal} />
                 ))}
               </Stack>
               <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>

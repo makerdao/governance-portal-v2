@@ -28,17 +28,16 @@ import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
 
 type Props = {
-  showDialog: boolean;
   close: () => void;
-  proposal: Proposal | unknown;
+  proposal: Proposal;
 };
 
-const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
+const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${(proposal as CMSProposal).address}?network=${getNetwork()}`
+    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
   );
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
@@ -237,11 +236,7 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
   }, [isPending, isMined, hasFailed]);
 
   return (
-    <DialogOverlay
-      style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-      isOpen={showDialog}
-      onDismiss={close}
-    >
+    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
       <DialogContent
         aria-label="Executive Vote"
         sx={
