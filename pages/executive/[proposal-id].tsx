@@ -22,6 +22,7 @@ import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
+import useAccountsStore from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
@@ -34,6 +35,8 @@ const editMarkdown = content => {
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
   const network = getNetwork();
+  const account = useAccountsStore(state => state.currentAccount);
+
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
@@ -96,12 +99,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
           </Card>
         </Box>
         <Stack gap={3}>
-          <Card variant="compact">
-            {proposal.address}
-            <Button variant="primary" onClick={() => setVoting(true)}>
-              Vote
-            </Button>
-          </Card>
+          {account && (
+            <Card variant="compact">
+              {proposal.address}
+              <Button variant="primary" onClick={() => setVoting(true)}>
+                Vote
+              </Button>
+            </Card>
+          )}
           <Box>
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
