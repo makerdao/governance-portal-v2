@@ -133,7 +133,7 @@ export default function ExecutiveOverviewCard({
         {spellData !== undefined && spellData.hasBeenCast && (
           <>
             <Divider my={0} />
-            <Flex p={3} sx={{ justifyContent: 'center' }}>
+            <Flex p={[4, 3]} sx={{ justifyContent: 'center' }}>
               <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
                 Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
                 {typeof spellData.dateExecuted === 'string' ? (
@@ -148,6 +148,7 @@ export default function ExecutiveOverviewCard({
       </Card>
     );
   }
+
   return (
     <Card sx={{ p: [0, 0] }} {...props}>
       <Box sx={{ p: 3 }}>

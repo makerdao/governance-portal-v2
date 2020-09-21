@@ -1,4 +1,5 @@
 export type CMSProposal = {
+  active: boolean;
   address: string;
   key: string;
   content: string;

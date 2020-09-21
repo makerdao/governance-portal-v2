@@ -16,6 +16,8 @@ type Store = {
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
   setShowHistorical: (showHistorical: boolean) => void;
   resetPollFilters: () => void;
+  executiveSortBy: 'Date Posted' | 'MKR Amount';
+  setExecutiveSortBy: (method: 'Date Posted' | 'MKR Amount') => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
@@ -58,6 +60,12 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         showHistorical: false
       }
     });
+  },
+
+  executiveSortBy: 'Date Posted',
+
+  setExecutiveSortBy: sortMethod => {
+    set({ executiveSortBy: sortMethod });
   }
 }));
 
