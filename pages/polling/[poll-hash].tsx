@@ -136,23 +136,25 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             </Flex>
           </Flex>
           <Card sx={{ p: [0, 0] }}>
-            <Flex sx={{ flexDirection: 'column', p: [3, 4], pb: 3 }}>
-              <Text
-                variant="caps"
-                sx={{
-                  fontSize: [1],
-                  color: 'textMuted'
-                }}
-              >
-                {new Date(poll.startDate).toLocaleString('default', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                })}
-              </Text>
-              <Heading my="2" sx={{ fontSize: [5, 6] }}>
-                {poll.title}
-              </Heading>
+            <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
+              <Box>
+                <Text
+                  variant="caps"
+                  sx={{
+                    fontSize: [1],
+                    color: 'textSecondary'
+                  }}
+                >
+                  {new Date(poll.startDate).toLocaleString('default', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  })}
+                </Text>
+                <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                  {poll.title}
+                </Heading>
+              </Box>
               <Flex sx={{ justifyContent: 'space-between' }}>
                 <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                 <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
@@ -171,7 +173,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   {Object.keys(poll.options).map((_, i) => (
                     <div key={i}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
-                        <Text sx={{ color: 'textMuted', width: '20%' }}>
+                        <Text sx={{ color: 'textSecondary', width: '20%' }}>
                           {tally ? (
                             tally.results[i].optionName
                           ) : (
@@ -180,7 +182,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                             </Delay>
                           )}
                         </Text>
-                        <Text sx={{ color: 'textMuted', width: tally ? 'unset' : '30%' }}>
+                        <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                           {tally ? (
                             `${tally.results[i].firstChoice
                               .add(tally.results[i].transfer)

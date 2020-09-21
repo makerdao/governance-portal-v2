@@ -64,8 +64,9 @@ const baseTabStyles: SxStyleProp = {
   mx: 3,
   p: 0,
   pb: 2,
+  color: 'textSecondary',
   fontSize: 3,
-  fontWeight: 500,
+  fontWeight: 400,
   border: 'none !important',
   bg: 'inherit',
   outline: 'none'
@@ -73,7 +74,7 @@ const baseTabStyles: SxStyleProp = {
 
 const getTabStyles = ({ isActive, isFirst }) => ({
   ...baseTabStyles,
-  ...(isActive ? { color: 'primary' } : {}),
+  ...(isActive ? { color: 'primary', fontWeight: 500 } : {}),
   ...(isFirst ? { ml: 0 } : {})
 });
 

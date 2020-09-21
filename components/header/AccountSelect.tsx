@@ -111,7 +111,7 @@ const AccountSelect = props => {
           <Box mx={2}>Connect wallet</Box>
         )}
       </Button>
-      <DialogOverlay style={{ background: 'hsla(0, 100%, 100%, 0.9)' }} isOpen={showDialog} onDismiss={close}>
+      <DialogOverlay isOpen={showDialog} onDismiss={close}>
         {changeWallet ? (
           <DialogContent
             aria-label="Change Wallet"
