@@ -6,6 +6,9 @@ import { GetStaticProps } from 'next';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
+
+import Deposit from '../components/executive/Deposit';
+import Withdraw from '../components/executive/Withdraw';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
@@ -39,12 +42,8 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Button variant="mutedOutline" ml={3}>
-              Deposit
-            </Button>
-            <Button variant="mutedOutline" ml={3}>
-              Withdraw
-            </Button>
+            <Deposit sx={{ ml: 3 }} />
+            <Withdraw sx={{ ml: 3 }} />
           </Flex>
         )}
 
