@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Text, Button, Spinner } from 'theme-ui';
+import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -21,7 +21,7 @@ const BallotStatus = (props: any): JSX.Element => {
   return (
     <Button
       variant={
-        ballotLength && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
           ? 'primary'
           : 'outline'
       }
@@ -30,7 +30,7 @@ const BallotStatus = (props: any): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        border: transaction ? '1px solid mutedOrange' : ballotLength ? null : '1px solid secondaryMuted',
+        border: transaction ? '1px solid #D4D9E1' : ballotLength ? null : '1px solid secondaryMuted',
         display: 'flex',
         height: '36px'
       }}
@@ -39,28 +39,24 @@ const BallotStatus = (props: any): JSX.Element => {
         router.push({ pathname: '/polling/review', query: network });
       }}
       {...props}
+      disabled={
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+          ? false
+          : true
+      }
     >
       <Icon
         name="ballot"
         size={3}
         sx={{
-          color: ballotLength ? 'white' : 'textMuted',
-          display: transaction?.status === 'pending' || transaction?.status === 'mined' ? 'none' : null,
+          color:
+            ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+              ? 'white'
+              : 'textMuted',
           mr: 2
         }}
       />
-      {transaction?.status === 'pending' && (
-        <Spinner
-          size={16}
-          sx={{
-            color: 'mutedOrange',
-            alignSelf: 'center',
-            display: transaction && transaction.status === 'pending' ? null : 'none',
-            mr: 2
-          }}
-        />
-      )}
-      <StatusText {...{ transaction, ballotLength }} />
+      <StatusText {...{ transaction }} ballotLength={transaction?.status === 'pending' ? 0 : ballotLength} />
     </Button>
   );
 };
@@ -73,26 +69,11 @@ const StatusText = ({
   ballotLength: number;
 }): JSX.Element => {
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
-  const text =
-    transaction === null
-      ? DEFAULT_TEXT
-      : transaction.status === 'pending'
-      ? 'Vote Pending'
-      : transaction.status === 'mined'
-      ? 'Vote Sent Successfully'
-      : DEFAULT_TEXT;
-
   const DEFAULT_COLOR = 'white';
   const color =
-    transaction === null
-      ? ballotLength === 0
-        ? 'textMuted'
-        : DEFAULT_COLOR
-      : transaction.status === 'pending'
-      ? 'mutedOrange'
-      : transaction.status === 'mined'
-      ? 'primary'
-      : DEFAULT_COLOR;
+    ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+      ? DEFAULT_COLOR
+      : 'textMuted';
 
   return (
     <Text
@@ -101,7 +82,7 @@ const StatusText = ({
         fontWeight: ballotLength === 0 ? 'normal' : '600'
       }}
     >
-      {text || DEFAULT_TEXT}
+      {DEFAULT_TEXT}
     </Text>
   );
 };
