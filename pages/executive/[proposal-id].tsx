@@ -5,8 +5,9 @@ import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
 
-import { Button, Card, Flex, Heading, Spinner, jsx } from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
 
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
@@ -16,8 +17,8 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
-import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
 
@@ -35,6 +36,13 @@ const ProposalView = ({ proposal }: Props) => {
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
+
+  const { data: allSupporters, error: supportersError } = useSWR('/exec-supporters', async () => {
+    const maker = await getMaker();
+    return maker.service('chief').getVoteTally();
+  });
+  const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
+
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
@@ -84,7 +92,61 @@ const ProposalView = ({ proposal }: Props) => {
               Vote
             </Button>
           </Card>
-          <Card variant="compact">Supporters</Card>
+          <Box>
+            <Heading mt={3} mb={2} as="h3" variant="microHeading">
+              Supporters
+            </Heading>
+            <Card variant="compact" p={3} sx={{ height: '237px' }}>
+              <Box sx={{ overflowY: 'scroll', height: '100%' }}>
+                {supporters ? (
+                  supporters.map(supporter => (
+                    <Flex
+                      sx={{
+                        justifyContent: 'space-between',
+                        fontSize: 3,
+                        lineHeight: '34px'
+                      }}
+                      key={supporter.address}
+                    >
+                      <Text color="onSecondary">
+                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                      </Text>
+                      <ExternalLink
+                        href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
+                        target="_blank"
+                      >
+                        <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
+                          {cutMiddle(supporter.address)}
+                        </Text>
+                      </ExternalLink>
+                    </Flex>
+                  ))
+                ) : supportersError ? (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    No supporters found
+                  </Flex>
+                ) : (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+              </Box>
+            </Card>
+          </Box>
           <ResourceBox />
         </Stack>
       </SidebarLayout>

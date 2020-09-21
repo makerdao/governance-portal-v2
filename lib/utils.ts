@@ -254,3 +254,8 @@ function now() {
 export function formatAddress(address: string) {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
+
+export function cutMiddle(text = '', left = 6, right = 4) {
+  if (text.length <= left + right) return text;
+  return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
+}
