@@ -14,11 +14,11 @@ type Props = {
   hashRoute?: boolean;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props) => {
+const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const [, hash] = location.href.split('#');
     if (hashRoute && hash) {
       tabTitles.forEach((title, i) => {
