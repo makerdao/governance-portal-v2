@@ -4,14 +4,8 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import {
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Spinner,
-  jsx
-} from 'theme-ui';
+
+import { Button, Card, Flex, Heading, Spinner, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
 import OnChainFx from '../../components/executive/OnChainFx';
@@ -59,6 +53,7 @@ const ProposalView = ({ proposal }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
+      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <SidebarLayout>
         <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
         <Card sx={{ p: [0, 0] }}>
