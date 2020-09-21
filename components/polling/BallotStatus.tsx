@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Text, Button, Spinner } from 'theme-ui';
+import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
@@ -21,9 +21,7 @@ const BallotStatus = (props: any): JSX.Element => {
   return (
     <Button
       variant={
-        transaction?.status == 'pending' || transaction?.status !== 'mined'
-          ? 'outline'
-          : ballotLength
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
           ? 'primary'
           : 'outline'
       }
@@ -42,16 +40,19 @@ const BallotStatus = (props: any): JSX.Element => {
       }}
       {...props}
       disabled={
-        ballotLength > 0
+        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
           ? false
-          : transaction === null || transaction?.status === 'pending' || transaction?.status === 'mined'
+          : true
       }
     >
       <Icon
         name="ballot"
         size={3}
         sx={{
-          color: ballotLength && transaction?.status !== 'pending' ? 'white' : 'textMuted',
+          color:
+            ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+              ? 'white'
+              : 'textMuted',
           mr: 2
         }}
       />
@@ -69,14 +70,9 @@ const StatusText = ({
 }): JSX.Element => {
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
   const DEFAULT_COLOR = 'white';
-  console.log('transaction');
   const color =
-    transaction === null
-      ? ballotLength === 0 ||
-        ((transaction as unknown) as TX).status === 'pending' ||
-        ((transaction as unknown) as TX).status === 'mined'
-        ? 'textMuted'
-        : DEFAULT_COLOR
+    ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+      ? DEFAULT_COLOR
       : 'textMuted';
 
   return (

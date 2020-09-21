@@ -4,6 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
+
 import { Button, Card, Flex, Heading, Spinner, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 
@@ -14,7 +15,6 @@ import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
-
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
@@ -30,15 +30,15 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal }: Props) => {
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
-
   const [showDialog, setShowDialog] = useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
+
   const onChainFxTab = (
     <div key={2} sx={{ p: [3, 4] }}>
       {stateDiff ? (
@@ -55,6 +55,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     <PrimaryLayout shortenFooter={true}>
       <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
       <SidebarLayout>
+        <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
         <Card sx={{ p: [0, 0] }}>
           <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
             {'title' in proposal ? proposal.title : proposal.address}
@@ -92,13 +93,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }) {
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
 
   // fetch proposal contents at run-time if on any network other than the default
-  useEffect((): void => {
+  useEffect(() => {
     if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
         .then(_setProposal)
