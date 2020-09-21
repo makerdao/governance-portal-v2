@@ -40,19 +40,31 @@ const Header = (props): JSX.Element => {
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
         <Link href={{ pathname: '/polling', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}>
+          <NavLink
+            href={`/polling?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}
+          >
             Polling
           </NavLink>
         </Link>
 
         <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}>
+          <NavLink
+            href={`/executive?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}
+          >
             Executive
           </NavLink>
         </Link>
 
         <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}>
+          <NavLink
+            href={`/module?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
+          >
             ES Module
           </NavLink>
         </Link>
