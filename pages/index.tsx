@@ -41,7 +41,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   return (
     <div>
       <Head>
-        <title>Maker Governance Portal</title>
+        <title>Maker Governance</title>
       </Head>
       <div
         sx={{
@@ -81,7 +81,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Grid gap={6} sx={{ px: [5, 0] }} columns={[1, 3]}>
+            <Grid gap={[5, 6]} sx={{ px: [2, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Intro to Governance"
                 linkText="Get started"

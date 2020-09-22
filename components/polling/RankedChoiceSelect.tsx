@@ -92,15 +92,16 @@ export default function RankedChoiceSelect({
       {canAddOption && (
         <Text
           color="primary"
+          variant="caps"
           onClick={() => setNumConfirmed(numConfirmed + 1)}
           sx={{
-            pt: 1,
-            fontSize: 2,
-            cursor: 'pointer',
-            textTransform: 'uppercase'
+            pt: 2,
+            pb: 1,
+            fontSize: 1,
+            cursor: 'pointer'
           }}
         >
-          <span sx={{ mr: 2 }}>+</span> Add another choice
+          <span sx={{ mr: 1 }}>+</span> Add another choice
         </Text>
       )}
     </Box>

@@ -79,7 +79,7 @@ export default function ({
         px={4}
         sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
       >
-        Please use your [hardware, metamask, etc] wallet to sign this transaction.
+        Please use your wallet to sign this transaction.
       </Text>
       <Button
         mt={3}

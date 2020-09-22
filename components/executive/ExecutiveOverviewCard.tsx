@@ -50,7 +50,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
         <Flex px={4} py={spellData?.hasBeenCast ? 3 : 4} sx={{ justifyContent: 'space-between' }}>
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-              <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
+              <Text variant="caps" sx={{ color: 'mutedAlt' }}>
                 posted {formatDateWithTime(proposal.date)}
               </Text>
             </Flex>

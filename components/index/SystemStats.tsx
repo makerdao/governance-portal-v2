@@ -78,7 +78,7 @@ export default function (): JSX.Element {
 
       {/* Mobile */}
       <Box sx={{ display: ['block', 'none'], backgroundColor: 'background', p: 2 }}>
-        <Grid sx={{ p: 4 }}>
+        <Grid sx={{ p: 3 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 4, fontWeight: '500', color: 'text' }}>System Stats</Text>
             <ExternalLink href="https://daistats.com/" target="_blank">
