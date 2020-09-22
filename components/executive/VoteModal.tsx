@@ -67,8 +67,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       pending: () => setStep('pending'),
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
-
-        close();
+        close(); // TBD maybe show a separate "done" dialog
       },
       error: () => setStep('failed')
     });
@@ -185,7 +184,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         Transaction Sent!
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Icon name="reviewCheck" size={5} sx={{ my: 3 }} />
+        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
           Vote will update once the blockchain has confirmed the transaction.
         </Text>
@@ -194,14 +193,14 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
           sx={{ p: 0 }}
         >
-          <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
             <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>
         </ExternalLink>
         <Button
           onClick={close}
-          sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
+          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
           variant="outline"
         >
           Close
