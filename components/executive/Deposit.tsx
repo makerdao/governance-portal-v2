@@ -55,10 +55,12 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
               error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
             />
           </Box>
-          <Flex sx={{ alignItems: 'center', mb: 3 }}>
-            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR Balance:</Text>
+          <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
+            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
+              MKR Balance:&nbsp;
+            </Text>
             {mkrBalance ? (
-              <Text sx={{ fontWeight: 'bold', ml: 3 }}>{mkrBalance.toBigNumber().toFormat(6)}</Text>
+              <Text sx={{ fontWeight: 'bold' }}>{mkrBalance.toBigNumber().toFormat(6)}</Text>
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />

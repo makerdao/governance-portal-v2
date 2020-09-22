@@ -55,10 +55,12 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
               error={mkrToWithdraw.gt(lockedMkr) && 'MKR balance too low'}
             />
           </Box>
-          <Flex sx={{ alignItems: 'center', mb: 3 }}>
-            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR in contract:</Text>
+          <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
+            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
+              MKR in contract:&nbsp;
+            </Text>
             {lockedMkr ? (
-              <Text sx={{ fontWeight: 'bold', ml: 3 }}>{lockedMkr.toBigNumber().toFormat(6)}</Text>
+              <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)}</Text>
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
