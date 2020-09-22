@@ -130,11 +130,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 {filteredProposals
                   .filter(proposal => proposal.active)
                   .map((proposal, index) => (
-                    <ExecutiveOverviewCard
-                      key={index}
-                      proposal={proposal}
-                      openVoteModal={() => open(proposal)}
-                    />
+                    <ExecutiveOverviewCard key={index} proposal={proposal} />
                   ))}
               </Stack>
 
