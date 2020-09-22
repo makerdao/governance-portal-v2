@@ -20,7 +20,7 @@ type Props = {
   proposal: Proposal;
 };
 
-type ModalStep = 'confirm' | 'signing' | 'pending';
+type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
 
 const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
@@ -68,7 +68,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
         close(); // TBD maybe show a separate "done" dialog
-      }
+      },
+      error: () => setStep('failed')
     });
     setTxId(txId);
     setStep('signing');
@@ -184,8 +185,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
-          Proposal will update once the blockchain has confirmed the tx.
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+          Vote will update once the blockchain has confirmed the transaction.
         </Text>
         <ExternalLink
           target="_blank"
@@ -208,6 +209,32 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
     </Flex>
   );
 
+  const Error = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+        onClick={close}
+      />
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Transaction Failed.
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewFailed" size={5} sx={{ my: 3 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+          Something went wrong with your transaction. Please try again.
+        </Text>
+        <Button
+          onClick={close}
+          sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
+          variant="outline"
+        >
+          Close
+        </Button>
+      </Flex>
+    </Flex>
+  );
+
   const view = useMemo(() => {
     switch (step) {
       case 'confirm':
@@ -216,7 +243,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         return <Signing />;
       case 'pending':
         return <Pending />;
-      // case 'failed': return <Error />;
+      case 'failed':
+        return <Error />;
     }
   }, [step]);
 

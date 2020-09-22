@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-
+import { DialogOverlay, DialogContent } from '@reach/dialog';
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
@@ -68,6 +68,26 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   return (
     <PrimaryLayout shortenFooter={true}>
       {voting && <VoteModal close={close} proposal={proposal} />}
+      {account && bpi === 0 && (
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            backgroundColor: 'white',
+            width: '100vw',
+            borderTopLeftRadius: 'roundish',
+            borderTopRightRadius: 'roundish',
+            px: 3,
+            py: 4,
+            border: '1px solid #D4D9E1'
+          }}
+        >
+          <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
+            Vote for this proposal
+          </Button>
+        </Box>
+      )}
       <SidebarLayout>
         <Box>
           <Link href={{ pathname: '/executive', query: { network } }}>
@@ -101,13 +121,20 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
           </Card>
         </Box>
         <Stack gap={3}>
-          {account && (
-            <Card variant="compact">
-              {cutMiddle(proposal.address)}
-              <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
-                Vote
-              </Button>
-            </Card>
+          {account && bpi !== 0 && (
+            <>
+              <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
+                Your Vote
+              </Heading>
+              <Card variant="compact">
+                <Text sx={{ fontSize: 5 }}>
+                  {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
+                </Text>
+                <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%', mt: 3 }}>
+                  Vote
+                </Button>
+              </Card>
+            </>
           )}
           <Box>
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
