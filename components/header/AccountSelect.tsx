@@ -156,7 +156,7 @@ const AccountSelect = props => {
                 change={() => setChangeWallet(true)}
               />
             )}
-            {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 2 }} />}
+            {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
           </DialogContent>
         )}
