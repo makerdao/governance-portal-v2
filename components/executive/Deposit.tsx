@@ -17,10 +17,13 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from '../
 
 const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => {
   const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
-  const [approveTxId, setApproveTxId] = useState(null);
+  const [approveMkrTxId, setApproveMkrTxId] = useState(null);
 
   const [track, approveTx] = useTransactionStore(
-    state => [state.track, approveTxId ? transactionsSelectors.getTransaction(state, approveTxId) : null],
+    state => [
+      state.track,
+      approveMkrTxId ? transactionsSelectors.getTransaction(state, approveMkrTxId) : null
+    ],
     shallow
   );
 
@@ -53,7 +56,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             />
           </Box>
           <Flex sx={{ alignItems: 'center', mb: 3 }}>
-            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR Balance</Text>
+            <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR Balance:</Text>
             {mkrBalance ? (
               <Text sx={{ fontWeight: 'bold', ml: 3 }}>{mkrBalance.toBigNumber().toFormat(6)}</Text>
             ) : (
@@ -65,6 +68,15 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
           <Button
             sx={{ flexDirection: 'column', width: '100%' }}
             disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
+            onClick={async () => {
+              const maker = await getMaker();
+              const lockTxCreator = () => maker.service('chief').lock(mkrToDeposit);
+              const txId = await track(lockTxCreator, 'Depositing MKR', {
+                pending: () => close(),
+                mined: txId => transactionsApi.getState().setMessage(txId, 'MKR deposited'),
+                error: () => transactionsApi.getState().setMessage(txId, 'MKR deposit failed')
+              });
+            }}
           >
             Deposit MKR
           </Button>
@@ -101,7 +113,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
               </Text>
               <Text
                 sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                onClick={() => setApproveTxId(null)}
+                onClick={() => setApproveMkrTxId(null)}
               >
                 Cancel
               </Text>
@@ -146,10 +158,10 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
               mined: txId => transactionsApi.getState().setMessage(txId, 'Granted MKR approval'),
               error: () => {
                 transactionsApi.getState().setMessage(txId, 'MKR approval failed');
-                setApproveTxId(null);
+                setApproveMkrTxId(null);
               }
             });
-            setApproveTxId(txId);
+            setApproveMkrTxId(txId);
           }}
         >
           Approve vote proxy
