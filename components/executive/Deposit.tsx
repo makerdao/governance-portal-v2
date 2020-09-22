@@ -109,7 +109,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
           {!txPending && (
             <Box>
               <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-                Please use your wallet to confirm this trnasaction.
+                Please use your wallet to confirm this transaction.
               </Text>
               <Text
                 sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
