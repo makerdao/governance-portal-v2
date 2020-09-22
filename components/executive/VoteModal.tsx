@@ -1,19 +1,7 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
 import useSWR from 'swr';
-import {
-  Grid,
-  Button,
-  Flex,
-  Close,
-  Text,
-  Textarea,
-  Box,
-  Label,
-  Spinner,
-  Link as ExternalLink,
-  jsx
-} from 'theme-ui';
+import { Grid, Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -70,7 +58,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
 
   const vote = async () => {
     const maker = await getMaker();
-    const voteTxCreator = () => maker.service('chief').vote((proposal as CMSProposal).address);
+    const voteTxCreator = () => maker.service('chief').vote(proposal.address);
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
@@ -145,14 +133,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           </Text>
         </Box>
       </Grid>
-      <Box as="form" sx={{ width: '100%', mt: [3, 4] }}>
-        <Label htmlFor="reason">Why are you voting for this proposal?</Label>
-        <Textarea
-          sx={{ height: '96px' }}
-          name="reason"
-          defaultValue={"Optional. 250 character max. You'll be prompted to sign a message with your wallet"}
-        />
-        <Button variant="primary" sx={{ width: '100%', mt: 3 }} onClick={vote}>
+      <Box sx={{ width: '100%', mt: 3 }}>
+        <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
           Submit Vote
         </Button>
       </Box>
