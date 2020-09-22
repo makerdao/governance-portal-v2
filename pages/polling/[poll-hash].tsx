@@ -136,30 +136,59 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             </Flex>
           </Flex>
           <Card sx={{ p: [0, 0] }}>
-            <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
-              <Box>
-                <Text
-                  variant="caps"
-                  sx={{
-                    fontSize: [1],
-                    color: 'textSecondary'
-                  }}
-                >
-                  {new Date(poll.startDate).toLocaleString('default', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
-                </Text>
-                <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
-                  {poll.title}
-                </Heading>
-              </Box>
-              <Flex sx={{ justifyContent: 'space-between' }}>
-                <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
-                <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
+            {bpi < 1 ? (
+              <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
+                <Box>
+                  <Text
+                    variant="caps"
+                    sx={{
+                      fontSize: [1],
+                      color: 'textSecondary'
+                    }}
+                  >
+                    {new Date(poll.startDate).toLocaleString('default', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </Text>
+                  <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                    {poll.title}
+                  </Heading>
+                </Box>
+                <Flex sx={{ justifyContent: 'space-between' }}>
+                  <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
+                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
+                </Flex>
               </Flex>
-            </Flex>
+            ) : (
+              <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
+                <Box>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text
+                      variant="caps"
+                      sx={{
+                        fontSize: [1],
+                        color: 'textSecondary'
+                      }}
+                    >
+                      {new Date(poll.startDate).toLocaleString('default', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </Text>
+                    <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
+                  </Flex>
+                  <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                    {poll.title}
+                  </Heading>
+                </Box>
+                <Flex sx={{ justifyContent: 'space-between' }}>
+                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
+                </Flex>
+              </Flex>
+            )}
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
