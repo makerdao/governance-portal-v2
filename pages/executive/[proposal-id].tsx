@@ -103,8 +103,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Stack gap={3}>
           {account && (
             <Card variant="compact">
-              {cutMiddle(proposal.address)}
-              <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
+              <Text sx={{ fontSize: 5 }}>
+                {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
+              </Text>
+              <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%', mt: 3 }}>
                 Vote
               </Button>
             </Card>
