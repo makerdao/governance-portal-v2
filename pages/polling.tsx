@@ -158,13 +158,15 @@ const PollingOverview = ({ polls }: Props) => {
                         {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted {formatDateWithTime(date)}
                       </Text>
                       <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
-                        {groupedActivePolls[date].map(poll => (
-                          <PollOverviewCard
-                            key={poll.multiHash}
-                            poll={poll}
-                            startMobileVoting={() => setMobileVotingPoll(poll)}
-                            reviewPage={false}
-                          />
+                        {groupedActivePolls[date].map((poll, i) => (
+                          <div sx={{ mb: 4 }} key={i}>
+                            <PollOverviewCard
+                              key={poll.multiHash}
+                              poll={poll}
+                              startMobileVoting={() => setMobileVotingPoll(poll)}
+                              reviewPage={false}
+                            />
+                          </div>
                         ))}
                       </Stack>
                     </div>

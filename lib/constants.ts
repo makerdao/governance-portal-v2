@@ -5,8 +5,16 @@ export enum SupportedNetworks {
 }
 
 export const CMS_ENDPOINTS = {
-  [SupportedNetworks.MAINNET]: 'https://cms-gov.makerfoundation.com/content/governance-dashboard',
-  [SupportedNetworks.KOVAN]: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard'
+  [SupportedNetworks.MAINNET]: {
+    allTopics: 'https://cms-gov.makerfoundation.com/content/governance-dashboard',
+    allSpells: 'https://cms-gov.makerfoundation.com/content/all-spells'
+  },
+  [SupportedNetworks.KOVAN]: {
+    [SupportedNetworks.MAINNET]: {
+      allTopics: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard',
+      allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
+    }
+  }
 };
 
 export const GOV_BLOG_POSTS_ENDPOINT =

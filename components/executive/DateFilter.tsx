@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import { useRef, useEffect } from 'react';
-import { Grid, Flex, Input, Text, Button } from 'theme-ui';
+import { Grid, Flex, Input, Text, Button, jsx } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from '../FilterButton';
@@ -15,7 +16,12 @@ const displayDate = date => {
 
 export default function (props): JSX.Element {
   const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(
-    state => [state.pollFilters.startDate, state.setStartDate, state.pollFilters.endDate, state.setEndDate],
+    state => [
+      state.executiveFilters.startDate,
+      state.setStartDate,
+      state.executiveFilters.endDate,
+      state.setEndDate
+    ],
     shallow
   );
 
@@ -25,8 +31,8 @@ export default function (props): JSX.Element {
   const endInput = useRef<HTMLInputElement>(null);
 
   const reset = () => {
-    setStartDate('poll', null);
-    setEndDate('poll', null);
+    setStartDate('executive', null);
+    setEndDate('executive', null);
   };
 
   useEffect(() => {
@@ -37,10 +43,10 @@ export default function (props): JSX.Element {
   return (
     <FilterButton
       name={() => {
-        if (!startDateDisplay && !endDateDisplay) return 'Date Filter';
-        if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
-        if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
-        return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
+        if (!startDateDisplay && !endDateDisplay) return 'Date Posted';
+        if (!startDateDisplay) return `Date Posted: before ${endDateDisplay}`;
+        if (!endDateDisplay) return `Date Posted: after ${startDateDisplay}`;
+        return `Date Posted: ${startDateDisplay} - ${endDateDisplay}`;
       }}
       {...props}
     >
@@ -50,13 +56,17 @@ export default function (props): JSX.Element {
           <Input
             ref={startInput}
             type="date"
-            onChange={e => setStartDate('poll', new Date(e.target.value))}
+            onChange={e => setStartDate('executive', new Date(e.target.value))}
           />
         </Flex>
 
         <Text>Before</Text>
         <Flex sx={{ alignItems: 'center' }}>
-          <Input ref={endInput} type="date" onChange={e => setEndDate('poll', new Date(e.target.value))} />
+          <Input
+            ref={endInput}
+            type="date"
+            onChange={e => setEndDate('executive', new Date(e.target.value))}
+          />
         </Flex>
 
         <span />
