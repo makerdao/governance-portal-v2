@@ -186,8 +186,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Icon name="reviewCheck" size={5} sx={{ my: 3 }} />
-        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
-          Proposal will update once the blockchain has confirmed the tx.
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+          Vote will update once the blockchain has confirmed the transaction.
         </Text>
         <ExternalLink
           target="_blank"
