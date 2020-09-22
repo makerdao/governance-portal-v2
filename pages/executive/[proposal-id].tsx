@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
@@ -36,6 +37,7 @@ const editMarkdown = content => {
 const ProposalView = ({ proposal }: Props): JSX.Element => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
+  const bpi = useBreakpointIndex();
 
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
@@ -70,9 +72,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Box>
           <Link href={{ pathname: '/executive', query: { network } }}>
             <Button variant="mutedOutline" mb={2}>
-              <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+              <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />
-                Back to executive proposals
+                Back to {bpi === 0 ? 'all' : 'executive'} proposals
               </Flex>
             </Button>
           </Link>
@@ -101,8 +103,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Stack gap={3}>
           {account && (
             <Card variant="compact">
-              {proposal.address}
-              <Button variant="primary" onClick={() => setVoting(true)}>
+              {cutMiddle(proposal.address)}
+              <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
                 Vote
               </Button>
             </Card>

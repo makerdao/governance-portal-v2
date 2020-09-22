@@ -22,7 +22,7 @@ const Header = (props): JSX.Element => {
     <Box
       as="header"
       pt={3}
-      pb={5}
+      pb={[4, 5]}
       px={[2, 0]}
       variant="styles.header"
       sx={{
