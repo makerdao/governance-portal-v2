@@ -19,19 +19,43 @@ import { BoxWithClose } from './Withdraw';
 
 const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => {
   const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
-  const [approveMkrTxId, setApproveMkrTxId] = useState(null);
+  const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const [track, approveTx] = useTransactionStore(
-    state => [
-      state.track,
-      approveMkrTxId ? transactionsSelectors.getTransaction(state, approveMkrTxId) : null
-    ],
+  const [track, tx] = useTransactionStore(
+    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
   let content;
-  if (hasLargeMkrAllowance) {
+  if (tx) {
+    const txPending = tx.status === 'pending';
+    content = (
+      <Stack sx={{ textAlign: 'center' }}>
+        <Text variant="microHeading" color="onBackgroundAlt">
+          {txPending ? 'Transaction pending' : 'Confirm transaction'}
+        </Text>
+
+        <Flex sx={{ justifyContent: 'center' }}>
+          <TxIndicators.Pending sx={{ width: 6 }} />
+        </Flex>
+
+        {!txPending && (
+          <Box>
+            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              Please use your wallet to confirm this transaction.
+            </Text>
+            <Text
+              sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+              onClick={() => setTxId(null)}
+            >
+              Cancel
+            </Text>
+          </Box>
+        )}
+      </Stack>
+    );
+  } else if (hasLargeMkrAllowance) {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
@@ -76,45 +100,23 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             const maker = await getMaker();
             const lockTxCreator = () => maker.service('chief').lock(mkrToDeposit);
             const txId = await track(lockTxCreator, 'Depositing MKR', {
-              pending: () => close(),
-              mined: txId => transactionsApi.getState().setMessage(txId, 'MKR deposited'),
-              error: () => transactionsApi.getState().setMessage(txId, 'MKR deposit failed')
+              mined: txId => {
+                transactionsApi.getState().setMessage(txId, 'MKR deposited');
+                close();
+              },
+              error: () => {
+                transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
+                close();
+              }
             });
+            setTxId(txId);
           }}
         >
           Deposit MKR
         </Button>
       </Stack>
     );
-  } else if (approveTx) {
-    const txPending = approveTx.status === 'pending';
-    content = (
-      <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
-          {txPending ? 'Transaction pending' : 'Confirm transaction'}
-        </Text>
-
-        <Flex sx={{ justifyContent: 'center' }}>
-          <TxIndicators.Pending sx={{ width: 6 }} />
-        </Flex>
-
-        {!txPending && (
-          <Box>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              Please use your wallet to confirm this transaction.
-            </Text>
-            <Text
-              sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-              onClick={() => setApproveMkrTxId(null)}
-            >
-              Cancel
-            </Text>
-          </Box>
-        )}
-      </Stack>
-    );
   } else {
-    // user hasn't given approvals or initiated an approval tx
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
@@ -136,13 +138,16 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
                 .approveUnlimited(maker.service('smartContract').getContractAddresses().CHIEF);
 
             const txId = await track(approveTxCreator, 'Granting MKR approval', {
-              mined: txId => transactionsApi.getState().setMessage(txId, 'Granted MKR approval'),
+              mined: txId => {
+                transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
+                setTxId(null);
+              },
               error: () => {
                 transactionsApi.getState().setMessage(txId, 'MKR approval failed');
-                setApproveMkrTxId(null);
+                setTxId(null);
               }
             });
-            setApproveMkrTxId(txId);
+            setTxId(txId);
           }}
         >
           Approve vote proxy
