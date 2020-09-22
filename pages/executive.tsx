@@ -30,7 +30,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
             <Flex>
-              <Text>In voting contract: </Text>
+              <Text>In voting contract:&nbsp;</Text>
               {lockedMkr ? (
                 <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
               ) : (
