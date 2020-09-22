@@ -25,7 +25,7 @@ export default function PollOverviewCard({
 }: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
-  const bpi = useBreakpointIndex();
+  const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
   const ballot = useBallotStore(state => state.ballot);

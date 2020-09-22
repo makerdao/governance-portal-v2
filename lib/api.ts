@@ -21,20 +21,42 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   if (_cachedProposals) return _cachedProposals;
-  const topics = await (await fetch(CMS_ENDPOINTS[network])).json();
+  const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
+  const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
   const proposals = topics
-    .filter(proposal => proposal.active)
-    .filter(proposal => !proposal.govVote)
+    .filter(topic => topic.active)
+    .filter(topic => !topic.govVote)
     .map(topic => topic.proposals)
     .flat();
+
+  spells.forEach(spell => {
+    spell.address = spell.source;
+    delete spell.source;
+  });
 
   proposals.forEach(proposal => {
     proposal.proposalBlurb = proposal.proposal_blurb;
     proposal.address = proposal.source;
+    proposal.active = true;
     delete proposal.proposal_blurb;
     delete proposal.source;
   });
 
+  const oldSpells = spells
+    .filter(
+      spell => proposals.findIndex(proposal => proposal.address === spell.address) === -1 // filter out active spells
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  oldSpells.forEach(spell => {
+    spell.active = false;
+    spell.proposalBlurb = spell.proposal_blurb;
+    spell.key = spell._id;
+    delete spell.proposal_blurb;
+    delete spell._id;
+  });
+
+  proposals.push(...oldSpells);
   return (_cachedProposals = proposals);
 }
 
