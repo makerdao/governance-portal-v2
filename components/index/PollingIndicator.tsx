@@ -22,7 +22,7 @@ type Props = {
 };
 
 const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
-  ({ account, activePolls, unvotedPolls, href }, ref): JSX.Element => {
+  ({ account, activePolls, unvotedPolls, ...props }, ref): JSX.Element => {
     let message: string | undefined;
     let pollsToBeAwareOf = 0;
 
@@ -44,7 +44,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
     return (
       <NavLink
         ref={ref}
-        href={href}
+        href={`/polling?network=${getNetwork()}`}
         sx={{
           fontSize: 2,
           px: '3',
@@ -61,6 +61,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
             // '> svg': { color: 'primary' }
           }
         }}
+        {...props}
       >
         {pollsToBeAwareOf > 0 && (
           <Badge mr="3" variant="circle" p="3px">
@@ -88,25 +89,12 @@ export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))
     : undefined;
 
-  const query: { network: string; pollFilter?: string } = { network: getNetwork() };
-  if (account && unvotedPolls !== undefined && unvotedPolls.length > 0) {
-    query.pollFilter = 'unvoted';
-  } else if (!account && activePolls.length > 0) {
-    query.pollFilter = 'active';
-  }
-
   return (
     <Container sx={{ textAlign: 'center' }} {...props}>
       {account && !unvotedPolls ? (
         <Skeleton height="39px" width="400px" />
       ) : (
-        <Link
-          passHref
-          href={{
-            pathname: '/polling',
-            query
-          }}
-        >
+        <Link passHref href={{ pathname: '/polling', query: { network: getNetwork() } }}>
           <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
         </Link>
       )}
