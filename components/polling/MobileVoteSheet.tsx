@@ -147,7 +147,10 @@ export default function MobileVoteSheet({
     );
   else
     return (
-      <DialogOverlay sx={{background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)'}} onDismiss={close ? close : () => setViewState(ViewState.START)}>
+      <DialogOverlay
+        sx={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
+        onDismiss={close ? close : () => setViewState(ViewState.START)}
+      >
         <DialogContent
           sx={{
             width: '100vw',

@@ -26,7 +26,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         py: 2
       }}
     >
-      <Flex>
+      <Flex sx={{ alignItems: 'center' }}>
         {tx.status === 'pending' && (
           <Spinner
             size={'16px'}

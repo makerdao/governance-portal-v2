@@ -14,7 +14,6 @@ import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
-import VoteModal from '../components/executive/VoteModal';
 import { getExecutiveProposals } from '../lib/api';
 import getMaker, { isDefaultNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
@@ -26,15 +25,7 @@ import useUiFiltersStore from '../stores/uiFilters';
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
-  const [showDialog, setShowDialog] = React.useState(false);
   const [showHistorical, setShowHistorical] = React.useState(false);
-  const [proposal, setProposal] = React.useState({});
-  const open = (proposal: Proposal) => {
-    setProposal(proposal);
-    setShowDialog(true);
-  };
-  const loader = useRef<HTMLDivElement>(null);
-  const close = () => setShowDialog(false);
 
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
@@ -99,13 +90,12 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   }, [filteredProposals]);
 
   return (
-    <PrimaryLayout shortenFooter={true}>
-      <VoteModal showDialog={showDialog} close={close} proposal={proposal} />
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       <Stack>
         {account && (
           <Flex sx={{ alignItems: 'center' }}>
             <Flex>
-              <Text>In voting contract: </Text>
+              <Text>In voting contract:&nbsp;</Text>
               {lockedMkr ? (
                 <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
               ) : (
@@ -124,7 +114,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         )}
 
         <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" sx={{ mr: 3 }}>
+          <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
           <SortBy sx={{ mr: 3 }} />
@@ -162,11 +152,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       .filter(proposal => !proposal.active)
                       .slice(0, numHistoricalProposalsLoaded)
                       .map((proposal, index) => (
-                        <ExecutiveOverviewCard
-                          key={index}
-                          proposal={proposal}
-                          openVoteModal={() => open(proposal)}
-                        />
+                        <ExecutiveOverviewCard key={index} proposal={proposal} />
                       ))}
                   </Stack>
                   <div ref={loader} />

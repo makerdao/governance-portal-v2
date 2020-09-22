@@ -40,9 +40,9 @@ export default function OnChainFx({ stateDiff, ...props }: { stateDiff: SpellSta
           <Box key={label}>
             <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</Text>
             <Grid columns="max-content max-content 3ch max-content" sx={{ rowGap: 0, overflowX: 'scroll' }}>
-              {diffs.map(diff => (
+              {diffs.map((diff, index) => (
                 <>
-                  <Text sx={{ fontWeight: 'semibold', fontSize: 3, mr: 3 }}>
+                  <Text key={index} sx={{ fontWeight: 'semibold', fontSize: 3, mr: 3 }}>
                     {diff.name}
                     {diff.keys
                       ? diff.keys.map(key => `[${ethers.utils.isAddress(key) ? formatAddress(key) : key}]`)

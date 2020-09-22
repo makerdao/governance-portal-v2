@@ -23,7 +23,9 @@ export default function ({ poll, ...props }: { poll: Poll }): JSX.Element {
         <Heading as="h3" variant="microHeading">
           {poll.title}
         </Heading>
-        <Text sx={{ fontSize: '16px', color: 'textMuted', mt: 1, fontWeight: 'normal' }}>{poll.summary}</Text>
+        <Text sx={{ fontSize: '16px', color: 'textSecondary', mt: 1, fontWeight: 'normal' }}>
+          {poll.summary}
+        </Text>
         {showQuickVote && <QuickVote poll={poll} showHeader={false} account={account} />}
         {isActivePoll(poll) ? '' : <VotingStatus sx={{ mt: 3, mx: 3, textAlign: 'center' }} poll={poll} />}
       </Card>

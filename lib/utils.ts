@@ -17,7 +17,7 @@ import PollVote from '../types/pollVote';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
-  const units = ['k', 'm', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+  const units = ['k', 'm', 'B', 'T', 'P', 'E', 'Z', 'Y'];
   let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
   typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
   const noUnit = typeIndex < 0; // if the number is smaller than 1,000
@@ -253,4 +253,9 @@ function now() {
 
 export function formatAddress(address: string) {
   return address.slice(0, 7) + '...' + address.slice(-4);
+}
+
+export function cutMiddle(text = '', left = 6, right = 4) {
+  if (text.length <= left + right) return text;
+  return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
 }

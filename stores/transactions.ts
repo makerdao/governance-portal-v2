@@ -50,10 +50,10 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
       const nextState = {
         ...prevState,
         message
-      }
-      transactions[transactionIndex] = nextState
-      return { transactions }
-    })
+      };
+      transactions[transactionIndex] = nextState;
+      return { transactions };
+    });
   },
 
   setPending: (txId, hash) => {

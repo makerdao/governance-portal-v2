@@ -4,19 +4,12 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import {
-  Box,
-  Button,
-  Card,
-  Flex,
-  Text,
-  Heading,
-  Divider,
-  Spinner,
-  Link as ExternalLink,
-  jsx
-} from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
+import BigNumber from 'bignumber.js';
+import Link from 'next/link';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
@@ -25,12 +18,12 @@ import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
-
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
-import { fetchJson, parseSpellStateDiff } from '../../lib/utils';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import invariant from 'tiny-invariant';
+import useAccountsStore from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
@@ -42,14 +35,24 @@ const editMarkdown = content => {
 };
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
+  const network = getNetwork();
+  const account = useAccountsStore(state => state.currentAccount);
+  const bpi = useBreakpointIndex();
+
   const { data: stateDiff } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
-  const [showDialog, setShowDialog] = useState(false);
-  const open = () => setShowDialog(true);
-  const close = () => setShowDialog(false);
+  const { data: allSupporters, error: supportersError } = useSWR('/exec-supporters', async () => {
+    const maker = await getMaker();
+    return maker.service('chief').getVoteTally();
+  });
+  const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
+
+  const [voting, setVoting] = useState(false);
+  const close = () => setVoting(false);
+
   const onChainFxTab = (
     <div key={2} sx={{ p: [3, 4] }}>
       {stateDiff ? (
@@ -64,36 +67,103 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true}>
+      {voting && <VoteModal close={close} proposal={proposal} />}
       <SidebarLayout>
-        <Card sx={{ p: [0, 0] }}>
-          <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
-            {'title' in proposal ? proposal.title : proposal.address}
-          </Heading>
-          {'about' in proposal ? (
-            <Tabs
-              tabListStyles={{ pl: [3, 4] }}
-              tabTitles={['Proposal Detail', 'On-Chain Effects']}
-              tabPanels={[
-                <div
-                  key={1}
-                  sx={{ variant: 'markdown.default', p: [3, 4] }}
-                  dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                />,
-                onChainFxTab
-              ]}
-            />
-          ) : (
-            <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
-          )}
-        </Card>
-        <Stack>
-          <Card variant="compact">
-            {proposal.address}
-            <Button variant="primary" onClick={open}>
-              Vote
+        <Box>
+          <Link href={{ pathname: '/executive', query: { network } }}>
+            <Button variant="mutedOutline" mb={2}>
+              <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                <Icon name="chevron_left" size="2" mr={2} />
+                Back to {bpi === 0 ? 'all' : 'executive'} proposals
+              </Flex>
             </Button>
+          </Link>
+          <Card sx={{ p: [0, 0] }}>
+            <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
+              {'title' in proposal ? proposal.title : proposal.address}
+            </Heading>
+            {'about' in proposal ? (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['Proposal Detail', 'On-Chain Effects']}
+                tabPanels={[
+                  <div
+                    key={1}
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                  />,
+                  onChainFxTab
+                ]}
+              />
+            ) : (
+              <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+            )}
           </Card>
-          <Card variant="compact">Supporters</Card>
+        </Box>
+        <Stack gap={3}>
+          {account && (
+            <Card variant="compact">
+              {cutMiddle(proposal.address)}
+              <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
+                Vote
+              </Button>
+            </Card>
+          )}
+          <Box>
+            <Heading mt={3} mb={2} as="h3" variant="microHeading">
+              Supporters
+            </Heading>
+            <Card variant="compact" p={3} sx={{ height: '237px' }}>
+              <Box sx={{ overflowY: 'scroll', height: '100%' }}>
+                {supporters ? (
+                  supporters.map(supporter => (
+                    <Flex
+                      sx={{
+                        justifyContent: 'space-between',
+                        fontSize: 3,
+                        lineHeight: '34px'
+                      }}
+                      key={supporter.address}
+                    >
+                      <Text color="onSecondary">
+                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                      </Text>
+                      <ExternalLink
+                        href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
+                        target="_blank"
+                      >
+                        <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
+                          {cutMiddle(supporter.address)}
+                        </Text>
+                      </ExternalLink>
+                    </Flex>
+                  ))
+                ) : supportersError ? (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    No supporters found
+                  </Flex>
+                ) : (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+              </Box>
+            </Card>
+          </Box>
           <ResourceBox />
         </Stack>
       </SidebarLayout>
@@ -102,13 +172,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }) {
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
 
   // fetch proposal contents at run-time if on any network other than the default
-  useEffect((): void => {
+  useEffect(() => {
     if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
         .then(_setProposal)

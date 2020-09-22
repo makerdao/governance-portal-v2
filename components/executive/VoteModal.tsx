@@ -1,19 +1,7 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
 import useSWR from 'swr';
-import {
-  Grid,
-  Button,
-  Flex,
-  Close,
-  Text,
-  Textarea,
-  Box,
-  Label,
-  Spinner,
-  Link as ExternalLink,
-  jsx
-} from 'theme-ui';
+import { Grid, Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -28,17 +16,18 @@ import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
 
 type Props = {
-  showDialog: boolean;
   close: () => void;
-  proposal: Proposal | unknown;
+  proposal: Proposal;
 };
 
-const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
+type ModalStep = 'confirm' | 'signing' | 'pending';
+
+const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${(proposal as CMSProposal).address}?network=${getNetwork()}`
+    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
   );
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
@@ -69,15 +58,20 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
     </Box>
   );
 
+  const [step, setStep] = useState('confirm');
+
   const vote = async () => {
     const maker = await getMaker();
-    const voteTxCreator = () => maker.service('chief').vote((proposal as CMSProposal).address);
+    const voteTxCreator = () => maker.service('chief').vote(proposal.address);
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
+      pending: () => setStep('pending'),
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+        close(); // TBD maybe show a separate "done" dialog
       }
     });
     setTxId(txId);
+    setStep('signing');
   };
 
   const Default = () => (
@@ -125,7 +119,7 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             Your voting weight
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {votingWeight} MKR
           </Text>
         </GridBox>
@@ -133,7 +127,7 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             MKR supporting
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {mkrSupporting} MKR
           </Text>
         </GridBox>
@@ -141,25 +135,20 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             After vote cast
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {afterVote} MKR
           </Text>
         </Box>
       </Grid>
-      <Box as="form" sx={{ width: '100%', mt: [3, 4] }}>
-        <Label htmlFor="reason">Why are you voting for this proposal?</Label>
-        <Textarea
-          sx={{ height: '96px' }}
-          name="reason"
-          defaultValue={`Optional. 250 character max. You'll be prompted to sign a message with your wallet`}
-        />
-        <Button variant="primary" sx={{ width: '100%', mt: 3 }} onClick={vote}>
+      <Box sx={{ width: '100%', mt: 3 }}>
+        <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
           Submit Vote
         </Button>
       </Box>
     </Flex>
   );
-  const Pending = () => (
+
+  const Signing = () => (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Close
         aria-label="close"
@@ -171,23 +160,18 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
         Sign Transaction
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Spinner
-          size={'60px'}
-          sx={{
-            color: 'primary',
-            alignSelf: 'center'
-          }}
-        />
-        <Text sx={{ mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>
-        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: '14px' }}>
+        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
           Cancel vote submission
         </Button>
       </Flex>
     </Flex>
   );
-  const Mined = () => (
+
+  const Pending = () => (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Close
         aria-label="close"
@@ -198,12 +182,9 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
       <Text variant="heading" sx={{ fontSize: 6 }}>
         Transaction Sent!
       </Text>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 5 }}>
-        <Icon name="reviewCheck" size={5} />
-        <Text variant="heading" sx={{ fontSize: 4, mt: 3 }}>
-          Transaction Sent!
-        </Text>
-        <Text sx={{ mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
           Proposal will update once the blockchain has confirmed the tx.
         </Text>
         <ExternalLink
@@ -211,14 +192,14 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
           href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
           sx={{ p: 0 }}
         >
-          <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
             <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>
         </ExternalLink>
         <Button
           onClick={close}
-          sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
+          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
           variant="outline"
         >
           Close
@@ -226,22 +207,21 @@ const VoteModal = ({ showDialog, close, proposal }: Props): JSX.Element => {
       </Flex>
     </Flex>
   );
-  const isPending = tx?.status === 'pending';
-  const isMined = tx?.status === 'mined';
-  const hasFailed = tx?.status === 'error';
+
   const view = useMemo(() => {
-    if (isPending) return <Pending />;
-    if (isMined) return <Mined />;
-    // if (hasFailed) return <Error />;
-    return <Default />;
-  }, [isPending, isMined, hasFailed]);
+    switch (step) {
+      case 'confirm':
+        return <Default />;
+      case 'signing':
+        return <Signing />;
+      case 'pending':
+        return <Pending />;
+      // case 'failed': return <Error />;
+    }
+  }, [step]);
 
   return (
-    <DialogOverlay
-      style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-      isOpen={showDialog}
-      onDismiss={close}
-    >
+    <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
       <DialogContent
         aria-label="Executive Vote"
         sx={

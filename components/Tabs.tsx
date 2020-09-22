@@ -14,11 +14,11 @@ type Props = {
   hashRoute?: boolean;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props) => {
+const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const [, hash] = location.href.split('#');
     if (hashRoute && hash) {
       tabTitles.forEach((title, i) => {
@@ -64,8 +64,9 @@ const baseTabStyles: SxStyleProp = {
   mx: 3,
   p: 0,
   pb: 2,
-  fontSize: 3,
-  fontWeight: 500,
+  color: 'textSecondary',
+  fontSize: [2, 3],
+  fontWeight: 400,
   border: 'none !important',
   bg: 'inherit',
   outline: 'none'
@@ -73,7 +74,7 @@ const baseTabStyles: SxStyleProp = {
 
 const getTabStyles = ({ isActive, isFirst }) => ({
   ...baseTabStyles,
-  ...(isActive ? { color: 'primary' } : {}),
+  ...(isActive ? { color: 'primary', fontWeight: 500 } : {}),
   ...(isFirst ? { ml: 0 } : {})
 });
 

@@ -21,8 +21,8 @@ const Header = (props): JSX.Element => {
   return (
     <Box
       as="header"
-      pt={4}
-      pb={5}
+      pt={3}
+      pb={[4, 5]}
       px={[2, 0]}
       variant="styles.header"
       sx={{
@@ -40,25 +40,37 @@ const Header = (props): JSX.Element => {
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
         <Link href={{ pathname: '/polling', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}>
+          <NavLink
+            href={`/polling?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}
+          >
             Polling
           </NavLink>
         </Link>
 
         <Link href={{ pathname: '/executive', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}>
+          <NavLink
+            href={`/executive?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
+          >
             Executive
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/module', query: { network } }}>
-          <NavLink p={0} sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}>
+        {/* <Link href={{ pathname: '/module', query: { network } }}>
+          <NavLink
+            href={`/module?network=${network}`}
+            p={0}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
+          >
             ES Module
           </NavLink>
-        </Link>
+        </Link> */}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <AccountSelect sx={{ ml: ['auto', 'auto', 0] }} />
+        <AccountSelect sx={{ ml: ['auto', 3, 0] }} />
 
         <IconButton
           aria-label="Show menu"
@@ -98,9 +110,9 @@ const MobileMenu = ({ hide, network }) => {
         <Link href={{ pathname: '/executive', query: { network } }}>
           <NavLink>Executive</NavLink>
         </Link>
-        <Link href={{ pathname: '/module', query: { network } }}>
+        {/* <Link href={{ pathname: '/module', query: { network } }}>
           <NavLink>ES Module</NavLink>
-        </Link>
+        </Link> */}
       </Flex>
     </Container>
   );
