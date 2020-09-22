@@ -1,21 +1,27 @@
 import { useState } from 'react';
-import { Input } from 'theme-ui';
+import { Input, Text, Box } from 'theme-ui';
+
 import { MKR } from '../lib/maker';
 import CurrencyObject from '../types/currency';
 
 type Props = {
-  placeholder: string;
+  placeholder?: string;
   onChange: (value: CurrencyObject) => void;
   min?: CurrencyObject;
   max?: CurrencyObject;
+  error?: string | false;
 };
 
-const MKRInput = ({ placeholder = '0.00', ...props }: Props): JSX.Element => {
+const MKRInput = ({ placeholder = '0.00', error, ...props }: Props): JSX.Element => {
   const { onChange, min, max } = props;
   const [currentValueStr, setCurrentValueStr] = useState('');
 
   function updateValue(e: { currentTarget: { value: string } }) {
     const newValueStr = e.currentTarget.value;
+
+    /* eslint-disable no-useless-escape */
+    if (/^(\-(\d*))$/.test(newValueStr)) return; // no negatives
+    if (/\D/.test(newValueStr)) return; // only numbers
     const newValue = MKR(newValueStr || '0');
     const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max));
     if (invalidValue) {
@@ -27,13 +33,15 @@ const MKRInput = ({ placeholder = '0.00', ...props }: Props): JSX.Element => {
   }
 
   return (
-    <Input
-      aria-label="mkr-input"
-      onChange={updateValue}
-      type="number"
-      value={currentValueStr}
-      placeholder={placeholder}
-    />
+    <Box>
+      <Input
+        aria-label="mkr-input"
+        onChange={updateValue}
+        value={currentValueStr}
+        placeholder={placeholder}
+      />
+      {error && <Text sx={{ color: 'error', fontSize: 2 }}>{error}</Text>}
+    </Box>
   );
 };
 

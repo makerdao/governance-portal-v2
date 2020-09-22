@@ -11,6 +11,7 @@ export default function (props): JSX.Element {
     account?.address ? ['/user/polling-voting-weight', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
   );
+
   let votingWeightDescription = '';
   if (votingWeight) {
     votingWeightDescription += votingWeight.proxyChiefBalance?.gte(0.005)
