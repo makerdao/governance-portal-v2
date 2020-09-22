@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button, Flex, Text, Close, Box, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -14,10 +14,12 @@ import useAccountsStore from '../../stores/accounts';
 import CurrencyObject from '../../types/currency';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
+import { changeInputValue } from '../../lib/utils';
 
 const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [approveIouTxId, setApproveIouTxId] = useState(null);
+  const input = useRef<HTMLInputElement>(null);
 
   const [track, approveTx] = useTransactionStore(
     state => [
@@ -53,6 +55,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
               onChange={setMkrToWithdraw}
               placeholder="0.00 MKR"
               error={mkrToWithdraw.gt(lockedMkr) && 'MKR balance too low'}
+              ref={input}
             />
           </Box>
           <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
@@ -60,7 +63,15 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
               MKR in contract:&nbsp;
             </Text>
             {lockedMkr ? (
-              <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)}</Text>
+              <Text
+                sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+                onClick={() => {
+                  if (!input.current) return;
+                  changeInputValue(input.current, lockedMkr.toBigNumber().toFormat(18));
+                }}
+              >
+                {lockedMkr.toBigNumber().toFormat(6)}
+              </Text>
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
