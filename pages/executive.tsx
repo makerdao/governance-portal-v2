@@ -26,6 +26,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
+  const loader = useRef<HTMLDivElement>(null);
 
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
