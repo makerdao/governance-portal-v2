@@ -20,6 +20,8 @@ type Props = {
   proposal: Proposal;
 };
 
+type ModalStep = 'confirm' | 'signing' | 'pending';
+
 const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
@@ -56,15 +58,21 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
     </Box>
   );
 
+  const [step, setStep] = useState('confirm');
+
   const vote = async () => {
     const maker = await getMaker();
     const voteTxCreator = () => maker.service('chief').vote(proposal.address);
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
+      pending: () => setStep('pending'),
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+
+        close();
       }
     });
     setTxId(txId);
+    setStep('signing');
   };
 
   const Default = () => (
@@ -112,7 +120,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             Your voting weight
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {votingWeight} MKR
           </Text>
         </GridBox>
@@ -120,7 +128,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             MKR supporting
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {mkrSupporting} MKR
           </Text>
         </GridBox>
@@ -128,7 +136,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           <Text color="onSecondary" sx={{ fontSize: 3 }}>
             After vote cast
           </Text>
-          <Text color="#434358" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
             {afterVote} MKR
           </Text>
         </Box>
@@ -140,7 +148,8 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       </Box>
     </Flex>
   );
-  const Pending = () => (
+
+  const Signing = () => (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Close
         aria-label="close"
@@ -152,23 +161,18 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         Sign Transaction
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Spinner
-          size={'60px'}
-          sx={{
-            color: 'primary',
-            alignSelf: 'center'
-          }}
-        />
-        <Text sx={{ mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>
-        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: '14px' }}>
+        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
           Cancel vote submission
         </Button>
       </Flex>
     </Flex>
   );
-  const Mined = () => (
+
+  const Pending = () => (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Close
         aria-label="close"
@@ -179,12 +183,9 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       <Text variant="heading" sx={{ fontSize: 6 }}>
         Transaction Sent!
       </Text>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: 5 }}>
-        <Icon name="reviewCheck" size={5} />
-        <Text variant="heading" sx={{ fontSize: 4, mt: 3 }}>
-          Transaction Sent!
-        </Text>
-        <Text sx={{ mt: 3, color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewCheck" size={5} sx={{ my: 3 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
           Proposal will update once the blockchain has confirmed the tx.
         </Text>
         <ExternalLink
@@ -207,15 +208,18 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       </Flex>
     </Flex>
   );
-  const isPending = tx?.status === 'pending';
-  const isMined = tx?.status === 'mined';
-  const hasFailed = tx?.status === 'error';
+
   const view = useMemo(() => {
-    if (isPending) return <Pending />;
-    if (isMined) return <Mined />;
-    // if (hasFailed) return <Error />;
-    return <Default />;
-  }, [isPending, isMined, hasFailed]);
+    switch (step) {
+      case 'confirm':
+        return <Default />;
+      case 'signing':
+        return <Signing />;
+      case 'pending':
+        return <Pending />;
+      // case 'failed': return <Error />;
+    }
+  }, [step]);
 
   return (
     <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
