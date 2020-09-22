@@ -20,8 +20,7 @@ const MKRInput = ({ placeholder = '0.00', error, ...props }: Props): JSX.Element
     const newValueStr = e.currentTarget.value;
 
     /* eslint-disable no-useless-escape */
-    if (/^(\-(\d*))$/.test(newValueStr)) return; // no negatives
-    if (!/^-?\d*\.?\d*$/.test(newValueStr)) return; // only numbers
+    if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(newValueStr)) return; // only non-negative valid numbers
     const newValue = MKR(newValueStr || '0');
     const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max));
     if (invalidValue) {
@@ -36,6 +35,7 @@ const MKRInput = ({ placeholder = '0.00', error, ...props }: Props): JSX.Element
     <Box>
       <Input
         aria-label="mkr-input"
+        type="number"
         onChange={updateValue}
         value={currentValueStr}
         placeholder={placeholder}

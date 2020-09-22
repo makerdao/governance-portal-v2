@@ -66,7 +66,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
             )}
           </Flex>
           <Button
-            sx={{ flexDirection: 'column', width: '100%' }}
+            sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
             disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
             onClick={async () => {
               const maker = await getMaker();
@@ -146,7 +146,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
         </Box>
 
         <Button
-          sx={{ flexDirection: 'column', width: '100%' }}
+          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             const maker = await getMaker();
             const approveTxCreator = () =>
@@ -213,6 +213,7 @@ const Withdraw = props => {
           }
         >
           <ModalContent
+            sx={{ px: [3, null] }}
             hasLargeIouAllowance={hasLargeIouAllowance}
             lockedMkr={lockedMkr}
             close={() => setShowDialog(false)}

@@ -66,7 +66,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             )}
           </Flex>
           <Button
-            sx={{ flexDirection: 'column', width: '100%' }}
+            sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
             disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
             onClick={async () => {
               const maker = await getMaker();
@@ -146,7 +146,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
         </Box>
 
         <Button
-          sx={{ flexDirection: 'column', width: '100%' }}
+          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             const maker = await getMaker();
             const approveTxCreator = () =>

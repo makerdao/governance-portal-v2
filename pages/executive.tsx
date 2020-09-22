@@ -31,7 +31,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       <Stack>
         {account && (
-          <Flex sx={{ alignItems: 'center' }}>
+          <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
             <Flex>
               <Text>In voting contract:&nbsp;</Text>
               {lockedMkr ? (
@@ -42,8 +42,10 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Deposit sx={{ ml: 3 }} />
-            <Withdraw sx={{ ml: 3 }} />
+            <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
+              <Deposit sx={{ ml: [0, 3] }} />
+              <Withdraw sx={{ ml: 3 }} />
+            </Flex>
           </Flex>
         )}
 
