@@ -83,7 +83,7 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             justifyContent: 'center',
             alignItems: 'center',
             borderLeft: '1px solid',
-            borderLeftColor: [null, 'secondaryMuted'],
+            borderLeftColor: 'secondaryMuted',
             color: 'accentBlue',
             p: 2,
             flex: 1,

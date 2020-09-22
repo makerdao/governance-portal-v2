@@ -47,7 +47,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
   if ('about' in proposal) {
     return (
       <Card sx={{ p: [0, 0] }} {...props}>
-        <Flex px={4} py={spellData?.hasBeenCast ? 3 : 4} sx={{ justifyContent: 'space-between' }}>
+        <Flex px={[3, 4]} py={[3, spellData?.hasBeenCast ? 3 : 4]} sx={{ justifyContent: 'space-between' }}>
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
