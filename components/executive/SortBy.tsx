@@ -13,16 +13,22 @@ export default function (props): JSX.Element {
   );
 
   return (
-    <FilterButton name={() => `Sort by ${executiveSortBy}`} {...props}>
+    <FilterButton name={() => `Sort by ${executiveSortBy}`} listVariant="menubuttons.default.list" {...props}>
       <MenuItem
         onSelect={() => setExecutiveSortBy('Date Posted')}
-        sx={{ mb: 3, fontSize: 4, fontWeight: executiveSortBy === 'Date Posted' ? 'bold' : null }}
+        sx={{
+          variant: 'menubuttons.default.item',
+          fontWeight: executiveSortBy === 'Date Posted' ? 'bold' : null
+        }}
       >
         Date Posted
       </MenuItem>
       <MenuItem
         onSelect={() => setExecutiveSortBy('MKR Amount')}
-        sx={{ fontSize: 4, fontWeight: executiveSortBy === 'MKR Amount' ? 'bold' : null }}
+        sx={{
+          variant: 'menubuttons.default.item',
+          fontWeight: executiveSortBy === 'MKR Amount' ? 'bold' : null
+        }}
       >
         MKR Amount
       </MenuItem>
