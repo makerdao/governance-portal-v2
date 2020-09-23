@@ -182,7 +182,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
                   <Button variant="mutedOutline" onClick={() => setShowHistorical(true)}>
-                    View more proposals ({filteredProposals.filter(proposal => !proposal.active).length})
+                    View more proposals
                   </Button>
                   <Divider />
                 </Grid>
