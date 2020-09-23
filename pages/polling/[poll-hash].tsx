@@ -6,13 +6,12 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, Button, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Tooltip from '@reach/tooltip';
 import Skeleton from 'react-loading-skeleton';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import CountdownTimer from '../../components/CountdownTimer';
-import Delay from '../../components/Delay';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
@@ -21,6 +20,7 @@ import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/PollVotingStatus';
+import VoteBreakdown from '../../components/polling/[poll-hash]/VoteBreakdown';
 import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
 import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import ResourceBox from '../../components/ResourceBox';
@@ -28,7 +28,6 @@ import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';
 import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import useBallotStore from '../../stores/ballot';
 
 // if the poll has ended, always fetch its tally from the server's cache
@@ -201,135 +200,12 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                 />,
                 [
-                  poll.voteType === 'Plurality Voting' ? (
-                    <div key={2} sx={{ p: [3, 4] }}>
-                      <Text variant="microHeading" sx={{ mb: 3 }}>
-                        Vote Breakdown
-                      </Text>
-                      {Object.keys(poll.options)
-                        .slice(0, shownOptions)
-                        .map((_, i) => (
-                          <div key={i}>
-                            <Flex sx={{ justifyContent: 'space-between' }}>
-                              <Text sx={{ color: 'textSecondary', width: '20%' }}>
-                                {tally ? (
-                                  tally.results[i].optionName
-                                ) : (
-                                  <Delay>
-                                    <Skeleton />
-                                  </Delay>
-                                )}
-                              </Text>
-                              <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                                {tally ? (
-                                  `${tally.results[i].firstChoice
-                                    .add(tally.results[i].transfer)
-                                    .toBigNumber()
-                                    .toFormat(2)} MKR Voting (${tally.results[i].firstPct.toFixed(2)}%)`
-                                ) : (
-                                  <Delay>
-                                    <Skeleton />
-                                  </Delay>
-                                )}
-                              </Text>
-                            </Flex>
-
-                            {tally ? (
-                              <Tooltip
-                                label={`First choice ${tally.results[i].firstChoice
-                                  .toBigNumber()
-                                  .toFormat(2)}`}
-                              >
-                                <Box my={2}>
-                                  <Progress
-                                    sx={{ backgroundColor: 'muted', mb: '3' }}
-                                    max={tally.totalMkrParticipation.toBigNumber()}
-                                    value={tally.results[i].firstChoice.toBigNumber()}
-                                  />
-                                </Box>
-                              </Tooltip>
-                            ) : (
-                              <Delay>
-                                <Skeleton />
-                              </Delay>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  ) : (
-                    <div key={2} sx={{ p: [3, 4] }}>
-                      <Text variant="microHeading" sx={{ mb: 3 }}>
-                        Vote Breakdown
-                      </Text>
-                      {Object.keys(poll.options)
-                        .slice(0, shownOptions)
-                        .map((_, i) => (
-                          <div key={i}>
-                            <Flex sx={{ justifyContent: 'space-between' }}>
-                              <Text sx={{ color: 'textSecondary', width: '20%' }}>
-                                {tally ? (
-                                  tally.results[i].optionName
-                                ) : (
-                                  <Delay>
-                                    <Skeleton />
-                                  </Delay>
-                                )}
-                              </Text>
-                              <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                                {tally ? (
-                                  (console.log(tally.results[i].firstPct),
-                                  `${tally.results[i].firstChoice
-                                    .add(tally.results[i].transfer)
-                                    .toBigNumber()
-                                    .toFormat(2)} MKR Voting (${tally.results[i].firstPct
-                                    .plus(tally.results[i].transferPct)
-                                    .toFixed(2)}%)`)
-                                ) : (
-                                  <Delay>
-                                    <Skeleton />
-                                  </Delay>
-                                )}
-                              </Text>
-                            </Flex>
-
-                            {tally ? (
-                              <Box sx={{ position: 'relative', mb: 4 }}>
-                                <Tooltip
-                                  label={`First choice ${tally.results[i].firstChoice
-                                    .toBigNumber()
-                                    .toFormat(2)}`}
-                                >
-                                  <Box my={2}>
-                                    <Progress
-                                      sx={{ backgroundColor: 'muted', zIndex: 2, position: 'absolute' }}
-                                      max={tally.totalMkrParticipation.toBigNumber()}
-                                      value={tally.results[i].firstChoice.toBigNumber()}
-                                    />
-                                  </Box>
-                                </Tooltip>
-                                <Tooltip
-                                  label={`Transfer ${tally.results[i].transfer.toBigNumber().toFormat(2)}`}
-                                >
-                                  <Box my={2}>
-                                    <Progress
-                                      sx={{ backgroundColor: 'muted', zIndex: 1, position: 'absolute' }}
-                                      max={tally.totalMkrParticipation.toBigNumber()}
-                                      value={tally.results[i].firstChoice
-                                        .add(tally.results[i].transfer)
-                                        .toBigNumber()}
-                                    />
-                                  </Box>
-                                </Tooltip>
-                              </Box>
-                            ) : (
-                              <Delay>
-                                <Skeleton />
-                              </Delay>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  ),
+                  <VoteBreakdown
+                    poll={poll}
+                    shownOptions={shownOptions}
+                    tally={tally}
+                    key={'vote breakdown'}
+                  />,
                   shownOptions < Object.keys(poll.options).length && (
                     <Box sx={{ px: 4, pb: 3 }} key={'view more'}>
                       <Button
