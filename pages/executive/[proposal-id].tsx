@@ -44,10 +44,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     async url => parseSpellStateDiff(await fetchJson(url))
   );
 
-  const { data: allSupporters, error: supportersError } = useSWR('/exec-supporters', async () => {
-    const maker = await getMaker();
-    return maker.service('chief').getVoteTally();
-  });
+  const { data: allSupporters, error: supportersError } = useSWR(
+    `/api/executive/supporters?network=${getNetwork()}`
+  );
+
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
