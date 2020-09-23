@@ -61,9 +61,10 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal> {
+export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
   const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
+  if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');
 

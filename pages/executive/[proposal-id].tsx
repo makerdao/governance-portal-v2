@@ -10,7 +10,6 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
@@ -208,7 +207,13 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   useEffect(() => {
     if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
-        .then(_setProposal)
+        .then(proposal => {
+          if (proposal) {
+            _setProposal(proposal);
+          } else {
+            setError('No proposal found');
+          }
+        })
         .catch(setError);
     }
   }, [query['proposal-id']]);
@@ -238,7 +243,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
   const proposalId = params['proposal-id'] as string;
 
-  const proposal: Proposal = ethers.utils.isAddress(proposalId)
+  const proposal: Proposal | null = ethers.utils.isAddress(proposalId)
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
