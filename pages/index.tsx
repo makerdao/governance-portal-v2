@@ -123,13 +123,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
               <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
                 <Stack>
-                  {proposals.map(proposal => (
-                    <ExecutiveCard
-                      isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                      key={proposal.key}
-                      proposal={proposal}
-                    />
-                  ))}
+                  {proposals
+                    .filter(proposal => proposal.active)
+                    .map(proposal => (
+                      <ExecutiveCard
+                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                        key={proposal.key}
+                        proposal={proposal}
+                      />
+                    ))}
                 </Stack>
               </Container>
             </Stack>

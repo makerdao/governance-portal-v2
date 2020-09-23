@@ -10,10 +10,8 @@ export const CMS_ENDPOINTS = {
     allSpells: 'https://cms-gov.makerfoundation.com/content/all-spells'
   },
   [SupportedNetworks.KOVAN]: {
-    [SupportedNetworks.MAINNET]: {
-      allTopics: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard',
-      allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
-    }
+    allTopics: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard',
+    allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
   }
 };
 
