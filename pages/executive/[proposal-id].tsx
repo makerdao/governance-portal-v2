@@ -10,18 +10,19 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import invariant from 'tiny-invariant';
+
 import OnChainFx from '../../components/executive/OnChainFx';
 import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
+import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
-import invariant from 'tiny-invariant';
 import useAccountsStore from '../../stores/accounts';
 
 type Props = {
@@ -119,79 +120,83 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             )}
           </Card>
         </Box>
-        <Stack gap={3}>
-          {account && bpi !== 0 && (
-            <>
-              <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
-                Your Vote
+        <StickyColumn sx={{ pt: 3 }}>
+          <Stack gap={3}>
+            {account && bpi !== 0 && (
+              <>
+                <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
+                  Your Vote
+                </Heading>
+                <Card variant="compact">
+                  <Text sx={{ fontSize: 5 }}>
+                    {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
+                  </Text>
+                  <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%', mt: 3 }}>
+                    Vote
+                  </Button>
+                </Card>
+              </>
+            )}
+            <Box>
+              <Heading mt={3} mb={2} as="h3" variant="microHeading">
+                Supporters
               </Heading>
-              <Card variant="compact">
-                <Text sx={{ fontSize: 5 }}>
-                  {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
-                </Text>
-                <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%', mt: 3 }}>
-                  Vote
-                </Button>
-              </Card>
-            </>
-          )}
-          <Box>
-            <Heading mt={3} mb={2} as="h3" variant="microHeading">
-              Supporters
-            </Heading>
-            <Card variant="compact" p={3} sx={{ height: '237px' }}>
-              <Box sx={{ overflowY: 'scroll', height: '100%' }}>
-                {supporters ? (
-                  supporters.map(supporter => (
+              <Card variant="compact" p={3} sx={{ height: '237px' }}>
+                <Box sx={{ overflowY: 'scroll', height: '100%' }}>
+                  {supporters ? (
+                    supporters.map(supporter => (
+                      <Flex
+                        sx={{
+                          justifyContent: 'space-between',
+                          fontSize: 3,
+                          lineHeight: '34px'
+                        }}
+                        key={supporter.address}
+                      >
+                        <Text color="onSecondary">
+                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                        </Text>
+                        <ExternalLink
+                          href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
+                          target="_blank"
+                        >
+                          <Text
+                            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                          >
+                            {cutMiddle(supporter.address)}
+                          </Text>
+                        </ExternalLink>
+                      </Flex>
+                    ))
+                  ) : supportersError ? (
                     <Flex
                       sx={{
-                        justifyContent: 'space-between',
-                        fontSize: 3,
-                        lineHeight: '34px'
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 4,
+                        color: 'onSecondary'
                       }}
-                      key={supporter.address}
                     >
-                      <Text color="onSecondary">
-                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
-                      </Text>
-                      <ExternalLink
-                        href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
-                        target="_blank"
-                      >
-                        <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
-                          {cutMiddle(supporter.address)}
-                        </Text>
-                      </ExternalLink>
+                      No supporters found
                     </Flex>
-                  ))
-                ) : supportersError ? (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    No supporters found
-                  </Flex>
-                ) : (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
-              </Box>
-            </Card>
-          </Box>
-          <ResourceBox />
-        </Stack>
+                  ) : (
+                    <Flex
+                      sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Spinner size={32} />
+                    </Flex>
+                  )}
+                </Box>
+              </Card>
+            </Box>
+            <ResourceBox />
+          </Stack>
+        </StickyColumn>
       </SidebarLayout>
     </PrimaryLayout>
   );

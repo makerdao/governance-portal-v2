@@ -381,9 +381,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
             {!!account && <VoteBox poll={poll} />}
-            <SystemStatsSidebar
-              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-            />
+            <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
             <ResourceBox />
           </Stack>
         </StickyColumn>

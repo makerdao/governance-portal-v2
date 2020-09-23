@@ -240,9 +240,7 @@ const PollingOverview = ({ polls }: Props) => {
               {account && bpi > 0 && (
                 <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
               )}
-              <SystemStatsSidebar
-                fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-              />
+              <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
               <ResourceBox />
             </Stack>
           </StickyColumn>
