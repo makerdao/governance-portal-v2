@@ -33,9 +33,9 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
           fontSize: 4,
           textAlign: 'left',
           display: '-webkit-box',
-          overflow: 'hidden',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: 2
+          overflow: 'hidden'
+          // WebkitBoxOrient: 'vertical',
+          // WebkitLineClamp: 2
         }}
       >
         {blogPost.title}
