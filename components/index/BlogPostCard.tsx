@@ -31,11 +31,12 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
         sx={{
           textOverflow: 'ellipsis',
           fontSize: 4,
+          whiteSpace: 'nowrap',
           textAlign: 'left',
-          display: '-webkit-box',
-          overflow: 'hidden',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: 2
+          overflow: 'hidden'
+          // display: '-webkit-box',
+          // WebkitBoxOrient: 'vertical',
+          // WebkitLineClamp: 2
         }}
       >
         {blogPost.title}
