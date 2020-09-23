@@ -141,7 +141,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as="h1">Active Executive Proposals</Heading>
+              <Heading as="h1">Executive Proposals</Heading>
               <Stack gap={4} sx={{ mb: 4 }}>
                 {filteredProposals
                   .filter(proposal => proposal.active)
@@ -158,9 +158,9 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 <div>
                   <Heading mb={3} as="h4">
                     <Flex sx={{ justifyContent: 'space-between' }}>
-                      Historical Proposals
+                      <div />
                       <Button onClick={() => setShowHistorical(false)} variant="mutedOutline">
-                        Hide historical proposals
+                        View fewer proposals
                       </Button>
                     </Flex>
                   </Heading>
