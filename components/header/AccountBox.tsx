@@ -47,11 +47,10 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
       </Flex>
       <Flex
         sx={{
-          flexDirection: ['row', 'row'],
+          flexDirection: 'row',
           alignItems: 'stretch',
           borderTop: '1px solid',
           borderTopColor: 'secondaryMuted',
-          // width: '100%',
           variant: 'text.smallText',
           color: 'onSurface'
         }}

@@ -46,17 +46,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Text
-              // sx={{
-              //   variant: 'microHeading',
-              //   whiteSpace: 'nowrap',
-              //   overflow: 'hidden',
-              //   textOverflow: 'ellipsis',
-              //   fontSize: [3, 4]
-              // }}
-              variant="microHeading"
-              sx={{ fontSize: [3, 4], cursor: 'pointer' }}
-            >
+            <Text variant="microHeading" sx={{ fontSize: [3, 4], cursor: 'pointer' }}>
               {poll.title}
             </Text>
           </Link>
@@ -67,7 +57,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            fontSize: [3, 3],
+            fontSize: 3,
             opacity: 0.8
           }}
         >
