@@ -13,17 +13,17 @@ export default function (props): JSX.Element {
   return (
     <>
       <Flex {...props} sx={{ justifyContent: 'space-between' }}>
-        <Text color="onSurface" sx={{ pt: 3, fontSize: 1, fontWeight: '600' }}>
-          POLLING VOTING WEIGHT
+        <Text color="onSurface" variant="caps" sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}>
+          polling voting weight
         </Text>
       </Flex>
       <Flex>
-        <Text>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
+        <Text sx={{ fontSize: 5 }}>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
       </Flex>
       <Flex sx={{ py: 1 }}>
         <Text sx={{ fontSize: 2 }} color="onSurface">
-          Your voting weight is made up of MKR in your wallet, vote proxy, and voting contract. This amount is
-          applied to all polls you vote on.
+          Your voting weight is made up of the MKR in your wallet, vote proxy, and voting contract. This
+          amount is applied to all polls you vote on.
         </Text>
       </Flex>
     </>

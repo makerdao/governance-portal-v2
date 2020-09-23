@@ -45,13 +45,13 @@ export default function (props): JSX.Element {
       }}
     >
       <Flex sx={{ flexDirection: 'row' }}>
-        <Text color="onSecondary" sx={{ fontWeight: 'bold', fontSize: '12px' }}>
-          POLLING VOTING WEIGHT
+        <Text color="onSurface" variant="caps" sx={{ fontWeight: 'bold', fontSize: '12px' }}>
+          polling voting weight
         </Text>
         {votingWeightDescription ? (
           <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
             <Box>
-              <Icon name="question" ml={1} mt={1} sx={{ paddingTop: '3px' }} />
+              <Icon name="question" ml={1} mt={0} sx={{ paddingTop: '0px' }} />
             </Box>
           </Tooltip>
         ) : null}

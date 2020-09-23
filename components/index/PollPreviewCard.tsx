@@ -20,10 +20,10 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
       <Stack gap={2} sx={{ variant: 'cards.primary' }}>
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Text
+            variant="caps"
             sx={{
-              fontSize: [2, 3],
-              color: 'text',
-              textTransform: 'uppercase'
+              fontSize: [2, 1],
+              color: 'textSecondary'
             }}
           >
             Posted{' '}
@@ -46,15 +46,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Text
-              sx={{
-                variant: 'microHeading',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                fontSize: [3, 4]
-              }}
-            >
+            <Text variant="microHeading" sx={{ fontSize: [3, 4], cursor: 'pointer' }}>
               {poll.title}
             </Text>
           </Link>
@@ -65,7 +57,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            fontSize: [3, 4],
+            fontSize: 3,
             opacity: 0.8
           }}
         >

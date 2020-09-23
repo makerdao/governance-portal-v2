@@ -10,7 +10,7 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
     target="_blank"
     variant="card"
     href={blogPost.link}
-    sx={{ p: [0, 0], borderRadius: 'medium', ':hover': { borderColor: 'onSecondary' } }}
+    sx={{ p: [0, 0], borderRadius: 'medium', ':hover': { borderColor: 'onSecondary', boxShadow: 'faint' } }}
     {...otherProps}
   >
     <Box>
@@ -29,11 +29,13 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
         px={3}
         pt={3}
         sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
           textOverflow: 'ellipsis',
           fontSize: 4,
-          textAlign: 'left'
+          textAlign: 'left',
+          display: '-webkit-box',
+          overflow: 'hidden',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: 2
         }}
       >
         {blogPost.title}

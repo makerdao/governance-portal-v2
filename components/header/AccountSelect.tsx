@@ -52,7 +52,12 @@ const AccountSelect = props => {
         borderRadius: 'medium',
         mb: 2,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        '&:hover': {
+          color: 'text',
+          borderColor: 'onSecondary',
+          backgroundColor: 'white'
+        }
       }}
       key={name}
       onClick={() => {
@@ -122,10 +127,25 @@ const AccountSelect = props => {
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Button variant="textual" color="primary" onClick={() => setChangeWallet(false)}>
+              <Button
+                variant="textual"
+                color="primary"
+                sx={{ fontSize: 3, px: 0 }}
+                onClick={() => setChangeWallet(false)}
+              >
                 Back
               </Button>
-              <Close aria-label="close" sx={{ height: '18px', width: '18px', p: 0 }} onClick={close} />
+              <Close
+                aria-label="close"
+                sx={{
+                  p: 0,
+                  cursor: 'pointer',
+                  ':focus': {
+                    outline: 'none'
+                  }
+                }}
+                onClick={close}
+              />
             </Flex>
             {walletOptions}
           </DialogContent>
@@ -144,7 +164,18 @@ const AccountSelect = props => {
               </Text>
               <Close
                 aria-label="close"
-                sx={{ height: 4, width: 4, p: 0, position: 'relative', top: '-4px', left: '8px' }}
+                sx={{
+                  height: 4,
+                  width: 4,
+                  p: 0,
+                  position: 'relative',
+                  top: '-4px',
+                  left: '8px',
+                  cursor: 'pointer',
+                  ':focus': {
+                    outline: 'none'
+                  }
+                }}
                 onClick={close}
               />
             </Flex>

@@ -40,24 +40,33 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
         </Flex>
         <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>
           <Text variant="caps" color="onSurface">
-            CHANGE
-            {bpi > 0 && ' WALLET'}
+            change
+            {bpi > 0 && ' wallet'}
           </Text>
         </Button>
       </Flex>
       <Flex
         sx={{
-          flexDirection: ['column', 'row'],
+          flexDirection: 'row',
           alignItems: 'stretch',
           borderTop: '1px solid',
           borderTopColor: 'secondaryMuted',
-          width: '100%',
           variant: 'text.smallText',
           color: 'onSurface'
         }}
       >
         <Flex
-          sx={{ justifyContent: 'center', alignItems: 'center', p: 2, cursor: 'copy', flex: 1 }}
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            p: 2,
+            cursor: 'pointer',
+            flex: 1,
+            '&:hover': {
+              color: 'text',
+              backgroundColor: 'background'
+            }
+          }}
           onClick={() => navigator.clipboard.writeText(account)}
         >
           <Icon name="copy" sx={{ pr: 1 }} />
@@ -72,15 +81,19 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            borderLeft: ['0', '1px solid'],
-            borderLeftColor: [null, 'secondaryMuted'],
-            color: 'onSurface',
+            borderLeft: '1px solid',
+            borderLeftColor: 'secondaryMuted',
+            color: 'accentBlue',
             p: 2,
-            flex: 1
+            flex: 1,
+            '&:hover': {
+              color: 'blueLinkHover',
+              backgroundColor: 'background'
+            }
           }}
         >
           View on Etherscan
-          <Icon name="arrowTopRight" color="accentBlue" size={2} sx={{ ml: 1 }} />
+          <Icon name="arrowTopRight" size={2} sx={{ ml: 1 }} />
         </ExternalLink>
         {accountName === 'WalletConnect' && (
           <Flex

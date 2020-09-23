@@ -41,7 +41,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   return (
     <div>
       <Head>
-        <title>Maker Governance Portal</title>
+        <title>Maker Governance</title>
       </Head>
       <div
         sx={{
@@ -81,7 +81,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Grid gap={6} sx={{ px: [5, 0] }} columns={[1, 3]}>
+            <Grid gap={[5, 6]} sx={{ px: [2, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Intro to Governance"
                 linkText="Get started"
@@ -112,11 +112,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           <section>
             <Stack>
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={3}>
+                <Stack gap={2}>
                   <Heading as="h2">Executive Votes</Heading>
-                  <Text
-                    sx={{ fontWeight: 400, color: 'textSecondary', px: [4, 'inherit'], fontSize: [3, 5] }}
-                  >
+                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [3, 5] }}>
                     Executive Votes are conducted to make changes to the system. The governing proposal
                     represents the current state of the system.
                   </Text>
@@ -140,9 +138,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           <section>
             <Stack>
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={3}>
+                <Stack gap={2}>
                   <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ color: 'textSecondary', px: [4, 'inherit'], fontSize: [3, 5] }}>
+                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [3, 5] }}>
                     Polls are conducted to establish a rough consensus of community sentiment before Executive
                     Votes are conducted.
                   </Text>
