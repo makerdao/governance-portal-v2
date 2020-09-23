@@ -23,8 +23,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
-
-  const proposals = topics
+  let proposals: CmsProposal[] = topics
     .filter(topic => topic.active)
     .filter(topic => !topic.govVote)
     .map(topic => topic.proposals)
@@ -58,6 +57,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   });
 
   proposals.push(...oldSpells);
+  proposals = proposals.slice(0, 100);
   return (_cachedProposals = proposals);
 }
 
