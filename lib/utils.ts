@@ -228,7 +228,12 @@ export const formatDateWithTime = dateString => {
     timeZone: 'UTC',
     timeZoneName: 'short'
   };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
+  try {
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  } catch (err) {
+    console.error(err);
+    return '??';
+  }
 };
 
 export async function initTestchainPolls() {

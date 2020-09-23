@@ -7,6 +7,7 @@ import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
+import throttle from 'lodash/throttle';
 
 import Deposit from '../components/executive/Deposit';
 import Withdraw from '../components/executive/Withdraw';
@@ -42,21 +43,22 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     `/api/executive/analyze-spell?network=${getNetwork()}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
-      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) })
+      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
+    { refreshInterval: 0 }
   );
 
-  const [startDate, endDate, executiveSortBy] = useUiFiltersStore(
+  const [startDate, endDate, sortBy] = useUiFiltersStore(
     state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
     shallow
   );
 
-  const prevSortByRef = useRef<string>(executiveSortBy);
+  const prevSortByRef = useRef<string>(sortBy);
   useEffect(() => {
-    if (executiveSortBy !== prevSortByRef.current) {
-      prevSortByRef.current = executiveSortBy;
+    if (sortBy !== prevSortByRef.current) {
+      prevSortByRef.current = sortBy;
       setShowHistorical(true);
     }
-  }, [executiveSortBy]);
+  }, [sortBy]);
 
   const filteredProposals = useMemo(() => {
     const start = startDate && new Date(startDate);
@@ -69,12 +71,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       return true;
     }) as CMSProposal[]).sort((a, b) => {
       // MKR amount sort TODO
-      if (executiveSortBy === 'MKR Amount') {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sortBy === 'MKR Amount') {
+        const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
+        const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
+        return bSupport - aSupport;
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [proposals, startDate, endDate]) as CMSProposal[];
+  }, [proposals, startDate, endDate, sortBy]);
 
   const loadMore = entries => {
     const target = entries.pop();
