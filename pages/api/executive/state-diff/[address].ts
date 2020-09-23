@@ -25,6 +25,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     alchemy: process.env.ALCHEMY_KEY
   });
 
+  console.log(process.env.INFURA_KEY, process.env.ALCHEMY_KEY, 'infura and alchemy keys');
   const encoder = new ethers.utils.Interface([
     'function sig() returns (bytes)',
     'function action() returns (address)',
@@ -95,6 +96,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     body: JSON.stringify({ trace })
   });
 
-  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json({ hasBeenCast, executedOn, decodedDiff });
 });
