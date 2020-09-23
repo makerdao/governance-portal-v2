@@ -13,7 +13,11 @@ export default function (props): JSX.Element {
   );
 
   return (
-    <FilterButton name={() => `Sort by ${executiveSortBy}`} listVariant="menubuttons.default.list" {...props}>
+    <FilterButton
+      name={() => `Sort by ${executiveSortBy !== 'Date Posted' ? executiveSortBy : ''}`}
+      listVariant="menubuttons.default.list"
+      {...props}
+    >
       <MenuItem
         onSelect={() => setExecutiveSortBy('Date Posted')}
         sx={{

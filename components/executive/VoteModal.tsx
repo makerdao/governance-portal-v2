@@ -15,15 +15,17 @@ import {
   jsx
 } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Bignumber from 'bignumber.js';
+import Skeleton from 'react-loading-skeleton';
+
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
-import shallow from 'zustand/shallow';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
 
@@ -38,6 +40,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
+
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
   );
@@ -134,25 +137,43 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
             <Text color="onSecondary" sx={{ fontSize: 3 }}>
               Your voting weight
             </Text>
-            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {votingWeight} MKR
-            </Text>
+            {lockedMkr ? (
+              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+                {votingWeight} MKR
+              </Text>
+            ) : (
+              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+                <Skeleton />
+              </Text>
+            )}
           </GridBox>
           <GridBox bpi={bpi}>
             <Text color="onSecondary" sx={{ fontSize: 3 }}>
               MKR supporting
             </Text>
-            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {mkrSupporting} MKR
-            </Text>
+            {spellData ? (
+              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+                {mkrSupporting} MKR
+              </Text>
+            ) : (
+              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+                <Skeleton />
+              </Text>
+            )}
           </GridBox>
           <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
             <Text color="onSecondary" sx={{ fontSize: 3 }}>
               After vote cast
             </Text>
-            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {afterVote} MKR
-            </Text>
+            {lockedMkr && spellData ? (
+              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+                {afterVote} MKR
+              </Text>
+            ) : (
+              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+                <Skeleton />
+              </Text>
+            )}
           </Box>
         </Grid>
         <Box sx={{ width: '100%', mt: 3 }}>
@@ -282,7 +303,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
       case 'failed':
         return <Error />;
     }
-  }, [step]);
+  }, [step, lockedMkr, spellData, tx]);
 
   return (
     <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
