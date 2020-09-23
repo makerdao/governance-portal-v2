@@ -19,6 +19,9 @@ export default withApiHandler(
     let sampleError,
       failures = 0;
 
+    // FIXME most of the spells here will be unchanged most of the time;
+    // we should waste less effort re-fetching the same data
+
     const spellData = (
       await Promise.all(
         addresses.map(async address => {

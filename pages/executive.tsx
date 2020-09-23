@@ -17,12 +17,14 @@ import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
 import { getExecutiveProposals } from '../lib/api';
-import getMaker, { isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal, { CMSProposal } from '../types/proposal';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
+import SpellData from '../types/spellData';
+import { fetchJson } from '../lib/utils';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -33,6 +35,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const { data: lockedMkr } = useSWR(
     account?.address ? ['/user/mkr-locked', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
+  );
+
+  // FIXME merge this into the proposal object
+  const { data: spellData } = useSWR<Record<string, SpellData>>(
+    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    // needs to be a POST because the list of addresses is too long to be a GET query parameter
+    url =>
+      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) })
   );
 
   const [startDate, endDate, executiveSortBy] = useUiFiltersStore(
@@ -59,7 +69,9 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       return true;
     }) as CMSProposal[]).sort((a, b) => {
       // MKR amount sort TODO
-      if (executiveSortBy === 'MKR Amount') return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (executiveSortBy === 'MKR Amount') {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
   }, [proposals, startDate, endDate]) as CMSProposal[];
@@ -89,7 +101,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   }, [loader, loadMore]);
 
   useEffect(() => {
-    setNumHistoricalProposalsLoaded(5); // reset inifite scroll if a new filter is applied
+    setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
   return (
@@ -130,7 +142,11 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 {filteredProposals
                   .filter(proposal => proposal.active)
                   .map((proposal, index) => (
-                    <ExecutiveOverviewCard key={index} proposal={proposal} />
+                    <ExecutiveOverviewCard
+                      key={index}
+                      proposal={proposal}
+                      spellData={spellData ? spellData[proposal.address] : undefined}
+                    />
                   ))}
               </Stack>
 
@@ -149,7 +165,11 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       .filter(proposal => !proposal.active)
                       .slice(0, numHistoricalProposalsLoaded)
                       .map((proposal, index) => (
-                        <ExecutiveOverviewCard key={index} proposal={proposal} />
+                        <ExecutiveOverviewCard
+                          key={index}
+                          proposal={proposal}
+                          spellData={spellData ? spellData[proposal.address] : undefined}
+                        />
                       ))}
                   </Stack>
                   <div ref={loader} />
