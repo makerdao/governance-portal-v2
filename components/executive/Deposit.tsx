@@ -82,7 +82,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
               sx={{ fontWeight: 'bold', cursor: 'pointer' }}
               onClick={() => {
                 if (!input.current) return;
-                changeInputValue(input.current, mkrBalance.toBigNumber().toFormat(18));
+                changeInputValue(input.current, mkrBalance.toBigNumber().toString());
               }}
             >
               {mkrBalance.toBigNumber().toFormat(6)}
