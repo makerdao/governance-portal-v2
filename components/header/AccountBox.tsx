@@ -47,7 +47,7 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
       </Flex>
       <Flex
         sx={{
-          flexDirection: 'row',
+          flexDirection: ['column', 'row'],
           alignItems: 'stretch',
           borderTop: '1px solid',
           borderTopColor: 'secondaryMuted',
@@ -81,8 +81,8 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            borderLeft: '1px solid',
-            borderLeftColor: 'secondaryMuted',
+            borderLeft: ['0', '1px solid'],
+            borderLeftColor: [null, 'secondaryMuted'],
             color: 'accentBlue',
             p: 2,
             flex: 1,
@@ -100,7 +100,7 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
             sx={{
               borderLeft: ['0', '1px solid'],
-              borderColor: 'secondaryMuted',
+              borderColor: [null, 'secondaryMuted'],
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
