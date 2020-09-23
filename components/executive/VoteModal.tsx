@@ -1,7 +1,19 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
 import useSWR from 'swr';
-import { Grid, Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
+import {
+  Grid,
+  Button,
+  Flex,
+  Close,
+  Text,
+  Box,
+  Spinner,
+  Link as ExternalLink,
+  Label,
+  Checkbox,
+  jsx
+} from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -75,79 +87,103 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
     setStep('signing');
   };
 
-  const Default = () => (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Close
-        aria-label="close"
-        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-        onClick={close}
-      />
+  const Default = () => {
+    const [hatChecked, setHatChecked] = useState(true);
+    return (
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Close
+          aria-label="close"
+          sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+          onClick={close}
+        />
 
-      <Text variant="heading" sx={{ fontSize: 6 }}>
-        Confirm Vote
-      </Text>
-      <Text sx={{ marginTop: 3, color: 'onSecondary', fontSize: 4 }}>
-        You are voting for the following executive proposal:
-      </Text>
-      <Box
-        sx={{
-          mt: 2,
-          p: 3,
-          width: '100%',
-          mx: 3,
-          backgroundColor: 'background',
-          textAlign: 'center',
-          fontSize: 4
-        }}
-      >
-        <Text>{(proposal as CMSProposal).title}</Text>
-      </Box>
-      <Grid
-        columns={[1, 3, 3, 3]}
-        gap={0}
-        sx={{
-          width: '100%',
-          minHeight: ['modal.height.mobile', 'modal.height.desktop'],
-          borderRadius: 'small',
-          border: '1px solid #D4D9E1',
-          mt: 3,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
-        <GridBox bpi={bpi}>
-          <Text color="onSecondary" sx={{ fontSize: 3 }}>
-            Your voting weight
-          </Text>
-          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-            {votingWeight} MKR
-          </Text>
-        </GridBox>
-        <GridBox bpi={bpi}>
-          <Text color="onSecondary" sx={{ fontSize: 3 }}>
-            MKR supporting
-          </Text>
-          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-            {mkrSupporting} MKR
-          </Text>
-        </GridBox>
-        <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
-          <Text color="onSecondary" sx={{ fontSize: 3 }}>
-            After vote cast
-          </Text>
-          <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-            {afterVote} MKR
-          </Text>
+        <Text variant="heading" sx={{ fontSize: 6 }}>
+          Confirm Vote
+        </Text>
+        <Text sx={{ marginTop: 3, color: 'onSecondary', fontSize: 4 }}>
+          You are voting for the following executive proposal:
+        </Text>
+        <Box
+          sx={{
+            mt: 2,
+            p: 3,
+            width: '100%',
+            mx: 3,
+            backgroundColor: 'background',
+            textAlign: 'center',
+            fontSize: 4
+          }}
+        >
+          <Text>{(proposal as CMSProposal).title}</Text>
         </Box>
-      </Grid>
-      <Box sx={{ width: '100%', mt: 3 }}>
-        <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
-          Submit Vote
-        </Button>
-      </Box>
-    </Flex>
-  );
+        <Grid
+          columns={[1, 3, 3, 3]}
+          gap={0}
+          sx={{
+            width: '100%',
+            minHeight: ['modal.height.mobile', 'modal.height.desktop'],
+            borderRadius: 'small',
+            border: '1px solid #D4D9E1',
+            mt: 3,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <GridBox bpi={bpi}>
+            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+              Your voting weight
+            </Text>
+            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              {votingWeight} MKR
+            </Text>
+          </GridBox>
+          <GridBox bpi={bpi}>
+            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+              MKR supporting
+            </Text>
+            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              {mkrSupporting} MKR
+            </Text>
+          </GridBox>
+          <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
+            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+              After vote cast
+            </Text>
+            <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              {afterVote} MKR
+            </Text>
+          </Box>
+        </Grid>
+        <Box sx={{ width: '100%', mt: 3 }}>
+          <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
+            Submit Vote
+          </Button>
+          <Label
+            sx={{
+              mt: 3,
+              p: 0,
+              fontWeight: 400,
+              alignItems: 'center',
+              color: 'textSecondary',
+              lineHeight: '0px',
+              fontSize: [1, 2]
+            }}
+          >
+            <Checkbox
+              sx={{ width: '18px', height: '18px' }}
+              checked={hatChecked}
+              onChange={event => {
+                console.log('event', event);
+                setHatChecked(event.target.checked);
+              }}
+            />
+            Keep my MKR on old proposal to secure the Maker protocol
+          </Label>
+        </Box>
+      </Flex>
+    );
+  };
 
   const Signing = () => (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
