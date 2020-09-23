@@ -21,12 +21,14 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
     const totalMkrParticipation = tally.totalMkrParticipation;
     const winner: string = tally.winner;
     const rounds = parseInt(tally.rounds);
+    const numVoters = parseInt(tally.numVoters);
 
     const parsedTally = {
       options: tally.options,
       winner,
       rounds,
-      totalMkrParticipation
+      totalMkrParticipation,
+      numVoters
     };
 
     res.setHeader('Cache-Control', cacheType);

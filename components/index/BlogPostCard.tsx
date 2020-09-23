@@ -28,15 +28,17 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
       <Text
         px={3}
         pt={3}
-        sx={{
-          textOverflow: 'ellipsis',
-          fontSize: 4,
-          textAlign: 'left',
-          display: '-webkit-box',
-          overflow: 'hidden'
-          // WebkitBoxOrient: 'vertical',
-          // WebkitLineClamp: 2
-        }}
+        sx={
+          {
+            textOverflow: 'ellipsis',
+            fontSize: 4,
+            textAlign: 'left',
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2
+          } as any
+        }
       >
         {blogPost.title}
       </Text>

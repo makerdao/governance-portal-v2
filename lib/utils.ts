@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
+import BigNumber from 'bignumber.js';
 
 import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
@@ -73,6 +74,14 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
         optionName: poll.options[key],
         firstChoice: MKR(rawTally.options?.[key]?.firstChoice || 0),
         transfer: MKR(rawTally.options?.[key]?.transfer || 0),
+        firstPct: rawTally.options?.[key]?.firstChoice
+          ? new BigNumber(rawTally.options[key].firstChoice)
+              .div(totalMkrParticipation.toBigNumber())
+              .times(100)
+          : new BigNumber(0),
+        transferPct: rawTally.options?.[key]?.transfer
+          ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation.toBigNumber()).times(100)
+          : new BigNumber(0),
         eliminated: rawTally.options?.[key]?.eliminated ?? true,
         winner: rawTally.options?.[key]?.winner ?? false
       };
@@ -85,7 +94,7 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
     });
 
   delete rawTally.options;
-  return { ...rawTally, results, totalMkrParticipation };
+  return { ...rawTally, results, totalMkrParticipation, numVoters: rawTally.numVoters };
 }
 
 export function getEtherscanLink(
