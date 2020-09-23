@@ -6,10 +6,11 @@
 import { useEffect } from 'react';
 import getMaker from '../../maker';
 
-export const syncMakerAccount = (library, account) => {
+export const syncMakerAccount = (library, account, chainIdError) => {
+  console.log(chainIdError, 'chainIdError');
   useEffect(() => {
     (async () => {
-      if (!library || !account) return;
+      if ((!library || !account) && !chainIdError) return;
 
       // check to see if the account already exists (i.e. switching back to one that was already added)
       // before adding it

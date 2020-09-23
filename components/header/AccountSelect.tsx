@@ -1,11 +1,12 @@
 /** @jsx jsx */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
+import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
+import { getNetwork, chainIdToNetworkName } from '../../lib/maker';
 import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
 import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
@@ -16,6 +17,9 @@ import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
 import VotingWeight from './VotingWeight';
+import NetworkAlertModal from './NetworkAlertModal';
+
+export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
 const WrappedAccountSelect = (props): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
@@ -24,11 +28,17 @@ const WrappedAccountSelect = (props): JSX.Element => (
 );
 
 const AccountSelect = props => {
-  const web3ReactContext = useWeb3React();
-  const { library, account, activate, connector } = web3ReactContext;
+  const { library, account, activate, connector, error, chainId } = useWeb3React();
+  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
+
+  useEffect(() => {
+    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+    if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork())
+      setChainIdError('network mismatch');
+  }, [chainId, error]);
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
-  syncMakerAccount(library, account);
+  syncMakerAccount(library, account, chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork());
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
     state.transactions
@@ -74,6 +84,10 @@ const AccountSelect = props => {
 
   return (
     <Box>
+      <NetworkAlertModal
+        chainIdError={chainIdError}
+        walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
+      />
       <Button
         aria-label="Connect wallet"
         sx={{
