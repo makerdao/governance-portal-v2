@@ -20,7 +20,7 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';

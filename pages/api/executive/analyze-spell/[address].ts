@@ -43,6 +43,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const maker = await getConnectedMakerObj(network);
   const analysis = await analyzeSpell(spellAddress, maker);
 
-  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json(analysis);
 });

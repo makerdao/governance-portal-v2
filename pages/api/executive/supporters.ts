@@ -13,6 +13,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const maker = await getConnectedMakerObj(network);
   const allSupporters = await maker.service('chief').getVoteTally();
 
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
   res.status(200).json(allSupporters);
 });

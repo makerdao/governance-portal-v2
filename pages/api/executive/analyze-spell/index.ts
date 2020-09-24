@@ -40,7 +40,7 @@ export default withApiHandler(
         `Failed to fetch data for ${failures}/${addresses.length} spell(s). Sample error: ${sampleError}`
       );
     }
-    res.setHeader('Cache-Control', 'maxage=15, stale-while-revalidate');
+    res.setHeader('Cache-Control', 'maxage=30, stale-while-revalidate');
     res.status(200).json(zipObject(addresses, spellData));
   },
   { allowPost: true }

@@ -18,7 +18,9 @@ export default function (props): JSX.Element {
         </Text>
       </Flex>
       <Flex>
-        <Text sx={{ fontSize: 5 }}>{votingWeight ? `${votingWeight.total.toString()}` : '--'}</Text>
+        <Text sx={{ fontSize: 5 }}>
+          {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(2)} MKR` : '--'}
+        </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>
         <Text sx={{ fontSize: 2 }} color="onSurface">
