@@ -16,6 +16,7 @@ export default withApiHandler(
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
     const maker = await getConnectedMakerObj(network);
+
     let sampleError,
       failures = 0;
 
