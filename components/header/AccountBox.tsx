@@ -100,7 +100,7 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
             sx={{
               borderLeft: ['0', '1px solid'],
-              borderColor: 'secondaryMuted',
+              borderColor: [null, 'secondaryMuted'],
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
