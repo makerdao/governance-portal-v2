@@ -23,7 +23,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
-  const proposals = topics
+  let proposals: Array<any> = topics
     .filter(topic => topic.active)
     .filter(topic => !topic.govVote)
     .map(topic => topic.proposals)
@@ -57,12 +57,14 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   });
 
   proposals.push(...oldSpells);
+  proposals = proposals.slice(0, 100);
   return (_cachedProposals = proposals);
 }
 
-export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal> {
+export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
   const proposals = await getExecutiveProposals();
   const proposal = proposals.find(proposal => proposal.key === proposalId);
+  if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');
 

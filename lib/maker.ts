@@ -60,29 +60,6 @@ function determineNetwork(): SupportedNetworks {
   }
 }
 
-function handleChainChanged(chainId: string) {
-  const newNetwork = chainIdToNetworkName(parseInt(chainId));
-  const asPath = Router?.router?.asPath?.replace(/network=[a-z]+/i, '');
-  if (Router?.router) {
-    Router.push(
-      {
-        pathname: Router.router.pathname,
-        query: { network: newNetwork || DEFAULT_NETWORK }
-      },
-      asPath
-    );
-  }
-}
-
-if (typeof window !== 'undefined' && typeof (window as any)?.ethereum?.on !== 'undefined') {
-  (window as any).ethereum.autoRefreshOnNetworkChange = false;
-  // update the URL anytime the provider's network changes
-  // we use both methods as the latter doesn't work atm, but the former will be removed once the latter is ready
-  // https://github.com/MetaMask/metamask-extension/issues/8077
-  (window as any).ethereum.on('chainIdChanged', handleChainChanged);
-  (window as any).ethereum.on('chainChanged', handleChainChanged);
-}
-
 let makerSingleton: Promise<Maker>;
 function getMaker(): Promise<Maker> {
   if (!makerSingleton) {

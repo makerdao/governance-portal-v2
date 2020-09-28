@@ -151,26 +151,27 @@ const PollingOverview = ({ polls }: Props) => {
                   >
                     Active Polls
                   </Heading>
-                  {sortedStartDatesActive.map(date => (
-                    <div key={date}>
-                      <Text variant="caps" color="onSurface" mb={2}>
-                        {groupedActivePolls[date].length} Poll
-                        {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted {formatDateWithTime(date)}
-                      </Text>
-                      <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
-                        {groupedActivePolls[date].map((poll, i) => (
-                          <div sx={{ mb: 4 }} key={i}>
+                  <Stack>
+                    {sortedStartDatesActive.map(date => (
+                      <div key={date}>
+                        <Text variant="caps" color="onSurface" mb={2}>
+                          {groupedActivePolls[date].length} Poll
+                          {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                          {formatDateWithTime(date)}
+                        </Text>
+                        <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
+                          {groupedActivePolls[date].map(poll => (
                             <PollOverviewCard
                               key={poll.multiHash}
                               poll={poll}
                               startMobileVoting={() => setMobileVotingPoll(poll)}
                               reviewPage={false}
                             />
-                          </div>
-                        ))}
-                      </Stack>
-                    </div>
-                  ))}
+                          ))}
+                        </Stack>
+                      </div>
+                    ))}
+                  </Stack>
                 </div>
                 {showHistorical ? (
                   <div>
@@ -182,20 +183,22 @@ const PollingOverview = ({ polls }: Props) => {
                         </Button>
                       </Flex>
                     </Heading>
-                    {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
-                      <div key={date}>
-                        <Text variant="caps" color="onSurface" mb={2}>
-                          {groupedHistoricalPolls[date].length} Poll
-                          {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
-                          {formatDateWithTime(date)}
-                        </Text>
-                        <Stack sx={{ mb: 4 }}>
-                          {groupedHistoricalPolls[date].map(poll => (
-                            <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
-                          ))}
-                        </Stack>
-                      </div>
-                    ))}
+                    <Stack>
+                      {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                        <div key={date}>
+                          <Text variant="caps" color="onSurface" mb={2}>
+                            {groupedHistoricalPolls[date].length} Poll
+                            {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                            {formatDateWithTime(date)}
+                          </Text>
+                          <Stack sx={{ mb: 4 }}>
+                            {groupedHistoricalPolls[date].map(poll => (
+                              <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
+                            ))}
+                          </Stack>
+                        </div>
+                      ))}
+                    </Stack>
                     <div ref={loader} />
                   </div>
                 ) : (
@@ -242,9 +245,7 @@ const PollingOverview = ({ polls }: Props) => {
               {account && bpi > 0 && (
                 <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
               )}
-              <SystemStatsSidebar
-                fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-              />
+              <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
               <ResourceBox />
             </Stack>
           </StickyColumn>

@@ -6,13 +6,12 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, Progress, NavLink, Box, Button, jsx } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Tooltip from '@reach/tooltip';
 import Skeleton from 'react-loading-skeleton';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import CountdownTimer from '../../components/CountdownTimer';
-import Delay from '../../components/Delay';
 import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
@@ -21,6 +20,7 @@ import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/PollVotingStatus';
+import VoteBreakdown from '../../components/polling/[poll-hash]/VoteBreakdown';
 import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
 import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import ResourceBox from '../../components/ResourceBox';
@@ -28,7 +28,6 @@ import Poll from '../../types/poll';
 import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';
 import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import useBallotStore from '../../stores/ballot';
 
 // if the poll has ended, always fetch its tally from the server's cache
@@ -52,10 +51,11 @@ const editMarkdown = content => {
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
-  const bpi = useBreakpointIndex();
+  const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
   const [_polls, _setPolls] = useState<Poll[]>();
+  const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
@@ -162,7 +162,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                 </Flex>
               </Flex>
             ) : (
-              <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
+              <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: 4, pb: 3 }}>
                 <Box>
                   <Flex sx={{ justifyContent: 'space-between' }}>
                     <Text
@@ -189,6 +189,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                 </Flex>
               </Flex>
             )}
+
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
@@ -198,54 +199,57 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   sx={{ variant: 'markdown.default', p: [3, 4] }}
                   dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                 />,
-                <div key={2} sx={{ p: [3, 4] }}>
-                  {Object.keys(poll.options).map((_, i) => (
-                    <div key={i}>
-                      <Flex sx={{ justifyContent: 'space-between' }}>
-                        <Text sx={{ color: 'textSecondary', width: '20%' }}>
-                          {tally ? (
-                            tally.results[i].optionName
-                          ) : (
-                            <Delay>
-                              <Skeleton />
-                            </Delay>
-                          )}
-                        </Text>
-                        <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                          {tally ? (
-                            `${tally.results[i].firstChoice
-                              .add(tally.results[i].transfer)
-                              .toBigNumber()
-                              .toFormat(2)} MKR Voting`
-                          ) : (
-                            <Delay>
-                              <Skeleton />
-                            </Delay>
-                          )}
-                        </Text>
-                      </Flex>
+                [
+                  <VoteBreakdown
+                    poll={poll}
+                    shownOptions={shownOptions}
+                    tally={tally}
+                    key={'vote breakdown'}
+                  />,
+                  shownOptions < Object.keys(poll.options).length && (
+                    <Box sx={{ px: 4, pb: 3 }} key={'view more'}>
+                      <Button
+                        variant="mutedOutline"
+                        onClick={() => {
+                          setShownOptions(shownOptions + 6);
+                        }}
+                      >
+                        <Flex sx={{ alignItems: 'center' }}>
+                          View more
+                          <Icon name="chevron_down" size="2" ml={2} />
+                        </Flex>
+                      </Button>
+                    </Box>
+                  ),
 
+                  <Divider key={'divider'} />,
+                  <Flex sx={{ p: 4, flexDirection: 'column' }} key={'voting stats'}>
+                    <Text variant="microHeading" sx={{ mb: 4 }}>
+                      Voting Stats
+                    </Text>
+                    <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
+                      <Text sx={{ color: 'onSurface' }}>Total Votes</Text>
                       {tally ? (
-                        <Tooltip
-                          sx={{ mt: -1 }}
-                          label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}
-                        >
-                          <Box my={1} py={1}>
-                            <Progress
-                              sx={{ backgroundColor: 'muted', mb: '3' }}
-                              max={tally.totalMkrParticipation.toBigNumber()}
-                              value={tally.results[i].firstChoice.toBigNumber()}
-                            />
-                          </Box>
-                        </Tooltip>
+                        <Text>{tally.totalMkrParticipation.toBigNumber().toFormat(2)} MKR</Text>
                       ) : (
-                        <Delay>
+                        <Box sx={{ width: 3 }}>
                           <Skeleton />
-                        </Delay>
+                        </Box>
                       )}
-                    </div>
-                  ))}
-                </div>
+                    </Flex>
+
+                    <Flex sx={{ justifyContent: 'space-between' }}>
+                      <Text sx={{ color: 'onSurface' }}>Unique Voters</Text>
+                      {tally ? (
+                        <Text>{tally.numVoters}</Text>
+                      ) : (
+                        <Box sx={{ width: 3 }}>
+                          <Skeleton />
+                        </Box>
+                      )}
+                    </Flex>
+                  </Flex>
+                ]
               ]}
             />
           </Card>
@@ -253,9 +257,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         <StickyColumn sx={{ pt: 3 }}>
           <Stack gap={3}>
             {!!account && <VoteBox poll={poll} />}
-            <SystemStatsSidebar
-              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-            />
+            <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
             <ResourceBox />
           </Stack>
         </StickyColumn>

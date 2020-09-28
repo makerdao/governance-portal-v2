@@ -8,21 +8,22 @@ import Skeleton from 'react-loading-skeleton';
 import Bignumber from 'bignumber.js';
 
 import Proposal from '../../types/proposal';
-import SpellData from '../../types/spellData';
 import getMaker, { getNetwork } from '../../lib/maker';
 import { formatDateWithTime } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import useAccountsStore from '../../stores/accounts';
 import VoteModal from './VoteModal';
 import { useState } from 'react';
+import SpellData from '../../types/spellData';
 
-export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal: Proposal }): JSX.Element {
+type Props = {
+  proposal: Proposal;
+  spellData?: SpellData;
+};
+
+export default function ExecutiveOverviewCard({ proposal, spellData, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const [voting, setVoting] = useState(false);
-
-  const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
-  );
 
   const { data: votedProposals } = useSWR<string[]>(
     ['/executive/voted-proposals', account?.address],
@@ -127,7 +128,7 @@ export default function ExecutiveOverviewCard({ proposal, ...props }: { proposal
         </Flex>
         {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
-        {spellData !== undefined && spellData.hasBeenCast && (
+        {spellData?.hasBeenCast && (
           <>
             <Divider my={0} />
             <Flex p={[4, 3]} sx={{ justifyContent: 'center' }}>

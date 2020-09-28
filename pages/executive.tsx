@@ -7,7 +7,10 @@ import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
+import throttle from 'lodash/throttle';
 
+import Deposit from '../components/executive/Deposit';
+import Withdraw from '../components/executive/Withdraw';
 import SortBy from '../components/executive/SortBy';
 import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
@@ -15,12 +18,14 @@ import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
 import { getExecutiveProposals } from '../lib/api';
-import getMaker, { isDefaultNetwork } from '../lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal, { CMSProposal } from '../types/proposal';
 import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
+import SpellData from '../types/spellData';
+import { fetchJson } from '../lib/utils';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -33,18 +38,27 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
   );
 
-  const [startDate, endDate, executiveSortBy] = useUiFiltersStore(
+  // FIXME merge this into the proposal object
+  const { data: spellData } = useSWR<Record<string, SpellData>>(
+    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    // needs to be a POST because the list of addresses is too long to be a GET query parameter
+    url =>
+      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
+    { refreshInterval: 0 }
+  );
+
+  const [startDate, endDate, sortBy] = useUiFiltersStore(
     state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
     shallow
   );
 
-  const prevSortByRef = useRef<string>(executiveSortBy);
+  const prevSortByRef = useRef<string>(sortBy);
   useEffect(() => {
-    if (executiveSortBy !== prevSortByRef.current) {
-      prevSortByRef.current = executiveSortBy;
+    if (sortBy !== prevSortByRef.current) {
+      prevSortByRef.current = sortBy;
       setShowHistorical(true);
     }
-  }, [executiveSortBy]);
+  }, [sortBy]);
 
   const filteredProposals = useMemo(() => {
     const start = startDate && new Date(startDate);
@@ -57,10 +71,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       return true;
     }) as CMSProposal[]).sort((a, b) => {
       // MKR amount sort TODO
-      if (executiveSortBy === 'MKR Amount') return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sortBy === 'MKR Amount') {
+        const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
+        const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
+        return bSupport - aSupport;
+      }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [proposals, startDate, endDate]) as CMSProposal[];
+  }, [proposals, startDate, endDate, sortBy]);
 
   const loadMore = entries => {
     const target = entries.pop();
@@ -87,14 +105,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   }, [loader, loadMore]);
 
   useEffect(() => {
-    setNumHistoricalProposalsLoaded(5); // reset inifite scroll if a new filter is applied
+    setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       <Stack>
         {account && (
-          <Flex sx={{ alignItems: 'center' }}>
+          <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
             <Flex>
               <Text>In voting contract:&nbsp;</Text>
               {lockedMkr ? (
@@ -105,12 +123,10 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Button variant="mutedOutline" ml={3}>
-              Deposit
-            </Button>
-            <Button variant="mutedOutline" ml={3}>
-              Withdraw
-            </Button>
+            <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
+              <Deposit sx={{ ml: [0, 3] }} />
+              <Withdraw sx={{ ml: 3 }} />
+            </Flex>
           </Flex>
         )}
 
@@ -125,12 +141,16 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              <Heading as="h1">Active Executive Proposals</Heading>
+              <Heading as="h1">Executive Proposals</Heading>
               <Stack gap={4} sx={{ mb: 4 }}>
                 {filteredProposals
                   .filter(proposal => proposal.active)
                   .map((proposal, index) => (
-                    <ExecutiveOverviewCard key={index} proposal={proposal} />
+                    <ExecutiveOverviewCard
+                      key={index}
+                      proposal={proposal}
+                      spellData={spellData ? spellData[proposal.address] : undefined}
+                    />
                   ))}
               </Stack>
 
@@ -138,9 +158,9 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 <div>
                   <Heading mb={3} as="h4">
                     <Flex sx={{ justifyContent: 'space-between' }}>
-                      Historical Proposals
+                      <div />
                       <Button onClick={() => setShowHistorical(false)} variant="mutedOutline">
-                        Hide historical proposals
+                        View fewer proposals
                       </Button>
                     </Flex>
                   </Heading>
@@ -149,7 +169,11 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       .filter(proposal => !proposal.active)
                       .slice(0, numHistoricalProposalsLoaded)
                       .map((proposal, index) => (
-                        <ExecutiveOverviewCard key={index} proposal={proposal} />
+                        <ExecutiveOverviewCard
+                          key={index}
+                          proposal={proposal}
+                          spellData={spellData ? spellData[proposal.address] : undefined}
+                        />
                       ))}
                   </Stack>
                   <div ref={loader} />

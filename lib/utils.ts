@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
+import BigNumber from 'bignumber.js';
 
 import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
@@ -73,6 +74,14 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
         optionName: poll.options[key],
         firstChoice: MKR(rawTally.options?.[key]?.firstChoice || 0),
         transfer: MKR(rawTally.options?.[key]?.transfer || 0),
+        firstPct: rawTally.options?.[key]?.firstChoice
+          ? new BigNumber(rawTally.options[key].firstChoice)
+              .div(totalMkrParticipation.toBigNumber())
+              .times(100)
+          : new BigNumber(0),
+        transferPct: rawTally.options?.[key]?.transfer
+          ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation.toBigNumber()).times(100)
+          : new BigNumber(0),
         eliminated: rawTally.options?.[key]?.eliminated ?? true,
         winner: rawTally.options?.[key]?.winner ?? false
       };
@@ -85,7 +94,7 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
     });
 
   delete rawTally.options;
-  return { ...rawTally, results, totalMkrParticipation };
+  return { ...rawTally, results, totalMkrParticipation, numVoters: rawTally.numVoters };
 }
 
 export function getEtherscanLink(
@@ -228,7 +237,12 @@ export const formatDateWithTime = dateString => {
     timeZone: 'UTC',
     timeZoneName: 'short'
   };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
+  try {
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  } catch (err) {
+    console.error(err);
+    return '??';
+  }
 };
 
 export async function initTestchainPolls() {
@@ -258,4 +272,16 @@ export function formatAddress(address: string) {
 export function cutMiddle(text = '', left = 6, right = 4) {
   if (text.length <= left + right) return text;
   return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
+}
+
+/**
+ * sets the value of an input in a way that triggers the onChange handler.
+ * this is a workaround for logic in React that dedupes change events.
+ * see: https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
+ */
+export function changeInputValue(inputRef: HTMLInputElement, value: string): void {
+  const valueProp = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+  invariant(valueProp?.set);
+  valueProp.set.call(inputRef, value);
+  inputRef.dispatchEvent(new Event('input', { bubbles: true }));
 }

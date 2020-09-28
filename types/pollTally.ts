@@ -1,4 +1,5 @@
 import CurrencyObject from './currency';
+import BigNumber from 'bignumber.js';
 
 type Result = {
   optionId: string;
@@ -7,6 +8,8 @@ type Result = {
   transfer: CurrencyObject;
   winner: boolean;
   eliminated: boolean;
+  firstPct: BigNumber;
+  transferPct: BigNumber;
 };
 
 type PollTally = {
@@ -15,6 +18,7 @@ type PollTally = {
   rounds: number;
   totalMkrParticipation: CurrencyObject;
   results: Result[];
+  numVoters: number;
 };
 
 export default PollTally;

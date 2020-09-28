@@ -63,7 +63,7 @@ const baseTabStyles: SxStyleProp = {
   appearance: 'none',
   mx: 3,
   p: 0,
-  pb: 2,
+  mb: 2,
   color: 'textSecondary',
   fontSize: [2, 3],
   fontWeight: 400,

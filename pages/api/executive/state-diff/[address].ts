@@ -25,6 +25,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     alchemy: process.env.ALCHEMY_KEY
   });
 
+  console.log(process.env.INFURA_KEY, process.env.ALCHEMY_KEY, 'infura and alchemy keys state diff');
   const encoder = new ethers.utils.Interface([
     'function sig() returns (bytes)',
     'function action() returns (address)',
@@ -71,12 +72,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       toBlock: 'latest',
       topics: [pauseExecSelector, spellAddressBytes32, usrBytes32]
     });
+    console.log('hasBeenCast', transactionHash);
 
     invariant(transactionHash, `Unable to find cast transaction for spell ${spellAddress}`);
     trace = await getTrace('trace_replayTransaction', transactionHash, network);
     executedOn = blockNumber;
   } else {
     const [fax] = await ethCall('sig');
+    console.log('hasNotBeenCast', usr, fax);
 
     trace = await getTrace(
       'trace_call',
@@ -89,12 +92,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     );
   }
 
+  console.log(trace, 'trace');
   invariant(trace, `Unable to fetch trace for spell ${spellAddress}`);
   const decodedDiff = await fetchJson(ETH_TX_STATE_DIFF_ENDPOINT(SupportedNetworks.MAINNET), {
     method: 'POST',
     body: JSON.stringify({ trace })
   });
+  console.log(decodedDiff, 'decodedDiff');
 
-  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json({ hasBeenCast, executedOn, decodedDiff });
 });

@@ -50,13 +50,17 @@ test('should initialize a tx properly', async () => {
 
 test('should set pending properly', async () => {
   const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
-  const txId = await transactionsApi.getState().track(txCreator);
+  const txIdPromise = transactionsApi.getState().track(txCreator);
 
-  await waitForExpect(() => {
-    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe('pending');
+  await waitForExpect(async () => {
+    expect(transactionsSelectors.getTransaction(transactionsApi.getState(), await txIdPromise).status).toBe(
+      'pending'
+    );
   });
 
-  expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).hash).toBeDefined();
+  expect(
+    transactionsSelectors.getTransaction(transactionsApi.getState(), await txIdPromise).hash
+  ).toBeDefined();
 });
 
 test('should set mined properly', async () => {
