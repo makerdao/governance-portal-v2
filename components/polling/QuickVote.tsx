@@ -79,7 +79,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
           display: showHeader ? null : 'none'
         }}
       >
-        <Text variant="caps" color="text">
+        <Text variant="caps" color="textSecondary">
           Your Vote
         </Text>
         {isRankedChoicePoll(poll) && (

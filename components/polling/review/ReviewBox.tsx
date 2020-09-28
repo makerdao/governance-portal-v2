@@ -52,7 +52,7 @@ export default function ({
     <ReviewBoxCard {...props}>
       <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
       <Divider />
-      <VotingWeight sx={{ mx: 3, py: [1, 2] }} />
+      <VotingWeight sx={{ mt: 0, px: 3, py: [1, 2] }} />
       <Divider />
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
@@ -142,12 +142,11 @@ export default function ({
           Submit Your Ballot
         </Button>
       </Flex>
-      <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+      <Link href={{ pathname: '/polling/review', query: { network: getNetwork() } }}>
         <Button
-          mt={1}
-          mb={4}
+          pb={3}
           variant="textual"
-          sx={{ borderColor: 'primary', color: 'secondaryEmphasis' }}
+          sx={{ borderColor: 'primary', color: 'secondaryEmphasis', fontSize: 2 }}
           onClick={clearTx}
         >
           Go back

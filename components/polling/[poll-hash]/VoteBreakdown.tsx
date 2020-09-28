@@ -58,7 +58,13 @@ export default function ({
                   <Tooltip label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}>
                     <Box my={2}>
                       <Progress
-                        sx={{ backgroundColor: 'muted', color: 'primary', zIndex: 2, position: 'absolute' }}
+                        sx={{
+                          backgroundColor: 'muted',
+                          height: 2,
+                          color: 'primary',
+                          zIndex: 2,
+                          position: 'absolute'
+                        }}
                         max={tally.totalMkrParticipation.toBigNumber()}
                         value={tally.results[i].firstChoice.toBigNumber()}
                       />
@@ -69,6 +75,7 @@ export default function ({
                       <Progress
                         sx={{
                           backgroundColor: 'muted',
+                          height: 2,
                           color: 'primaryMuted',
                           zIndex: 1,
                           position: 'absolute'
@@ -127,7 +134,7 @@ export default function ({
               <Tooltip label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}>
                 <Box my={2}>
                   <Progress
-                    sx={{ backgroundColor: 'muted', mb: '3' }}
+                    sx={{ backgroundColor: 'muted', mb: '3', height: 2 }}
                     max={tally.totalMkrParticipation.toBigNumber()}
                     value={tally.results[i].firstChoice.toBigNumber()}
                   />

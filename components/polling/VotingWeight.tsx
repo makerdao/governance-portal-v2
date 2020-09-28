@@ -37,31 +37,25 @@ export default function (props): JSX.Element {
       {...props}
       sx={{
         ...props.sx,
-        // justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        flexDirection: 'column',
-        mt: 3,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        mt: 2,
         width: '100%'
       }}
     >
       <Flex sx={{ flexDirection: 'row' }}>
-        <Text color="onSurface" variant="caps" sx={{ fontWeight: 'bold', fontSize: '12px' }}>
-          polling voting weight
-        </Text>
+        <Text color="textSecondary">Voting weight</Text>
         {votingWeightDescription ? (
           <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
             <Box>
-              <Icon name="question" ml={1} mt={0} sx={{ paddingTop: '0px' }} />
+              <Icon name="question" ml={2} mt={'6px'} />
             </Box>
           </Tooltip>
         ) : null}
       </Flex>
       <Text sx={{ color: 'text' }}>
         {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(2)} MKR` : '--'}
-      </Text>
-      <Text sx={{ color: 'onSecondary', mt: 2 }}>
-        Your voting weight is made up of MKR in your wallet, vote proxy, and voting contract. This amount is
-        applied to all polls you vote on.
       </Text>
     </Flex>
   );

@@ -17,9 +17,7 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
         choice.map((id, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
-              <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
-                {getNumberWithOrdinal(index + 1)} choice
-              </Text>
+              <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text>{poll.options[id]}</Text>
             </Flex>
           </Flex>

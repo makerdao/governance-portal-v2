@@ -49,15 +49,20 @@ export default function PollOverviewCard({
               {poll.title}
             </Text>
           </Link>
-          <Text
-            sx={{
-              fontSize: [2, 3],
-              color: 'textSecondary',
-              mt: 1
-            }}
+          <Link
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            {poll.summary}
-          </Text>
+            <Text
+              sx={{
+                fontSize: [2, 3],
+                color: 'textSecondary',
+                mt: 1
+              }}
+            >
+              {poll.summary}
+            </Text>
+          </Link>
         </Box>
 
         {bpi > 0 && (
@@ -97,9 +102,10 @@ export default function PollOverviewCard({
               variant="outline"
               sx={{
                 display: reviewPage ? 'none' : null,
-                borderColor: 'secondaryAlt',
+                borderColor: 'onSecondary',
                 color: 'secondaryAlt',
-                borderRadius: 'small'
+                borderRadius: 'small',
+                ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
               }}
             >
               View Details

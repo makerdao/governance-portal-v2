@@ -40,7 +40,7 @@ export default function ({ ballot, polls, activePolls, ...props }: Props): JSX.E
 
   return availablePollsLength > 0 || edits > 0 ? (
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
-      <Text sx={{ color: 'onSurface', fontSize: 16, fontWeight: 'semiBold' }}>
+      <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
         {`${Object.keys(ballot).length - edits} of ${availablePollsLength} available polls added to ballot`}
       </Text>
       <Flex
@@ -73,7 +73,7 @@ export default function ({ ballot, polls, activePolls, ...props }: Props): JSX.E
       </Flex>
       {edits > 0 && (
         <Box mt={2} mb={-2}>
-          <Text sx={{ color: 'onSurface', fontWeight: 'semiBold' }}>
+          <Text sx={{ color: 'textSecondary', fontWeight: 'semiBold' }}>
             <strong sx={{ color: 'text', fontWeight: 'bold' }}>and {edits}</strong> vote edit
             {edits > 1 && 's'} added to ballot.
           </Text>

@@ -228,22 +228,22 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       Voting Stats
                     </Text>
                     <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
-                      <Text sx={{ color: 'onSurface' }}>Total Votes</Text>
+                      <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                       {tally ? (
                         <Text>{tally.totalMkrParticipation.toBigNumber().toFormat(2)} MKR</Text>
                       ) : (
-                        <Box sx={{ width: 3 }}>
+                        <Box sx={{ width: 4 }}>
                           <Skeleton />
                         </Box>
                       )}
                     </Flex>
 
                     <Flex sx={{ justifyContent: 'space-between' }}>
-                      <Text sx={{ color: 'onSurface' }}>Unique Voters</Text>
+                      <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
                       {tally ? (
                         <Text>{tally.numVoters}</Text>
                       ) : (
-                        <Box sx={{ width: 3 }}>
+                        <Box sx={{ width: 4 }}>
                           <Skeleton />
                         </Box>
                       )}

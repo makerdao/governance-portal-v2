@@ -94,9 +94,8 @@ const AccountSelect = props => {
           variant: 'buttons.card',
           borderRadius: 'round',
           color: 'textSecondary',
-          height: '40px',
           px: [2, 3],
-          py: 0,
+          py: 2,
           alignSelf: 'flex-end',
           '&:hover': {
             color: 'text',
@@ -149,17 +148,7 @@ const AccountSelect = props => {
               >
                 Back
               </Button>
-              <Close
-                aria-label="close"
-                sx={{
-                  p: 0,
-                  cursor: 'pointer',
-                  ':focus': {
-                    outline: 'none'
-                  }
-                }}
-                onClick={close}
-              />
+              <Close aria-label="close" onClick={close} />
             </Flex>
             {walletOptions}
           </DialogContent>
@@ -184,11 +173,7 @@ const AccountSelect = props => {
                   p: 0,
                   position: 'relative',
                   top: '-4px',
-                  left: '8px',
-                  cursor: 'pointer',
-                  ':focus': {
-                    outline: 'none'
-                  }
+                  left: '8px'
                 }}
                 onClick={close}
               />

@@ -174,7 +174,7 @@ export default function MobileVoteSheet({
                 sx={{
                   flexDirection: 'row',
                   flexWrap: 'nowrap',
-                  height: '4px',
+                  height: 2,
                   my: 2
                 }}
               >
@@ -194,12 +194,17 @@ export default function MobileVoteSheet({
                 ))}
               </Flex>
               {ballotCount < total && (
-                <Button variant="outline" onClick={goToNextPoll}>
+                <Button
+                  variant="outline"
+                  sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
+                  onClick={goToNextPoll}
+                >
                   Next Poll
                 </Button>
               )}
               <Button
                 variant="primary"
+                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => router.push({ pathname: '/polling/review', query: network })}
               >
                 Review &amp; Submit Ballot
@@ -207,8 +212,8 @@ export default function MobileVoteSheet({
             </Stack>
           ) : (
             <Stack gap={2}>
-              <Text variant="subheading">{poll.title}</Text>
-              <Text sx={{ fontSize: [2, 3], opacity: 0.8 }}>{poll.summary}</Text>
+              <Text variant="microHeading">{poll.title}</Text>
+              <Text sx={{ fontSize: [2, 3] }}>{poll.summary}</Text>
               {viewState == ViewState.ADDING ? (
                 <AddingView done={() => setViewState(ViewState.NEXT)} />
               ) : isRankedChoicePoll(poll) ? (
@@ -218,6 +223,7 @@ export default function MobileVoteSheet({
               )}
               <Button
                 variant="primary"
+                sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={submit}
                 disabled={!isChoiceValid || viewState == ViewState.ADDING}
               >

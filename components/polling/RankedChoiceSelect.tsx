@@ -44,9 +44,7 @@ export default function RankedChoiceSelect({
         {Array.from({ length: numConfirmed }).map((_, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
-              <Text sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}>
-                {getNumberWithOrdinal(index + 1)} choice
-              </Text>
+              <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text>{poll.options[choice[index]]}</Text>
             </Flex>
             <Close
@@ -69,10 +67,11 @@ export default function RankedChoiceSelect({
             const newChoice = [...choice];
             newChoice[numConfirmed] = parseInt(value);
             setChoice(newChoice);
+            // setNumConfirmed(numConfirmed + 1);
           }}
         >
           <ListboxButton
-            sx={{ variant: 'listboxes.default.button' }}
+            sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [3, 2] }}
             arrow={<Icon name="chevron_down" size={2} />}
           />
           <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
@@ -93,7 +92,9 @@ export default function RankedChoiceSelect({
         <Text
           color="primary"
           variant="caps"
-          onClick={() => setNumConfirmed(numConfirmed + 1)}
+          onClick={() => {
+            setNumConfirmed(numConfirmed + 1);
+          }}
           sx={{
             pt: 2,
             pb: 1,

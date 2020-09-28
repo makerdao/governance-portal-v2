@@ -16,7 +16,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
       {...props}
     >
       <ListboxButton
-        sx={{ variant: 'listboxes.default.button' }}
+        sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [3, 2] }}
         arrow={<Icon name="chevron_down" size={2} />}
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>

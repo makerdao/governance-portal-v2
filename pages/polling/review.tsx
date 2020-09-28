@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
 import { Heading, Box, jsx, Button, Flex } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
@@ -49,7 +50,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}
@@ -67,6 +68,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
             <Stack gap={2}>
               <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
+                  <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
                 </Button>
               </Link>
@@ -94,7 +96,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
           </Box>
           {bpi === 3 && !!account && (
             <StickyColumn sx={{ pt: 3 }}>
-              <Heading mb={2} as="h4" sx={{ lineHeight: '33px' }}>
+              <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
               </Heading>
               <ReviewBox polls={polls} activePolls={activePolls} />

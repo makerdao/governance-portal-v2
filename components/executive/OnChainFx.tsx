@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Grid, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
+import { Grid, Text, Box, Link as ExternalLink, jsx, Divider } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 
 import Stack from '../layouts/Stack';
@@ -38,8 +38,8 @@ export default function OnChainFx({ stateDiff, ...props }: { stateDiff: SpellSta
       <Stack gap={3} {...props}>
         {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
           <Box key={label}>
-            <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{label}</Text>
-            <Grid columns="max-content max-content 3ch max-content" sx={{ rowGap: 0, overflowX: 'scroll' }}>
+            <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase', mb: '1' }}>{label}</Text>
+            <Grid columns="max-content max-content 3ch max-content" sx={{ rowGap: 2, overflowX: 'scroll' }}>
               {diffs.map((diff, index) => (
                 <>
                   <Text key={index} sx={{ fontWeight: 'semibold', fontSize: 3, mr: 3 }}>
@@ -52,7 +52,7 @@ export default function OnChainFx({ stateDiff, ...props }: { stateDiff: SpellSta
                   <Text>
                     {new BigNumber(diff.from).toFormat(diff.from.toString().split('.')?.[1]?.length || 0)}
                   </Text>
-                  <Text>{'=>'}</Text>
+                  <Text>{'⟶'}</Text>
                   <Text>
                     {new BigNumber(diff.to).toFormat(diff.to.toString().split('.')?.[1]?.length || 0)}
                   </Text>

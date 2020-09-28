@@ -13,7 +13,7 @@ export default function (props): JSX.Element {
   return (
     <>
       <Flex {...props} sx={{ justifyContent: 'space-between' }}>
-        <Text color="onSurface" variant="caps" sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}>
+        <Text color="textSecondary" variant="caps" sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}>
           polling voting weight
         </Text>
       </Flex>
@@ -23,7 +23,7 @@ export default function (props): JSX.Element {
         </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>
-        <Text sx={{ fontSize: 2 }} color="onSurface">
+        <Text sx={{ fontSize: 2 }} color="textSecondary">
           Your voting weight is made up of the MKR in your wallet, vote proxy, and voting contract. This
           amount is applied to all polls you vote on.
         </Text>
