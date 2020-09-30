@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Flex, NavLink, Container, Close, Box, IconButton, jsx } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, jsx, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from '../lib/maker';
@@ -100,19 +100,22 @@ const MobileMenu = ({ hide, network, router }) => {
         sx={{
           flexDirection: 'column',
           alignItems: 'flex-start',
+          mt: 4,
           justifyContent: 'space-between',
-          height: '50vh',
+          height: '40vh',
           '> a': {
-            fontSize: 7
+            fontSize: 6
           }
         }}
       >
         <Link href={{ pathname: '/', query: { network } }}>
           <NavLink>Home</NavLink>
         </Link>
+        <Divider sx={{ width: '100%' }} />
         <Link href={{ pathname: '/polling', query: { network } }}>
           <NavLink>Polling</NavLink>
         </Link>
+        <Divider sx={{ width: '100%' }} />
         <Link href={{ pathname: '/executive', query: { network } }}>
           <NavLink>Executive</NavLink>
         </Link>

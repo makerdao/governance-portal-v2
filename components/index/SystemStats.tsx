@@ -34,10 +34,10 @@ export default function (): JSX.Element {
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
         <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3, mx: 'auto' }}>
-          <Text sx={{ fontSize: 5, fontWeight: '500' }}>System stats</Text>
+          <Text sx={{ fontSize: [4, 5], fontWeight: '500' }}>System stats</Text>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <Flex sx={{ alignItems: 'center' }}>
-              <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
+              <Text sx={{ color: 'accentBlue', fontSize: [2, 3], ':hover': { color: 'blueLinkHover' } }}>
                 View more stats
                 <Icon ml={2} name="arrowTopRight" size="2" />
               </Text>
@@ -48,27 +48,27 @@ export default function (): JSX.Element {
         <Flex sx={{ mx: 0, px: 5, py: 3, backgroundColor: 'background', borderRadius: 'small' }}>
           <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
             <div>
-              <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
-              <Text mt={2} sx={{ fontSize: [4, 5] }}>
+              <Text sx={{ fontSize: [2, 3], color: 'textSecondary' }}>Dai Savings Rate</Text>
+              <Text mt={2} sx={{ fontSize: [2, 5] }}>
                 {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
               </Text>
             </div>
 
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
-              <Text mt={2} sx={{ fontSize: [4, 5] }}>
+              <Text mt={2} sx={{ fontSize: [2, 5] }}>
                 {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-              <Text mt={2} sx={{ fontSize: [4, 5] }}>
+              <Text mt={2} sx={{ fontSize: [2, 5] }}>
                 {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
-              <Text mt={2} sx={{ fontSize: [4, 5] }}>
+              <Text mt={2} sx={{ fontSize: [2, 5] }}>
                 {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>

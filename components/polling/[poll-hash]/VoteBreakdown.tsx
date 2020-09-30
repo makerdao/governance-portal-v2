@@ -98,7 +98,7 @@ export default function ({
   }
 
   return (
-    <div key={2} sx={{ p: [3, 4] }} {...props}>
+    <div key={2} sx={{ p: [3, 4], fontSize: [2, 3] }} {...props}>
       <Text variant="microHeading" sx={{ mb: 3 }}>
         Vote Breakdown
       </Text>

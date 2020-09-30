@@ -3,37 +3,38 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 type Props = {
   title: string;
-  linkText: string;
   linkDest?: string;
   icon?: string;
   children: React.ReactNode;
 };
 
-const IntroCard = ({ icon, title, children, linkDest, linkText, ...otherProps }: Props): JSX.Element => (
-  <Box {...otherProps}>
-    <Icon name={icon} size="5" />
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: [null, '7.5rem'] }}>
-      <Box>
-        <Text sx={{ fontSize: 5, textAlign: 'left' }}>{title}</Text>
-        <Text sx={{ fontSize: 3, color: 'textSecondary', whiteSpace: 'initial' }} my="1">
-          {children}
-        </Text>
-      </Box>
-      <ExternalLink
+const IntroCard = ({ icon, title, children, linkDest, ...otherProps }: Props): JSX.Element => (
+  <ExternalLink
+    sx={{
+      color: 'text',
+      fontWeight: '400'
+    }}
+    href={linkDest}
+    target="_blank"
+  >
+    <Box {...otherProps} sx={{ p: 3, border: '2px solid', borderColor: '#D4D9E180', borderRadius: 'medium' }}>
+      <Flex
         sx={{
-          color: 'primary',
-          fontSize: '3',
-          fontWeight: 'semiBold',
-          ':hover': { color: 'greenLinkHover' }
+          flexDirection: 'row',
+          justifyContent: 'space-between'
         }}
-        href={linkDest}
-        target="_blank"
       >
-        {linkText}
-        <Icon ml="2" name="arrowTopRight" size="2" />
-      </ExternalLink>
-    </Flex>
-  </Box>
+        <Icon name={icon} size="4" />
+        <Icon ml="2" name="arrowTopRight" size="2" color="onSecondary" />
+      </Flex>
+      <Flex sx={{ flexDirection: 'column', justifyContent: 'flex-start', height: [null, 'auto'] }}>
+        <Text mt="2" mb="1" sx={{ fontSize: [4, 5], textAlign: 'left', fontWeight: ['500', '400'] }}>
+          {title}
+        </Text>
+        <Text sx={{ fontSize: [2, 3], color: 'textSecondary', whiteSpace: 'initial' }}>{children}</Text>
+      </Flex>
+    </Box>
+  </ExternalLink>
 );
 
 export default IntroCard;

@@ -89,7 +89,7 @@ export default function PollOverviewCard({
                 Edit Choices
               </Button>
             ) : (
-              <Button variant="primary" mr={2} onClick={startMobileVoting}>
+              <Button variant="primary" mr={2} px={4} onClick={startMobileVoting}>
                 Vote
               </Button>
             ))}

@@ -140,9 +140,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
                 <Box>
                   <Text
-                    variant="caps"
+                    variant="text.caps"
                     sx={{
-                      fontSize: [1],
+                      fontSize: 1,
                       color: 'textSecondary'
                     }}
                   >
@@ -223,8 +223,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   ),
 
                   <Divider key={'divider'} />,
-                  <Flex sx={{ p: 4, flexDirection: 'column' }} key={'voting stats'}>
-                    <Text variant="microHeading" sx={{ mb: 4 }}>
+                  <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'voting stats'}>
+                    <Text variant="microHeading" sx={{ mb: 3 }}>
                       Voting Stats
                     </Text>
                     <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>

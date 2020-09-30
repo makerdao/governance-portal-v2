@@ -156,14 +156,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
               {showHistorical ? (
                 <div>
-                  <Heading mb={3} as="h4">
-                    <Flex sx={{ justifyContent: 'space-between' }}>
-                      <div />
-                      <Button onClick={() => setShowHistorical(false)} variant="mutedOutline">
-                        View fewer proposals
-                      </Button>
-                    </Flex>
-                  </Heading>
+                  <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                    <Divider />
+                    <Button variant="mutedOutline" onClick={() => setShowHistorical(false)}>
+                      View fewer proposals
+                    </Button>
+                    <Divider />
+                  </Grid>
+
                   <Stack gap={4}>
                     {filteredProposals
                       .filter(proposal => !proposal.active)

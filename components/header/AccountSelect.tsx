@@ -65,8 +65,8 @@ const AccountSelect = props => {
         alignItems: 'center',
         '&:hover': {
           color: 'text',
-          borderColor: 'onSecondary',
-          backgroundColor: 'white'
+          // borderColor: 'onSecondary',
+          backgroundColor: 'background'
         }
       }}
       key={name}
@@ -188,6 +188,15 @@ const AccountSelect = props => {
             )}
             {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />}
             {account && txs?.length > 0 && <TransactionBox txs={txs} />}
+            {account && (
+              <Button
+                variant="primaryOutline"
+                onClick={close}
+                sx={{ display: ['block', 'none'], width: '100%', mt: 4, mb: 2, py: [3] }}
+              >
+                Close
+              </Button>
+            )}
           </DialogContent>
         )}
       </DialogOverlay>

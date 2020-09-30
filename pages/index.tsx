@@ -66,7 +66,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
-                  <Text as="p" mb="3" sx={{ color: 'textSecondary', fontSize: [3, 5], px: [4, 'inherit'] }}>
+                  <Text as="p" mb="3" sx={{ color: 'textSecondary', fontSize: [3, 5], px: [3, 'inherit'] }}>
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
@@ -81,28 +81,43 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <Grid gap={[5, 6]} sx={{ px: [2, 0] }} columns={[1, 3]}>
+            <Grid gap={[4, 5]} sx={{ px: [2, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Intro to Governance"
-                linkText="Get started"
                 linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
                 icon="govIntro"
+                sx={{
+                  '&:hover': {
+                    backgroundColor: '#FFC28608',
+                    borderColor: '#FFC286CC'
+                  }
+                }}
               >
                 A guide outlining the basics of getting started with Maker Governance.
               </IntroCard>
               <IntroCard
                 title="Maker Forum"
-                linkText="Go to forum"
                 linkDest="https://forum.makerdao.com"
                 icon="govForum"
+                sx={{
+                  '&:hover': {
+                    backgroundColor: '#AFBBFF08',
+                    borderColor: '#AFBBFFCC'
+                  }
+                }}
               >
-                Get the latest updates and take part in current discussions.
+                Get the latest updates and take part in current governance discussions.
               </IntroCard>
               <IntroCard
                 title="Community Tools"
-                linkText="View community tools"
                 linkDest="https://community-development.makerdao.com/governance/governance-tools"
                 icon="govCalls"
+                sx={{
+                  '&:hover': {
+                    backgroundColor: '#84CBC408',
+                    borderColor: '#84CBC4CC'
+                  }
+                }}
               >
                 Use tools from the community to stay informed on the state of the system.
               </IntroCard>
@@ -114,8 +129,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
                 <Stack gap={2}>
                   <Heading as="h2">Executive Votes</Heading>
-                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [3, 5] }}>
-                    Executive Votes are conducted to make changes to the system. The governing proposal
+                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+                    Executive Votes are conducted to make changes to the protocol. The governing proposal
                     represents the current state of the system.
                   </Text>
                 </Stack>
@@ -142,8 +157,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
                 <Stack gap={2}>
                   <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [3, 5] }}>
-                    Polls are conducted to establish a rough consensus of community sentiment before Executive
+                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
+                    Polls take place to establish a rough consensus of community sentiment before Executive
                     Votes are conducted.
                   </Text>
                 </Stack>

@@ -139,7 +139,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
           {spellData?.hasBeenCast && (
             <>
               <Divider my={0} />
-              <Flex p={[4, 3]} sx={{ justifyContent: 'center' }}>
+              <Flex p={3} sx={{ justifyContent: 'center' }}>
                 <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
                   Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
                   {typeof spellData.dateExecuted === 'string' ? (
