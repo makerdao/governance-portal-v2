@@ -121,7 +121,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
               {canVote && bpi === 0 && (
                 <Box sx={{ pt: 2 }}>
                   <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => setVoting(true)}>
-                    {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
+                    Vote
                   </Button>
                 </Box>
               )}
@@ -129,12 +129,14 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
             {canVote && bpi > 0 && (
               <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
                 <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => setVoting(true)}>
-                  {hasVotedFor ? 'Withdraw Vote' : 'Vote'}
+                  Vote
                 </Button>
               </Flex>
             )}
           </Flex>
-          {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
+          {voting && (
+            <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
+          )}
 
           {spellData?.hasBeenCast && (
             <>

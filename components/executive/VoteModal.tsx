@@ -28,15 +28,19 @@ import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
+import { array } from 'prop-types';
+import CurrencyObject from '../../types/currency';
 
 type Props = {
   close: () => void;
   proposal: Proposal;
+  currentSlate?: string[];
 };
 
 type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
 
-const VoteModal = ({ close, proposal }: Props): JSX.Element => {
+const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element => {
+  console.log('currentSlate', currentSlate);
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
@@ -53,6 +57,15 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
+
+  const { data: hat } = useSWR<string>('/executive/hat', () =>
+    getMaker().then(maker => maker.service('chief').getHat())
+  );
+
+  const isHat = hat ? hat === proposal.address : false;
+
+  const showHatCheckbox =
+    hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
 
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
@@ -75,9 +88,10 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
 
   const [step, setStep] = useState('confirm');
 
-  const vote = async () => {
+  const vote = async hatChecked => {
     const maker = await getMaker();
-    const voteTxCreator = () => maker.service('chief').vote(proposal.address);
+    const proposals = hatChecked && showHatCheckbox ? [hat, proposal.address].sort() : [proposal.address];
+    const voteTxCreator = () => maker.service('chief').vote(proposals);
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
       mined: txId => {
@@ -177,30 +191,35 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
           </Box>
         </Grid>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
-            Submit Vote
+          <Button variant="primary" sx={{ width: '100%' }} onClick={() => vote(hatChecked)}>
+            {currentSlate.includes(proposal.address) && currentSlate.length > 1
+              ? 'Concentrate all my MKR on this proposal'
+              : !currentSlate.includes(proposal.address) && isHat
+              ? 'Add MKR to secure the protocol'
+              : 'Submit Vote'}
           </Button>
-          <Label
-            sx={{
-              mt: 3,
-              p: 0,
-              fontWeight: 400,
-              alignItems: 'center',
-              color: 'textSecondary',
-              lineHeight: '0px',
-              fontSize: [1, 2]
-            }}
-          >
-            <Checkbox
-              sx={{ width: '18px', height: '18px' }}
-              checked={hatChecked}
-              onChange={event => {
-                console.log('event', event);
-                setHatChecked(event.target.checked);
+          {showHatCheckbox ? (
+            <Label
+              sx={{
+                mt: 3,
+                p: 0,
+                fontWeight: 400,
+                alignItems: 'center',
+                color: 'textSecondary',
+                lineHeight: '0px',
+                fontSize: [1, 2]
               }}
-            />
-            Keep my MKR on old proposal to secure the Maker protocol
-          </Label>
+            >
+              <Checkbox
+                sx={{ width: '18px', height: '18px' }}
+                checked={hatChecked}
+                onChange={event => {
+                  setHatChecked(event.target.checked);
+                }}
+              />
+              Keep my MKR on old proposal to secure the Maker protocol
+            </Label>
+          ) : null}
         </Box>
       </Flex>
     );

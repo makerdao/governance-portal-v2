@@ -20,7 +20,7 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
@@ -48,6 +48,17 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     `/api/executive/supporters?network=${getNetwork()}`
   );
 
+  const { data: votedProposals } = useSWR<string[]>(
+    ['/executive/voted-proposals', account?.address],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .service('chief')
+          .getVotedSlate(address)
+          .then(slate => maker.service('chief').getSlateAddresses(slate))
+      )
+  );
+
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
@@ -67,7 +78,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
-      {voting && <VoteModal close={close} proposal={proposal} />}
+      {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
           sx={{
