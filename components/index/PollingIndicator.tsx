@@ -89,8 +89,9 @@ export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))
     : undefined;
 
+  const shouldDisplay = activePolls.length === 0 || (account && !unvotedPolls?.length) ? 'none' : null;
   return (
-    <Container sx={{ textAlign: 'center' }} {...props}>
+    <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !unvotedPolls ? (
         <Skeleton height="39px" width="400px" />
       ) : (
