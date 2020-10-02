@@ -285,3 +285,8 @@ export function changeInputValue(inputRef: HTMLInputElement, value: string): voi
   valueProp.set.call(inputRef, value);
   inputRef.dispatchEvent(new Event('input', { bubbles: true }));
 }
+
+export const sortBytesArray = _array =>
+  [..._array].sort((a, b) => {
+    return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
+  });

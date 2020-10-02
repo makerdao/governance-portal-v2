@@ -24,7 +24,7 @@ import Skeleton from 'react-loading-skeleton';
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
-import { getEtherscanLink } from '../../lib/utils';
+import { getEtherscanLink, sortBytesArray } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
@@ -40,7 +40,6 @@ type Props = {
 type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
 
 const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element => {
-  console.log('currentSlate', currentSlate);
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
@@ -62,7 +61,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
-  const isHat = hat ? hat === proposal.address : false;
+  const isHat = hat && hat === proposal.address;
 
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
@@ -90,7 +89,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
   const vote = async hatChecked => {
     const maker = await getMaker();
-    const proposals = hatChecked && showHatCheckbox ? [hat, proposal.address].sort() : [proposal.address];
+    const proposals =
+      hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
     const voteTxCreator = () => maker.service('chief').vote(proposals);
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
