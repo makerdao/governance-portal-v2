@@ -25,7 +25,7 @@ export default function RankedChoiceSelect({
   const choice = _choice || [];
   const [numConfirmed, setNumConfirmed] = useState(choice.length > 0 ? choice.length - 1 : 0);
   const totalNumOptions = Object.keys(poll.options).length;
-  const canAddOption = totalNumOptions > numConfirmed + 1 && choice[numConfirmed] !== undefined;
+  const canAddOption = totalNumOptions > numConfirmed + 1;
 
   const availableChoices = useMemo(
     () =>
@@ -67,7 +67,7 @@ export default function RankedChoiceSelect({
             const newChoice = [...choice];
             newChoice[numConfirmed] = parseInt(value);
             setChoice(newChoice);
-            // setNumConfirmed(numConfirmed + 1);
+            if (canAddOption) setNumConfirmed(numConfirmed + 1);
           }}
         >
           <ListboxButton
@@ -88,23 +88,6 @@ export default function RankedChoiceSelect({
           </ListboxPopover>
         </ListboxInput>
       </Stack>
-      {canAddOption && (
-        <Text
-          color="primary"
-          variant="caps"
-          onClick={() => {
-            setNumConfirmed(numConfirmed + 1);
-          }}
-          sx={{
-            pt: 2,
-            pb: 1,
-            fontSize: 1,
-            cursor: 'pointer'
-          }}
-        >
-          <span sx={{ mr: 1 }}>+</span> Add another choice
-        </Text>
-      )}
     </Box>
   );
 }
