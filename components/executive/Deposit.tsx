@@ -98,6 +98,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
           onClick={async () => {
             const maker = await getMaker();
+            // TODO when wallet is for a proxy, use VoteProxyService instead
             const lockTxCreator = () => maker.service('chief').lock(mkrToDeposit);
             const txId = await track(lockTxCreator, 'Depositing MKR', {
               mined: txId => {
