@@ -18,8 +18,9 @@ test('should automatically add an account changed listener to dai.js', async () 
     key: nextAccount.key
   });
   maker.useAccount('test-account');
-
-  const currentAccount = accountsApi.getState().currentAccount;
-  expect(currentAccount.address).toBe(nextAccount.address);
-  expect(currentAccount.name).toBe('test-account');
+  await waitForExpect(() => {
+    const currentAccount = accountsApi.getState().currentAccount;
+    expect(currentAccount.address).toBe(nextAccount.address);
+    expect(currentAccount.name).toBe('test-account');
+  });
 });
