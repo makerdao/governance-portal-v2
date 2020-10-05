@@ -127,7 +127,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 ]}
               />
             ) : (
-              <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['On-Chain Effects']}
+                tabPanels={[onChainFxTab]}
+              />
             )}
           </Card>
         </Box>
