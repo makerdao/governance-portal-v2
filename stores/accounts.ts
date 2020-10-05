@@ -10,7 +10,7 @@ type VoteProxy = {
   getHotAddress: () => string;
   lock: () => Promise<any>;
   free: () => Promise<any>;
-  voteExec: () => Promise<any>;
+  voteExec: (picks: string[] | string) => Promise<any>;
   getNumDeposits: () => Promise<any>;
   getVotedProposalAddresses: () => Promise<any>;
 };
