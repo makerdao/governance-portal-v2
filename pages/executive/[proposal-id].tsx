@@ -25,6 +25,10 @@ import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
 
+// DEV BOOL ------------------------
+const SHOW_DEV_COMMENT_UI = false;
+// DEV BOOL ------------------------
+
 type Props = {
   proposal: Proposal;
 };
@@ -59,6 +63,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )
   );
 
+  const { data: comments } = useSWR(
+    SHOW_DEV_COMMENT_UI ? `/api/executive/comments/list/${proposal.address}` : null
+  );
+
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
@@ -78,6 +86,44 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
+      {/* DEV ONLY – TODO: DELETE */}
+      {SHOW_DEV_COMMENT_UI && (
+        <Box>
+          <Button
+            onClick={() => {
+              const things = [
+                'I worry about lenders jumping to compound',
+                'Vishesh convinced me we need rate increases',
+                'I like turtles'
+              ];
+              const thing = things[Math.floor(Math.random() * things.length)];
+              fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                  voterAddress: '0x0C9e93Baa9981d09CA55AAd7a6211b015B45ea2F',
+                  comment: `I voted for this because ${thing}.`
+                })
+              });
+            }}
+          >
+            add random comment{' '}
+          </Button>
+          <Box sx={{ mt: 3, p: 3 }}>
+            {comments ? (
+              <Box sx={{ mt: 2 }}>
+                {comments.map(comment => (
+                  <Box key={Math.random()}>
+                    {comment.voterAddress}: {comment.comment}
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              'Loading comments'
+            )}
+          </Box>
+        </Box>
+      )}
+      {/* DEV ONLY – TODO: DELETE */}
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box

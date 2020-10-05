@@ -17,7 +17,7 @@ type VoteProxy = {
 
 type Store = {
   currentAccount?: Account;
-  proxies: Record<string, VoteProxy>;
+  proxies: Record<string, VoteProxy | null>;
   addAccountsListener: () => Promise<void>;
 };
 
