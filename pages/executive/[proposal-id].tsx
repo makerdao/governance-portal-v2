@@ -60,23 +60,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )
   );
 
-  // const { data: comments } = useSWR(
-  //   `/api/executive/comments/list/${proposal.address}`
-  // );
-  const comments = [
-    {
-      voterAddress: '0x',
-      voterWeight: '1,500.50',
-      comment: 'blah blah blah blah blah blah blah',
-      date: new Date()
-    },
-    {
-      voterAddress: '0x',
-      voterWeight: '1,500.50',
-      comment: 'blah blah blah blah blah blah blah',
-      date: new Date()
-    }
-  ];
+  const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
+  // const comments = [
+  //   {
+  //     voterAddress: '0x',
+  //     voterWeight: '1,500.50',
+  //     comment: 'blah blah blah blah blah blah blah',
+  //     date: new Date()
+  //   },
+  //   {
+  //     voterAddress: '0x',
+  //     voterWeight: '1,500.50',
+  //     comment: 'blah blah blah blah blah blah blah',
+  //     date: new Date()
+  //   }
+  // ];
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
