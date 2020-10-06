@@ -37,7 +37,9 @@ export default function RankedChoiceSelect({
       ),
     [numConfirmed]
   );
-
+  console.log('availableChoices', availableChoices);
+  console.log('numConfirmed:', numConfirmed);
+  console.log('Object.keys(availableChoices)', Object.keys(availableChoices).length);
   return (
     <Box {...props}>
       <Stack gap={2}>
@@ -67,7 +69,7 @@ export default function RankedChoiceSelect({
             const newChoice = [...choice];
             newChoice[numConfirmed] = parseInt(value);
             setChoice(newChoice);
-            if (canAddOption) setNumConfirmed(numConfirmed + 1);
+            if (canAddOption || Object.keys(availableChoices).length === 1) setNumConfirmed(numConfirmed + 1);
           }}
         >
           <ListboxButton
