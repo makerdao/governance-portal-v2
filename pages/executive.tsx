@@ -7,7 +7,6 @@ import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
-import throttle from 'lodash/throttle';
 
 import Deposit from '../components/executive/Deposit';
 import Withdraw from '../components/executive/Withdraw';
