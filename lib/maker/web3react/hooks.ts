@@ -18,7 +18,15 @@ export const syncMakerAccount = (library, account, chainIdError) => {
       if (accounts.some(a => a.address.toLowerCase() === account.toLowerCase())) {
         maker.useAccountWithAddress(account);
       } else {
+        const notFirst = maker.service('accounts').hasAccount();
         await maker.addAccount({ type: 'web3-react', library, address: account });
+        if (!notFirst) {
+          // if we're adding an account but it's not the first one, we have to explicitly use it;
+          // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
+          // you can test this by connecting with metamask, and then switching the account in the
+          // metamask extension UI.
+          maker.useAccountWithAddress(account);
+        }
       }
     })();
   }, [library, account]);

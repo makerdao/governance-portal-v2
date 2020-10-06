@@ -29,13 +29,16 @@ import { fetchJson } from '../lib/utils';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const { data: lockedMkr } = useSWR(
-    account?.address ? ['/user/mkr-locked', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
+  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
+    getMaker().then(maker =>
+      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
+    )
   );
 
   // FIXME merge this into the proposal object

@@ -28,8 +28,6 @@ import { getEtherscanLink, sortBytesArray } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
-import { array } from 'prop-types';
-import CurrencyObject from '../../types/currency';
 
 type Props = {
   close: () => void;
@@ -43,13 +41,17 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+
+  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
+    getMaker().then(maker =>
+      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
+    )
+  );
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
-  );
-  const { data: lockedMkr } = useSWR(
-    account?.address ? ['/user/mkr-locked', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
   );
 
   const [track, tx] = useTransactionStore(
@@ -91,7 +93,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const maker = await getMaker();
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
-    const voteTxCreator = () => maker.service('chief').vote(proposals);
+
+    const voteTxCreator = voteProxy
+      ? () => voteProxy.voteExec(proposals)
+      : () => maker.service('chief').vote(proposals);
+
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
       mined: txId => {
@@ -225,92 +231,6 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     );
   };
 
-  const Signing = () => (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Close
-        aria-label="close"
-        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-        onClick={close}
-      />
-
-      <Text variant="heading" sx={{ fontSize: 6 }}>
-        Sign Transaction
-      </Text>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
-        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
-          Please use your wallet to sign this transaction.
-        </Text>
-        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
-          Cancel vote submission
-        </Button>
-      </Flex>
-    </Flex>
-  );
-
-  const Pending = () => (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Close
-        aria-label="close"
-        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-        onClick={close}
-      />
-
-      <Text variant="heading" sx={{ fontSize: 6 }}>
-        Transaction Sent!
-      </Text>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-          Vote will update once the blockchain has confirmed the transaction.
-        </Text>
-        <ExternalLink
-          target="_blank"
-          href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
-          sx={{ p: 0 }}
-        >
-          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-            View on Etherscan
-            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-          </Text>
-        </ExternalLink>
-        <Button
-          onClick={close}
-          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
-          variant="outline"
-        >
-          Close
-        </Button>
-      </Flex>
-    </Flex>
-  );
-
-  const Error = () => (
-    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Close
-        aria-label="close"
-        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-        onClick={close}
-      />
-      <Text variant="heading" sx={{ fontSize: 6 }}>
-        Transaction Failed.
-      </Text>
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-        <Icon name="reviewFailed" size={5} sx={{ my: 3 }} />
-        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
-          Something went wrong with your transaction. Please try again.
-        </Text>
-        <Button
-          onClick={close}
-          sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
-          variant="outline"
-        >
-          Close
-        </Button>
-      </Flex>
-    </Flex>
-  );
-
   const view = useMemo(() => {
     switch (step) {
       case 'confirm':
@@ -318,7 +238,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'signing':
         return <Signing />;
       case 'pending':
-        return <Pending />;
+        return <Pending tx={tx} />;
       case 'failed':
         return <Error />;
     }
@@ -339,5 +259,91 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     </DialogOverlay>
   );
 };
+
+const Signing = () => (
+  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Close
+      aria-label="close"
+      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+      onClick={close}
+    />
+
+    <Text variant="heading" sx={{ fontSize: 6 }}>
+      Sign Transaction
+    </Text>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
+        Please use your wallet to sign this transaction.
+      </Text>
+      <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
+        Cancel vote submission
+      </Button>
+    </Flex>
+  </Flex>
+);
+
+const Pending = ({ tx }) => (
+  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Close
+      aria-label="close"
+      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+      onClick={close}
+    />
+
+    <Text variant="heading" sx={{ fontSize: 6 }}>
+      Transaction Sent!
+    </Text>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+        Vote will update once the blockchain has confirmed the transaction.
+      </Text>
+      <ExternalLink
+        target="_blank"
+        href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
+        sx={{ p: 0 }}
+      >
+        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          View on Etherscan
+          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+        </Text>
+      </ExternalLink>
+      <Button
+        onClick={close}
+        sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
+        variant="outline"
+      >
+        Close
+      </Button>
+    </Flex>
+  </Flex>
+);
+
+const Error = () => (
+  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+    <Close
+      aria-label="close"
+      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+      onClick={close}
+    />
+    <Text variant="heading" sx={{ fontSize: 6 }}>
+      Transaction Failed.
+    </Text>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Icon name="reviewFailed" size={5} sx={{ my: 3 }} />
+      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+        Something went wrong with your transaction. Please try again.
+      </Text>
+      <Button
+        onClick={close}
+        sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
+        variant="outline"
+      >
+        Close
+      </Button>
+    </Flex>
+  </Flex>
+);
 
 export default VoteModal;

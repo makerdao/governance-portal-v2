@@ -100,6 +100,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
             const maker = await getMaker();
+            // TODO when wallet is for a proxy, use VoteProxyService instead
             const freeTxCreator = () => maker.service('chief').free(mkrToWithdraw);
             const txId = await track(freeTxCreator, 'Withdrawing MKR', {
               mined: txId => {
