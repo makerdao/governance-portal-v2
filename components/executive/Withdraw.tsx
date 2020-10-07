@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useRef } from 'react';
-import { Button, Flex, Text, Close, Box, jsx } from 'theme-ui';
+import { Button, Flex, Text, Close, Box, jsx, Card, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Skeleton from 'react-loading-skeleton';
@@ -15,11 +15,33 @@ import CurrencyObject from '../../types/currency';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
 import { changeInputValue } from '../../lib/utils';
+import invariant from 'tiny-invariant';
 
-const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
+const ModalContent = ({ address, voteProxy, close, ...props }) => {
+  invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
+
+  const { data: allowanceOk } = useSWR<CurrencyObject>(
+    ['/user/iou-allowance', address, !!voteProxy],
+    (_, address) =>
+      voteProxy || // no need for IOU approval when using vote proxy
+      getMaker()
+        .then(maker =>
+          maker
+            .getToken('IOU')
+            .allowance(address, maker.service('smartContract').getContractAddresses().CHIEF)
+        )
+        .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
+  );
+
+  const lockedMkrKey = voteProxy?.getProxyAddress() || address;
+  const { data: lockedMkr } = useSWR(['/user/mkr-locked', lockedMkrKey], (_, address) =>
+    getMaker().then(maker =>
+      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
+    )
+  );
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -55,7 +77,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
         )}
       </Stack>
     );
-  } else if (hasLargeIouAllowance) {
+  } else if (allowanceOk) {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
@@ -75,7 +97,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
             ref={input}
           />
         </Box>
-        <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
+        <Flex sx={{ alignItems: 'baseline' }}>
           <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
             MKR in contract:&nbsp;
           </Text>
@@ -95,13 +117,21 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
             </Box>
           )}
         </Flex>
+        {voteProxy && address === voteProxy.getHotAddress() && (
+          <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
+            You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
+          </Alert>
+        )}
         <Button
-          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
             const maker = await getMaker();
-            // TODO when wallet is for a proxy, use VoteProxyService instead
-            const freeTxCreator = () => maker.service('chief').free(mkrToWithdraw);
+
+            const freeTxCreator = voteProxy
+              ? () => voteProxy.free(mkrToWithdraw)
+              : () => maker.service('chief').free(mkrToWithdraw);
+
             const txId = await track(freeTxCreator, 'Withdrawing MKR', {
               mined: txId => {
                 transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
@@ -128,7 +158,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
             Approve voting contract
           </Text>
           <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-            Approve the vote proxy to withdraw your MKR from the voting contract.
+            Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
           </Text>
         </Box>
 
@@ -154,7 +184,7 @@ const ModalContent = ({ hasLargeIouAllowance, lockedMkr, close, ...props }) => {
             setTxId(txId);
           }}
         >
-          Approve vote proxy
+          Approve
         </Button>
       </Stack>
     );
@@ -182,25 +212,12 @@ export const BoxWithClose = ({ content, close, ...props }): JSX.Element => (
   </Box>
 );
 
-const Withdraw = props => {
+const Withdraw = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
-
-  const { data: iouAllowance } = useSWR<CurrencyObject>(
-    ['/user/iou-allowance', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker.getToken('IOU').allowance(address, maker.service('smartContract').getContractAddresses().CHIEF)
-      )
-  );
-
-  const { data: lockedMkr } = useSWR(
-    account?.address ? ['/user/mkr-locked', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('chief').getNumDeposits(address))
-  );
-
-  const hasLargeIouAllowance = iouAllowance && iouAllowance.gt('10e26'); // greater than 100,000,000 MKR
 
   return (
     <>
@@ -225,8 +242,8 @@ const Withdraw = props => {
         >
           <ModalContent
             sx={{ px: [3, null] }}
-            hasLargeIouAllowance={hasLargeIouAllowance}
-            lockedMkr={lockedMkr}
+            address={account?.address}
+            voteProxy={voteProxy}
             close={() => setShowDialog(false)}
           />
         </DialogContent>
