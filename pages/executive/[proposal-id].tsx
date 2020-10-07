@@ -67,6 +67,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     SHOW_DEV_COMMENT_UI ? `/api/executive/comments/list/${proposal.address}` : null
   );
 
+  useSWR('/executive/all-slates', () => getMaker().then(maker => maker.service('chief').getAllSlates()));
+
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);

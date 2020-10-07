@@ -59,6 +59,10 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     shallow
   );
 
+  const { data: slateLogs } = useSWR('/executive/all-slates', () =>
+    getMaker().then(maker => maker.service('chief').getAllSlates())
+  );
+
   const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
@@ -94,9 +98,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
 
+    const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
+    const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
+    const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
+    const slateOrProposals = slateAlreadyExists ? slate : proposals;
     const voteTxCreator = voteProxy
-      ? () => voteProxy.voteExec(proposals)
-      : () => maker.service('chief').vote(proposals);
+      ? () => voteProxy.voteExec(slateOrProposals)
+      : () => maker.service('chief').vote(slateOrProposals);
 
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
