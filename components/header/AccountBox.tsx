@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Flex, Text, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ConnectorName } from '../../lib/maker/web3react';
@@ -18,6 +19,7 @@ type Props = {
 
 const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
+  const [copyAddressText, setCopyAddressText] = useState('Copy Address');
 
   return (
     <Flex
@@ -67,10 +69,14 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
               backgroundColor: 'background'
             }
           }}
-          onClick={() => navigator.clipboard.writeText(account)}
+          onClick={() => {
+            navigator.clipboard.writeText(account);
+            setCopyAddressText('Copied!');
+            setTimeout(() => setCopyAddressText('Copy Address'), 1000);
+          }}
         >
           <Icon name="copy" sx={{ pr: 1 }} />
-          Copy Address
+          {copyAddressText}
         </Flex>
         <ExternalLink
           href={getEtherscanLink(getNetwork(), account, 'address')}
