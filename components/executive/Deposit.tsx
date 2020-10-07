@@ -28,17 +28,19 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
   );
 
-  const { data: chiefAllowance } = useSWR<CurrencyObject>(['/user/chief-allowance', address], (_, address) =>
-    getMaker().then(maker =>
-      maker
-        .getToken(MKR)
-        .allowance(
-          address,
-          address === voteProxy?.getColdAddress()
-            ? voteProxy?.getProxyAddress()
-            : maker.service('smartContract').getContractAddresses().CHIEF
-        )
-    )
+  const { data: chiefAllowance } = useSWR<CurrencyObject>(
+    ['/user/chief-allowance', address, !!voteProxy],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .getToken(MKR)
+          .allowance(
+            address,
+            address === voteProxy?.getColdAddress()
+              ? voteProxy?.getProxyAddress()
+              : maker.service('smartContract').getContractAddresses().CHIEF
+          )
+      )
   );
 
   const hasLargeMkrAllowance = chiefAllowance?.gt('10e26'); // greater than 100,000,000 MKR
@@ -193,7 +195,8 @@ const Deposit = (props): JSX.Element => {
   const open = () => {
     if (voteProxy && account?.address === voteProxy.getHotAddress()) {
       alert(
-        'This is the hot wallet for a voting proxy. You can only deposit from the cold wallet. ' +
+        'You are using the hot wallet for a voting proxy. ' +
+          'You can only deposit from the cold wallet. ' +
           'Switch to that wallet to continue.'
       );
       return;
