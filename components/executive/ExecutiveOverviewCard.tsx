@@ -130,7 +130,14 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>
-                <Button variant="primaryOutline" sx={{ width: '100%' }} onClick={() => setVoting(true)}>
+                <Button
+                  variant="primaryOutline"
+                  sx={{ width: '100%' }}
+                  onClick={ev => {
+                    setVoting(true);
+                    ev.stopPropagation();
+                  }}
+                >
                   Vote
                 </Button>
               </Box>
