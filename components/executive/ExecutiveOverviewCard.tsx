@@ -133,6 +133,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
                 <Button
                   variant="primaryOutline"
                   sx={{ width: '100%' }}
+                  disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
                     setVoting(true);
                     ev.stopPropagation();
@@ -148,6 +149,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
               <Button
                 variant="primaryOutline"
                 sx={{ width: '100%' }}
+                disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                 onClick={ev => {
                   setVoting(true);
                   ev.stopPropagation();

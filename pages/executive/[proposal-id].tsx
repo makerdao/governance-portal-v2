@@ -84,6 +84,12 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     </div>
   );
 
+  const hasVotedFor =
+    votedProposals &&
+    !!votedProposals.find(
+      proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
+    );
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       {/* DEV ONLY – TODO: DELETE */}
@@ -140,7 +146,12 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             border: '1px solid #D4D9E1'
           }}
         >
-          <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
+          <Button
+            variant="primary"
+            onClick={() => setVoting(true)}
+            sx={{ width: '100%' }}
+            disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+          >
             Vote for this proposal
           </Button>
         </Box>
@@ -192,8 +203,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   <Text sx={{ fontSize: 5 }}>
                     {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
                   </Text>
-                  <Button variant="primary" onClick={() => setVoting(true)} sx={{ width: '100%', mt: 3 }}>
-                    Vote
+                  <Button
+                    variant="primary"
+                    onClick={() => setVoting(true)}
+                    sx={{ width: '100%', mt: 3 }}
+                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+                  >
+                    Vote for this proposal
                   </Button>
                 </Card>
               </>
