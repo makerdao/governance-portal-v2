@@ -13,7 +13,7 @@ import {
   Label,
   Checkbox,
   jsx,
-  Input
+  Textarea
 } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
@@ -209,25 +209,27 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
           </Box>
         </Grid>
         <Box sx={{ width: '100%', mt: 4 }}>
-          <Text variant="microHeading" sx={{ fontSize: 3 }}>
-            Why are you voting for this proposal?
-          </Text>
           <Box
             sx={{
               borderRadius: 'medium',
-              mt: 2,
+              my: 2,
+              mb: 4,
               width: '100%',
               borderColor: 'secondaryMuted',
               height: '96px'
             }}
           >
-            <Input
+            <Label variant="microHeading" sx={{ fontSize: 3 }}>
+              Why are you voting for this proposal?
+            </Label>
+            <Textarea
               sx={{
                 color: 'secondaryMuted',
                 height: '96px',
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
-                display: 'flex'
+                display: 'flex',
+                resize: 'none'
               }}
               onChange={event => {
                 setComment(event.target.value);
