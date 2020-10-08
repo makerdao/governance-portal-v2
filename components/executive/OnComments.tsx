@@ -22,7 +22,6 @@ export default function OnComments({ comments, ...props }: { comments: Comment[]
   // ];
   return (
     <Stack gap={3}>
-      {/* <Header stateDiff={stateDiff} /> */}
       <Flex
         sx={{
           flexDirection: 'row',
