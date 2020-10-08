@@ -40,8 +40,6 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     )
   );
 
-  useSWR('/executive/all-slates', () => getMaker().then(maker => maker.service('chief').getAllSlates()));
-
   // FIXME merge this into the proposal object
   const { data: spellData } = useSWR<Record<string, SpellData>>(
     `/api/executive/analyze-spell?network=${getNetwork()}`,
