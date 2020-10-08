@@ -2,10 +2,18 @@
 import { Flex, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
 
 import Stack from '../layouts/Stack';
-import CommentDateFilter from './CommentDateFilter';
+import CommentSortBy from './CommentSortBy';
 import Comment from '../../types/comment';
+import Proposal from '../../types/proposal';
 
-export default function OnComments({ comments, ...props }: { comments: Comment[] }): JSX.Element {
+export default function OnComments({
+  proposal,
+  comments,
+  ...props
+}: {
+  proposal: Proposal;
+  comments: Comment[];
+}): JSX.Element {
   return (
     <Stack gap={3}>
       <Flex
@@ -19,7 +27,7 @@ export default function OnComments({ comments, ...props }: { comments: Comment[]
         }}
       >
         <Text variant="microHeading">Comments ({comments.length})</Text>
-        <CommentDateFilter />
+        <CommentSortBy />
       </Flex>
       <Stack gap={3} {...props}>
         <Box>

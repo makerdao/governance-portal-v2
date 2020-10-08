@@ -103,18 +103,20 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       pending: () => setStep('pending'),
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+        fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            voterAddress: account,
+            comment: comment,
+            date: new Date(),
+            txId: txId
+          })
+        });
         close(); // TBD maybe show a separate "done" dialog
       },
       error: () => setStep('failed')
     });
-    fetchJson(`/api/executive/comments/add/${proposal.address}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        voterAddress: account,
-        comment: comment,
-        date: new Date()
-      })
-    });
+
     setTxId(txId);
     setStep('signing');
   };

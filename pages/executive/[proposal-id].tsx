@@ -61,20 +61,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   );
 
   const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
-  // const comments = [
-  //   {
-  //     voterAddress: '0x',
-  //     voterWeight: '1,500.50',
-  //     comment: 'blah blah blah blah blah blah blah',
-  //     date: new Date()
-  //   },
-  //   {
-  //     voterAddress: '0x',
-  //     voterWeight: '1,500.50',
-  //     comment: 'blah blah blah blah blah blah blah',
-  //     date: new Date()
-  //   }
-  // ];
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -95,7 +81,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const onCommentsTab = (
     <div key={2} sx={{ p: [3, 4] }}>
       {comments ? (
-        <OnComments comments={comments} />
+        <OnComments proposal={proposal} comments={comments} />
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
           loading <Spinner size={20} ml={2} />
