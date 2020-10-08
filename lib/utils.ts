@@ -18,13 +18,13 @@ import PollVote from '../types/pollVote';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
-  const units = ['k', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+  const units = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
   let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
   typeIndex = typeIndex >= units.length ? 7 : typeIndex; // if the number out of range
   const noUnit = typeIndex < 0; // if the number is smaller than 1,000
   const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
   invariant(value, 'bigNumberKFormat value undefined');
-  return `${value.toBigNumber().toFixed(2)} ${noUnit ? '' : units[typeIndex]}`;
+  return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
 }
 
 export async function markdownToHtml(markdown: string) {
@@ -285,3 +285,8 @@ export function changeInputValue(inputRef: HTMLInputElement, value: string): voi
   valueProp.set.call(inputRef, value);
   inputRef.dispatchEvent(new Event('input', { bubbles: true }));
 }
+
+export const sortBytesArray = _array =>
+  [..._array].sort((a, b) => {
+    return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
+  });

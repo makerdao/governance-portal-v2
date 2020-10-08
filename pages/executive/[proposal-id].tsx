@@ -20,10 +20,14 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
+
+// DEV BOOL ------------------------
+const SHOW_DEV_COMMENT_UI = false;
+// DEV BOOL ------------------------
 
 type Props = {
   proposal: Proposal;
@@ -48,6 +52,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     `/api/executive/supporters?network=${getNetwork()}`
   );
 
+  const { data: votedProposals } = useSWR<string[]>(
+    ['/executive/voted-proposals', account?.address],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .service('chief')
+          .getVotedSlate(address)
+          .then(slate => maker.service('chief').getSlateAddresses(slate))
+      )
+  );
+
+  const { data: comments } = useSWR(
+    SHOW_DEV_COMMENT_UI ? `/api/executive/comments/list/${proposal.address}` : null
+  );
+
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
@@ -65,9 +84,53 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     </div>
   );
 
+  const hasVotedFor =
+    votedProposals &&
+    !!votedProposals.find(
+      proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
+    );
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
-      {voting && <VoteModal close={close} proposal={proposal} />}
+      {/* DEV ONLY – TODO: DELETE */}
+      {SHOW_DEV_COMMENT_UI && (
+        <Box>
+          <Button
+            onClick={() => {
+              const things = [
+                'I worry about lenders jumping to compound',
+                'Vishesh convinced me we need rate increases',
+                'I like turtles'
+              ];
+              const thing = things[Math.floor(Math.random() * things.length)];
+              fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                  voterAddress: '0x0C9e93Baa9981d09CA55AAd7a6211b015B45ea2F',
+                  comment: `I voted for this because ${thing}.`
+                })
+              });
+            }}
+          >
+            add random comment{' '}
+          </Button>
+          <Box sx={{ mt: 3, p: 3 }}>
+            {comments ? (
+              <Box sx={{ mt: 2 }}>
+                {comments.map(comment => (
+                  <Box key={Math.random()}>
+                    {comment.voterAddress}: {comment.comment}
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              'Loading comments'
+            )}
+          </Box>
+        </Box>
+      )}
+      {/* DEV ONLY – TODO: DELETE */}
+      {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
           sx={{
@@ -83,7 +146,12 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             border: '1px solid #D4D9E1'
           }}
         >
-          <Button variant="primaryLarge" onClick={() => setVoting(true)} sx={{ width: '100%' }}>
+          <Button
+            variant="primaryLarge"
+            onClick={() => setVoting(true)}
+            sx={{ width: '100%' }}
+            disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+          >
             Vote for this proposal
           </Button>
         </Box>
@@ -116,7 +184,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 ]}
               />
             ) : (
-              <Tabs tabTitles={['On-Chain Effects']} tabPanels={[onChainFxTab]} />
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['On-Chain Effects']}
+                tabPanels={[onChainFxTab]}
+              />
             )}
           </Card>
         </Box>
@@ -135,8 +207,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     variant="primaryLarge"
                     onClick={() => setVoting(true)}
                     sx={{ width: '100%', mt: 3 }}
+                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   >
-                    Vote
+                    Vote for this proposal
                   </Button>
                 </Card>
               </>

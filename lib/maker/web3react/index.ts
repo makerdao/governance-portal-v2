@@ -1,4 +1,5 @@
-// TODO move this to its own module
+// TODO move everything under web3react/ to its own module
+
 import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/provider';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
