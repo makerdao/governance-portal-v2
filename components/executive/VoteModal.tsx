@@ -244,11 +244,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'confirm':
         return <Default />;
       case 'signing':
-        return <Signing />;
+        return <Signing close={close} />;
       case 'pending':
-        return <Pending tx={tx} />;
+        return <Pending tx={tx} close={close} />;
       case 'failed':
-        return <Error />;
+        return <Error close={close} />;
     }
   }, [step, lockedMkr, spellData, tx]);
 
@@ -268,7 +268,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   );
 };
 
-const Signing = () => (
+const Signing = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
@@ -291,7 +291,7 @@ const Signing = () => (
   </Flex>
 );
 
-const Pending = ({ tx }) => (
+const Pending = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
@@ -328,7 +328,7 @@ const Pending = ({ tx }) => (
   </Flex>
 );
 
-const Error = () => (
+const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
