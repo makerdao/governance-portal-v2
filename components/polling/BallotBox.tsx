@@ -60,9 +60,14 @@ export default function ({ ballot, activePolls, network, polls }: Props): JSX.El
 
           <Divider />
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
-          <Divider />
+          <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Button onClick={startReview} variant="primary" disabled={!ballotLength} sx={{ width: '100%' }}>
+            <Button
+              onClick={startReview}
+              variant="primaryLarge"
+              disabled={!ballotLength}
+              sx={{ width: '100%' }}
+            >
               Review & Submit Your Ballot
             </Button>
           </Flex>

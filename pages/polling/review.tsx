@@ -39,9 +39,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       <Flex sx={{ flexDirection: 'column' }}>
         <Button
           onClick={submitBallot}
-          variant="primary"
+          variant="primaryLarge"
           disabled={!ballotLength || !!txId}
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', mt: 2 }}
         >
           Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
         </Button>

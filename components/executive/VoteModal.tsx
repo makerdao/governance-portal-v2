@@ -103,7 +103,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         <Text variant="heading" sx={{ fontSize: 6 }}>
           Confirm Vote
         </Text>
-        <Text sx={{ marginTop: 3, color: 'onSecondary', fontSize: 4 }}>
+        <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
           You are voting for the following executive proposal:
         </Text>
         <Box
@@ -114,7 +114,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
             mx: 3,
             backgroundColor: 'background',
             textAlign: 'center',
-            fontSize: 4
+            fontSize: [3, 4]
           }}
         >
           <Text>{(proposal as CMSProposal).title}</Text>
@@ -138,11 +138,11 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
               Your voting weight
             </Text>
             {lockedMkr ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {votingWeight} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
@@ -152,11 +152,11 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
               MKR supporting
             </Text>
             {spellData ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {mkrSupporting} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
@@ -166,18 +166,18 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
               After vote cast
             </Text>
             {lockedMkr && spellData ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {afterVote} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
           </Box>
         </Grid>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button variant="primary" sx={{ width: '100%' }} onClick={vote}>
+          <Button variant="primaryLarge" sx={{ width: '100%' }} onClick={vote}>
             Submit Vote
           </Button>
           <Label
