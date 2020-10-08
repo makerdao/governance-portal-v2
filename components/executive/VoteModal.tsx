@@ -221,7 +221,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
           >
             <Input
               sx={{
-                color: '#D4D9E1',
+                color: 'secondaryMuted',
                 height: '96px',
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
