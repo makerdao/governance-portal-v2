@@ -6,20 +6,6 @@ import CommentDateFilter from './CommentDateFilter';
 import Comment from '../../types/comment';
 
 export default function OnComments({ comments, ...props }: { comments: Comment[] }): JSX.Element {
-  // const comments = [
-  //   {
-  //     voterAddress: '0x',
-  //     voterWeight: '1,500.50',
-  //     comment: 'blah blah blah blah blah blah blah',
-  //     date: new Date()
-  //   },
-  //   {
-  //     voterAddress: '0x',
-  //     voterWeight: '1,500.50',
-  //     comment: 'blah blah blah blah blah blah blah',
-  //     date: new Date()
-  //   }
-  // ];
   return (
     <Stack gap={3}>
       <Flex
