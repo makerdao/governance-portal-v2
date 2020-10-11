@@ -75,10 +75,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
-  const afterVote =
-    lockedMkr && spellData
-      ? lockedMkr.toBigNumber().plus(new Bignumber(spellData.mkrSupport)).toFormat(3)
-      : 0;
+  const afterVote = currentSlate.includes(proposal.address)
+    ? mkrSupporting
+    : lockedMkr && spellData
+    ? lockedMkr.toBigNumber().plus(new Bignumber(spellData.mkrSupport)).toFormat(3)
+    : 0;
 
   const GridBox = ({ bpi, children }) => (
     <Box
