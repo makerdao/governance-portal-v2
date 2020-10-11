@@ -180,6 +180,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                           key={index}
                           proposal={proposal}
                           spellData={spellData ? spellData[proposal.address] : undefined}
+                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                         />
                       ))}
                   </Stack>
