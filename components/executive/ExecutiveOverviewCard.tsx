@@ -19,9 +19,10 @@ import SpellData from '../../types/spellData';
 type Props = {
   proposal: Proposal;
   spellData?: SpellData;
+  isHat: boolean;
 };
 
-export default function ExecutiveOverviewCard({ proposal, spellData, ...props }: Props): JSX.Element {
+export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const [voting, setVoting] = useState(false);
@@ -91,42 +92,54 @@ export default function ExecutiveOverviewCard({ proposal, spellData, ...props }:
             >
               {proposal.proposalBlurb}
             </Text>
-            <Flex sx={{ alignItems: 'center' }}>
-              <Flex>
-                {hasVotedFor && (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      color: 'primary',
-                      borderColor: 'primary',
-                      textTransform: 'uppercase',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      mr: 2
-                    }}
-                  >
-                    <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                      <Icon name="verified" size={3} />
-                    </Flex>
-                    Your Vote
-                  </Badge>
-                )}
-                {spellData?.mkrSupport === undefined ? (
-                  <Box sx={{ width: 6 }}>
-                    <Skeleton />
-                  </Box>
-                ) : (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      borderColor: 'text',
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
-                  </Badge>
-                )}
-              </Flex>
+            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    m: 1
+                  }}
+                >
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
+              )}
+              {isHat ? (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    m: 1,
+                    borderColor: 'primaryAlt',
+                    color: 'primaryAlt',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  Governing proposal
+                </Badge>
+              ) : null}
+              {spellData?.mkrSupport === undefined ? (
+                <Box sx={{ width: 6, m: 1 }}>
+                  <Skeleton />
+                </Box>
+              ) : (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    borderColor: 'text',
+                    textTransform: 'uppercase',
+                    m: 1
+                  }}
+                >
+                  {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
+                </Badge>
+              )}
             </Flex>
             {canVote && bpi === 0 && (
               <Box sx={{ pt: 2 }}>

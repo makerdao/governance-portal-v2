@@ -110,6 +110,10 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
+  const { data: hat } = useSWR<string>('/executive/hat', () =>
+    getMaker().then(maker => maker.service('chief').getHat())
+  );
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
       <Stack>
@@ -152,6 +156,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       key={index}
                       proposal={proposal}
                       spellData={spellData ? spellData[proposal.address] : undefined}
+                      isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                     />
                   ))}
               </Stack>
