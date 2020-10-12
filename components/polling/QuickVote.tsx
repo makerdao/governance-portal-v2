@@ -114,7 +114,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
             mt={gap}
             disabled={!isChoiceValid}
           >
-            Add vote to ballot
+            {editing ? 'Update vote' : 'Add vote to ballot'}
           </Button>
         </div>
       )}
