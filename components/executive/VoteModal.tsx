@@ -12,7 +12,8 @@ import {
   Link as ExternalLink,
   Label,
   Checkbox,
-  jsx
+  jsx,
+  Textarea
 } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
@@ -24,7 +25,7 @@ import Skeleton from 'react-loading-skeleton';
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
-import { getEtherscanLink, sortBytesArray } from '../../lib/utils';
+import { getEtherscanLink, sortBytesArray, fetchJson } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
@@ -93,7 +94,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
   const [step, setStep] = useState('confirm');
 
-  const vote = async hatChecked => {
+  const vote = async (hatChecked, comment) => {
     const maker = await getMaker();
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
@@ -110,16 +111,27 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       pending: () => setStep('pending'),
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+        fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+          method: 'POST',
+          body: JSON.stringify({
+            voterAddress: account,
+            comment: comment,
+            date: new Date(),
+            txId: txId
+          })
+        });
         close(); // TBD maybe show a separate "done" dialog
       },
       error: () => setStep('failed')
     });
+
     setTxId(txId);
     setStep('signing');
   };
 
   const Default = () => {
     const [hatChecked, setHatChecked] = useState(true);
+    const [comment, setComment] = useState('');
     return (
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
         <Close
@@ -204,8 +216,43 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             )}
           </Box>
         </Grid>
+        <Box sx={{ width: '100%', mt: 4 }}>
+          <Box
+            sx={{
+              borderRadius: 'medium',
+              my: 2,
+              mb: 4,
+              width: '100%',
+              borderColor: 'secondaryMuted',
+              height: '96px'
+            }}
+          >
+            <Label variant="microHeading" sx={{ fontSize: 3 }}>
+              Why are you voting for this proposal?
+            </Label>
+            <Textarea
+              sx={{
+                color: 'secondaryMuted',
+                height: '96px',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-start',
+                display: 'flex',
+                resize: 'none'
+              }}
+              onChange={event => {
+                setComment(event.target.value);
+              }}
+              placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
+            />
+          </Box>
+        </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button variant="primaryLarge" sx={{ width: '100%' }} onClick={() => vote(hatChecked)}>
+          <Button
+            variant="primaryLarge"
+            sx={{ width: '100%' }}
+            onClick={() => vote(hatChecked, comment)}
+            disabled={comment.length > 250}
+          >
             {currentSlate.includes(proposal.address) && currentSlate.length > 1
               ? 'Concentrate all my MKR on this proposal'
               : !currentSlate.includes(proposal.address) && isHat

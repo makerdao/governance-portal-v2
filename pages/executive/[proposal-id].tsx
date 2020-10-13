@@ -13,6 +13,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 
 import OnChainFx from '../../components/executive/OnChainFx';
+import OnComments from '../../components/executive/OnComments';
 import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
@@ -24,10 +25,6 @@ import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
-
-// DEV BOOL ------------------------
-const SHOW_DEV_COMMENT_UI = false;
-// DEV BOOL ------------------------
 
 type Props = {
   proposal: Proposal;
@@ -63,9 +60,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )
   );
 
-  const { data: comments } = useSWR(
-    SHOW_DEV_COMMENT_UI ? `/api/executive/comments/list/${proposal.address}` : null
-  );
+  const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -83,6 +78,17 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
     </div>
   );
+  const onCommentsTab = (
+    <div key={2} sx={{ p: [3, 4] }}>
+      {comments ? (
+        <OnComments proposal={proposal} comments={comments} />
+      ) : (
+        <Flex sx={{ alignItems: 'center' }}>
+          loading <Spinner size={20} ml={2} />
+        </Flex>
+      )}
+    </div>
+  );
 
   const hasVotedFor =
     votedProposals &&
@@ -92,44 +98,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
-      {/* DEV ONLY – TODO: DELETE */}
-      {SHOW_DEV_COMMENT_UI && (
-        <Box>
-          <Button
-            onClick={() => {
-              const things = [
-                'I worry about lenders jumping to compound',
-                'Vishesh convinced me we need rate increases',
-                'I like turtles'
-              ];
-              const thing = things[Math.floor(Math.random() * things.length)];
-              fetchJson(`/api/executive/comments/add/${proposal.address}`, {
-                method: 'POST',
-                body: JSON.stringify({
-                  voterAddress: '0x0C9e93Baa9981d09CA55AAd7a6211b015B45ea2F',
-                  comment: `I voted for this because ${thing}.`
-                })
-              });
-            }}
-          >
-            add random comment{' '}
-          </Button>
-          <Box sx={{ mt: 3, p: 3 }}>
-            {comments ? (
-              <Box sx={{ mt: 2 }}>
-                {comments.map(comment => (
-                  <Box key={Math.random()}>
-                    {comment.voterAddress}: {comment.comment}
-                  </Box>
-                ))}
-              </Box>
-            ) : (
-              'Loading comments'
-            )}
-          </Box>
-        </Box>
-      )}
-      {/* DEV ONLY – TODO: DELETE */}
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
@@ -173,14 +141,19 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             {'about' in proposal ? (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
-                tabTitles={['Proposal Detail', 'On-Chain Effects']}
+                tabTitles={[
+                  'Proposal Detail',
+                  'On-Chain Effects',
+                  `Comments (${comments && comments.length})`
+                ]}
                 tabPanels={[
                   <div
                     key={1}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
-                  onChainFxTab
+                  onChainFxTab,
+                  onCommentsTab
                 ]}
               />
             ) : (
