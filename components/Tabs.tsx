@@ -2,7 +2,7 @@
 import { slugify } from '../lib/utils';
 
 import { jsx } from 'theme-ui';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Flex, Divider, SxStyleProp } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import Router from 'next/router';

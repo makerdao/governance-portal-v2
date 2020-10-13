@@ -10,7 +10,7 @@ import shallow from 'zustand/shallow';
 
 import Deposit from '../components/executive/Deposit';
 import Withdraw from '../components/executive/Withdraw';
-import SortBy from '../components/executive/SortBy';
+import ProposalsSortBy from '../components/executive/ProposalsSortBy';
 import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
 import ResourceBox from '../components/ResourceBox';
@@ -72,7 +72,6 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
       return true;
     }) as CMSProposal[]).sort((a, b) => {
-      // MKR amount sort TODO
       if (sortBy === 'MKR Amount') {
         const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
         const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
@@ -140,7 +139,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <SortBy sx={{ mr: 3 }} />
+          <ProposalsSortBy sx={{ mr: 3 }} />
           <DateFilter />
         </Flex>
 

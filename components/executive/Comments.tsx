@@ -1,5 +1,7 @@
 /** @jsx jsx */
 import { Flex, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
+import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
 
 import Stack from '../layouts/Stack';
 import CommentSortBy from './CommentSortBy';
@@ -7,6 +9,7 @@ import Comment from '../../types/comment';
 import Proposal from '../../types/proposal';
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
+import useUiFiltersStore from '../../stores/uiFilters';
 
 export default function CommentsTab({
   proposal,
@@ -14,8 +17,21 @@ export default function CommentsTab({
   ...props
 }: {
   proposal: Proposal;
-  comments: Comment[];
+  comments: Comment[] | undefined;
 }): JSX.Element {
+  const commentSortBy = useUiFiltersStore(state => state.commentSortBy);
+
+  const sortedComments = useMemo(() => {
+    return comments?.sort((a, b) => {
+      if (commentSortBy === 'MKR Amount') {
+        const aWeight = new BigNumber(a.voterWeight || 0);
+        const bWeight = new BigNumber(b.voterWeight || 0);
+        return aWeight.lt(bWeight) ? 1 : aWeight.eq(bWeight) ? 0 : -1;
+      }
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  }, [commentSortBy]);
+
   return (
     <Stack gap={3}>
       <Flex
@@ -33,9 +49,9 @@ export default function CommentsTab({
       </Flex>
       <Stack gap={3} {...props}>
         <Box>
-          {comments ? (
+          {sortedComments ? (
             <Box>
-              {comments.map(comment => (
+              {sortedComments.map(comment => (
                 <Box
                   sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
                   key={comment.voterAddress}

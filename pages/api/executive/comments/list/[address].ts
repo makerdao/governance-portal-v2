@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import uniqBy from 'lodash/uniqBy';
 
 import { connectToDatabase } from '../../../_lib/utils';
 import withApiHandler from '../../../_lib/withApiHandler';
@@ -21,11 +22,14 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('executiveComments');
+  // decending sort
   const comments = await collection.find({ spellAddress }).sort({ date: -1 }).toArray();
+
   comments.forEach(comment => {
     delete comment._id;
   });
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
-  res.status(200).json(comments);
+  // only return the latest comment from each address
+  res.status(200).json(uniqBy(comments, 'voterAddress'));
 });
