@@ -72,7 +72,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
 
   commentSortBy: 'Latest',
 
-  setCommentSortBy: sortMethod => {
+  setCommentSortBy: (sortMethod: 'Latest' | 'Oldest') => {
     set({ commentSortBy: sortMethod });
   }
 }));
