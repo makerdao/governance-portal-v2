@@ -58,7 +58,8 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             fontSize: 3,
-            opacity: 0.8
+            opacity: 0.8,
+            mb: 2
           }}
         >
           {poll.summary}
@@ -75,7 +76,9 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Button variant="outline">View Proposal</Button>
+            <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4 }}>
+              View proposal
+            </Button>
           </Link>
           <PollOptionBadge poll={poll} />
         </Flex>

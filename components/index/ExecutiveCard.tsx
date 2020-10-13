@@ -54,12 +54,13 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           fontSize: 3,
-          opacity: 0.8
+          opacity: 0.8,
+          mb: 3
         }}
       >
         {proposal.proposalBlurb}
       </Text>
-      <Flex sx={{ alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+      <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Link
           href={{
             pathname: '/executive/[proposal-id]',
@@ -70,35 +71,35 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             query: { network }
           }}
         >
-          <Button sx={{ mt: 2 }}>Vote on proposal</Button>
+          <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, mr: 2 }}>
+            View proposal
+          </Button>
         </Link>
+        {isHat ? (
+          <Badge
+            variant="primary"
+            sx={{
+              m: 2,
+              borderColor: 'primaryAlt',
+              color: 'primaryAlt',
+              textTransform: 'uppercase'
+            }}
+          >
+            Governing proposal
+          </Badge>
+        ) : null}
         {mkrSupport ? (
-          <Flex sx={{ mt: 2, flex: 1, ml: 3, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-            <Badge
-              variant="primary"
-              sx={{
-                textTransform: 'uppercase'
-              }}
-            >
-              {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
-            </Badge>
-            {isHat ? (
-              <Badge
-                variant="primary"
-                sx={{
-                  mt: [3, 3, 0],
-                  ml: [0, 0, 3],
-                  borderColor: 'primaryAlt',
-                  color: 'primaryAlt',
-                  textTransform: 'uppercase'
-                }}
-              >
-                Governing proposal
-              </Badge>
-            ) : null}
-          </Flex>
+          <Badge
+            variant="primary"
+            sx={{
+              m: 2,
+              textTransform: 'uppercase'
+            }}
+          >
+            {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
+          </Badge>
         ) : (
-          <Box m="auto" ml="3" sx={{ width: '200px' }}>
+          <Box m="auto" sx={{ m: 2, width: '200px' }}>
             <Skeleton />
           </Box>
         )}
