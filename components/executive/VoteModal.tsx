@@ -110,9 +110,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const commentSig = comment.length > 0 ? await personalSign(comment) : '';
 
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
-      pending: () => setStep('pending'),
-      mined: (txId, txHash) => {
-        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+      pending: txHash => {
+        setStep('pending');
         if (comment.length > 0) {
           fetchJson(`/api/executive/comments/add/${proposal.address}`, {
             method: 'POST',
@@ -123,8 +122,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               txHash,
               voterWeight: votingWeight
             })
-          });
+          })
+            .then(() => console.log('comment successfully added'))
+            .catch(() => console.error('failed to add comment'));
         }
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
         close(); // TBD maybe show a separate "done" dialog
       },
       error: () => setStep('failed')
