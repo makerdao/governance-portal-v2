@@ -50,7 +50,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}

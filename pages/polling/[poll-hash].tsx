@@ -75,7 +75,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   // prepopulate the local tally cache for polls before and/or after this one
   [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet
           account={account}

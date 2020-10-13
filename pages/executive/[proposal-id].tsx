@@ -109,7 +109,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: '1380px' }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
