@@ -21,7 +21,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('executiveComments');
-  const comments = await collection.find({ spellAddress }).toArray();
+  const comments = await collection.find({ spellAddress }).sort({ date: -1 }).toArray();
   comments.forEach(comment => {
     delete comment._id;
   });

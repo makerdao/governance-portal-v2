@@ -11,20 +11,39 @@ export default withApiHandler(
     const spellAddress: string = req.query.address as string;
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-    const { voterAddress, comment } = JSON.parse(req.body);
+    const { voterAddress, comment, commentSig, txHash } = JSON.parse(req.body);
 
-    // only store comments for mainnet
+    // only store comments for mainnet votes
     invariant(
       !req.query.network || req.query.network === SupportedNetworks.MAINNET,
       `unsupported network ${req.query.network}`
     );
 
+    const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
+      infura: process.env.INFURA_KEY,
+      alchemy: process.env.ALCHEMY_KEY
+    });
+
+    // verify tx
+    const { from } = await provider.getTransaction(txHash);
+    invariant(
+      ethers.utils.getAddress(from) === ethers.utils.getAddress(voterAddress),
+      "invalid 'from' address"
+    );
+
+    // verify signature
+    invariant(
+      ethers.utils.verifyMessage(comment, commentSig) === ethers.utils.getAddress(voterAddress),
+      'invalid message signature'
+    );
+
+    // query db
     const { db, client } = await connectToDatabase();
 
     invariant(await client.isConnected(), 'Mongo client failed to connect');
 
     const collection = db.collection('executiveComments');
-    await collection.insert({ spellAddress, voterAddress, comment });
+    await collection.insert({ spellAddress, voterAddress, comment, date: new Date() });
 
     res.status(200);
   },
