@@ -30,7 +30,7 @@ export default function CommentsTab({
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [commentSortBy]);
+  }, [commentSortBy, comments]);
 
   return (
     <Stack gap={3}>
