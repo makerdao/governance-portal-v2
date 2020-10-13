@@ -29,7 +29,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     delete comment._id;
   });
 
-  res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
+  res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
   // only return the latest comment from each address
   res.status(200).json(uniqBy(comments, 'voterAddress'));
 });
