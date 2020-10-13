@@ -67,6 +67,7 @@ export async function connectToDatabase() {
     return { client: cachedClient, db: cachedDb };
   }
 
+  console.log(process.env.MONGODB_COMMENTS_DB, 'mongo comments db name');
   invariant(
     process.env.MONGODB_URI && process.env.MONGODB_COMMENTS_DB,
     'Missing required Mongodb environment variables'
