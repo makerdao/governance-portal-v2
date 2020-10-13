@@ -203,7 +203,7 @@ export default function MobileVoteSheet({
                 </Button>
               )}
               <Button
-                variant="primary"
+                variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => router.push({ pathname: '/polling/review', query: network })}
               >
@@ -222,7 +222,7 @@ export default function MobileVoteSheet({
                 <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
               )}
               <Button
-                variant="primary"
+                variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={submit}
                 disabled={!isChoiceValid || viewState == ViewState.ADDING}

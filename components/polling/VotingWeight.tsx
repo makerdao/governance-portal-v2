@@ -40,7 +40,6 @@ export default function (props): JSX.Element {
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
-        mt: 2,
         width: '100%'
       }}
     >
