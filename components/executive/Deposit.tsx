@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useRef } from 'react';
-import { Button, Flex, Text, Close, Box, jsx } from 'theme-ui';
+import { Button, Flex, Text, Box, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Skeleton from 'react-loading-skeleton';
@@ -16,11 +16,34 @@ import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
 import { changeInputValue } from '../../lib/utils';
 import { BoxWithClose } from './Withdraw';
+import invariant from 'tiny-invariant';
 
-const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => {
+const ModalContent = ({ address, voteProxy, close, ...props }) => {
+  invariant(address);
   const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
+
+  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
+    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
+  );
+
+  const { data: chiefAllowance } = useSWR<CurrencyObject>(
+    ['/user/chief-allowance', address, !!voteProxy],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .getToken(MKR)
+          .allowance(
+            address,
+            address === voteProxy?.getColdAddress()
+              ? voteProxy?.getProxyAddress()
+              : maker.service('smartContract').getContractAddresses().CHIEF
+          )
+      )
+  );
+
+  const hasLargeMkrAllowance = chiefAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -98,8 +121,9 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
           onClick={async () => {
             const maker = await getMaker();
-            // TODO when wallet is for a proxy, use VoteProxyService instead
-            const lockTxCreator = () => maker.service('chief').lock(mkrToDeposit);
+            const lockTxCreator = voteProxy
+              ? () => voteProxy.lock(mkrToDeposit)
+              : () => maker.service('chief').lock(mkrToDeposit);
             const txId = await track(lockTxCreator, 'Depositing MKR', {
               mined: txId => {
                 transactionsApi.getState().setMessage(txId, 'MKR deposited');
@@ -125,7 +149,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             Approve voting contract
           </Text>
           <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-            Approve the vote proxy to deposit your MKR in the voting contract.
+            Approve the transfer of MKR to the voting contract.
           </Text>
         </Box>
 
@@ -136,7 +160,9 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             const approveTxCreator = () =>
               maker
                 .getToken(MKR)
-                .approveUnlimited(maker.service('smartContract').getContractAddresses().CHIEF);
+                .approveUnlimited(
+                  voteProxy?.getProxyAddress() || maker.service('smartContract').getContractAddresses().CHIEF
+                );
 
             const txId = await track(approveTxCreator, 'Granting MKR approval', {
               mined: txId => {
@@ -151,7 +177,7 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
             setTxId(txId);
           }}
         >
-          Approve vote proxy
+          Approve
         </Button>
       </Stack>
     );
@@ -159,25 +185,24 @@ const ModalContent = ({ hasLargeMkrAllowance, mkrBalance, close, ...props }) => 
   return <BoxWithClose content={content} close={close} {...props} />;
 };
 
-const Deposit = props => {
+const Deposit = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const { data: chiefAllowance } = useSWR<CurrencyObject>(
-    ['/user/chief-allowance', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker.getToken(MKR).allowance(address, maker.service('smartContract').getContractAddresses().CHIEF)
-      )
-  );
-
-  const { data: mkrBalance } = useSWR(
-    account?.address ? ['/user/mkr-balance', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
-
-  const hasLargeMkrAllowance = chiefAllowance && chiefAllowance.gt('10e26'); // greater than 100,000,000 MKR
+  const open = () => {
+    if (voteProxy && account?.address === voteProxy.getHotAddress()) {
+      alert(
+        'You are using the hot wallet for a voting proxy. ' +
+          'You can only deposit from the cold wallet. ' +
+          'Switch to that wallet to continue.'
+      );
+      return;
+    }
+    setShowDialog(true);
+  };
 
   return (
     <>
@@ -200,14 +225,10 @@ const Deposit = props => {
                 }
           }
         >
-          <ModalContent
-            hasLargeMkrAllowance={hasLargeMkrAllowance}
-            mkrBalance={mkrBalance}
-            close={() => setShowDialog(false)}
-          />
+          <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
-      <Button variant="mutedOutline" onClick={() => setShowDialog(true)} {...props}>
+      <Button variant="mutedOutline" onClick={open} {...props}>
         Deposit
       </Button>
     </>

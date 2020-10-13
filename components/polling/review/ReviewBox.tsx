@@ -52,13 +52,13 @@ export default function ({
     <ReviewBoxCard {...props}>
       <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
       <Divider />
-      <VotingWeight sx={{ mt: 0, px: 3, py: [1, 2] }} />
-      <Divider />
+      <VotingWeight sx={{ px: 3, py: [2, 2], mb: 1 }} />
+      <Divider m={0} sx={{ display: ['none', 'block'] }} />
       {bpi > 2 && (
-        <Flex p={3} sx={{ flexDirection: 'column', width: '100%' }}>
+        <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
             onClick={submitBallot}
-            variant="primary"
+            variant="primaryLarge"
             disabled={!ballotLength || !!voteTxId}
             sx={{ width: '100%' }}
           >
@@ -138,7 +138,7 @@ export default function ({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button onClick={submitBallot} variant="primary" disabled={!ballotLength} sx={{ width: '100%' }}>
+        <Button onClick={submitBallot} variant="primaryLarge" disabled={!ballotLength} sx={{ width: '100%' }}>
           Submit Your Ballot
         </Button>
       </Flex>

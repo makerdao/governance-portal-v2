@@ -192,7 +192,7 @@ const AccountSelect = props => {
               <Button
                 variant="primaryOutline"
                 onClick={close}
-                sx={{ display: ['block', 'none'], width: '100%', mt: 4, mb: 2, py: [3] }}
+                sx={{ display: ['block', 'none'], width: '100%', mt: 4, mb: 2, py: 3 }}
               >
                 Close
               </Button>

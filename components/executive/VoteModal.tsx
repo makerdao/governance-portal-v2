@@ -60,6 +60,10 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     shallow
   );
 
+  const { data: slateLogs } = useSWR('/executive/all-slates', () =>
+    getMaker().then(maker => maker.service('chief').getAllSlates())
+  );
+
   const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
@@ -95,9 +99,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
 
+    const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
+    const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
+    const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
+    const slateOrProposals = slateAlreadyExists ? slate : proposals;
     const voteTxCreator = voteProxy
-      ? () => voteProxy.voteExec(proposals)
-      : () => maker.service('chief').vote(proposals);
+      ? () => voteProxy.voteExec(slateOrProposals)
+      : () => maker.service('chief').vote(slateOrProposals);
 
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
@@ -135,7 +143,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
         <Text variant="heading" sx={{ fontSize: 6 }}>
           Confirm Vote
         </Text>
-        <Text sx={{ marginTop: 3, color: 'onSecondary', fontSize: 4 }}>
+        <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
           You are voting for the following executive proposal:
         </Text>
         <Box
@@ -146,7 +154,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             mx: 3,
             backgroundColor: 'background',
             textAlign: 'center',
-            fontSize: 4
+            fontSize: [3, 4]
           }}
         >
           <Text>{(proposal as CMSProposal).title}</Text>
@@ -170,11 +178,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               Your voting weight
             </Text>
             {lockedMkr ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {votingWeight} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
@@ -184,11 +192,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               MKR supporting
             </Text>
             {spellData ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {mkrSupporting} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
@@ -198,11 +206,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               After vote cast
             </Text>
             {lockedMkr && spellData ? (
-              <Text color="text" mt={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {afterVote} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, mt: 2, width: 6 }}>
+              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
                 <Skeleton />
               </Text>
             )}
@@ -240,7 +248,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
           <Button
-            variant="primary"
+            variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => vote(hatChecked, comment)}
             disabled={comment.length > 250}
@@ -283,11 +291,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'confirm':
         return <Default />;
       case 'signing':
-        return <Signing />;
+        return <Signing close={close} />;
       case 'pending':
-        return <Pending tx={tx} />;
+        return <Pending tx={tx} close={close} />;
       case 'failed':
-        return <Error />;
+        return <Error close={close} />;
     }
   }, [step, lockedMkr, spellData, tx]);
 
@@ -307,7 +315,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   );
 };
 
-const Signing = () => (
+const Signing = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
@@ -330,7 +338,7 @@ const Signing = () => (
   </Flex>
 );
 
-const Pending = ({ tx }) => (
+const Pending = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
@@ -367,7 +375,7 @@ const Pending = ({ tx }) => (
   </Flex>
 );
 
-const Error = () => (
+const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"

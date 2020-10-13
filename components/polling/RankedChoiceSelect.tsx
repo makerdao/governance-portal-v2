@@ -25,7 +25,7 @@ export default function RankedChoiceSelect({
   const choice = _choice || [];
   const [numConfirmed, setNumConfirmed] = useState(choice.length > 0 ? choice.length - 1 : 0);
   const [showListboxInput, setShowListboxInput] = useState(true);
-  const [showAddButton, setShowAddButton] = useState(true);
+  const [showAddButton, setShowAddButton] = useState(false);
   const totalNumOptions = Object.keys(poll.options).length;
   const canAddOption = totalNumOptions > numConfirmed + 1;
 
@@ -39,6 +39,9 @@ export default function RankedChoiceSelect({
       ),
     [numConfirmed]
   );
+
+  if (numConfirmed === 0 && !showListboxInput) setShowListboxInput(true);
+  if (showListboxInput && showAddButton) setShowAddButton(false);
 
   return (
     <Box {...props}>
@@ -58,6 +61,7 @@ export default function RankedChoiceSelect({
                 newChoice.splice(index, 1);
                 setNumConfirmed(numConfirmed - 1);
                 setChoice(newChoice);
+                if (totalNumOptions === numConfirmed && !showAddButton) setShowAddButton(true);
               }}
             />
           </Flex>
@@ -73,6 +77,7 @@ export default function RankedChoiceSelect({
               if (canAddOption || Object.keys(availableChoices).length === 1)
                 setNumConfirmed(numConfirmed + 1);
               setShowListboxInput(false);
+              if (canAddOption) setShowAddButton(true);
             }}
           >
             <ListboxButton
@@ -100,7 +105,6 @@ export default function RankedChoiceSelect({
           variant="caps"
           onClick={() => {
             setShowListboxInput(true);
-            if (!canAddOption) setShowAddButton(false);
           }}
           sx={{
             pt: 2,
