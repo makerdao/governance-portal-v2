@@ -13,7 +13,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 
 import OnChainFx from '../../components/executive/OnChainFx';
-import OnComments from '../../components/executive/OnComments';
+import Comments from '../../components/executive/Comments';
 import VoteModal from '../../components/executive/VoteModal';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
@@ -40,9 +40,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
 
-  const { data: stateDiff } = useSWR(
+  const { data: stateDiff, error: stateDiffError } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
-    async url => parseSpellStateDiff(await fetchJson(url))
+    async url => parseSpellStateDiff(await fetchJson(url)),
+    { refreshInterval: 0 }
   );
 
   const { data: allSupporters, error: supportersError } = useSWR(
@@ -67,10 +68,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const [voting, setVoting] = useState(false);
   const close = () => setVoting(false);
 
-  const onChainFxTab = (
+  const commentsTab = (
     <div key={2} sx={{ p: [3, 4] }}>
-      {stateDiff ? (
-        <OnChainFx stateDiff={stateDiff} />
+      {comments ? (
+        <Comments proposal={proposal} comments={comments} />
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
           loading <Spinner size={20} ml={2} />
@@ -78,10 +79,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
     </div>
   );
-  const onCommentsTab = (
-    <div key={2} sx={{ p: [3, 4] }}>
-      {comments ? (
-        <OnComments proposal={proposal} comments={comments} />
+
+  const onChainFxTab = (
+    <div key={3} sx={{ p: [3, 4] }}>
+      <Flex sx={{ mb: 3 }}>
+        For the spell at address
+        <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
+          <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+            {proposal.address}
+          </Text>
+        </ExternalLink>
+      </Flex>
+      {stateDiff ? (
+        <OnChainFx stateDiff={stateDiff} />
+      ) : stateDiffError ? (
+        <Flex>Error fetching on-chain effects</Flex>
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
           loading <Spinner size={20} ml={2} />
@@ -144,7 +156,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 tabTitles={[
                   'Proposal Detail',
                   'On-Chain Effects',
-                  `Comments (${comments && comments.length})`
+                  `Comments (${comments ? comments.length : '-'})`
                 ]}
                 tabPanels={[
                   <div
@@ -153,7 +165,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
                   onChainFxTab,
-                  onCommentsTab
+                  commentsTab
                 ]}
               />
             ) : (

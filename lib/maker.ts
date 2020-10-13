@@ -105,5 +105,32 @@ function isTestnet(): boolean {
   return getNetwork() === 'testnet' || !!process.env.TESTNET;
 }
 
+async function personalSign(message) {
+  const maker = await getMaker();
+  const provider = maker.service('web3')._web3.currentProvider;
+  const from = maker.currentAddress();
+  return new Promise((resolve, reject) => {
+    provider.sendAsync(
+      {
+        method: 'personal_sign',
+        params: [message, from],
+        from
+      },
+      (err, res) => {
+        if (err) reject(err);
+        resolve(res.result);
+      }
+    );
+  });
+}
+
 export default getMaker;
-export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, chainIdToNetworkName, isTestnet };
+export {
+  DAI,
+  getNetwork,
+  isDefaultNetwork,
+  isSupportedNetwork,
+  chainIdToNetworkName,
+  isTestnet,
+  personalSign
+};

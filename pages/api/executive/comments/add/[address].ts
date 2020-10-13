@@ -11,7 +11,7 @@ export default withApiHandler(
     const spellAddress: string = req.query.address as string;
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-    const { voterAddress, comment, commentSig, txHash } = JSON.parse(req.body);
+    const { voterAddress, comment, commentSig, txHash, voterWeight } = JSON.parse(req.body);
 
     // only store comments for mainnet votes
     invariant(
@@ -43,9 +43,9 @@ export default withApiHandler(
     invariant(await client.isConnected(), 'Mongo client failed to connect');
 
     const collection = db.collection('executiveComments');
-    await collection.insert({ spellAddress, voterAddress, comment, date: new Date() });
+    await collection.insertOne({ spellAddress, voterAddress, comment, voterWeight, date: new Date() });
 
-    res.status(200);
+    res.status(200).json({ success: 'Added Successfully' });
   },
   { allowPost: true }
 );

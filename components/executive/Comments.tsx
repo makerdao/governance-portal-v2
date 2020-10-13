@@ -5,8 +5,10 @@ import Stack from '../layouts/Stack';
 import CommentSortBy from './CommentSortBy';
 import Comment from '../../types/comment';
 import Proposal from '../../types/proposal';
+import { getEtherscanLink } from '../../lib/utils';
+import { getNetwork } from '../../lib/maker';
 
-export default function OnComments({
+export default function CommentsTab({
   proposal,
   comments,
   ...props
@@ -26,7 +28,7 @@ export default function OnComments({
           alignItems: 'center'
         }}
       >
-        <Text variant="microHeading">Comments ({comments.length})</Text>
+        <Text variant="microHeading">Comments ({comments ? comments.length : '-'})</Text>
         <CommentSortBy />
       </Flex>
       <Stack gap={3} {...props}>
@@ -36,14 +38,14 @@ export default function OnComments({
               {comments.map(comment => (
                 <Box
                   sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
-                  key={Math.random()}
+                  key={comment.voterAddress}
                 >
                   <Text variant="caps" color="textSecondary" sx={{ lineHeight: '22px' }}>
                     {comment.date.toString()}
                   </Text>
                   <Flex sx={{ flexDirection: 'row', mt: 1 }}>
                     <ExternalLink
-                      href={`https://etherscan.io/address/${comment.voterAddress}`}
+                      href={getEtherscanLink(getNetwork(), comment.voterAddress, 'address')}
                       target="_blank"
                     >
                       <Text>{comment.voterAddress}</Text>

@@ -23,7 +23,7 @@ import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
 
 import SpellData from '../../types/spellData';
-import getMaker, { getNetwork } from '../../lib/maker';
+import getMaker, { getNetwork, personalSign } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink, sortBytesArray, fetchJson } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
@@ -107,19 +107,24 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       ? () => voteProxy.voteExec(slateOrProposals)
       : () => maker.service('chief').vote(slateOrProposals);
 
+    const commentSig = comment.length > 0 ? await personalSign(comment) : '';
+
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: () => setStep('pending'),
-      mined: txId => {
+      mined: (txId, txHash) => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
-        fetchJson(`/api/executive/comments/add/${proposal.address}`, {
-          method: 'POST',
-          body: JSON.stringify({
-            voterAddress: account,
-            comment: comment,
-            date: new Date(),
-            txId: txId
-          })
-        });
+        if (comment.length > 0) {
+          fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+            method: 'POST',
+            body: JSON.stringify({
+              voterAddress: account?.address,
+              comment: comment,
+              commentSig: commentSig,
+              txHash,
+              voterWeight: votingWeight
+            })
+          });
+        }
         close(); // TBD maybe show a separate "done" dialog
       },
       error: () => setStep('failed')
@@ -239,9 +244,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
                 display: 'flex',
                 resize: 'none'
               }}
-              onChange={event => {
-                setComment(event.target.value);
-              }}
+              onChange={event => setComment(event.target.value)}
               placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
           </Box>

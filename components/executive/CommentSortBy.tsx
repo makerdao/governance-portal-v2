@@ -6,18 +6,14 @@ import { MenuItem } from '@reach/menu-button';
 import useUiFiltersStore from '../../stores/uiFilters';
 import FilterButton from '../FilterButton';
 
-export default function (): JSX.Element {
+export default function (props): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useUiFiltersStore(
     state => [state.commentSortBy, state.setCommentSortBy],
     shallow
   );
 
   return (
-    <FilterButton
-      name={() => 'Sort by date'}
-      listVariant="menubuttons.default.list"
-      // {...props}
-    >
+    <FilterButton name={() => 'Sort by date'} listVariant="menubuttons.default.list" {...props}>
       <MenuItem
         onSelect={() => setCommentSortBy('Latest')}
         sx={{
