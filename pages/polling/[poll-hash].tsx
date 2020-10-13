@@ -112,7 +112,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   <NavLink p={0}>
                     <Button variant="mutedOutline">
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                        <Icon name="chevron_left" size={2} mr={2} /> Previous Poll
+                        <Icon name="chevron_left" size={2} mr={2} />
+                        {bpi > 0 ? 'Previous Poll' : 'Previous'}
                       </Flex>
                     </Button>
                   </NavLink>
@@ -127,7 +128,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   <NavLink p={0} ml={2}>
                     <Button variant="mutedOutline">
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                        Next Poll <Icon name="chevron_right" size={2} ml={2} />
+                        {bpi > 0 ? 'Next Poll' : 'Next'}
+                        <Icon name="chevron_right" size={2} ml={2} />
                       </Flex>
                     </Button>
                   </NavLink>
