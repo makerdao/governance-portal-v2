@@ -210,7 +210,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       <Flex
                         sx={{
                           justifyContent: 'space-between',
-                          fontSize: 3,
+                          fontSize: bpi === 0 ? 2 : 3,
                           lineHeight: '34px'
                         }}
                         key={supporter.address}
