@@ -7,7 +7,7 @@ import getMaker from '../lib/maker';
 import TX, { TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 
 type Hooks = {
-  pending?: () => void;
+  pending?: (txHash: string) => void;
   mined?: (txId: string, txHash: string) => void;
   error?: () => void;
 };
@@ -122,7 +122,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     maker.service('transactionManager').listen(txPromise, {
       pending: ({ hash }) => {
         get().setPending(txId, hash);
-        if (typeof hooks?.pending === 'function') hooks.pending();
+        if (typeof hooks?.pending === 'function') hooks.pending(hash);
       },
       mined: ({ hash }) => {
         get().setMined(txId);

@@ -30,27 +30,3 @@ export default function ({ poll, ...props }: { poll: Poll }): JSX.Element {
     </Box>
   );
 }
-
-//Mobile Vote Button When Needed
-// {canVote &&
-//   bpi === 0 &&
-//   (onBallot ? (
-//     <Button
-//       variant="outline"
-//       mr={2}
-//       onClick={startMobileVoting}
-//       sx={{
-//         display: 'flex',
-//         flexDirection: 'row',
-//         flexWrap: 'nowrap',
-//         alignItems: 'center'
-//       }}
-//     >
-//       <Icon name="edit" size={3} mr={2} />
-//       Edit Choices
-//     </Button>
-//   ) : (
-//     <Button variant="primary" mr={2} onClick={startMobileVoting}>
-//       Vote
-//     </Button>
-//   ))}

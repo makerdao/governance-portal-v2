@@ -66,7 +66,7 @@ export default function ({ ballot, activePolls, network, polls }: Props): JSX.El
               onClick={startReview}
               variant="primaryLarge"
               disabled={!ballotLength}
-              sx={{ width: '100%' }}
+              sx={{ width: '100%', cursor: !ballotLength ? 'not-allowed' : 'pointer' }}
             >
               Review & Submit Your Ballot
             </Button>
