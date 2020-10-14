@@ -110,7 +110,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </IntroCard>
               <IntroCard
                 title="Community Tools"
-                linkDest="https://community-development.makerdao.com/governance/governance-tools"
+                linkDest="https://community-development.makerdao.com/learn/governance/participate"
                 icon="govCalls"
                 sx={{
                   '&:hover': {

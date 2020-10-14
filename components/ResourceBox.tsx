@@ -41,7 +41,7 @@ export default function (props): JSX.Element {
           </Flex>
         </ExternalLink>
         <ExternalLink
-          href="https://community-development.makerdao.com/governance/governance-and-risk-meetings"
+          href="https://community-development.makerdao.com/contribute/governance_and_risk_meetings/"
           target="_blank"
         >
           <Flex sx={{ alignItems: 'center', pt: 3 }}>
