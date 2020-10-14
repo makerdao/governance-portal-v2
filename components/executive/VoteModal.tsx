@@ -225,7 +225,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             )}
           </Box>
         </Grid>
-        <Box sx={{ width: '100%', mt: 4 }}>
+        <Box sx={{ width: '100%', my: 3 }}>
           <Box
             sx={{
               borderRadius: 'medium',
@@ -251,6 +251,9 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               onChange={event => setComment(event.target.value)}
               placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
+            <Text variant="text" sx={{ color: comment.length > 250 ? 'error' : 'text' }}>
+              {250 - comment.length}
+            </Text>
           </Box>
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
