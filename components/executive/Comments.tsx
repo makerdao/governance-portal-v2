@@ -7,7 +7,7 @@ import Stack from '../layouts/Stack';
 import CommentSortBy from './CommentSortBy';
 import Comment from '../../types/comment';
 import Proposal from '../../types/proposal';
-import { getEtherscanLink } from '../../lib/utils';
+import { getEtherscanLink, formatAddress, formatDateWithTime } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
 import useUiFiltersStore from '../../stores/uiFilters';
 
@@ -23,10 +23,10 @@ export default function CommentsTab({
 
   const sortedComments = useMemo(() => {
     return comments?.sort((a, b) => {
-      if (commentSortBy === 'MKR Amount') {
-        const aWeight = new BigNumber(a.voterWeight || 0);
-        const bWeight = new BigNumber(b.voterWeight || 0);
-        return aWeight.lt(bWeight) ? 1 : aWeight.eq(bWeight) ? 0 : -1;
+      if (commentSortBy === 'Latest') {
+        const aDate = a.date || 0;
+        const bDate = b.date || 0;
+        return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
@@ -57,16 +57,16 @@ export default function CommentsTab({
                   key={comment.voterAddress}
                 >
                   <Text variant="caps" color="textSecondary" sx={{ lineHeight: '22px' }}>
-                    {comment.date.toString()}
+                    {formatDateWithTime(comment.date)}
                   </Text>
                   <Flex sx={{ flexDirection: 'row', mt: 1 }}>
                     <ExternalLink
                       href={getEtherscanLink(getNetwork(), comment.voterAddress, 'address')}
                       target="_blank"
                     >
-                      <Text>{comment.voterAddress}</Text>
+                      <Text>{formatAddress(comment.voterAddress)}</Text>
                     </ExternalLink>
-                    <Text variant="text" sx={{ ml: 1 }}>
+                    <Text variant="text" sx={{ ml: 1, fontWeight: 'normal' }}>
                       voted with {comment.voterWeight} MKR{' '}
                     </Text>
                   </Flex>

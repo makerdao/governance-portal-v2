@@ -5,6 +5,7 @@ import { jsx } from 'theme-ui';
 import { useState, useEffect } from 'react';
 import { Flex, Divider, SxStyleProp } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import Router from 'next/router';
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
+  const bpi = useBreakpointIndex();
 
   useEffect(() => {
     const [, hash] = location.href.split('#');
@@ -40,9 +42,14 @@ const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = tr
       }}
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
-        <TabList sx={{ display: 'block', bg: 'inherit', ...tabListStyles }}>
+        <TabList sx={{ display: bpi > 0 ? 'block' : 'flex', bg: 'inherit', ...tabListStyles }}>
           {tabTitles.map((tabTitle, index) => (
-            <Tab key={tabTitle} sx={getTabStyles({ isActive: activeTab === tabTitle, isFirst: index === 0 })}>
+            <Tab
+              key={tabTitle}
+              sx={{
+                ...getTabStyles({ isActive: activeTab === tabTitle, isFirst: index === 0 })
+              }}
+            >
               {tabTitle}
             </Tab>
           ))}

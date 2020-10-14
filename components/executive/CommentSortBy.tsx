@@ -14,27 +14,27 @@ export default function (props): JSX.Element {
 
   return (
     <FilterButton
-      name={() => `Sort by ${commentSortBy !== 'Date Posted' ? commentSortBy : ''}`}
+      name={() => `Sort by ${commentSortBy !== 'Latest' ? commentSortBy : ''}`}
       listVariant="menubuttons.default.list"
       {...props}
     >
       <MenuItem
-        onSelect={() => setCommentSortBy('Date Posted')}
+        onSelect={() => setCommentSortBy('Latest')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: commentSortBy === 'Date Posted' ? 'bold' : null
+          fontWeight: commentSortBy === 'Latest' ? 'bold' : null
         }}
       >
-        Date Posted
+        Latest
       </MenuItem>
       <MenuItem
-        onSelect={() => setCommentSortBy('MKR Amount')}
+        onSelect={() => setCommentSortBy('Oldest')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: commentSortBy === 'MKR Amount' ? 'bold' : null
+          fontWeight: commentSortBy === 'Oldest' ? 'bold' : null
         }}
       >
-        MKR Amount
+        Oldest
       </MenuItem>
     </FilterButton>
   );
