@@ -111,7 +111,7 @@ export default function PollOverviewCard({
               View Details
             </Button>
           </Link>
-          {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ color: 'text' }} />}
+          {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} />}
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
         </Flex>
       </Stack>

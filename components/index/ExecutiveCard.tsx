@@ -55,7 +55,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           textOverflow: 'ellipsis',
           fontSize: 3,
           opacity: 0.8,
-          mb: 3
+          mb: [1, 3]
         }}
       >
         {proposal.proposalBlurb}
@@ -71,7 +71,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             query: { network }
           }}
         >
-          <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, mr: 2 }}>
+          <Button
+            variant="primaryOutline"
+            sx={{ borderRadius: 'small', px: 4, mr: 3, display: ['none', 'block'] }}
+          >
             View proposal
           </Button>
         </Link>
@@ -79,7 +82,8 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           <Badge
             variant="primary"
             sx={{
-              m: 2,
+              my: [1, 2],
+              mr: 3,
               borderColor: 'primaryAlt',
               color: 'primaryAlt',
               textTransform: 'uppercase'
@@ -92,7 +96,8 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           <Badge
             variant="primary"
             sx={{
-              m: 2,
+              my: [1, 2],
+              mr: 3,
               textTransform: 'uppercase'
             }}
           >
@@ -103,6 +108,23 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             <Skeleton />
           </Box>
         )}
+        <Link
+          href={{
+            pathname: '/executive/[proposal-id]',
+            query: { network }
+          }}
+          as={{
+            pathname: `/executive/${proposal.key}`,
+            query: { network }
+          }}
+        >
+          <Button
+            variant="primaryOutline"
+            sx={{ borderRadius: 'small', px: 4, mt: 2, width: '100%', display: ['block', 'none'] }}
+          >
+            View proposal
+          </Button>
+        </Link>
       </Flex>
     </Stack>
   );

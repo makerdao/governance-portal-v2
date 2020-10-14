@@ -59,12 +59,13 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
             textOverflow: 'ellipsis',
             fontSize: 3,
             opacity: 0.8,
-            mb: 2
+            mb: [1, 2]
           }}
         >
           {poll.summary}
         </Text>
-        <Flex>
+        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+          <PollOptionBadge poll={poll} sx={{ mb: 2, display: ['block', 'none'] }} />
           <Link
             key={poll.slug}
             href={{
@@ -76,11 +77,11 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4 }}>
+            <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, width: ['100%', 'auto'] }}>
               View proposal
             </Button>
           </Link>
-          <PollOptionBadge poll={poll} />
+          <PollOptionBadge poll={poll} sx={{ ml: 3, display: ['none', 'block'] }} />
         </Flex>
       </Stack>
     </div>

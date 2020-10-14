@@ -16,13 +16,11 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
       : `/api/polling/tally/${poll.pollId}?network=${network}`,
     async url => parsePollTally(await fetchJson(url), poll)
   );
-
   return (
     <Flex sx={{ alignItems: 'center', color: 'primaryAlt' }} {...props}>
       {tally ? (
         hasPollEnded ? (
           <Badge
-            ml="3"
             variant="primary"
             sx={{
               borderColor: 'inherit',
@@ -33,7 +31,6 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
           </Badge>
         ) : (
           <Badge
-            ml="3"
             variant="primary"
             sx={{
               borderColor: 'text',
@@ -44,7 +41,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
           </Badge>
         )
       ) : (
-        <Box ml="3" sx={{ width: '170px' }}>
+        <Box sx={{ width: '170px' }}>
           <Skeleton />
         </Box>
       )}
