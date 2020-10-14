@@ -3,7 +3,6 @@ import { Flex, Text, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ConnectorName } from '../../lib/maker/web3react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from '../../lib/utils';
@@ -101,21 +100,6 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
           View on Etherscan
           <Icon name="arrowTopRight" size={2} sx={{ ml: 1 }} />
         </ExternalLink>
-        {accountName === 'WalletConnect' && (
-          <Flex
-            onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
-            sx={{
-              borderLeft: ['0', '1px solid'],
-              borderColor: [null, 'secondaryMuted'],
-              justifyContent: 'center',
-              alignItems: 'center',
-              cursor: 'pointer',
-              p: 2
-            }}
-          >
-            Disconnect
-          </Flex>
-        )}
       </Flex>
     </Flex>
   );

@@ -18,6 +18,7 @@ import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -151,6 +152,29 @@ const AccountSelect = props => {
               <Close aria-label="close" onClick={close} />
             </Flex>
             {walletOptions}
+            {accountName === 'WalletConnect' && (
+              <Flex
+                onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
+                sx={{
+                  cursor: 'pointer',
+                  width: '100%',
+                  p: 3,
+                  border: '1px solid',
+                  borderColor: 'secondaryMuted',
+                  borderRadius: 'medium',
+                  mb: 2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  '&:hover': {
+                    color: 'text',
+                    // borderColor: 'onSecondary',
+                    backgroundColor: 'background'
+                  }
+                }}
+              >
+                Disconnect
+              </Flex>
+            )}
           </DialogContent>
         ) : (
           <DialogContent
