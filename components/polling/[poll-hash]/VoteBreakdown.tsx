@@ -55,7 +55,10 @@ export default function ({
 
               {tally ? (
                 <Box sx={{ position: 'relative', mb: 4 }}>
-                  <Tooltip label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}>
+                  <Tooltip
+                    style={{ backgroundColor: 'white', fontSize: 15, borderRadius: 5 }}
+                    label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}
+                  >
                     <Box my={2}>
                       <Progress
                         sx={{
@@ -70,7 +73,10 @@ export default function ({
                       />
                     </Box>
                   </Tooltip>
-                  <Tooltip label={`Transfer ${tally.results[i].transfer.toBigNumber().toFormat(2)}`}>
+                  <Tooltip
+                    style={{ backgroundColor: 'white', fontSize: 15, borderRadius: 5 }}
+                    label={`Transfer ${tally.results[i].transfer.toBigNumber().toFormat(2)}`}
+                  >
                     <Box my={2}>
                       <Progress
                         sx={{

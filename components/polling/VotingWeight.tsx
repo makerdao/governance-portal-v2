@@ -46,7 +46,11 @@ export default function (props): JSX.Element {
       <Flex sx={{ flexDirection: 'row' }}>
         <Text color="textSecondary">Voting weight</Text>
         {votingWeightDescription ? (
-          <Tooltip sx={{ mt: -1 }} label={votingWeightDescription}>
+          <Tooltip
+            sx={{ mt: -1 }}
+            style={{ backgroundColor: 'white', fontSize: 15, borderRadius: 5 }}
+            label={votingWeightDescription}
+          >
             <Box>
               <Icon name="question" ml={2} mt={'6px'} />
             </Box>

@@ -386,7 +386,8 @@ export default ({ shorten = false }) => {
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
-          variant: 'styles.footer'
+          variant: 'styles.footer',
+          fontSize: 2
         }}
       >
         <Link href="/terms">
