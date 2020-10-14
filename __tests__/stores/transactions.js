@@ -51,11 +51,10 @@ test('should initialize a tx properly', async () => {
 test('should set pending properly', async () => {
   const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
   const mockPendingHook = jest.fn();
-  await transactionsApi.getState().track(txCreator, '', { pending: () => mockPendingHook() });
+  await transactionsApi.getState().track(txCreator, '', { pending: mockPendingHook });
+  await new Promise(res => setTimeout(res, 1000));
 
-  await waitForExpect(() => {
-    expect(mockPendingHook.mock.calls.length).toBe(1);
-  });
+  expect(mockPendingHook.mock.calls.length).toBe(1);
 });
 
 test('should set mined properly', async () => {
