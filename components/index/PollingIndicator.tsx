@@ -29,10 +29,10 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
     if (account) {
       invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
       pollsToBeAwareOf = unvotedPolls.length;
-      message = 'Live Governance polls available for voting';
+      message = `Live Governance poll${pollsToBeAwareOf > 1 ? 's' : ''} available for voting`;
     } else {
       pollsToBeAwareOf = activePolls.length;
-      message = 'New polling votes';
+      message = `New polling vote${pollsToBeAwareOf > 1 ? 's' : ''}`;
     }
 
     return pollsToBeAwareOf > 0 ? (
