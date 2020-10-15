@@ -1,4 +1,5 @@
-import { Box, Flex, Text } from 'theme-ui';
+/** @jsx jsx */
+import { Box, Flex, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from '../Tooltip';
 import useSWR from 'swr';
@@ -34,9 +35,7 @@ export default function VotingWeight(props): JSX.Element {
 
   const tooltipLabel = (
     <>
-      {votingWeightDescription && (
-        <div style={{ fontWeight: 600, paddingBottom: '10px' }}>{votingWeightDescription}</div>
-      )}
+      {votingWeightDescription && <Box sx={{ fontWeight: 600, pb: 2 }}>{votingWeightDescription}</Box>}
       Your voting weight is made up of MKR in your wallet, vote proxy, and voting contract. <br />
       This amount is applied to all polls you vote on.
     </>
@@ -55,11 +54,7 @@ export default function VotingWeight(props): JSX.Element {
     >
       <Flex sx={{ flexDirection: 'row' }}>
         <Text color="textSecondary">Voting weight</Text>
-        <Tooltip
-          sx={{ mt: -1 }}
-          style={{ backgroundColor: 'white', fontSize: 15, borderRadius: 5 }}
-          label={tooltipLabel}
-        >
+        <Tooltip label={tooltipLabel}>
           <Box>
             <Icon name="question" ml={2} mt={'6px'} />
           </Box>

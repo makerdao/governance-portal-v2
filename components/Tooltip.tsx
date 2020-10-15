@@ -22,7 +22,7 @@ export default function ({ children, label, ...props }): JSX.Element {
       </DialogOverlay>
     </Box>
   ) : (
-    <Tooltip label={label} {...props}>
+    <Tooltip sx={{ bg: 'white', fontSize: 3, borderRadius: 'medium' }} label={label} {...props}>
       {children}
     </Tooltip>
   );

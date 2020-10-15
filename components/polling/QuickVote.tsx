@@ -82,10 +82,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
           Your Vote
         </Text>
         {isRankedChoicePoll(poll) && (
-          <Tooltip
-            style={{ backgroundColor: 'white', fontSize: 15, borderRadius: 5 }}
-            label={rankedChoiceBlurb}
-          >
+          <Tooltip label={rankedChoiceBlurb}>
             <Box sx={{ position: 'relative' }}>
               {/* Box is used because tooltip needs a child that can be passed a ref */}
               <Icon name="stackedVotes" size={3} ml={2} />
