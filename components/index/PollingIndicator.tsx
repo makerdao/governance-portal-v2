@@ -29,19 +29,13 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
     if (account) {
       invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
       pollsToBeAwareOf = unvotedPolls.length;
-      message =
-        unvotedPolls.length > 0
-          ? 'Live Governance polls available for voting'
-          : activePolls.length > 0
-          ? 'Congratulations, you have voted on all current Governance Polls'
-          : 'There are no live Governance Polls at the moment';
+      message = 'Live Governance polls available for voting';
     } else {
       pollsToBeAwareOf = activePolls.length;
-      message =
-        activePolls.length > 0 ? 'New polling votes' : 'There are no live Governance Polls at the moment';
+      message = 'New polling votes';
     }
 
-    return (
+    return pollsToBeAwareOf > 0 ? (
       <NavLink
         ref={ref}
         href={`/polling?network=${getNetwork()}`}
@@ -63,14 +57,14 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
         }}
         {...props}
       >
-        {pollsToBeAwareOf > 0 && (
-          <Badge mr="3" variant="circle" p="3px">
-            {pollsToBeAwareOf}
-          </Badge>
-        )}
+        <Badge mr="3" variant="circle" p="3px">
+          {pollsToBeAwareOf}
+        </Badge>
         <Box pb="2px">{message}</Box>
         <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
       </NavLink>
+    ) : (
+      <div />
     );
   }
 );
