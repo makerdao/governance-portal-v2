@@ -1,11 +1,11 @@
 FROM node:12.16.3
-
 EXPOSE 3000
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY . .
-
 RUN yarn --no-progress --non-interactive --frozen-lockfile
 
-CMD [ "yarn", "dev" ]
+RUN npm run build
+
+CMD [ "npm", "run", "start" ]
