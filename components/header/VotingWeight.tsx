@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import useAccountsStore from '../../stores/accounts';
 import getMaker from '../../lib/maker';
 
-export default function (props): JSX.Element {
+export default function VotingWeight(props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: votingWeight } = useSWR(
     account?.address ? ['/user/polling-voting-weight', account.address] : null,

@@ -4,9 +4,8 @@ import { Text, Flex, Button, Box, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-import isNil from 'lodash/isNil';
 import shallow from 'zustand/shallow';
-import Tooltip from '@reach/tooltip';
+import Tooltip from '../Tooltip';
 import useSWR from 'swr';
 
 import getMaker from '../../lib/maker';
