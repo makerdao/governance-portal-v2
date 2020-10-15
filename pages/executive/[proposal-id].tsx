@@ -156,7 +156,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 tabTitles={[
                   'Proposal Detail',
                   'On-Chain Effects',
-                  `Comments (${comments ? comments.length : '-'})`
+                  `Comments ${comments ? `(${comments.length})` : ''}`
                 ]}
                 tabPanels={[
                   <div
