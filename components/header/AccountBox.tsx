@@ -65,7 +65,8 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             flex: 1,
             '&:hover': {
               color: 'text',
-              backgroundColor: 'background'
+              backgroundColor: 'background',
+              borderBottomLeftRadius: 'medium'
             }
           }}
           onClick={() => {
@@ -93,7 +94,8 @@ const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Ele
             flex: 1,
             '&:hover': {
               color: 'blueLinkHover',
-              backgroundColor: 'background'
+              backgroundColor: 'background',
+              borderBottomRightRadius: 'medium'
             }
           }}
         >

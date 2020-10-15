@@ -82,7 +82,7 @@ export default function ({ ballot, polls, activePolls, ...props }: Props): JSX.E
     </Box>
   ) : (
     <Box pt={3} px={3} pb={2} sx={{ color: 'primary' }}>
-      All polls complete.
+      All polls complete
     </Box>
   );
 }
