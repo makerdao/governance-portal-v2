@@ -27,3 +27,5 @@ yarn-error.log*
 .now
 .yalc
 yalc.lock
+
+.vercel
