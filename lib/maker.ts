@@ -66,7 +66,7 @@ function getMaker(): Promise<Maker> {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork(), staging: true }], //TODO: set staging to false before releasing to production
+        [GovernancePlugin, { network: getNetwork(), staging: !process.env.USE_PROD_SPOCK }],
         Web3ReactPlugin
       ],
       provider: {

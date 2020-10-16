@@ -13,11 +13,10 @@ export async function getConnectedMakerObj(network: SupportedNetworks): Promise<
   if (cachedMakerObjs[network]) {
     return cachedMakerObjs[network];
   }
-
   const makerObj = await Maker.create('http', {
     plugins: [
       [McdPlugin, { prefetch: false }],
-      [GovernancePlugin, { network, staging: true }] //TODO: set staging to false before releasing to production
+      [GovernancePlugin, { network, staging: !process.env.USE_PROD_SPOCK }]
     ],
     provider: {
       url: networkToRpc(network),
