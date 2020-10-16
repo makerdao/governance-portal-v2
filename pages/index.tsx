@@ -69,7 +69,13 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   <Text
                     as="p"
                     mb="3"
-                    sx={{ color: 'text', opacity: '0.7', fontSize: [3, 5], px: [3, 'inherit'] }}
+                    sx={{
+                      color: 'text',
+                      opacity: '0.7',
+                      fontWeight: 500,
+                      fontSize: [3, 5],
+                      px: [3, 'inherit']
+                    }}
                   >
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.

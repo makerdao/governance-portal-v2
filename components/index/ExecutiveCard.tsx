@@ -49,14 +49,18 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
         </Link>
       </div>
       <Text
-        sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          fontSize: 3,
-          opacity: 0.8,
-          mb: [1, 3]
-        }}
+        sx={
+          {
+            textOverflow: 'ellipsis',
+            fontSize: [2, 3],
+            opacity: 0.8,
+            mb: [1, 3],
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 2
+          } as any
+        }
       >
         {proposal.proposalBlurb}
       </Text>

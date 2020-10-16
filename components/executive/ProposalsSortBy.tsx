@@ -14,7 +14,7 @@ export default function (props): JSX.Element {
 
   return (
     <FilterButton
-      name={() => `Sort by ${executiveSortBy !== 'Date Posted' ? executiveSortBy : ''}`}
+      name={() => `Sort by ${executiveSortBy !== 'Date Posted' ? executiveSortBy : 'date'}`}
       listVariant="menubuttons.default.list"
       {...props}
     >

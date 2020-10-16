@@ -22,7 +22,6 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
           <Text
             variant="caps"
             sx={{
-              fontSize: [2, 1],
               color: 'textSecondary'
             }}
           >
@@ -53,14 +52,18 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
         </Flex>
 
         <Text
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: 3,
-            opacity: 0.8,
-            mb: [1, 2]
-          }}
+          sx={
+            {
+              textOverflow: 'ellipsis',
+              fontSize: [2, 3],
+              opacity: 0.8,
+              mb: [1, 2],
+              display: '-webkit-box',
+              overflow: 'hidden',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 2
+            } as any
+          }
         >
           {poll.summary}
         </Text>

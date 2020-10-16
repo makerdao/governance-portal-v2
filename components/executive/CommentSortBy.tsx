@@ -14,7 +14,7 @@ export default function (props): JSX.Element {
 
   return (
     <FilterButton
-      name={() => `Sort by ${commentSortBy !== 'Latest' ? commentSortBy : ''}`}
+      name={() => `Sort by ${commentSortBy !== 'Latest' ? commentSortBy : 'latest'}`}
       listVariant="menubuttons.default.list"
       {...props}
     >
