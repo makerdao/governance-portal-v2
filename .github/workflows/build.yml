@@ -1,0 +1,9 @@
+name: Build and test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: TODO - build and run tests etc.
