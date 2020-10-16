@@ -23,7 +23,7 @@ export default function RankedChoiceSelect({
   ...props
 }: RankedChoiceSelectProps): JSX.Element {
   const choice = _choice || [];
-  const [numConfirmed, setNumConfirmed] = useState(choice.length > 0 ? choice.length - 1 : 0);
+  const [numConfirmed, setNumConfirmed] = useState(choice.length > 0 ? choice.length : 0);
   const [showListboxInput, setShowListboxInput] = useState(true);
   const [showAddButton, setShowAddButton] = useState(false);
   const totalNumOptions = Object.keys(poll.options).length;
@@ -40,6 +40,7 @@ export default function RankedChoiceSelect({
     [numConfirmed]
   );
 
+  if (showListboxInput && numConfirmed === totalNumOptions) setShowListboxInput(false);
   if (numConfirmed === 0 && !showListboxInput) setShowListboxInput(true);
   if (showListboxInput && showAddButton) setShowAddButton(false);
 
