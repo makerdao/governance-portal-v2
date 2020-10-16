@@ -35,7 +35,7 @@ const Header = (props): JSX.Element => {
     >
       <Link href={{ pathname: '/', query: { network } }}>
         <IconButton aria-label="Maker home" sx={{ width: 4, height: 4, p: 0 }}>
-          <Icon name="maker" size="4" sx={{ cursor: 'pointer' }} />
+          <Icon name="maker" size="40px" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>

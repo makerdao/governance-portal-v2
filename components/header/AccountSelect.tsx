@@ -147,6 +147,7 @@ const AccountSelect = props => {
                 sx={{ fontSize: 3, px: 0 }}
                 onClick={() => setChangeWallet(false)}
               >
+                <Icon name="chevron_left" color="primary" size="10px" mr="2" />
                 Back
               </Button>
               <Close aria-label="close" onClick={close} />

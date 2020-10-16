@@ -52,7 +52,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           zIndex: -1,
           position: 'absolute',
           backgroundImage: 'url(/assets/heroVisual.svg)',
-          backgroundSize: 'contain',
+          backgroundSize: ['cover', 'contain'],
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat'
         }}
@@ -66,7 +66,11 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
-                  <Text as="p" mb="3" sx={{ color: 'textSecondary', fontSize: [3, 5], px: [3, 'inherit'] }}>
+                  <Text
+                    as="p"
+                    mb="3"
+                    sx={{ color: 'text', opacity: '0.7', fontSize: [3, 5], px: [3, 'inherit'] }}
+                  >
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
@@ -189,7 +193,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             >
               <div
                 sx={{
-                  height: '85%',
+                  borderRadius: 'small',
+                  height: '100%',
                   width: '100%',
                   position: 'absolute',
                   zIndex: -1,
