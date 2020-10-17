@@ -85,6 +85,12 @@ const PollingOverview = ({ polls }: Props) => {
   const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
   const sortedStartDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
+  useEffect(() => {
+    if (activePolls.length === 0) {
+      setShowHistorical(true);
+    }
+  }, []);
+
   const loadMore = entries => {
     const target = entries.pop();
     if (target.isIntersecting) {
