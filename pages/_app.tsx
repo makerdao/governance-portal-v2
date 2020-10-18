@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex } from 'theme-ui';
+import { Global } from '@emotion/core';
 
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
@@ -24,6 +25,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           fetcher: url => fetchJson(url)
         }}
       >
+        <Global
+          styles={{
+            '*': {
+              '-webkit-font-smoothing': 'antialiased',
+              '-moz-osx-font-smoothing': 'grayscale'
+            }
+          }}
+        />
         <Flex
           sx={{
             flexDirection: 'column',

@@ -29,6 +29,7 @@ import PollTally from '../../types/pollTally';
 import useAccountsStore from '../../stores/accounts';
 import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
 import useBallotStore from '../../stores/ballot';
+import PollOptionBadge from '../../components/PollOptionBadge';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -141,30 +142,37 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             {bpi < 1 ? (
               <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
                 <Box>
-                  <Text
-                    variant="text.caps"
-                    sx={{
-                      fontSize: 1,
-                      color: 'textSecondary'
-                    }}
-                  >
-                    {new Date(poll.startDate).toLocaleString('default', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </Text>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text
+                      variant="text.caps"
+                      sx={{
+                        fontSize: 1,
+                        color: 'textSecondary'
+                      }}
+                    >
+                      Posted{' '}
+                      {new Date(poll.startDate).toLocaleString('default', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        timeZone: 'UTC',
+                        timeZoneName: 'short'
+                      })}
+                    </Text>
+                    <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
+                  </Flex>
                   <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
                     {poll.title}
                   </Heading>
+                  <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
                 </Box>
                 <Flex sx={{ justifyContent: 'space-between' }}>
-                  <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
                 </Flex>
               </Flex>
             ) : (
-              <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: 4, pb: 3 }}>
+              <Flex sx={{ flexDirection: 'column', px: [3, 4], py: 3 }}>
                 <Box>
                   <Flex sx={{ justifyContent: 'space-between' }}>
                     <Text
@@ -174,17 +182,31 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         color: 'textSecondary'
                       }}
                     >
+                      Posted{' '}
                       {new Date(poll.startDate).toLocaleString('default', {
                         month: 'long',
                         day: 'numeric',
-                        year: 'numeric'
+                        year: 'numeric',
+                        hour: 'numeric',
+                        timeZone: 'UTC',
+                        timeZoneName: 'short'
                       })}
                     </Text>
-                    <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   </Flex>
-                  <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
-                    {poll.title}
-                  </Heading>
+                  <Flex>
+                    <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                      {poll.title}
+                    </Heading>
+                    <Flex sx={{ flexDirection: 'column', minWidth: 7, justifyContent: 'space-between' }}>
+                      <CountdownTimer
+                        key={poll.multiHash}
+                        endText="Poll ended"
+                        endDate={poll.endDate}
+                        sx={{ ml: 'auto' }}
+                      />
+                      <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} />
+                    </Flex>
+                  </Flex>
                 </Box>
                 <Flex sx={{ justifyContent: 'space-between' }}>
                   <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
