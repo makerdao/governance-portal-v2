@@ -18,8 +18,8 @@ type Store = {
   resetPollFilters: () => void;
   executiveSortBy: 'Date Posted' | 'MKR Amount';
   setExecutiveSortBy: (method: 'Date Posted' | 'MKR Amount') => void;
-  commentSortBy: 'Latest' | 'Oldest';
-  setCommentSortBy: (address: 'Latest' | 'Oldest') => void;
+  commentSortBy: 'Latest' | 'Oldest' | 'MKR Amount';
+  setCommentSortBy: (address: 'Latest' | 'Oldest' | 'MKR Amount') => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
@@ -72,7 +72,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
 
   commentSortBy: 'Latest',
 
-  setCommentSortBy: (sortMethod: 'Latest' | 'Oldest') => {
+  setCommentSortBy: (sortMethod: 'Latest' | 'Oldest' | 'MKR Amount') => {
     set({ commentSortBy: sortMethod });
   }
 }));
