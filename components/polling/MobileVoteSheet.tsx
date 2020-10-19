@@ -151,20 +151,7 @@ export default function MobileVoteSheet({
         sx={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         onDismiss={close ? close : () => setViewState(ViewState.START)}
       >
-        <DialogContent
-          sx={{
-            width: '100vw',
-            position: 'absolute',
-            bottom: 0,
-            mb: 0,
-            borderTopLeftRadius: '12px',
-            borderTopRightRadius: '12px',
-            border: '1px solid #D4D9E1',
-            px: 3,
-            py: 4
-          }}
-          aria-label="Vote Form"
-        >
+        <DialogContent sx={{ variant: 'dialog.mobile' }} aria-label="Vote Form">
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">

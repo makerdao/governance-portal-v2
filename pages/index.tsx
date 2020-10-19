@@ -58,7 +58,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <PrimaryLayout sx={{ maxWidth: 'landing' }}>
+      <PrimaryLayout sx={{ maxWidth: 'page' }}>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
@@ -197,7 +197,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Container
               sx={{
                 textAlign: 'center',
-                maxWidth: 'landing',
+                maxWidth: 'page',
                 position: ['relative']
               }}
             >

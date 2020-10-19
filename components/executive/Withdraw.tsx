@@ -12,6 +12,7 @@ import MKRInput from '../MKRInput';
 import getMaker, { MKR } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 import CurrencyObject from '../../types/currency';
+import { fadeIn } from '../../lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
 import { changeInputValue } from '../../lib/utils';
@@ -232,9 +233,9 @@ const Withdraw = (props): JSX.Element => {
             bpi === 0
               ? { variant: 'dialog.mobile' }
               : {
-                  boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
+                  variant: 'dialog.desktop',
+                  animation: `${fadeIn} 350ms ease`,
                   width: '520px',
-                  borderRadius: '8px',
                   px: 5,
                   py: 4
                 }

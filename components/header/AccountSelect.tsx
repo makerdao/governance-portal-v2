@@ -11,6 +11,7 @@ import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react
 import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
+import { fadeIn } from '../../lib/keyframes';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
@@ -137,7 +138,7 @@ const AccountSelect = props => {
             sx={
               bpi === 0
                 ? { variant: 'dialog.mobile' }
-                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+                : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -182,8 +183,14 @@ const AccountSelect = props => {
             aria-label="Wallet Info"
             sx={
               bpi === 0
-                ? { variant: 'dialog.mobile' }
-                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+                ? {
+                    variant: 'dialog.mobile'
+                  }
+                : {
+                    variant: 'dialog.desktop',
+                    animation: `${fadeIn} 350ms ease`,
+                    width: '450px'
+                  }
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>

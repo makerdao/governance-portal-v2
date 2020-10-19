@@ -200,7 +200,7 @@ class LongFooter extends React.Component {
     return (
       <FooterContainer>
         <Grid
-          sx={{ maxWidth: 'landing' }}
+          sx={{ maxWidth: 'page' }}
           m="0 auto"
           columns={['1fr', '1fr 1fr', '1fr 1fr', 'repeat(4, 1fr) auto']}
           gap="2rem"

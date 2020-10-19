@@ -28,8 +28,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <Global
           styles={{
             '*': {
-              '-webkit-font-smoothing': 'antialiased',
-              '-moz-osx-font-smoothing': 'grayscale'
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale'
             }
           }}
         />

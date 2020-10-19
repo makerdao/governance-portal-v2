@@ -167,9 +167,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   </Heading>
                   <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
                 </Box>
-                <Flex sx={{ justifyContent: 'space-between' }}>
-                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
-                </Flex>
               </Flex>
             ) : (
               <Flex sx={{ flexDirection: 'column', px: [3, 4], py: 3 }}>
@@ -193,7 +190,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       })}
                     </Text>
                   </Flex>
-                  <Flex>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
                     <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
                       {poll.title}
                     </Heading>
@@ -208,9 +205,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     </Flex>
                   </Flex>
                 </Box>
-                <Flex sx={{ justifyContent: 'space-between' }}>
-                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
-                </Flex>
               </Flex>
             )}
 

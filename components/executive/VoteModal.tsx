@@ -22,6 +22,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
 
+import { fadeIn } from '../../lib/keyframes';
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork, personalSign } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
@@ -317,7 +318,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
         sx={
           bpi === 0
             ? { variant: 'dialog.mobile' }
-            : { borderRadius: '8px', boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '50em', p: 4 }
+            : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
         }
       >
         {view}

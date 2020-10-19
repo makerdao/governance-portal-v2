@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-
 import { useBreakpointIndex } from '@theme-ui/match-media';
+
 import { getEtherscanLink } from '../../../lib/utils';
 import { getNetwork } from '../../../lib/maker';
 import Poll from '../../../types/poll';
@@ -146,7 +146,13 @@ export default function ({
         <Button
           pb={3}
           variant="textual"
-          sx={{ borderColor: 'primary', color: 'secondaryEmphasis', fontSize: 2 }}
+          sx={{
+            borderColor: 'primary',
+            color: 'secondaryEmphasis',
+            fontSize: 2,
+            width: 'max-content',
+            margin: 'auto'
+          }}
           onClick={clearTx}
         >
           Go back
