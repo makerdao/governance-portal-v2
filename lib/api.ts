@@ -2,6 +2,7 @@ import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
+import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
@@ -90,53 +91,79 @@ export async function getPolls(): Promise<Poll[]> {
   return (_cachedPolls = polls);
 }
 
-export function parsePollsMetadata(pollList): Promise<Poll[]> {
-  return Promise.all(
-    uniqBy(pollList, p => p.multiHash).map(async p => {
-      let document = '';
-      try {
-        document = await timeoutPromise(
-          5000, // reject if it takes longer than this to fetch
-          backoffRetry(3, () => fetch(p.url))
-        ).then(response => response?.text());
-        if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
-          throw new Error();
-      } catch (err) {
-        console.log(`unable to fetch valid poll document from ${p.url} for poll ${p.pollId}`);
-        return null;
-      }
+export async function parsePollsMetadata(pollList): Promise<Poll[]> {
+  let numFailedFetches = 0;
+  const failedPollIds: number[] = [];
+  const polls: Poll[] = [];
 
-      const pollMeta = matter(document).data;
-      const content = matter(document).content || '';
-      const summary = pollMeta?.summary || '';
-      const title = pollMeta?.title || '';
-      const options = pollMeta.options;
-      delete options[0]; // delete abstain option
-      const discussionLink =
-        pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
-          ? pollMeta.discussion_link
-          : null;
-      const voteType: VoteTypes =
-        (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
-      const category = pollMeta?.category || 'Uncategorized';
-      return {
-        ...p,
-        slug: p.multiHash.slice(0, 8),
-        startDate: `${p.startDate}`,
-        endDate: `${p.endDate}`,
-        content,
-        summary,
-        title,
-        options,
-        discussionLink,
-        voteType,
-        category
-      };
-    })
-  ).then(polls =>
-    (polls as any[])
-      .filter(p => !!p && !!p.summary && !!p.options)
-      .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
+  for (const pollGroup of chunk(
+    uniqBy(pollList, p => p.multiHash),
+    20
+  )) {
+    // fetch polls in batches, don't fetch a new batch until the current one has resolved
+    const pollGroupWithData = await Promise.all(
+      pollGroup.map(async p => {
+        let document = '';
+        try {
+          document = await timeoutPromise(
+            5000, // reject if it takes longer than this to fetch
+            backoffRetry(3, () => fetch(p.url))
+          ).then(response => response?.text());
+          if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
+            throw new Error();
+        } catch (err) {
+          numFailedFetches += 1;
+          failedPollIds.push(p.pollId);
+          return null;
+        }
+
+        const pollMeta = matter(document).data;
+        const content = matter(document).content || '';
+        const summary = pollMeta?.summary || '';
+        const title = pollMeta?.title || '';
+        const options = pollMeta.options;
+        delete options[0]; // delete abstain option
+        const discussionLink =
+          pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
+            ? pollMeta.discussion_link
+            : null;
+        const voteType: VoteTypes =
+          (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
+        const category = pollMeta?.category || 'Uncategorized';
+        return {
+          ...p,
+          slug: p.multiHash.slice(0, 8),
+          startDate: `${p.startDate}`,
+          endDate: `${p.endDate}`,
+          content,
+          summary,
+          title,
+          options,
+          discussionLink,
+          voteType,
+          category
+        };
+      })
+    ).then(polls =>
+      (polls as any[])
+        .filter(p => !!p && !!p.summary && !!p.options)
+        .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
+    );
+
+    polls.push(...pollGroupWithData);
+  }
+
+  console.log(
+    `\n 
+    ---
+    Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
+    This could be because the document link from the poll is no longer valid.
+    The following are the missing poll ids: ${failedPollIds}.
+    ---`
+  );
+
+  return (
+    polls
       // newest to oldest
       .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
   );
