@@ -94,14 +94,13 @@ export async function getPolls(): Promise<Poll[]> {
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
-
   const polls: Poll[] = [];
-  const chunkedPollList = chunk(
+
+  for (const pollGroup of chunk(
     uniqBy(pollList, p => p.multiHash),
     20
-  );
-  let numGroupsFetched = 0;
-  for (const pollGroup of chunkedPollList) {
+  )) {
+    // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
       pollGroup.map(async p => {
         let document = '';
@@ -150,7 +149,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
         .filter(p => !!p && !!p.summary && !!p.options)
         .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
     );
-    numGroupsFetched += 1;
+
     polls.push(...pollGroupWithData);
   }
 
