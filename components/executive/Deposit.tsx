@@ -7,6 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
+import { slideUp } from '../../lib/keyframes';
 import Stack from '../layouts/Stack';
 import MKRInput from '../MKRInput';
 import getMaker, { MKR } from '../../lib/maker';
@@ -216,7 +217,7 @@ const Deposit = (props): JSX.Element => {
           aria-label="Executive Vote"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
               : {
                   variant: 'dialog.desktop',
                   animation: `${fadeIn} 350ms ease`,

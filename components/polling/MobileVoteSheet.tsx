@@ -23,6 +23,7 @@ import { useRouter } from 'next/router';
 import getMaker, { getNetwork } from '../../lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from '../../lib/animation/ballotSuccess.json';
+import { slideUp } from '../../lib/keyframes';
 
 enum ViewState {
   START,
@@ -151,7 +152,10 @@ export default function MobileVoteSheet({
         sx={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         onDismiss={close ? close : () => setViewState(ViewState.START)}
       >
-        <DialogContent sx={{ variant: 'dialog.mobile' }} aria-label="Vote Form">
+        <DialogContent
+          sx={{ variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }}
+          aria-label="Vote Form"
+        >
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">

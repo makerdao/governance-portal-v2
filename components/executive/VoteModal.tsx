@@ -22,7 +22,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
 
-import { fadeIn } from '../../lib/keyframes';
+import { fadeIn, slideUp } from '../../lib/keyframes';
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork, personalSign } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
@@ -317,7 +317,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
         aria-label="Executive Vote"
         sx={
           bpi === 0
-            ? { variant: 'dialog.mobile' }
+            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
             : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
         }
       >

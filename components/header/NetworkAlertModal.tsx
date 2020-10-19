@@ -6,7 +6,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { SupportedNetworks } from '../../lib/constants';
-import { fadeIn } from '../../lib/keyframes';
+import { fadeIn, slideUp } from '../../lib/keyframes';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -27,7 +27,7 @@ const NetworkAlertModal = ({
           aria-label="Network Mismatch"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
               : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
           }
         >
@@ -59,7 +59,7 @@ const NetworkAlertModal = ({
           aria-label="Unsupported Network"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
               : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
           }
         >

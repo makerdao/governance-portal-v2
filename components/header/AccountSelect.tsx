@@ -11,7 +11,7 @@ import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react
 import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
-import { fadeIn } from '../../lib/keyframes';
+import { fadeIn, slideUp } from '../../lib/keyframes';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
@@ -137,7 +137,7 @@ const AccountSelect = props => {
             aria-label="Change Wallet"
             sx={
               bpi === 0
-                ? { variant: 'dialog.mobile' }
+                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
                 : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
             }
           >
@@ -184,7 +184,8 @@ const AccountSelect = props => {
             sx={
               bpi === 0
                 ? {
-                    variant: 'dialog.mobile'
+                    variant: 'dialog.mobile',
+                    animation: `${slideUp} 350ms ease`
                   }
                 : {
                     variant: 'dialog.desktop',
