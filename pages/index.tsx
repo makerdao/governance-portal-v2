@@ -81,7 +81,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                  <Flex sx={{ flexDirection: ['column', 'row'] }}>
+                  <Flex
+                    sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
+                  >
                     <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
                     <ExecutiveIndicator proposals={proposals} hat={hat} sx={{ mt: [2, 0] }} />
                   </Flex>
