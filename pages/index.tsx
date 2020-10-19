@@ -2,7 +2,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
+import ExecutiveIndicator from '../components/index/ExecutiveIndicator';
 import BlogPostCard from '../components/index/BlogPostCard';
 import { CMSProposal } from '../types/proposal';
 import Poll from '../types/poll';
@@ -80,7 +81,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                  <PollingIndicator polls={polls} />
+                  <Flex sx={{ flexDirection: ['column', 'row'] }}>
+                    <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
+                    <ExecutiveIndicator proposals={proposals} hat={hat} sx={{ mt: [2, 0] }} />
+                  </Flex>
                 </Stack>
               </Container>
             </Stack>
