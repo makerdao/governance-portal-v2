@@ -71,6 +71,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   }, []);
 
   const activePolls = _polls ? _polls.filter(isActivePoll) : [];
+  const hasPollEnded = !isActivePoll(poll);
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
   // prepopulate the local tally cache for polls before and/or after this one
@@ -201,7 +202,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         endDate={poll.endDate}
                         sx={{ ml: 'auto' }}
                       />
-                      <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} />
+                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : null}
                     </Flex>
                   </Flex>
                 </Box>
