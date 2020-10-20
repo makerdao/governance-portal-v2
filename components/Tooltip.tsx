@@ -4,7 +4,6 @@
 
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Tooltip from '@reach/tooltip';
-import { slideUp } from '../lib/keyframes';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box } from 'theme-ui';
@@ -17,7 +16,7 @@ export default function ({ children, label, ...props }): JSX.Element {
     <Box onClick={() => setOpen(true)}>
       {children}
       <DialogOverlay isOpen={isOpen} onDismiss={() => setOpen(false)}>
-        <DialogContent sx={{ variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }}>
+        <DialogContent sx={{ variant: 'dialog.mobile' }}>
           <Box {...props}>{label}</Box>
         </DialogContent>
       </DialogOverlay>

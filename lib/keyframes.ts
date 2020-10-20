@@ -13,10 +13,10 @@ export const fadeIn = keyframes`
 export const slideUp = keyframes`
   0%   { 
     opacity: .5; 
-    -webkit-transform: translateY(100px);
-    -moz-transform: translateY(100px);
-    -o-transform: translateY(100px);
-    transform:  translateY(100px);
+    -webkit-transform: translateY(75px);
+    -moz-transform: translateY(75px);
+    -o-transform: translateY(75px);
+    transform:  translateY(75px);
   }
   100% { 
     opacity: 0.75; 
