@@ -328,11 +328,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
   const polls = await getPolls();
   const pollExists = !!polls.find(poll => poll.slug === pollSlug);
-  if (!pollExists) return { unstable_revalidate: 30, props: { poll: null } };
+  if (!pollExists) return { revalidate: 30, props: { poll: null } };
   const poll = await getPoll(pollSlug);
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls,
       poll

@@ -250,7 +250,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const proposals = await getExecutiveProposals();
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals
     }
