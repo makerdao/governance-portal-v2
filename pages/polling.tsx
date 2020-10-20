@@ -28,6 +28,7 @@ import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
 import BallotStatus from '../components/polling/BallotStatus';
+import Head from 'next/head';
 
 type Props = {
   polls: Poll[];
@@ -125,6 +126,9 @@ const PollingOverview = ({ polls }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+      <Head>
+        <title>Maker Governance - Polling</title>
+      </Head>
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}
