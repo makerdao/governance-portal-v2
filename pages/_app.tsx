@@ -28,7 +28,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             "default-src 'self' https: wss:;" +
             "style-src 'self' 'unsafe-inline';" +
             `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
-            'img-src *'
+            'img-src *;' +
+            "frame-ancestors 'none'"
           }
         />
       </Head>
