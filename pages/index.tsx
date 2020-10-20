@@ -76,19 +76,19 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             }}
           >
             <Text sx={{ display: ['block', 'none'] }}>
-              Welcome to the new Governance Portal. The legacy site can still be reached at{' '}
+              Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
               <Link href="//v1.vote.makerdao.com">
                 <a>v1.vote.makerdao.com</a>
               </Link>
               .
             </Text>
             <Text sx={{ display: ['none', 'block'] }}>
-              Welcome to the new Governance Portal, featuring easier access to information, batched poll
-              voting, executive voting comments, and on-chain effects. For questions visit{' '}
+              Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
+              executive voting comments, and on-chain effects. For questions visit{' '}
               <Link href="//chat.makerdao.com/channel/governance-and-risk">
                 <a>Rocket Chat</a>
               </Link>
-              . The legacy Governance Portal can still be reached at{' '}
+              . The legacy Vote Portal can still be reached at{' '}
               <Link href="//v1.vote.makerdao.com">
                 <a>v1.vote.makerdao.com</a>
               </Link>
