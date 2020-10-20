@@ -202,7 +202,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         endDate={poll.endDate}
                         sx={{ ml: 'auto' }}
                       />
-                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : ''}
+                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : null}
                     </Flex>
                   </Flex>
                 </Box>
