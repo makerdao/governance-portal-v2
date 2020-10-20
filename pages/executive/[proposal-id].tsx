@@ -82,7 +82,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const onChainFxTab = (
     <div key={3} sx={{ p: [3, 4] }}>
-      <Flex sx={{ mb: 3 }}>
+      <Flex sx={{ mb: 3, overflow: 'auto' }}>
         For the spell at address
         <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
           <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>

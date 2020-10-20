@@ -2,7 +2,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, jsx } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, Badge, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -38,7 +38,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
-
   return (
     <div>
       <Head>
@@ -59,10 +58,48 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         }}
       />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Badge
+            variant="primary"
+            sx={{
+              textTransform: 'none',
+              textAlign: 'center',
+              borderColor: '#FDC134',
+              borderRadius: '50px',
+              width: '1020px',
+              whiteSpace: 'normal',
+              fontWeight: 'normal',
+              fontSize: [1, 2],
+              py: 2,
+              px: [3, 4],
+              mt: ['-10px', '-25px']
+            }}
+          >
+            <Text sx={{ display: ['block', 'none'] }}>
+              Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
+              <Link href="//v1.vote.makerdao.com">
+                <a>v1.vote.makerdao.com</a>
+              </Link>
+              .
+            </Text>
+            <Text sx={{ display: ['none', 'block'] }}>
+              Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
+              executive voting comments, and on-chain effects. For questions visit{' '}
+              <Link href="//chat.makerdao.com/channel/governance-and-risk">
+                <a>Rocket Chat</a>
+              </Link>
+              . The legacy Vote Portal can still be reached at{' '}
+              <Link href="//v1.vote.makerdao.com">
+                <a>v1.vote.makerdao.com</a>
+              </Link>
+              .
+            </Text>
+          </Badge>
+        </Flex>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
-              <Container pt={[4, 6]} sx={{ maxWidth: 'title', textAlign: 'center' }}>
+              <Container pt={4} sx={{ maxWidth: 'title', textAlign: 'center' }}>
                 <Stack gap={3}>
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
