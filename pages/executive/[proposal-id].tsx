@@ -204,7 +204,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 Supporters
               </Heading>
               <Card variant="compact" p={3} sx={{ height: '237px' }}>
-                <Box sx={{ overflowY: 'scroll', height: '100%' }}>
+                <Box sx={{ overflowY: 'auto', height: '100%' }}>
                   {supporters ? (
                     supporters.map(supporter => (
                       <Flex

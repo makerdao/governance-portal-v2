@@ -29,7 +29,7 @@ const SidebarLayout = ({ children, ...props }: React.PropsWithChildren<any>) => 
 export const StickyColumn = ({ children, ...props }: React.PropsWithChildren<{ isSticky?: boolean[] }>) => {
   return (
     <Box sx={{ position: [null, null, null, 'sticky'], top: 0, height: 'min-content' }} {...props}>
-      <Box sx={{ maxHeight: [null, null, null, '100vh'], overflowY: 'scroll' }}>{children}</Box>
+      <Box sx={{ maxHeight: [null, null, null, '100vh'], overflowY: 'auto' }}>{children}</Box>
     </Box>
   );
 };
