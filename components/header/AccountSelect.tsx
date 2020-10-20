@@ -156,7 +156,10 @@ const AccountSelect = props => {
             {walletOptions}
             {accountName === 'WalletConnect' && (
               <Flex
-                onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
+                onClick={() => {
+                  (connector as WalletConnectConnector).walletConnectProvider.disconnect();
+                  close();
+                }}
                 sx={{
                   cursor: 'pointer',
                   width: '100%',
