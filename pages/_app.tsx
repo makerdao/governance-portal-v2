@@ -25,7 +25,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <meta
           httpEquiv="Content-Security-Policy"
           content={
-            "default-src 'self' https: wss:;" +
+            "default-src 'none'" +
+            "connect-src 'self' https: wss:;" +
             "style-src 'self' 'unsafe-inline';" +
             `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
             'img-src *;' +
