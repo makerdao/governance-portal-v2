@@ -23,7 +23,8 @@ const Header = ({ stateDiff }) => (
         </ExternalLink>{' '}
         for definitions.{' '}
         <strong>
-          NOTE: This shows only changes to the Vat. The rest of the MCD contracts will be added soon.
+          NOTE: This currently shows only changes to the Vat and Jug contracts. The rest of the MCD contracts
+          will be added soon.
         </strong>
       </>
     ) : (
