@@ -11,14 +11,27 @@ import '@reach/tooltip/styles.css';
 import { fetchJson } from '../lib/utils';
 import theme from '../lib/theme';
 import Header from '../components/Header';
+import Head from 'next/head';
 
 export function reportWebVitals(metric) {
   console.log(metric);
 }
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  const dev = process.env.NODE_ENV === 'development';
   return (
     <ThemeProvider theme={theme}>
+      <Head>
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={
+            "default-src 'self' https: wss:;" +
+            "style-src 'self' 'unsafe-inline';" +
+            `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
+            'img-src *'
+          }
+        />
+      </Head>
       <SWRConfig
         value={{
           refreshInterval: 2000,
