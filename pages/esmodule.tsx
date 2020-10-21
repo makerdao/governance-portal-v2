@@ -124,11 +124,41 @@ const ModalContent = ({
       </Flex>
     );
   };
+
+  const ConfirmBurn = () => {
+    return (
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
+        <Text>Confirm that Burn Baby</Text>
+        <Grid columns={2} mt={4}>
+          <Button
+            onClick={() => {
+              setShowDialog(false);
+            }}
+            variant="outline"
+            sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => setStep(2)}
+            variant="outline"
+            sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+          >
+            Continue
+          </Button>
+        </Grid>
+      </Flex>
+    );
+  };
+
   switch (step) {
     case 0:
       return <DefaultScreen />;
     case 1:
       return <MKRAmount />;
+    case 2:
+      return <ConfirmBurn />;
     default:
       return <DefaultScreen />;
   }
