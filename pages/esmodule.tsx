@@ -1,15 +1,16 @@
 /** @jsx jsx */
-import { Flex, Box, Button, Text, Card, Spinner, Grid, Input, jsx } from 'theme-ui';
+import { Flex, Box, Button, Text, Card, Spinner, Grid, Input, jsx, Close } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { GetStaticProps } from 'next';
 import useSWR, { mutate } from 'swr';
 import ErrorPage from 'next/error';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Icon } from '@makerdao/dai-ui-icons';
 import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import useAccountsStore from '../stores/accounts';
-import Address from '../types/account'
+import Address from '../types/account';
 
 async function getModuleStats() {
   const maker = await getMaker();
@@ -37,15 +38,26 @@ if (typeof window !== 'undefined') {
   });
 }
 
-const ModalContent = ({ address, setShowDialog }: {address: Address | undefined, setShowDialog: (value: boolean) => void}) => {
+const ModalContent = ({
+  address,
+  setShowDialog
+}: {
+  address: Address | undefined;
+  setShowDialog: (value: boolean) => void;
+}) => {
   const [step, setStep] = useState(0);
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
+  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
+    getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
+
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Text variant="heading">Are you sure you want to burn MKR?</Text>
-      <Text variant="text" sx={{ mt: 3, color: 'onSecondary' }}>
+      <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
+      <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
+      <Text variant="heading" mt={4}>
+        Are you sure you want to burn MKR?
+      </Text>
+      <Text variant="text" sx={{ mt: 3 }}>
         By burning your MKR in the ESM, you are contributing to the shutdown of the Dai Credit System. Your
         MKR will be immediately burned and cannot be retrieved.
       </Text>
@@ -53,7 +65,7 @@ const ModalContent = ({ address, setShowDialog }: {address: Address | undefined,
         <Button
           onClick={() => setShowDialog(false)}
           variant="outline"
-          sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
+          sx={{ color: '#9FAFB9', borderColor: '#9FAFB9', borderRadius: 'small' }}
         >
           Cancel
         </Button>
@@ -67,43 +79,62 @@ const ModalContent = ({ address, setShowDialog }: {address: Address | undefined,
       </Grid>
     </Flex>
   );
-  const MKRAmount = () => (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-    <Text variant="heading">Burn your MKR in the ESM</Text>
-    <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: 4, py: 4 }}>
-      <Text variant='microHeading'>Enter the amount of MKR to burn</Text>
-      <Input mt={3} placeholder='0.00 MKR'></Input>
-  <Flex mt={3} ><Text variant='caps'>MKR Balance In Wallet</Text><Text variant='caps'>{mkrBalance}</Text></Flex>
-    </Box>
-    <Grid columns={2} mt={4}>
-      <Button
-        onClick={() => {setShowDialog(false)}}
-        variant="outline"
-        sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
-      >
-        Cancel
-      </Button>
-      <Button
-        onClick={() => setStep(2)}
-        variant="outline"
-        sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
-      >
-        Continue
-      </Button>
-    </Grid>
-  </Flex> 
-  )
+  const MKRAmount = () => {
+    const [stakeAmount, setStakeAmount] = useState(0);
+    return (
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
+        <Text variant="heading">Burn your MKR in the ESM</Text>
+        <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: 5, py: 4 }}>
+          <Text variant="microHeading">Enter the amount of MKR to burn</Text>
+          <Flex sx={{ border: '1px solid #D8E0E3', mt: 3 }}>
+            <Input sx={{ border: '0px solid' }} value={`${stakeAmount.toFixed(2)} MKR`} />
+            <Button
+              variant="textual"
+              sx={{ width: '100px', fontWeight: 'bold' }}
+              onClick={() => setStakeAmount(mkrBalance)}
+            >
+              Set max
+            </Button>
+          </Flex>
+
+          <Flex mt={3} sx={{ alignItems: 'center' }}>
+            <Text variant="caps">MKR Balance In Wallet</Text>
+            <Text ml={3}>{mkrBalance ? mkrBalance.toString() : '---'}</Text>
+          </Flex>
+        </Box>
+        <Grid columns={2} mt={4}>
+          <Button
+            onClick={() => {
+              setShowDialog(false);
+            }}
+            variant="outline"
+            sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => setStep(2)}
+            variant="outline"
+            sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+          >
+            Continue
+          </Button>
+        </Grid>
+      </Flex>
+    );
+  };
   switch (step) {
     case 0:
       return <DefaultScreen />;
     case 1:
-      return <MKRAmount />
+      return <MKRAmount />;
     default:
       return <DefaultScreen />;
   }
 };
 
-const ESModule = ({}) => {
+const ESModule = () => {
   const { data } = useSWR('/es-module', getModuleStats);
   const [totalStaked, canFire, thresholdAmount, fired, mkrInEsm, cageTime] = data || [];
   const loader = useRef<HTMLDivElement>(null);
@@ -124,19 +155,13 @@ const ESModule = ({}) => {
               ? { variant: 'dialog.mobile' }
               : {
                   boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
-                  width: '520px',
                   borderRadius: '8px',
                   px: 5,
-                  py: 4
+                  py: 4,
+                  my: 5
                 }
           }
         >
-          {/* <ModalContent
-            sx={{ px: [3, null] }}
-            address={account?.address}
-            voteProxy={voteProxy}
-            close={() => setShowDialog(false)}
-          /> */}
           <ModalContent address={account} setShowDialog={setShowDialog} />
         </DialogContent>
       </DialogOverlay>
@@ -219,7 +244,7 @@ const ESModule = ({}) => {
   );
 };
 
-export default function ESModulePage({}): JSX.Element {
+export default function ESModulePage(): JSX.Element {
   const [error, setError] = useState<string>();
 
   if (error) {
