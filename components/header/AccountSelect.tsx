@@ -20,6 +20,7 @@ import AccountIcon from './AccountIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import useAccountsStore from '../../stores/accounts';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -32,6 +33,7 @@ const WrappedAccountSelect = (props): JSX.Element => (
 const AccountSelect = props => {
   const { library, account, activate, connector, error, chainId } = useWeb3React();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
+  const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
   useEffect(() => {
     if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
@@ -158,6 +160,8 @@ const AccountSelect = props => {
               <Flex
                 onClick={() => {
                   (connector as WalletConnectConnector).walletConnectProvider.disconnect();
+                  disconnectAccount();
+                  setAccountName(undefined);
                   close();
                 }}
                 sx={{
