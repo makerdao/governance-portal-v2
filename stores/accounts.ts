@@ -2,7 +2,6 @@ import create from 'zustand';
 
 import getMaker from '../lib/maker';
 import Account from '../types/account';
-import { devtools } from 'zustand/middleware';
 
 type VoteProxy = {
   getProxyAddress: () => string;
@@ -19,6 +18,7 @@ type Store = {
   currentAccount?: Account;
   proxies: Record<string, VoteProxy | null>;
   addAccountsListener: () => Promise<void>;
+  disconnectAccount: () => Promise<void>;
 };
 
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
@@ -40,6 +40,12 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null }
       });
     });
+  },
+
+  // explicitly setting this as `undefined` is an anti-pattern, but it's only a bandaid until
+  // disconnect functionality is added to dai.js
+  disconnectAccount: async () => {
+    set({ currentAccount: undefined });
   }
 }));
 

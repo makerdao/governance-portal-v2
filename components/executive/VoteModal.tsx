@@ -253,8 +253,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               onChange={event => setComment(event.target.value)}
               placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
-            <Text variant="text" sx={{ color: comment.length > 250 ? 'error' : 'text' }}>
-              {250 - comment.length}
+            <Text variant="text" sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted' }}>
+              {250 - comment.length} characters remaining
             </Text>
           </Box>
         </Box>
