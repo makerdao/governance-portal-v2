@@ -97,7 +97,7 @@ const Terms = () => {
       <Text sx={{ textAlign: 'center' }}>
         <h2>Terms of Use</h2>
       </Text>
-      <Card sx={{ overflowY: 'scroll' }}>
+      <Card sx={{ overflowY: 'auto' }}>
         <div dangerouslySetInnerHTML={{ __html: content || '' }} />
       </Card>
     </Box>

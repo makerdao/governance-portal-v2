@@ -25,6 +25,7 @@ import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
 import SpellData from '../types/spellData';
 import { fetchJson } from '../lib/utils';
+import Head from 'next/head';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -114,7 +115,10 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+      <Head>
+        <title>Maker Governance - Executive Proposals</title>
+      </Head>
       <Stack>
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
@@ -246,7 +250,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const proposals = await getExecutiveProposals();
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals
     }

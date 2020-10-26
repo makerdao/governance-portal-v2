@@ -28,6 +28,7 @@ import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
 import BallotStatus from '../components/polling/BallotStatus';
+import Head from 'next/head';
 
 type Props = {
   polls: Poll[];
@@ -124,7 +125,10 @@ const PollingOverview = ({ polls }: Props) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+      <Head>
+        <title>Maker Governance - Polling</title>
+      </Head>
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}
@@ -291,7 +295,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const polls = await getPolls();
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls
     }

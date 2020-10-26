@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { Button, Text, Flex, jsx } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import Stack from '../layouts/Stack';
 import { getNetwork } from '../../lib/maker';
@@ -14,6 +15,7 @@ type Props = {
 
 const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
   const network = getNetwork();
+  const bpi = useBreakpointIndex();
 
   return (
     <div {...props}>
@@ -25,7 +27,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               color: 'textSecondary'
             }}
           >
-            Posted{' '}
+            {bpi > 0 && 'Posted'}{' '}
             {new Date(poll.startDate).toLocaleString('default', {
               month: 'long',
               day: 'numeric',

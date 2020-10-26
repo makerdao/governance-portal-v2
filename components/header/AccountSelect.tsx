@@ -11,6 +11,7 @@ import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react
 import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
+import { fadeIn, slideUp } from '../../lib/keyframes';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
@@ -19,6 +20,7 @@ import AccountIcon from './AccountIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import useAccountsStore from '../../stores/accounts';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -31,6 +33,7 @@ const WrappedAccountSelect = (props): JSX.Element => (
 const AccountSelect = props => {
   const { library, account, activate, connector, error, chainId } = useWeb3React();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
+  const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
   useEffect(() => {
     if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
@@ -136,8 +139,8 @@ const AccountSelect = props => {
             aria-label="Change Wallet"
             sx={
               bpi === 0
-                ? { variant: 'dialog.mobile' }
-                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+                : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -155,7 +158,12 @@ const AccountSelect = props => {
             {walletOptions}
             {accountName === 'WalletConnect' && (
               <Flex
-                onClick={() => (connector as WalletConnectConnector).walletConnectProvider.disconnect()}
+                onClick={() => {
+                  (connector as WalletConnectConnector).walletConnectProvider.disconnect();
+                  disconnectAccount();
+                  setAccountName(undefined);
+                  close();
+                }}
                 sx={{
                   cursor: 'pointer',
                   width: '100%',
@@ -182,8 +190,15 @@ const AccountSelect = props => {
             aria-label="Wallet Info"
             sx={
               bpi === 0
-                ? { variant: 'dialog.mobile' }
-                : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+                ? {
+                    variant: 'dialog.mobile',
+                    animation: `${slideUp} 350ms ease`
+                  }
+                : {
+                    variant: 'dialog.desktop',
+                    animation: `${fadeIn} 350ms ease`,
+                    width: '450px'
+                  }
             }
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>

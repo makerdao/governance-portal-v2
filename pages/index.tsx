@@ -2,7 +2,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, jsx } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, Badge, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -17,6 +17,7 @@ import PollPreviewCard from '../components/index/PollPreviewCard';
 import ExecutiveCard from '../components/index/ExecutiveCard';
 import IntroCard from '../components/index/IntroCard';
 import PollingIndicator from '../components/index/PollingIndicator';
+import ExecutiveIndicator from '../components/index/ExecutiveIndicator';
 import BlogPostCard from '../components/index/BlogPostCard';
 import { CMSProposal } from '../types/proposal';
 import Poll from '../types/poll';
@@ -37,7 +38,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const { data: hat } = useSWR<string>('/executive/hat', () =>
     getMaker().then(maker => maker.service('chief').getHat())
   );
-
   return (
     <div>
       <Head>
@@ -57,11 +57,49 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <PrimaryLayout sx={{ maxWidth: 'landing' }}>
+      <PrimaryLayout sx={{ maxWidth: 'page' }}>
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Badge
+            variant="primary"
+            sx={{
+              textTransform: 'none',
+              textAlign: 'center',
+              borderColor: '#FDC134',
+              borderRadius: '50px',
+              width: '1020px',
+              whiteSpace: 'normal',
+              fontWeight: 'normal',
+              fontSize: [1, 2],
+              py: 2,
+              px: [3, 4],
+              mt: ['-10px', '-25px']
+            }}
+          >
+            <Text sx={{ display: ['block', 'none'] }}>
+              Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
+              <Link href="//v1.vote.makerdao.com">
+                <a>v1.vote.makerdao.com</a>
+              </Link>
+              .
+            </Text>
+            <Text sx={{ display: ['none', 'block'] }}>
+              Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
+              executive voting comments, and on-chain effects. For questions visit{' '}
+              <Link href="//chat.makerdao.com/channel/governance-and-risk">
+                <a>Rocket Chat</a>
+              </Link>
+              . The legacy Vote Portal can still be reached at{' '}
+              <Link href="//v1.vote.makerdao.com">
+                <a>v1.vote.makerdao.com</a>
+              </Link>
+              .
+            </Text>
+          </Badge>
+        </Flex>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
-              <Container pt={[4, 6]} sx={{ maxWidth: 'title', textAlign: 'center' }}>
+              <Container pt={4} sx={{ maxWidth: 'title', textAlign: 'center' }}>
                 <Stack gap={3}>
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
@@ -80,7 +118,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                  <PollingIndicator polls={polls} />
+                  <Flex
+                    sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
+                  >
+                    <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
+                    <ExecutiveIndicator proposals={proposals} hat={hat} sx={{ mt: [2, 0] }} />
+                  </Flex>
                 </Stack>
               </Container>
             </Stack>
@@ -193,7 +236,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Container
               sx={{
                 textAlign: 'center',
-                maxWidth: 'landing',
+                maxWidth: 'page',
                 position: ['relative']
               }}
             >
@@ -286,7 +329,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   ]);
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals,
       polls,

@@ -71,6 +71,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   }, []);
 
   const activePolls = _polls ? _polls.filter(isActivePoll) : [];
+  const hasPollEnded = !isActivePoll(poll);
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
   // prepopulate the local tally cache for polls before and/or after this one
@@ -167,9 +168,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   </Heading>
                   <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
                 </Box>
-                <Flex sx={{ justifyContent: 'space-between' }}>
-                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
-                </Flex>
               </Flex>
             ) : (
               <Flex sx={{ flexDirection: 'column', px: [3, 4], py: 3 }}>
@@ -193,7 +191,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       })}
                     </Text>
                   </Flex>
-                  <Flex>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
                     <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
                       {poll.title}
                     </Heading>
@@ -204,13 +202,10 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         endDate={poll.endDate}
                         sx={{ ml: 'auto' }}
                       />
-                      <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} />
+                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : null}
                     </Flex>
                   </Flex>
                 </Box>
-                <Flex sx={{ justifyContent: 'space-between' }}>
-                  <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />
-                </Flex>
               </Flex>
             )}
 
@@ -333,11 +328,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
   const polls = await getPolls();
   const pollExists = !!polls.find(poll => poll.slug === pollSlug);
-  if (!pollExists) return { unstable_revalidate: 30, props: { poll: null } };
+  if (!pollExists) return { revalidate: 30, props: { poll: null } };
   const poll = await getPoll(pollSlug);
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls,
       poll

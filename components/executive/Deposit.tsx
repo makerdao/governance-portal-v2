@@ -7,12 +7,14 @@ import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
+import { slideUp } from '../../lib/keyframes';
 import Stack from '../layouts/Stack';
 import MKRInput from '../MKRInput';
 import getMaker, { MKR } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 import CurrencyObject from '../../types/currency';
 import TxIndicators from '../TxIndicators';
+import { fadeIn } from '../../lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
 import { changeInputValue } from '../../lib/utils';
 import { BoxWithClose } from './Withdraw';
@@ -215,11 +217,11 @@ const Deposit = (props): JSX.Element => {
           aria-label="Executive Vote"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
               : {
-                  boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
+                  variant: 'dialog.desktop',
+                  animation: `${fadeIn} 350ms ease`,
                   width: '520px',
-                  borderRadius: '8px',
                   px: 5,
                   py: 4
                 }

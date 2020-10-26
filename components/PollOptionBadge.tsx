@@ -44,7 +44,7 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
           </Badge>
         )
       ) : (
-        <Box sx={{ width: '170px' }}>
+        <Box sx={{ width: '140px', justifyContent: 'right' }} {...props}>
           <Skeleton />
         </Box>
       )}

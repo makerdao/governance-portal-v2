@@ -37,7 +37,7 @@
     "lodash": "^4.7.0",
     "lottie-web": "^5.7.1",
     "mongodb": "^3.6.2",
-    "next": "^9.4.0",
+    "next": "^9.5.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-loading-skeleton": "^2.0.1",

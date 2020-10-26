@@ -29,7 +29,7 @@ export function bigNumberKFormat(num: CurrencyObject) {
 
 export async function markdownToHtml(markdown: string) {
   const result = await remark().use(html).process(markdown);
-  return result.toString();
+  return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 
 export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> {

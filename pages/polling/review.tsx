@@ -94,7 +94,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               </Stack>
             </Stack>
           </Box>
-          {bpi === 3 && !!account && (
+          {bpi >= 3 && !!account && (
             <StickyColumn sx={{ pt: 3 }}>
               <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
@@ -159,7 +159,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const polls = await getPolls();
 
   return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls
     }

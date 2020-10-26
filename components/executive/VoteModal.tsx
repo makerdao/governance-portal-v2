@@ -22,6 +22,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
 
+import { fadeIn, slideUp } from '../../lib/keyframes';
 import SpellData from '../../types/spellData';
 import getMaker, { getNetwork, personalSign } from '../../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
@@ -252,8 +253,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               onChange={event => setComment(event.target.value)}
               placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
-            <Text variant="text" sx={{ color: comment.length > 250 ? 'error' : 'text' }}>
-              {250 - comment.length}
+            <Text variant="text" sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted' }}>
+              {250 - comment.length} characters remaining
             </Text>
           </Box>
         </Box>
@@ -316,8 +317,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
         aria-label="Executive Vote"
         sx={
           bpi === 0
-            ? { variant: 'dialog.mobile' }
-            : { borderRadius: '8px', boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '50em', p: 4 }
+            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+            : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, p: 4 }
         }
       >
         {view}

@@ -23,7 +23,8 @@ const Header = ({ stateDiff }) => (
         </ExternalLink>{' '}
         for definitions.{' '}
         <strong>
-          NOTE: This shows only changes to the Vat. The rest of the MCD contracts will be added soon.
+          NOTE: This currently shows only changes to the Vat and Jug contracts. The rest of the MCD contracts
+          will be added soon.
         </strong>
       </>
     ) : (
@@ -40,7 +41,7 @@ export default function OnChainFx({ stateDiff, ...props }: { stateDiff: SpellSta
         {Object.entries(stateDiff.groupedDiff).map(([label, diffs]) => (
           <Box key={label}>
             <Text sx={{ fontWeight: 'bold', textTransform: 'uppercase', mb: '1' }}>{label}</Text>
-            <Grid columns="max-content max-content 3ch max-content" sx={{ rowGap: 2, overflowX: 'scroll' }}>
+            <Grid columns="max-content max-content 3ch max-content" sx={{ rowGap: 2, overflowX: 'auto' }}>
               {diffs.map((diff, index) => (
                 <Fragment key={index}>
                   <Text key={index} sx={{ fontWeight: 'semibold', fontSize: 3, mr: 3 }}>

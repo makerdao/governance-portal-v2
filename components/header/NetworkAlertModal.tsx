@@ -2,10 +2,11 @@
 import { useState } from 'react';
 import { jsx, Flex, Text, NavLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+
 import { SupportedNetworks } from '../../lib/constants';
+import { fadeIn, slideUp } from '../../lib/keyframes';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -23,11 +24,11 @@ const NetworkAlertModal = ({
     return (
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent
-          aria-label="Change Wallet"
+          aria-label="Network Mismatch"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
-              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
           }
         >
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>
@@ -55,11 +56,11 @@ const NetworkAlertModal = ({
     return (
       <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
         <DialogContent
-          aria-label="Change Wallet"
+          aria-label="Unsupported Network"
           sx={
             bpi === 0
-              ? { variant: 'dialog.mobile' }
-              : { boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)', width: '450px', borderRadius: '8px' }
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
           }
         >
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', mb: 3 }}>

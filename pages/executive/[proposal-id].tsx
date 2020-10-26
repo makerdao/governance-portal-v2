@@ -82,7 +82,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const onChainFxTab = (
     <div key={3} sx={{ p: [3, 4] }}>
-      <Flex sx={{ mb: 3 }}>
+      <Flex sx={{ mb: 3, overflow: 'auto' }}>
         For the spell at address
         <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
           <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
@@ -204,7 +204,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 Supporters
               </Heading>
               <Card variant="compact" p={3} sx={{ height: '237px' }}>
-                <Box sx={{ overflowY: 'scroll', height: '100%' }}>
+                <Box sx={{ overflowY: 'auto', height: '100%' }}>
                   {supporters ? (
                     supporters.map(supporter => (
                       <Flex

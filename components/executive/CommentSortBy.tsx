@@ -43,7 +43,7 @@ export default function (props): JSX.Element {
           fontWeight: commentSortBy === 'MKR Amount' ? 'bold' : null
         }}
       >
-        Oldest
+        MKR Amount
       </MenuItem>
     </FilterButton>
   );
