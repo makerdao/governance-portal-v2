@@ -8,10 +8,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 const ModalContent = ({
   address,
-  setShowDialog
+  setShowDialog,
+  bpi
 }: {
   address: Address | undefined;
   setShowDialog: (value: boolean) => void;
+  bpi: number;
 }) => {
   const [step, setStep] = useState(0);
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
@@ -49,48 +51,74 @@ const ModalContent = ({
     </Flex>
   );
 
+  const MKRAmountView = () => (
+    <>
+      <Text
+        variant="microHeading"
+        mt={bpi < 1 ? 4 : null}
+        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+      >
+        Enter the amount of MKR to burn.
+      </Text>
+      <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
+        <Input
+          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+          onChange={e => setStakeAmount(e.target.value)}
+          value={stakeAmount}
+          placeholder="0.00 MKR"
+        />
+        <Button
+          variant="textual"
+          sx={{ width: '100px', fontWeight: 'bold' }}
+          onClick={() => setStakeAmount(mkrBalance?.toString())}
+        >
+          Set max
+        </Button>
+      </Flex>
+
+      <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
+        <Text variant="caps">MKR Balance In Wallet</Text>
+        <Text ml={3}>{mkrBalance ? mkrBalance.toString() : '---'}</Text>
+      </Flex>
+    </>
+  );
+
   const MKRAmount = () => {
     return (
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
         <Text variant="heading">Burn your MKR in the ESM</Text>
-        <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: 5, py: 4 }}>
-          <Text variant="microHeading">Enter the amount of MKR to burn.</Text>
-          <Flex sx={{ border: '1px solid #D8E0E3', mt: 3 }}>
-            <Input
-              sx={{ border: '0px solid' }}
-              onChange={e => setStakeAmount(e.target.value)}
-              value={stakeAmount}
-              placeholder="0.00 MKR"
-            />
-            <Button
-              variant="textual"
-              sx={{ width: '100px', fontWeight: 'bold' }}
-              onClick={() => setStakeAmount(mkrBalance?.toString())}
-            >
-              Set max
-            </Button>
-          </Flex>
-
-          <Flex mt={3} sx={{ alignItems: 'center' }}>
-            <Text variant="caps">MKR Balance In Wallet</Text>
-            <Text ml={3}>{mkrBalance ? mkrBalance.toString() : '---'}</Text>
-          </Flex>
-        </Box>
-        <Grid columns={2} mt={4}>
+        {bpi < 1 ? (
+          <MKRAmountView />
+        ) : (
+          <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: [3, 5], py: 4 }}>
+            <MKRAmountView />
+          </Box>
+        )}
+        <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
             onClick={() => {
               setShowDialog(false);
             }}
             variant="outline"
-            sx={{ color: 'secondary', borderColor: 'secondary', borderRadius: 'small' }}
+            sx={{
+              color: 'secondary',
+              borderColor: 'secondary',
+              borderRadius: 'small',
+              width: bpi < 1 ? '100%' : null
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={() => setStep(2)}
             variant="outline"
-            sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
+            sx={{
+              color: 'onNotice',
+              borderColor: 'notice',
+              borderRadius: 'small',
+              width: bpi < 1 ? '100%' : null
+            }}
           >
             Continue
           </Button>
@@ -104,7 +132,7 @@ const ModalContent = ({
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
         <Text>Confirm that Burn Baby</Text>
-        <Grid columns={2} mt={4}>
+        <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
             onClick={() => {
               setShowDialog(false);
@@ -115,7 +143,7 @@ const ModalContent = ({
             Cancel
           </Button>
           <Button
-            onClick={() => setStep(2)}
+            onClick={() => setStep(3)}
             variant="outline"
             sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
           >

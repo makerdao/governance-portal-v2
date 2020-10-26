@@ -176,7 +176,7 @@ const ESModule = () => {
                 }
           }
         >
-          <ModalContent address={account} setShowDialog={setShowDialog} />
+          <ModalContent address={account} setShowDialog={setShowDialog} bpi={bpi} />
         </DialogContent>
       </DialogOverlay>
       <Text variant="heading">Emergency Shutdown Module</Text>
