@@ -253,9 +253,9 @@ export default function ESModulePage(): JSX.Element {
   return <ESModule />;
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    unstable_revalidate: 30, // allow revalidation every 30 seconds
-    props: {}
-  };
-};
+// export const getStaticProps: GetStaticProps = async () => {
+//   return {
+//     unstable_revalidate: 30, // allow revalidation every 30 seconds
+//     props: {}
+//   };
+// };
