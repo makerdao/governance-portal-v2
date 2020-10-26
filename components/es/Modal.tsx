@@ -9,11 +9,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 const ModalContent = ({
   address,
   setShowDialog,
-  bpi
+  bpi,
+  lockedInChief
 }: {
   address: Address | undefined;
   setShowDialog: (value: boolean) => void;
   bpi: number;
+  lockedInChief: number;
 }) => {
   const [step, setStep] = useState(0);
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
@@ -95,6 +97,26 @@ const ModalContent = ({
             <MKRAmountView />
           </Box>
         )}
+        {lockedInChief ? (
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '1px solid #FBCC5F',
+              borderRadius: 'medium',
+              backgroundColor: '#FFF9ED',
+              color: '#826318',
+              p: 3,
+              fontSize: '12px',
+              mt: 3
+            }}
+          >
+            <Text sx={{ textAlign: 'center' }}>You have {lockedInChief} MKR locked in DSChief.</Text>
+            <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
+          </Flex>
+        ) : null}
         <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
             onClick={() => {

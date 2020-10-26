@@ -14,6 +14,7 @@ import useAccountsStore from '../stores/accounts';
 async function getModuleStats() {
   const maker = await getMaker();
   const esmService = await maker.service('esm');
+  const chiefService = await maker.service('chief');
   let account;
   try {
     account = await maker.currentAddress();
@@ -26,7 +27,8 @@ async function getModuleStats() {
     esmService.thresholdAmount(),
     esmService.fired(),
     esmService.getTotalStakedByAddress(account.address),
-    maker.service('smartContract').getContract('END').when()
+    maker.service('smartContract').getContract('END').when(),
+    maker.service('chief').getNumDeposits(account?.address)
   ]);
 }
 
@@ -39,7 +41,7 @@ if (typeof window !== 'undefined') {
 
 const ESModule = () => {
   const { data } = useSWR('/es-module', getModuleStats);
-  const [totalStaked, canFire, thresholdAmount, fired, mkrInEsm, cageTime] = data || [];
+  const [totalStaked, canFire, thresholdAmount, fired, mkrInEsm, cageTime, lockedInChief] = data || [];
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
   const [showDialog, setShowDialog] = useState(false);
@@ -176,7 +178,12 @@ const ESModule = () => {
                 }
           }
         >
-          <ModalContent address={account} setShowDialog={setShowDialog} bpi={bpi} />
+          <ModalContent
+            address={account}
+            setShowDialog={setShowDialog}
+            bpi={bpi}
+            lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+          />
         </DialogContent>
       </DialogOverlay>
       <Text variant="heading">Emergency Shutdown Module</Text>
