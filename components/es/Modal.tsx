@@ -149,11 +149,21 @@ const ModalContent = ({
     );
   };
 
+  const ConfirmBurnView = () => {
+    return <Text>Hey</Text>;
+  };
   const ConfirmBurn = () => {
     return (
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-        <Text>Confirm that Burn Baby</Text>
+        <Text variant="heading">Burn your MKR in the ESM</Text>
+        {bpi < 1 ? (
+          <ConfirmBurnView />
+        ) : (
+          <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: [3, 5], py: 4 }}>
+            <ConfirmBurnView />
+          </Box>
+        )}
         <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
             onClick={() => {
