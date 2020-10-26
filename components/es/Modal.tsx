@@ -17,6 +17,7 @@ const ModalContent = ({
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
+  const [stakeAmount, setStakeAmount] = useState('');
 
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -49,19 +50,23 @@ const ModalContent = ({
   );
 
   const MKRAmount = () => {
-    const [stakeAmount, setStakeAmount] = useState(0);
     return (
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
         <Text variant="heading">Burn your MKR in the ESM</Text>
         <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: 5, py: 4 }}>
-          <Text variant="microHeading">Enter the amount of MKR to burn</Text>
+          <Text variant="microHeading">Enter the amount of MKR to burn.</Text>
           <Flex sx={{ border: '1px solid #D8E0E3', mt: 3 }}>
-            <Input sx={{ border: '0px solid' }} value={`${stakeAmount.toFixed(2)} MKR`} />
+            <Input
+              sx={{ border: '0px solid' }}
+              onChange={e => setStakeAmount(e.target.value)}
+              value={stakeAmount}
+              placeholder="0.00 MKR"
+            />
             <Button
               variant="textual"
               sx={{ width: '100px', fontWeight: 'bold' }}
-              onClick={() => setStakeAmount(mkrBalance)}
+              onClick={() => setStakeAmount(mkrBalance?.toString())}
             >
               Set max
             </Button>

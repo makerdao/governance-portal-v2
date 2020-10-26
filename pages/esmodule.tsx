@@ -144,7 +144,11 @@ const ESModule = () => {
       <>
         <ProgressRing
           progress={
-            totalStaked.gte(thresholdAmount) ? 100 : totalStaked.mul(100).div(thresholdAmount).toFixed()
+            typeof totalStaked !== 'undefined'
+              ? totalStaked.gte(thresholdAmount)
+                ? 100
+                : totalStaked.mul(100).div(thresholdAmount).toFixed()
+              : 0
           }
         />
       </>
