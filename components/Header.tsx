@@ -53,7 +53,7 @@ const Header = (props): JSX.Element => {
           <NavLink
             href={`/executive?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
           >
             Executive
           </NavLink>
