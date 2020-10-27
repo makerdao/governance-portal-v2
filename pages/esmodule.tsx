@@ -20,7 +20,7 @@ async function getModuleStats() {
   try {
     account = await maker.currentAddress();
   } catch (e) {
-    account = { address: '0x0000000000000000000000000000000000000000' };
+    account = { address: null };
   }
   return Promise.all([
     esmService.getTotalStaked(),
@@ -165,7 +165,7 @@ const ESModule = () => {
             mt: bpi < 1 ? 2 : null
           }}
         >
-          {totalStaked ? (
+          {totalStaked && account ? (
             <Button
               onClick={() => setShowDialog(true)}
               variant="outline"

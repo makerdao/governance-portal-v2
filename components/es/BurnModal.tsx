@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -21,10 +21,10 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { MKR, getNetwork } from '../../lib/maker';
 import { getEtherscanLink } from '../../lib/utils';
-import Address from '../../types/account';
 import CurrencyObject from '../../types/currency';
 import { TXMined } from '../../types/transaction';
 import Toggle from './Toggle';
+import MKRInput from '../../components/MKRInput';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import useAccountsStore from '../../stores/accounts';
 
@@ -40,7 +40,9 @@ const ModalContent = ({
   const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState('');
+  const input = useRef<HTMLInputElement>(null);
+  // const [burnAmount, setBurnAmount] = useState('');
+  const [burnAmount, setBurnAmount] = useState(MKR(0));
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', account?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
@@ -110,16 +112,17 @@ const ModalContent = ({
         Enter the amount of MKR to burn.
       </Text>
       <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
-        <Input
-          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
-          onChange={e => setBurnAmount(e.target.value)}
-          value={burnAmount}
+        <MKRInput
+          // sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+          onChange={setBurnAmount}
+          // value={burnAmount}
+          error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
           placeholder="0.00 MKR"
         />
         <Button
           variant="textual"
           sx={{ width: '100px', fontWeight: 'bold' }}
-          onClick={() => setBurnAmount(mkrBalance?.toString())}
+          onClick={() => setBurnAmount(mkrBalance)}
         >
           Set max
         </Button>
@@ -211,7 +214,7 @@ const ModalContent = ({
           }}
         >
           <Text>Burn amount</Text>
-          <Text>{burnAmount} MKR</Text>
+          <Text>{burnAmount.toString()} MKR</Text>
         </Flex>
         <Divider />
         <Flex
@@ -224,7 +227,7 @@ const ModalContent = ({
           }}
         >
           <Text>New ESM total</Text>
-          <Text>{parseFloat(burnAmount) + totalStaked?.toNumber()} MKR</Text>
+          <Text>{burnAmount.add(totalStaked).toString()} MKR</Text>
         </Flex>
         <Text
           variant="microHeading"
