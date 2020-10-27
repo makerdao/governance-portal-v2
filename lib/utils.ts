@@ -14,7 +14,7 @@ import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from '../mocks/polls.json';
 import PollVote from '../types/pollVote';
-import round from 'lodash.round';
+import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
