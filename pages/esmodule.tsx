@@ -183,6 +183,7 @@ const ESModule = () => {
             setShowDialog={setShowDialog}
             bpi={bpi}
             lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+            totalStaked={totalStaked}
           />
         </DialogContent>
       </DialogOverlay>

@@ -1,27 +1,31 @@
 /** @jsx jsx */
-import { Flex, Box, Button, Text, Grid, Input, jsx, Close } from 'theme-ui';
+import { Flex, Box, Button, Text, Grid, Input, jsx, Close, Checkbox, Link, Divider } from 'theme-ui';
 import { useState } from 'react';
 import useSWR from 'swr';
 import getMaker, { MKR } from '../../lib/maker';
 import Address from '../../types/account';
 import { Icon } from '@makerdao/dai-ui-icons';
+import CurrencyObject from '../../types/currency';
+import Toggle from '../../components/es/Toggle';
 
 const ModalContent = ({
   address,
   setShowDialog,
   bpi,
-  lockedInChief
+  lockedInChief,
+  totalStaked
 }: {
   address: Address | undefined;
   setShowDialog: (value: boolean) => void;
   bpi: number;
   lockedInChief: number;
+  totalStaked: CurrencyObject;
 }) => {
   const [step, setStep] = useState(0);
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
-  const [stakeAmount, setStakeAmount] = useState('');
+  const [burnAmount, setBurnAmount] = useState('');
 
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -65,14 +69,14 @@ const ModalContent = ({
       <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
         <Input
           sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
-          onChange={e => setStakeAmount(e.target.value)}
-          value={stakeAmount}
+          onChange={e => setBurnAmount(e.target.value)}
+          value={burnAmount}
           placeholder="0.00 MKR"
         />
         <Button
           variant="textual"
           sx={{ width: '100px', fontWeight: 'bold' }}
-          onClick={() => setStakeAmount(mkrBalance?.toString())}
+          onClick={() => setBurnAmount(mkrBalance?.toString())}
         >
           Set max
         </Button>
@@ -134,6 +138,7 @@ const ModalContent = ({
           </Button>
           <Button
             onClick={() => setStep(2)}
+            disabled={!burnAmount}
             variant="outline"
             sx={{
               color: 'onNotice',
@@ -149,21 +154,94 @@ const ModalContent = ({
     );
   };
 
-  const ConfirmBurnView = () => {
-    return <Text>Hey</Text>;
-  };
-  const ConfirmBurn = () => {
+  const ConfirmBurnView = ({ passValue, value, setValue }) => {
     return (
-      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <>
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            mt: bpi < 1 ? 4 : null,
+            py: 1
+          }}
+        >
+          <Text>Burn amount</Text>
+          <Text>{burnAmount} MKR</Text>
+        </Flex>
+        <Divider />
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            py: 1
+          }}
+        >
+          <Text>New ESM total</Text>
+          <Text>{parseFloat(burnAmount) + totalStaked?.toNumber()} MKR</Text>
+        </Flex>
+        <Text
+          variant="microHeading"
+          mt={4}
+          sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+        >
+          Enter the following phrase to continue.
+        </Text>
+        <Flex sx={{ flexDirection: 'column', mt: 3, width: '100%' }}>
+          <Input
+            defaultValue={passValue}
+            disabled={true}
+            backgroundColor={'#F6F8F9'}
+            sx={{ border: '1px solid', borderColor: '#D8E0E3' }}
+          />
+          <Input
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            placeholder={'I am burning...'}
+            disabled={true}
+            sx={{ border: '1px solid', borderColor: '#D8E0E3', mt: 2 }}
+          />
+        </Flex>
+      </>
+    );
+  };
+
+  const ConfirmBurn = () => {
+    const [mkrApproved, setMkrApproved] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const passValue = `I am burning ${burnAmount} MKR`;
+    const [value, setValue] = useState('');
+
+    return (
+      <Flex sx={{ flexDirection: 'column' }}>
         <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-        <Text variant="heading">Burn your MKR in the ESM</Text>
+        <Flex></Flex>
+        <Text variant="heading" sx={{ textAlign: 'center' }}>
+          Burn your MKR in the ESM
+        </Text>
         {bpi < 1 ? (
-          <ConfirmBurnView />
+          <ConfirmBurnView passValue={passValue} value={value} setValue={setValue} />
         ) : (
-          <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: [3, 5], py: 4 }}>
-            <ConfirmBurnView />
+          <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', p: 4 }}>
+            <ConfirmBurnView passValue={passValue} value={value} setValue={setValue} />
           </Box>
         )}
+        <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
+          <Toggle active={mkrApproved} onClick={setMkrApproved} />
+          <Flex ml={3}>
+            <Text>Unlock MKR to continue</Text>
+            <Icon name="question" ml={2} mt={'6px'} />
+          </Flex>
+        </Flex>
+        <Flex sx={{ flexDirection: 'row', mt: 3 }}>
+          <Checkbox checked={termsAccepted} onClick={() => setTermsAccepted(!termsAccepted)} />
+          <Text>
+            I have read and accept the <Link>Terms of Service</Link>.
+          </Text>
+        </Flex>
         <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
             onClick={() => {
@@ -176,6 +254,7 @@ const ModalContent = ({
           </Button>
           <Button
             onClick={() => setStep(3)}
+            disabled={!mkrApproved || !termsAccepted || passValue !== value}
             variant="outline"
             sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
           >
