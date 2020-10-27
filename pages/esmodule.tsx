@@ -52,7 +52,6 @@ const ESModule = () => {
   const bpi = useBreakpointIndex();
 
   const DesktopView = () => {
-    console.log(totalStaked);
     return (
       <>
         <Flex sx={{ flexDirection: 'row' }}>
