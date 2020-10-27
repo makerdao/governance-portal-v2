@@ -56,18 +56,18 @@ const ModalContent = ({
     const maker = await getMaker();
     const esm = await maker.service('esm');
     const burnTxObject = esm.stake(burnAmount);
-    // const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
-    //   pending: txHash => {
-    //     setStep('pending');
-    //   },
-    //   mined: txId => {
-    //     transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-    //     close(); // TBD maybe show a separate "done" dialog
-    //   },
-    //   error: () => setStep('failed')
-    // });
+    const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
+      pending: txHash => {
+        setStep('pending');
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
+        close(); // TBD maybe show a separate "done" dialog
+      },
+      error: () => setStep('failed')
+    });
 
-    // setTxId(txId);
+    setTxId(txId);
     setStep('signing');
   };
 
