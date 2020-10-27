@@ -9,12 +9,12 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import ModalContent from '../components/es/Modal';
+import ProgressRing from '../components/es/ProgressRing';
 import useAccountsStore from '../stores/accounts';
 
 async function getModuleStats() {
   const maker = await getMaker();
   const esmService = await maker.service('esm');
-  const chiefService = await maker.service('chief');
   let account;
   try {
     account = await maker.currentAddress();
@@ -95,52 +95,6 @@ const ESModule = () => {
     );
   };
 
-  const ProgressRing = ({ progress }) => {
-    const radius = 116;
-    const stroke = 10;
-    const normalizedRadius = radius - stroke * 2;
-    const circumference = normalizedRadius * 2 * Math.PI;
-    const strokeDashoffset = circumference - (progress / 100) * circumference;
-    return (
-      <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-        <svg height={radius * 2} width={radius * 2}>
-          <circle
-            stroke="#F6F8F9"
-            fill="transparent"
-            strokeWidth={stroke}
-            strokeDasharray={circumference + ' ' + circumference}
-            style={{ strokeDashoffset: 0 }}
-            r={normalizedRadius}
-            cx={radius}
-            cy={radius}
-          />
-          <circle
-            stroke="#F77249"
-            fill="transparent"
-            strokeWidth={stroke}
-            strokeDasharray={circumference + ' ' + circumference}
-            style={{ strokeDashoffset }}
-            r={normalizedRadius}
-            cx={radius}
-            cy={radius}
-          ></circle>
-          <text x="50%" y="48%" textAnchor="middle" fill="#434358" fontSize="18px" dy=".3em">
-            {totalStaked ? (
-              `${totalStaked.toString()}     `
-            ) : (
-              <Box pl="14px" pr="14px">
-                <div ref={loader} />
-              </Box>
-            )}
-          </text>
-          <text x="50%" y="58%" textAnchor="middle" fill="#708390" fontSize="14px" dy=".3em">
-            {`of ${thresholdAmount ? thresholdAmount.toString() : '---'}`}
-          </text>
-        </svg>
-      </Flex>
-    );
-  };
-
   const MobileView = () => {
     return (
       <>
@@ -152,6 +106,8 @@ const ESModule = () => {
                 : totalStaked.mul(100).div(thresholdAmount).toFixed()
               : 0
           }
+          totalStaked={totalStaked}
+          thresholdAmount={thresholdAmount}
         />
       </>
     );

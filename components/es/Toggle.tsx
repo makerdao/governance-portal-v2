@@ -20,7 +20,7 @@ const InnerToggle = ({ active }) => {
   );
 };
 
-export default function Toggle({ active, onClick }) {
+export default function Toggle({ active, onClick, disabled }) {
   return (
     <Button
       sx={{
@@ -36,6 +36,7 @@ export default function Toggle({ active, onClick }) {
       }}
       aria-pressed={active}
       onClick={() => onClick(!active)}
+      disabled={disabled}
     >
       <InnerToggle active={active} />
     </Button>

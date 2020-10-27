@@ -1,12 +1,30 @@
 /** @jsx jsx */
-import { Flex, Box, Button, Text, Grid, Input, jsx, Close, Checkbox, Link, Divider } from 'theme-ui';
-import { useState } from 'react';
+import {
+  Flex,
+  Box,
+  Button,
+  Text,
+  Grid,
+  Input,
+  jsx,
+  Close,
+  Label,
+  Checkbox,
+  Link,
+  Divider,
+  Spinner
+} from 'theme-ui';
+import { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import getMaker, { MKR } from '../../lib/maker';
+import shallow from 'zustand/shallow';
+import getMaker, { MKR, getNetwork } from '../../lib/maker';
 import Address from '../../types/account';
 import { Icon } from '@makerdao/dai-ui-icons';
 import CurrencyObject from '../../types/currency';
 import Toggle from '../../components/es/Toggle';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
+import { getEtherscanLink } from '../../lib/utils';
+import { TXMined } from '../../types/transaction';
 
 const ModalContent = ({
   address,
@@ -21,11 +39,37 @@ const ModalContent = ({
   lockedInChief: number;
   totalStaked: CurrencyObject;
 }) => {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState('default');
+  const [txId, setTxId] = useState(null);
+  const [burnAmount, setBurnAmount] = useState('');
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
-  const [burnAmount, setBurnAmount] = useState('');
+
+  const [track, tx] = useTransactionStore(
+    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
+    shallow
+  );
+
+  const close = () => setShowDialog(false);
+  const burn = async () => {
+    const maker = await getMaker();
+    const esm = await maker.service('esm');
+    const burnTxObject = esm.stake(burnAmount);
+    const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
+      pending: txHash => {
+        setStep('pending');
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
+        close(); // TBD maybe show a separate "done" dialog
+      },
+      error: () => setStep('failed')
+    });
+
+    setTxId(txId);
+    setStep('signing');
+  };
 
   const DefaultScreen = () => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -40,14 +84,14 @@ const ModalContent = ({
       </Text>
       <Grid columns={2} mt={4}>
         <Button
-          onClick={() => setShowDialog(false)}
+          onClick={close}
           variant="outline"
           sx={{ color: '#9FAFB9', borderColor: '#9FAFB9', borderRadius: 'small' }}
         >
           Cancel
         </Button>
         <Button
-          onClick={() => setStep(1)}
+          onClick={() => setStep('amount')}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
         >
@@ -137,7 +181,7 @@ const ModalContent = ({
             Cancel
           </Button>
           <Button
-            onClick={() => setStep(2)}
+            onClick={() => setStep('confirm')}
             disabled={!burnAmount}
             variant="outline"
             sx={{
@@ -212,8 +256,40 @@ const ModalContent = ({
   const ConfirmBurn = () => {
     const [mkrApproved, setMkrApproved] = useState(false);
     const [termsAccepted, setTermsAccepted] = useState(false);
+    const [mkrApprovePending, setMkrApprovePending] = useState(false);
     const passValue = `I am burning ${burnAmount} MKR`;
     const [value, setValue] = useState('');
+    const changeTerms = e => {
+      setTermsAccepted(e.target.checked);
+    };
+
+    useEffect(() => {
+      (async () => {
+        if (address) {
+          const maker = await getMaker();
+          const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
+          const connectedWalletAllowance = await maker.getToken(MKR).allowance(address, esmAddress);
+          const hasMkrAllowance = connectedWalletAllowance.gte(MKR(burnAmount));
+          setMkrApproved(hasMkrAllowance);
+        }
+      })();
+    }, [address, burnAmount]);
+
+    const giveProxyMkrAllowance = async () => {
+      setMkrApprovePending(true);
+      const maker = await getMaker();
+      const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
+      // setMkrApproved(true);
+      try {
+        await maker.getToken(MKR).approve(esmAddress, burnAmount);
+        setMkrApproved(true);
+      } catch (err) {
+        const message = err.message ? err.message : err;
+        const errMsg = `unlock mkr tx failed ${message}`;
+        console.error(errMsg);
+      }
+      setMkrApprovePending(false);
+    };
 
     return (
       <Flex sx={{ flexDirection: 'column' }}>
@@ -230,17 +306,19 @@ const ModalContent = ({
           </Box>
         )}
         <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-          <Toggle active={mkrApproved} onClick={setMkrApproved} />
+          <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
           <Flex ml={3}>
             <Text>Unlock MKR to continue</Text>
             <Icon name="question" ml={2} mt={'6px'} />
           </Flex>
         </Flex>
         <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-          <Checkbox checked={termsAccepted} onClick={() => setTermsAccepted(!termsAccepted)} />
-          <Text>
-            I have read and accept the <Link>Terms of Service</Link>.
-          </Text>
+          <Label>
+            <Checkbox checked={termsAccepted} onChange={e => changeTerms(e)} onClick={changeTerms} />
+            <Text>
+              I have read and accept the <Link>Terms of Service</Link>.
+            </Text>
+          </Label>
         </Flex>
         <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
           <Button
@@ -253,7 +331,7 @@ const ModalContent = ({
             Cancel
           </Button>
           <Button
-            onClick={() => setStep(3)}
+            onClick={burn}
             disabled={!mkrApproved || !termsAccepted || passValue !== value}
             variant="outline"
             sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
@@ -265,13 +343,105 @@ const ModalContent = ({
     );
   };
 
+  const BurnSigning = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+        onClick={close}
+      />
+
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Sign Transaction
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
+          Please use your wallet to sign this transaction.
+        </Text>
+        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
+          Cancel vote submission
+        </Button>
+      </Flex>
+    </Flex>
+  );
+
+  const BurnPending = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+        onClick={close}
+      />
+
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Transaction Sent!
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+          Vote will update once the blockchain has confirmed the transaction.
+        </Text>
+        <Link
+          target="_blank"
+          href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
+          sx={{ p: 0 }}
+        >
+          <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+            View on Etherscan
+            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+          </Text>
+        </Link>
+        <Button
+          onClick={close}
+          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
+          variant="outline"
+        >
+          Close
+        </Button>
+      </Flex>
+    </Flex>
+  );
+
+  const BurnFailed = () => (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
+        onClick={close}
+      />
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Transaction Failed.
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewFailed" size={5} sx={{ my: 3 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+          Something went wrong with your transaction. Please try again.
+        </Text>
+        <Button
+          onClick={close}
+          sx={{ mt: 5, borderColor: 'primary', width: '100%', color: 'primary' }}
+          variant="outline"
+        >
+          Close
+        </Button>
+      </Flex>
+    </Flex>
+  );
+
   switch (step) {
-    case 0:
+    case 'default':
       return <DefaultScreen />;
-    case 1:
+    case 'amount':
       return <MKRAmount />;
-    case 2:
+    case 'confirm':
       return <ConfirmBurn />;
+    case 'signing':
+      return <BurnSigning />;
+    case 'pending':
+      return <BurnPending />;
+    case 'failed':
+      return <BurnFailed />;
     default:
       return <DefaultScreen />;
   }
