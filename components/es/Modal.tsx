@@ -56,18 +56,18 @@ const ModalContent = ({
     const maker = await getMaker();
     const esm = await maker.service('esm');
     const burnTxObject = esm.stake(burnAmount);
-    const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
-      pending: txHash => {
-        setStep('pending');
-      },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-        close(); // TBD maybe show a separate "done" dialog
-      },
-      error: () => setStep('failed')
-    });
+    // const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
+    //   pending: txHash => {
+    //     setStep('pending');
+    //   },
+    //   mined: txId => {
+    //     transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
+    //     close(); // TBD maybe show a separate "done" dialog
+    //   },
+    //   error: () => setStep('failed')
+    // });
 
-    setTxId(txId);
+    // setTxId(txId);
     setStep('signing');
   };
 
@@ -245,7 +245,6 @@ const ModalContent = ({
             value={value}
             onChange={e => setValue(e.target.value)}
             placeholder={'I am burning...'}
-            disabled={true}
             sx={{ border: '1px solid', borderColor: '#D8E0E3', mt: 2 }}
           />
         </Flex>
@@ -332,7 +331,7 @@ const ModalContent = ({
           </Button>
           <Button
             onClick={burn}
-            disabled={!mkrApproved || !termsAccepted || passValue !== value}
+            disabled={!mkrApproved || !termsAccepted || passValue !== value || !address}
             variant="outline"
             sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
           >
@@ -359,8 +358,8 @@ const ModalContent = ({
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
           Please use your wallet to sign this transaction.
         </Text>
-        <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
-          Cancel vote submission
+        <Button onClick={close} variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
+          Cancel burn submission
         </Button>
       </Flex>
     </Flex>
