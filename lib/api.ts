@@ -122,7 +122,6 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
         const summary = pollMeta?.summary || '';
         const title = pollMeta?.title || '';
         const options = pollMeta.options;
-        delete options[0]; // delete abstain option
         const discussionLink =
           pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
             ? pollMeta.discussion_link

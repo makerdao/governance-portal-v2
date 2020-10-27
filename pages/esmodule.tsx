@@ -1,15 +1,16 @@
 /** @jsx jsx */
 import { Flex, Box, Button, Text, Card, Spinner, Link, jsx } from 'theme-ui';
 import { useState, useRef } from 'react';
-import { GetStaticProps } from 'next';
+// import { GetStaticProps } from 'next';
 import useSWR, { mutate } from 'swr';
-import ErrorPage from 'next/error';
+// import ErrorPage from 'next/error';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
-import ModalContent from '../components/es/Modal';
+import BurnModal from '../components/es/BurnModal';
 import ProgressRing from '../components/es/ProgressRing';
+import ESMHistory from '../components/es/ESMHistory';
 import useAccountsStore from '../stores/accounts';
 
 async function getModuleStats() {
@@ -19,7 +20,7 @@ async function getModuleStats() {
   try {
     account = await maker.currentAddress();
   } catch (e) {
-    account = { address: '0x0000000000000000000000000000000000000000' };
+    account = { address: null };
   }
   return Promise.all([
     esmService.getTotalStaked(),
@@ -134,10 +135,8 @@ const ESModule = () => {
                 }
           }
         >
-          <ModalContent
-            address={account}
+          <BurnModal
             setShowDialog={setShowDialog}
-            bpi={bpi}
             lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
             totalStaked={totalStaked}
           />
@@ -166,7 +165,7 @@ const ESModule = () => {
             mt: bpi < 1 ? 2 : null
           }}
         >
-          {totalStaked ? (
+          {totalStaked && account ? (
             <Button
               onClick={() => setShowDialog(true)}
               variant="outline"
@@ -193,19 +192,17 @@ const ESModule = () => {
       <Text variant="microHeading" mt={5}>
         ESM History
       </Text>
-      <Card mt={3}>
-        <Text>No history to show</Text>
-      </Card>
+      <ESMHistory />
     </PrimaryLayout>
   );
 };
 
 export default function ESModulePage(): JSX.Element {
-  const [error, setError] = useState<string>();
+  // const [error, setError] = useState<string>();
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching ES module" />;
-  }
+  // if (error) {
+  //   return <ErrorPage statusCode={404} title="Error fetching ES module" />;
+  // }
 
   if (!isDefaultNetwork())
     return (

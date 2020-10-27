@@ -1,10 +1,12 @@
 import create from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools as realDevtools } from 'zustand/middleware';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker from '../lib/maker';
 import { transactionsApi } from './transactions';
 import Ballot from '../types/ballot';
+
+const devtools = typeof window !== 'undefined' ? realDevtools : x => x;
 
 type Store = {
   ballot: Ballot;

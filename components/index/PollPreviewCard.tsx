@@ -27,7 +27,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               color: 'textSecondary'
             }}
           >
-            {bpi > 0 && 'Posted'}{' '}
+            <Text sx={{ display: ['none', 'inline'] }}>Posted </Text>
             {new Date(poll.startDate).toLocaleString('default', {
               month: 'long',
               day: 'numeric',

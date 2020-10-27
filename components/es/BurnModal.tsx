@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useState, useEffect, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -14,35 +15,35 @@ import {
   Divider,
   Spinner
 } from 'theme-ui';
-import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import shallow from 'zustand/shallow';
-import getMaker, { MKR, getNetwork } from '../../lib/maker';
-import Address from '../../types/account';
 import { Icon } from '@makerdao/dai-ui-icons';
-import CurrencyObject from '../../types/currency';
-import Toggle from '../../components/es/Toggle';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import getMaker, { MKR, getNetwork } from '../../lib/maker';
 import { getEtherscanLink } from '../../lib/utils';
+import CurrencyObject from '../../types/currency';
 import { TXMined } from '../../types/transaction';
+import Toggle from './Toggle';
+import MKRInput from '../../components/MKRInput';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
+import useAccountsStore from '../../stores/accounts';
 
 const ModalContent = ({
-  address,
   setShowDialog,
-  bpi,
   lockedInChief,
   totalStaked
 }: {
-  address: Address | undefined;
   setShowDialog: (value: boolean) => void;
-  bpi: number;
   lockedInChief: number;
   totalStaked: CurrencyObject;
 }) => {
+  const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState('');
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
+  const input = useRef<HTMLInputElement>(null);
+  // const [burnAmount, setBurnAmount] = useState('');
+  const [burnAmount, setBurnAmount] = useState(MKR(0));
+  const { data: mkrBalance } = useSWR(['/user/mkr-balance', account?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
   );
 
@@ -50,7 +51,7 @@ const ModalContent = ({
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
-
+  const bpi = useBreakpointIndex();
   const close = () => setShowDialog(false);
   const burn = async () => {
     const maker = await getMaker();
@@ -111,16 +112,17 @@ const ModalContent = ({
         Enter the amount of MKR to burn.
       </Text>
       <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
-        <Input
-          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
-          onChange={e => setBurnAmount(e.target.value)}
-          value={burnAmount}
+        <MKRInput
+          // sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+          onChange={setBurnAmount}
+          // value={burnAmount}
+          error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
           placeholder="0.00 MKR"
         />
         <Button
           variant="textual"
           sx={{ width: '100px', fontWeight: 'bold' }}
-          onClick={() => setBurnAmount(mkrBalance?.toString())}
+          onClick={() => setBurnAmount(mkrBalance)}
         >
           Set max
         </Button>
@@ -212,7 +214,7 @@ const ModalContent = ({
           }}
         >
           <Text>Burn amount</Text>
-          <Text>{burnAmount} MKR</Text>
+          <Text>{burnAmount.toString()} MKR</Text>
         </Flex>
         <Divider />
         <Flex
@@ -225,7 +227,7 @@ const ModalContent = ({
           }}
         >
           <Text>New ESM total</Text>
-          <Text>{parseFloat(burnAmount) + totalStaked?.toNumber()} MKR</Text>
+          <Text>{burnAmount.add(totalStaked).toString()} MKR</Text>
         </Flex>
         <Text
           variant="microHeading"
@@ -264,15 +266,15 @@ const ModalContent = ({
 
     useEffect(() => {
       (async () => {
-        if (address) {
+        if (account) {
           const maker = await getMaker();
           const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
-          const connectedWalletAllowance = await maker.getToken(MKR).allowance(address, esmAddress);
+          const connectedWalletAllowance = await maker.getToken(MKR).allowance(account?.address, esmAddress);
           const hasMkrAllowance = connectedWalletAllowance.gte(MKR(burnAmount));
           setMkrApproved(hasMkrAllowance);
         }
       })();
-    }, [address, burnAmount]);
+    }, [account, burnAmount]);
 
     const giveProxyMkrAllowance = async () => {
       setMkrApprovePending(true);
@@ -331,7 +333,7 @@ const ModalContent = ({
           </Button>
           <Button
             onClick={burn}
-            disabled={!mkrApproved || !termsAccepted || passValue !== value || !address}
+            disabled={!mkrApproved || !termsAccepted || passValue !== value || !account?.address}
             variant="outline"
             sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
           >
