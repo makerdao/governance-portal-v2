@@ -10,13 +10,13 @@ import getMaker, { getNetwork } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 
 type Props = {
-  proposals: CMSProposal[];
+  numProposals: number;
   href?: string;
 };
 
 const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
-  ({ proposals, ...props }, ref): JSX.Element => {
-    const message = `New executive vote${proposals.length > 1 ? 's' : ''}`;
+  ({ numProposals, ...props }, ref): JSX.Element => {
+    const message = `New executive vote${numProposals > 1 ? 's' : ''}`;
 
     return (
       <NavLink
@@ -41,7 +41,7 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
         {...props}
       >
         <Badge mr="3" variant="circle" p="3px">
-          {proposals.length}
+          {numProposals}
         </Badge>
         <Box pb="2px">{message}</Box>
         <Icon name="chevron_right" color="surface" size="3" ml="3" pb="1px" />
@@ -51,13 +51,10 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
 );
 
 export default ({ proposals, hat, ...props }: { proposals: CMSProposal[]; hat?: string }): JSX.Element => {
-  const newActiveProposals = useMemo(
-    () =>
-      proposals.filter(
-        proposal => proposal.active && hat && hat.toLowerCase() !== proposal.address.toLowerCase()
-      ),
-    [hat, proposals]
-  );
+  const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
+  const newActiveProposals = hat
+    ? activeProposals.filter(proposal => hat.toLowerCase() !== proposal.address.toLowerCase())
+    : activeProposals;
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
 
@@ -71,21 +68,21 @@ export default ({ proposals, hat, ...props }: { proposals: CMSProposal[]; hat?: 
           .then(slate => maker.service('chief').getSlateAddresses(slate))
       )
   );
-
   const newUnvotedProposals =
     votedProposals && account
       ? newActiveProposals.filter(
           proposal => !votedProposals.map(p => p.toLowerCase()).includes(proposal.address.toLowerCase())
         )
       : newActiveProposals;
-  const shouldDisplay = newUnvotedProposals.length === 0 ? 'none' : null;
+  const shouldDisplay =
+    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : null;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !votedProposals ? (
-        <Skeleton height="39px" width="400px" />
+        <Skeleton height="39px" width="240px" />
       ) : (
         <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
-          <ExecutiveIndicator proposals={newUnvotedProposals} />
+          <ExecutiveIndicator numProposals={hat ? newUnvotedProposals.length : activeProposals.length - 1} />
         </Link>
       )}
     </Container>

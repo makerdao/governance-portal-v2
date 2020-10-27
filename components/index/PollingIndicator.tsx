@@ -87,7 +87,7 @@ export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !unvotedPolls ? (
-        <Skeleton height="39px" width="400px" />
+        <Skeleton height="39px" width="230px" />
       ) : (
         <Link passHref href={{ pathname: '/polling', query: { network: getNetwork() } }}>
           <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
