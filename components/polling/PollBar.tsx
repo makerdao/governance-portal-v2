@@ -12,7 +12,7 @@ import useAccountsStore from '../../stores/accounts';
 
 type Props = { ballot: Ballot; polls: Poll[]; activePolls: Poll[] };
 
-export default function ({ ballot, polls, activePolls, ...props }: Props): JSX.Element {
+export default function PollBar({ ballot, polls, activePolls, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,

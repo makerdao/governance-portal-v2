@@ -5,7 +5,7 @@ type Props = {
   blogPost: BlogPost;
 };
 
-export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
+const BlogPostCard = ({ blogPost, ...otherProps }: Props): JSX.Element => (
   <ExternalLink
     target="_blank"
     variant="card"
@@ -52,3 +52,5 @@ export default ({ blogPost, ...otherProps }: Props): JSX.Element => (
     </Box>
   </ExternalLink>
 );
+
+export default BlogPostCard;

@@ -69,7 +69,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
+const PollingIndicatorComponent = ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 
@@ -96,3 +96,5 @@ export default ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
     </Container>
   );
 };
+
+export default PollingIndicatorComponent;

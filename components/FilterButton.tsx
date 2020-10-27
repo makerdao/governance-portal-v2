@@ -5,7 +5,12 @@ import { Menu, MenuButton, MenuList } from '@reach/menu-button';
 
 type Props = { name: () => string; listVariant?: string; children: React.ReactNode };
 
-export default function ({ name, children, listVariant = 'cards.compact', ...props }: Props): JSX.Element {
+export default function FilterButton({
+  name,
+  children,
+  listVariant = 'cards.compact',
+  ...props
+}: Props): JSX.Element {
   return (
     <Menu>
       <MenuButton sx={{ variant: 'buttons.outline' }} {...props}>

@@ -13,7 +13,7 @@ const displayDate = date => {
   }
 };
 
-export default function (props): JSX.Element {
+export default function DateFilter(props): JSX.Element {
   const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(
     state => [state.pollFilters.startDate, state.setStartDate, state.pollFilters.endDate, state.setEndDate],
     shallow

@@ -25,7 +25,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export default function (): JSX.Element {
+export default function SystemStats(): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats-index', getSystemStats);
   const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
 

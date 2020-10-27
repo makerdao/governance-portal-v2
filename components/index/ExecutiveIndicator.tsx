@@ -50,7 +50,14 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-export default ({ proposals, hat, ...props }: { proposals: CMSProposal[]; hat?: string }): JSX.Element => {
+const ExecutiveIndicatorComponent = ({
+  proposals,
+  hat,
+  ...props
+}: {
+  proposals: CMSProposal[];
+  hat?: string;
+}): JSX.Element => {
   const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
   const newActiveProposals = hat
     ? activeProposals.filter(proposal => hat.toLowerCase() !== proposal.address.toLowerCase())
@@ -88,3 +95,5 @@ export default ({ proposals, hat, ...props }: { proposals: CMSProposal[]; hat?: 
     </Container>
   );
 };
+
+export default ExecutiveIndicatorComponent;

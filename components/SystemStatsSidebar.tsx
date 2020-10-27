@@ -31,7 +31,7 @@ if (typeof window !== 'undefined') {
 
 type StatField = 'mkr needed to pass' | 'savings rate' | 'total dai' | 'debt ceiling' | 'system surplus';
 
-export default function ({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
+export default function SystemStatsSidebar({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats-sidebar', getSystemStats);
   const [mkrOnHat, savingsRate, totalDai, debtCeiling, systemSurplus] = data || [];
 

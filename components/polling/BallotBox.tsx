@@ -13,7 +13,7 @@ import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
-export default function ({ ballot, activePolls, network, polls }: Props): JSX.Element {
+export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
   const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),

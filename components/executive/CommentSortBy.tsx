@@ -6,7 +6,7 @@ import { MenuItem } from '@reach/menu-button';
 import useUiFiltersStore from '../../stores/uiFilters';
 import FilterButton from '../FilterButton';
 
-export default function (props): JSX.Element {
+export default function CommentSortBy(props): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useUiFiltersStore(
     state => [state.commentSortBy, state.setCommentSortBy],
     shallow

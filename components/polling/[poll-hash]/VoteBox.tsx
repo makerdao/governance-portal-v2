@@ -8,7 +8,7 @@ import useAccountsStore from '../../../stores/accounts';
 import { isActivePoll } from '../../../lib/utils';
 import Poll from '../../../types/poll';
 
-export default function ({ poll, ...props }: { poll: Poll }): JSX.Element {
+export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const canVote = !!account && isActivePoll(poll);
