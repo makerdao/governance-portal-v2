@@ -13,6 +13,7 @@ import ShutdownModal from '../components/es/ShutdownModal';
 import ProgressRing from '../components/es/ProgressRing';
 import ESMHistory from '../components/es/ESMHistory';
 import useAccountsStore from '../stores/accounts';
+import { formatDateWithTime } from '../lib/utils';
 
 async function getModuleStats() {
   const maker = await getMaker();
@@ -23,14 +24,15 @@ async function getModuleStats() {
   } catch (e) {
     account = { address: null };
   }
+
   return Promise.all([
     esmService.getTotalStaked(),
     esmService.canFire(),
     esmService.thresholdAmount(),
     esmService.fired(),
-    esmService.getTotalStakedByAddress(account.address),
+    account.address ? esmService.getTotalStakedByAddress(account.address) : null,
     maker.service('smartContract').getContract('END').when(),
-    maker.service('chief').getNumDeposits(account?.address)
+    account.address ? maker.service('chief').getNumDeposits(account?.address) : null
   ]);
 }
 
@@ -50,12 +52,13 @@ const ESModule = () => {
   const bpi = useBreakpointIndex();
 
   const DesktopView = () => {
+    console.log(totalStaked);
     return (
       <>
         <Flex sx={{ flexDirection: 'row' }}>
           <Text>
             {totalStaked ? (
-              `${totalStaked.toString()}     `
+              `${totalStaked.toString(6)}     `
             ) : (
               <Box pl="14px" pr="14px">
                 <div ref={loader} />
@@ -103,7 +106,7 @@ const ESModule = () => {
         <ProgressRing
           progress={
             typeof totalStaked !== 'undefined'
-              ? totalStaked.gte(thresholdAmount)
+              ? canFire
                 ? 100
                 : totalStaked.mul(100).div(thresholdAmount).toFixed()
               : 0
@@ -137,7 +140,7 @@ const ESModule = () => {
           }
         >
           {totalStaked ? (
-            totalStaked.gte(thresholdAmount) ? (
+            canFire ? (
               <BurnModal
                 setShowDialog={setShowDialog}
                 lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
@@ -153,6 +156,29 @@ const ESModule = () => {
           )}
         </DialogContent>
       </DialogOverlay>
+      {fired && (
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            border: '1px solid #F77249',
+            borderRadius: 'medium',
+            backgroundColor: '#FDEDE8',
+
+            color: '#994126',
+            p: 3,
+            fontSize: '12px',
+            mt: 3
+          }}
+        >
+          <Text sx={{ textAlign: 'center' }}>
+            Emergency shutdown has been initiated on {formatDateWithTime(cageTime)}. This dashboard is
+            currently read-only. You can read more information about next steps here NEED LINK
+          </Text>
+        </Flex>
+      )}
       <Text variant="heading">Emergency Shutdown Module</Text>
       <Text variant="text" sx={{ mt: 2, color: 'onSecondary' }}>
         The ESM allows MKR holders to shutdown the system without a central authority. Once 50,000 MKR are
@@ -173,9 +199,15 @@ const ESModule = () => {
           sx={{
             flexDirection: bpi > 0 ? 'row' : 'column',
             justifyContent: 'space-between',
+            alignItems: 'center',
             mt: bpi < 1 ? 2 : null
           }}
         >
+          {account || (
+            <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2 }}>
+              No Account Connected
+            </Text>
+          )}
           {totalStaked && account ? (
             <Button
               onClick={() => setShowDialog(true)}
@@ -184,12 +216,8 @@ const ESModule = () => {
             >
               {totalStaked.gte(thresholdAmount) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
-          ) : (
-            <Box pl="14px" pr="14px">
-              <Spinner size={'20px'} color="notice" />
-            </Box>
-          )}
-          <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2, mt: bpi > 0 ? null : 2 }}>
+          ) : null}
+          <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2 }}>
             {mkrInEsm && mkrInEsm.gt(0) ? (
               <Box>
                 You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString()}</strong> in the ESM

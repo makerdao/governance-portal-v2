@@ -33,7 +33,7 @@ const ProgressRing = ({ progress, totalStaked, thresholdAmount }) => {
         ></circle>
         <text x="50%" y="48%" textAnchor="middle" fill="#434358" fontSize="18px" dy=".3em">
           {totalStaked ? (
-            `${totalStaked.toString()}     `
+            `${totalStaked.toString(6)}     `
           ) : (
             <Box pl="14px" pr="14px">
               <div ref={loader} />
