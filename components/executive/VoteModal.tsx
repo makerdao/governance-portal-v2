@@ -343,9 +343,9 @@ const Signing = ({ close }) => (
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
         Please use your wallet to sign this transaction.
       </Text>
-      <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
+      {/* <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
         Cancel vote submission
-      </Button>
+      </Button> */}
     </Flex>
   </Flex>
 );

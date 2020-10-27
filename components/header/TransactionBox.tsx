@@ -59,7 +59,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
   );
 };
 
-export default ({ txs }: MainProps): JSX.Element => {
+export default function TransactionBox({ txs }: MainProps): JSX.Element {
   return (
     <>
       <Text sx={{ mt: 4, mb: 3 }}>Transactions</Text>
@@ -68,4 +68,4 @@ export default ({ txs }: MainProps): JSX.Element => {
       })}
     </>
   );
-};
+}
