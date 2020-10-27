@@ -12,7 +12,6 @@ const ESMHistory = () => {
     (async () => {
       const maker = await getMaker();
       const stakingHistory = await maker.service('esm').getStakingHistory();
-      console.log(stakingHistory, 'hiii');
       setRows(stakingHistory);
       setIsLoading(false);
     })();
@@ -23,13 +22,6 @@ const ESMHistory = () => {
         style={{
           width: '100%'
         }}
-        //   variant="normal"
-        // css={`
-        //   td,
-        //   th {
-        //     padding-right: 10px;
-        //   }
-        // `}
       >
         <thead>
           <tr>
