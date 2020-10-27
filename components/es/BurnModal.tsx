@@ -41,7 +41,6 @@ const ModalContent = ({
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
-  // const [burnAmount, setBurnAmount] = useState('');
   const [burnAmount, setBurnAmount] = useState(MKR(0));
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', account?.address], (_, account) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
@@ -57,18 +56,18 @@ const ModalContent = ({
     const maker = await getMaker();
     const esm = await maker.service('esm');
     const burnTxObject = esm.stake(burnAmount);
-    // const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
-    //   pending: txHash => {
-    //     setStep('pending');
-    //   },
-    //   mined: txId => {
-    //     transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-    //     close(); // TBD maybe show a separate "done" dialog
-    //   },
-    //   error: () => setStep('failed')
-    // });
+    const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
+      pending: txHash => {
+        setStep('pending');
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
+        close(); // TBD maybe show a separate "done" dialog
+      },
+      error: () => setStep('failed')
+    });
 
-    // setTxId(txId);
+    setTxId(txId);
     setStep('signing');
   };
 
@@ -115,9 +114,9 @@ const ModalContent = ({
         <MKRInput
           // sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
           onChange={setBurnAmount}
-          // value={burnAmount}
           error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
           placeholder="0.00 MKR"
+          ref={input}
         />
         <Button
           variant="textual"

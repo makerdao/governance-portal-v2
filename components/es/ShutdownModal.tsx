@@ -1,26 +1,10 @@
 /** @jsx jsx */
-import {
-  Flex,
-  Box,
-  Button,
-  Text,
-  Grid,
-  Input,
-  jsx,
-  Close,
-  Label,
-  Checkbox,
-  Link,
-  Divider,
-  Spinner
-} from 'theme-ui';
-import { useState, useEffect } from 'react';
-import useSWR from 'swr';
+import { Flex, Button, Text, Grid, jsx, Close, Link, Spinner } from 'theme-ui';
+import { useState } from 'react';
 import shallow from 'zustand/shallow';
-import getMaker, { MKR, getNetwork } from '../../lib/maker';
+import getMaker, { getNetwork } from '../../lib/maker';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Toggle from './Toggle';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
@@ -28,10 +12,6 @@ import { TXMined } from '../../types/transaction';
 const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => void }) => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState('');
-  // const { data: mkrBalance } = useSWR(['/user/mkr-balance', address?.address], (_, account) =>
-  //   getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
-  // );
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

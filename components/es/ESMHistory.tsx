@@ -22,13 +22,6 @@ const ESMHistory = () => {
         style={{
           width: '100%'
         }}
-        //   variant="normal"
-        // css={`
-        //   td,
-        //   th {
-        //     padding-right: 10px;
-        //   }
-        // `}
       >
         <thead>
           <tr>
