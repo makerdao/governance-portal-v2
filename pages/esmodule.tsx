@@ -10,6 +10,7 @@ import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import ModalContent from '../components/es/Modal';
 import ProgressRing from '../components/es/ProgressRing';
+import ESMHistory from '../components/es/ESMHistory';
 import useAccountsStore from '../stores/accounts';
 
 async function getModuleStats() {
@@ -193,9 +194,7 @@ const ESModule = () => {
       <Text variant="microHeading" mt={5}>
         ESM History
       </Text>
-      <Card mt={3}>
-        <Text>No history to show</Text>
-      </Card>
+      <ESMHistory />
     </PrimaryLayout>
   );
 };

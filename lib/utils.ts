@@ -5,7 +5,6 @@ import { cloneElement } from 'react';
 import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
-
 import { MKR } from './maker';
 import CurrencyObject from '../types/currency';
 import PollTally from '../types/pollTally';
@@ -15,6 +14,7 @@ import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from '../mocks/polls.json';
 import PollVote from '../types/pollVote';
+import round from 'lodash.round';
 
 export function bigNumberKFormat(num: CurrencyObject) {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -290,3 +290,6 @@ export const sortBytesArray = _array =>
   [..._array].sort((a, b) => {
     return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
   });
+
+export const formatRound = (num, decimals = 2) =>
+  isNaN(num) ? '----' : round(num, decimals).toLocaleString({}, { minimumFractionDigits: decimals });
