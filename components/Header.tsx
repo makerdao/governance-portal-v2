@@ -53,21 +53,21 @@ const Header = (props): JSX.Element => {
           <NavLink
             href={`/executive?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
           >
             Executive
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        {/* <Link href={{ pathname: '/esmodule', query: { network } }}>
           <NavLink
             href={`/module?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
+            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5]}}
           >
             ES Module
           </NavLink>
-        </Link>
+        </Link> */}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <AccountSelect sx={{ ml: ['auto', 3, 0] }} />
@@ -119,9 +119,9 @@ const MobileMenu = ({ hide, network, router }) => {
         <Link href={{ pathname: '/executive', query: { network } }}>
           <NavLink>Executive</NavLink>
         </Link>
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        {/* <Link href={{ pathname: '/esmodule', query: { network } }}>
           <NavLink>ES Module</NavLink>
-        </Link>
+        </Link> */}
       </Flex>
     </Container>
   );
