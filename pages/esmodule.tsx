@@ -9,6 +9,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import BurnModal from '../components/es/BurnModal';
+import ShutdownModal from '../components/es/ShutdownModal';
 import ProgressRing from '../components/es/ProgressRing';
 import ESMHistory from '../components/es/ESMHistory';
 import useAccountsStore from '../stores/accounts';
@@ -135,11 +136,15 @@ const ESModule = () => {
                 }
           }
         >
-          <BurnModal
-            setShowDialog={setShowDialog}
-            lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
-            totalStaked={totalStaked}
-          />
+          {totalStaked.gte(thresholdAmount) ? (
+            <BurnModal
+              setShowDialog={setShowDialog}
+              lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+              totalStaked={totalStaked}
+            />
+          ) : (
+            <ShutdownModal setShowDialog={setShowDialog} />
+          )}
         </DialogContent>
       </DialogOverlay>
       <Text variant="heading">Emergency Shutdown Module</Text>
@@ -171,7 +176,7 @@ const ESModule = () => {
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
             >
-              Burn Your MKR
+              {totalStaked.gte(thresholdAmount) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
           ) : (
             <Box pl="14px" pr="14px">
