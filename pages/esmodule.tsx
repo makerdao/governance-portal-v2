@@ -136,14 +136,20 @@ const ESModule = () => {
                 }
           }
         >
-          {totalStaked.gte(thresholdAmount) ? (
-            <BurnModal
-              setShowDialog={setShowDialog}
-              lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
-              totalStaked={totalStaked}
-            />
+          {totalStaked ? (
+            totalStaked.gte(thresholdAmount) ? (
+              <BurnModal
+                setShowDialog={setShowDialog}
+                lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+                totalStaked={totalStaked}
+              />
+            ) : (
+              <ShutdownModal setShowDialog={setShowDialog} />
+            )
           ) : (
-            <ShutdownModal setShowDialog={setShowDialog} />
+            <Box pl="14px" pr="14px">
+              <div ref={loader} />
+            </Box>
           )}
         </DialogContent>
       </DialogOverlay>
