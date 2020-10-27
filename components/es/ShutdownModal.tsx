@@ -38,7 +38,9 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
     shallow
   );
   const bpi = useBreakpointIndex();
-  const close = () => setShowDialog(false);
+  const close = () => {
+    setShowDialog(false);
+  };
   const shutdown = async () => {
     const maker = await getMaker();
     const esm = await maker.service('esm');
@@ -63,11 +65,11 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
       <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
       <Text variant="heading" mt={4}>
-        Are you sure you want to burn MKR?
+        Shutting down the Dai Credit System
       </Text>
       <Text variant="text" sx={{ mt: 3 }}>
-        By burning your MKR in the ESM, you are contributing to the shutdown of the Dai Credit System. Your
-        MKR will be immediately burned and cannot be retrieved.
+        The 50,000 MKR limit for the emergency shutdown module has been reached. By continuing past this
+        alert, emergency shutdown will be initiated for the Dai Credit System.
       </Text>
       <Grid columns={2} mt={4}>
         <Button
@@ -97,7 +99,7 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
       />
 
       <Text variant="heading" sx={{ fontSize: 6 }}>
-        Sign Transaction
+        Sign TX to start Emergency Shutdown.
       </Text>
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
@@ -105,7 +107,7 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
           Please use your wallet to sign this transaction.
         </Text>
         <Button onClick={close} variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
-          Cancel burn submission
+          Cancel shutdown submission
         </Button>
       </Flex>
     </Flex>
@@ -125,7 +127,7 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-          Vote will update once the blockchain has confirmed the transaction.
+          Shutdown will update once the blockchain has confirmed the transaction.
         </Text>
         <Link
           target="_blank"
