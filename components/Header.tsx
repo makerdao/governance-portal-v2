@@ -59,7 +59,7 @@ const Header = (props): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        {/* <Link href={{ pathname: '/esmodule', query: { network } }}>
           <NavLink
             href={`/module?network=${network}`}
             p={0}
@@ -67,7 +67,7 @@ const Header = (props): JSX.Element => {
           >
             ES Module
           </NavLink>
-        </Link>
+        </Link> */}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <AccountSelect sx={{ ml: ['auto', 3, 0] }} />
