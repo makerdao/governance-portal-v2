@@ -8,7 +8,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
-import ModalContent from '../components/es/Modal';
+import BurnModal from '../components/es/BurnModal';
 import ProgressRing from '../components/es/ProgressRing';
 import ESMHistory from '../components/es/ESMHistory';
 import useAccountsStore from '../stores/accounts';
@@ -135,7 +135,7 @@ const ESModule = () => {
                 }
           }
         >
-          <ModalContent
+          <BurnModal
             address={account}
             setShowDialog={setShowDialog}
             bpi={bpi}

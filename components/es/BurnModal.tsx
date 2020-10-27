@@ -21,7 +21,7 @@ import getMaker, { MKR, getNetwork } from '../../lib/maker';
 import Address from '../../types/account';
 import { Icon } from '@makerdao/dai-ui-icons';
 import CurrencyObject from '../../types/currency';
-import Toggle from '../../components/es/Toggle';
+import Toggle from './Toggle';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
