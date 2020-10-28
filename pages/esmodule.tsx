@@ -202,7 +202,7 @@ const ESModule = () => {
             mt: bpi < 1 ? 2 : null
           }}
         >
-          {account || (
+          {!account && (
             <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2 }}>
               No Account Connected
             </Text>
