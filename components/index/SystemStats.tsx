@@ -64,13 +64,13 @@ export default function SystemStats(): JSX.Element {
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
+                {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
+                {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
@@ -105,11 +105,15 @@ export default function SystemStats(): JSX.Element {
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Total Dai</Text>
-            <Text sx={{ fontSize: 2 }}>{data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}</Text>
+            <Text sx={{ fontSize: 2 }}>
+              {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+            </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-            <Text sx={{ fontSize: 2 }}>{data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}</Text>
+            <Text sx={{ fontSize: 2 }}>
+              {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+            </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>System Surplus</Text>
