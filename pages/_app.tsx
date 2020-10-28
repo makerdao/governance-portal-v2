@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <SWRConfig
         value={{
-          refreshInterval: 2000,
+          refreshInterval: 5000,
           fetcher: url => fetchJson(url)
         }}
       >
