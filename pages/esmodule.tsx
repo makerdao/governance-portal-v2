@@ -57,15 +57,15 @@ const ESModule = () => {
         <Flex sx={{ flexDirection: 'row' }}>
           <Text>
             {totalStaked ? (
-              `${totalStaked.toString(6)}     `
+              `${totalStaked.toString(6)}`
             ) : (
               <Box pl="14px" pr="14px">
                 <div ref={loader} />
               </Box>
             )}
           </Text>
-          <Text color="#708390" ml="2" sx={{ fontWeight: '400' }}>
-            {` of ${thresholdAmount ? thresholdAmount.toString() : '---'}`}
+          <Text color="#708390" sx={{ fontWeight: '400' }}>
+            &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
           </Text>
         </Flex>
         <Box
