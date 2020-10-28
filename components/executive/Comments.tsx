@@ -74,7 +74,7 @@ export default function CommentsTab({
                       voted with {comment.voterWeight} MKR{' '}
                     </Text>
                   </Flex>
-                  <Text mt={2} variant="text" color="secondaryEmphasis">
+                  <Text mt={2} variant="text" color="secondaryEmphasis" sx={{ overflowWrap: 'break-word' }}>
                     {comment.comment}
                   </Text>
                 </Box>
