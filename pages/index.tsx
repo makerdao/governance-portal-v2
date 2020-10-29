@@ -280,21 +280,19 @@ export default function Index({
   blogPosts
 }: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, _setPolls] = useState<Poll[]>();
-  const [_proposals, _setProposals] = useState<CMSProposal[]>();
+  const [polls, setPolls] = useState<Poll[]>(prefetchedPolls);
+  const [proposals, setProposals] = useState<CMSProposal[]>(prefetchedProposals);
   const [error, setError] = useState<string>();
 
-  // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    async function initTestchain() {
-      if (getNetwork() === 'testnet') await initTestchainPolls();
+    if (getNetwork() === 'testnet') {
+      initTestchainPolls(); // this is async but we don't need to await
     }
-    initTestchain();
-    if (!isDefaultNetwork()) {
+    if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
-          _setPolls(polls);
-          _setProposals(proposals);
+          setPolls(polls);
+          setProposals(proposals);
         })
         .catch(setError);
     }
@@ -304,20 +302,14 @@ export default function Index({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_proposals))
+  if (!isDefaultNetwork() && (!polls || !proposals))
     return (
       <PrimaryLayout>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  return (
-    <LandingPage
-      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
-      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
-      blogPosts={blogPosts}
-    />
-  );
+  return <LandingPage proposals={proposals} polls={polls} blogPosts={blogPosts} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {

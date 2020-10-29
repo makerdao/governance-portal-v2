@@ -6,9 +6,9 @@ import theme from '../../lib/theme';
 import Index from '../../pages/index';
 
 test('renders', async () => {
-  const { getByText } = render(
+  const { debug } = render(
     <ThemeProvider theme={theme}>
-      <Index />
+      <Index blogPosts={[]} polls={[]} proposals={[]} />
     </ThemeProvider>
   );
 });
