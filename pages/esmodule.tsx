@@ -242,12 +242,12 @@ export default function ESModulePage(): JSX.Element {
   //   return <ErrorPage statusCode={404} title="Error fetching ES module" />;
   // }
 
-  if (!isDefaultNetwork())
-    return (
-      <PrimaryLayout>
-        <p>Loading…</p>
-      </PrimaryLayout>
-    );
+  // if (!isDefaultNetwork())
+  //   return (
+  //     <PrimaryLayout>
+  //       <p>Loading…</p>
+  //     </PrimaryLayout>
+  //   );
 
   return <ESModule />;
 }

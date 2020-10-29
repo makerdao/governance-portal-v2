@@ -1,0 +1,121 @@
+/** @jsx jsx */
+import { useState, useEffect, useRef } from 'react';
+import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import { MKR } from '../../../lib/maker';
+import MKRInput from '../../../components/MKRInput';
+
+const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
+  const bpi = useBreakpointIndex();
+  const input = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState(MKR(0));
+  const updateInputValue = newVal => {
+    setValue(newVal);
+    setBurnAmount(MKR(newVal));
+  };
+  return (
+    <>
+      <Text
+        variant="microHeading"
+        mt={bpi < 1 ? 4 : null}
+        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+      >
+        Enter the amount of MKR to burn.
+      </Text>
+      <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
+        <MKRInput
+          onChange={updateInputValue}
+          placeholder="0.00 MKR"
+          error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
+          ref={input}
+        />
+        {/* <Input
+          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+          onChange={(e) => updateValue(e)}
+          value={burnAmountStr}
+          placeholder="0.00 MKR"
+        /> */}
+        {/* <Button
+          variant="textual"
+          sx={{ width: '100px', fontWeight: 'bold' }}
+          onClick={() => setBurnAmountStr(mkrBalance.toString())}
+        >
+          Set max
+        </Button> */}
+      </Flex>
+
+      <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
+        <Text variant="caps">MKR Balance In Wallet</Text>
+        <Text ml={3}>{mkrBalance ? mkrBalance.toString() : '---'}</Text>
+      </Flex>
+    </>
+  );
+};
+
+const MKRAmount = ({ lockedInChief, setBurnAmount, setShowDialog, burnAmount, setStep, mkrBalance }) => {
+  const bpi = useBreakpointIndex();
+  return (
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
+      <Text variant="heading">Burn your MKR in the ESM</Text>
+      {bpi < 1 ? (
+        <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
+      ) : (
+        <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: [3, 5], py: 4 }}>
+          <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
+        </Box>
+      )}
+      {lockedInChief ? (
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            border: '1px solid #FBCC5F',
+            borderRadius: 'medium',
+            backgroundColor: '#FFF9ED',
+            color: '#826318',
+            p: 3,
+            fontSize: '12px',
+            mt: 3
+          }}
+        >
+          <Text sx={{ textAlign: 'center' }}>You have {lockedInChief} MKR locked in DSChief.</Text>
+          <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
+        </Flex>
+      ) : null}
+      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
+        <Button
+          onClick={() => {
+            setShowDialog(false);
+          }}
+          variant="outline"
+          sx={{
+            color: 'secondary',
+            borderColor: 'secondary',
+            borderRadius: 'small',
+            width: bpi < 1 ? '100%' : null
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => setStep('confirm')}
+          disabled={!burnAmount}
+          variant="outline"
+          sx={{
+            color: 'onNotice',
+            borderColor: 'notice',
+            borderRadius: 'small',
+            width: bpi < 1 ? '100%' : null
+          }}
+        >
+          Continue
+        </Button>
+      </Grid>
+    </Flex>
+  );
+};
+
+export default MKRAmount;

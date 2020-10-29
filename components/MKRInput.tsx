@@ -29,7 +29,9 @@ const MKRInput = forwardRef<HTMLInputElement, Props>(
       }
 
       onChange(newValue);
+      console.log('hello');
       setCurrentValueStr(newValueStr);
+      console.log('hi');
     }
 
     return (
