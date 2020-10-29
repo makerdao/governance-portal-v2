@@ -6,9 +6,9 @@ module.exports = {
   ],
   coverageReporters: ['json', 'lcov', 'text-summary'],
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
-  testPathIgnorePatterns: ['/node_modules/', '/.next/', '/setup'],
+  testPathIgnorePatterns: ['/node_modules/', '/.next/', '/setup', '/helpers'],
   transformIgnorePatterns: ['/node_modules/'],
-  moduleDirectories: ['node_modules', 'test/helpers'],
+  moduleDirectories: ['node_modules'],
   globals: {
     __TESTCHAIN__: true
   }
