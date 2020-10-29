@@ -390,21 +390,27 @@ export default function Foot({ shorten = false }) {
           fontSize: 2
         }}
       >
-        <ExternalLink href="/terms" target="_blank">
-          <NavLink variant="footer" p={1} sx={{ color: 'black', fontWeight: 400 }}>
-            Terms
-          </NavLink>
-        </ExternalLink>
-        <ExternalLink href="https://makerdao.com/en/privacy/" target="_blank">
-          <NavLink variant="footer" p={2} sx={{ color: 'black', fontWeight: 400 }}>
-            Privacy Policy
-          </NavLink>
-        </ExternalLink>
-        <ExternalLink href="https://makerdao.statuspage.io/" target="_blank">
-          <NavLink variant="footer" p={2} sx={{ color: 'black', fontWeight: 400 }}>
-            Status
-          </NavLink>
-        </ExternalLink>
+        <NavLink href="/terms" target="_blank" variant="footer" p={1} sx={{ fontWeight: 400 }}>
+          Terms
+        </NavLink>
+        <NavLink
+          href="https://makerdao.com/en/privacy/"
+          target="_blank"
+          variant="footer"
+          p={2}
+          sx={{ fontWeight: 400 }}
+        >
+          Privacy Policy
+        </NavLink>
+        <NavLink
+          href="https://makerdao.statuspage.io/"
+          target="_blank"
+          variant="footer"
+          p={2}
+          sx={{ fontWeight: 400 }}
+        >
+          Status
+        </NavLink>
         <div sx={{ mx: 'auto' }} />
         <div sx={{ p: 2 }}>© 2020 Maker</div>
       </footer>
