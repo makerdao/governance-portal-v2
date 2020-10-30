@@ -21,7 +21,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         }}
       >
         <Text>Burn amount</Text>
-        <Text>{burnAmount.toString()} MKR</Text>
+        <Text>{burnAmount.toString()}</Text>
       </Flex>
       <Divider />
       <Flex
@@ -34,7 +34,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         }}
       >
         <Text>New ESM total</Text>
-        <Text>{burnAmount.add(totalStaked).toString()} MKR</Text>
+        <Text>{burnAmount.add(totalStaked).toString()}</Text>
       </Flex>
       <Text
         variant="microHeading"
@@ -66,7 +66,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
   const [mkrApproved, setMkrApproved] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
-  const passValue = `I am burning ${burnAmount} MKR`;
+  const passValue = `I am burning ${burnAmount}`;
   const [value, setValue] = useState('');
   const changeTerms = e => {
     setTermsAccepted(e.target.checked);

@@ -4,13 +4,12 @@ import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { MKR } from '../../../lib/maker';
 import MKRInput from '../../../components/MKRInput';
+import { changeInputValue } from '../../../lib/utils';
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
   const bpi = useBreakpointIndex();
   const input = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState(MKR(0));
   const updateInputValue = newVal => {
-    setValue(newVal);
     setBurnAmount(MKR(newVal));
   };
   return (
@@ -27,21 +26,19 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
           onChange={updateInputValue}
           placeholder="0.00 MKR"
           error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
+          style={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
           ref={input}
         />
-        {/* <Input
-          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
-          onChange={(e) => updateValue(e)}
-          value={burnAmountStr}
-          placeholder="0.00 MKR"
-        /> */}
-        {/* <Button
+        <Button
           variant="textual"
           sx={{ width: '100px', fontWeight: 'bold' }}
-          onClick={() => setBurnAmountStr(mkrBalance.toString())}
+          onClick={() => {
+            if (!input.current) return;
+            changeInputValue(input.current, mkrBalance.toBigNumber().toString());
+          }}
         >
           Set max
-        </Button> */}
+        </Button>
       </Flex>
 
       <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>

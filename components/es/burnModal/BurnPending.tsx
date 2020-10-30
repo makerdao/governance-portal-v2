@@ -5,7 +5,7 @@ import { getNetwork } from '../../../lib/maker';
 import { getEtherscanLink } from '../../../lib/utils';
 import { TXMined } from '../../../types/transaction';
 
-const BurnPending = ({ tx }) => (
+const BurnPending = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
