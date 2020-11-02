@@ -97,11 +97,11 @@ const ModalContent = ({
         />
       );
     case 'signing':
-      return <BurnSigning />;
+      return <BurnSigning close={close} />;
     case 'pending':
-      return <BurnPending tx={tx} />;
+      return <BurnPending tx={tx} close={close} />;
     case 'failed':
-      return <BurnFailed />;
+      return <BurnFailed close={close} />;
     default:
       return <DefaultScreen setShowDialog={setShowDialog} setStep={setStep} />;
   }
