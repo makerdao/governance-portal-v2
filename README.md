@@ -28,4 +28,4 @@ _Requires node version >= v11.15.0_
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
 6. Set `USE_PROD_SPOCK` to true to use the production spock instance
 
-If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance is could just be a bit less consistent as many people are using these.
+If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.

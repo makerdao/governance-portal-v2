@@ -31,7 +31,7 @@ jobs:
             source /home/circleci/setup-env.sh
             yarn test:ci
             yarn build
-            npm i --no-save codecov
+            yarn add --dev codecov
             ./node_modules/.bin/codecov
 
 workflows:

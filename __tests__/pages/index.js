@@ -1,14 +1,21 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { ThemeProvider } from 'theme-ui';
+import { renderWithTheme as render } from '../helpers';
 
-import theme from '../../lib/theme';
 import Index from '../../pages/index';
+import { getPostsAndPhotos, getExecutiveProposals, getPolls } from '../../lib/api';
+
+let blogPosts, proposals, polls;
+
+beforeAll(async () => {
+  [blogPosts, proposals, polls] = await Promise.all([
+    getPostsAndPhotos(),
+    getExecutiveProposals(),
+    getPolls()
+  ]);
+});
 
 test('renders', async () => {
-  const { getByText } = render(
-    <ThemeProvider theme={theme}>
-      <Index />
-    </ThemeProvider>
+  const { debug } = render(
+    <Index blogPosts={blogPosts} polls={polls} proposals={proposals} />
   );
 });
