@@ -64,8 +64,9 @@ const ESMHistory = () => {
                       text-overflow: ellipsis;
                       overflow: hidden;
                     `}
+                    style={{ borderBottom: '1px solid #EDEDED' }}
                   >
-                    <Text color="darkLavender" variant="caption">
+                    <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
                       {formatDateWithTime(action.time)}
                     </Text>
                   </td>
@@ -73,15 +74,16 @@ const ESMHistory = () => {
                     css={`
                       white-space: nowrap;
                     `}
+                    style={{ borderBottom: '1px solid #EDEDED' }}
                   >
-                    <Text color="darkLavender" variant="caption">
+                    <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
                       {action.amount.gte(0.01)
                         ? formatRound(action.amount.toNumber())
                         : formatRound(action.amount.toNumber(), 6)}{' '}
                       MKR
                     </Text>
                   </td>
-                  <td>
+                  <td style={{ borderBottom: '1px solid #EDEDED' }}>
                     <Link
                       href={getEtherscanLink(getNetwork(), action.senderAddress, 'address')}
                       target="_blank"
