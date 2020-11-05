@@ -4,8 +4,8 @@ import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
-import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS } from './constants';
+import { markdownToHtml, timeoutPromise, backoffRetry, fetchJson } from './utils';
+import { CMS_ENDPOINTS, POLL_CATEGORIZATION_ENDPOINT } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
 import { CMSProposal } from '../types/proposal';
@@ -112,6 +112,8 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
 
+  const categoryMap = await fetchJson(POLL_CATEGORIZATION_ENDPOINT);
+
   for (const pollGroup of chunk(
     uniqBy(pollList, p => p.multiHash),
     20
@@ -144,7 +146,12 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
             : null;
         const voteType: VoteTypes =
           (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
-        const category = pollMeta?.category || 'Uncategorized';
+
+        const categories = [
+          ...(pollMeta?.categories || []),
+          ...(pollMeta?.category ? [pollMeta?.category] : []),
+          ...(categoryMap?.[p.pollId] || [])
+        ];
         return {
           ...p,
           slug: p.multiHash.slice(0, 8),
@@ -156,7 +163,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           options,
           discussionLink,
           voteType,
-          category
+          categories: categories.length > 0 ? categories : ['Uncategorized']
         };
       })
     ).then(polls =>

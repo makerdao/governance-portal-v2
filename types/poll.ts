@@ -11,7 +11,7 @@ type Poll = {
   startDate: string;
   discussionLink: string | null;
   voteType: VoteTypes;
-  category: string;
+  categories: string[];
   slug: string;
   ctx: {
     prev: Poll | null;
