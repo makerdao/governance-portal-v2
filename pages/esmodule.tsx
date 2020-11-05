@@ -165,10 +165,9 @@ const ESModule = () => {
             border: '1px solid #F77249',
             borderRadius: 'medium',
             backgroundColor: '#FDEDE8',
-
             color: '#994126',
             p: 3,
-            fontSize: '12px',
+            fontSize: 1,
             mt: 3
           }}
         >

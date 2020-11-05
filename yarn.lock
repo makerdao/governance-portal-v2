@@ -2011,14 +2011,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@makerdao/currency@>=0.9.0":
-  version "0.9.8"
-  resolved "https://registry.yarnpkg.com/@makerdao/currency/-/currency-0.9.8.tgz#97b853bee7d366499c0f265d1135662dd7d77e0a"
-  integrity sha512-Vd6i3iuInk4PMOi8eG5aZbF5yHy2To5Un9o/c4NxfjInhi5owE5O3VKNua1Z6yaW33PQNt8NqQGcCItNZMnnxw==
-  dependencies:
-    babel-runtime "^6.26.0"
-    bignumber.js "^8.1.1"
-
 "@makerdao/currency@^0.9.8", "@makerdao/currency@^0.9.9":
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/@makerdao/currency/-/currency-0.9.9.tgz#b5f847362cb4648c30548313f005c80c1c878c9e"
@@ -2027,12 +2019,12 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.12.29":
-  version "0.12.29"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.29.tgz#5182f902e6f68a92b7e16e79014a64c87cd3d54c"
-  integrity sha512-aVXuxIjP0shRJRjOkEOZ3pgYURoAG8UpyK2JjWsn0SKFviBmBoMNaXRmd5I09PdFIMhqnPWrHPduY7EpB2wN8g==
+"@makerdao/dai-plugin-governance@0.12.30":
+  version "0.12.30"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.30.tgz#9c69e712dc6eb198f2c271d51d4c359dba414acb"
+  integrity sha512-o3gNQH9ws6+/b7z5HnN1XhsEmMVmA2HyNR86uk+0Wwl9jWczycobjZv1IcxvqCLBi6opf52JrSsb+o4P9/mEgA==
   dependencies:
-    "@makerdao/currency" ">=0.9.0"
+    "@makerdao/currency" "^0.9.8"
     "@makerdao/services-core" "^0.10.0"
     assert "^2.0.0"
     debug "^4.1.1"
@@ -2065,7 +2057,7 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.5":
+"@makerdao/dai@^0.32.6":
   version "0.32.6"
   resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.6.tgz#79c3cfa1ee088ff303151f4037fbe730fe2455be"
   integrity sha512-8TwoG29821XqyZabvs3iPRKrjeWBR6bFjouCnklGVtMinLtKNiyRVUfRmmvVseXomJKNXVyI0yNk/yPwXTEm8Q==
@@ -3594,7 +3586,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:

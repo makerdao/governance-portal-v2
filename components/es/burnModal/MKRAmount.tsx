@@ -2,16 +2,26 @@
 import { useRef } from 'react';
 import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import Skeleton from 'react-loading-skeleton';
+
+import CurrencyObject from '../../../types/currency';
 import { MKR } from '../../../lib/maker';
 import MKRInput from '../../../components/MKRInput';
 import { changeInputValue } from '../../../lib/utils';
 
-const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
+type MKRAmoutnViewProps = {
+  setBurnAmount: (burnAmount: CurrencyObject) => void;
+  burnAmount: CurrencyObject;
+  mkrBalance: CurrencyObject | undefined;
+};
+
+const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewProps) => {
   const bpi = useBreakpointIndex();
   const input = useRef<HTMLInputElement>(null);
   const updateInputValue = newVal => {
     setBurnAmount(MKR(newVal));
   };
+
   return (
     <>
       <Text
@@ -25,15 +35,16 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
         <MKRInput
           onChange={updateInputValue}
           placeholder="0.00 MKR"
-          error={burnAmount.gt(mkrBalance) && 'MKR balance too low'}
+          error={mkrBalance && burnAmount.gt(mkrBalance) && 'MKR balance too low'}
           style={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
           ref={input}
         />
         <Button
+          disabled={mkrBalance === undefined}
           variant="textual"
           sx={{ width: '100px', fontWeight: 'bold' }}
           onClick={() => {
-            if (!input.current) return;
+            if (!input.current || mkrBalance === undefined) return;
             changeInputValue(input.current, mkrBalance.toBigNumber().toString());
           }}
         >
@@ -49,8 +60,25 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }) => {
   );
 };
 
-const MKRAmount = ({ lockedInChief, setBurnAmount, setShowDialog, burnAmount, setStep, mkrBalance }) => {
+type MKRAmountProps = {
+  lockedInChief: number;
+  setBurnAmount: (burnAmount: CurrencyObject) => void;
+  burnAmount: CurrencyObject;
+  setShowDialog: (bool: boolean) => void;
+  setStep: (step: string) => void;
+  mkrBalance: CurrencyObject | undefined;
+};
+
+const MKRAmount = ({
+  lockedInChief,
+  setBurnAmount,
+  setShowDialog,
+  burnAmount,
+  setStep,
+  mkrBalance
+}: MKRAmountProps) => {
   const bpi = useBreakpointIndex();
+
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
@@ -74,7 +102,7 @@ const MKRAmount = ({ lockedInChief, setBurnAmount, setShowDialog, burnAmount, se
             backgroundColor: '#FFF9ED',
             color: '#826318',
             p: 3,
-            fontSize: '12px',
+            fontSize: 1,
             mt: 3
           }}
         >
@@ -99,7 +127,7 @@ const MKRAmount = ({ lockedInChief, setBurnAmount, setShowDialog, burnAmount, se
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={!burnAmount}
+          disabled={burnAmount.eq(0)}
           variant="outline"
           sx={{
             color: 'onNotice',

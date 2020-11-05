@@ -4,7 +4,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../../lib/maker';
-import { bigNumberKFormat } from '../../lib/utils';
 import CurrencyObject from '../../types/currency';
 
 async function getSystemStats(): Promise<CurrencyObject[]> {
