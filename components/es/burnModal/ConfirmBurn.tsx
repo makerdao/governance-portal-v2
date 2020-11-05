@@ -130,7 +130,6 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
-          {/* <Icon name="question" ml={2} mt={'6px'} /> */}
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'row', mt: 3 }}>
