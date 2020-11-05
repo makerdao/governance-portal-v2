@@ -14,11 +14,13 @@ import Header from '../components/Header';
 import Head from 'next/head';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
+import { mixpanelInit } from '../lib/analytics';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const dev = process.env.NODE_ENV === 'development';
+  mixpanelInit();
   return (
     <ThemeProvider theme={theme}>
       <Head>

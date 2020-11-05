@@ -5,12 +5,13 @@
 
 import { useEffect } from 'react';
 import getMaker from '../../maker';
+import mixpanel from 'mixpanel-browser';
 
 export const syncMakerAccount = (library, account, chainIdError) => {
   useEffect(() => {
     (async () => {
       if (!library || !account || !!chainIdError) return;
-
+      mixpanel.identify(account);
       // check to see if the account already exists (i.e. switching back to one that was already added)
       // before adding it
       const maker = await getMaker();

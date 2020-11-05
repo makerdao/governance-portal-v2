@@ -21,6 +21,7 @@ import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import useAccountsStore from '../../stores/accounts';
+import mixpanel from 'mixpanel-browser';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -76,6 +77,7 @@ const AccountSelect = props => {
       key={name}
       onClick={() => {
         activate(connector).then(() => {
+          mixpanel.people.set({wallet: name});
           setAccountName(name);
           setChangeWallet(false);
         });
