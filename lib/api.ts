@@ -154,11 +154,11 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
 
   console.log(
     `\n 
-    ---
-    Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
-    This could be because the document link from the poll is no longer valid.
-    The following are the missing poll ids: ${failedPollIds}.
-    ---`
+---
+Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
+This could be because the document link from the poll is no longer valid.
+The following are the missing poll ids: ${failedPollIds}.
+---`
   );
 
   return (

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Button, Text, Flex, jsx } from 'theme-ui';
+import { Button, Text, Flex, Link as InternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import Stack from '../layouts/Stack';
@@ -47,9 +47,11 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Text variant="microHeading" sx={{ fontSize: [3, 4], cursor: 'pointer' }}>
-              {poll.title}
-            </Text>
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Text variant="microHeading" sx={{ fontSize: [3, 4], cursor: 'pointer' }}>
+                {poll.title}
+              </Text>
+            </InternalLink>
           </Link>
         </Flex>
 
@@ -82,9 +84,11 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
               query: { network }
             }}
           >
-            <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, width: ['100%', 'auto'] }}>
-              View proposal
-            </Button>
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, width: ['100%', 'auto'] }}>
+                View proposal
+              </Button>
+            </InternalLink>
           </Link>
           <PollOptionBadge poll={poll} sx={{ ml: 3, display: ['none', 'block'] }} />
         </Flex>

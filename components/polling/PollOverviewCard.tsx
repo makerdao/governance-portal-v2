@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Text, Flex, Box, Button, jsx } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
@@ -45,23 +45,27 @@ export default function PollOverviewCard({
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-              {poll.title}
-            </Text>
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                {poll.title}
+              </Text>
+            </InternalLink>
           </Link>
           <Link
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Text
-              sx={{
-                fontSize: [2, 3],
-                color: 'textSecondary',
-                mt: 1
-              }}
-            >
-              {poll.summary}
-            </Text>
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Text
+                sx={{
+                  fontSize: [2, 3],
+                  color: 'textSecondary',
+                  mt: 1
+                }}
+              >
+                {poll.summary}
+              </Text>
+            </InternalLink>
           </Link>
         </Box>
 
@@ -98,18 +102,20 @@ export default function PollOverviewCard({
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
           >
-            <Button
-              variant="outline"
-              sx={{
-                display: reviewPage ? 'none' : null,
-                borderColor: 'onSecondary',
-                color: 'secondaryAlt',
-                borderRadius: 'small',
-                ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-              }}
-            >
-              View Details
-            </Button>
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Button
+                variant="outline"
+                sx={{
+                  display: reviewPage ? 'none' : null,
+                  borderColor: 'onSecondary',
+                  color: 'secondaryAlt',
+                  borderRadius: 'small',
+                  ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                }}
+              >
+                View Details
+              </Button>
+            </InternalLink>
           </Link>
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} />}
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />

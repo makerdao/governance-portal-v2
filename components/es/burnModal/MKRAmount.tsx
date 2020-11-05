@@ -2,7 +2,6 @@
 import { useRef } from 'react';
 import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Skeleton from 'react-loading-skeleton';
 
 import CurrencyObject from '../../../types/currency';
 import { MKR } from '../../../lib/maker';

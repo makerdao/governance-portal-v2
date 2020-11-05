@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
-import { Button, Text, Flex, Badge, Box, jsx } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 
 import Stack from '../layouts/Stack';
@@ -35,17 +35,20 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             query: { network }
           }}
         >
-          <Text
-            variant="microHeading"
-            sx={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: [3, 4]
-            }}
-          >
-            {proposal.title}
-          </Text>
+          <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
+            <Text
+              variant="microHeading"
+              sx={{
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: [3, 4],
+                cursor: 'pointer'
+              }}
+            >
+              {proposal.title}
+            </Text>
+          </InternalLink>
         </Link>
       </div>
       <Text
@@ -122,12 +125,14 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             query: { network }
           }}
         >
-          <Button
-            variant="primaryOutline"
-            sx={{ borderRadius: 'small', px: 4, mt: 2, width: '100%', display: ['block', 'none'] }}
-          >
-            View proposal
-          </Button>
+          <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
+            <Button
+              variant="primaryOutline"
+              sx={{ borderRadius: 'small', px: 4, mt: 2, width: '100%', display: ['block', 'none'] }}
+            >
+              View proposal
+            </Button>
+          </InternalLink>
         </Link>
       </Flex>
     </Stack>
