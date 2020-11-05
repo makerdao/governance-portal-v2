@@ -2,7 +2,7 @@
 // import { QRCode } from 'react-qr-svg';
 import React from 'react';
 import Link from 'next/link';
-import { Flex, Grid, Box, Input, Button, NavLink, Container, jsx } from 'theme-ui';
+import { Flex, Grid, Box, Input, Button, NavLink, Link as ExternalLink, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { translate } from '@makerdao/i18n-helper';
 import url from 'url';
@@ -390,21 +390,27 @@ export default function Foot({ shorten = false }) {
           fontSize: 2
         }}
       >
-        <Link href="/terms">
-          <NavLink variant="footer" p={1} sx={{ fontWeight: 400 }}>
-            Terms
-          </NavLink>
-        </Link>
-        <Link href="/privacy-policy">
-          <NavLink variant="footer" p={2} sx={{ fontWeight: 400 }}>
-            Privacy Policy
-          </NavLink>
-        </Link>
-        <Link href="/status">
-          <NavLink variant="footer" p={2} sx={{ fontWeight: 400 }}>
-            Status
-          </NavLink>
-        </Link>
+        <NavLink href="/terms" target="_blank" variant="footer" p={1} sx={{ fontWeight: 400 }}>
+          Terms
+        </NavLink>
+        <NavLink
+          href="https://makerdao.com/en/privacy/"
+          target="_blank"
+          variant="footer"
+          p={2}
+          sx={{ fontWeight: 400 }}
+        >
+          Privacy Policy
+        </NavLink>
+        <NavLink
+          href="https://makerdao.statuspage.io/"
+          target="_blank"
+          variant="footer"
+          p={2}
+          sx={{ fontWeight: 400 }}
+        >
+          Status
+        </NavLink>
         <div sx={{ mx: 'auto' }} />
         <div sx={{ p: 2 }}>© 2020 Maker</div>
       </footer>

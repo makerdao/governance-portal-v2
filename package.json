@@ -12,8 +12,8 @@
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.32.5",
-    "@makerdao/dai-plugin-governance": "0.12.28",
+    "@makerdao/dai": "^0.32.6",
+    "@makerdao/dai-plugin-governance": "0.12.30",
     "@makerdao/dai-plugin-mcd": "^1.6.5",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",

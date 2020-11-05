@@ -22,7 +22,7 @@ const ReviewBoxCard = ({ children, ...props }) => (
   </Card>
 );
 
-export default function ({
+export default function ReviewBox({
   activePolls,
   polls,
   ...props

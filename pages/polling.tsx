@@ -250,15 +250,13 @@ const PollingOverview = ({ polls }: Props) => {
               </Flex>
             )}
           </Box>
-          <StickyColumn sx={{ pt: 3 }}>
-            <Stack gap={3}>
-              {account && bpi > 0 && (
-                <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
-              )}
-              <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
-              <ResourceBox />
-            </Stack>
-          </StickyColumn>
+          <Stack gap={3}>
+            {account && bpi > 0 && (
+              <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
+            )}
+            <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
+            <ResourceBox />
+          </Stack>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>

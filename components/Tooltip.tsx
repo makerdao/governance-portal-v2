@@ -9,7 +9,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box } from 'theme-ui';
 import { useState } from 'react';
 
-export default function ({ children, label, ...props }): JSX.Element {
+export default function TooltipComponent({ children, label, ...props }): JSX.Element {
   const bpi = useBreakpointIndex();
   const [isOpen, setOpen] = useState(false);
   return bpi === 0 ? (

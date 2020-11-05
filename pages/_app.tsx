@@ -12,10 +12,10 @@ import { fetchJson } from '../lib/utils';
 import theme from '../lib/theme';
 import Header from '../components/Header';
 import Head from 'next/head';
+import debug from 'debug';
+const vitalslog = debug('govpo:vitals');
 
-export function reportWebVitals(metric) {
-  console.log(metric);
-}
+export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const dev = process.env.NODE_ENV === 'development';
@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <SWRConfig
         value={{
-          refreshInterval: 2000,
+          refreshInterval: 5000,
           fetcher: url => fetchJson(url)
         }}
       >

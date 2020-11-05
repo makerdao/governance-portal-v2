@@ -7,7 +7,7 @@ import Delay from '../../../components/Delay';
 import PollTally from '../../../types/pollTally';
 import Poll from '../../../types/poll';
 
-export default function ({
+export default function VoteBreakdown({
   poll,
   shownOptions,
   tally,

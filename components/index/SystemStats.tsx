@@ -4,7 +4,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../../lib/maker';
-import { bigNumberKFormat } from '../../lib/utils';
 import CurrencyObject from '../../types/currency';
 
 async function getSystemStats(): Promise<CurrencyObject[]> {
@@ -25,7 +24,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export default function (): JSX.Element {
+export default function SystemStats(): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats-index', getSystemStats);
   const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
 
@@ -64,13 +63,13 @@ export default function (): JSX.Element {
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}
+                {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}
+                {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
@@ -105,11 +104,15 @@ export default function (): JSX.Element {
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Total Dai</Text>
-            <Text sx={{ fontSize: 2 }}>{data ? `${bigNumberKFormat(totalDai)} DAI` : <Skeleton />}</Text>
+            <Text sx={{ fontSize: 2 }}>
+              {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+            </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-            <Text sx={{ fontSize: 2 }}>{data ? `${bigNumberKFormat(debtCeiling)} DAI` : <Skeleton />}</Text>
+            <Text sx={{ fontSize: 2 }}>
+              {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+            </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>System Surplus</Text>

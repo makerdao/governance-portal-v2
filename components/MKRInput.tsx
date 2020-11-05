@@ -10,11 +10,12 @@ type Props = {
   min?: CurrencyObject;
   max?: CurrencyObject;
   error?: string | false;
+  style?: {} 
 };
 
 const MKRInput = forwardRef<HTMLInputElement, Props>(
   ({ placeholder = '0.00', error, ...props }: Props, ref): JSX.Element => {
-    const { onChange, min, max } = props;
+    const { onChange, min, max, style } = props;
     const [currentValueStr, setCurrentValueStr] = useState('');
 
     function updateValue(e: { currentTarget: { value: string } }) {
@@ -31,7 +32,7 @@ const MKRInput = forwardRef<HTMLInputElement, Props>(
       onChange(newValue);
       setCurrentValueStr(newValueStr);
     }
-
+    
     return (
       <Box>
         <Input
@@ -41,6 +42,7 @@ const MKRInput = forwardRef<HTMLInputElement, Props>(
           onChange={updateValue}
           value={currentValueStr}
           placeholder={placeholder}
+          sx={style}
         />
         {error && <Text sx={{ color: 'error', fontSize: 2 }}>{error}</Text>}
       </Box>

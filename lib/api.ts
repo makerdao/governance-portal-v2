@@ -122,7 +122,6 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
         const summary = pollMeta?.summary || '';
         const title = pollMeta?.title || '';
         const options = pollMeta.options;
-        delete options[0]; // delete abstain option
         const discussionLink =
           pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
             ? pollMeta.discussion_link
@@ -155,11 +154,11 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
 
   console.log(
     `\n 
-    ---
-    Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
-    This could be because the document link from the poll is no longer valid.
-    The following are the missing poll ids: ${failedPollIds}.
-    ---`
+---
+Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
+This could be because the document link from the poll is no longer valid.
+The following are the missing poll ids: ${failedPollIds}.
+---`
   );
 
   return (

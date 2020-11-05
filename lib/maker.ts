@@ -1,7 +1,6 @@
 import Maker from '@makerdao/dai';
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
-import GovernancePlugin from '@makerdao/dai-plugin-governance';
-import Router from 'next/router';
+import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
 import { Web3ReactPlugin } from './maker/web3react';
 
 import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
@@ -9,7 +8,7 @@ import { networkToRpc } from './maker/network';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
-export const MKR = Maker.MKR;
+export { MKR };
 
 function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
