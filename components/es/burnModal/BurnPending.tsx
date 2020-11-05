@@ -19,7 +19,7 @@ const BurnPending = ({ tx, close }) => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Burned MKR amounts update once the blockchain has confirmed the transaction.
+        Burned MKR amounts will update once the blockchain has confirmed the transaction.
       </Text>
       <Link
         target="_blank"
