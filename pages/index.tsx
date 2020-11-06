@@ -32,7 +32,6 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
-  console.log(proposals, 'proposals – landing – render');
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
 
@@ -320,7 +319,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     getPolls(),
     getPostsAndPhotos()
   ]);
-  console.log(proposals, 'proposals – landing – getStaticProps');
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds

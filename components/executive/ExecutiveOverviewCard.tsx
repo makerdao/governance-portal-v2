@@ -62,104 +62,87 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
       href={{ pathname: '/executive/[proposal-id]', query: { network } }}
       as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
     >
-      <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
-        <Card
-          sx={{
-            p: [0, 0],
-            cursor: 'pointer',
-            '&:hover': {
-              borderColor: 'onSecondary'
-            }
-          }}
-          {...props}
-        >
-          <Flex px={[3, 4]} py={[3, spellData?.hasBeenCast ? 3 : 4]} sx={{ justifyContent: 'space-between' }}>
-            <Stack gap={2}>
-              <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                  posted {formatDateWithTime(proposal.date)}
-                </Text>
-              </Flex>
-              <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
-                  {proposal.title}
-                </Text>
-              </Box>
-              <Text
-                sx={{
-                  fontSize: [2, 3],
-                  color: 'onSecondary'
-                }}
-              >
-                {proposal.proposalBlurb}
+      <Card
+        sx={{
+          p: [0, 0],
+          cursor: 'pointer',
+          '&:hover': {
+            borderColor: 'onSecondary'
+          }
+        }}
+        {...props}
+      >
+        <Flex px={[3, 4]} py={[3, spellData?.hasBeenCast ? 3 : 4]} sx={{ justifyContent: 'space-between' }}>
+          <Stack gap={2}>
+            <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+              <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                posted {formatDateWithTime(proposal.date)}
               </Text>
-              <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                {hasVotedFor && (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      color: 'primary',
-                      borderColor: 'primary',
-                      textTransform: 'uppercase',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      m: 1
-                    }}
-                  >
-                    <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                      <Icon name="verified" size={3} />
-                    </Flex>
-                    Your Vote
-                  </Badge>
-                )}
-                {isHat ? (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      m: 1,
-                      borderColor: 'primaryAlt',
-                      color: 'primaryAlt',
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    Governing proposal
-                  </Badge>
-                ) : null}
-                {spellData?.mkrSupport === undefined ? (
-                  <Box sx={{ width: 6, m: 1 }}>
-                    <Skeleton />
-                  </Box>
-                ) : (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      borderColor: 'text',
-                      textTransform: 'uppercase',
-                      m: 1
-                    }}
-                  >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
-                  </Badge>
-                )}
-              </Flex>
-              {canVote && bpi === 0 && (
-                <Box sx={{ pt: 2 }}>
-                  <Button
-                    variant="primaryOutline"
-                    sx={{ width: '100%' }}
-                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
-                    onClick={ev => {
-                      setVoting(true);
-                      ev.stopPropagation();
-                    }}
-                  >
-                    Vote
-                  </Button>
-                </Box>
+            </Flex>
+            <Box>
+              <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
+                {proposal.title}
+              </Text>
+            </Box>
+            <Text
+              sx={{
+                fontSize: [2, 3],
+                color: 'onSecondary'
+              }}
+            >
+              {proposal.proposalBlurb}
+            </Text>
+            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    m: 1
+                  }}
+                >
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
               )}
-            </Stack>
-            {canVote && bpi > 0 && (
-              <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
+              {isHat ? (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    m: 1,
+                    borderColor: 'primaryAlt',
+                    color: 'primaryAlt',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  Governing proposal
+                </Badge>
+              ) : null}
+              {spellData?.mkrSupport === undefined ? (
+                <Box sx={{ width: 6, m: 1 }}>
+                  <Skeleton />
+                </Box>
+              ) : (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    borderColor: 'text',
+                    textTransform: 'uppercase',
+                    m: 1
+                  }}
+                >
+                  {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
+                </Badge>
+              )}
+            </Flex>
+            {canVote && bpi === 0 && (
+              <Box sx={{ pt: 2 }}>
                 <Button
                   variant="primaryOutline"
                   sx={{ width: '100%' }}
@@ -171,30 +154,45 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                 >
                   Vote
                 </Button>
-              </Flex>
+              </Box>
             )}
-          </Flex>
-          {voting && (
-            <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
+          </Stack>
+          {canVote && bpi > 0 && (
+            <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
+              <Button
+                variant="primaryOutline"
+                sx={{ width: '100%' }}
+                disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+                onClick={ev => {
+                  setVoting(true);
+                  ev.stopPropagation();
+                }}
+              >
+                Vote
+              </Button>
+            </Flex>
           )}
+        </Flex>
+        {voting && (
+          <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
+        )}
 
-          {spellData?.hasBeenCast && (
-            <>
-              <Divider my={0} />
-              <Flex p={3} sx={{ justifyContent: 'center' }}>
-                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                  Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                  {typeof spellData.dateExecuted === 'string' ? (
-                    <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-                  ) : (
-                    <>Available for execution on {formatDateWithTime(spellData.eta)}.</>
-                  )}
-                </Text>
-              </Flex>
-            </>
-          )}
-        </Card>
-      </InternalLink>
+        {spellData?.hasBeenCast && (
+          <>
+            <Divider my={0} />
+            <Flex p={3} sx={{ justifyContent: 'center' }}>
+              <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+                {typeof spellData.dateExecuted === 'string' ? (
+                  <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+                ) : (
+                  <>Available for execution on {formatDateWithTime(spellData.eta)}.</>
+                )}
+              </Text>
+            </Flex>
+          </>
+        )}
+      </Card>
     </Link>
   );
 }
