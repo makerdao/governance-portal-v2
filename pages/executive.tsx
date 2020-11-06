@@ -28,6 +28,7 @@ import { fetchJson } from '../lib/utils';
 import Head from 'next/head';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+  console.log(proposals, 'proposals – exec overview');
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
@@ -248,6 +249,7 @@ export default function ExecutiveOverviewPage({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
+  console.log(proposals, 'proposals – exec overview – getStaticProps');
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
