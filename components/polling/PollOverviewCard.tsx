@@ -15,6 +15,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from '../../stores/accounts';
 import useBallotStore from '../../stores/ballot';
 import QuickVote from './QuickVote';
+import mixpanel from 'mixpanel-browser';
 
 type Props = { poll: Poll; startMobileVoting?: () => void; reviewPage: boolean };
 export default function PollOverviewCard({
@@ -81,7 +82,14 @@ export default function PollOverviewCard({
               <Button
                 variant="outline"
                 mr={2}
-                onClick={startMobileVoting}
+                onClick={()=>{
+                  mixpanel.track('btn-click', {
+                    id: 'showHistoricalPolls',
+                    product: 'governance-portal-v2',
+                    page: 'Polling',
+                  });
+                  startMobileVoting && startMobileVoting();
+                }}
                 sx={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -93,7 +101,14 @@ export default function PollOverviewCard({
                 Edit Choices
               </Button>
             ) : (
-              <Button variant="primary" mr={2} px={4} onClick={startMobileVoting}>
+              <Button variant="primary" mr={2} px={4} onClick={()=>{
+                mixpanel.track('btn-click', {
+                  id: 'startMobileVoting',
+                  product: 'governance-portal-v2',
+                  page: 'Polling',
+                });
+                startMobileVoting && startMobileVoting();
+                }}>
                 Vote
               </Button>
             ))}

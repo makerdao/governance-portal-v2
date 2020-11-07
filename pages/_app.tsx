@@ -15,12 +15,29 @@ import Head from 'next/head';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
 import { mixpanelInit } from '../lib/analytics';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import mixpanel from 'mixpanel-browser';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const dev = process.env.NODE_ENV === 'development';
-  mixpanelInit();
+  const router = useRouter();
+  useEffect(() => {
+    mixpanelInit();
+    const handleRouteChange = (url) => {
+      console.log('route change!!');
+      mixpanel.track('route-change', {
+        id: url,
+        product: 'governance-portal-v2',
+      });
+    }
+    router.events.on('routeChangeStart', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [])
   return (
     <ThemeProvider theme={theme}>
       <Head>

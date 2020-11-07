@@ -29,6 +29,7 @@ import useUiFiltersStore from '../stores/uiFilters';
 import MobileVoteSheet from '../components/polling/MobileVoteSheet';
 import BallotStatus from '../components/polling/BallotStatus';
 import Head from 'next/head';
+import mixpanel from 'mixpanel-browser';
 
 type Props = {
   polls: Poll[];
@@ -188,7 +189,14 @@ const PollingOverview = ({ polls }: Props) => {
                     <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
                         Ended Polls
-                        <Button onClick={() => setShowHistorical(false)} variant="mutedOutline">
+                        <Button onClick={() => {
+                            mixpanel.track('btn-click', {
+                              id: 'hideHistoricalPolls',
+                              product: 'governance-portal-v2',
+                              page: 'Polling',
+                            });
+                            setShowHistorical(false);
+                          }} variant="mutedOutline">
                           Hide ended polls
                         </Button>
                       </Flex>
@@ -213,7 +221,14 @@ const PollingOverview = ({ polls }: Props) => {
                   </div>
                 ) : (
                   <Button
-                    onClick={() => setShowHistorical(true)}
+                    onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'showHistoricalPolls',
+                        product: 'governance-portal-v2',
+                        page: 'Polling',
+                      });
+                      setShowHistorical(true);
+                    }}
                     variant="outline"
                     sx={{ py: 3, display: historicalPolls.length > 0 ? null : 'none' }}
                   >

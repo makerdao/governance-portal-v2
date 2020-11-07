@@ -11,6 +11,7 @@ import useTransactionStore, { transactionsSelectors } from '../../stores/transac
 import { getEtherscanLink } from '../../lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
+import mixpanel from 'mixpanel-browser';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
@@ -63,7 +64,14 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
-              onClick={startReview}
+              onClick={()=>{
+                mixpanel.track('btn-click', {
+                  id: 'reviewAndSubmitBallot',
+                  product: 'governance-portal-v2',
+                  page: 'Polling',
+                });
+                startReview();
+              }}
               variant="primaryLarge"
               disabled={!ballotLength}
               sx={{ width: '100%', cursor: !ballotLength ? 'not-allowed' : 'pointer' }}

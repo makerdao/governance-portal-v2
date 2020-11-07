@@ -18,6 +18,7 @@ import useBallotStore from '../../stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
+import mixpanel from 'mixpanel-browser';
 
 type Props = {
   poll: Poll;
@@ -109,7 +110,14 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
           <Button
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
-            onClick={submit}
+            onClick={()=> {
+              mixpanel.track('btn-click', {
+                id: 'addVoteToBallot',
+                product: 'governance-portal-v2',
+                page: 'Polling',
+              });
+              submit();
+            }}
             mt={gap}
             disabled={!isChoiceValid}
           >

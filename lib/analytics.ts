@@ -22,5 +22,5 @@ export const mixpanelInit = () => {
     `[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`
   );
   mixpanel.init(config.mixpanel.token, config.mixpanel.config);
-  mixpanel.track('Pageview', { product: 'governance-portal-v2' });
+  mixpanel.track('Pageview', { product: 'governance-portal-v2'});
 };

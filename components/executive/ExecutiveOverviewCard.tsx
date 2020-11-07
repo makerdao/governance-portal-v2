@@ -15,6 +15,7 @@ import useAccountsStore from '../../stores/accounts';
 import VoteModal from './VoteModal';
 import { useState } from 'react';
 import SpellData from '../../types/spellData';
+import mixpanel from 'mixpanel-browser';
 
 type Props = {
   proposal: Proposal;
@@ -148,6 +149,11 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   sx={{ width: '100%' }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
+                    mixpanel.track('btn-click', {
+                      id: 'openExecVoteModal',
+                      product: 'governance-portal-v2',
+                      page: 'Executive',
+                    });
                     setVoting(true);
                     ev.stopPropagation();
                   }}

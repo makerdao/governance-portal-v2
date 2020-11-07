@@ -3,6 +3,7 @@ import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import { ABSTAIN } from '../../lib/constants';
+import mixpanel from 'mixpanel-browser';
 
 const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
@@ -24,7 +25,14 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
         ))
       )}
       <Button
-        onClick={edit}
+        onClick={()=>{
+          mixpanel.track('btn-click', {
+            id: 'editChoice',
+            product: 'governance-portal-v2',
+            page: 'PollingReview',
+          });
+          edit();
+        }}
         variant={props.showHeader ? 'smallOutline' : 'outline'}
         sx={{
           display: voteIsPending ? 'none' : 'inline-flex',

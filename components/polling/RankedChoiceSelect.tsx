@@ -9,6 +9,7 @@ import omitBy from 'lodash/omitBy';
 import { getNumberWithOrdinal } from '../../lib/utils';
 import Poll from '../../types/poll';
 import Stack from '../layouts/Stack';
+import mixpanel from 'mixpanel-browser';
 
 type RankedChoiceSelectProps = {
   poll: Poll;
@@ -105,6 +106,11 @@ export default function RankedChoiceSelect({
           color="primary"
           variant="caps"
           onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'addAnotherRankedChoice',
+              product: 'governance-portal-v2',
+              page: 'Polling',
+            });
             setShowListboxInput(true);
           }}
           sx={{

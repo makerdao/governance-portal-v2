@@ -17,6 +17,7 @@ import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '../../stores/transactions';
 import { changeInputValue } from '../../lib/utils';
 import invariant from 'tiny-invariant';
+import mixpanel from 'mixpanel-browser';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
@@ -127,6 +128,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
+            mixpanel.track('btn-click', {
+              id: 'withdrawMkr',
+              product: 'governance-portal-v2',
+              page: 'Executive',
+            });
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy
@@ -166,6 +172,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
+            mixpanel.track('btn-click', {
+              id: 'approveWithdraw',
+              product: 'governance-portal-v2',
+              page: 'Executive',
+            });
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker

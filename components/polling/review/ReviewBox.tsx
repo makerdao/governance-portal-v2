@@ -15,6 +15,7 @@ import useTransactionStore, { transactionsSelectors } from '../../../stores/tran
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
+import mixpanel from 'mixpanel-browser';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -57,7 +58,14 @@ export default function ReviewBox({
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
-            onClick={submitBallot}
+            onClick={() => {
+              mixpanel.track('btn-click', {
+                id: 'submitBallot',
+                product: 'governance-portal-v2',
+                page: 'PollingReview',
+              });
+              submitBallot();
+            }}
             variant="primaryLarge"
             disabled={!ballotLength || !!voteTxId}
             sx={{ width: '100%' }}
@@ -138,7 +146,15 @@ export default function ReviewBox({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button onClick={submitBallot} variant="primaryLarge" disabled={!ballotLength} sx={{ width: '100%' }}>
+        <Button onClick={() => {
+          mixpanel.track('btn-click', {
+            id: 'submitBallot',
+            product: 'governance-portal-v2',
+            page: 'PollingReview',
+          });
+          submitBallot();
+          }}
+          variant="primaryLarge" disabled={!ballotLength} sx={{ width: '100%' }}>
           Submit Your Ballot
         </Button>
       </Flex>

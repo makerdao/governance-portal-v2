@@ -30,6 +30,7 @@ import { getEtherscanLink, sortBytesArray, fetchJson } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
 import useAccountsStore from '../../stores/accounts';
 import Proposal, { CMSProposal } from '../../types/proposal';
+import mixpanel from 'mixpanel-browser';
 
 type Props = {
   close: () => void;
@@ -262,7 +263,14 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
           <Button
             variant="primaryLarge"
             sx={{ width: '100%' }}
-            onClick={() => vote(hatChecked, comment)}
+            onClick={() => {
+              mixpanel.track('btn-click', {
+                id: 'vote',
+                product: 'governance-portal-v2',
+                page: 'Executive',
+              });
+              vote(hatChecked, comment);
+            }}
             disabled={comment.length > 250}
           >
             {currentSlate.includes(proposal.address) && currentSlate.length > 1

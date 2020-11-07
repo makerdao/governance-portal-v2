@@ -24,6 +24,7 @@ import getMaker, { getNetwork } from '../../lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from '../../lib/animation/ballotSuccess.json';
 import { slideUp } from '../../lib/keyframes';
+import mixpanel from 'mixpanel-browser';
 
 enum ViewState {
   START,
@@ -215,7 +216,14 @@ export default function MobileVoteSheet({
               <Button
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={submit}
+                onClick={()=>{
+                  mixpanel.track('btn-click', {
+                    id: 'addVoteToBallot',
+                    product: 'governance-portal-v2',
+                    page: 'Polling',
+                  });
+                  submit();
+                }}
                 disabled={!isChoiceValid || viewState == ViewState.ADDING}
               >
                 {editingOnly ? 'Update vote' : 'Add vote to ballot'}

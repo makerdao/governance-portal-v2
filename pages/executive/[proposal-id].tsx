@@ -25,6 +25,7 @@ import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
+import mixpanel from 'mixpanel-browser';
 
 type Props = {
   proposal: Proposal;
@@ -128,7 +129,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         >
           <Button
             variant="primaryLarge"
-            onClick={() => setVoting(true)}
+            onClick={() => {
+              mixpanel.track('btn-click', {
+                id: 'openPollVoteModal',
+                product: 'governance-portal-v2',
+                page: 'PollDetail',
+              });
+              setVoting(true);
+            }}
             sx={{ width: '100%' }}
             disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
           >
@@ -190,7 +198,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   </Text>
                   <Button
                     variant="primaryLarge"
-                    onClick={() => setVoting(true)}
+                    onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'openPollVoteModal',
+                        product: 'governance-portal-v2',
+                        page: 'PollDetail',
+                      });
+                      setVoting(true);
+                    }}
                     sx={{ width: '100%', mt: 3 }}
                     disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   >

@@ -19,6 +19,7 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from '../
 import { changeInputValue } from '../../lib/utils';
 import { BoxWithClose } from './Withdraw';
 import invariant from 'tiny-invariant';
+import mixpanel from 'mixpanel-browser';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
@@ -122,6 +123,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
           onClick={async () => {
+            mixpanel.track('btn-click', {
+              id: 'DepositMkr',
+              product: 'governance-portal-v2',
+              page: 'Executive',
+            });
             const maker = await getMaker();
             const lockTxCreator = voteProxy
               ? () => voteProxy.lock(mkrToDeposit)
@@ -158,6 +164,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
+            mixpanel.track('btn-click', {
+              id: 'approveDeposit',
+              product: 'governance-portal-v2',
+              page: 'Executive',
+            });
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker

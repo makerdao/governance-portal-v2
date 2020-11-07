@@ -26,6 +26,7 @@ import useUiFiltersStore from '../stores/uiFilters';
 import SpellData from '../types/spellData';
 import { fetchJson } from '../lib/utils';
 import Head from 'next/head';
+import mixpanel from 'mixpanel-browser';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -168,7 +169,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 <div>
                   <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                     <Divider />
-                    <Button variant="mutedOutline" onClick={() => setShowHistorical(false)}>
+                    <Button variant="mutedOutline" onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'hideHistoricalExecs',
+                        product: 'governance-portal-v2',
+                        page: 'Executive',
+                      });
+                      setShowHistorical(false);
+                    }}>
                       View fewer proposals
                     </Button>
                     <Divider />
@@ -192,7 +200,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               ) : (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
-                  <Button variant="mutedOutline" onClick={() => setShowHistorical(true)}>
+                  <Button variant="mutedOutline" onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'showHistoricalExecs',
+                      product: 'governance-portal-v2',
+                      page: 'Executive',
+                    });
+                    setShowHistorical(true);
+                    }}>
                     View more proposals
                   </Button>
                   <Divider />
