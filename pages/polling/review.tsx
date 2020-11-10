@@ -13,7 +13,7 @@ import { isDefaultNetwork, getNetwork } from '../../lib/maker';
 import { getPolls } from '../../lib/api';
 import { isActivePoll, findPollById } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
+import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import PollOverviewCard from '../../components/polling/PollOverviewCard';
 import Poll from '../../types/poll';
@@ -43,7 +43,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
             mixpanel.track('btn-click', {
               id: 'submitBallot',
               product: 'governance-portal-v2',
-              page: 'PollingReview',
+              page: 'PollingReview'
             });
             submitBallot();
           }}
@@ -103,12 +103,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
             </Stack>
           </Box>
           {bpi >= 3 && !!account && (
-            <StickyColumn sx={{ pt: 3 }}>
+            <Box sx={{ pt: 3 }}>
               <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                 Submit Ballot
               </Heading>
               <ReviewBox polls={polls} activePolls={activePolls} />
-            </StickyColumn>
+            </Box>
           )}
         </SidebarLayout>
       </Stack>

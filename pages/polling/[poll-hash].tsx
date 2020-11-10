@@ -16,7 +16,7 @@ import { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { getPolls, getPoll } from '../../lib/api';
 import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
 import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout, { StickyColumn } from '../../components/layouts/Sidebar';
+import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
 import VotingStatus from '../../components/polling/PollVotingStatus';
@@ -273,13 +273,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             />
           </Card>
         </div>
-        <StickyColumn sx={{ pt: 3 }}>
-          <Stack gap={3}>
-            {!!account && bpi > 0 && <VoteBox poll={poll} />}
-            <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
-            <ResourceBox />
-          </Stack>
-        </StickyColumn>
+        <Stack gap={3}>
+          {!!account && bpi > 0 && <VoteBox poll={poll} />}
+          <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
+          <ResourceBox />
+        </Stack>
       </SidebarLayout>
     </PrimaryLayout>
   );

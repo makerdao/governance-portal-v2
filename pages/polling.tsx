@@ -15,7 +15,7 @@ import { isDefaultNetwork, getNetwork } from '../lib/maker';
 import { getPolls } from '../lib/api';
 import { isActivePoll, formatDateWithTime } from '../lib/utils';
 import PrimaryLayout from '../components/layouts/Primary';
-import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
+import SidebarLayout from '../components/layouts/Sidebar';
 import Stack from '../components/layouts/Stack';
 import PollOverviewCard from '../components/polling/PollOverviewCard';
 import DateFilter from '../components/polling/DateFilter';
@@ -189,14 +189,17 @@ const PollingOverview = ({ polls }: Props) => {
                     <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
                         Ended Polls
-                        <Button onClick={() => {
+                        <Button
+                          onClick={() => {
                             mixpanel.track('btn-click', {
                               id: 'hideHistoricalPolls',
                               product: 'governance-portal-v2',
-                              page: 'Polling',
+                              page: 'Polling'
                             });
                             setShowHistorical(false);
-                          }} variant="mutedOutline">
+                          }}
+                          variant="mutedOutline"
+                        >
                           Hide ended polls
                         </Button>
                       </Flex>
@@ -225,7 +228,7 @@ const PollingOverview = ({ polls }: Props) => {
                       mixpanel.track('btn-click', {
                         id: 'showHistoricalPolls',
                         product: 'governance-portal-v2',
-                        page: 'Polling',
+                        page: 'Polling'
                       });
                       setShowHistorical(true);
                     }}

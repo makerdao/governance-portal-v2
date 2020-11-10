@@ -20,7 +20,7 @@ import { getExecutiveProposals } from '../lib/api';
 import getMaker, { isDefaultNetwork, getNetwork } from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import Proposal, { CMSProposal } from '../types/proposal';
-import SidebarLayout, { StickyColumn } from '../components/layouts/Sidebar';
+import SidebarLayout from '../components/layouts/Sidebar';
 import useAccountsStore from '../stores/accounts';
 import useUiFiltersStore from '../stores/uiFilters';
 import SpellData from '../types/spellData';
@@ -169,14 +169,17 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 <div>
                   <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                     <Divider />
-                    <Button variant="mutedOutline" onClick={() => {
-                      mixpanel.track('btn-click', {
-                        id: 'hideHistoricalExecs',
-                        product: 'governance-portal-v2',
-                        page: 'Executive',
-                      });
-                      setShowHistorical(false);
-                    }}>
+                    <Button
+                      variant="mutedOutline"
+                      onClick={() => {
+                        mixpanel.track('btn-click', {
+                          id: 'hideHistoricalExecs',
+                          product: 'governance-portal-v2',
+                          page: 'Executive'
+                        });
+                        setShowHistorical(false);
+                      }}
+                    >
                       View fewer proposals
                     </Button>
                     <Divider />
@@ -200,14 +203,17 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               ) : (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
-                  <Button variant="mutedOutline" onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'showHistoricalExecs',
-                      product: 'governance-portal-v2',
-                      page: 'Executive',
-                    });
-                    setShowHistorical(true);
-                    }}>
+                  <Button
+                    variant="mutedOutline"
+                    onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'showHistoricalExecs',
+                        product: 'governance-portal-v2',
+                        page: 'Executive'
+                      });
+                      setShowHistorical(true);
+                    }}
+                  >
                     View more proposals
                   </Button>
                   <Divider />
@@ -215,14 +221,12 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               )}
             </Stack>
           </Box>
-          <StickyColumn>
-            <Stack gap={3}>
-              <SystemStatsSidebar
-                fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
-              />
-              <ResourceBox />
-            </Stack>
-          </StickyColumn>
+          <Stack gap={3}>
+            <SystemStatsSidebar
+              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+            />
+            <ResourceBox />
+          </Stack>
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
