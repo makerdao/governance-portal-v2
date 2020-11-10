@@ -27,7 +27,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     mixpanelInit();
     const handleRouteChange = (url) => {
-      console.log('route change!!');
       mixpanel.track('route-change', {
         id: url,
         product: 'governance-portal-v2',

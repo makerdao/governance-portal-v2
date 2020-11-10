@@ -40,6 +40,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
 
   const { data: stateDiff, error: stateDiffError } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
@@ -57,7 +58,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       getMaker().then(maker =>
         maker
           .service('chief')
-          .getVotedSlate(address)
+          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
           .then(slate => maker.service('chief').getSlateAddresses(slate))
       )
   );
