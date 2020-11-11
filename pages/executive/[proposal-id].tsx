@@ -253,7 +253,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       color: 'onSecondary'
                     }}
                   >
-                    No supporters found
+                    List of supporters currently unavailable
                   </Flex>
                 ) : (
                   <Flex
