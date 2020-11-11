@@ -63,7 +63,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       .map(() => '0')
       .join('')}${usr.replace('0x', '')}`;
 
-    const [{ transactionHash, blockNumber }] = await provider.getLogs({
+    const [{ transactionHash, blockNumber }] = await new ethers.providers.InfuraProvider(
+      network,
+      process.env.INFURA_KEY
+    ).getLogs({
       address: MCD_PAUSE,
       fromBlock: 0,
       toBlock: 'latest',
