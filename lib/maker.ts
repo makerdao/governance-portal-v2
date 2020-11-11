@@ -69,7 +69,7 @@ function getMaker(): Promise<Maker> {
         Web3ReactPlugin
       ],
       provider: {
-        url: networkToRpc(getNetwork()),
+        url: networkToRpc(getNetwork(), 'alchemy'),
         type: 'HTTP'
       },
       web3: {

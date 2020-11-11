@@ -19,7 +19,7 @@ export async function getConnectedMakerObj(network: SupportedNetworks): Promise<
       [GovernancePlugin, { network, staging: !process.env.USE_PROD_SPOCK }]
     ],
     provider: {
-      url: networkToRpc(network),
+      url: networkToRpc(network, 'alchemy'),
       type: 'HTTP'
     },
     web3: {

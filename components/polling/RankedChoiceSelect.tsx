@@ -109,7 +109,7 @@ export default function RankedChoiceSelect({
             mixpanel.track('btn-click', {
               id: 'addAnotherRankedChoice',
               product: 'governance-portal-v2',
-              page: 'Polling',
+              page: 'Polling'
             });
             setShowListboxInput(true);
           }}
