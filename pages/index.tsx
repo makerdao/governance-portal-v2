@@ -96,6 +96,41 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             </Text>
           </Badge>
         </Flex>
+        <Flex sx={{ justifyContent: 'center', mt: 5 }}>
+          <Badge
+            variant="primary"
+            sx={{
+              textTransform: 'none',
+              textAlign: 'center',
+              color: '#AE3C4B',
+              borderColor: '#AE3C4B',
+              borderRadius: '50px',
+              width: '1020px',
+              whiteSpace: 'normal',
+              fontWeight: 'bold',
+              fontSize: [1, 2],
+              py: 2,
+              px: [3, 4],
+              mt: ['-10px', '-25px']
+            }}
+          >
+            <Text sx={{ display: ['block', 'none'] }}>
+              We are currently experiencing issues with Infura when connecting with Metamask. If you are using
+              Metamask, please create a Custom RPC, you can see how to{' '}
+              <Link href="https://www.notion.so/makerdao/How-to-connect-MetaMask-to-a-Custom-RPC-da53e6f2d1f54fb7abf38decc645a80c">
+                <a target="_blank">here</a>
+              </Link>
+              .
+            </Text>
+            <Text sx={{ display: ['none', 'block'] }}>
+              We are currently experiencing issues with Infura when connecting with Metamask. If you are using
+              Metamask, please create a Custom RPC, you can see how to{' '}
+              <Link href="https://www.notion.so/makerdao/How-to-connect-MetaMask-to-a-Custom-RPC-da53e6f2d1f54fb7abf38decc645a80c">
+                <a target="_blank">here</a>
+              </Link>
+            </Text>
+          </Badge>
+        </Flex>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
