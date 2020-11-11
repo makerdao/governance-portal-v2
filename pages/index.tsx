@@ -115,19 +115,14 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             }}
           >
             <Text sx={{ display: ['block', 'none'] }}>
-              We are currently experiencing issues with Infura when connecting with Metamask. If you are using
-              Metamask, please create a Custom RPC, you can see how to{' '}
-              <Link href="https://www.notion.so/makerdao/How-to-connect-MetaMask-to-a-Custom-RPC-da53e6f2d1f54fb7abf38decc645a80c">
-                <a target="_blank">here</a>
-              </Link>
-              .
+              The recent issues with Infura have now been resolved. If you are using Metamask, and switched to
+              a custom RPC using our provided Alchemy endpoint, please switch back to Metamask Mainnet as
+              access to our Alchemy endpoint provided will soon be revoked.
             </Text>
             <Text sx={{ display: ['none', 'block'] }}>
-              We are currently experiencing issues with Infura when connecting with Metamask. If you are using
-              Metamask, please create a Custom RPC, you can see how to{' '}
-              <Link href="https://www.notion.so/makerdao/How-to-connect-MetaMask-to-a-Custom-RPC-da53e6f2d1f54fb7abf38decc645a80c">
-                <a target="_blank">here</a>
-              </Link>
+              The recent issues with Infura have now been resolved. If you are using Metamask, and switched to
+              a custom RPC using our provided Alchemy endpoint, please switch back to Metamask Mainnet as
+              access to our Alchemy endpoint provided will soon be revoked.
             </Text>
           </Badge>
         </Flex>

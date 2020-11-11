@@ -27,7 +27,7 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
   [
     'WalletConnect',
     new WalletConnectConnector({
-      rpc: { 1: networkToRpc(SupportedNetworks.MAINNET, 'alchemy') },
+      rpc: { 1: networkToRpc(SupportedNetworks.MAINNET, 'infura') },
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true,
       pollingInterval: POLLING_INTERVAL
@@ -36,7 +36,7 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
   [
     'WalletLink',
     new WalletLinkConnector({
-      url: networkToRpc(SupportedNetworks.MAINNET, 'alchemy'),
+      url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
       appName: 'vote.makerdao.com'
     })
   ]
