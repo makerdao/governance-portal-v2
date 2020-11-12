@@ -64,6 +64,7 @@
     "eslint-plugin-react": "^7.20.5",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "jest-canvas-mock": "^2.3.0",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "typescript": "^3.9.3",
