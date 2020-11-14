@@ -13,6 +13,7 @@ import Withdraw from '../components/executive/Withdraw';
 import ProposalsSortBy from '../components/executive/ProposalsSortBy';
 import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
+import MkrLiquiditySidebar from '../components/MkrLiquiditySidebar';
 import ResourceBox from '../components/ResourceBox';
 import Stack from '../components/layouts/Stack';
 import ExecutiveOverviewCard from '../components/executive/ExecutiveOverviewCard';
@@ -224,6 +225,9 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           <Stack gap={3}>
             <SystemStatsSidebar
               fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+            />
+            <MkrLiquiditySidebar
+              fields={['MKR in Aave', 'MKR in Balancer', 'MKR in Uniswap']}
             />
             <ResourceBox />
           </Stack>
