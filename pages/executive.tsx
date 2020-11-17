@@ -226,9 +226,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             <SystemStatsSidebar
               fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
-            <MkrLiquiditySidebar
-              fields={['MKR in Aave', 'MKR in Balancer', 'MKR in Uniswap']}
-            />
+            <MkrLiquiditySidebar/>
             <ResourceBox />
           </Stack>
         </SidebarLayout>

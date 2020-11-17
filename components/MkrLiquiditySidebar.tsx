@@ -46,62 +46,31 @@ async function getMkrLiquidity() {
   const maker = await getMaker();
   return Promise.all([
     maker.service('token').getToken(MKR).balanceOf(aaveLendingPoolCore),
-    getBalancerMkr(),
     maker.service('token').getToken(MKR).balanceOf(uniswapV2MkrPool)
   ]);
 }
 
-type StatField = 'MKR in Aave' | 'MKR in Balancer' | 'MKR in Uniswap';
+export default function SystemStatsSidebar({ ...props }): JSX.Element {
+  const { data: nonBalancer } = useSWR<CurrencyObject[]>('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
+  const { data: balancer } = useSWR<CurrencyObject>('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
+  const [aave, uniswap] = nonBalancer || [];
+  let mkrPools = [['Balancer', balancer], ['Aave', aave], ['Uniswap V2', uniswap]];
+  if (nonBalancer && balancer) mkrPools = mkrPools.sort((a,b) => b[1].toBigNumber().minus(a[1].toBigNumber()));
 
-export default function SystemStatsSidebar({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
-  const { data } = useSWR<CurrencyObject[]>('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
-  const [aave, balancer, uniswap] = data || [];
-  const statsMap = {
-    'MKR in Aave': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Aave</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {aave ? (
-            `${aave.toBigNumber().toFormat(0)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
-
-    'MKR in Balancer': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Balancer</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {balancer ? (
-            `${balancer.toBigNumber().toFormat(0)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
-
-    'MKR in Uniswap': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Uniswap V2</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {uniswap ? (
-            `${uniswap.toBigNumber().toFormat(0)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    )
-    };
+  const PoolComponent = pool => (
+    <Flex key={pool[0]} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+      <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in {pool[0]}</Text>
+      <Text variant="h2" sx={{ fontSize: 3 }}>
+        {pool[1] ? (
+          `${pool[1].toBigNumber().toFormat(0)} MKR`
+        ) : (
+          <Box sx={{ width: 6 }}>
+            <Skeleton />
+          </Box>
+        )}
+      </Text>
+    </Flex>
+  );
 
   return (
     <>
@@ -110,7 +79,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
             MKR Liquidity
           </Heading>
         <Card variant="compact">
-          <Stack gap={3}>{fields.map(field => statsMap[field](field))}</Stack>
+          <Stack gap={3}>{mkrPools.map(p => PoolComponent(p))}</Stack>
         </Card>
       </Box>
     </>
