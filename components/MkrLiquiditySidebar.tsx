@@ -51,11 +51,11 @@ async function getMkrLiquidity() {
 }
 
 export default function SystemStatsSidebar({ ...props }): JSX.Element {
-  const { data: nonBalancer } = useSWR<CurrencyObject[]>('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
-  const { data: balancer } = useSWR<CurrencyObject>('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
+  const { data: nonBalancer } = useSWR('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
+  const { data: balancer } = useSWR('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
   const [aave, uniswap] = nonBalancer || [];
-  let mkrPools = [['Balancer', balancer], ['Aave', aave], ['Uniswap V2', uniswap]];
-  if (nonBalancer && balancer) mkrPools = mkrPools.sort((a,b) => b[1].toBigNumber().minus(a[1].toBigNumber()));
+  let mkrPools = [['Balancer', balancer], ['Aave', aave], ['Uniswap V2', uniswap]]
+    .sort((a,b) => a[1] && b[1] && b[1].toBigNumber().minus(a[1].toBigNumber()));
 
   const PoolComponent = pool => (
     <Flex key={pool[0]} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
