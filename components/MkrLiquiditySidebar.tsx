@@ -1,11 +1,9 @@
 /** @jsx jsx */
-import { Card, Flex, Link as ExternalLink, Text, Box, Heading, jsx } from 'theme-ui';
+import { Card, Flex, Text, Box, Heading, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
-
 import Stack from './layouts/Stack';
-import getMaker, { DAI } from '../lib/maker';
-import CurrencyObject from '../types/currency';
+import getMaker from '../lib/maker';
 import { MKR } from '../lib/maker';
 const axios = require('axios');
 
@@ -50,7 +48,7 @@ async function getMkrLiquidity() {
   ]);
 }
 
-export default function SystemStatsSidebar({ ...props }): JSX.Element {
+export default function MkrLiquiditySidebar({ ...props }): JSX.Element {
   const { data: nonBalancer } = useSWR('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
   const { data: balancer } = useSWR('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
   const [aave, uniswap] = nonBalancer || [];
