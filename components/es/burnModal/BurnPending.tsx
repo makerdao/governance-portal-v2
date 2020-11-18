@@ -1,6 +1,8 @@
 /** @jsx jsx */
 import { Flex, Button, Text, jsx, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+
+import TxIndicators from '../../TxIndicators';
 import { getNetwork } from '../../../lib/maker';
 import { getEtherscanLink } from '../../../lib/utils';
 import { TXMined } from '../../../types/transaction';
@@ -17,7 +19,9 @@ const BurnPending = ({ tx, close }) => (
       Transaction Sent!
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+      <Flex sx={{ justifyContent: 'center', my: 4 }}>
+        <TxIndicators.Pending sx={{ width: 6 }} />
+      </Flex>
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
         Burned MKR amounts will update once the blockchain has confirmed the transaction.
       </Text>
