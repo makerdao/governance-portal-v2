@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { GetStaticProps } from 'next';
 import useSWR from 'swr';
@@ -28,6 +28,8 @@ import SpellData from '../types/spellData';
 import { fetchJson } from '../lib/utils';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
+import { MKR } from '../lib/maker';
+import oldChiefAbi from '../lib/oldChiefAbi.json'
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -36,10 +38,18 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
+  const oldChiefAddress = {'mainnet': '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5', 'kovan': '0xbbffc76e94b34f72d96d054b31f6424249c1337d'};
+
   const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
     getMaker().then(maker =>
       voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
+    )
+  );
+
+  const { data: lockedMkrOldChief } = useSWR(lockedMkrKey ? ['/user/mkr-locked-old-chief', lockedMkrKey] : null, (_, address) =>
+  getMaker().then(maker =>
+      maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).deposits(lockedMkrKey).then(MKR.wei)
     )
   );
 
@@ -116,11 +126,37 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
+  const CHIEF_MIGRATION_FF = false;
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
         <title>Maker Governance - Executive Proposals</title>
       </Head>
+      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.gt(0) ? (
+        <Flex sx={{ justifyContent: 'center' }}>
+          <Badge
+            variant="primary"
+            sx={{
+              textTransform: 'none',
+              borderColor: 'primary',
+              borderRadius: 'small',
+              width: '100%',
+              whiteSpace: 'normal',
+              fontWeight: 'normal',
+              fontSize: [1, 2],
+              py: 3,
+              px: [3, 4],
+              mt: ['-10px', '-25px'],
+              my: 3
+            }}
+          >
+            <Text>
+            An executive vote has passed to update the Chief to a new version. You have <b>{lockedMkrOldChief.toBigNumber().toFormat(2)} MKR</b> to withdraw from the old chief.
+            </Text>
+          </Badge>
+        </Flex>) : <Flex/>
+      }
       <Stack>
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
