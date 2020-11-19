@@ -52,34 +52,35 @@ export default function MkrLiquiditySidebar({ ...props }): JSX.Element {
   const { data: nonBalancer } = useSWR('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
   const { data: balancer } = useSWR('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
   const [aave, uniswap] = nonBalancer || [];
-  let mkrPools = [['Balancer', balancer], ['Aave', aave], ['Uniswap V2', uniswap]]
-    .sort((a,b) => a[1] && b[1] && b[1].toBigNumber().minus(a[1].toBigNumber()));
+  const mkrPools = [['Balancer', balancer], ['Aave', aave], ['Uniswap V2', uniswap]]
+    .sort((a,b) => a[1] && b[1] && b[1].toBigNumber().minus(a[1].toBigNumber()).toNumber());
 
-  const PoolComponent = pool => (
-    <Flex key={pool[0]} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-      <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in {pool[0]}</Text>
-      <Text variant="h2" sx={{ fontSize: 3 }}>
-        {pool[1] ? (
-          `${pool[1].toBigNumber().toFormat(0)} MKR`
-        ) : (
-          <Box sx={{ width: 6 }}>
-            <Skeleton />
-          </Box>
-        )}
-      </Text>
-    </Flex>
-  );
+  const PoolComponent = pool => {
+    const [poolName, poolLiquidity] = pool;
+    return (
+      <Flex key={poolName} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in {poolName}</Text>
+        <Text variant="h2" sx={{ fontSize: 3 }}>
+          {poolLiquidity ? (
+            `${poolLiquidity.toBigNumber().toFormat(0)} MKR`
+          ) : (
+            <Box sx={{ width: 6 }}>
+              <Skeleton />
+            </Box>
+          )}
+        </Text>
+      </Flex>
+    );
+  };
 
   return (
-    <>
-      <Box sx={{ display: ['none', 'block'] }} {...props}>
-          <Heading as="h3" variant="microHeading" sx={{mb: 2, mt: 3}} >
-            MKR Liquidity
-          </Heading>
-        <Card variant="compact">
-          <Stack gap={3}>{mkrPools.map(p => PoolComponent(p))}</Stack>
-        </Card>
-      </Box>
-    </>
+    <Box sx={{ display: ['none', 'block'] }} {...props}>
+        <Heading as="h3" variant="microHeading" sx={{mb: 2, mt: 3}} >
+          MKR Liquidity
+        </Heading>
+      <Card variant="compact">
+        <Stack gap={3}>{mkrPools.map(p => PoolComponent(p))}</Stack>
+      </Card>
+    </Box>
   );
 }
