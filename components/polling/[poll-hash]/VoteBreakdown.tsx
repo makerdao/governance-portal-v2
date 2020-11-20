@@ -40,8 +40,7 @@ export default function VoteBreakdown({
                 <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                   {tally ? (
                     `${tally.results[i].firstChoice
-                      .add(tally.results[i].transfer)
-                      .toBigNumber()
+                      .plus(tally.results[i].transfer)
                       .toFormat(2)} MKR Voting (${tally.results[i].firstPct
                       .plus(tally.results[i].transferPct)
                       .toFixed(2)}%)`
@@ -55,34 +54,46 @@ export default function VoteBreakdown({
 
               {tally ? (
                 <Box sx={{ position: 'relative', mb: 4 }}>
-                  <Tooltip label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}>
+                  <Tooltip
+                    label={`First choice ${tally.results[i].firstChoice.toFormat(
+                      2
+                    )}; Transfer ${tally.results[i].transfer.toFormat(2)}`}
+                  >
                     <Box my={2}>
-                      <Progress
-                        sx={{
-                          backgroundColor: 'muted',
-                          height: 2,
-                          color: 'primary',
-                          zIndex: 2,
-                          position: 'absolute'
-                        }}
-                        max={tally.totalMkrParticipation.toBigNumber()}
-                        value={tally.results[i].firstChoice.toBigNumber()}
-                      />
-                    </Box>
-                  </Tooltip>
-                  <Tooltip label={`Transfer ${tally.results[i].transfer.toBigNumber().toFormat(2)}`}>
-                    <Box my={2}>
-                      <Progress
-                        sx={{
-                          backgroundColor: 'muted',
-                          height: 2,
-                          color: 'primaryMuted',
-                          zIndex: 1,
-                          position: 'absolute'
-                        }}
-                        max={tally.totalMkrParticipation.toBigNumber()}
-                        value={tally.results[i].firstChoice.add(tally.results[i].transfer).toBigNumber()}
-                      />
+                      <Box>
+                        <Progress
+                          sx={{
+                            backgroundColor: 'transparent',
+                            height: 2,
+                            color: 'primary',
+                            zIndex: 2,
+                            position: 'absolute'
+                          }}
+                          max={tally.totalMkrParticipation.toBigNumber()}
+                          value={
+                            tally.results[i].transfer.lt(0)
+                              ? tally.results[i].firstChoice.plus(tally.results[i].transfer).toNumber()
+                              : tally.results[i].firstChoice.toNumber()
+                          }
+                        />
+                      </Box>
+                      <Box>
+                        <Progress
+                          sx={{
+                            backgroundColor: 'muted',
+                            height: 2,
+                            color: 'mutedAlt',
+                            zIndex: 1,
+                            position: 'absolute'
+                          }}
+                          max={tally.totalMkrParticipation.toBigNumber()}
+                          value={
+                            tally.results[i].transfer.lt(0)
+                              ? tally.results[i].firstChoice.toNumber()
+                              : tally.results[i].firstChoice.plus(tally.results[i].transfer).toNumber()
+                          }
+                        />
+                      </Box>
                     </Box>
                   </Tooltip>
                 </Box>
@@ -119,8 +130,7 @@ export default function VoteBreakdown({
               <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                 {tally ? (
                   `${tally.results[i].firstChoice
-                    .add(tally.results[i].transfer)
-                    .toBigNumber()
+                    .plus(tally.results[i].transfer)
                     .toFormat(2)} MKR Voting (${tally.results[i].firstPct.toFixed(2)}%)`
                 ) : (
                   <Delay>
@@ -131,12 +141,12 @@ export default function VoteBreakdown({
             </Flex>
 
             {tally ? (
-              <Tooltip label={`First choice ${tally.results[i].firstChoice.toBigNumber().toFormat(2)}`}>
+              <Tooltip label={`First choice ${tally.results[i].firstChoice.toFormat(2)}`}>
                 <Box my={2}>
                   <Progress
                     sx={{ backgroundColor: 'muted', mb: '3', height: 2 }}
                     max={tally.totalMkrParticipation.toBigNumber()}
-                    value={tally.results[i].firstChoice.toBigNumber()}
+                    value={tally.results[i].firstChoice.toNumber()}
                   />
                 </Box>
               </Tooltip>

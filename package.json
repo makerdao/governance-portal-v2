@@ -12,9 +12,9 @@
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.32.7",
-    "@makerdao/dai-plugin-governance": "0.12.31",
-    "@makerdao/dai-plugin-mcd": "^1.6.11",
+    "@makerdao/dai": "^0.32.8",
+    "@makerdao/dai-plugin-governance": "0.12.39",
+    "@makerdao/dai-plugin-mcd": "^1.6.12",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
@@ -31,6 +31,7 @@
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
     "aws-sdk": "^2.771.0",
+    "axios": "^0.21.0",
     "ethers": "^5.0.8",
     "gray-matter": "^4.0.2",
     "jazzicon": "^1.5.0",

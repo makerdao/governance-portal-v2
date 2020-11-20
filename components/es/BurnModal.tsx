@@ -12,6 +12,7 @@ import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnSigning from './burnModal/BurnSigning';
 import BurnPending from './burnModal/BurnPending';
+import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 
 const ModalContent = ({
@@ -48,7 +49,7 @@ const ModalContent = ({
       },
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-        close(); // TBD maybe show a separate "done" dialog
+        setStep('mined');
       },
       error: () => setStep('failed')
     });
@@ -85,6 +86,8 @@ const ModalContent = ({
       return <BurnSigning close={close} />;
     case 'pending':
       return <BurnPending tx={tx} close={close} />;
+    case 'mined':
+      return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':
       return <BurnFailed close={close} />;
     default:
