@@ -39,5 +39,5 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
 export { createPollTallyRoute };
 
 export default createPollTallyRoute({
-  cacheType: 's-maxage=30, stale-while-revalidate'
+  cacheType: 's-maxage=5, stale-while-revalidate'
 });
