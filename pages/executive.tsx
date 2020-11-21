@@ -30,6 +30,7 @@ import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
 import { MKR } from '../lib/maker';
 import oldChiefAbi from '../lib/oldChiefAbi.json'
+import { Icon } from '@makerdao/dai-ui-icons';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -134,7 +135,6 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         <title>Maker Governance - Executive Proposals</title>
       </Head>
       {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.gt(0) ? (
-        <Flex sx={{ justifyContent: 'center' }}>
           <Badge
             variant="primary"
             sx={{
@@ -145,17 +145,62 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               whiteSpace: 'normal',
               fontWeight: 'normal',
               fontSize: [1, 2],
-              py: 3,
               px: [3, 4],
               mt: ['-10px', '-25px'],
-              my: 3
+              my: 3,
+              py: 2
             }}
           >
-            <Text>
-            An executive vote has passed to update the Chief to a new version. You have <b>{lockedMkrOldChief.toBigNumber().toFormat(2)} MKR</b> to withdraw from the old chief.
-            </Text>
+            <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', alignContent: 'space-between', flexWrap: 'wrap', }}>
+              <Text sx={{py: 2}}>
+              An executive vote has passed to update the Chief to a new version. You have <b>{lockedMkrOldChief.toBigNumber().toFormat(2)} MKR</b> to withdraw from the old chief.
+              </Text>
+              <Flex>
+                  <Button
+                    onClick={()=>{alert('start withdraw flow')}}
+                    variant="primary"
+                    sx={{ height: '26px',
+                    py: 0,
+                    mx: 1,
+                    textTransform: 'uppercase',
+                    borderRadius: 'small',
+                    fontWeight: 'bold',
+                    fontSize: '10px'
+                  }}
+                  >
+                    Withdraw
+                  </Button>
+                <Link
+                  href="https://forum.makerdao.com/t/dschief-1-2-flash-loan-protection-for-maker-governance"
+                  target="_blank"
+                >
+                  <Button
+                    variant="outline"
+                    sx={{
+                      height: '26px',
+                      py: 0,
+                      px: 2,
+                      ml: 1,
+                      textTransform: 'uppercase',
+                      borderRadius: 'small',
+                      fontWeight: 'bold',
+                      fontSize: '10px',
+                      borderColor: 'accentBlue',
+                      color: 'accentBlue',
+                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
+                      ':hover svg': { color: 'blueLinkHover'}
+                  }}
+                  >
+                    <Text>
+                      Forum Post{' '}
+                      <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue"/>
+                    </Text>
+                  </Button>
+                  </Link>
+              </Flex>
+            </Flex>
           </Badge>
-        </Flex>) : <Flex/>
+        ): <Flex/>
       }
       <Stack>
         {account && (
