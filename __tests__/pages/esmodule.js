@@ -140,8 +140,7 @@ describe('emergency shutdown render', () => {
 
     // Valid Amount Check
    fireEvent.change(input, { target: { value: amount - 2 }, });
-    console.log(input.value)
-    await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 2000});
+   await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 2000});
    fireEvent.click(continueButton);
 
     // Third Step Render
@@ -195,12 +194,8 @@ describe('initiate emergency shutdown', () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await token.approve(esm.address, -1); //approve unlimited
     await esm.join(WAD.times(50000).toFixed());
-    const end = maker.service('smartContract').getContract('MCD_END');
-    for (let ilkInfo of ilks) {
-        const [ilk] = ilkInfo;
-        console.log(ilk)
-        await end['cage(bytes32)'](stringToBytes(ilk));
-    }
+    
+
     // const migVault = maker
     //   .service('migration')
     //   .getMigration('global-settlement-collateral-claims');
@@ -209,12 +204,7 @@ describe('initiate emergency shutdown', () => {
     //   await migVault.free(vaults[vault].id, vault);
     // }
 
-    await end.thaw();
 
-    for (let ilkInfo of ilks) {
-      const [ilk] = ilkInfo;
-      await end.flow(stringToBytes(ilk));
-    }
   });
 
   test('show Initiate Shutdown button on threshold reached', async () => {
@@ -225,6 +215,18 @@ describe('initiate emergency shutdown', () => {
   test('show disabled Initiate Shutdown button on shutdown initiated', async () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await esm.fire();
+    const end = maker.service('smartContract').getContract('MCD_END');
+    for (let ilkInfo of ilks) {
+        const [ilk] = ilkInfo;
+        await end['cage(bytes32)'](stringToBytes(ilk));
+    }
+    // 
+    // await end.thaw();
+
+    // for (let ilkInfo of ilks) {
+    //   const [ilk] = ilkInfo;
+    //   await end.flow(stringToBytes(ilk));
+    // }
     const { findByText, getByTestId, debug } = await renderWithTheme(<ESModule />);
     const initiateButton = await findByText('Initiate Emergency Shutdown');
     waitFor(() => expect(initiateButton.disabled).toBeTruthy());
