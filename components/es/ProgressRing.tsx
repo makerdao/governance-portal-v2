@@ -9,7 +9,7 @@ const ProgressRing = ({ progress, totalStaked, thresholdAmount }) => {
   const strokeDashoffset = circumference - (progress / 100) * circumference;
   const loader = useRef<HTMLDivElement>(null);
   return (
-    <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+    <Flex sx={{ justifyContent: 'center', alignItems: 'center' }} data-testid="progress-ring">
       <svg height={radius * 2} width={radius * 2}>
         <circle
           stroke="#F6F8F9"

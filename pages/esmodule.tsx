@@ -76,6 +76,7 @@ const ESModule = () => {
             height: '20px',
             my: 3
           }}
+          data-testid="progress-bar"
         >
           <Box
             as="div"
