@@ -176,13 +176,6 @@ describe('initiate emergency shutdown', () => {
 
   beforeAll(async () => {
     maker = await getMaker();
-    // const nextAccount = TestAccountProvider.nextAccount();
-    // maker.useAccount('test-account');
-    // await waitForExpect(() => {
-    //   const currentAccount = accountsApi.getState().currentAccount;
-    //   expect(currentAccount.address).toBe(nextAccount.address);
-    //   expect(currentAccount.name).toBe('test-account');
-    // });
     const token = maker.service('smartContract').getContract('MCD_GOV');
     await token['mint(uint256)'](WAD.times(50000).toFixed());
     const esm = maker.service('smartContract').getContract('MCD_ESM');
@@ -193,13 +186,13 @@ describe('initiate emergency shutdown', () => {
         const [ilk] = ilkInfo;
         await end['cage(bytes32)'](stringToBytes(ilk));
     }
-    const migVault = maker
-      .service('migration')
-      .getMigration('global-settlement-collateral-claims');
+    // const migVault = maker
+    //   .service('migration')
+    //   .getMigration('global-settlement-collateral-claims');
 
-    for (let vault of Object.keys(vaults)) {
-      await migVault.free(vaults[vault].id, vault);
-    }
+    // for (let vault of Object.keys(vaults)) {
+    //   await migVault.free(vaults[vault].id, vault);
+    // }
 
     await end.thaw();
 
