@@ -72,8 +72,8 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
       return {
         optionId: key,
         optionName: poll.options[key],
-        firstChoice: MKR(rawTally.options?.[key]?.firstChoice || 0),
-        transfer: MKR(rawTally.options?.[key]?.transfer || 0),
+        firstChoice: new BigNumber(rawTally.options?.[key]?.firstChoice || 0),
+        transfer: new BigNumber(rawTally.options?.[key]?.transfer || 0),
         firstPct: rawTally.options?.[key]?.firstChoice
           ? new BigNumber(rawTally.options[key].firstChoice)
               .div(totalMkrParticipation.toBigNumber())
@@ -87,13 +87,12 @@ export function parsePollTally(rawTally, poll: Poll): PollTally {
       };
     })
     .sort((a, b) => {
-      const valueA = a.firstChoice.add(a.transfer);
-      const valueB = b.firstChoice.add(b.transfer);
+      const valueA = a.firstChoice.plus(a.transfer);
+      const valueB = b.firstChoice.plus(b.transfer);
       if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
       return valueA.gt(valueB) ? -1 : 1;
     });
 
-  delete rawTally.options;
   return { ...rawTally, results, totalMkrParticipation, numVoters: rawTally.numVoters };
 }
 

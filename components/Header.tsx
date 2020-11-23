@@ -119,6 +119,7 @@ const MobileMenu = ({ hide, network, router }) => {
         <Link href={{ pathname: '/executive', query: { network } }}>
           <NavLink>Executive</NavLink>
         </Link>
+        <Divider sx={{ width: '100%' }} />
         <Link href={{ pathname: '/esmodule', query: { network } }}>
           <NavLink>ES Module</NavLink>
         </Link>

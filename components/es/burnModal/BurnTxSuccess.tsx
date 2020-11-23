@@ -2,12 +2,11 @@
 import { Flex, Button, Text, jsx, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import TxIndicators from '../../TxIndicators';
 import { getNetwork } from '../../../lib/maker';
 import { getEtherscanLink } from '../../../lib/utils';
 import { TXMined } from '../../../types/transaction';
 
-const BurnPending = ({ tx, close }) => (
+const BurnTxSuccess = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
@@ -16,15 +15,14 @@ const BurnPending = ({ tx, close }) => (
     />
 
     <Text variant="heading" sx={{ fontSize: 6 }}>
-      Transaction Sent!
+      MKR successfully burned in ESM
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Flex sx={{ justifyContent: 'center', my: 4 }}>
-        <TxIndicators.Pending sx={{ width: 6 }} />
-      </Flex>
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Burned MKR amounts will update once the blockchain has confirmed the transaction.
+        You can safely close this modal
       </Text>
+      <Icon name="burnSuccess" size={7} sx={{ my: 4 }} />
+
       <Link
         target="_blank"
         href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
@@ -46,4 +44,4 @@ const BurnPending = ({ tx, close }) => (
   </Flex>
 );
 
-export default BurnPending;
+export default BurnTxSuccess;

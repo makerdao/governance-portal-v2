@@ -29,7 +29,6 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
               {label}
             </ListboxOption>
           ))}
-          <ListboxOption value={String(ABSTAIN)}>Abstain</ListboxOption>
         </ListboxList>
       </ListboxPopover>
     </ListboxInput>
