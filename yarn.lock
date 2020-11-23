@@ -2011,7 +2011,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@makerdao/currency@^0.9.8", "@makerdao/currency@^0.9.9":
+"@makerdao/currency@0.9.9":
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/@makerdao/currency/-/currency-0.9.9.tgz#b5f847362cb4648c30548313f005c80c1c878c9e"
   integrity sha512-fr6MaiWxQ1IxEaSO8znnhcZTPb8P5ZJU5PS76lx5zAX8CF/ZykfDCX7lb4AMaOVCWajQ8OPN8ekO5a0MOJb3wg==
@@ -2019,23 +2019,23 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.12.31":
-  version "0.12.31"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.31.tgz#9a77f0006b83f686b97424041a90af7833f405d2"
-  integrity sha512-49GUSoNoGjxx52u9BJwa6exHRpA1TvCdW1/RkowfQZva9cUVtrNJq7z9tsFA4NmpfpHoDsGVGeMyxKH/sCtgrg==
+"@makerdao/dai-plugin-governance@0.12.40":
+  version "0.12.40"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.40.tgz#34a939cefe624676bd05bdcd3f9bdbe3ae186042"
+  integrity sha512-Vs9IP0vITgODLF0PfSF4IjRTocytmHDFF8UE0aPwQl4DbLa1Ih6Ed+yWjPF5NakxnSdEHBvW9co2GHojYNLzdA==
   dependencies:
-    "@makerdao/currency" "^0.9.8"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.10.0"
     assert "^2.0.0"
     debug "^4.1.1"
     ramda "^0.25.0"
 
-"@makerdao/dai-plugin-mcd@^1.6.11":
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.11.tgz#1d5ec47e6b1a314a7c9928e62f326d0325b0f28c"
-  integrity sha512-lxM+JH9RNUdtQUOuWBfUOJiscpmYg3POm5WwGFyXXc1dC/+WjGcNVFDnkTu2PGqNfwFLVZ1E9WT7xr7vPNTbfw==
+"@makerdao/dai-plugin-mcd@^1.6.14":
+  version "1.6.14"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.14.tgz#aa6e26aaf7be7a8bcbed30fbb7ac8357520f930f"
+  integrity sha512-G6H8pKB1v5wHmptJ00mOWlfoVW+ColI5CE8abz5k0EP6aHqAtpO+laUb2bZL4jZMNta1wO3kM54OOqn9qwn5MQ==
   dependencies:
-    "@makerdao/currency" "^0.9.9"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.9.9"
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
@@ -2057,13 +2057,13 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.7":
-  version "0.32.7"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.7.tgz#961633dd9e8ce61e1c7e22abc105db5a5cf1feff"
-  integrity sha512-lueovCLYxhNfqgBKoYPHg8512k4iryLZeZPypSCEL9txHNq/Xzh0weW1E1cj0GmnXyLnZlfaq8cZ0uyHfI7jWQ==
+"@makerdao/dai@^0.32.9":
+  version "0.32.9"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.9.tgz#c5c09aba910c42eb06e199d1730710f0e376eb7f"
+  integrity sha512-YMEVuVMeX+R3NtortSa2kRJMQ4FeRd20vNEb9sWl8b5WksP4cSoAGdMp0oz+jPCJMdlZdZ2jXAUXNLjrI4LQrQ==
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@makerdao/currency" "^0.9.8"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/multicall" "^0.11.0"
     "@makerdao/services-core" "^0.9.9"
     "@makerdao/test-helpers" "^0.2.1"
@@ -2135,10 +2135,10 @@
   dependencies:
     node-fetch "^2.6.0"
 
-"@makerdao/testchain@^1.1.21":
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/@makerdao/testchain/-/testchain-1.1.21.tgz#6ca7e0425226d156d5676b3cc483968958e9ab66"
-  integrity sha512-s5kqkkg1+eAiekXGzV6fNUmUqhXvPQ8JSZPsZQOV4FzX1/N8hT0YsDiKtajRcSIfMveqZngiEEroxQZurjs1zQ==
+"@makerdao/testchain@^1.1.22":
+  version "1.1.22"
+  resolved "https://registry.yarnpkg.com/@makerdao/testchain/-/testchain-1.1.22.tgz#412ac8958825da4f11ee746c048dc1359ad4a6ab"
+  integrity sha512-6oxIZI2dLFvsFGBkwbP92fcT3PTN7WUUycamau02ZlYtj0vUaXJHRtLQX4al1zSOZpHAl35JmSJcAje23om/QQ==
   dependencies:
     ganache-cli makerdao/ganache-cli#fix/gas-est-crash
 
@@ -3655,6 +3655,13 @@ aws4@^1.8.0:
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
+
+axios@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
+  integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
+  dependencies:
+    follow-redirects "^1.10.0"
 
 babel-code-frame@^6.26.0:
   version "6.26.0"
@@ -7073,6 +7080,11 @@ focus-lock@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.7.0.tgz#b2bfb0ca7beacc8710a1ff74275fe0dc60a1d88a"
   integrity sha512-LI7v2mH02R55SekHYdv9pRHR9RajVNyIJ2N5IEkWbg7FT5ZmJ9Hw4mWxHeEUcd+dJo0QmzztHvDvWcc7prVFsw==
+
+follow-redirects@^1.10.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
+  integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
 
 for-each@~0.3.3:
   version "0.3.3"
