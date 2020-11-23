@@ -1,7 +1,6 @@
 import React from 'react';
 import { renderWithTheme } from '../helpers';
-import { act, cleanup, fireEvent, render, wait, screen, waitFor } from '@testing-library/react';
-
+import { act, cleanup, fireEvent, render, wait, screen, waitFor, configure } from '@testing-library/react';
 import { ESM } from '@makerdao/dai-plugin-governance/dist/utils/constants';
 import waitForExpect from 'wait-for-expect'
 import { MKR } from '@makerdao/dai';
@@ -13,6 +12,18 @@ import getMaker from '../../lib/maker';
 import { accountsApi } from '../../stores/accounts';
 import ilkList from '../../lib/references'
 import BigNumber from 'bignumber.js';
+
+configure({
+  getElementError: (message, container) => {
+    const error = new Error(message);
+    error.name = 'TestingLibraryElementError';
+    error.stack = null;
+    return error;
+  },
+});
+const stringToBytes = (str) => {
+  return '0x' + Buffer.from(str).toString('hex');
+}
 
 export const WAD = new BigNumber('1e18');
 
@@ -103,7 +114,6 @@ describe('emergency shutdown render', () => {
 
     // First Step Render
     const burnButton = await findByText('Burn Your MKR', {}, {timeout: 5000})
-    // debug()
     fireEvent.click(getByText('Burn Your MKR'));
     await findByText('Are you sure you want to burn MKR?');
     fireEvent.click(getByText('Continue'));
@@ -116,26 +126,28 @@ describe('emergency shutdown render', () => {
     fireEvent.change(getByRole('spinbutton'), { target: { value: amount } });
     await findByText('MKR balance too low')
     // await wait(() => getByText("You don't have enough MKR"));
+    const input = getByRole('spinbutton')
     const continueButton = getByText('Continue');
     expect(continueButton.disabled).toBeTruthy();
 
     // Set Max Check
-    fireEvent.click(getByText('Set max'));
-    // debug()
-    await waitFor(() => expect(getByRole('spinbutton').value).toEqual('2.0000'), {timeout: 5000});
+    // fireEvent.click(getByText('Set max'));
+    // await waitFor(() => expect(input.value).toEqual('2.0000'), {timeout: 5000});
+    
 
     // MKR is Chief Check
     // getByTestId('voting-power');
 
     // Valid Amount Check
-    fireEvent.change(getByRole('spinbutton'), { target: { value: amount - 2 } });
-    await waitFor(() => expect(continueButton.disabled).toBeFalsy());
-    fireEvent.click(continueButton);
+   fireEvent.change(input, { target: { value: amount - 2 }, });
+    console.log(input.value)
+    await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 2000});
+   fireEvent.click(continueButton);
 
     // Third Step Render
     // await waitFor(() => getByText('Burn amount'))
-    // waitFor(() => getByText('New ESM total'))
-    await findByText('Burn amount')
+    // waitFor(() => getByText('New ESM total'))d
+    await findByText('Burn amount', { timeout: 2000})
     await findByText('New ESM total')
     // debug()
 
@@ -172,10 +184,12 @@ describe('emergency shutdown render', () => {
   });
 
 });
+
 describe('initiate emergency shutdown', () => {
 
   beforeAll(async () => {
     maker = await getMaker();
+    await maker.service('accounts').useAccount('default')
     const token = maker.service('smartContract').getContract('MCD_GOV');
     await token['mint(uint256)'](WAD.times(50000).toFixed());
     const esm = maker.service('smartContract').getContract('MCD_ESM');
@@ -184,6 +198,7 @@ describe('initiate emergency shutdown', () => {
     const end = maker.service('smartContract').getContract('MCD_END');
     for (let ilkInfo of ilks) {
         const [ilk] = ilkInfo;
+        console.log(ilk)
         await end['cage(bytes32)'](stringToBytes(ilk));
     }
     // const migVault = maker
@@ -210,7 +225,7 @@ describe('initiate emergency shutdown', () => {
   test('show disabled Initiate Shutdown button on shutdown initiated', async () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await esm.fire();
-    const { findByText, getByTestId, debug } = await renderWithTheme(<ESModule store={subStore} />);
+    const { findByText, getByTestId, debug } = await renderWithTheme(<ESModule />);
     const initiateButton = await findByText('Initiate Emergency Shutdown');
     waitFor(() => expect(initiateButton.disabled).toBeTruthy());
     // await wait(() => getByTestId('shutdown-initiated'));
