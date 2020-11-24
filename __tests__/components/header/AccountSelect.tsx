@@ -1,4 +1,4 @@
-import { renderWithWeb3ReactProvider as render } from '../../helpers'; 
+import { renderWithTheme as render } from '../../helpers'; 
 import { fireEvent } from '@testing-library/react';
 import { ethers } from 'ethers';
 import WrappedAccountSelect from '../../../components/header/AccountSelect';
@@ -18,6 +18,6 @@ test('can connect an account', async () => {
     const { debug, findByText } = render(<WrappedAccountSelect />);
     click(await findByText('Connect wallet'));
     click(await findByText('MetaMask'))
-    // debug();
+    debug();
   // });
 });
