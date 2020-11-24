@@ -77,7 +77,7 @@ const AccountSelect = props => {
       key={name}
       onClick={() => {
         activate(connector).then(() => {
-          mixpanel.people.set({wallet: name});
+          mixpanel.people.set({ wallet: name });
           setAccountName(name);
           setChangeWallet(false);
         });
@@ -87,6 +87,11 @@ const AccountSelect = props => {
       <Text sx={{ ml: 3 }}>{name}</Text>
     </Flex>
   ));
+
+  if (chainId) {
+    console.log('window.ethereum:', (window as any).ethereum._state.accounts);
+    console.log('window.ethereum.send:', (window as any).ethereum.send);
+  }
 
   return (
     <Box>
