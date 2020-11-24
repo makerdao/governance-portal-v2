@@ -2,6 +2,11 @@ import create from 'zustand';
 
 import getMaker from '../lib/maker';
 import Account from '../types/account';
+import oldVoteProxyFactoryAbi from '../lib/abis/oldVoteProxyFactoryAbi.json';
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+import { getNetwork } from '../lib/maker';
+import { StringLiteral } from '@babel/types';
+import { oldVoteProxyFactoryAddress } from '../lib/constants';
 
 type VoteProxy = {
   getProxyAddress: () => string;
@@ -14,16 +19,36 @@ type VoteProxy = {
   getVotedProposalAddresses: () => Promise<any>;
 };
 
+type OldVoteProxy = {
+  role: string;
+  address: string;
+};
+
 type Store = {
   currentAccount?: Account;
   proxies: Record<string, VoteProxy | null>;
+  oldProxy: OldVoteProxy;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
 };
 
+const getProxyStatus = async (address, maker) => {
+  const oldFactory = maker.service('smartContract').getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
+  const [proxyAddressCold, proxyAddressHot] = await Promise.all([
+    oldFactory.coldMap(address),
+    oldFactory.hotMap(address)
+  ]);
+  if (proxyAddressCold !== ZERO_ADDRESS)
+    return { role: 'cold', address: proxyAddressCold };
+  if (proxyAddressHot !== ZERO_ADDRESS)
+    return { role: 'hot', address: proxyAddressHot };
+  return {role: '', address: ''};
+}
+
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   currentAccount: undefined,
   proxies: {},
+  oldProxy: {role: '', address: ''},
 
   addAccountsListener: async () => {
     const maker = await getMaker();
@@ -34,10 +59,14 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
       }
 
       const { address } = account;
-      const { hasProxy, voteProxy } = await maker.service('voteProxy').getVoteProxy(address);
+      const [{ hasProxy, voteProxy }, oldProxy] = await Promise.all([
+        maker.service('voteProxy').getVoteProxy(address),
+        getProxyStatus(address, maker)
+      ]);
       set({
         currentAccount: account,
-        proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null }
+        proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
+        oldProxy
       });
     });
   },

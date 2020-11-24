@@ -10,6 +10,7 @@ import shallow from 'zustand/shallow';
 
 import Deposit from '../components/executive/Deposit';
 import Withdraw from '../components/executive/Withdraw';
+import WithdrawOldChief from '../components/executive/WithdrawOldChief';
 import ProposalsSortBy from '../components/executive/ProposalsSortBy';
 import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
@@ -29,17 +30,16 @@ import { fetchJson } from '../lib/utils';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
 import { MKR } from '../lib/maker';
-import oldChiefAbi from '../lib/oldChiefAbi.json'
+import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { oldChiefAddress } from '../lib/constants';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const [voteProxy, oldProxyAddress] = useAccountsStore(state => (account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]));
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
-
-  const oldChiefAddress = {'mainnet': '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5', 'kovan': '0xbbffc76e94b34f72d96d054b31f6424249c1337d'};
 
   const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
@@ -48,9 +48,10 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     )
   );
 
-  const { data: lockedMkrOldChief } = useSWR(lockedMkrKey ? ['/user/mkr-locked-old-chief', lockedMkrKey] : null, (_, address) =>
+  const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
+  const { data: lockedMkrOldChief } = useSWR(lockedMkrKey ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null, (_, address) =>
   getMaker().then(maker =>
-      maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).deposits(lockedMkrKey).then(MKR.wei)
+      maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).deposits(lockedMkrKeyOldChief).then(MKR.wei)
     )
   );
 
@@ -127,7 +128,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
-  const CHIEF_MIGRATION_FF = false;
+  const CHIEF_MIGRATION_FF = true;
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -156,20 +157,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               An executive vote has passed to update the Chief to a new version. You have <b>{lockedMkrOldChief.toBigNumber().toFormat(2)} MKR</b> to withdraw from the old chief.
               </Text>
               <Flex>
-                  <Button
-                    onClick={()=>{alert('start withdraw flow')}}
-                    variant="primary"
-                    sx={{ height: '26px',
-                    py: 0,
-                    mx: 1,
-                    textTransform: 'uppercase',
-                    borderRadius: 'small',
-                    fontWeight: 'bold',
-                    fontSize: '10px'
-                  }}
-                  >
-                    Withdraw
-                  </Button>
+                  <WithdrawOldChief/>
                 <Link
                   href="https://forum.makerdao.com/t/dschief-1-2-flash-loan-protection-for-maker-governance"
                   target="_blank"
