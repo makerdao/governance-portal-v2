@@ -62,6 +62,18 @@ function determineNetwork(): SupportedNetworks {
 let makerSingleton: Promise<Maker>;
 function getMaker(): Promise<Maker> {
   if (!makerSingleton) {
+    const addressOverrides =
+      getNetwork() === 'kovan'
+        ? {
+            smartContract: {
+              addressOverrides: {
+                CHIEF: '0x27E0c9567729Ea6e3241DE74B3dE499b7ddd3fe6',
+                VOTE_PROXY_FACTORY: '0x1400798AA746457E467A1eb9b3F3f72C25314429'
+              }
+            }
+          }
+        : {};
+
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
@@ -76,7 +88,8 @@ function getMaker(): Promise<Maker> {
         pollingInterval: null
       },
       log: false,
-      multicall: true
+      multicall: true,
+      ...addressOverrides
     }).then(maker => {
       if (typeof window !== 'undefined') (window as any).maker = maker;
       return maker;
