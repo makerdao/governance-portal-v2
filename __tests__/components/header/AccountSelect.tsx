@@ -23,3 +23,4 @@ test('can connect an account', async () => {
     const displayedAddress = await findAllByText('0x16F', { exact: false });
     expect(displayedAddress.length).toBe(2);
   });
+  
