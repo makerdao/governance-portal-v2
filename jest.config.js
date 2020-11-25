@@ -5,7 +5,7 @@ module.exports = {
     '!**/{node_modules,coverage}/**',
   ],
   coverageReporters: ['json', 'lcov', 'text-summary'],
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js', 'jest-canvas-mock'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/setup', '/helpers', '/__tests__/__mocks__'],
   transformIgnorePatterns: ['/node_modules/'],
   moduleDirectories: ['node_modules'],
