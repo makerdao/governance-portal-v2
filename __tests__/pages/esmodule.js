@@ -114,7 +114,7 @@ describe('emergency shutdown render', () => {
 
     // First Step Render
     const burnButton = await findByText('Burn Your MKR', {}, {timeout: 5000})
-    fireEvent.click(getByText('Burn Your MKR'));
+    fireEvent.click(burnButton);
     await findByText('Are you sure you want to burn MKR?');
     fireEvent.click(getByText('Continue'));
 
@@ -131,22 +131,20 @@ describe('emergency shutdown render', () => {
     expect(continueButton.disabled).toBeTruthy();
 
     // Set Max Check
-    // fireEvent.click(getByText('Set max'));
-    // await waitFor(() => expect(input.value).toEqual('2.0000'), {timeout: 5000});
+    fireEvent.click(getByText('Set max'));
+    await waitFor(() => expect(input.value).toEqual('2.0000'), {timeout: 5000});
     
 
     // MKR is Chief Check
     // getByTestId('voting-power');
 
     // Valid Amount Check
-   fireEvent.change(input, { target: { value: amount - 2 }, });
-   await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 2000});
+   fireEvent.change(input, { target: { value: amount - 2 }});
+   await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 5000});
    fireEvent.click(continueButton);
 
     // Third Step Render
-    // await waitFor(() => getByText('Burn amount'))
-    // waitFor(() => getByText('New ESM total'))d
-    await findByText('Burn amount', { timeout: 2000})
+    await findByText('Burn amount', {}, { timeout: 5000})
     await findByText('New ESM total')
     // debug()
 
