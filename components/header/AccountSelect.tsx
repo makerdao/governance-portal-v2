@@ -88,11 +88,6 @@ const AccountSelect = props => {
     </Flex>
   ));
 
-  if (chainId) {
-    console.log('window.ethereum:', (window as any).ethereum._state.accounts);
-    console.log('window.ethereum.send:', (window as any).ethereum.send);
-  }
-
   return (
     <Box>
       <NetworkAlertModal
