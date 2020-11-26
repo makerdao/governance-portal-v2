@@ -49,7 +49,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   );
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
-  const { data: lockedMkrOldChief } = useSWR(lockedMkrKey ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null, (_, address) =>
+  const { data: lockedMkrOldChief } = useSWR(lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null, (_, address) =>
   getMaker().then(maker =>
       maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).deposits(lockedMkrKeyOldChief).then(MKR.wei)
     )
