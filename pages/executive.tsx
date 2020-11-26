@@ -33,6 +33,7 @@ import { MKR } from '../lib/maker';
 import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { oldChiefAddress } from '../lib/constants';
+import { ZERO_ADDRESS } from '../stores/accounts';
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
@@ -63,6 +64,21 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
     { refreshInterval: 0 }
   );
+
+  const { data: votedProposals } = useSWR<string[]>(
+    ['/executive/voted-proposals', account?.address],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .service('chief')
+          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
+          .then(slate => maker.service('chief').getSlateAddresses(slate))
+      )
+  );
+
+  const votingForZero =
+    votedProposals &&
+    !!votedProposals.find(proposalAddress => proposalAddress === ZERO_ADDRESS);
 
   const [startDate, endDate, sortBy] = useUiFiltersStore(
     state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
@@ -190,7 +206,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           </Badge>
         )
       }
-      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.eq(0) && lockedMkr && lockedMkr.eq(0) && (
+      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.eq(0) && !votingForZero && (
           <Badge
             variant="primary"
             sx={{
