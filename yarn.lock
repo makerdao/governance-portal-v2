@@ -2011,7 +2011,7 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@makerdao/currency@^0.9.8", "@makerdao/currency@^0.9.9":
+"@makerdao/currency@0.9.9":
   version "0.9.9"
   resolved "https://registry.yarnpkg.com/@makerdao/currency/-/currency-0.9.9.tgz#b5f847362cb4648c30548313f005c80c1c878c9e"
   integrity sha512-fr6MaiWxQ1IxEaSO8znnhcZTPb8P5ZJU5PS76lx5zAX8CF/ZykfDCX7lb4AMaOVCWajQ8OPN8ekO5a0MOJb3wg==
@@ -2019,23 +2019,23 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.12.31":
-  version "0.12.31"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.31.tgz#9a77f0006b83f686b97424041a90af7833f405d2"
-  integrity sha512-49GUSoNoGjxx52u9BJwa6exHRpA1TvCdW1/RkowfQZva9cUVtrNJq7z9tsFA4NmpfpHoDsGVGeMyxKH/sCtgrg==
+"@makerdao/dai-plugin-governance@0.12.41-rc.1":
+  version "0.12.41-rc.1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.12.41-rc.1.tgz#10d9891e04ecfe4050bf8f4624f943986e4824a0"
+  integrity sha512-xYJsILsKep0pFjCEMS+JLhtBkMSuOsWA7opBU4/vAv2+SBlJii7z2bvkHHShyF/Xzu3pY952cjnaiym8r2qS1A==
   dependencies:
-    "@makerdao/currency" "^0.9.8"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.10.0"
     assert "^2.0.0"
     debug "^4.1.1"
     ramda "^0.25.0"
 
-"@makerdao/dai-plugin-mcd@^1.6.11":
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.11.tgz#1d5ec47e6b1a314a7c9928e62f326d0325b0f28c"
-  integrity sha512-lxM+JH9RNUdtQUOuWBfUOJiscpmYg3POm5WwGFyXXc1dC/+WjGcNVFDnkTu2PGqNfwFLVZ1E9WT7xr7vPNTbfw==
+"@makerdao/dai-plugin-mcd@^1.6.15-rc.1":
+  version "1.6.15-rc.1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.15-rc.1.tgz#a08c876ee2c252a825b43b6b21b48e35dfe12807"
+  integrity sha512-VsFQSWydkX9ezHo3Pix9/HCcO3rmUxRVnyVyLOrnebEfaLKo8IOk+qWY5gWLETHKCN/1MIRX+WS0bmbFg5Hk2A==
   dependencies:
-    "@makerdao/currency" "^0.9.9"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.9.9"
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
@@ -2057,13 +2057,13 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.7":
-  version "0.32.7"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.7.tgz#961633dd9e8ce61e1c7e22abc105db5a5cf1feff"
-  integrity sha512-lueovCLYxhNfqgBKoYPHg8512k4iryLZeZPypSCEL9txHNq/Xzh0weW1E1cj0GmnXyLnZlfaq8cZ0uyHfI7jWQ==
+"@makerdao/dai@^0.32.9":
+  version "0.32.9"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.9.tgz#c5c09aba910c42eb06e199d1730710f0e376eb7f"
+  integrity sha512-YMEVuVMeX+R3NtortSa2kRJMQ4FeRd20vNEb9sWl8b5WksP4cSoAGdMp0oz+jPCJMdlZdZ2jXAUXNLjrI4LQrQ==
   dependencies:
     "@babel/runtime" "^7.3.4"
-    "@makerdao/currency" "^0.9.8"
+    "@makerdao/currency" "0.9.9"
     "@makerdao/multicall" "^0.11.0"
     "@makerdao/services-core" "^0.9.9"
     "@makerdao/test-helpers" "^0.2.1"
@@ -2135,10 +2135,10 @@
   dependencies:
     node-fetch "^2.6.0"
 
-"@makerdao/testchain@^1.1.21":
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/@makerdao/testchain/-/testchain-1.1.21.tgz#6ca7e0425226d156d5676b3cc483968958e9ab66"
-  integrity sha512-s5kqkkg1+eAiekXGzV6fNUmUqhXvPQ8JSZPsZQOV4FzX1/N8hT0YsDiKtajRcSIfMveqZngiEEroxQZurjs1zQ==
+"@makerdao/testchain@^1.1.23":
+  version "1.1.23"
+  resolved "https://registry.yarnpkg.com/@makerdao/testchain/-/testchain-1.1.23.tgz#193afb2e1118171032e9190f795246032254614d"
+  integrity sha512-QKMgAU3UCiJlpYXlf+nA9LYMwXAfFWawx1EfoMREDOOy1yALXc/pk0d3OGN6eTI1qAROHYBaRlWrI+l+bUYgWQ==
   dependencies:
     ganache-cli makerdao/ganache-cli#fix/gas-est-crash
 
@@ -7198,7 +7198,7 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
-ganache-cli@makerdao/ganache-cli#fix/gas-est-crash:
+"ganache-cli@github:makerdao/ganache-cli#fix/gas-est-crash":
   version "6.4.3-beta.0"
   resolved "https://codeload.github.com/makerdao/ganache-cli/tar.gz/3e512b61da2479042627e6155231dcb038110650"
   dependencies:
