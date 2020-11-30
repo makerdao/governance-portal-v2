@@ -37,6 +37,7 @@ export default function Toggle({ active, onClick, disabled }) {
       aria-pressed={active}
       onClick={() => onClick(!active)}
       disabled={disabled}
+      data-testid="allowance-toggle"
     >
       <InnerToggle active={active} />
     </Button>
