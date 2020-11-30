@@ -100,6 +100,13 @@ describe('emergency shutdown render', () => {
 
   test('Burn MKR Modal Flow', async () => {
     jest.setTimeout(60000)
+    const token = maker.service('smartContract').getContract('MCD_GOV');
+    const account = maker.currentAccount()
+    await maker.service('accounts').useAccount('default')
+    await token['mint(uint256)'](WAD.times(2).toFixed());
+    await token['transfer(address,uint256)'](account.address, WAD.times(2).toFixed())
+    await maker.service('accounts').useAccount('test-account')
+    
     const { getByTestId, getAllByTestId, getByText, getByRole, findByText, findByTestId, debug } = renderWithTheme(
       <ESModule />
     );
@@ -124,15 +131,16 @@ describe('emergency shutdown render', () => {
     // Not Enough MKR Check
     const amount = 3;
     fireEvent.change(getByRole('spinbutton'), { target: { value: amount } });
-    await findByText('MKR balance too low')
+    await findByText('MKR balance too low', {}, {timeout: 3000})
+
     // await wait(() => getByText("You don't have enough MKR"));
     const input = getByRole('spinbutton')
     const continueButton = getByText('Continue');
     expect(continueButton.disabled).toBeTruthy();
 
     // Set Max Check
-    fireEvent.click(getByText('Set max'));
-    await waitFor(() => expect(input.value).toEqual('2.0000'), {timeout: 5000});
+    await waitFor(() => fireEvent.click(getByText('Set max'), {timeout: 5000}));
+    await waitFor(() => expect(input.value).toEqual('2'), {timeout: 5000});
     
 
     // MKR is Chief Check
@@ -164,12 +172,12 @@ describe('emergency shutdown render', () => {
     await waitFor(() => expect(allowanceBtn.disabled).toBeTruthy());
 
     // Incorrect Input Check
-    fireEvent.change(confirmInput, { target: { value: 'I am burning 2 MKR' } });
+    fireEvent.change(confirmInput, { target: { value: 'I am burning 2.00 MKR' } });
     await waitFor(() => expect(burnMKRbutton.disabled).toBeTruthy());
 
     // Correct Input Check
-    fireEvent.change(confirmInput, { target: { value: 'I am burning 1 MKR' } });
-    await waitFor(() => expect(!burnMKRbutton.disabled).toBeTruthy());
+    fireEvent.change(confirmInput, { target: { value: 'I am burning 1.00 MKR' } });
+    await waitFor(() => expect(!burnMKRbutton.disabled).toBeTruthy(), {timeout: 5000});
 
     fireEvent.click(burnMKRbutton);
 
@@ -192,17 +200,6 @@ describe('initiate emergency shutdown', () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await token.approve(esm.address, -1); //approve unlimited
     await esm.join(WAD.times(50000).toFixed());
-    
-
-    // const migVault = maker
-    //   .service('migration')
-    //   .getMigration('global-settlement-collateral-claims');
-
-    // for (let vault of Object.keys(vaults)) {
-    //   await migVault.free(vaults[vault].id, vault);
-    // }
-
-
   });
 
   test('show Initiate Shutdown button on threshold reached', async () => {
@@ -218,13 +215,6 @@ describe('initiate emergency shutdown', () => {
         const [ilk] = ilkInfo;
         await end['cage(bytes32)'](stringToBytes(ilk));
     }
-    // 
-    // await end.thaw();
-
-    // for (let ilkInfo of ilks) {
-    //   const [ilk] = ilkInfo;
-    //   await end.flow(stringToBytes(ilk));
-    // }
     const { findByText, getByTestId, debug } = await renderWithTheme(<ESModule />);
     const initiateButton = await findByText('Initiate Emergency Shutdown');
     waitFor(() => expect(initiateButton.disabled).toBeTruthy());
