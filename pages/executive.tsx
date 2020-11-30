@@ -84,7 +84,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       )
   );
 
-  const votingForZero =
+  const votingForActivation =
     votedProposals && !!votedProposals.find(proposalAddress => proposalAddress === ZERO_ADDRESS);
 
   const [startDate, endDate, sortBy] = useUiFiltersStore(
@@ -220,7 +220,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           </Flex>
         </Badge>
       )}
-      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.eq(0) && !votingForZero && (
+      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.eq(0) && !votingForActivation && (
         <Badge
           variant="primary"
           sx={{
@@ -247,7 +247,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           >
             <Text sx={{ py: 2 }}>
               To participate in executive votes, deposit your MKR into the new Chief contract. Activate the
-              new chief by voting on the “0 Proposal”.
+              new chief by voting on the “Activation Proposal”.
               {oldProxyAddress &&
                 !voteProxy &&
                 ' If you wish to continue using a vote proxy, use the v1 vote portal to create a new one and deposit your MKR'}
