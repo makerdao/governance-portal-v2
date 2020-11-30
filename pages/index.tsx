@@ -113,18 +113,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               px: [3, 4],
               mt: ['-10px', '-25px']
             }}
-          >
-            <Text sx={{ display: ['block', 'none'] }}>
-              The recent issues with Infura have now been resolved. If you are using Metamask, and switched to
-              a custom RPC using our provided Alchemy endpoint, please switch back to Metamask Mainnet as
-              access to our Alchemy endpoint provided will soon be revoked.
-            </Text>
-            <Text sx={{ display: ['none', 'block'] }}>
-              The recent issues with Infura have now been resolved. If you are using Metamask, and switched to
-              a custom RPC using our provided Alchemy endpoint, please switch back to Metamask Mainnet as
-              access to our Alchemy endpoint provided will soon be revoked.
-            </Text>
-          </Badge>
+          ></Badge>
         </Flex>
         <Stack gap={[5, 6]}>
           <section>
