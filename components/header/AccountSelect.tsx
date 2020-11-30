@@ -77,7 +77,7 @@ const AccountSelect = props => {
       key={name}
       onClick={() => {
         activate(connector).then(() => {
-          mixpanel.people.set({wallet: name});
+          if (chainId) mixpanel.people.set({ wallet: name });
           setAccountName(name);
           setChangeWallet(false);
         });
