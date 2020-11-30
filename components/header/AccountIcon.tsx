@@ -10,7 +10,7 @@ type AccountIconProps = { account: string };
 
 export default dynamic(
   async () => {
-    const { default: jazzicon } = await import('jazzicon');
+    const { default: jazzicon } = await import('@metamask/jazzicon');
     return ({ account, ...props }: AccountIconProps) => {
       const iconParent = useRef<HTMLDivElement>(null);
 
