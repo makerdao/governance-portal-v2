@@ -4,8 +4,8 @@ import BigNumber from 'bignumber.js';
 type Result = {
   optionId: string;
   optionName: string;
-  firstChoice: CurrencyObject;
-  transfer: CurrencyObject;
+  firstChoice: BigNumber;
+  transfer: BigNumber;
   winner: boolean;
   eliminated: boolean;
   firstPct: BigNumber;
