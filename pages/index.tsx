@@ -96,25 +96,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             </Text>
           </Badge>
         </Flex>
-        <Flex sx={{ justifyContent: 'center', mt: 5 }}>
-          <Badge
-            variant="primary"
-            sx={{
-              textTransform: 'none',
-              textAlign: 'center',
-              color: '#AE3C4B',
-              borderColor: '#AE3C4B',
-              borderRadius: '50px',
-              width: '1020px',
-              whiteSpace: 'normal',
-              fontWeight: 'bold',
-              fontSize: [1, 2],
-              py: 2,
-              px: [3, 4],
-              mt: ['-10px', '-25px']
-            }}
-          ></Badge>
-        </Flex>
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
