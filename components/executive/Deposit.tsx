@@ -126,7 +126,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'DepositMkr',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const lockTxCreator = voteProxy
@@ -167,7 +167,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'approveDeposit',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const approveTxCreator = () =>
@@ -241,15 +241,15 @@ const Deposit = (props): JSX.Element => {
           <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
-      {props.link ? 
-        (<Link onClick={open} sx={{textDecoration: 'underline', cursor: 'pointer'}} {...props}>
+      {props.link ? (
+        <Link onClick={open} sx={{ textDecoration: 'underline', cursor: 'pointer' }} {...props}>
           Click here
-        </Link>) : (
+        </Link>
+      ) : (
         <Button variant="mutedOutline" onClick={open} {...props}>
           Deposit
         </Button>
-      )
-      }
+      )}
     </>
   );
 };

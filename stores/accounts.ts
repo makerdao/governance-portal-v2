@@ -33,22 +33,22 @@ type Store = {
 };
 
 const getOldProxyStatus = async (address, maker) => {
-  const oldFactory = maker.service('smartContract').getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
+  const oldFactory = maker
+    .service('smartContract')
+    .getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
   const [proxyAddressCold, proxyAddressHot] = await Promise.all([
     oldFactory.coldMap(address),
     oldFactory.hotMap(address)
   ]);
-  if (proxyAddressCold !== ZERO_ADDRESS)
-    return { role: 'cold', address: proxyAddressCold };
-  if (proxyAddressHot !== ZERO_ADDRESS)
-    return { role: 'hot', address: proxyAddressHot };
-  return {role: '', address: ''};
-}
+  if (proxyAddressCold !== ZERO_ADDRESS) return { role: 'cold', address: proxyAddressCold };
+  if (proxyAddressHot !== ZERO_ADDRESS) return { role: 'hot', address: proxyAddressHot };
+  return { role: '', address: '' };
+};
 
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   currentAccount: undefined,
   proxies: {},
-  oldProxy: {role: '', address: ''},
+  oldProxy: { role: '', address: '' },
 
   addAccountsListener: async () => {
     const maker = await getMaker();

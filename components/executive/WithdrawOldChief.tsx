@@ -18,7 +18,6 @@ import oldChiefAbi from '../../lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from '../../lib/abis/oldVoteProxyAbi.json';
 import { oldChiefAddress } from '../../lib/constants';
 
-
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [txId, setTxId] = useState(null);
@@ -28,18 +27,18 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     (_, address) =>
       voteProxy.address || // no need for IOU approval when using vote proxy
       getMaker()
-        .then(maker =>
-          maker
-            .getToken('IOU')
-            .allowance(address, oldChiefAddress[getNetwork()])
-        )
+        .then(maker => maker.getToken('IOU').allowance(address, oldChiefAddress[getNetwork()]))
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
   const lockedMkrKeyOldChief = voteProxy.address || address;
   const { data: lockedMkr } = useSWR(['/user/mkr-locked-old-chief', lockedMkrKeyOldChief], (_, address) =>
     getMaker().then(maker =>
-      maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).deposits(lockedMkrKeyOldChief).then(MKR.wei)
+      maker
+        .service('smartContract')
+        .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+        .deposits(lockedMkrKeyOldChief)
+        .then(MKR.wei)
     )
   );
 
@@ -85,8 +84,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             Withdraw MKR from Chief
           </Text>
           <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
-            You are withdrawing <b>{lockedMkr ? lockedMkr.toBigNumber().toFormat(6) : '---'} MKR</b>
-            {' '}from the old Chief contract back to your wallet.
+            You are withdrawing <b>{lockedMkr ? lockedMkr.toBigNumber().toFormat(6) : '---'} MKR</b> from the
+            old Chief contract back to your wallet.
           </Text>
         </Box>
         {voteProxy && voteProxy.role === 'hot' && (
@@ -101,13 +100,21 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'withdrawMkr',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy.address
-              ? () => maker.service('smartContract').getContractByAddressAndAbi(voteProxy.address, oldVoteProxyAbi).freeAll()
-              : () => maker.service('smartContract').getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi).free(lockedMkr.toFixed('wei'));
+              ? () =>
+                  maker
+                    .service('smartContract')
+                    .getContractByAddressAndAbi(voteProxy.address, oldVoteProxyAbi)
+                    .freeAll()
+              : () =>
+                  maker
+                    .service('smartContract')
+                    .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+                    .free(lockedMkr.toFixed('wei'));
 
             const txId = await track(freeTxCreator, 'Withdrawing MKR', {
               mined: txId => {
@@ -145,13 +152,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'approveWithdraw',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const approveTxCreator = () =>
-              maker
-                .getToken('IOU')
-                .approveUnlimited(oldChiefAddress[getNetwork()]);
+              maker.getToken('IOU').approveUnlimited(oldChiefAddress[getNetwork()]);
 
             const txId = await track(approveTxCreator, 'Granting IOU approval', {
               mined: txId => {
@@ -231,15 +236,17 @@ const WithdrawOldChief = (props): JSX.Element => {
         </DialogContent>
       </DialogOverlay>
       <Button
-        onClick={() => setShowDialog(true)} {...props}
+        onClick={() => setShowDialog(true)}
+        {...props}
         variant="primary"
-        sx={{ height: '26px',
-        py: 0,
-        mx: 1,
-        textTransform: 'uppercase',
-        borderRadius: 'small',
-        fontWeight: 'bold',
-        fontSize: '10px'
+        sx={{
+          height: '26px',
+          py: 0,
+          mx: 1,
+          textTransform: 'uppercase',
+          borderRadius: 'small',
+          fontWeight: 'bold',
+          fontSize: '10px'
         }}
       >
         Withdraw
