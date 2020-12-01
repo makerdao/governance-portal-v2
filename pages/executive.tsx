@@ -214,10 +214,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               </Text>
               <Flex>
                 <WithdrawOldChief />
-                <Link
-                  href="https://forum.makerdao.com/t/dschief-1-2-flash-loan-protection-for-maker-governance"
-                  target="_blank"
-                >
+                <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
                   <Button
                     variant="outline"
                     sx={{
@@ -233,6 +230,13 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       color: 'accentBlue',
                       ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
                       ':hover svg': { color: 'blueLinkHover' }
+                    }}
+                    onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'chiefMigrationForumPostButton',
+                        product: 'governance-portal-v2',
+                        page: 'Executive'
+                      });
                     }}
                   >
                     <Text>
@@ -256,9 +260,16 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   Choose one of the options below to deposit MKR into the new chief:
                 </Heading>
                 <Link
-                  href="https://blog.makerdao.com/"
+                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
                   target="_blank"
                   sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'chiefMigrationMoreInfoLink',
+                      product: 'governance-portal-v2',
+                      page: 'Executive'
+                    });
+                  }}
                 >
                   <Flex sx={{ alignItems: 'center' }}>
                     <Text>

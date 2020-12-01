@@ -242,11 +242,33 @@ const Deposit = (props): JSX.Element => {
         </DialogContent>
       </DialogOverlay>
       {props.link ? (
-        <Link onClick={open} sx={{ textDecoration: 'underline', cursor: 'pointer' }} {...props}>
+        <Link
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'OpenDepositModalFromMigration',
+              product: 'governance-portal-v2',
+              page: 'Executive'
+            });
+            open();
+          }}
+          sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+          {...props}
+        >
           Click here
         </Link>
       ) : (
-        <Button variant="mutedOutline" onClick={open} {...props}>
+        <Button
+          variant="mutedOutline"
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'OpenDepositModal',
+              product: 'governance-portal-v2',
+              page: 'Executive'
+            });
+            open();
+          }}
+          {...props}
+        >
           Deposit
         </Button>
       )}

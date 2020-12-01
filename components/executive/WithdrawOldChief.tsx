@@ -98,7 +98,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           disabled={!lockedMkr}
           onClick={async () => {
             mixpanel.track('btn-click', {
-              id: 'withdrawMkr',
+              id: 'withdrawMkrOldChief',
               product: 'governance-portal-v2',
               page: 'Executive'
             });
@@ -150,7 +150,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             mixpanel.track('btn-click', {
-              id: 'approveWithdraw',
+              id: 'approveWithdrawOldChief',
               product: 'governance-portal-v2',
               page: 'Executive'
             });
