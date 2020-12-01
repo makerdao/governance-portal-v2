@@ -300,6 +300,13 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       <Link
                         href="https://v1.vote.makerdao.com/proxysetup"
                         sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          mixpanel.track('btn-click', {
+                            id: 'chiefMigrationLinkToProxySetup',
+                            product: 'governance-portal-v2',
+                            page: 'Executive'
+                          });
+                        }}
                       >
                         Click here
                       </Link>{' '}
