@@ -35,6 +35,43 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { oldChiefAddress } from '../lib/constants';
 import { ZERO_ADDRESS } from '../stores/accounts';
 
+const CircleNumber = ({children}) => (
+  <Box sx={{
+    width: '26px',
+    minWidth: '26px',
+    lineHeight: '26px',
+    borderRadius: '50%',
+    textAlign: 'center',
+    fontSize: '12px',
+    backgroundColor: 'primary',
+    color: 'white',
+    fontWeight: 'bold',
+    mr: 3,
+    my: 1,
+  }}>
+    {children}
+  </Box>
+);
+
+const MigrationBadge = ({children, py = [2, 3]}) => (
+  <Badge
+  variant="primary"
+  sx={{
+    textTransform: 'none',
+    borderColor: 'primary',
+    borderRadius: 'small',
+    width: '100%',
+    whiteSpace: 'normal',
+    fontWeight: 'normal',
+    fontSize: [1, 2],
+    px: [3, 4],
+    my: 3,
+    py
+  }}>
+    {children}
+  </Badge>
+);
+
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
@@ -151,112 +188,35 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     getMaker().then(maker => maker.service('chief').getHat())
   );
 
-  const CHIEF_MIGRATION_FF = true;
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
         <title>Maker Governance - Executive Proposals</title>
       </Head>
-      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
-        <Badge
-          variant="primary"
-          sx={{
-            textTransform: 'none',
-            borderColor: 'primary',
-            borderRadius: 'small',
-            width: '100%',
-            whiteSpace: 'normal',
-            fontWeight: 'normal',
-            fontSize: [1, 2],
-            px: [3, 4],
-            mt: ['-10px', '-25px'],
-            my: 3,
-            py: 2
-          }}
-        >
-          <Flex
-            sx={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              alignContent: 'space-between',
-              flexWrap: 'wrap'
-            }}
-          >
-            <Text sx={{ py: 2 }}>
-              An executive vote has passed to update the Chief to a new version. You have{' '}
-              <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b> to
-              withdraw from the old chief.
-            </Text>
-            <Flex>
-              <WithdrawOldChief />
-              <Link
-                href="https://forum.makerdao.com/t/dschief-1-2-flash-loan-protection-for-maker-governance"
-                target="_blank"
-              >
-                <Button
-                  variant="outline"
-                  sx={{
-                    height: '26px',
-                    py: 0,
-                    px: 2,
-                    ml: 1,
-                    textTransform: 'uppercase',
-                    borderRadius: 'small',
-                    fontWeight: 'bold',
-                    fontSize: '10px',
-                    borderColor: 'accentBlue',
-                    color: 'accentBlue',
-                    ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
-                    ':hover svg': { color: 'blueLinkHover' }
-                  }}
+      <Box sx={{ mt: ['-10px', '-25px']}}>
+        {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
+          <MigrationBadge py={[2]}>
+            <Flex
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                alignContent: 'space-between',
+                flexWrap: 'wrap'
+              }}
+            >
+              <Text sx={{ py: 2 }}>
+                An executive vote has passed to update the Chief to a new version. You have{' '}
+                <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b> to
+                withdraw from the old chief.
+              </Text>
+              <Flex>
+                <WithdrawOldChief />
+                <Link
+                  href="https://forum.makerdao.com/t/dschief-1-2-flash-loan-protection-for-maker-governance"
+                  target="_blank"
                 >
-                  <Text>
-                    Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
-                  </Text>
-                </Button>
-              </Link>
-            </Flex>
-          </Flex>
-        </Badge>
-      )}
-      {CHIEF_MIGRATION_FF && lockedMkrOldChief && lockedMkrOldChief.eq(0) && !votingForActivation && (
-        <Badge
-          variant="primary"
-          sx={{
-            textTransform: 'none',
-            borderColor: 'primary',
-            borderRadius: 'small',
-            width: '100%',
-            whiteSpace: 'normal',
-            fontWeight: 'normal',
-            fontSize: [1, 2],
-            px: [3, 4],
-            mt: ['-10px', '-25px'],
-            my: 3,
-            py: 2
-          }}
-        >
-          <Flex
-            sx={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              alignContent: 'space-between',
-              flexWrap: 'wrap'
-            }}
-          >
-            <Text sx={{ py: 2 }}>
-              To participate in executive votes, deposit your MKR into the new Chief contract. Activate the
-              new chief by voting on the “Activation Proposal”.
-              {oldProxyAddress &&
-                !voteProxy &&
-                ' If you wish to continue using a vote proxy, use the v1 vote portal to create a new one and deposit your MKR'}
-            </Text>
-            <Flex>
-              {oldProxyAddress && !voteProxy && (
-                <Link href="https://v1.vote.makerdao.com">
                   <Button
-                    variant="primaryOutline"
+                    variant="outline"
                     sx={{
                       height: '26px',
                       py: 0,
@@ -265,17 +225,79 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       textTransform: 'uppercase',
                       borderRadius: 'small',
                       fontWeight: 'bold',
-                      fontSize: '10px'
+                      fontSize: '10px',
+                      borderColor: 'accentBlue',
+                      color: 'accentBlue',
+                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
+                      ':hover svg': { color: 'blueLinkHover' }
                     }}
                   >
-                    Make Vote Proxy
+                    <Text>
+                      Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
+                    </Text>
                   </Button>
                 </Link>
-              )}
+              </Flex>
             </Flex>
-          </Flex>
-        </Badge>
-      )}
+          </MigrationBadge>
+        )}
+        {lockedMkrOldChief && lockedMkrOldChief.eq(0) && !votingForActivation && !voteProxy && lockedMkr && lockedMkr.eq(0) && (
+          <div>
+            <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+              <Heading variant="microHeading">Choose one of the options below to deposit MKR into the new chief:</Heading>
+              <Link
+                href="https://blog.makerdao.com/"
+                target="_blank"
+                sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Text>
+                    More info
+                    <Icon ml={2} name="arrowTopRight" size={2} />
+                  </Text>
+                </Flex>
+              </Link>
+            </Flex>
+            <MigrationBadge py={0}>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  py: 2
+                }}
+              >
+                <Flex sx={{alignItems: 'center'}}>
+                  <CircleNumber> 1 </CircleNumber>
+                  <Text>
+                  <Deposit link={true}/>
+                  {' '}to deposit your MKR directly into the new Chief without using a vote proxy. Please then vote on the executive proposal below to activate the new chief.
+                </Text>
+                </Flex>
+                <Divider />
+                <Flex sx={{alignItems: 'center'}}>
+                <CircleNumber> 2 </CircleNumber>
+                <Text>
+                  <Link href="https://v1.vote.makerdao.com/proxysetup" sx={{textDecoration: 'underline'}}>
+                    Click here
+                  </Link>
+                  {' '}to create a vote proxy for additional wallet security. Please then vote on the executive proposal below to activate the new chief.
+                </Text>
+                </Flex>
+              </Flex>
+            </MigrationBadge>
+          </div>
+        )}
+        {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && voteProxy && lockedMkr && (
+          <MigrationBadge>
+            {lockedMkr.eq(0) ? 'Your vote proxy has been created. Please deposit into your new vote proxy contract by using the deposit button below, then vote on the executive proposal below to activate the new chief'
+            : 'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'}
+          </MigrationBadge>
+        )}
+        {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && !voteProxy && lockedMkr && lockedMkr.gt(0) && (
+          <MigrationBadge>
+            Your MKR has been deposited. Please vote on the executive proposal below to activate the new chief.
+          </MigrationBadge>
+        )}
+      </Box>
       <Stack>
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>

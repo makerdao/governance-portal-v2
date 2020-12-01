@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useRef } from 'react';
-import { Button, Flex, Text, Box, jsx } from 'theme-ui';
+import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Skeleton from 'react-loading-skeleton';
@@ -241,9 +241,15 @@ const Deposit = (props): JSX.Element => {
           <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
-      <Button variant="mutedOutline" onClick={open} {...props}>
-        Deposit
-      </Button>
+      {props.link ? 
+        (<Link onClick={open} sx={{textDecoration: 'underline', cursor: 'pointer'}} {...props}>
+          Click here
+        </Link>) : (
+        <Button variant="mutedOutline" onClick={open} {...props}>
+          Deposit
+        </Button>
+      )
+      }
     </>
   );
 };
