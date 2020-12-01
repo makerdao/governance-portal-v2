@@ -84,7 +84,7 @@ describe('emergency shutdown render', () => {
 
   test('show esm history', async () => {
     jest.setTimeout(10000)
-    const { getByText, container, debug, findByText } = render(<ESModule />);
+    const { getByText, container, debug, findByText } = renderWithTheme(<ESModule />);
     
     await findByText('ESM History');
     await findByText('Dec 5, 2019, 11:04 UTC', {}, {timeout: 5000})
@@ -93,7 +93,7 @@ describe('emergency shutdown render', () => {
 
   test('show "Burn your MKR" button', async () => {
     jest.setTimeout(10000)
-    const { getByText, findByText } = render(<ESModule />);
+    const { getByText, findByText } = renderWithTheme(<ESModule />);
 
     await findByText('Burn Your MKR', {}, {timeout: 5000})
   });
