@@ -5,6 +5,9 @@ jobs:
       - image: circleci/node:lts
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
           command: |
@@ -19,6 +22,9 @@ jobs:
       - image: levity/dapptools-node-latest
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Run tests
           command: |
