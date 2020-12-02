@@ -104,6 +104,7 @@ const MKRAmount = ({
             fontSize: 1,
             mt: 3
           }}
+          data-testid="voting-power"
         >
           <Text sx={{ textAlign: 'center' }}>You have {lockedInChief} MKR locked in DSChief.</Text>
           <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
@@ -126,7 +127,7 @@ const MKRAmount = ({
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={burnAmount.eq(0)}
+          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance))}
           variant="outline"
           sx={{
             color: 'onNotice',
