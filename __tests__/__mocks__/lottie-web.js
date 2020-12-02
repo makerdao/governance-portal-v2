@@ -1,4 +1,4 @@
-const lottie = jest.createMockFromModule('lottie-web');
+const lottie = jest.fn();
 
 const animation = jest.fn()
 lottie.animation = animation
