@@ -60,16 +60,6 @@ afterEach(() => {
     cleanup()
 });
 
-function setup(props) {
-  // mock functions
-  const utils = render(<SWRESModule {...props} />);
-  // grab items
-  // const input = utils.getByLabelText()
-  return {
-    ...utils
-  };
-}
-
 describe('emergency shutdown render', () => {
 
   test('renders', async () => {
@@ -78,13 +68,13 @@ describe('emergency shutdown render', () => {
 
   // tests render on mobile view automatically
   test('show progress bar', () => {
-    const { getByTestId } = setup();
+    const { getByTestId } = renderWithTheme(<ESModule />);
     getByTestId('progress-ring')
   });
 
   test('show esm history', async () => {
     jest.setTimeout(10000)
-    const { getByText, container, debug, findByText } = renderWithTheme(<ESModule />);
+    const { findByText } = renderWithTheme(<ESModule />);
     
     await findByText('ESM History');
     await findByText('Dec 5, 2019, 11:04 UTC', {}, {timeout: 5000})
@@ -93,13 +83,13 @@ describe('emergency shutdown render', () => {
 
   test('show "Burn your MKR" button', async () => {
     jest.setTimeout(10000)
-    const { getByText, findByText } = renderWithTheme(<ESModule />);
+    const { findByText } = renderWithTheme(<ESModule />);
 
     await findByText('Burn Your MKR', {}, {timeout: 5000})
   });
 
   test('Burn MKR Modal Flow', async () => {
-    jest.setTimeout(60000)
+    jest.setTimeout(10000)
     const token = maker.service('smartContract').getContract('MCD_GOV');
     const account = maker.currentAccount()
     await maker.service('accounts').useAccount('default')
