@@ -1,11 +1,8 @@
 import React from 'react';
 import { renderWithTheme } from '../helpers';
-import { act, cleanup, fireEvent, render, wait, screen, waitFor, configure } from '@testing-library/react';
-import { ESM } from '@makerdao/dai-plugin-governance/dist/utils/constants';
+import { cleanup, fireEvent, waitFor, configure } from '@testing-library/react';
 import waitForExpect from 'wait-for-expect'
-import { MKR } from '@makerdao/dai';
 import { TestAccountProvider } from '@makerdao/test-helpers';
-import userEvent from '@testing-library/user-event'
 import { cache, SWRConfig } from "swr";
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
@@ -21,6 +18,7 @@ configure({
     return error;
   },
 });
+
 const stringToBytes = (str) => {
   return '0x' + Buffer.from(str).toString('hex');
 }
