@@ -29,6 +29,7 @@
     "@types/theme-ui": "^0.3.2",
     "@web3-react/core": "^6.1.1",
     "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/trezor-connector": "^6.1.6",
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
     "axios": "^0.21.0",

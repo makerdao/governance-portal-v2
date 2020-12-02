@@ -56,37 +56,42 @@ const AccountSelect = props => {
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
-  const walletOptions = connectors.map(([name, connector]) => (
-    <Flex
-      sx={{
-        cursor: 'pointer',
-        width: '100%',
-        p: 3,
-        border: '1px solid',
-        borderColor: 'secondaryMuted',
-        borderRadius: 'medium',
-        mb: 2,
-        flexDirection: 'row',
-        alignItems: 'center',
-        '&:hover': {
-          color: 'text',
-          // borderColor: 'onSecondary',
-          backgroundColor: 'background'
-        }
-      }}
-      key={name}
-      onClick={() => {
-        activate(connector).then(() => {
-          if (chainId) mixpanel.people.set({ wallet: name });
-          setAccountName(name);
-          setChangeWallet(false);
-        });
-      }}
-    >
-      <Icon name={name} />
-      <Text sx={{ ml: 3 }}>{name}</Text>
-    </Flex>
-  ));
+  const walletOptions = connectors.map(
+    ([name, connector]) => (
+      console.log(name),
+      (
+        <Flex
+          sx={{
+            cursor: 'pointer',
+            width: '100%',
+            p: 3,
+            border: '1px solid',
+            borderColor: 'secondaryMuted',
+            borderRadius: 'medium',
+            mb: 2,
+            flexDirection: 'row',
+            alignItems: 'center',
+            '&:hover': {
+              color: 'text',
+              // borderColor: 'onSecondary',
+              backgroundColor: 'background'
+            }
+          }}
+          key={name}
+          onClick={() => {
+            activate(connector).then(() => {
+              if (chainId) mixpanel.people.set({ wallet: name });
+              setAccountName(name);
+              setChangeWallet(false);
+            });
+          }}
+        >
+          <Icon name={name} />
+          <Text sx={{ ml: 3 }}>{name}</Text>
+        </Flex>
+      )
+    )
+  );
 
   return (
     <Box>
