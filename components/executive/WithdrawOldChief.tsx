@@ -16,7 +16,8 @@ import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
 import oldChiefAbi from '../../lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from '../../lib/abis/oldVoteProxyAbi.json';
-import { oldChiefAddress } from '../../lib/constants';
+import oldIouAbi from '../../lib/abis/oldIouAbi.json';
+import { oldChiefAddress, oldIouAddress } from '../../lib/constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
@@ -27,10 +28,14 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     (_, address) =>
       voteProxy.address || // no need for IOU approval when using vote proxy
       getMaker()
-        .then(maker => maker.getToken('IOU').allowance(address, oldChiefAddress[getNetwork()]))
-        .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
+        .then(maker =>
+          maker
+            .service('smartContract')
+            .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
+            .allowance(address, oldChiefAddress[getNetwork()])
+        )
+        .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
-
   const lockedMkrKeyOldChief = voteProxy.address || address;
   const { data: lockedMkr } = useSWR(['/user/mkr-locked-old-chief', lockedMkrKeyOldChief], (_, address) =>
     getMaker().then(maker =>
@@ -156,7 +161,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             });
             const maker = await getMaker();
             const approveTxCreator = () =>
-              maker.getToken('IOU').approveUnlimited(oldChiefAddress[getNetwork()]);
+              maker
+                .service('smartContract')
+                .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
+                .approve(oldChiefAddress[getNetwork()], -1);
 
             const txId = await track(approveTxCreator, 'Granting IOU approval', {
               mined: txId => {

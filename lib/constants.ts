@@ -41,3 +41,9 @@ export const oldVoteProxyFactoryAddress = {
   kovan: '0x3e08741a68c2d964d172793cd0ad14292f658cd8',
   testnet: '0x99eD2B819A93ED703a3786e3141570933E3e3D89'
 };
+
+export const oldIouAddress = {
+  mainnet: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355',
+  kovan: '0x4D5d2F7E1284bc5c871ce3e1A997Bd8646c75ba5',
+  testnet: '0xF2C26512fcF36dE7117d0E2bB521e11398a55871'
+};
