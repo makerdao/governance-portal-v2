@@ -31,11 +31,12 @@ describe('can vote in a poll', () => {
     await connectAccount(click, find);
   });
 
-  test('quick vote', async () => {
-    // const { debug, findByText } = render(<PollingOverviewPage polls={[]} />);
+  test('renders voting options when account is connected', async () => {
     expect(await find('Active Polls')).toBeDefined();
-
     expect(await find('Your Ballot: 0 votes')).toBeDefined();
+  });
+
+  test('quick vote', async () => {
     log();
   });
 });
