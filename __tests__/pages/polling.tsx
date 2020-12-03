@@ -2,6 +2,7 @@ import { injectProvider, connectAccount, renderWithAccountSelect as render } fro
 import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
+import polls from '../../mocks/polls.json';
 
 const { click } = fireEvent;
 let maker;
@@ -22,13 +23,14 @@ beforeAll(async () => {
 
 describe('can vote in a poll', () => {
   let log, find;
-
   beforeEach(async () => {
     await createTestPoll();
-    const { debug, findByText } = render(<PollingOverviewPage polls={[]} />);
+
+    const { debug, findByText } = render(<PollingOverviewPage polls={polls as any} />);
+    await connectAccount(click, findByText);
+
     log = debug;
     find = findByText;
-    await connectAccount(click, find);
   });
 
   test('renders voting options when account is connected', async () => {
@@ -37,6 +39,7 @@ describe('can vote in a poll', () => {
   });
 
   test('quick vote', async () => {
+    // await find('Add vote to ballot', 10000);
     log();
   });
 });
