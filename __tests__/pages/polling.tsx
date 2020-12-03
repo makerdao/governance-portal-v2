@@ -1,4 +1,4 @@
-import { injectProvider, renderWithAccountSelect as render } from '../helpers'; 
+import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers'; 
 import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
@@ -21,16 +21,21 @@ beforeAll(async () => {
 });
 
 describe('can vote in a poll', () => {
+  let log, find;
+
   beforeEach(async () => {
     await createTestPoll();
+    const { debug, findByText } = render(<PollingOverviewPage polls={[]} />);
+    log = debug;
+    find = findByText;
+    await connectAccount(click, find);
   });
 
   test('quick vote', async () => {
-    const { debug, findByText } = render(<PollingOverviewPage polls={[]} />);
-    expect(await findByText('Active Polls')).toBeDefined();
+    // const { debug, findByText } = render(<PollingOverviewPage polls={[]} />);
+    expect(await find('Active Polls')).toBeDefined();
 
-    click(await findByText('Connect wallet'));
-    click(await findByText('MetaMask'));
-    debug();
+    expect(await find('Your Ballot: 0 votes')).toBeDefined();
+    log();
   });
 });
