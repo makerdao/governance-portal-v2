@@ -23,6 +23,10 @@ type Props = {
   isHat: boolean;
 };
 
+const SPELL_SCHEDULED_DATE_OVERRIDES = {
+  '0xB70fB4eE900650DCaE5dD63Fd06E07F0b3a45d13': 'December 7, 2020, 14:00 UTC'
+};
+
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
@@ -152,7 +156,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                     mixpanel.track('btn-click', {
                       id: 'openExecVoteModal',
                       product: 'governance-portal-v2',
-                      page: 'Executive',
+                      page: 'Executive'
                     });
                     setVoting(true);
                     ev.stopPropagation();
@@ -192,7 +196,10 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                 {typeof spellData.dateExecuted === 'string' ? (
                   <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
                 ) : (
-                  <>Available for execution on {formatDateWithTime(spellData.eta)}.</>
+                  <>
+                    Available for execution on{' '}
+                    {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                  </>
                 )}
               </Text>
             </Flex>
