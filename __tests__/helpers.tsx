@@ -29,8 +29,8 @@ export function injectProvider() {
 export function renderWithAccountSelect(component): RenderResult {
   return render(
     <>
-      <WrappedAccountSelect />
       <ThemeProvider theme={theme}>
+        <WrappedAccountSelect />
         {component}
       </ThemeProvider>
     </>

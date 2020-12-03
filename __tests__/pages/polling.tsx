@@ -31,6 +31,6 @@ describe('can vote in a poll', () => {
 
     click(await findByText('Connect wallet'));
     click(await findByText('MetaMask'));
-    // debug();
+    debug();
   });
 });
