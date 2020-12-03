@@ -77,7 +77,11 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         }}
         {...props}
       >
-        <Flex px={[3, 4]} py={[3, spellData?.hasBeenCast ? 3 : 4]} sx={{ justifyContent: 'space-between' }}>
+        <Flex
+          px={[3, 4]}
+          py={[3, spellData?.hasBeenScheduled ? 3 : 4]}
+          sx={{ justifyContent: 'space-between' }}
+        >
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
@@ -187,7 +191,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
 
-        {spellData?.hasBeenCast && (
+        {spellData?.hasBeenScheduled && (
           <>
             <Divider my={0} />
             <Flex p={3} sx={{ justifyContent: 'center' }}>

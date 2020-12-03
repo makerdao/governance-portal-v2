@@ -9,7 +9,8 @@ import withApiHandler from '../../_lib/withApiHandler';
 import SpellData from '../../../../types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+  const [done, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+    maker.service('spell').getDone(address),
     maker.service('spell').getEta(address),
     maker
       .service('spell')
@@ -25,7 +26,8 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
   ]);
 
   return {
-    hasBeenCast: !!eta,
+    hasBeenCast: done,
+    hasBeenScheduled: !!eta,
     eta,
     datePassed,
     dateExecuted,
