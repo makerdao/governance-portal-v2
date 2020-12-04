@@ -289,8 +289,9 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   <Flex sx={{ alignItems: 'center' }}>
                     <CircleNumber> 1 </CircleNumber>
                     <Text>
-                      <Deposit link={true} /> to deposit your MKR directly into the new Chief without using a
-                      vote proxy. Please then vote on the executive proposal below to activate the new chief.
+                      <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
+                      using a vote proxy. Please then vote on the executive proposal below to activate the new
+                      chief.
                     </Text>
                   </Flex>
                   <Divider />
@@ -320,9 +321,14 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           )}
         {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && voteProxy && lockedMkr && (
           <MigrationBadge>
-            {lockedMkr.eq(0)
-              ? 'Your vote proxy has been created. Please deposit into your new vote proxy contract by using the deposit button below, then vote on the executive proposal below to activate the new chief'
-              : 'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'}
+            {lockedMkr.eq(0) ? (
+              <Text>
+                Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote proxy
+                contract, then vote on the executive proposal below to activate the new chief
+              </Text>
+            ) : (
+              'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
+            )}
           </MigrationBadge>
         )}
         {!votingForActivation &&

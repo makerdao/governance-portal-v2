@@ -254,7 +254,7 @@ const Deposit = (props): JSX.Element => {
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
           {...props}
         >
-          Click here
+          {props.link}
         </Link>
       ) : (
         <Button
