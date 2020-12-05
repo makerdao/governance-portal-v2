@@ -48,7 +48,8 @@ const CircleNumber = ({ children }) => (
       color: 'white',
       fontWeight: 'bold',
       mr: 3,
-      my: 1
+      my: 1,
+      ml: [0, '-8px']
     }}
   >
     {children}
@@ -289,6 +290,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   <Flex sx={{ alignItems: 'center' }}>
                     <CircleNumber> 1 </CircleNumber>
                     <Text>
+                      <b>Hot wallet only: </b>
                       <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
                       using a vote proxy. Please then vote on the executive proposal below to activate the new
                       chief.
@@ -298,6 +300,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   <Flex sx={{ alignItems: 'center' }}>
                     <CircleNumber> 2 </CircleNumber>
                     <Text>
+                      <b>Hot and cold wallet: </b>
                       <Link
                         href="https://v1.vote.makerdao.com/proxysetup"
                         sx={{ textDecoration: 'underline' }}
@@ -311,8 +314,23 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       >
                         Click here
                       </Link>{' '}
-                      to create a vote proxy for additional wallet security. Please then vote on the executive
-                      proposal below to activate the new chief.
+                      to create a vote proxy for additional wallet security. More info{' '}
+                      <Link
+                        href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                        target="_blank"
+                        sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          mixpanel.track('btn-click', {
+                            id: 'chiefMigrationLinkToVoteProxyBlog',
+                            product: 'governance-portal-v2',
+                            page: 'Executive'
+                          });
+                        }}
+                      >
+                        here
+                      </Link>
+                      {'. '}
+                      Please then vote on the executive proposal below to activate the new chief.
                     </Text>
                   </Flex>
                 </Flex>
