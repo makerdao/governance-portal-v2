@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, jsx } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { GetStaticProps } from 'next';
 import useSWR from 'swr';
@@ -10,6 +10,7 @@ import shallow from 'zustand/shallow';
 
 import Deposit from '../components/executive/Deposit';
 import Withdraw from '../components/executive/Withdraw';
+import WithdrawOldChief from '../components/executive/WithdrawOldChief';
 import ProposalsSortBy from '../components/executive/ProposalsSortBy';
 import DateFilter from '../components/executive/DateFilter';
 import SystemStatsSidebar from '../components/SystemStatsSidebar';
@@ -28,10 +29,58 @@ import SpellData from '../types/spellData';
 import { fetchJson } from '../lib/utils';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
+import { MKR } from '../lib/maker';
+import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { oldChiefAddress } from '../lib/constants';
+import { ZERO_ADDRESS } from '../stores/accounts';
+
+const CircleNumber = ({ children }) => (
+  <Box
+    sx={{
+      width: '26px',
+      minWidth: '26px',
+      lineHeight: '26px',
+      borderRadius: '50%',
+      textAlign: 'center',
+      fontSize: '12px',
+      backgroundColor: 'primary',
+      color: 'white',
+      fontWeight: 'bold',
+      mr: 3,
+      my: 1,
+      ml: [0, '-8px']
+    }}
+  >
+    {children}
+  </Box>
+);
+
+const MigrationBadge = ({ children, py = [2, 3] }) => (
+  <Badge
+    variant="primary"
+    sx={{
+      textTransform: 'none',
+      borderColor: 'primary',
+      borderRadius: 'small',
+      width: '100%',
+      whiteSpace: 'normal',
+      fontWeight: 'normal',
+      fontSize: [1, 2],
+      px: [3, 4],
+      my: 3,
+      py
+    }}
+  >
+    {children}
+  </Badge>
+);
 
 const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
+  );
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
@@ -43,6 +92,19 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     )
   );
 
+  const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
+  const { data: lockedMkrOldChief } = useSWR(
+    lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .service('smartContract')
+          .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+          .deposits(lockedMkrKeyOldChief)
+          .then(MKR.wei)
+      )
+  );
+
   // FIXME merge this into the proposal object
   const { data: spellData } = useSWR<Record<string, SpellData>>(
     `/api/executive/analyze-spell?network=${getNetwork()}`,
@@ -51,6 +113,20 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
     { refreshInterval: 0 }
   );
+
+  const { data: votedProposals } = useSWR<string[]>(
+    ['/executive/voted-proposals', account?.address],
+    (_, address) =>
+      getMaker().then(maker =>
+        maker
+          .service('chief')
+          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
+          .then(slate => maker.service('chief').getSlateAddresses(slate))
+      )
+  );
+
+  const votingForActivation =
+    votedProposals && !!votedProposals.find(proposalAddress => proposalAddress === ZERO_ADDRESS);
 
   const [startDate, endDate, sortBy] = useUiFiltersStore(
     state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
@@ -121,6 +197,170 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       <Head>
         <title>Maker Governance - Executive Proposals</title>
       </Head>
+      <Box sx={{ mt: ['-10px', '-25px'] }}>
+        {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
+          <MigrationBadge py={[2]}>
+            <Flex
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                alignContent: 'space-between',
+                flexWrap: 'wrap'
+              }}
+            >
+              <Text sx={{ py: 2 }}>
+                An executive vote has passed to update the Chief to a new version. You have{' '}
+                <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b> to
+                withdraw from the old chief.
+              </Text>
+              <Flex>
+                <WithdrawOldChief />
+                <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
+                  <Button
+                    variant="outline"
+                    sx={{
+                      height: '26px',
+                      py: 0,
+                      px: 2,
+                      ml: 1,
+                      textTransform: 'uppercase',
+                      borderRadius: 'small',
+                      fontWeight: 'bold',
+                      fontSize: '10px',
+                      borderColor: 'accentBlue',
+                      color: 'accentBlue',
+                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
+                      ':hover svg': { color: 'blueLinkHover' }
+                    }}
+                    onClick={() => {
+                      mixpanel.track('btn-click', {
+                        id: 'chiefMigrationForumPostButton',
+                        product: 'governance-portal-v2',
+                        page: 'Executive'
+                      });
+                    }}
+                  >
+                    <Text>
+                      Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
+                    </Text>
+                  </Button>
+                </Link>
+              </Flex>
+            </Flex>
+          </MigrationBadge>
+        )}
+        {lockedMkrOldChief &&
+          lockedMkrOldChief.eq(0) &&
+          !votingForActivation &&
+          !voteProxy &&
+          lockedMkr &&
+          lockedMkr.eq(0) && (
+            <div>
+              <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Heading variant="microHeading">
+                  Choose one of the options below to deposit MKR into the new chief:
+                </Heading>
+                <Link
+                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
+                  target="_blank"
+                  sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                  onClick={() => {
+                    mixpanel.track('btn-click', {
+                      id: 'chiefMigrationMoreInfoLink',
+                      product: 'governance-portal-v2',
+                      page: 'Executive'
+                    });
+                  }}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text>
+                      More info
+                      <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
+                  </Flex>
+                </Link>
+              </Flex>
+              <MigrationBadge py={[0]}>
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    py: 2
+                  }}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <CircleNumber> 1 </CircleNumber>
+                    <Text>
+                      <b>Hot wallet only: </b>
+                      <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
+                      using a vote proxy. Please then vote on the executive proposal below to activate the new
+                      chief.
+                    </Text>
+                  </Flex>
+                  <Divider />
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <CircleNumber> 2 </CircleNumber>
+                    <Text>
+                      <b>Hot and cold wallet: </b>
+                      <Link
+                        href="https://v1.vote.makerdao.com/proxysetup"
+                        sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          mixpanel.track('btn-click', {
+                            id: 'chiefMigrationLinkToProxySetup',
+                            product: 'governance-portal-v2',
+                            page: 'Executive'
+                          });
+                        }}
+                      >
+                        Click here
+                      </Link>{' '}
+                      to create a vote proxy for additional wallet security. More info{' '}
+                      <Link
+                        href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                        target="_blank"
+                        sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          mixpanel.track('btn-click', {
+                            id: 'chiefMigrationLinkToVoteProxyBlog',
+                            product: 'governance-portal-v2',
+                            page: 'Executive'
+                          });
+                        }}
+                      >
+                        here
+                      </Link>
+                      {'. '}
+                      Please then vote on the executive proposal below to activate the new chief.
+                    </Text>
+                  </Flex>
+                </Flex>
+              </MigrationBadge>
+            </div>
+          )}
+        {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && voteProxy && lockedMkr && (
+          <MigrationBadge>
+            {lockedMkr.eq(0) ? (
+              <Text>
+                Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote proxy
+                contract, then vote on the executive proposal below to activate the new chief
+              </Text>
+            ) : (
+              'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
+            )}
+          </MigrationBadge>
+        )}
+        {!votingForActivation &&
+          lockedMkrOldChief &&
+          lockedMkrOldChief.eq(0) &&
+          !voteProxy &&
+          lockedMkr &&
+          lockedMkr.gt(0) && (
+            <MigrationBadge>
+              Your MKR has been deposited. Please vote on the executive proposal below to activate the new
+              chief.
+            </MigrationBadge>
+          )}
+      </Box>
       <Stack>
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
@@ -226,7 +466,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             <SystemStatsSidebar
               fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
-            <MkrLiquiditySidebar/>
+            <MkrLiquiditySidebar />
             <ResourceBox />
           </Stack>
         </SidebarLayout>
