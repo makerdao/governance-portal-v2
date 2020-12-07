@@ -116,7 +116,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   Your Vote
                 </Badge>
               )}
-              {isHat ? (
+              {isHat && proposal.address !== '0x0000000000000000000000000000000000000000' ? (
                 <Badge
                   variant="primary"
                   sx={{
