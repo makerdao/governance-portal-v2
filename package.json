@@ -64,6 +64,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.5",
+    "filenamify": "^4.2.0",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.2.11",

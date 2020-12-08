@@ -91,7 +91,9 @@ export async function getPolls(): Promise<Poll[]> {
   return (_cachedPolls = polls);
 }
 
-export async function parsePollsMetadata(pollList): Promise<Poll[]> {
+const normalFetch = url => fetch(url).then(resp => resp?.text());
+
+export async function parsePollsMetadata(pollList, fetchFn = normalFetch): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
@@ -107,8 +109,8 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
         try {
           document = await timeoutPromise(
             5000, // reject if it takes longer than this to fetch
-            backoffRetry(3, () => fetch(p.url))
-          ).then(response => response?.text());
+            backoffRetry(3, () => fetchFn(p.url))
+          );
           if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
             throw new Error();
         } catch (err) {
