@@ -1,27 +1,27 @@
 /** @jsx jsx */
 
 import React, { useEffect, useState } from 'react';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
+import mixpanel from 'mixpanel-browser';
 
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
 import { getNetwork, chainIdToNetworkName } from '../../lib/maker';
 import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
-import { syncMakerAccount } from '../../lib/maker/web3react/hooks';
+import { syncMakerAccount, useEagerConnect, useInactiveListener } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
 import { fadeIn, slideUp } from '../../lib/keyframes';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AccountIcon from './AccountIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import useAccountsStore from '../../stores/accounts';
-import mixpanel from 'mixpanel-browser';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -33,6 +33,8 @@ const WrappedAccountSelect = (props): JSX.Element => (
 
 const AccountSelect = props => {
   const { library, account, activate, connector, error, chainId } = useWeb3React();
+
+  const triedEager = useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
@@ -59,7 +61,7 @@ const AccountSelect = props => {
   const walletOptions = connectors.map(([name, connector]) => (
     <Flex
       sx={{
-        cursor: 'pointer',
+        cursor: triedEager ? 'pointer' : 'unset',
         width: '100%',
         p: 3,
         border: '1px solid',
