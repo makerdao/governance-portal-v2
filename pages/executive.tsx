@@ -34,6 +34,7 @@ import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { oldChiefAddress } from '../lib/constants';
 import { ZERO_ADDRESS } from '../stores/accounts';
+import ProgressBar from '../components/executive/ProgressBar';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -95,7 +96,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    (_, address) =>
+    () =>
       getMaker().then(maker =>
         maker
           .service('smartContract')
@@ -199,55 +200,58 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       </Head>
       <Box sx={{ mt: ['-10px', '-25px'] }}>
         {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
-          <MigrationBadge py={[2]}>
-            <Flex
-              sx={{
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                alignContent: 'space-between',
-                flexWrap: 'wrap'
-              }}
-            >
-              <Text sx={{ py: 2 }}>
-                An executive vote has passed to update the Chief to a new version. You have{' '}
-                <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b> to
-                withdraw from the old chief.
-              </Text>
-              <Flex>
-                <WithdrawOldChief />
-                <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
-                  <Button
-                    variant="outline"
-                    sx={{
-                      height: '26px',
-                      py: 0,
-                      px: 2,
-                      ml: 1,
-                      textTransform: 'uppercase',
-                      borderRadius: 'small',
-                      fontWeight: 'bold',
-                      fontSize: '10px',
-                      borderColor: 'accentBlue',
-                      color: 'accentBlue',
-                      ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
-                      ':hover svg': { color: 'blueLinkHover' }
-                    }}
-                    onClick={() => {
-                      mixpanel.track('btn-click', {
-                        id: 'chiefMigrationForumPostButton',
-                        product: 'governance-portal-v2',
-                        page: 'Executive'
-                      });
-                    }}
-                  >
-                    <Text>
-                      Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
-                    </Text>
-                  </Button>
-                </Link>
+          <>
+            <ProgressBar step={0} />
+            <MigrationBadge py={[2]}>
+              <Flex
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  alignContent: 'space-between',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <Text sx={{ py: 2 }}>
+                  An executive vote has passed to update the Chief to a new version. You have{' '}
+                  <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
+                  to withdraw from the old chief.
+                </Text>
+                <Flex>
+                  <WithdrawOldChief />
+                  <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
+                    <Button
+                      variant="outline"
+                      sx={{
+                        height: '26px',
+                        py: 0,
+                        px: 2,
+                        ml: 1,
+                        textTransform: 'uppercase',
+                        borderRadius: 'small',
+                        fontWeight: 'bold',
+                        fontSize: '10px',
+                        borderColor: 'accentBlue',
+                        color: 'accentBlue',
+                        ':hover': { color: 'blueLinkHover', borderColor: 'blueLinkHover' },
+                        ':hover svg': { color: 'blueLinkHover' }
+                      }}
+                      onClick={() => {
+                        mixpanel.track('btn-click', {
+                          id: 'chiefMigrationForumPostButton',
+                          product: 'governance-portal-v2',
+                          page: 'Executive'
+                        });
+                      }}
+                    >
+                      <Text>
+                        Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
+                      </Text>
+                    </Button>
+                  </Link>
+                </Flex>
               </Flex>
-            </Flex>
-          </MigrationBadge>
+            </MigrationBadge>
+          </>
         )}
         {lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
@@ -255,8 +259,11 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           !voteProxy &&
           lockedMkr &&
           lockedMkr.eq(0) && (
-            <div>
-              <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <>
+              <ProgressBar step={1} />
+              <Flex
+                sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}
+              >
                 <Heading variant="microHeading">
                   Choose one of the options below to deposit MKR into the new chief:
                 </Heading>
@@ -335,19 +342,22 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   </Flex>
                 </Flex>
               </MigrationBadge>
-            </div>
+            </>
           )}
         {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && voteProxy && lockedMkr && (
-          <MigrationBadge>
-            {lockedMkr.eq(0) ? (
-              <Text>
-                Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote proxy
-                contract, then vote on the executive proposal below to activate the new chief
-              </Text>
-            ) : (
-              'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
-            )}
-          </MigrationBadge>
+          <>
+            <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
+            <MigrationBadge>
+              {lockedMkr.eq(0) ? (
+                <Text>
+                  Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote
+                  proxy contract, then vote on the executive proposal below to activate the new chief
+                </Text>
+              ) : (
+                'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
+              )}
+            </MigrationBadge>
+          </>
         )}
         {!votingForActivation &&
           lockedMkrOldChief &&
@@ -355,10 +365,13 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           !voteProxy &&
           lockedMkr &&
           lockedMkr.gt(0) && (
-            <MigrationBadge>
-              Your MKR has been deposited. Please vote on the executive proposal below to activate the new
-              chief.
-            </MigrationBadge>
+            <>
+              <ProgressBar step={2} />
+              <MigrationBadge>
+                Your MKR has been deposited. Please vote on the executive proposal below to activate the new
+                chief.
+              </MigrationBadge>
+            </>
           )}
       </Box>
       <Stack>
