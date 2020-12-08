@@ -9,8 +9,8 @@ function CircleNumber({ selected = false, num }: { selected?: boolean; num: numb
         lineHeight: '20px',
         borderRadius: '50%',
         textAlign: 'center',
-        fontSize: '12px',
-        backgroundColor: selected ? 'primary' : '#9FAFB9',
+        fontSize: '1',
+        backgroundColor: selected ? 'primary' : 'badgeGrey',
         color: 'white',
         fontWeight: 'bold',
         mr: 1
