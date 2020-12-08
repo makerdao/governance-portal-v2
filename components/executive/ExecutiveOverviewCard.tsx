@@ -120,7 +120,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   Your Vote
                 </Badge>
               )}
-              {isHat ? (
+              {isHat && proposal.address !== '0x0000000000000000000000000000000000000000' ? (
                 <Badge
                   variant="primary"
                   sx={{
@@ -195,17 +195,23 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <>
             <Divider my={0} />
             <Flex p={3} sx={{ justifyContent: 'center' }}>
-              <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                {typeof spellData.dateExecuted === 'string' ? (
-                  <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-                ) : (
-                  <>
-                    Available for execution on{' '}
-                    {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
-                  </>
-                )}
-              </Text>
+              {proposal.address === '0x0000000000000000000000000000000000000000' ? (
+                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                  The 80,000 MKR threshold must be passed in order to activate the new chief.
+                </Text>
+              ) : (
+                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                  Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+                  {typeof spellData.dateExecuted === 'string' ? (
+                    <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+                  ) : (
+                    <>
+                      Available for execution on{' '}
+                      {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                    </>
+                  )}
+                </Text>
+              )}
             </Flex>
           </>
         )}

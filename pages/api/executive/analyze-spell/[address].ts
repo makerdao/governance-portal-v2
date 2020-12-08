@@ -10,8 +10,14 @@ import SpellData from '../../../../types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
   const [done, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
-    maker.service('spell').getDone(address),
-    maker.service('spell').getEta(address),
+    maker
+      .service('spell')
+      .getDone(address)
+      .catch(_ => _), // this fails if the spell doesn't have the right ABI,
+    maker
+      .service('spell')
+      .getEta(address)
+      .catch(_ => _), // this fails if the spell doesn't have the right ABI,
     maker
       .service('spell')
       .getScheduledDate(address)

@@ -75,14 +75,24 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               mt: ['-10px', '-25px']
             }}
           >
-            <Text sx={{ display: ['block', 'none'] }}>
+            {/* <Text sx={{ display: ['block', 'none'] }}>
               Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
               <Link href="//v1.vote.makerdao.com">
                 <a>v1.vote.makerdao.com</a>
               </Link>
               .
+            </Text> */}
+            <Text>
+              MakerDAO is currently migrating to a new governance chief contract to prevent flashloans from
+              being used in governance activities. Please withdraw from the old Chief, deposit your MKR in the
+              new Chief contract, and vote on the new proposal on the Executive Voting page. For more
+              information please refer to this{' '}
+              <Link href="//blog.makerdao.com/maker-dschief-1-2-governance-security-update-requires-mkr-holder-actions/">
+                <a>blog</a>
+              </Link>
+              .
             </Text>
-            <Text sx={{ display: ['none', 'block'] }}>
+            {/* <Text sx={{ display: ['none', 'block'] }}>
               Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
               executive voting comments, and on-chain effects. For questions visit{' '}
               <Link href="//chat.makerdao.com/channel/governance-and-risk">
@@ -93,7 +103,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 <a>v1.vote.makerdao.com</a>
               </Link>
               .
-            </Text>
+            </Text> */}
           </Badge>
         </Flex>
         <Stack gap={[5, 6]}>

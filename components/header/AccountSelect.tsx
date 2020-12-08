@@ -12,7 +12,7 @@ import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-
 
 import { getNetwork, chainIdToNetworkName } from '../../lib/maker';
 import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
-import { syncMakerAccount, useEagerConnect, useInactiveListener } from '../../lib/maker/web3react/hooks';
+import { syncMakerAccount, useEagerConnect } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
 import useTransactionStore from '../../stores/transactions';
 import { fadeIn, slideUp } from '../../lib/keyframes';
