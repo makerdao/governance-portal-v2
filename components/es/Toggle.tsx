@@ -9,7 +9,7 @@ const InnerToggle = ({ active }) => {
       sx={{
         transform: active
           ? `translateX(calc(${TOGGLE_WIDTH} - ( 2 * ${BORDER_WIDTH}) - ${TOGGLE_BUTTON_WIDTH}))`
-          : null,
+          : undefined,
         transition: 'transform 0.2s',
         width: TOGGLE_BUTTON_WIDTH,
         height: TOGGLE_BUTTON_WIDTH,

@@ -26,7 +26,7 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewP
       <Text
         variant="microHeading"
         mt={bpi < 1 ? 4 : null}
-        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+        sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
         Enter the amount of MKR to burn.
       </Text>
@@ -110,7 +110,7 @@ const MKRAmount = ({
           <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
         </Flex>
       ) : null}
-      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
+      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
           onClick={() => {
             setShowDialog(false);
@@ -120,7 +120,7 @@ const MKRAmount = ({
             color: 'secondary',
             borderColor: 'secondary',
             borderRadius: 'small',
-            width: bpi < 1 ? '100%' : null
+            width: bpi < 1 ? '100%' : undefined
           }}
         >
           Cancel
@@ -133,7 +133,7 @@ const MKRAmount = ({
             color: 'onNotice',
             borderColor: 'notice',
             borderRadius: 'small',
-            width: bpi < 1 ? '100%' : null
+            width: bpi < 1 ? '100%' : undefined
           }}
         >
           Continue

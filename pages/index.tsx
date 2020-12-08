@@ -257,7 +257,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   width: '100%',
                   position: 'absolute',
                   zIndex: -1,
-                  mt: t => `-${t.space[5]}px`,
+                  mt: t => `-${(t as any).space[5]}px`,
                   bg: 'background'
                 }}
               />

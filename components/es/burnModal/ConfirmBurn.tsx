@@ -16,7 +16,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          mt: bpi < 1 ? 4 : null,
+          mt: bpi < 1 ? 4 : undefined,
           py: 1
         }}
       >
@@ -39,7 +39,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
       <Text
         variant="microHeading"
         mt={4}
-        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+        sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
         Enter the following phrase to continue.
       </Text>
@@ -151,7 +151,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           </Text>
         </Label>
       </Flex>
-      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
+      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
           onClick={() => {
             setShowDialog(false);

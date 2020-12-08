@@ -175,11 +175,11 @@ export default function MobileVoteSheet({
                     key={i}
                     sx={{
                       flex: 1,
-                      borderLeft: i === 0 ? null : '2px solid white',
-                      borderTopLeftRadius: i === 0 ? 'small' : null,
-                      borderBottomLeftRadius: i === 0 ? 'small' : null,
-                      borderTopRightRadius: i === total - 1 ? 'small' : null,
-                      borderBottomRightRadius: i === total - 1 ? 'small' : null,
+                      borderLeft: i === 0 ? undefined : '2px solid white',
+                      borderTopLeftRadius: i === 0 ? 'small' : undefined,
+                      borderBottomLeftRadius: i === 0 ? 'small' : undefined,
+                      borderTopRightRadius: i === total - 1 ? 'small' : undefined,
+                      borderBottomRightRadius: i === total - 1 ? 'small' : undefined,
                       backgroundColor: i < ballotCount ? 'primary' : 'muted'
                     }}
                   />
@@ -216,11 +216,11 @@ export default function MobileVoteSheet({
               <Button
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={()=>{
+                onClick={() => {
                   mixpanel.track('btn-click', {
                     id: 'addVoteToBallot',
                     product: 'governance-portal-v2',
-                    page: 'Polling',
+                    page: 'Polling'
                   });
                   submit();
                 }}

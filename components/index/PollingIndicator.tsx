@@ -83,7 +83,7 @@ const PollingIndicatorComponent = ({ polls, ...props }: { polls: Poll[] }): JSX.
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))
     : undefined;
 
-  const shouldDisplay = activePolls.length === 0 || (account && !unvotedPolls?.length) ? 'none' : null;
+  const shouldDisplay = activePolls.length === 0 || (account && !unvotedPolls?.length) ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !unvotedPolls ? (

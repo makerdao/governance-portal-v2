@@ -22,7 +22,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderTop: index ? '1px solid #D4D9E1' : null,
+        borderTop: index ? '1px solid #D4D9E1' : undefined,
         py: 2
       }}
     >
