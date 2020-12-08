@@ -76,6 +76,7 @@ const ESModule = () => {
             height: '20px',
             my: 3
           }}
+          data-testid="progress-bar"
         >
           <Box
             as="div"
@@ -198,7 +199,7 @@ const ESModule = () => {
             flexDirection: bpi > 0 ? 'row' : 'column',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mt: bpi < 1 ? 2 : null
+            mt: bpi < 1 ? 2 : undefined
           }}
         >
           {!account && (

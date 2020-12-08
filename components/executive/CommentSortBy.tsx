@@ -22,7 +22,7 @@ export default function CommentSortBy(props): JSX.Element {
         onSelect={() => setCommentSortBy('Latest')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: commentSortBy === 'Latest' ? 'bold' : null
+          fontWeight: commentSortBy === 'Latest' ? 'bold' : undefined
         }}
       >
         Latest
@@ -31,7 +31,7 @@ export default function CommentSortBy(props): JSX.Element {
         onSelect={() => setCommentSortBy('Oldest')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: commentSortBy === 'Oldest' ? 'bold' : null
+          fontWeight: commentSortBy === 'Oldest' ? 'bold' : undefined
         }}
       >
         Oldest
@@ -40,7 +40,7 @@ export default function CommentSortBy(props): JSX.Element {
         onSelect={() => setCommentSortBy('MKR Amount')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: commentSortBy === 'MKR Amount' ? 'bold' : null
+          fontWeight: commentSortBy === 'MKR Amount' ? 'bold' : undefined
         }}
       >
         MKR Amount

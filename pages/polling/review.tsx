@@ -83,7 +83,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               <Stack gap={3}>
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
-                <Stack sx={{ display: activePolls.length ? null : 'none' }}>
+                <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                   {Object.keys(ballot).map((pollId, index) => {
                     const poll = findPollById(polls, pollId);
                     invariant(poll !== undefined, 'Unknown poll found on voter ballot');

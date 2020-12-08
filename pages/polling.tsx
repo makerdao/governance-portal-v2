@@ -158,7 +158,7 @@ const PollingOverview = ({ polls }: Props) => {
                     mb={3}
                     mt={4}
                     as="h4"
-                    sx={{ display: sortedStartDatesActive.length > 0 ? null : 'none' }}
+                    sx={{ display: sortedStartDatesActive.length > 0 ? undefined : 'none' }}
                   >
                     Active Polls
                   </Heading>
@@ -170,7 +170,7 @@ const PollingOverview = ({ polls }: Props) => {
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted{' '}
                           {formatDateWithTime(date)}
                         </Text>
-                        <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
+                        <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map(poll => (
                             <PollOverviewCard
                               key={poll.multiHash}
@@ -186,7 +186,7 @@ const PollingOverview = ({ polls }: Props) => {
                 </div>
                 {showHistorical ? (
                   <div>
-                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
+                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? undefined : 'none' }}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
                         Ended Polls
                         <Button
@@ -233,7 +233,7 @@ const PollingOverview = ({ polls }: Props) => {
                       setShowHistorical(true);
                     }}
                     variant="outline"
-                    sx={{ py: 3, display: historicalPolls.length > 0 ? null : 'none' }}
+                    sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
                   </Button>

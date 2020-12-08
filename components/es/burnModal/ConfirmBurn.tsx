@@ -16,7 +16,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          mt: bpi < 1 ? 4 : null,
+          mt: bpi < 1 ? 4 : undefined,
           py: 1
         }}
       >
@@ -39,7 +39,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
       <Text
         variant="microHeading"
         mt={4}
-        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+        sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
         Enter the following phrase to continue.
       </Text>
@@ -55,6 +55,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
           onChange={e => setValue(e.target.value)}
           placeholder={'I am burning...'}
           sx={{ border: '1px solid', borderColor: '#D8E0E3', mt: 2 }}
+          data-testid="confirm-input"
         />
       </Flex>
     </>
@@ -127,20 +128,30 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         </Box>
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-        <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
+        <Toggle
+          active={mkrApproved}
+          onClick={giveProxyMkrAllowance}
+          disabled={mkrApprovePending}
+          data-testid="allowance-toggle"
+        />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'row', mt: 3 }}>
         <Label>
-          <Checkbox checked={termsAccepted} onChange={e => changeTerms(e)} onClick={changeTerms} />
+          <Checkbox
+            checked={termsAccepted}
+            onChange={e => changeTerms(e)}
+            onClick={changeTerms}
+            data-testid="tosCheck"
+          />
           <Text>
             I have read and accept the <Link>Terms of Service</Link>.
           </Text>
         </Label>
       </Flex>
-      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
+      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
           onClick={() => {
             setShowDialog(false);
