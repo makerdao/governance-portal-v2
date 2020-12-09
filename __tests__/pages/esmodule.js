@@ -3,11 +3,10 @@ import { renderWithTheme } from '../helpers';
 import { cleanup, fireEvent, waitFor, configure } from '@testing-library/react';
 import waitForExpect from 'wait-for-expect'
 import { TestAccountProvider } from '@makerdao/test-helpers';
-import { cache, SWRConfig } from "swr";
+import { cache } from "swr";
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../stores/accounts';
-import ilkList from '../../lib/references'
 import BigNumber from 'bignumber.js';
 
 configure({
@@ -19,20 +18,8 @@ configure({
   },
 });
 
-const stringToBytes = (str) => {
-  return '0x' + Buffer.from(str).toString('hex');
-}
-
 export const WAD = new BigNumber('1e18');
 
-const ilks = ilkList.map(i => [i.symbol, i.currency])
-  .filter(i => i[0] !== 'MANA-A');
-
-const SWRESModule = () => (
-    <SWRConfig value={{ dedupingInterval: 0}}>
-        <ESModule />
-    </SWRConfig>
-)
 let maker;
 
 
@@ -198,11 +185,6 @@ describe('initiate emergency shutdown', () => {
   test('show disabled Initiate Shutdown button on shutdown initiated', async () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await esm.fire();
-    const end = maker.service('smartContract').getContract('MCD_END');
-    for (let ilkInfo of ilks) {
-        const [ilk] = ilkInfo;
-        await end['cage(bytes32)'](stringToBytes(ilk));
-    }
     const { findByText, getByTestId, debug } = await renderWithTheme(<ESModule />);
     const initiateButton = await findByText('Initiate Emergency Shutdown');
     waitFor(() => expect(initiateButton.disabled).toBeTruthy());
