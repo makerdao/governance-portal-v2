@@ -2,7 +2,7 @@ import { injectProvider, connectAccount, renderWithAccountSelect as render } fro
 import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
-import polls from '../../mocks/polls.json';
+import mockPolls from '../../mocks/polls.json';
 
 const { click } = fireEvent;
 let maker;
@@ -22,24 +22,27 @@ beforeAll(async () => {
 });
 
 describe('can vote in a poll', () => {
-  let log, find;
+  let log, find, findAll;
+  // re-combine these to speed up tests
   beforeEach(async () => {
     await createTestPoll();
 
-    const { debug, findByText } = render(<PollingOverviewPage polls={polls as any} />);
-    await connectAccount(click, findByText);
+    const { debug, findByText, findByLabelText, findAllByText } = render(<PollingOverviewPage polls={mockPolls as any} />);
+    await connectAccount(click, findByText, findByLabelText);
 
     log = debug;
     find = findByText;
+    findAll = findAllByText;
   });
 
   test('renders voting options when account is connected', async () => {
     expect(await find('Active Polls')).toBeDefined();
     expect(await find('Your Ballot: 0 votes')).toBeDefined();
+    // log();
   });
 
   test('quick vote', async () => {
-    // await find('Add vote to ballot', 10000);
-    log();
+    expect(await findAll('View Details', 10000)).toBeDefined();
+    // log();
   });
 });

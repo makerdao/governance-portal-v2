@@ -37,7 +37,8 @@ export function renderWithAccountSelect(component): RenderResult {
   );
 }
 
-export async function connectAccount(click, findByText) {
+export async function connectAccount(click, findByText, findByLabelText) {
   click(await findByText('Connect wallet'));
   click(await findByText('MetaMask'));
+  click(await findByLabelText('close'));
 }
