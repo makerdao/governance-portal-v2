@@ -253,113 +253,112 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             </MigrationBadge>
           </>
         )}
-        {lockedMkrOldChief &&
-          lockedMkrOldChief.eq(0) &&
-          !votingForActivation &&
-          !voteProxy &&
-          lockedMkr &&
-          lockedMkr.eq(0) && (
-            <>
-              <ProgressBar step={1} />
-              <Flex
-                sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}
-              >
-                <Heading variant="microHeading">
-                  Choose one of the options below to deposit MKR into the new chief:
-                </Heading>
-                <Link
-                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
-                  target="_blank"
-                  sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                  onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'chiefMigrationMoreInfoLink',
-                      product: 'governance-portal-v2',
-                      page: 'Executive'
-                    });
-                  }}
-                >
-                  <Flex sx={{ alignItems: 'center' }}>
-                    <Text>
-                      More info
-                      <Icon ml={2} name="arrowTopRight" size={2} />
-                    </Text>
-                  </Flex>
-                </Link>
-              </Flex>
-              <MigrationBadge py={[0]}>
-                <Flex
-                  sx={{
-                    flexDirection: 'column',
-                    py: 2
-                  }}
-                >
-                  <Flex sx={{ alignItems: 'center' }}>
-                    <CircleNumber> 1 </CircleNumber>
-                    <Text>
-                      <b>Hot wallet only: </b>
-                      <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
-                      using a vote proxy. Please then vote on the executive proposal below to activate the new
-                      chief.
-                    </Text>
-                  </Flex>
-                  <Divider />
-                  <Flex sx={{ alignItems: 'center' }}>
-                    <CircleNumber> 2 </CircleNumber>
-                    <Text>
-                      <b>Hot and cold wallet: </b>
-                      <Link
-                        href="https://v1.vote.makerdao.com/proxysetup"
-                        sx={{ textDecoration: 'underline' }}
-                        onClick={() => {
-                          mixpanel.track('btn-click', {
-                            id: 'chiefMigrationLinkToProxySetup',
-                            product: 'governance-portal-v2',
-                            page: 'Executive'
-                          });
-                        }}
-                      >
-                        Click here
-                      </Link>{' '}
-                      to create a vote proxy for additional wallet security. More info{' '}
-                      <Link
-                        href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                        target="_blank"
-                        sx={{ textDecoration: 'underline' }}
-                        onClick={() => {
-                          mixpanel.track('btn-click', {
-                            id: 'chiefMigrationLinkToVoteProxyBlog',
-                            product: 'governance-portal-v2',
-                            page: 'Executive'
-                          });
-                        }}
-                      >
-                        here
-                      </Link>
-                      {'. '}
-                      Please then vote on the executive proposal below to activate the new chief.
-                    </Text>
-                  </Flex>
-                </Flex>
-              </MigrationBadge>
-            </>
-          )}
-        {!votingForActivation && lockedMkrOldChief && lockedMkrOldChief.eq(0) && voteProxy && lockedMkr && (
+        {lockedMkrOldChief && lockedMkrOldChief.eq(0) && !voteProxy && lockedMkr && lockedMkr.eq(0) && (
           <>
-            <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
-            <MigrationBadge>
-              {lockedMkr.eq(0) ? (
-                <Text>
-                  Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote
-                  proxy contract, then vote on the executive proposal below to activate the new chief
-                </Text>
-              ) : (
-                'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
-              )}
+            <ProgressBar step={1} />
+            <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
+              <Heading variant="microHeading">
+                Choose one of the options below to deposit MKR into the new chief:
+              </Heading>
+              <Link
+                href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
+                target="_blank"
+                sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                onClick={() => {
+                  mixpanel.track('btn-click', {
+                    id: 'chiefMigrationMoreInfoLink',
+                    product: 'governance-portal-v2',
+                    page: 'Executive'
+                  });
+                }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Text>
+                    More info
+                    <Icon ml={2} name="arrowTopRight" size={2} />
+                  </Text>
+                </Flex>
+              </Link>
+            </Flex>
+            <MigrationBadge py={[0]}>
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  py: 2
+                }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  <CircleNumber> 1 </CircleNumber>
+                  <Text>
+                    <b>Hot wallet only: </b>
+                    <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
+                    using a vote proxy. Please then vote on the executive proposal below to activate the new
+                    chief.
+                  </Text>
+                </Flex>
+                <Divider />
+                <Flex sx={{ alignItems: 'center' }}>
+                  <CircleNumber> 2 </CircleNumber>
+                  <Text>
+                    <b>Hot and cold wallet: </b>
+                    <Link
+                      href="https://v1.vote.makerdao.com/proxysetup"
+                      sx={{ textDecoration: 'underline' }}
+                      onClick={() => {
+                        mixpanel.track('btn-click', {
+                          id: 'chiefMigrationLinkToProxySetup',
+                          product: 'governance-portal-v2',
+                          page: 'Executive'
+                        });
+                      }}
+                    >
+                      Click here
+                    </Link>{' '}
+                    to create a vote proxy for additional wallet security. More info{' '}
+                    <Link
+                      href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                      target="_blank"
+                      sx={{ textDecoration: 'underline' }}
+                      onClick={() => {
+                        mixpanel.track('btn-click', {
+                          id: 'chiefMigrationLinkToVoteProxyBlog',
+                          product: 'governance-portal-v2',
+                          page: 'Executive'
+                        });
+                      }}
+                    >
+                      here
+                    </Link>
+                    {'. '}
+                    Please then vote on the executive proposal below to activate the new chief.
+                  </Text>
+                </Flex>
+              </Flex>
             </MigrationBadge>
           </>
         )}
-        {!votingForActivation &&
+        {votedProposals &&
+          !votingForActivation &&
+          lockedMkrOldChief &&
+          lockedMkrOldChief.eq(0) &&
+          voteProxy &&
+          lockedMkr && (
+            <>
+              <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
+              <MigrationBadge>
+                {lockedMkr.eq(0) ? (
+                  <Text>
+                    Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote
+                    proxy contract, then vote on the executive proposal below to activate the new chief
+                  </Text>
+                ) : (
+                  'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
+                )}
+              </MigrationBadge>
+            </>
+          )}
+        {votedProposals &&
+          !votingForActivation &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
           !voteProxy &&
