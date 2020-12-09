@@ -81,14 +81,17 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/polls.json');
-  if (process.env.USE_FS_CACHE) {
-    const cachedPolls = fsCacheGet('polls');
-    if (cachedPolls) return JSON.parse(cachedPolls);
-  }
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
+
+  if (process.env.USE_FS_CACHE) {
+    const cachedPolls = fsCacheGet('polls');
+    if (cachedPolls) return JSON.parse(cachedPolls);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+    return require('../mocks/polls.json');
+  }
+
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
@@ -98,13 +101,13 @@ export async function getPolls(): Promise<Poll[]> {
 
 const fsCacheGet = name => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
-  const path = `/tmp/gov-portal-${name}-${new Date().toISOString().substring(0, 10)}`;
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
   if (fs.existsSync(path)) return fs.readFileSync(path).toString();
 };
 
 const fsCacheSet = (name, data) => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
-  const path = `/tmp/gov-portal-${name}-${new Date().toISOString().substring(0, 10)}`;
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
   fs.writeFileSync(path, data, err => console.error(err));
 };
 
