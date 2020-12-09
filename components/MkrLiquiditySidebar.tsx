@@ -5,39 +5,35 @@ import Skeleton from 'react-loading-skeleton';
 import Stack from './layouts/Stack';
 import getMaker from '../lib/maker';
 import { MKR } from '../lib/maker';
-import axios from 'axios';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const uniswapV2MkrPool = '0xC2aDdA861F89bBB333c90c492cB837741916A225';
 
 async function getBalancerMkr() {
-  let balancerNum = 0;
-  return axios({
-    url: 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer',
+  const maker = await getMaker();
+  const mkrAddress = maker.service('token').getToken('MKR').address();
+
+  const resp = await fetch('https://api.thegraph.com/subgraphs/name/balancer-labs/balancer', {
     method: 'post',
-    data: {
+    body: JSON.stringify({
       query: `
-        query PostsForPools {
-          pools(where: {tokensList_contains: ["0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2"], publicSwap: true}) {
-                  tokens {
-                    address
-                    balance
-                    symbol
-                  }
+          query PostsForPools {
+            pools(where: {tokensList_contains: ["${mkrAddress}"], publicSwap: true}) {
+              tokens {
+                address
+                balance
+                symbol
               }
-        }
-        `
-    }
-  }).then(result => {
-    result.data.data.pools.forEach(function (pool) {
-      pool.tokens.forEach(function (token) {
-        if (token.symbol == 'MKR') {
-          balancerNum = balancerNum + parseFloat(token.balance);
-        }
-      });
-    });
-    return MKR(balancerNum);
+            }
+          }
+          `
+    })
   });
+  const json = await resp.json();
+  const balancerNum = json.data.pools
+    .flatMap(pool => pool.tokens)
+    .reduce((sum, token) => (token.symbol === 'MKR' ? parseFloat(token.balance) : 0) + sum, 0);
+  return MKR(balancerNum);
 }
 
 async function getMkrLiquidity() {
