@@ -8,7 +8,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import { CMSProposal } from '../../types/proposal';
 import getMaker, { getNetwork } from '../../lib/maker';
-import useAccountsStore from '../../stores/accounts';
+import useAccountsStore, { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   numProposals: number;
@@ -76,14 +76,18 @@ const ExecutiveIndicatorComponent = ({
           .then(slate => maker.service('chief').getSlateAddresses(slate))
       )
   );
-  const newUnvotedProposals =
+  let newUnvotedProposals =
     votedProposals && account
       ? newActiveProposals.filter(
           proposal => !votedProposals.map(p => p.toLowerCase()).includes(proposal.address.toLowerCase())
         )
       : newActiveProposals;
+
+  //hard-coded 1 new proposal when 0x0 is hat, delete once the new cheif is activated
+  if (hat === ZERO_ADDRESS) newUnvotedProposals = [proposals[0]];
+
   const shouldDisplay =
-    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : null;
+    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !votedProposals ? (

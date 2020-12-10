@@ -61,12 +61,12 @@ export default function PollBar({ ballot, polls, activePolls, ...props }: Props)
               backgroundColor="muted"
               sx={{
                 flex: 1,
-                borderLeft: index === 0 ? null : '1px solid white',
-                borderTopLeftRadius: index === 0 ? 'small' : null,
-                borderBottomLeftRadius: index === 0 ? 'small' : null,
-                borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : null,
-                borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : null,
-                backgroundColor: index < Object.keys(ballot).length - edits ? 'primary' : null
+                borderLeft: index === 0 ? undefined : '1px solid white',
+                borderTopLeftRadius: index === 0 ? 'small' : undefined,
+                borderBottomLeftRadius: index === 0 ? 'small' : undefined,
+                borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
+                borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
+                backgroundColor: index < Object.keys(ballot).length - edits ? 'primary' : undefined
               }}
             />
           ))}

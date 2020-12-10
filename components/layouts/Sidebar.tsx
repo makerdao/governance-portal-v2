@@ -13,7 +13,7 @@ const SidebarLayout = ({ children, ...props }: React.PropsWithChildren<any>) => 
           'auto', // default to a stacked layout on small & medium screens
           'auto',
           'auto',
-          `1fr ${theme.sizes.sidebar}px` // use columns for larger screens
+          `1fr ${(theme as any).sizes.sidebar}px` // use columns for larger screens
         ],
         '& > *': {
           minWidth: 0
