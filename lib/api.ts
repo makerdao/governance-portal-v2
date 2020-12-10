@@ -81,15 +81,35 @@ let _cachedPolls: Poll[];
  * Everytime after that, it returns from the cache.
  */
 export async function getPolls(): Promise<Poll[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/polls.json');
   if (_cachedPolls) return _cachedPolls;
 
   const maker = await getMaker();
+
+  if (process.env.USE_FS_CACHE) {
+    const cachedPolls = fsCacheGet('polls');
+    if (cachedPolls) return JSON.parse(cachedPolls);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+    return require('../mocks/polls.json');
+  }
+
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
+  if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return (_cachedPolls = polls);
 }
+
+const fsCacheGet = name => {
+  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  if (fs.existsSync(path)) return fs.readFileSync(path).toString();
+};
+
+const fsCacheSet = (name, data) => {
+  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  fs.writeFileSync(path, data, err => console.error(err));
+};
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
@@ -108,7 +128,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           document = await timeoutPromise(
             5000, // reject if it takes longer than this to fetch
             backoffRetry(3, () => fetch(p.url))
-          ).then(response => response?.text());
+          ).then(resp => resp?.text());
           if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
             throw new Error();
         } catch (err) {
@@ -153,12 +173,9 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   }
 
   console.log(
-    `\n 
----
-Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
-This could be because the document link from the poll is no longer valid.
-The following are the missing poll ids: ${failedPollIds}.
----`
+    `---
+  Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
+  IDs: ${failedPollIds}`
   );
 
   return (
