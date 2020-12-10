@@ -9,6 +9,9 @@ beforeAll(() => {
 });
 
 test('can connect an account', async () => {
+  // temporary hack to hide spam warnings from web3react
+  console.warn = () => {};
+
   const { findByText, findAllByText } = render(<WrappedAccountSelect />);
   const connectButton = await findByText('Connect wallet');
   expect(connectButton).toBeDefined();

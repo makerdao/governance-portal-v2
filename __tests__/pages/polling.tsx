@@ -7,17 +7,23 @@ import mockPolls from '../../mocks/polls.json';
 const { click } = fireEvent;
 let maker;
 
-function createTestPoll() {
-  return maker.service('govPolling').createPoll(
+async function createTestPolls() {
+  // first poll is ranked choice, second is plurality
+  await maker.service('govPolling').createPoll(
     1577880000,
     33134788800,
     'test',
     'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP14%3A%20Inclusion%20Poll%20for%20Protocol%20DAI%20Transfer%20-%20June%208%2C%202020.md'
   );
+  return maker.service('govPolling').createPoll(
+    1577880000,
+    33134788800,
+    'test',
+    'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP2%3A%20Inclusion%20Poll%20for%20MIP8%20Amendments%20-%20June%208%2C%202020.md'
+  );
 }
 
 async function setup() {
-  await createTestPoll();
   const {
     debug,
     findByText,
@@ -37,6 +43,7 @@ async function setup() {
 beforeAll(async () => {
   injectProvider();
   maker = await getMaker();
+  await createTestPolls();
 });
 
 describe('can vote in a poll', () => {
@@ -55,8 +62,28 @@ describe('can vote in a poll', () => {
     // component.debug();
   });
 
-  test('quick vote', async () => {
-    expect(await component.findAllByText('View Details')).toBeDefined();
-    component.debug();
+  describe('quick vote', () => {
+    test('irv', async () => {
+      expect(await component.findAllByText('View Details')).toBeDefined();
+      // component.debug();
+    });
+    test('plurality', async () => {});
   });
+  
+  describe('add to ballot and submit', () => {
+    test('irv', async () => {});
+    test('plurality', async () => {});
+  });
+});
+
+describe('can edit selected choices', () => {
+  describe('quick vote', () => {
+    test('irv', async () => {});
+    test('plurality', async () => {});
+  });
+  
+  describe('ballot', () => {
+    test('irv', async () => {});
+    test('plurality', async () => {});
+  })
 });
