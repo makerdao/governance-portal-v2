@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: |
@@ -16,7 +16,8 @@ jobs:
           paths:
             - node_modules
             - ./node_modules
-          key: dependency-cache-{{ checksum "package.json" }}
+            - ./.next/cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
   test:
     docker:
       - image: levity/dapptools-node-latest
@@ -24,13 +25,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "package.json" }}
+            - dependency-cache-{{ checksum "yarn.lock" }}
       - run:
           name: Run tests
           command: |
             source /home/circleci/setup-env.sh
             yarn test:ci
-            yarn build
+            USE_FS_CACHE=1 yarn build
             yarn add --dev codecov
             ./node_modules/.bin/codecov
 
