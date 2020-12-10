@@ -30,7 +30,7 @@ jobs:
           command: |
             source /home/circleci/setup-env.sh
             yarn test:ci
-            yarn build
+            USE_FS_CACHE=1 yarn build
             yarn add --dev codecov
             ./node_modules/.bin/codecov
 
