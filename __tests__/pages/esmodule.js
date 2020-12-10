@@ -1,9 +1,9 @@
 import React from 'react';
 import { renderWithTheme } from '../helpers';
 import { cleanup, fireEvent, waitFor, configure } from '@testing-library/react';
-import waitForExpect from 'wait-for-expect'
+import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
-import { cache } from "swr";
+import { cache } from 'swr';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../stores/accounts';
@@ -15,13 +15,12 @@ configure({
     error.name = 'TestingLibraryElementError';
     error.stack = null;
     return error;
-  },
+  }
 });
 
 export const WAD = new BigNumber('1e18');
 
 let maker;
-
 
 beforeAll(async () => {
   maker = await getMaker();
@@ -41,12 +40,11 @@ beforeAll(async () => {
 });
 
 afterEach(() => {
-    cache.clear();
-    cleanup()
+  cache.clear();
+  cleanup();
 });
 
 describe('emergency shutdown render', () => {
-
   test('renders', async () => {
     const { debug } = renderWithTheme(<ESModule />);
   });
@@ -54,37 +52,42 @@ describe('emergency shutdown render', () => {
   // tests render on mobile view automatically
   test('show progress bar', () => {
     const { getByTestId } = renderWithTheme(<ESModule />);
-    getByTestId('progress-ring')
+    getByTestId('progress-ring');
   });
 
   test('show esm history', async () => {
-    jest.setTimeout(10000)
+    jest.setTimeout(10000);
     const { findByText } = renderWithTheme(<ESModule />);
-    
-    await findByText('ESM History');
-    await findByText('Dec 5, 2019, 11:04 UTC', {}, {timeout: 5000})
 
+    await findByText('ESM History');
+    await findByText('Dec 5, 2019, 11:04 UTC', {}, { timeout: 5000 });
   });
 
   test('show "Burn your MKR" button', async () => {
-    jest.setTimeout(10000)
+    jest.setTimeout(10000);
     const { findByText } = renderWithTheme(<ESModule />);
 
-    await findByText('Burn Your MKR', {}, {timeout: 5000})
+    await findByText('Burn Your MKR', {}, { timeout: 5000 });
   });
 
   test('Burn MKR Modal Flow', async () => {
-    jest.setTimeout(10000)
+    jest.setTimeout(10000);
     const token = maker.service('smartContract').getContract('MCD_GOV');
-    const account = maker.currentAccount()
-    await maker.service('accounts').useAccount('default')
+    const account = maker.currentAccount();
+    await maker.service('accounts').useAccount('default');
     await token['mint(uint256)'](WAD.times(2).toFixed());
-    await token['transfer(address,uint256)'](account.address, WAD.times(2).toFixed())
-    await maker.service('accounts').useAccount('test-account')
-    
-    const { getByTestId, getAllByTestId, getByText, getByRole, findByText, findByTestId, debug } = renderWithTheme(
-      <ESModule />
-    );
+    await token['transfer(address,uint256)'](account.address, WAD.times(2).toFixed());
+    await maker.service('accounts').useAccount('test-account');
+
+    const {
+      getByTestId,
+      getAllByTestId,
+      getByText,
+      getByRole,
+      findByText,
+      findByTestId,
+      debug
+    } = renderWithTheme(<ESModule />);
 
     // Intro Render
     // await wait(() =>
@@ -95,48 +98,47 @@ describe('emergency shutdown render', () => {
     // click(getByText('Continue'));
 
     // First Step Render
-    const burnButton = await findByText('Burn Your MKR', {}, {timeout: 5000})
+    const burnButton = await findByText('Burn Your MKR', {}, { timeout: 5000 });
     fireEvent.click(burnButton);
     await findByText('Are you sure you want to burn MKR?');
     fireEvent.click(getByText('Continue'));
 
     // Second Step Render
-    await findByText('Burn your MKR in the ESM')
+    await findByText('Burn your MKR in the ESM');
 
     // Not Enough MKR Check
     const amount = 3;
     fireEvent.change(getByRole('spinbutton'), { target: { value: amount } });
-    await findByText('MKR balance too low', {}, {timeout: 3000})
+    await findByText('MKR balance too low', {}, { timeout: 3000 });
 
     // await wait(() => getByText("You don't have enough MKR"));
-    const input = getByRole('spinbutton')
+    const input = getByRole('spinbutton');
     const continueButton = getByText('Continue');
     expect(continueButton.disabled).toBeTruthy();
 
     // Set Max Check
-    await waitFor(() => fireEvent.click(getByText('Set max'), {timeout: 5000}));
-    await waitFor(() => expect(input.value).toEqual('2'), {timeout: 5000});
-    
+    await waitFor(() => fireEvent.click(getByText('Set max'), { timeout: 5000 }));
+    await waitFor(() => expect(input.value).toEqual('2'), { timeout: 5000 });
 
     // MKR is Chief Check
     // getByTestId('voting-power');
 
     // Valid Amount Check
-   fireEvent.change(input, { target: { value: amount - 2 }});
-   await waitFor(() => expect(continueButton.disabled).toBeFalsy(), {timeout: 5000});
-   fireEvent.click(continueButton);
+    fireEvent.change(input, { target: { value: amount - 2 } });
+    await waitFor(() => expect(continueButton.disabled).toBeFalsy(), { timeout: 5000 });
+    fireEvent.click(continueButton);
 
     // Third Step Render
-    await findByText('Burn amount', {}, { timeout: 5000})
-    await findByText('New ESM total')
+    await findByText('Burn amount', {}, { timeout: 5000 });
+    await findByText('New ESM total');
     // debug()
 
-    let confirmInput = await findByTestId('confirm-input')
-    let burnMKRbutton = await findByText('Continue')
+    let confirmInput = await findByTestId('confirm-input');
+    let burnMKRbutton = await findByText('Continue');
     await waitFor(() => expect(burnMKRbutton.disabled).toBeTruthy());
 
     // click the terms of service
-    let tos = await findByTestId('tosCheck')
+    let tos = await findByTestId('tosCheck');
     fireEvent.click(tos);
     await waitFor(() => expect(tos.checked).toBeTruthy());
 
@@ -152,7 +154,7 @@ describe('emergency shutdown render', () => {
 
     // Correct Input Check
     fireEvent.change(confirmInput, { target: { value: 'I am burning 1.00 MKR' } });
-    await waitFor(() => expect(!burnMKRbutton.disabled).toBeTruthy(), {timeout: 5000});
+    await waitFor(() => expect(!burnMKRbutton.disabled).toBeTruthy(), { timeout: 5000 });
 
     fireEvent.click(burnMKRbutton);
 
@@ -162,14 +164,12 @@ describe('emergency shutdown render', () => {
     // Fourth Step Success Render
     await findByText('MKR successfully burned in ESM');
   });
-
 });
 
 describe('initiate emergency shutdown', () => {
-
   beforeAll(async () => {
     maker = await getMaker();
-    await maker.service('accounts').useAccount('default')
+    await maker.service('accounts').useAccount('default');
     const token = maker.service('smartContract').getContract('MCD_GOV');
     await token['mint(uint256)'](WAD.times(50000).toFixed());
     const esm = maker.service('smartContract').getContract('MCD_ESM');
@@ -181,7 +181,7 @@ describe('initiate emergency shutdown', () => {
     const { findByText } = await renderWithTheme(<ESModule />);
     await findByText('Initiate Emergency Shutdown');
   });
-  
+
   test('show disabled Initiate Shutdown button on shutdown initiated', async () => {
     const esm = maker.service('smartContract').getContract('MCD_ESM');
     await esm.fire();
@@ -190,7 +190,4 @@ describe('initiate emergency shutdown', () => {
     waitFor(() => expect(initiateButton.disabled).toBeTruthy());
     // await wait(() => getByTestId('shutdown-initiated'));
   });
-})
-
-
-
+});
