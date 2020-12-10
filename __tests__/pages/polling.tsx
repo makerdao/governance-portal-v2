@@ -16,33 +16,43 @@ function createTestPoll() {
   );
 }
 
+async function setup() {
+  await createTestPoll();
+  const {
+    debug,
+    findByText,
+    findByLabelText,
+    findAllByText
+  } = render(<PollingOverviewPage polls={mockPolls as any} />);
+  await connectAccount(click, findByText, findByLabelText);
+
+  return {
+    debug,
+    findByText,
+    findByLabelText,
+    findAllByText
+  }
+}
+
 beforeAll(async () => {
   injectProvider();
   maker = await getMaker();
 });
 
 describe('can vote in a poll', () => {
-  let log, find, findAll;
-  // re-combine these to speed up tests
+  let component;
   beforeEach(async () => {
-    await createTestPoll();
-
-    const { debug, findByText, findByLabelText, findAllByText } = render(<PollingOverviewPage polls={mockPolls as any} />);
-    await connectAccount(click, findByText, findByLabelText);
-
-    log = debug;
-    find = findByText;
-    findAll = findAllByText;
+    component = await setup();
   });
 
   test('renders voting options when account is connected', async () => {
-    expect(await find('Active Polls')).toBeDefined();
-    expect(await find('Your Ballot: 0 votes')).toBeDefined();
-    // log();
+    expect(await component.findByText('Active Polls')).toBeDefined();
+    expect(await component.findByText('Your Ballot')).toBeDefined();
+    // component.debug();
   });
 
   test('quick vote', async () => {
-    expect(await findAll('View Details', 10000)).toBeDefined();
-    // log();
+    expect(await component.findAllByText('View Details', 10000)).toBeDefined();
+    component.debug();
   });
 });
