@@ -40,6 +40,10 @@ beforeAll(async () => {
 });
 
 describe('can vote in a poll', () => {
+  // temporary hack to hide spam errors and warnings from dependencies
+  console.error = () => {};
+  console.warn = () => {};
+
   let component;
   beforeEach(async () => {
     component = await setup();
@@ -52,7 +56,7 @@ describe('can vote in a poll', () => {
   });
 
   test('quick vote', async () => {
-    expect(await component.findAllByText('View Details', 10000)).toBeDefined();
+    expect(await component.findAllByText('View Details')).toBeDefined();
     component.debug();
   });
 });
