@@ -45,7 +45,7 @@ const Header = (props): JSX.Element => {
             sx={{
               display: ['none', 'block'],
               ml: [0, 4, 'auto'],
-              color: router.asPath.startsWith('/polling') ? 'primary' : undefined
+              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
             }}
           >
             Polling
@@ -58,7 +58,7 @@ const Header = (props): JSX.Element => {
             sx={{
               display: ['none', 'block'],
               ml: [0, 4, 4, 5],
-              color: router.asPath.startsWith('/executive') ? 'primary' : undefined
+              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
             }}
           >
             Executive
@@ -72,7 +72,7 @@ const Header = (props): JSX.Element => {
               display: ['none', 'block'],
               ml: [0, 4, 4, 5],
               mr: [0, 'auto', 4, 5],
-              color: router.asPath.startsWith('/esmodule') ? 'primary' : undefined
+              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
             }}
           >
             ES Module
