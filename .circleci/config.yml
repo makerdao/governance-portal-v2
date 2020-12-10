@@ -16,7 +16,6 @@ jobs:
           paths:
             - node_modules
             - ./node_modules
-            - ./.next/cache
           key: dependency-cache-{{ checksum "yarn.lock" }}
   test:
     docker:
@@ -34,6 +33,12 @@ jobs:
             USE_FS_CACHE=1 yarn build
             yarn add --dev codecov
             ./node_modules/.bin/codecov
+      - save_cache:
+          paths:
+            - node_modules
+            - ./node_modules
+            - ./.next/cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
 
 workflows:
   version: 2
