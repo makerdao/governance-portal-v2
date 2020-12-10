@@ -5,23 +5,20 @@ import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
+import { CMS_ENDPOINTS } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 
-let _cachedProposals: CMSProposal[];
-/**
- * The first time this method is called, it fetches fresh proposals and caches them.
- * Everytime after that, it returns from the cache.
- */
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+  if (process.env.USE_FS_CACHE) {
+    const cachedProposals = fsCacheGet('proposals');
+    if (cachedProposals) return JSON.parse(cachedProposals);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
   let proposals: Array<any> = topics
@@ -59,7 +56,9 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   proposals.push(...oldSpells);
   proposals = proposals.slice(0, 100);
-  return (_cachedProposals = proposals);
+
+  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
+  return proposals;
 }
 
 export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
@@ -75,14 +74,7 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
   };
 }
 
-let _cachedPolls: Poll[];
-/**
- * The first time this method is called, it fetches fresh polls and caches them.
- * Everytime after that, it returns from the cache.
- */
 export async function getPolls(): Promise<Poll[]> {
-  if (_cachedPolls) return _cachedPolls;
-
   const maker = await getMaker();
 
   if (process.env.USE_FS_CACHE) {
@@ -96,12 +88,15 @@ export async function getPolls(): Promise<Poll[]> {
   const polls = await parsePollsMetadata(pollList);
 
   if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
-  return (_cachedPolls = polls);
+  return polls;
 }
+
+const fsCacheCache = {};
 
 const fsCacheGet = name => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
   const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  if (fsCacheCache[path]) return fsCacheCache[path];
   if (fs.existsSync(path)) return fs.readFileSync(path).toString();
 };
 
@@ -109,6 +104,7 @@ const fsCacheSet = (name, data) => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
   const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
   fs.writeFileSync(path, data, err => console.error(err));
+  fsCacheCache[path] = data;
 };
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {

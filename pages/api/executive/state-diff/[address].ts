@@ -72,7 +72,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       toBlock: 'latest',
       topics: [pauseExecSelector, spellAddressBytes32, usrBytes32]
     });
-    console.log('hasBeenCast', transactionHash);
 
     invariant(transactionHash, `Unable to find cast transaction for spell ${spellAddress}`);
     trace = await getTrace('trace_replayTransaction', transactionHash, network);
