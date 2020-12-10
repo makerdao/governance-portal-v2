@@ -1,11 +1,12 @@
 [
   {
     "key": "raise-the-eth-debt-ceiling-1",
-    "end_timestamp": 1591389900000,
+    "active": true,
+    "end_timestamp": 1991389900000,
     "date": "2020-06-05T00:00:00.000Z",
     "contract_name": "",
-    "proposalBlurb": "Vote for this proposal to raise the ETH Debt Ceiling by 20 million to 140 million Dai",
-    "title": "Raise the ETH Debt Ceiling",
+    "proposalBlurb": "Vote for this proposal to raise the Test Coverage to 100%",
+    "title": "Raise the Test Coverage",
     "end_approvals": 101490.22,
     "documents": [],
     "submitted_by": {
