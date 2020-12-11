@@ -197,7 +197,8 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
             <Flex p={3} sx={{ justifyContent: 'center' }}>
               {proposal.address === '0x0000000000000000000000000000000000000000' ? (
                 <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                  The 80,000 MKR threshold must be passed in order to activate the new chief.
+                  This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the
+                  new chief has been activated!
                 </Text>
               ) : (
                 <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
