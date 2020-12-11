@@ -8,7 +8,7 @@ const { click } = fireEvent;
 let maker;
 
 async function createTestPolls() {
-  // first poll is ranked choice, second is plurality
+  // first poll is ranked choice, second is single select
   await maker.service('govPolling').createPoll(
     1577880000,
     33134788800,
@@ -62,28 +62,43 @@ describe('can vote in a poll', () => {
     // component.debug();
   });
 
-  describe('quick vote', () => {
-    test('irv', async () => {
-      expect(await component.findAllByText('View Details')).toBeDefined();
+  describe.only('quick vote', () => {
+    test('ranked choice', async () => {
+      const select = await component.findByLabelText('Ranked choice select');
+      expect(select).toBeDefined();
       // component.debug();
     });
-    test('plurality', async () => {});
+
+    test('single select', async () => {
+      const select = await component.findByLabelText('Single select');
+      expect(select).toBeDefined();
+    });
   });
   
-  describe('add to ballot and submit', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
+  describe('ballot', () => {
+    test('ranked choice', async () => {});
+    test('single select', async () => {});
+  });
+
+  describe('mobile', () => {
+    test('ranked choice', async () => {});
+    test('single select', async () => {});
   });
 });
 
 describe('can edit selected choices', () => {
   describe('quick vote', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
+    test('ranked choice', async () => {});
+    test('single select', async () => {});
   });
   
   describe('ballot', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
-  })
+    test('ranked choice', async () => {});
+    test('single select', async () => {});
+  });
+
+    describe('mobile', () => {
+    test('ranked choice', async () => {});
+    test('single select', async () => {});
+  });
 });

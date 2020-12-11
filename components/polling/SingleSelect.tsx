@@ -11,6 +11,7 @@ type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
 export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
   return (
     <ListboxInput
+      aria-label="Single select"
       onChange={x => setChoice(parseInt(x))}
       defaultValue={choice !== null ? choice.toString() : 'default'}
       {...props}
