@@ -22,7 +22,7 @@ function CircleNumber({ selected = false, num }: { selected?: boolean; num: numb
 }
 
 export default function ProgressBar({ step }: { step: number }): JSX.Element {
-  const stepTexts = ['Withdraw', 'Deposit', 'Vote to Activate'];
+  const stepTexts = ['Withdraw', 'Deposit', 'Vote'];
 
   return (
     <Flex>

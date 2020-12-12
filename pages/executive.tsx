@@ -126,8 +126,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       )
   );
 
-  const votingForActivation =
-    votedProposals && !!votedProposals.find(proposalAddress => proposalAddress === ZERO_ADDRESS);
+  const votingForSomething = votedProposals && votedProposals.length > 0;
 
   const [startDate, endDate, sortBy] = useUiFiltersStore(
     state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
@@ -292,8 +291,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   <Text>
                     <b>Hot wallet only: </b>
                     <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
-                    using a vote proxy. Please then vote on the executive proposal below to activate the new
-                    chief.
+                    using a vote proxy.
                   </Text>
                 </Flex>
                 <Divider />
@@ -329,8 +327,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                     >
                       here
                     </Link>
-                    {'. '}
-                    Please then vote on the executive proposal below to activate the new chief.
+                    .
                   </Text>
                 </Flex>
               </Flex>
@@ -338,7 +335,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           </>
         )}
         {votedProposals &&
-          !votingForActivation &&
+          !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
           voteProxy &&
@@ -349,16 +346,16 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 {lockedMkr.eq(0) ? (
                   <Text>
                     Your vote proxy has been created. Please <Deposit link={'deposit'} /> into your new vote
-                    proxy contract, then vote on the executive proposal below to activate the new chief
+                    proxy contract
                   </Text>
                 ) : (
-                  'Your vote proxy has been created. Please vote on the executive proposal below to activate the new chief.'
+                  'Your vote proxy has been created. You are now ready to vote.'
                 )}
               </MigrationBadge>
             </>
           )}
         {votedProposals &&
-          !votingForActivation &&
+          !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
           !voteProxy &&
@@ -366,10 +363,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           lockedMkr.gt(0) && (
             <>
               <ProgressBar step={2} />
-              <MigrationBadge>
-                Your MKR has been deposited. Please vote on the executive proposal below to activate the new
-                chief.
-              </MigrationBadge>
+              <MigrationBadge>Your MKR has been deposited. You are now ready to vote.</MigrationBadge>
             </>
           )}
       </Box>
