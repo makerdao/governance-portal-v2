@@ -77,7 +77,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export default function ExecutiveOverview({ proposals }: { proposals: Proposal[] }): JSX.Element {
+const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
@@ -484,6 +484,37 @@ export default function ExecutiveOverview({ proposals }: { proposals: Proposal[]
         </SidebarLayout>
       </Stack>
     </PrimaryLayout>
+  );
+};
+
+export default function ExecutiveOverviewPage({
+  proposals: prefetchedProposals
+}: {
+  proposals: Proposal[];
+}): JSX.Element {
+  const [_proposals, _setProposals] = useState<Proposal[]>();
+  const [error, setError] = useState<string>();
+
+  // fetch proposals at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      getExecutiveProposals().then(_setProposals).catch(setError);
+    }
+  }, []);
+
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  }
+
+  if (!isDefaultNetwork() && !_proposals)
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+
+  return (
+    <ExecutiveOverview proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])} />
   );
 }
 
