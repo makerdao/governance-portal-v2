@@ -49,9 +49,8 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
       url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
       pollingInterval: POLLING_INTERVAL,
       chainId: 1,
-      requestTimeoutMs: 5000,
       manifestEmail: 'infosec@makerdao.com',
-      manifestAppUrl: 'http://localhost:3000/'
+      manifestAppUrl: 'https://8rg3h.csb.app/'
     })
   ]
 ];

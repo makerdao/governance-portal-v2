@@ -71,6 +71,9 @@
     "typescript": "^3.9.3",
     "wait-for-expect": "^3.0.2"
   },
+  "resolutions": {
+    "trezor-connect": "8.1.15"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
