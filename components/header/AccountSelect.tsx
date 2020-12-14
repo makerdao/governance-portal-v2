@@ -10,7 +10,7 @@ import mixpanel from 'mixpanel-browser';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
-import { getNetwork, chainIdToNetworkName } from '../../lib/maker';
+import getMaker, { getNetwork, chainIdToNetworkName } from '../../lib/maker';
 import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
 import { syncMakerAccount, useEagerConnect } from '../../lib/maker/web3react/hooks';
 import { formatAddress } from '../../lib/utils';
@@ -54,11 +54,57 @@ const AccountSelect = props => {
   const [showDialog, setShowDialog] = React.useState(false);
   const [accountName, setAccountName] = React.useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = React.useState(false);
+  const [addresses, setAddresses] = React.useState([]);
+  const [ledgerAccountScreen, setLedgerAccountScreen] = React.useState(false);
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
+  const ConnectWalletButton = ({ open, account, pending, ...props }) => (
+    <Button
+      aria-label="Connect wallet"
+      sx={{
+        variant: 'buttons.card',
+        borderRadius: 'round',
+        color: 'textSecondary',
+        px: [2, 3],
+        py: 2,
+        alignSelf: 'flex-end',
+        '&:hover': {
+          color: 'text',
+          borderColor: 'onSecondary',
+          backgroundColor: 'white'
+        }
+      }}
+      {...props}
+      onClick={open}
+    >
+      {account ? (
+        pending ? (
+          <Flex sx={{ display: 'inline-flex' }}>
+            <Spinner
+              size={16}
+              sx={{
+                color: 'mutedOrange',
+                alignSelf: 'center',
+                mr: 2
+              }}
+            />
+            <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
+          </Flex>
+        ) : (
+          <Flex sx={{ alignItems: 'center', mr: 2 }}>
+            <AccountIcon account={account} sx={{ mr: 2 }} />
+            <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
+          </Flex>
+        )
+      ) : (
+        <Box mx={2}>Connect wallet</Box>
+      )}
+    </Button>
+  );
   const walletOptions = connectors.map(([name, connector]) => (
+    // console.log(name),
     <Flex
       sx={{
         cursor: triedEager ? 'pointer' : 'unset',
@@ -90,55 +136,78 @@ const AccountSelect = props => {
     </Flex>
   ));
 
+  const LedgerButton = () => (
+    <Flex
+      sx={{
+        cursor: 'pointer',
+        width: '100%',
+        p: 3,
+        border: '1px solid',
+        borderColor: 'secondaryMuted',
+        borderRadius: 'medium',
+        mb: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        '&:hover': {
+          color: 'text',
+          // borderColor: 'onSecondary',
+          backgroundColor: 'background'
+        }
+      }}
+      // key={'Ledger'}
+      onClick={async () => {
+        // if (chainId) mixpanel.people.set({ wallet: name });
+        const maker = await getMaker();
+        await maker.addAccount('myLedger', {
+          type: 'ledger',
+          accountsLength: 10,
+          choose: (addresses, callback) => {
+            setAddresses(addresses);
+            setLedgerAccountScreen(true);
+            // show the list of addresses in your UI and have the user pick one; then
+            // call the callback with the chosen address. `addAccount` will not resolve
+            // until the callback is called. if you pass an error object as the first
+            // argument, `addAccount` will throw it.
+            // setTimeout(() => callback(null, addresses[7]), 20000);
+          }
+        });
+      }}
+    >
+      <Icon name={'Ledger'} />
+      <Text sx={{ ml: 3 }}>Ledger</Text>
+    </Flex>
+  );
+
+  const BackButton = () => (
+    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Button
+        variant="textual"
+        color="primary"
+        sx={{ fontSize: 3, px: 0 }}
+        onClick={() => setLedgerAccountScreen(false)}
+      >
+        <Icon name="chevron_left" color="primary" size="10px" mr="2" />
+        Back
+      </Button>
+      <Close
+        aria-label="close"
+        onClick={() => {
+          close();
+          setLedgerAccountScreen(false);
+        }}
+      />
+    </Flex>
+  );
+
   return (
     <Box>
       <NetworkAlertModal
         chainIdError={chainIdError}
         walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
       />
-      <Button
-        aria-label="Connect wallet"
-        sx={{
-          variant: 'buttons.card',
-          borderRadius: 'round',
-          color: 'textSecondary',
-          px: [2, 3],
-          py: 2,
-          alignSelf: 'flex-end',
-          '&:hover': {
-            color: 'text',
-            borderColor: 'onSecondary',
-            backgroundColor: 'white'
-          }
-        }}
-        {...props}
-        onClick={open}
-      >
-        {account ? (
-          pending ? (
-            <Flex sx={{ display: 'inline-flex' }}>
-              <Spinner
-                size={16}
-                sx={{
-                  color: 'mutedOrange',
-                  alignSelf: 'center',
-                  mr: 2
-                }}
-              />
-              <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
-            </Flex>
-          ) : (
-            <Flex sx={{ alignItems: 'center', mr: 2 }}>
-              <AccountIcon account={account} sx={{ mr: 2 }} />
-              <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
-            </Flex>
-          )
-        ) : (
-          <Box mx={2}>Connect wallet</Box>
-        )}
-      </Button>
+      <ConnectWalletButton open={open} account={account} pending={pending} {...props} />
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        {changeWallet ? (
+        {ledgerAccountScreen ? (
           <DialogContent
             aria-label="Change Wallet"
             sx={
@@ -147,19 +216,44 @@ const AccountSelect = props => {
                 : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
             }
           >
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Button
-                variant="textual"
-                color="primary"
-                sx={{ fontSize: 3, px: 0 }}
-                onClick={() => setChangeWallet(false)}
-              >
-                <Icon name="chevron_left" color="primary" size="10px" mr="2" />
-                Back
-              </Button>
-              <Close aria-label="close" onClick={close} />
-            </Flex>
+            <BackButton />
+            {(() =>
+              addresses.map(address => (
+                <Flex
+                  sx={{
+                    cursor: 'pointer',
+                    width: '100%',
+                    p: 3,
+                    border: '1px solid',
+                    borderColor: 'secondaryMuted',
+                    borderRadius: 'medium',
+                    mb: 2,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    '&:hover': {
+                      color: 'text',
+                      // borderColor: 'onSecondary',
+                      backgroundColor: 'background'
+                    }
+                  }}
+                  key={address}
+                >
+                  <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
+                </Flex>
+              )))()}
+          </DialogContent>
+        ) : changeWallet ? (
+          <DialogContent
+            aria-label="Change Wallet"
+            sx={
+              bpi === 0
+                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+                : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
+            }
+          >
+            <BackButton />
             {walletOptions}
+            <LedgerButton />
             {accountName === 'WalletConnect' && (
               <Flex
                 onClick={() => {
@@ -222,7 +316,12 @@ const AccountSelect = props => {
                 onClick={close}
               />
             </Flex>
-            {!account && <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>}
+            {!account && (
+              <Flex sx={{ flexDirection: 'column' }}>
+                {walletOptions}
+                <LedgerButton />
+              </Flex>
+            )}
             {account && connector && (
               <AccountBox
                 {...{ account, accountName, connector }}

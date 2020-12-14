@@ -5,6 +5,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { TrezorConnector } from '@web3-react/trezor-connector';
+import { LedgerConnector } from '@web3-react/ledger-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { networkToRpc } from '../network';
 import { SupportedNetworks } from '../../constants';
@@ -21,7 +22,7 @@ export const getLibrary = (provider, connector) => ({ provider, connector });
 
 const POLLING_INTERVAL = 12000;
 
-export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'WalletLink' | 'Trezor';
+export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'WalletLink' | 'Trezor' | 'Ledger';
 
 export const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 42, 999] });
 
@@ -53,4 +54,13 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
       manifestAppUrl: 'https://8rg3h.csb.app/'
     })
   ]
+  // [
+  //   'Ledger',
+  //   new LedgerConnector({
+  //     url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
+  //     pollingInterval: POLLING_INTERVAL,
+  //     chainId: 1,
+  //     requestTimeoutMs: 5000,
+  //   })
+  // ]
 ];

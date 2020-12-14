@@ -1,5 +1,6 @@
 import Maker from '@makerdao/dai';
 import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
+import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
 import { Web3ReactPlugin } from './maker/web3react';
 
@@ -66,7 +67,8 @@ function getMaker(): Promise<Maker> {
       plugins: [
         [McdPlugin, { prefetch: false }],
         [GovernancePlugin, { network: getNetwork(), staging: !process.env.USE_PROD_SPOCK }],
-        Web3ReactPlugin
+        Web3ReactPlugin,
+        LedgerPlugin
       ],
       provider: {
         url: networkToRpc(getNetwork(), 'infura'),
