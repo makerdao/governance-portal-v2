@@ -77,7 +77,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]

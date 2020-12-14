@@ -45,7 +45,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: stateDiff, error: stateDiffError } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url)),
-    { refreshInterval: 0 }
+    {
+      refreshInterval: 0,
+      shouldRetryOnError: network === 'mainnet'
+    }
   );
 
   const { data: allSupporters, error: supportersError } = useSWR(
