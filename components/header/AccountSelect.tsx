@@ -32,7 +32,9 @@ const WrappedAccountSelect = (props): JSX.Element => (
 );
 
 const AccountSelect = props => {
-  const { library, account, activate, connector, error, chainId } = useWeb3React();
+  const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
+  const account2 = useAccountsStore(state => state.currentAccount);
+  const address = w3rAddress || account2?.address;
 
   const triedEager = useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
@@ -45,7 +47,11 @@ const AccountSelect = props => {
   }, [chainId, error]);
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
-  syncMakerAccount(library, account, chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork());
+  syncMakerAccount(
+    library,
+    w3rAddress,
+    chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()
+  );
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
     state.transactions
@@ -56,10 +62,31 @@ const AccountSelect = props => {
   const [changeWallet, setChangeWallet] = React.useState(false);
   const [addresses, setAddresses] = React.useState([]);
   const [ledgerAccountScreen, setLedgerAccountScreen] = React.useState(false);
+  const [ledgerSelectCallback, setLedgerSelectCallback] = React.useState<
+    (err: Error | null, address?: string) => void
+  >();
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
+  const addLedgerAccount = async address => {
+    const maker = await getMaker();
+    const accounts = maker.listAccounts();
+    if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
+      maker.useAccountWithAddress(address);
+      ledgerSelectCallback && ledgerSelectCallback(new Error('already added'));
+    } else {
+      ledgerSelectCallback && ledgerSelectCallback(null, address);
+      const notFirst = maker.service('accounts').hasAccount();
+      if (notFirst) {
+        // if we're adding an account but it's not the first one, we have to explicitly use it;
+        // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
+        // you can test this by connecting with metamask, and then switching the account in the
+        // metamask extension UI.
+        maker.useAccountWithAddress(address);
+      }
+    }
+  };
   const ConnectWalletButton = ({ open, account, pending, ...props }) => (
     <Button
       aria-label="Connect wallet"
@@ -79,7 +106,7 @@ const AccountSelect = props => {
       {...props}
       onClick={open}
     >
-      {account ? (
+      {address ? (
         pending ? (
           <Flex sx={{ display: 'inline-flex' }}>
             <Spinner
@@ -94,7 +121,7 @@ const AccountSelect = props => {
           </Flex>
         ) : (
           <Flex sx={{ alignItems: 'center', mr: 2 }}>
-            <AccountIcon account={account} sx={{ mr: 2 }} />
+            <AccountIcon account={address} sx={{ mr: 2 }} />
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
           </Flex>
         )
@@ -156,21 +183,34 @@ const AccountSelect = props => {
       }}
       // key={'Ledger'}
       onClick={async () => {
-        // if (chainId) mixpanel.people.set({ wallet: name });
         const maker = await getMaker();
-        await maker.addAccount('myLedger', {
-          type: 'ledger',
-          accountsLength: 10,
-          choose: (addresses, callback) => {
-            setAddresses(addresses);
-            setLedgerAccountScreen(true);
-            // show the list of addresses in your UI and have the user pick one; then
-            // call the callback with the chosen address. `addAccount` will not resolve
-            // until the callback is called. if you pass an error object as the first
-            // argument, `addAccount` will throw it.
-            // setTimeout(() => callback(null, addresses[7]), 20000);
+
+        try {
+          await maker.addAccount({
+            type: 'ledger',
+            accountsLength: 10,
+            choose: (addresses, callback) => {
+              setAddresses(addresses);
+              setLedgerAccountScreen(true);
+              setLedgerSelectCallback(() => callback);
+
+              // show the list of addresses in your UI and have the user pick one; then
+              // call the callback with the chosen address. `addAccount` will not resolve
+              // until the callback is called. if you pass an error object as the first
+              // argument, `addAccount` will throw it.
+              // setTimeout(() => callback(null, addresses[7]), 20000);
+            }
+          });
+        } catch (err) {
+          if (err.message !== 'already added') {
+            throw err;
           }
-        });
+        }
+        if (chainId) mixpanel.people.set({ wallet: name });
+        setAccountName('Ledger');
+        setChangeWallet(false);
+        setLedgerAccountScreen(false);
+        close();
       }}
     >
       <Icon name={'Ledger'} />
@@ -198,14 +238,13 @@ const AccountSelect = props => {
       />
     </Flex>
   );
-
   return (
     <Box>
       <NetworkAlertModal
         chainIdError={chainIdError}
         walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
       />
-      <ConnectWalletButton open={open} account={account} pending={pending} {...props} />
+      <ConnectWalletButton open={open} account={address} pending={pending} {...props} />
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
         {ledgerAccountScreen ? (
           <DialogContent
@@ -217,30 +256,30 @@ const AccountSelect = props => {
             }
           >
             <BackButton />
-            {(() =>
-              addresses.map(address => (
-                <Flex
-                  sx={{
-                    cursor: 'pointer',
-                    width: '100%',
-                    p: 3,
-                    border: '1px solid',
-                    borderColor: 'secondaryMuted',
-                    borderRadius: 'medium',
-                    mb: 2,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    '&:hover': {
-                      color: 'text',
-                      // borderColor: 'onSecondary',
-                      backgroundColor: 'background'
-                    }
-                  }}
-                  key={address}
-                >
-                  <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
-                </Flex>
-              )))()}
+            {addresses.map(address => (
+              <Flex
+                sx={{
+                  cursor: 'pointer',
+                  width: '100%',
+                  p: 3,
+                  border: '1px solid',
+                  borderColor: 'secondaryMuted',
+                  borderRadius: 'medium',
+                  mb: 2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  '&:hover': {
+                    color: 'text',
+                    // borderColor: 'onSecondary',
+                    backgroundColor: 'background'
+                  }
+                }}
+                key={address}
+                onClick={() => addLedgerAccount(address)}
+              >
+                <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
+              </Flex>
+            ))}
           </DialogContent>
         ) : changeWallet ? (
           <DialogContent
@@ -301,7 +340,7 @@ const AccountSelect = props => {
           >
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
               <Text variant="microHeading" color="onBackgroundAlt">
-                {account ? 'Account' : 'Select a Wallet'}
+                {address ? 'Account' : 'Select a Wallet'}
               </Text>
               <Close
                 aria-label="close"
@@ -316,22 +355,22 @@ const AccountSelect = props => {
                 onClick={close}
               />
             </Flex>
-            {!account && (
+            {!address && (
               <Flex sx={{ flexDirection: 'column' }}>
                 {walletOptions}
                 <LedgerButton />
               </Flex>
             )}
-            {account && connector && (
+            {address && (
               <AccountBox
-                {...{ account, accountName, connector }}
+                {...{ account: address, accountName }}
                 // This needs to be the change function for the wallet select dropdown
                 change={() => setChangeWallet(true)}
               />
             )}
-            {account && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />}
-            {account && txs?.length > 0 && <TransactionBox txs={txs} />}
-            {account && (
+            {address && <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />}
+            {address && txs?.length > 0 && <TransactionBox txs={txs} />}
+            {address && (
               <Button
                 variant="primaryOutline"
                 onClick={close}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Flex, Text, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ConnectorName } from '../../lib/maker/web3react';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from '../../lib/utils';
@@ -13,10 +12,9 @@ type Props = {
   account: string;
   accountName: ConnectorName | undefined;
   change: () => void;
-  connector: AbstractConnector;
 };
 
-const AccountBox = ({ account, accountName, change, connector }: Props): JSX.Element => {
+const AccountBox = ({ account, accountName, change }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copyAddressText, setCopyAddressText] = useState('Copy Address');
 
