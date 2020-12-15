@@ -13,9 +13,16 @@ type Props = {
   tabPanels: React.ReactNode[];
   tabListStyles?: SxStyleProp;
   hashRoute?: boolean;
+  banner?: JSX.Element;
 };
 
-const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = true }: Props): JSX.Element => {
+const TabbedLayout = ({
+  tabTitles,
+  tabPanels,
+  tabListStyles = {},
+  hashRoute = true,
+  banner
+}: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
   const bpi = useBreakpointIndex();
@@ -54,7 +61,7 @@ const TabbedLayout = ({ tabTitles, tabPanels, tabListStyles = {}, hashRoute = tr
             </Tab>
           ))}
         </TabList>
-        <Divider sx={{ m: 0 }} />
+        {banner ? banner : <Divider sx={{ m: 0 }} />}
         <TabPanels>
           {tabPanels.map((tabPanel, i) => (
             <TabPanel key={i}>{tabPanel}</TabPanel>

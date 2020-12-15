@@ -33,7 +33,6 @@ import { MKR } from '../lib/maker';
 import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { oldChiefAddress } from '../lib/constants';
-import { ZERO_ADDRESS } from '../stores/accounts';
 import ProgressBar from '../components/executive/ProgressBar';
 
 const CircleNumber = ({ children }) => (

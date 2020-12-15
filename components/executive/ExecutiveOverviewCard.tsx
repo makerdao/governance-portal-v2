@@ -16,15 +16,13 @@ import VoteModal from './VoteModal';
 import { useState } from 'react';
 import SpellData from '../../types/spellData';
 import mixpanel from 'mixpanel-browser';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
+import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
   spellData?: SpellData;
   isHat: boolean;
-};
-
-const SPELL_SCHEDULED_DATE_OVERRIDES = {
-  '0xB70fB4eE900650DCaE5dD63Fd06E07F0b3a45d13': 'December 7, 2020, 14:00 UTC'
 };
 
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
@@ -120,7 +118,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   Your Vote
                 </Badge>
               )}
-              {isHat && proposal.address !== '0x0000000000000000000000000000000000000000' ? (
+              {isHat && proposal.address !== ZERO_ADDRESS ? (
                 <Badge
                   variant="primary"
                   sx={{
@@ -195,7 +193,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <>
             <Divider my={0} />
             <Flex p={3} sx={{ justifyContent: 'center' }}>
-              {proposal.address === '0x0000000000000000000000000000000000000000' ? (
+              {proposal.address === ZERO_ADDRESS ? (
                 <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
                   This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the
                   new chief has been activated!
