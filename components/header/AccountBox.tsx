@@ -6,15 +6,15 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
-import AccountIcon from './AccountIcon';
+import AddressIcon from './AddressIcon';
 
 type Props = {
-  account: string;
+  address: string;
   accountName: ConnectorName | undefined;
   change: () => void;
 };
 
-const AccountBox = ({ account, accountName, change }: Props): JSX.Element => {
+const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copyAddressText, setCopyAddressText] = useState('Copy Address');
 
@@ -33,8 +33,8 @@ const AccountBox = ({ account, accountName, change }: Props): JSX.Element => {
             {accountName}
           </Text>
           <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 1 }}>
-            <AccountIcon account={account} sx={{ mr: 2 }} />
-            <Text sx={{ fontFamily: 'body' }}>{formatAddress(account)}</Text>
+            <AddressIcon address={address} sx={{ mr: 2 }} />
+            <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
           </Flex>
         </Flex>
         <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>
@@ -68,7 +68,7 @@ const AccountBox = ({ account, accountName, change }: Props): JSX.Element => {
             }
           }}
           onClick={() => {
-            navigator.clipboard.writeText(account);
+            navigator.clipboard.writeText(address);
             setCopyAddressText('Copied!');
             setTimeout(() => setCopyAddressText('Copy Address'), 1000);
           }}
@@ -77,7 +77,7 @@ const AccountBox = ({ account, accountName, change }: Props): JSX.Element => {
           {copyAddressText}
         </Flex>
         <ExternalLink
-          href={getEtherscanLink(getNetwork(), account, 'address')}
+          href={getEtherscanLink(getNetwork(), address, 'address')}
           target="_blank"
           sx={{
             whiteSpace: 'nowrap',
