@@ -33,8 +33,8 @@ const WrappedAccountSelect = (props): JSX.Element => (
 
 const AccountSelect = props => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
-  const account2 = useAccountsStore(state => state.currentAccount);
-  const address = account2?.address || w3rAddress;
+  const account = useAccountsStore(state => state.currentAccount);
+  const address = account?.address;
 
   const triedEager = useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
@@ -317,7 +317,7 @@ const AccountSelect = props => {
       />
       <ConnectWalletButton open={open} account={address} pending={pending} {...props} />
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
-        {ledgerAccountScreen ? (
+        {ledgerAccountScreen || trezorAccountScreen ? (
           <DialogContent
             aria-label="Change Wallet"
             sx={
@@ -345,41 +345,15 @@ const AccountSelect = props => {
                   }
                 }}
                 key={address}
-                onClick={() => addLedgerAccount(address)}
-              >
-                <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
-              </Flex>
-            ))}
-          </DialogContent>
-        ) : trezorAccountScreen ? (
-          <DialogContent
-            aria-label="Change Wallet"
-            sx={
-              bpi === 0
-                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-                : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
-            }
-          >
-            <BackButton />
-            {addresses.map(address => (
-              <Flex
-                sx={{
-                  cursor: 'pointer',
-                  width: '100%',
-                  p: 3,
-                  border: '1px solid',
-                  borderColor: 'secondaryMuted',
-                  borderRadius: 'medium',
-                  mb: 2,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  '&:hover': {
-                    color: 'text',
-                    backgroundColor: 'background'
+                onClick={() => {
+                  if (ledgerAccountScreen) {
+                    addLedgerAccount(address);
+                  } else if (trezorAccountScreen) {
+                    addTrezorAccount(address);
+                  } else {
+                    throw new Error('Trying to add both ledger and trezor at the same time');
                   }
                 }}
-                key={address}
-                onClick={() => addTrezorAccount(address)}
               >
                 <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
               </Flex>
