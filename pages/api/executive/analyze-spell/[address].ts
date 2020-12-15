@@ -13,21 +13,21 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     maker
       .service('spell')
       .getDone(address)
-      .catch(_ => _), // this fails if the spell doesn't have the right ABI,
+      .catch(_ => null), // this fails if the spell doesn't have the right ABI,
     maker
       .service('spell')
       .getEta(address)
-      .catch(_ => _), // this fails if the spell doesn't have the right ABI,
+      .catch(_ => null), // this fails if the spell doesn't have the right ABI,
     maker
       .service('spell')
       .getScheduledDate(address)
       /* tslint:disable:no-empty */
-      .catch(_ => _), // this fails if the spell has not been scheduled
+      .catch(_ => null), // this fails if the spell has not been scheduled
     maker
       .service('spell')
       .getExecutionDate(address)
       /* tslint:disable:no-empty */
-      .catch(_ => _), // this fails if the spell has not been executed
+      .catch(_ => null), // this fails if the spell has not been executed
     maker.service('chief').getApprovalCount(address)
   ]);
 

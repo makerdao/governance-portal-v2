@@ -34,7 +34,7 @@ const WrappedAccountSelect = (props): JSX.Element => (
 const AccountSelect = props => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
   const account2 = useAccountsStore(state => state.currentAccount);
-  const address = w3rAddress || account2?.address;
+  const address = account2?.address || w3rAddress;
 
   const triedEager = useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
@@ -60,11 +60,18 @@ const AccountSelect = props => {
   const [showDialog, setShowDialog] = React.useState(false);
   const [accountName, setAccountName] = React.useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = React.useState(false);
-  const [addresses, setAddresses] = React.useState([]);
+  const [addresses, setAddresses] = React.useState<string[]>([]);
+
   const [ledgerAccountScreen, setLedgerAccountScreen] = React.useState(false);
   const [ledgerSelectCallback, setLedgerSelectCallback] = React.useState<
     (err: Error | null, address?: string) => void
   >();
+
+  const [trezorAccountScreen, setTrezorAccountScreen] = React.useState(false);
+  const [trezorSelectCallback, setTrezorSelectCallback] = React.useState<
+    (err: Error | null, address?: string) => void
+  >();
+
   const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
@@ -87,6 +94,23 @@ const AccountSelect = props => {
       }
     }
   };
+
+  const addTrezorAccount = async address => {
+    const maker = await getMaker();
+    const accounts = maker.listAccounts();
+    console.log(trezorSelectCallback, 'trezorSelectCallback');
+    if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
+      maker.useAccountWithAddress(address);
+      trezorSelectCallback && trezorSelectCallback(new Error('already added'));
+    } else {
+      trezorSelectCallback && trezorSelectCallback(null, address);
+      const notFirst = maker.service('accounts').hasAccount();
+      if (notFirst) {
+        setTimeout(() => maker.useAccountWithAddress(address));
+      }
+    }
+  };
+
   const ConnectWalletButton = ({ open, account, pending, ...props }) => (
     <Button
       aria-label="Connect wallet"
@@ -130,8 +154,8 @@ const AccountSelect = props => {
       )}
     </Button>
   );
+
   const walletOptions = connectors.map(([name, connector]) => (
-    // console.log(name),
     <Flex
       sx={{
         cursor: triedEager ? 'pointer' : 'unset',
@@ -177,11 +201,9 @@ const AccountSelect = props => {
         alignItems: 'center',
         '&:hover': {
           color: 'text',
-          // borderColor: 'onSecondary',
           backgroundColor: 'background'
         }
       }}
-      // key={'Ledger'}
       onClick={async () => {
         const maker = await getMaker();
 
@@ -215,6 +237,55 @@ const AccountSelect = props => {
     >
       <Icon name={'Ledger'} />
       <Text sx={{ ml: 3 }}>Ledger</Text>
+    </Flex>
+  );
+
+  const TrezorButton = () => (
+    <Flex
+      sx={{
+        cursor: 'pointer',
+        width: '100%',
+        p: 3,
+        border: '1px solid',
+        borderColor: 'secondaryMuted',
+        borderRadius: 'medium',
+        mb: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        '&:hover': {
+          color: 'text',
+          backgroundColor: 'background'
+        }
+      }}
+      onClick={async () => {
+        const maker = await getMaker();
+
+        try {
+          await maker.addAccount({
+            type: 'trezor',
+            accountsLength: 10,
+            accountsOffset: 0,
+            path: "44'/60'/0'/0/0",
+            choose: (addresses, callback) => {
+              setAddresses(addresses);
+              setTrezorAccountScreen(true);
+              setTrezorSelectCallback(() => callback);
+            }
+          });
+        } catch (err) {
+          if (err.message !== 'already added') {
+            throw err;
+          }
+        }
+
+        if (chainId) mixpanel.people.set({ wallet: name });
+        setAccountName('Trezor');
+        setChangeWallet(false);
+        close();
+      }}
+    >
+      <Icon name={'Trezor'} />
+      <Text sx={{ ml: 3 }}>Trezor</Text>
     </Flex>
   );
 
@@ -270,12 +341,45 @@ const AccountSelect = props => {
                   alignItems: 'center',
                   '&:hover': {
                     color: 'text',
-                    // borderColor: 'onSecondary',
                     backgroundColor: 'background'
                   }
                 }}
                 key={address}
                 onClick={() => addLedgerAccount(address)}
+              >
+                <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
+              </Flex>
+            ))}
+          </DialogContent>
+        ) : trezorAccountScreen ? (
+          <DialogContent
+            aria-label="Change Wallet"
+            sx={
+              bpi === 0
+                ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+                : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
+            }
+          >
+            <BackButton />
+            {addresses.map(address => (
+              <Flex
+                sx={{
+                  cursor: 'pointer',
+                  width: '100%',
+                  p: 3,
+                  border: '1px solid',
+                  borderColor: 'secondaryMuted',
+                  borderRadius: 'medium',
+                  mb: 2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  '&:hover': {
+                    color: 'text',
+                    backgroundColor: 'background'
+                  }
+                }}
+                key={address}
+                onClick={() => addTrezorAccount(address)}
               >
                 <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
               </Flex>
@@ -292,6 +396,7 @@ const AccountSelect = props => {
           >
             <BackButton />
             {walletOptions}
+            <TrezorButton />
             <LedgerButton />
             {accountName === 'WalletConnect' && (
               <Flex

@@ -4,8 +4,6 @@ import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/prov
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
-import { TrezorConnector } from '@web3-react/trezor-connector';
-import { LedgerConnector } from '@web3-react/ledger-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { networkToRpc } from '../network';
 import { SupportedNetworks } from '../../constants';
@@ -43,24 +41,5 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
       url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
       appName: 'vote.makerdao.com'
     })
-  ],
-  [
-    'Trezor',
-    new TrezorConnector({
-      url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
-      pollingInterval: POLLING_INTERVAL,
-      chainId: 1,
-      manifestEmail: 'infosec@makerdao.com',
-      manifestAppUrl: 'https://8rg3h.csb.app/'
-    })
   ]
-  // [
-  //   'Ledger',
-  //   new LedgerConnector({
-  //     url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
-  //     pollingInterval: POLLING_INTERVAL,
-  //     chainId: 1,
-  //     requestTimeoutMs: 5000,
-  //   })
-  // ]
 ];
