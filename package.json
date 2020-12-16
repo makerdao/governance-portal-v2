@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next",
+    "dev-https": "node server.js",
     "build": "next build",
     "start": "next start",
     "export": "next export",
@@ -14,7 +15,9 @@
   "dependencies": {
     "@makerdao/dai": "^0.32.9",
     "@makerdao/dai-plugin-governance": "0.12.41-rc.3",
+    "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.6.15-rc.1",
+    "@makerdao/dai-plugin-trezor-web": "^0.9.6",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
@@ -69,6 +72,9 @@
     "prettier": "^2.0.5",
     "typescript": "^3.9.3",
     "wait-for-expect": "^3.0.2"
+  },
+  "resolutions": {
+    "trezor-connect": "8.1.15"
   },
   "husky": {
     "hooks": {

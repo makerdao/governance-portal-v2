@@ -188,7 +188,6 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         {voting && (
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
-
         {spellData?.hasBeenScheduled && (
           <>
             <Divider my={0} />
