@@ -4,8 +4,19 @@ import WrappedAccountSelect from '../../../components/header/AccountSelect';
 
 const { click } = fireEvent;
 
+let warn;
+
 beforeAll(() => {
   injectProvider();
+  warn = console.warn;
+  console.warn = (...args) => {
+    if (args[0].match(/falling back to/)) return;
+    return warn(...args);
+  };
+});
+
+afterAll(() => {
+  console.warn = warn;
 });
 
 test('can connect an account', async () => {
