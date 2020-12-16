@@ -1,6 +1,8 @@
 import Maker from '@makerdao/dai';
 import GovernancePlugin from '@makerdao/dai-plugin-governance';
 import McdPlugin from '@makerdao/dai-plugin-mcd';
+import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
+import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import { ethers } from 'ethers';
 import { MongoClient } from 'mongodb';
 import invariant from 'tiny-invariant';
@@ -16,7 +18,9 @@ export async function getConnectedMakerObj(network: SupportedNetworks): Promise<
   const makerObj = await Maker.create('http', {
     plugins: [
       [McdPlugin, { prefetch: false }],
-      [GovernancePlugin, { network, staging: !process.env.USE_PROD_SPOCK }]
+      [GovernancePlugin, { network, staging: !process.env.USE_PROD_SPOCK }],
+      LedgerPlugin,
+      TrezorPlugin
     ],
     provider: {
       url: networkToRpc(network, 'infura'),

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 
 module.exports = {
   // everything in here gets exposed to the frontend.
