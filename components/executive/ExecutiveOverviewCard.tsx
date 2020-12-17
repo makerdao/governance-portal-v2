@@ -163,6 +163,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                     setVoting(true);
                     ev.stopPropagation();
                   }}
+                  data-testid="vote-button-exec-overview-card"
                 >
                   Vote
                 </Button>
@@ -179,6 +180,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   setVoting(true);
                   ev.stopPropagation();
                 }}
+                data-testid="vote-button-exec-overview-card"
               >
                 Vote
               </Button>
