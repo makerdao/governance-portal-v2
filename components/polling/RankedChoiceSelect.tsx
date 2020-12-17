@@ -93,7 +93,7 @@ export default function RankedChoiceSelect({
                   {getNumberWithOrdinal(numConfirmed + 1)} choice
                 </ListboxOption>
                 {map(availableChoices, (label, optionId) => (
-                  <ListboxOption key={optionId} value={optionId}>
+                  <ListboxOption aria-label="ranked choice option" key={optionId} value={optionId}>
                     {label}
                   </ListboxOption>
                 ))}
@@ -106,6 +106,7 @@ export default function RankedChoiceSelect({
         <Text
           color="primary"
           variant="caps"
+          aria-label="Add button"
           onClick={() => {
             mixpanel.track('btn-click', {
               id: 'addAnotherRankedChoice',
