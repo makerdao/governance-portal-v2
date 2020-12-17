@@ -53,4 +53,4 @@ export const SPELL_SCHEDULED_DATE_OVERRIDES = {
 };
 
 export const POLL_CATEGORIZATION_ENDPOINT =
-  'https://raw.githubusercontent.com/makerdao/community/f2c2fb7355510972984e46f43275c8b9a61e67f9/governance/polls/meta/retroactive-poll-categorization.json';
+  'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/retroactive-poll-categorization.json';
