@@ -188,7 +188,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         {voting && (
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
-        {spellData?.hasBeenScheduled && (
+        {(spellData?.hasBeenScheduled || proposal.address === ZERO_ADDRESS) && (
           <>
             <Divider my={0} />
             <Flex p={3} sx={{ justifyContent: 'center' }}>
@@ -198,17 +198,21 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   new chief has been activated!
                 </Text>
               ) : (
-                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                  Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                  {typeof spellData.dateExecuted === 'string' ? (
-                    <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-                  ) : (
-                    <>
-                      Available for execution on{' '}
-                      {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
-                    </>
-                  )}
-                </Text>
+                spellData && (
+                  <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                    Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+                    {typeof spellData.dateExecuted === 'string' ? (
+                      <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+                    ) : (
+                      <>
+                        Available for execution on{' '}
+                        {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
+                          formatDateWithTime(spellData.eta)}
+                        .
+                      </>
+                    )}
+                  </Text>
+                )
               )}
             </Flex>
           </>
