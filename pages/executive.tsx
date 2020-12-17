@@ -469,7 +469,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           </Box>
           <Stack gap={3}>
             <SystemStatsSidebar
-              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+              fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
             <MkrLiquiditySidebar />
             <ResourceBox />
