@@ -44,7 +44,6 @@ import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
-  proposals: Proposal[];
 };
 
 const editMarkdown = content => {
@@ -52,20 +51,11 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
-const ProposalTimingBanner = ({ proposals, proposal }): JSX.Element => {
-  const { data: spellDataArray } = proposals
-    ? useSWR<Record<string, SpellData>>(
-        `/api/executive/analyze-spell?network=${getNetwork()}`,
-        // needs to be a POST because the list of addresses is too long to be a GET query parameter
-        url =>
-          fetchJson(url, {
-            method: 'POST',
-            body: JSON.stringify({ addresses: proposals.map(p => p.address) })
-          }),
-        { refreshInterval: 0 }
-      )
-    : { data: null };
-  const spellData = spellDataArray && proposal && spellDataArray[proposal.address];
+const ProposalTimingBanner = ({ proposal }): JSX.Element => {
+  const { data: spellData } = useSWR<SpellData>(
+    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`,
+    url => fetchJson(url)
+  );
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
@@ -76,7 +66,7 @@ const ProposalTimingBanner = ({ proposals, proposal }): JSX.Element => {
               This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
               chief has been activated!
             </Text>
-          ) : spellData.hasBeenScheduled ? (
+          ) : spellData && spellData.hasBeenScheduled ? (
             <Text sx={{ textAlign: 'center', px: [3, 4] }}>
               Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
               {typeof spellData.dateExecuted === 'string' ? (
@@ -100,7 +90,7 @@ const ProposalTimingBanner = ({ proposals, proposal }): JSX.Element => {
   return <></>;
 };
 
-const ProposalView = ({ proposals, proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal }: Props): JSX.Element => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
@@ -243,7 +233,7 @@ const ProposalView = ({ proposals, proposal }: Props): JSX.Element => {
                   onChainFxTab,
                   commentsTab
                 ]}
-                banner={<ProposalTimingBanner proposals={proposals} proposal={proposal} />}
+                banner={<ProposalTimingBanner proposal={proposal} />}
               ></Tabs>
             ) : (
               <Tabs
@@ -345,13 +335,7 @@ const ProposalView = ({ proposals, proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({
-  proposal: prefetchedProposal,
-  proposals
-}: {
-  proposal?: Proposal;
-  proposals: Proposal[];
-}): JSX.Element {
+export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -388,7 +372,7 @@ export default function ProposalPage({
     );
 
   const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  return <ProposalView proposals={proposals} proposal={proposal as Proposal} />;
+  return <ProposalView proposal={proposal as Proposal} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -400,10 +384,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
-  const proposals = await getExecutiveProposals();
   return {
     props: {
-      proposals,
       proposal
     }
   };
