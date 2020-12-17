@@ -9,6 +9,7 @@ type Props = ThemeUICSSProperties & {
 };
 
 const StackLayout = React.forwardRef<any, Props>(({ children, gap = 4, ...props }, ref) => (
+  // @ts-ignore
   <Flex
     ref={ref}
     sx={{
@@ -21,7 +22,7 @@ const StackLayout = React.forwardRef<any, Props>(({ children, gap = 4, ...props 
   >
     {React.Children.toArray(children)
       .filter(Boolean)
-      .map((child, i) => styledClone(child, { sx: { mt: i == 0 ? null : gap } }))}
+      .map((child, i) => styledClone(child, { sx: { mt: i == 0 ? undefined : gap } }))}
   </Flex>
 ));
 

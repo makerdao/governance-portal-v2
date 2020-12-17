@@ -16,6 +16,8 @@ import VoteModal from './VoteModal';
 import { useState } from 'react';
 import SpellData from '../../types/spellData';
 import mixpanel from 'mixpanel-browser';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
+import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
@@ -73,7 +75,11 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         }}
         {...props}
       >
-        <Flex px={[3, 4]} py={[3, spellData?.hasBeenCast ? 3 : 4]} sx={{ justifyContent: 'space-between' }}>
+        <Flex
+          px={[3, 4]}
+          py={[3, spellData?.hasBeenScheduled ? 3 : 4]}
+          sx={{ justifyContent: 'space-between' }}
+        >
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
@@ -112,7 +118,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   Your Vote
                 </Badge>
               )}
-              {isHat ? (
+              {isHat && proposal.address !== ZERO_ADDRESS ? (
                 <Badge
                   variant="primary"
                   sx={{
@@ -152,7 +158,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                     mixpanel.track('btn-click', {
                       id: 'openExecVoteModal',
                       product: 'governance-portal-v2',
-                      page: 'Executive',
+                      page: 'Executive'
                     });
                     setVoting(true);
                     ev.stopPropagation();
@@ -182,19 +188,28 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         {voting && (
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
-
-        {spellData?.hasBeenCast && (
+        {spellData?.hasBeenScheduled && (
           <>
             <Divider my={0} />
             <Flex p={3} sx={{ justifyContent: 'center' }}>
-              <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                {typeof spellData.dateExecuted === 'string' ? (
-                  <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-                ) : (
-                  <>Available for execution on {formatDateWithTime(spellData.eta)}.</>
-                )}
-              </Text>
+              {proposal.address === ZERO_ADDRESS ? (
+                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                  This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the
+                  new chief has been activated!
+                </Text>
+              ) : (
+                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+                  Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+                  {typeof spellData.dateExecuted === 'string' ? (
+                    <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+                  ) : (
+                    <>
+                      Available for execution on{' '}
+                      {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                    </>
+                  )}
+                </Text>
+              )}
             </Flex>
           </>
         )}

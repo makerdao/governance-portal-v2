@@ -4,7 +4,18 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import {
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
@@ -26,9 +37,14 @@ import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
 import mixpanel from 'mixpanel-browser';
+import { formatDateWithTime } from '../../lib/utils';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
+import SpellData from '../../types/spellData';
+import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
+  proposals: Proposal[];
 };
 
 const editMarkdown = content => {
@@ -36,7 +52,55 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>/, '');
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalTimingBanner = ({ proposals, proposal }): JSX.Element => {
+  const { data: spellDataArray } = proposals
+    ? useSWR<Record<string, SpellData>>(
+        `/api/executive/analyze-spell?network=${getNetwork()}`,
+        // needs to be a POST because the list of addresses is too long to be a GET query parameter
+        url =>
+          fetchJson(url, {
+            method: 'POST',
+            body: JSON.stringify({ addresses: proposals.map(p => p.address) })
+          }),
+        { refreshInterval: 0 }
+      )
+    : { data: null };
+  const spellData = spellDataArray && proposal && spellDataArray[proposal.address];
+  if (spellData || proposal.address === ZERO_ADDRESS)
+    return (
+      <>
+        <Divider my={1} />
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+          {proposal.address === ZERO_ADDRESS ? (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
+              chief has been activated!
+            </Text>
+          ) : spellData.hasBeenScheduled ? (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+              {typeof spellData.dateExecuted === 'string' ? (
+                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+              ) : (
+                <>
+                  Available for execution on{' '}
+                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                </>
+              )}
+            </Text>
+          ) : (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              This proposal has not yet passed and is not available for execution.
+            </Text>
+          )}
+        </Flex>
+        <Divider sx={{ mt: 1 }} />
+      </>
+    );
+  return <></>;
+};
+
+const ProposalView = ({ proposals, proposal }: Props): JSX.Element => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
@@ -45,7 +109,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: stateDiff, error: stateDiffError } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url)),
-    { refreshInterval: 0 }
+    {
+      refreshInterval: 0,
+      shouldRetryOnError: network === 'mainnet'
+    }
   );
 
   const { data: allSupporters, error: supportersError } = useSWR(
@@ -176,7 +243,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   onChainFxTab,
                   commentsTab
                 ]}
-              />
+                banner={<ProposalTimingBanner proposals={proposals} proposal={proposal} />}
+              ></Tabs>
             ) : (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
@@ -277,7 +345,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
+export default function ProposalPage({
+  proposal: prefetchedProposal,
+  proposals
+}: {
+  proposal?: Proposal;
+  proposals: Proposal[];
+}): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -314,7 +388,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  return <ProposalView proposal={proposal as Proposal} />;
+  return <ProposalView proposals={proposals} proposal={proposal as Proposal} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -326,8 +400,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
+  const proposals = await getExecutiveProposals();
   return {
     props: {
+      proposals,
       proposal
     }
   };

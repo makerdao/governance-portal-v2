@@ -1,12 +1,10 @@
 /** @jsx jsx */
-import { Flex, Box, Button, Text, Card, Spinner, Link, jsx } from 'theme-ui';
+import { Flex, Box, Button, Text, Card, Link, jsx } from 'theme-ui';
 import { useState, useRef } from 'react';
-// import { GetStaticProps } from 'next';
 import useSWR, { mutate } from 'swr';
-// import ErrorPage from 'next/error';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import getMaker, { isDefaultNetwork, MKR } from '../lib/maker';
+import getMaker from '../lib/maker';
 import PrimaryLayout from '../components/layouts/Primary';
 import BurnModal from '../components/es/BurnModal';
 import ShutdownModal from '../components/es/ShutdownModal';
@@ -76,6 +74,7 @@ const ESModule = () => {
             height: '20px',
             my: 3
           }}
+          data-testid="progress-bar"
         >
           <Box
             as="div"
@@ -198,7 +197,7 @@ const ESModule = () => {
             flexDirection: bpi > 0 ? 'row' : 'column',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mt: bpi < 1 ? 2 : null
+            mt: bpi < 1 ? 2 : undefined
           }}
         >
           {!account && (
@@ -235,25 +234,5 @@ const ESModule = () => {
 };
 
 export default function ESModulePage(): JSX.Element {
-  // const [error, setError] = useState<string>();
-
-  // if (error) {
-  //   return <ErrorPage statusCode={404} title="Error fetching ES module" />;
-  // }
-
-  // if (!isDefaultNetwork())
-  //   return (
-  //     <PrimaryLayout>
-  //       <p>Loading…</p>
-  //     </PrimaryLayout>
-  //   );
-
   return <ESModule />;
 }
-
-// export const getStaticProps: GetStaticProps = async () => {
-//   return {
-//     unstable_revalidate: 30, // allow revalidation every 30 seconds
-//     props: {}
-//   };
-// };

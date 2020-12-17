@@ -82,8 +82,9 @@ const ExecutiveIndicatorComponent = ({
           proposal => !votedProposals.map(p => p.toLowerCase()).includes(proposal.address.toLowerCase())
         )
       : newActiveProposals;
+
   const shouldDisplay =
-    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : null;
+    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
       {account && !votedProposals ? (

@@ -82,11 +82,11 @@ export default function PollOverviewCard({
               <Button
                 variant="outline"
                 mr={2}
-                onClick={()=>{
+                onClick={() => {
                   mixpanel.track('btn-click', {
                     id: 'showHistoricalPolls',
                     product: 'governance-portal-v2',
-                    page: 'Polling',
+                    page: 'Polling'
                   });
                   startMobileVoting && startMobileVoting();
                 }}
@@ -101,14 +101,19 @@ export default function PollOverviewCard({
                 Edit Choices
               </Button>
             ) : (
-              <Button variant="primary" mr={2} px={4} onClick={()=>{
-                mixpanel.track('btn-click', {
-                  id: 'startMobileVoting',
-                  product: 'governance-portal-v2',
-                  page: 'Polling',
-                });
-                startMobileVoting && startMobileVoting();
-                }}>
+              <Button
+                variant="primary"
+                mr={2}
+                px={4}
+                onClick={() => {
+                  mixpanel.track('btn-click', {
+                    id: 'startMobileVoting',
+                    product: 'governance-portal-v2',
+                    page: 'Polling'
+                  });
+                  startMobileVoting && startMobileVoting();
+                }}
+              >
                 Vote
               </Button>
             ))}
@@ -121,7 +126,7 @@ export default function PollOverviewCard({
               <Button
                 variant="outline"
                 sx={{
-                  display: reviewPage ? 'none' : null,
+                  display: reviewPage ? 'none' : undefined,
                   borderColor: 'onSecondary',
                   color: 'secondaryAlt',
                   borderRadius: 'small',

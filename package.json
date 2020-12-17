@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next",
+    "dev-https": "node server.js",
     "build": "next build",
     "start": "next start",
     "export": "next export",
@@ -13,8 +14,10 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.9",
-    "@makerdao/dai-plugin-governance": "0.12.40",
-    "@makerdao/dai-plugin-mcd": "^1.6.14",
+    "@makerdao/dai-plugin-governance": "0.12.41-rc.3",
+    "@makerdao/dai-plugin-ledger-web": "^0.9.10",
+    "@makerdao/dai-plugin-mcd": "^1.6.15-rc.1",
+    "@makerdao/dai-plugin-trezor-web": "^0.9.6",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
@@ -31,7 +34,6 @@
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.1.4",
     "@web3-react/walletlink-connector": "^6.1.1",
-    "axios": "^0.21.0",
     "ethers": "^5.0.8",
     "gray-matter": "^4.0.2",
     "lodash": "^4.7.0",
@@ -54,11 +56,13 @@
   },
   "devDependencies": {
     "@makerdao/test-helpers": "^0.3.0",
-    "@makerdao/testchain": "^1.1.22",
+    "@makerdao/testchain": "^1.1.23",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
+    "@testing-library/user-event": "^12.2.2",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "bignumber.js": "^9.0.1",
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.5",
@@ -68,6 +72,9 @@
     "prettier": "^2.0.5",
     "typescript": "^3.9.3",
     "wait-for-expect": "^3.0.2"
+  },
+  "resolutions": {
+    "trezor-connect": "8.1.15"
   },
   "husky": {
     "hooks": {
