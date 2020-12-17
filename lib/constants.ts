@@ -51,3 +51,6 @@ export const oldIouAddress = {
 export const SPELL_SCHEDULED_DATE_OVERRIDES = {
   '0xB70fB4eE900650DCaE5dD63Fd06E07F0b3a45d13': 'December 7, 2020, 14:00 UTC'
 };
+
+export const POLL_CATEGORIZATION_ENDPOINT =
+  'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/retroactive-poll-categorization.json';

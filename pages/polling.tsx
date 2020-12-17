@@ -74,8 +74,9 @@ const PollingOverview = ({ polls }: Props) => {
     return polls.filter(poll => {
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      // if no category filter is set for this type, show it. Otherwise do whatever the bool in the filter obj says.
-      return categoryFilter?.[poll.category] === undefined ? true : categoryFilter[poll.category];
+      return categoryFilter === null // if categoryFilter is null, no filters have been set yet
+        ? true
+        : !poll.categories.some(category => categoryFilter[category] === false);
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -146,7 +147,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.category)))} />
+          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
