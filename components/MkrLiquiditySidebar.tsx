@@ -7,6 +7,7 @@ import getMaker from '../lib/maker';
 import { MKR } from '../lib/maker';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
+const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
 const uniswapV2MkrPool = '0xC2aDdA861F89bBB333c90c492cB837741916A225';
 
 async function getBalancerMkr() {
@@ -40,6 +41,7 @@ async function getMkrLiquidity() {
   const maker = await getMaker();
   return Promise.all([
     maker.service('token').getToken(MKR).balanceOf(aaveLendingPoolCore),
+    maker.service('token').getToken(MKR).balanceOf(aaveV2Amkr),
     maker.service('token').getToken(MKR).balanceOf(uniswapV2MkrPool)
   ]);
 }
@@ -47,10 +49,10 @@ async function getMkrLiquidity() {
 export default function MkrLiquiditySidebar({ ...props }): JSX.Element {
   const { data: nonBalancer } = useSWR('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
   const { data: balancer } = useSWR('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
-  const [aave, uniswap] = nonBalancer || [];
+  const [aaveV1, aaveV2, uniswap] = nonBalancer || [];
   const mkrPools = [
     ['Balancer', balancer],
-    ['Aave', aave],
+    ['Aave', aaveV1 && aaveV2 && aaveV1.plus(aaveV2)],
     ['Uniswap V2', uniswap]
   ].sort((a, b) => a[1] && b[1] && b[1].toBigNumber().minus(a[1].toBigNumber()).toNumber());
 

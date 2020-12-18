@@ -33,7 +33,6 @@ import { MKR } from '../lib/maker';
 import oldChiefAbi from '../lib/abis/oldChiefAbi.json';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { oldChiefAddress } from '../lib/constants';
-import { ZERO_ADDRESS } from '../stores/accounts';
 import ProgressBar from '../components/executive/ProgressBar';
 
 const CircleNumber = ({ children }) => (
@@ -77,7 +76,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
@@ -470,7 +469,7 @@ const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           </Box>
           <Stack gap={3}>
             <SystemStatsSidebar
-              fields={['mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+              fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
             <MkrLiquiditySidebar />
             <ResourceBox />

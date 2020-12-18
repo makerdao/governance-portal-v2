@@ -4,24 +4,21 @@ import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
-import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS, GOV_BLOG_POSTS_ENDPOINT } from './constants';
+import { markdownToHtml, timeoutPromise, backoffRetry, fetchJson } from './utils';
+import { CMS_ENDPOINTS, POLL_CATEGORIZATION_ENDPOINT } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
 
-let _cachedProposals: CMSProposal[];
-/**
- * The first time this method is called, it fetches fresh proposals and caches them.
- * Everytime after that, it returns from the cache.
- */
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+  if (process.env.USE_FS_CACHE) {
+    const cachedProposals = fsCacheGet('proposals');
+    if (cachedProposals) return JSON.parse(cachedProposals);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  if (_cachedProposals) return _cachedProposals;
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
   let proposals: Array<any> = topics
@@ -59,7 +56,9 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   proposals.push(...oldSpells);
   proposals = proposals.slice(0, 100);
-  return (_cachedProposals = proposals);
+
+  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
+  return proposals;
 }
 
 export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
@@ -75,26 +74,45 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
   };
 }
 
-let _cachedPolls: Poll[];
-/**
- * The first time this method is called, it fetches fresh polls and caches them.
- * Everytime after that, it returns from the cache.
- */
 export async function getPolls(): Promise<Poll[]> {
-  if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/polls.json');
-  if (_cachedPolls) return _cachedPolls;
-
   const maker = await getMaker();
+
+  if (process.env.USE_FS_CACHE) {
+    const cachedPolls = fsCacheGet('polls');
+    if (cachedPolls) return JSON.parse(cachedPolls);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+    return require('../mocks/polls.json');
+  }
+
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
-  return (_cachedPolls = polls);
+  if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
+  return polls;
 }
+
+const fsCacheCache = {};
+
+const fsCacheGet = name => {
+  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  if (fsCacheCache[path]) return fsCacheCache[path];
+  if (fs.existsSync(path)) return fs.readFileSync(path).toString();
+};
+
+const fsCacheSet = (name, data) => {
+  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  fs.writeFileSync(path, data, err => console.error(err));
+  fsCacheCache[path] = data;
+};
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
+
+  const categoryMap = await fetchJson(POLL_CATEGORIZATION_ENDPOINT);
 
   for (const pollGroup of chunk(
     uniqBy(pollList, p => p.multiHash),
@@ -108,7 +126,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           document = await timeoutPromise(
             5000, // reject if it takes longer than this to fetch
             backoffRetry(3, () => fetch(p.url))
-          ).then(response => response?.text());
+          ).then(resp => resp?.text());
           if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
             throw new Error();
         } catch (err) {
@@ -128,7 +146,12 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
             : null;
         const voteType: VoteTypes =
           (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
-        const category = pollMeta?.category || 'Uncategorized';
+
+        const categories = [
+          ...(pollMeta?.categories || []),
+          ...(pollMeta?.category ? [pollMeta?.category] : []),
+          ...(categoryMap?.[p.pollId] || [])
+        ];
         return {
           ...p,
           slug: p.multiHash.slice(0, 8),
@@ -140,7 +163,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           options,
           discussionLink,
           voteType,
-          category
+          categories: categories.length > 0 ? categories : ['Uncategorized']
         };
       })
     ).then(polls =>
@@ -153,12 +176,9 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   }
 
   console.log(
-    `\n 
----
-Failed to fetch documents for ${numFailedFetches}/${pollList.length} polls.
-This could be because the document link from the poll is no longer valid.
-The following are the missing poll ids: ${failedPollIds}.
----`
+    `---
+  Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
+  IDs: ${failedPollIds}`
   );
 
   return (

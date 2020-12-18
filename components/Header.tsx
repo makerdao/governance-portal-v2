@@ -39,31 +39,41 @@ const Header = (props): JSX.Element => {
         </IconButton>
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/polling', query: { network } }}>
+        <Link href={{ pathname: '/polling', query: { network } }} passHref>
           <NavLink
-            href={`/polling?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 'auto'] }}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 'auto'],
+              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
+            }}
           >
             Polling
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/executive', query: { network } }}>
+        <Link href={{ pathname: '/executive', query: { network } }} passHref>
           <NavLink
-            href={`/executive?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5] }}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
+            }}
           >
             Executive
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        <Link href={{ pathname: '/esmodule', query: { network } }} passHref>
           <NavLink
-            href={`/module?network=${network}`}
             p={0}
-            sx={{ display: ['none', 'block'], ml: [0, 4, 4, 5], mr: [0, 'auto', 4, 5] }}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              mr: [0, 'auto', 4, 5],
+              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
+            }}
           >
             ES Module
           </NavLink>

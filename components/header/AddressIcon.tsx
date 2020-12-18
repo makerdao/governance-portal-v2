@@ -6,20 +6,20 @@ import dynamic from 'next/dynamic';
 
 const ICON_SIZE = 22;
 
-type AccountIconProps = { account: string };
+type AccountIconProps = { address: string };
 
 export default dynamic(
   async () => {
     const { default: jazzicon } = await import('@metamask/jazzicon');
-    return ({ account, ...props }: AccountIconProps) => {
+    return ({ address, ...props }: AccountIconProps) => {
       const iconParent = useRef<HTMLDivElement>(null);
 
       useEffect(() => {
-        if (!account || !iconParent.current || typeof window === 'undefined') return;
+        if (!address || !iconParent.current || typeof window === 'undefined') return;
         const parent: HTMLDivElement = iconParent.current;
         if (parent.firstChild) parent.removeChild(parent.firstChild);
-        parent.appendChild(jazzicon(ICON_SIZE, parseInt(account.slice(2, 10), 16)));
-      }, [account]);
+        parent.appendChild(jazzicon(ICON_SIZE, parseInt(address.slice(2, 10), 16)));
+      }, [address]);
 
       return (
         <Box {...props}>
