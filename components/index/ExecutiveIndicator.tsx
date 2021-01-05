@@ -87,13 +87,9 @@ const ExecutiveIndicatorComponent = ({
     newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
-      {account && !votedProposals ? (
-        <Skeleton height="39px" width="240px" />
-      ) : (
-        <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
-          <ExecutiveIndicator numProposals={hat ? newUnvotedProposals.length : activeProposals.length - 1} />
-        </Link>
-      )}
+      <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
+        <ExecutiveIndicator numProposals={hat ? newUnvotedProposals.length : activeProposals.length - 1} />
+      </Link>
     </Container>
   );
 };
