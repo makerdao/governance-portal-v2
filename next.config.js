@@ -12,7 +12,11 @@ module.exports = {
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
     // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
-    if (!isServer) config.node = { fs: 'empty' };
+    if (isServer) {
+      process.env.USE_FS_CACHE = 1;
+    } else {
+      config.node = { fs: 'empty' };
+    }
     return config;
   }
 };
