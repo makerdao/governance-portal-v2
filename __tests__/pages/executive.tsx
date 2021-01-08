@@ -1,15 +1,19 @@
 import { ExecutiveOverview } from '../../pages/executive';
 import proposals from '../../mocks/proposals.json';
 import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers'; 
-import { fireEvent, cleanup } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import mixpanel from 'mixpanel-browser';
-import { cache } from 'swr';
+import { SWRConfig } from 'swr';
 
 const { click } = fireEvent;
 let component;
 
 async function setup() {
-  const comp = render(<ExecutiveOverview proposals={proposals} />);
+  const comp = render(
+  <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 100 }}>
+    <ExecutiveOverview proposals={proposals} />
+  </SWRConfig>
+  );
   await connectAccount(click, comp.findByText, comp.findByLabelText);
   return comp;
 }
@@ -20,25 +24,27 @@ beforeAll(async () => {
   // temporary hack to hide spam errors and warnings from dependencies
   console.error = () => {};
   console.warn = () => {};
-});
-
-beforeEach(async () => {
   component = await setup();
 });
 
-test('can deposit', async () => {
+test('can deposit and vote', async () => {
+  //deposit
   const depositButton = await component.findByTestId('deposit-button');
   click(depositButton);
-  const t = await component.findByText('Approve voting contract');
+  await component.findByText('Approve voting contract');
   const approveButton = component.getByTestId('deposit-approve-button');
   click(approveButton);
-  //TODO
-});
+  await component.findByText('Deposit into voting contract');
+  const input = component.getByLabelText('mkr-input');
+  fireEvent.change(input, { target: { value: '10' } });
+  const finalDepositButton = await component.findByText('Deposit MKR');
+  expect(finalDepositButton.disabled).toBe(false);
+  click(finalDepositButton);
 
-test('can vote', async () => {
+  //vote
   const [voteButtonOne, ] = await component.findAllByTestId('vote-button-exec-overview-card');
   click(voteButtonOne);
   const submitButton = await component.findByText('Submit Vote');
   click(submitButton);
-  //FIXME: test that UI updates accordingly, for some reason the votedProposals isn't being updated even though the tx succeeds
-});
+  //TODO: get the UI to reflect the vote and test for that
+}, 10000);
