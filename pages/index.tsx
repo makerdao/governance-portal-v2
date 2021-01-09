@@ -132,7 +132,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
                   >
                     <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
-                    <ExecutiveIndicator proposals={proposals} hat={hat} sx={{ mt: [2, 0] }} />
+                    <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
                   </Flex>
                 </Stack>
               </Container>

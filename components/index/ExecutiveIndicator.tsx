@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
-
 import { CMSProposal } from '../../types/proposal';
 import getMaker, { getNetwork } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
+import SpellData from '../../types/spellData';
+import { fetchJson } from '../../lib/utils';
 
 type Props = {
   numProposals: number;
@@ -51,17 +52,18 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const ExecutiveIndicatorComponent = ({
-  proposals,
-  hat,
-  ...props
-}: {
-  proposals: CMSProposal[];
-  hat?: string;
-}): JSX.Element => {
+const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSProposal[] }): JSX.Element => {
+  const { data: spellData } = useSWR<Record<string, SpellData>>(
+    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    // needs to be a POST because the list of addresses is too long to be a GET query parameter
+    url =>
+      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
+    { refreshInterval: 0 }
+  );
+
   const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
-  const newActiveProposals = hat
-    ? activeProposals.filter(proposal => hat.toLowerCase() !== proposal.address.toLowerCase())
+  const uncastProposals = spellData
+    ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenCast)
     : activeProposals;
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
@@ -78,18 +80,21 @@ const ExecutiveIndicatorComponent = ({
   );
   const newUnvotedProposals =
     votedProposals && account
-      ? newActiveProposals.filter(
+      ? uncastProposals.filter(
           proposal => !votedProposals.map(p => p.toLowerCase()).includes(proposal.address.toLowerCase())
         )
-      : newActiveProposals;
+      : uncastProposals;
 
-  const shouldDisplay =
-    newUnvotedProposals.length === 0 || (!hat && activeProposals.length <= 1) ? 'none' : undefined;
+  const shouldDisplay = newUnvotedProposals.length === 0 ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
-      <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
-        <ExecutiveIndicator numProposals={hat ? newUnvotedProposals.length : activeProposals.length - 1} />
-      </Link>
+      {!spellData ? (
+        <Skeleton height="39px" width="240px" />
+      ) : (
+        <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
+          <ExecutiveIndicator numProposals={newUnvotedProposals.length} />
+        </Link>
+      )}
     </Container>
   );
 };
