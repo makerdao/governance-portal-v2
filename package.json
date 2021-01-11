@@ -13,10 +13,10 @@
     "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.32.9",
-    "@makerdao/dai-plugin-governance": "0.12.41-rc.3",
+    "@makerdao/dai": "^0.32.11",
+    "@makerdao/dai-plugin-governance": "0.12.44",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
-    "@makerdao/dai-plugin-mcd": "^1.6.15-rc.1",
+    "@makerdao/dai-plugin-mcd": "^1.6.21",
     "@makerdao/dai-plugin-trezor-web": "^0.9.6",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@makerdao/test-helpers": "^0.3.0",
-    "@makerdao/testchain": "^1.1.23",
+    "@makerdao/testchain": "^1.1.27",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
     "@testing-library/user-event": "^12.2.2",

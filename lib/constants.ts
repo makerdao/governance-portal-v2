@@ -33,13 +33,13 @@ export const ABSTAIN = 0;
 export const oldChiefAddress = {
   mainnet: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
   kovan: '0xbbffc76e94b34f72d96d054b31f6424249c1337d',
-  testnet: '0x127BFdF59236E7EC1Caab020B844d0B813C3Cc39'
+  testnet: '0x1d24598fa8B77811E68243A2746CC553E68ca03B'
 };
 
 export const oldVoteProxyFactoryAddress = {
   mainnet: '0x868ba9aeacA5B73c7C27F3B01588bf4F1339F2bC',
   kovan: '0x3e08741a68c2d964d172793cd0ad14292f658cd8',
-  testnet: '0x99eD2B819A93ED703a3786e3141570933E3e3D89'
+  testnet: '0x26ea0dd33Aa37e15D95a9Ae166092a139Ad62013'
 };
 
 export const oldIouAddress = {
