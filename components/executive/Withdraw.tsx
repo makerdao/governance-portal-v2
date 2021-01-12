@@ -131,7 +131,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'withdrawMkr',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
 
@@ -175,7 +175,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'approveWithdraw',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const approveTxCreator = () =>
@@ -195,6 +195,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             });
             setTxId(txId);
           }}
+          data-testid="withdraw-approve-button"
         >
           Approve
         </Button>
@@ -260,7 +261,12 @@ const Withdraw = (props): JSX.Element => {
           />
         </DialogContent>
       </DialogOverlay>
-      <Button variant="mutedOutline" onClick={() => setShowDialog(true)} {...props}>
+      <Button
+        variant="mutedOutline"
+        onClick={() => setShowDialog(true)}
+        {...props}
+        data-testid="withdraw-button"
+      >
         Withdraw
       </Button>
     </>
