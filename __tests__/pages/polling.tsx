@@ -60,13 +60,13 @@ describe('can vote in a poll', () => {
     component = await setup();
   });
 
-  test('renders voting options when account is connected', async () => {
+  test.only('renders voting options when account is connected', async () => {
     expect(await component.findByText('Active Polls')).toBeDefined();
     expect(await component.findByText('Your Ballot')).toBeDefined();
   });
 
   describe('quick vote', () => {
-    test.only('ranked choice', async () => {
+    test('ranked choice', async () => {
       const polls = await component.findAllByLabelText('Poll overview');
       const pollCard = polls[0];
       const menu = (await component.findAllByText('1st choice'))[0];
