@@ -23,23 +23,6 @@ async function createTestPolls() {
   );
 }
 
-async function setup() {
-  const {
-    debug,
-    findByText,
-    findByLabelText,
-    findAllByText
-  } = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(click, findByText, findByLabelText);
-
-  return {
-    debug,
-    findByText,
-    findByLabelText,
-    findAllByText
-  }
-}
-
 beforeAll(async () => {
   injectProvider();
   maker = await getMaker();
@@ -51,39 +34,22 @@ describe('can vote in a poll', () => {
   console.error = () => {};
   console.warn = () => {};
 
-  let component;
-  beforeEach(async () => {
-    component = await setup();
-  });
-
   test('renders voting options when account is connected', async () => {
-    expect(await component.findByText('Active Polls')).toBeDefined();
-    expect(await component.findByText('Your Ballot')).toBeDefined();
-    // component.debug();
+    const {
+      findByText,
+      findByLabelText
+    } = render(<PollingOverviewPage polls={mockPolls as any} />);
+    await connectAccount(click, findByText, findByLabelText);
+  
+    expect(await findByText('Active Polls')).toBeDefined();
+    expect(await findByText('Your Ballot')).toBeDefined();
   });
 
   describe('quick vote', () => {
-    test('irv', async () => {
-      expect(await component.findAllByText('View Details')).toBeDefined();
-      // component.debug();
+    test('ranked choice', async () => {
+      // this test is incomplete
+      const { findAllByText } = render(<PollingOverviewPage polls={mockPolls as any} />);
+      expect(await findAllByText('View Details')).toBeDefined();
     });
-    test('plurality', async () => {});
   });
-  
-  describe('add to ballot and submit', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
-  });
-});
-
-describe('can edit selected choices', () => {
-  describe('quick vote', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
-  });
-  
-  describe('ballot', () => {
-    test('irv', async () => {});
-    test('plurality', async () => {});
-  })
 });
