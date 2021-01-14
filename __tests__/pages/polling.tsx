@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
+import useBreakpointIndex from '@theme-ui/match-media';
 
 const { click } = fireEvent;
 let maker;
@@ -22,6 +23,14 @@ async function createTestPolls() {
     'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP2%3A%20Inclusion%20Poll%20for%20MIP8%20Amendments%20-%20June%208%2C%202020.md'
   );
 }
+
+// Sets the bpi. Can be moved within tests to switch
+// between desktop and mobile
+jest.mock('@theme-ui/match-media', () => {
+  return {
+      useBreakpointIndex: jest.fn(() => 3)
+  };
+});
 
 beforeAll(async () => {
   injectProvider();
