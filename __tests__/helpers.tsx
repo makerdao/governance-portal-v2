@@ -1,7 +1,7 @@
 import { render, RenderResult } from '@testing-library/react';
 import { ThemeProvider } from 'theme-ui';
-import { Web3ReactProvider } from '@web3-react/core';
 import { ethers } from 'ethers';
+import WrappedAccountSelect from '../components/header/AccountSelect';
 import theme from '../lib/theme';
 
 export function renderWithTheme(component): RenderResult {
@@ -26,14 +26,19 @@ export function injectProvider() {
   });
 }
 
-// may still be necessary for end-to-end testing
-export function renderWithWeb3ReactProvider(component): RenderResult {
-  const getLibrary = (provider, connector) => ({ provider, connector });
+export function renderWithAccountSelect(component): RenderResult {
   return render(
-    <Web3ReactProvider getLibrary={getLibrary}>
+    <>
       <ThemeProvider theme={theme}>
+        <WrappedAccountSelect />
         {component}
       </ThemeProvider>
-    </Web3ReactProvider>
+    </>
   );
+}
+
+export async function connectAccount(click, findByText, findByLabelText) {
+  click(await findByText('Connect wallet'));
+  click(await findByText('MetaMask'));
+  click(await findByLabelText('close'));
 }
