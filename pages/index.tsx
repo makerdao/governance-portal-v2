@@ -41,7 +41,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   return (
     <div>
       <Head>
-        <title>Maker Governance</title>
+        <title>Maker Governance Voting Portal</title>
       </Head>
       <div
         sx={{
