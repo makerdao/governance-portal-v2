@@ -5,7 +5,7 @@ import { fireEvent } from '@testing-library/react';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 import { accountsApi } from '../../stores/accounts';
-import { configure } from '@testing-library/react'
+import { configure } from '@testing-library/react';
 
 const { click } = fireEvent;
 let component;
