@@ -130,7 +130,7 @@ export default function PollOverviewCard({
               <Button
                 variant="outline"
                 sx={{
-                  display: reviewPage ? 'none' : null,
+                  display: reviewPage ? 'none' : undefined,
                   borderColor: 'onSecondary',
                   color: 'secondaryAlt',
                   borderRadius: 'small',

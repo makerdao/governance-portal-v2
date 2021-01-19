@@ -85,7 +85,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             View proposal
           </Button>
         </Link>
-        {isHat ? (
+        {isHat && proposal.address !== '0x0000000000000000000000000000000000000000' ? (
           <Badge
             variant="primary"
             sx={{

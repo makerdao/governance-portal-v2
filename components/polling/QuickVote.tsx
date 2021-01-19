@@ -76,7 +76,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          display: showHeader ? null : 'none'
+          display: showHeader ? undefined : 'none'
         }}
       >
         <Text variant="caps" color="textSecondary">
@@ -110,11 +110,11 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
           <Button
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
-            onClick={()=> {
+            onClick={() => {
               mixpanel.track('btn-click', {
                 id: 'addVoteToBallot',
                 product: 'governance-portal-v2',
-                page: 'Polling',
+                page: 'Polling'
               });
               submit();
             }}

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useRef } from 'react';
-import { Button, Flex, Text, Box, jsx } from 'theme-ui';
+import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Skeleton from 'react-loading-skeleton';
@@ -126,7 +126,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'DepositMkr',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const lockTxCreator = voteProxy
@@ -167,7 +167,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             mixpanel.track('btn-click', {
               id: 'approveDeposit',
               product: 'governance-portal-v2',
-              page: 'Executive',
+              page: 'Executive'
             });
             const maker = await getMaker();
             const approveTxCreator = () =>
@@ -189,6 +189,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             });
             setTxId(txId);
           }}
+          data-testid="deposit-approve-button"
         >
           Approve
         </Button>
@@ -241,9 +242,38 @@ const Deposit = (props): JSX.Element => {
           <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
-      <Button variant="mutedOutline" onClick={open} {...props}>
-        Deposit
-      </Button>
+      {props.link ? (
+        <Link
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'OpenDepositModalFromMigration',
+              product: 'governance-portal-v2',
+              page: 'Executive'
+            });
+            open();
+          }}
+          sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+          {...props}
+        >
+          {props.link}
+        </Link>
+      ) : (
+        <Button
+          variant="mutedOutline"
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'OpenDepositModal',
+              product: 'governance-portal-v2',
+              page: 'Executive'
+            });
+            open();
+          }}
+          data-testid="deposit-button"
+          {...props}
+        >
+          Deposit
+        </Button>
+      )}
     </>
   );
 };

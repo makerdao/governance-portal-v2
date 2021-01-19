@@ -9,23 +9,31 @@ import withApiHandler from '../../_lib/withApiHandler';
 import SpellData from '../../../../types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
-    maker.service('spell').getEta(address),
+  const [done, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+    maker
+      .service('spell')
+      .getDone(address)
+      .catch(_ => null), // this fails if the spell doesn't have the right ABI,
+    maker
+      .service('spell')
+      .getEta(address)
+      .catch(_ => null), // this fails if the spell doesn't have the right ABI,
     maker
       .service('spell')
       .getScheduledDate(address)
       /* tslint:disable:no-empty */
-      .catch(_ => _), // this fails if the spell has not been scheduled
+      .catch(_ => null), // this fails if the spell has not been scheduled
     maker
       .service('spell')
       .getExecutionDate(address)
       /* tslint:disable:no-empty */
-      .catch(_ => _), // this fails if the spell has not been executed
+      .catch(_ => null), // this fails if the spell has not been executed
     maker.service('chief').getApprovalCount(address)
   ]);
 
   return {
-    hasBeenCast: !!eta,
+    hasBeenCast: done,
+    hasBeenScheduled: !!eta,
     eta,
     datePassed,
     dateExecuted,

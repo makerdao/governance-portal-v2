@@ -275,7 +275,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         </div>
         <Stack gap={3}>
           {!!account && bpi > 0 && <VoteBox poll={poll} />}
-          <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
+          <SystemStatsSidebar
+            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+          />
           <ResourceBox />
         </Stack>
       </SidebarLayout>

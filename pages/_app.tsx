@@ -26,17 +26,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   useEffect(() => {
     mixpanelInit();
-    const handleRouteChange = (url) => {
+    const handleRouteChange = url => {
       mixpanel.track('route-change', {
         id: url,
-        product: 'governance-portal-v2',
+        product: 'governance-portal-v2'
       });
-    }
-    router.events.on('routeChangeStart', handleRouteChange)
+    };
+    router.events.on('routeChangeStart', handleRouteChange);
     return () => {
-      router.events.off('routeChangeStart', handleRouteChange)
-    }
-  }, [])
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, []);
   return (
     <ThemeProvider theme={theme}>
       <Head>
@@ -44,12 +44,17 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           httpEquiv="Content-Security-Policy"
           content={
             "default-src 'none';" +
+            'frame-src https://connect.trezor.io;' +
             "font-src 'self';" +
             "connect-src 'self' https: wss:;" +
             "style-src 'self' 'unsafe-inline';" +
             `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
             "img-src 'self' https: data:"
           }
+        />
+        <meta
+          name="description"
+          content="MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community."
         />
       </Head>
       <SWRConfig

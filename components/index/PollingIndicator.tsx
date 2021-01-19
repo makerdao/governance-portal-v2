@@ -81,18 +81,14 @@ const PollingIndicatorComponent = ({ polls, ...props }: { polls: Poll[] }): JSX.
 
   const unvotedPolls = allUserVotes
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))
-    : undefined;
+    : activePolls;
 
-  const shouldDisplay = activePolls.length === 0 || (account && !unvotedPolls?.length) ? 'none' : null;
+  const shouldDisplay = unvotedPolls.length === 0 ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
-      {account && !unvotedPolls ? (
-        <Skeleton height="39px" width="230px" />
-      ) : (
-        <Link passHref href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-          <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
-        </Link>
-      )}
+      <Link passHref href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+        <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
+      </Link>
     </Container>
   );
 };

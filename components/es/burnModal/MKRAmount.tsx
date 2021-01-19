@@ -26,7 +26,7 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewP
       <Text
         variant="microHeading"
         mt={bpi < 1 ? 4 : null}
-        sx={{ textAlign: bpi < 1 ? 'left' : null, alignSelf: 'flex-start' }}
+        sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
         Enter the amount of MKR to burn.
       </Text>
@@ -104,12 +104,13 @@ const MKRAmount = ({
             fontSize: 1,
             mt: 3
           }}
+          data-testid="voting-power"
         >
           <Text sx={{ textAlign: 'center' }}>You have {lockedInChief} MKR locked in DSChief.</Text>
           <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
         </Flex>
       ) : null}
-      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : null }}>
+      <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
           onClick={() => {
             setShowDialog(false);
@@ -119,20 +120,20 @@ const MKRAmount = ({
             color: 'secondary',
             borderColor: 'secondary',
             borderRadius: 'small',
-            width: bpi < 1 ? '100%' : null
+            width: bpi < 1 ? '100%' : undefined
           }}
         >
           Cancel
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={burnAmount.eq(0)}
+          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance))}
           variant="outline"
           sx={{
             color: 'onNotice',
             borderColor: 'notice',
             borderRadius: 'small',
-            width: bpi < 1 ? '100%' : null
+            width: bpi < 1 ? '100%' : undefined
           }}
         >
           Continue

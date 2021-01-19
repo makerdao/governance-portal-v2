@@ -1,5 +1,6 @@
 type SpellData = {
   hasBeenCast: boolean;
+  hasBeenScheduled: boolean;
   eta?: Date;
   datePassed?: Date;
   dateExecuted?: Date;

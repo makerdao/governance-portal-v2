@@ -4,7 +4,18 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import useSWR from 'swr';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import {
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
@@ -26,6 +37,10 @@ import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../
 import Proposal from '../../types/proposal';
 import useAccountsStore from '../../stores/accounts';
 import mixpanel from 'mixpanel-browser';
+import { formatDateWithTime } from '../../lib/utils';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
+import SpellData from '../../types/spellData';
+import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
   proposal: Proposal;
@@ -34,6 +49,45 @@ type Props = {
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>/, '');
+};
+
+const ProposalTimingBanner = ({ proposal }): JSX.Element => {
+  const { data: spellData } = useSWR<SpellData>(
+    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`,
+    url => fetchJson(url)
+  );
+  if (spellData || proposal.address === ZERO_ADDRESS)
+    return (
+      <>
+        <Divider my={1} />
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+          {proposal.address === ZERO_ADDRESS ? (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
+              chief has been activated!
+            </Text>
+          ) : spellData && spellData.hasBeenScheduled ? (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+              {typeof spellData.dateExecuted === 'string' ? (
+                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
+              ) : (
+                <>
+                  Available for execution on{' '}
+                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                </>
+              )}
+            </Text>
+          ) : (
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+              This proposal has not yet passed and is not available for execution.
+            </Text>
+          )}
+        </Flex>
+        <Divider sx={{ mt: 1 }} />
+      </>
+    );
+  return <></>;
 };
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
@@ -45,7 +99,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: stateDiff, error: stateDiffError } = useSWR(
     `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
     async url => parseSpellStateDiff(await fetchJson(url)),
-    { refreshInterval: 0 }
+    {
+      refreshInterval: 0,
+      shouldRetryOnError: network === 'mainnet'
+    }
   );
 
   const { data: allSupporters, error: supportersError } = useSWR(
@@ -176,7 +233,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   onChainFxTab,
                   commentsTab
                 ]}
-              />
+                banner={<ProposalTimingBanner proposal={proposal} />}
+              ></Tabs>
             ) : (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}

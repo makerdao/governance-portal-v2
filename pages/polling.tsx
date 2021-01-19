@@ -74,8 +74,9 @@ const PollingOverview = ({ polls }: Props) => {
     return polls.filter(poll => {
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      // if no category filter is set for this type, show it. Otherwise do whatever the bool in the filter obj says.
-      return categoryFilter?.[poll.category] === undefined ? true : categoryFilter[poll.category];
+      return categoryFilter === null // if categoryFilter is null, no filters have been set yet
+        ? true
+        : !poll.categories.some(category => categoryFilter[category] === false);
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -146,7 +147,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.category)))} />
+          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
@@ -158,7 +159,7 @@ const PollingOverview = ({ polls }: Props) => {
                     mb={3}
                     mt={4}
                     as="h4"
-                    sx={{ display: sortedStartDatesActive.length > 0 ? null : 'none' }}
+                    sx={{ display: sortedStartDatesActive.length > 0 ? undefined : 'none' }}
                   >
                     Active Polls
                   </Heading>
@@ -170,7 +171,7 @@ const PollingOverview = ({ polls }: Props) => {
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted{' '}
                           {formatDateWithTime(date)}
                         </Text>
-                        <Stack sx={{ mb: 0, display: activePolls.length ? null : 'none' }}>
+                        <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map(poll => (
                             <PollOverviewCard
                               key={poll.multiHash}
@@ -186,7 +187,7 @@ const PollingOverview = ({ polls }: Props) => {
                 </div>
                 {showHistorical ? (
                   <div>
-                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? null : 'none' }}>
+                    <Heading mb={3} as="h4" sx={{ display: historicalPolls.length > 0 ? undefined : 'none' }}>
                       <Flex sx={{ justifyContent: 'space-between' }}>
                         Ended Polls
                         <Button
@@ -233,7 +234,7 @@ const PollingOverview = ({ polls }: Props) => {
                       setShowHistorical(true);
                     }}
                     variant="outline"
-                    sx={{ py: 3, display: historicalPolls.length > 0 ? null : 'none' }}
+                    sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
                   </Button>
@@ -272,7 +273,9 @@ const PollingOverview = ({ polls }: Props) => {
             {account && bpi > 0 && (
               <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
             )}
-            <SystemStatsSidebar fields={['savings rate', 'total dai', 'debt ceiling', 'system surplus']} />
+            <SystemStatsSidebar
+              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+            />
             <ResourceBox />
           </Stack>
         </SidebarLayout>

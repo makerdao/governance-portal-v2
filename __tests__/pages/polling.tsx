@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
+import useBreakpointIndex from '@theme-ui/match-media';
 
 let maker;
 
@@ -15,6 +16,14 @@ jest.mock('@reach/listbox', () => {
       )
     }
   }
+});
+
+// Sets the bpi. Can be moved within tests to switch
+// between desktop and mobile
+jest.mock('@theme-ui/match-media', () => {
+  return {
+      useBreakpointIndex: jest.fn(() => 3)
+  };
 });
 
 async function createTestPolls() {
@@ -54,7 +63,7 @@ describe('can vote in a poll', () => {
   let component;
   beforeEach(async () => {
     component = await setup();
-  });
+  })
 
   test('renders voting options when account is connected', async () => {
     expect(await component.findByText('Active Polls')).toBeDefined();
@@ -62,7 +71,7 @@ describe('can vote in a poll', () => {
   });
 
   describe('quick vote', () => {
-    test.only('ranked choice', async () => {
+    test('ranked choice', async () => {
       const polls = await component.findAllByLabelText('Poll overview');
       const pollCard = polls[0];
       const menu = await component.findByTestId('Ranked choice select');

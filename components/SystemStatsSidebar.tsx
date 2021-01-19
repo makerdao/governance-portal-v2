@@ -5,8 +5,8 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 
 import Stack from './layouts/Stack';
-import getMaker, { DAI } from '../lib/maker';
-import { bigNumberKFormat } from '../lib/utils';
+import getMaker, { DAI, getNetwork } from '../lib/maker';
+import { bigNumberKFormat, formatAddress, getEtherscanLink } from '../lib/utils';
 import CurrencyObject from '../types/currency';
 
 async function getSystemStats(): Promise<CurrencyObject[]> {
@@ -29,13 +29,61 @@ if (typeof window !== 'undefined') {
   });
 }
 
-type StatField = 'mkr needed to pass' | 'savings rate' | 'total dai' | 'debt ceiling' | 'system surplus';
+type StatField =
+  | 'chief contract'
+  | 'polling contract'
+  | 'mkr needed to pass'
+  | 'savings rate'
+  | 'total dai'
+  | 'debt ceiling'
+  | 'system surplus';
 
 export default function SystemStatsSidebar({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
   const { data } = useSWR<CurrencyObject[]>('/system-stats-sidebar', getSystemStats);
+  const { data: chiefAddress } = useSWR<string>('/chief-address', () =>
+    getMaker().then(maker => maker.service('smartContract').getContract('MCD_ADM').address)
+  );
+  const { data: pollingAddress } = useSWR<string>('/polling-address', () =>
+    getMaker().then(maker => maker.service('smartContract').getContract('POLLING').address)
+  );
+
   const [mkrOnHat, savingsRate, totalDai, debtCeiling, systemSurplus] = data || [];
 
   const statsMap = {
+    'chief contract': key => (
+      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
+        <Text variant="h2" sx={{ fontSize: 3 }}>
+          {chiefAddress ? (
+            <ExternalLink href={getEtherscanLink(getNetwork(), chiefAddress, 'address')} target="_blank">
+              <Text>{formatAddress(chiefAddress)}</Text>
+            </ExternalLink>
+          ) : (
+            <Box sx={{ width: 6 }}>
+              <Skeleton />
+            </Box>
+          )}
+        </Text>
+      </Flex>
+    ),
+
+    'polling contract': key => (
+      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
+        <Text variant="h2" sx={{ fontSize: 3 }}>
+          {pollingAddress ? (
+            <ExternalLink href={getEtherscanLink(getNetwork(), pollingAddress, 'address')} target="_blank">
+              <Text>{formatAddress(pollingAddress)}</Text>
+            </ExternalLink>
+          ) : (
+            <Box sx={{ width: 6 }}>
+              <Skeleton />
+            </Box>
+          )}
+        </Text>
+      </Flex>
+    ),
+
     'mkr needed to pass': key => (
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
@@ -117,7 +165,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Box sx={{ display: ['none', 'block'] }} {...props}>
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 4 }}>
           <Heading as="h3" variant="microHeading">
-            System Stats
+            System Info
           </Heading>
           <ExternalLink
             href="https://daistats.com/"
@@ -126,7 +174,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
           >
             <Flex sx={{ alignItems: 'center' }}>
               <Text>
-                See all stats
+                See more
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>
             </Flex>

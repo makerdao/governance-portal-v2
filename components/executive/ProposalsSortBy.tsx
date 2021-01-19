@@ -22,7 +22,7 @@ export default function ProposalsSortBy(props): JSX.Element {
         onSelect={() => setExecutiveSortBy('Date Posted')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: executiveSortBy === 'Date Posted' ? 'bold' : null
+          fontWeight: executiveSortBy === 'Date Posted' ? 'bold' : undefined
         }}
       >
         Date Posted
@@ -31,7 +31,7 @@ export default function ProposalsSortBy(props): JSX.Element {
         onSelect={() => setExecutiveSortBy('MKR Amount')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: executiveSortBy === 'MKR Amount' ? 'bold' : null
+          fontWeight: executiveSortBy === 'MKR Amount' ? 'bold' : undefined
         }}
       >
         MKR Amount
