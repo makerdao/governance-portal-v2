@@ -4,8 +4,18 @@ import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
 
-const { click, keyDown, change } = fireEvent;
 let maker;
+
+jest.mock('@reach/listbox', () => {
+  return {
+    ListboxInput: (props) => {
+      console.log(props);
+      return (
+        <div {...props}></div>
+      )
+    }
+  }
+});
 
 async function createTestPolls() {
   // first poll is ranked choice, second is single select
@@ -24,24 +34,10 @@ async function createTestPolls() {
 }
 
 async function setup() {
-  const {
-    debug,
-    findByText,
-    findByLabelText,
-    findAllByLabelText,
-    findAllByText,
-    getByTestId
-  } = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(click, findByText, findByLabelText);
+  const component = render(<PollingOverviewPage polls={mockPolls as any} />);
+  await connectAccount(fireEvent.click, component.findByText, component.findByLabelText);
 
-  return {
-    debug,
-    findByText,
-    findByLabelText,
-    findAllByLabelText,
-    findAllByText,
-    getByTestId,
-  }
+  return component;
 }
 
 beforeAll(async () => {
@@ -60,25 +56,20 @@ describe('can vote in a poll', () => {
     component = await setup();
   });
 
-  test.only('renders voting options when account is connected', async () => {
+  test('renders voting options when account is connected', async () => {
     expect(await component.findByText('Active Polls')).toBeDefined();
     expect(await component.findByText('Your Ballot')).toBeDefined();
   });
 
   describe('quick vote', () => {
-    test('ranked choice', async () => {
+    test.only('ranked choice', async () => {
       const polls = await component.findAllByLabelText('Poll overview');
       const pollCard = polls[0];
-      const menu = (await component.findAllByText('1st choice'))[0];
-      expect(menu).toBeDefined();
-      const option = await component.findByText('0.25');
-      // change(menu, {target: { value: '0.25'}});
-      keyDown(menu);
+      const menu = await component.findByTestId('Ranked choice select');
       component.debug(menu);
+      expect(menu).toBeDefined();
+      fireEvent.change(menu, { target: { value: '0.25' }})
       // component.debug(pollCard);
-      component.debug(pollCard);
-      const options = await component.findAllByLabelText('ranked choice option');
-      // component.debug(options[0]);
     });
 
     test('single select', async () => {
@@ -88,28 +79,6 @@ describe('can vote in a poll', () => {
   });
   
   describe('ballot', () => {
-    test('ranked choice', async () => {});
-    test('single select', async () => {});
-  });
-
-  describe('mobile', () => {
-    test('ranked choice', async () => {});
-    test('single select', async () => {});
-  });
-});
-
-describe('can edit selected choices', () => {
-  describe('quick vote', () => {
-    test('ranked choice', async () => {});
-    test('single select', async () => {});
-  });
-  
-  describe('ballot', () => {
-    test('ranked choice', async () => {});
-    test('single select', async () => {});
-  });
-
-    describe('mobile', () => {
     test('ranked choice', async () => {});
     test('single select', async () => {});
   });
