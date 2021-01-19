@@ -8,8 +8,11 @@ import useBreakpointIndex from '@theme-ui/match-media';
 let maker;
 
 jest.mock('@reach/listbox', () => {
+  const listbox = jest.requireActual('@reach/listbox');
   return {
+    ...listbox,
     ListboxInput: ({ children }) => children
+    // ListboxButton: ({ children }) => children,
   }
 });
 
