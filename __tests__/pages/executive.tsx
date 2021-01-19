@@ -17,6 +17,7 @@ async function setup() {
   </SWRConfig>
   );
   await connectAccount(click, comp.findByText, comp.findByLabelText);
+  comp.debug();
   return comp;
 }
 

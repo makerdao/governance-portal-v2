@@ -9,17 +9,10 @@ let maker;
 
 jest.mock('@reach/listbox', () => {
   return {
-    ListboxInput: (props) => {
-      console.log(props);
-      return (
-        <div {...props}></div>
-      )
-    }
+    ListboxInput: ({ children }) => children
   }
 });
 
-// Sets the bpi. Can be moved within tests to switch
-// between desktop and mobile
 jest.mock('@theme-ui/match-media', () => {
   return {
       useBreakpointIndex: jest.fn(() => 3)
@@ -45,6 +38,7 @@ async function createTestPolls() {
 async function setup() {
   const component = render(<PollingOverviewPage polls={mockPolls as any} />);
   await connectAccount(fireEvent.click, component.findByText, component.findByLabelText);
+  component.debug();
 
   return component;
 }
@@ -66,11 +60,12 @@ describe('can vote in a poll', () => {
   })
 
   test('renders voting options when account is connected', async () => {
+    // component.debug();
     expect(await component.findByText('Active Polls')).toBeDefined();
     expect(await component.findByText('Your Ballot')).toBeDefined();
   });
 
-  describe('quick vote', () => {
+  xdescribe('quick vote', () => {
     test('ranked choice', async () => {
       const polls = await component.findAllByLabelText('Poll overview');
       const pollCard = polls[0];
@@ -87,7 +82,7 @@ describe('can vote in a poll', () => {
     });
   });
   
-  describe('ballot', () => {
+  xdescribe('ballot', () => {
     test('ranked choice', async () => {});
     test('single select', async () => {});
   });

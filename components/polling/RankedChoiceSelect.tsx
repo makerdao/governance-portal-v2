@@ -74,7 +74,7 @@ export default function RankedChoiceSelect({
           <ListboxInput
             defaultValue={choice[numConfirmed] ? choice[numConfirmed].toString() : 'default'}
             key={numConfirmed}
-            data-testid="Ranked choice select"
+            aria-label="Ranked choice select"
             onChange={value => {
               const newChoice = [...choice];
               newChoice[numConfirmed] = parseInt(value);
