@@ -12,7 +12,6 @@ jest.mock('@reach/listbox', () => {
   return {
     ...listbox,
     ListboxInput: ({ children }) => children
-    // ListboxButton: ({ children }) => children,
   }
 });
 
@@ -40,9 +39,10 @@ async function createTestPolls() {
 
 async function setup() {
   const component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(fireEvent.click, component.findByText, component.findByLabelText);
-  component.debug();
-
+  await connectAccount(fireEvent.click, component);
+  // component.debug();
+  const copyButton = await component.findByText('Copy Address');
+  expect(copyButton).toBeDefined();
   return component;
 }
 

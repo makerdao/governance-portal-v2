@@ -37,8 +37,14 @@ export function renderWithAccountSelect(component): RenderResult {
   );
 }
 
-export async function connectAccount(click, findByText, findByLabelText) {
-  click(await findByText('Connect wallet'));
-  click(await findByText('MetaMask'));
-  click(await findByLabelText('close'));
+export async function connectAccount(click, component) {
+  click(await component.findByText('Connect wallet'));
+  click(await component.findByText('MetaMask'));
+  click(await component.findByLabelText('close'));
+
+  try {
+    await component.findAllByText('0x16F', { exact: false });
+  } catch (err) {
+    throw new Error('Failed to connect account in helpers.tsx.');
+  }
 }
