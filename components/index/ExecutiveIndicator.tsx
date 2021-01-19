@@ -62,8 +62,8 @@ const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSPr
   );
 
   const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
-  const uncastProposals = spellData
-    ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenCast)
+  const unscheduledProposals = spellData
+    ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
     : activeProposals;
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
@@ -80,10 +80,10 @@ const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSPr
   );
   const newUnvotedProposals =
     votedProposals && account
-      ? uncastProposals.filter(
+      ? unscheduledProposals.filter(
           proposal => !votedProposals.map(p => p.toLowerCase()).includes(proposal.address.toLowerCase())
         )
-      : uncastProposals;
+      : unscheduledProposals;
 
   const shouldDisplay = newUnvotedProposals.length === 0 ? 'none' : undefined;
   return (
