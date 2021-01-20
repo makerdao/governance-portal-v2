@@ -13,10 +13,18 @@ type Poll = {
   voteType: VoteTypes;
   categories: string[];
   slug: string;
-  ctx: {
+  ctx?: {
     prev: Poll | null;
     next: Poll | null;
   };
 };
 
 export default Poll;
+
+export type PartialPoll = {
+  pollId: number;
+  multiHash: string;
+  startDate: number;
+  endDate: number;
+  url: string;
+};

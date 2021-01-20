@@ -7,10 +7,11 @@ import chunk from 'lodash/chunk';
 import { markdownToHtml, timeoutPromise, backoffRetry, fetchJson } from './utils';
 import { CMS_ENDPOINTS, POLL_CATEGORIZATION_ENDPOINT } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
-import Poll from '../types/poll';
+import Poll, { PartialPoll } from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import VoteTypes from '../types/voteTypes';
+import { fetchCategoryMap, parsePollMetadata } from './polling/parser';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (process.env.USE_FS_CACHE) {
@@ -96,8 +97,14 @@ const fsCacheCache = {};
 const fsCacheGet = name => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
   const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
-  if (fsCacheCache[path]) return fsCacheCache[path];
-  if (fs.existsSync(path)) return fs.readFileSync(path).toString();
+  if (fsCacheCache[path]) {
+    console.log(`mem cache hit: ${path}`);
+    return fsCacheCache[path];
+  }
+  if (fs.existsSync(path)) {
+    console.log(`fs cache hit: ${path}`);
+    return fs.readFileSync(path).toString();
+  }
 };
 
 const fsCacheSet = (name, data) => {
@@ -112,7 +119,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
 
-  const categoryMap = await fetchJson(POLL_CATEGORIZATION_ENDPOINT);
+  const categoryMap = await fetchCategoryMap();
 
   for (const pollGroup of chunk(
     uniqBy(pollList, p => p.multiHash),
@@ -120,7 +127,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   )) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
-      pollGroup.map(async p => {
+      pollGroup.map(async (p: PartialPoll) => {
         let document = '';
         try {
           document = await timeoutPromise(
@@ -135,36 +142,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           return null;
         }
 
-        const pollMeta = matter(document).data;
-        const content = matter(document).content || '';
-        const summary = pollMeta?.summary || '';
-        const title = pollMeta?.title || '';
-        const options = pollMeta.options;
-        const discussionLink =
-          pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link)
-            ? pollMeta.discussion_link
-            : null;
-        const voteType: VoteTypes =
-          (pollMeta as { vote_type: VoteTypes | null })?.vote_type || 'Plurality Voting'; // compiler error if invalid vote type
-
-        const categories = [
-          ...(pollMeta?.categories || []),
-          ...(pollMeta?.category ? [pollMeta?.category] : []),
-          ...(categoryMap?.[p.pollId] || [])
-        ];
-        return {
-          ...p,
-          slug: p.multiHash.slice(0, 8),
-          startDate: `${p.startDate}`,
-          endDate: `${p.endDate}`,
-          content,
-          summary,
-          title,
-          options,
-          discussionLink,
-          voteType,
-          categories: categories.length > 0 ? categories : ['Uncategorized']
-        };
+        return parsePollMetadata(p, document, categoryMap);
       })
     ).then(polls =>
       (polls as any[])
