@@ -20,3 +20,11 @@ type Poll = {
 };
 
 export default Poll;
+
+export type PartialPoll = {
+  pollId: number;
+  multiHash: string;
+  startDate: number;
+  endDate: number;
+  url: string;
+};
