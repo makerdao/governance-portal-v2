@@ -2,20 +2,9 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import Poll, { PartialPoll } from '../../types/poll';
 import VoteTypes from '../../types/voteTypes';
-import { POLL_CATEGORIZATION_ENDPOINT } from '../constants';
-import { fetchJson } from '../utils';
+import categoryMap from './oldPollCategories';
 
-type CategoryMap = Record<string, string[]>;
-let categoryMapCache;
-
-export async function fetchCategoryMap(): Promise<CategoryMap> {
-  if (!categoryMapCache) {
-    categoryMapCache = await fetchJson(POLL_CATEGORIZATION_ENDPOINT);
-  }
-  return categoryMapCache;
-}
-
-export function parsePollMetadata(poll: PartialPoll, document: string, categoryMap?: CategoryMap): Poll {
+export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
@@ -27,7 +16,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string, categoryM
   const categories = [
     ...(pollMeta?.categories || []),
     ...(pollMeta?.category ? [pollMeta?.category] : []),
-    ...(categoryMap?.[poll.pollId] || [])
+    ...(categoryMap[poll.pollId] || [])
   ];
   return {
     ...poll,
