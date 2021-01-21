@@ -2,6 +2,8 @@ import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
 import { VoteTypesArray } from '../../types/voteTypes';
+import Poll, { PartialPoll } from '../../types/poll';
+import { parsePollMetadata } from './parser';
 
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json
@@ -21,12 +23,15 @@ const validCategories = [
 type ValidationResult = {
   valid: boolean;
   errors: string[];
+  parsedData?: Poll;
 };
 
-export async function validateUrl(url: string): Promise<ValidationResult> {
+export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
   const text = await resp.json();
-  return validateText(text);
+  const result = validateText(text);
+  if (result.valid && poll) result.parsedData = parsePollMetadata(poll, text);
+  return result;
 }
 
 export function validateText(text: string): ValidationResult {
