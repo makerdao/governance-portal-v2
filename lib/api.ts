@@ -119,8 +119,6 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
 
-  const categoryMap = await fetchCategoryMap();
-
   for (const pollGroup of chunk(
     uniqBy(pollList, p => p.multiHash),
     20
@@ -142,7 +140,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
           return null;
         }
 
-        return parsePollMetadata(p, document, categoryMap);
+        return parsePollMetadata(p, document);
       })
     ).then(polls =>
       (polls as any[])
