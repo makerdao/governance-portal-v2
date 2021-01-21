@@ -13,7 +13,10 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
   return (
     <ListboxInput
       data-testid="Single select"
-      onChange={x => setChoice(parseInt(x))}
+      onChange={x => {
+        console.log('hiiiiiii', x);
+        setChoice(parseInt(x));
+      }}
       defaultValue={choice !== null ? choice.toString() : 'default'}
       {...props}
     >
