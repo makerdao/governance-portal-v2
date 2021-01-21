@@ -29,6 +29,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     options,
     discussionLink,
     voteType,
-    categories: categories.length > 0 ? categories : ['Uncategorized']
+    categories: categories.length > 0 ? categories : ['Uncategorized'],
+    ctx: { prev: null, next: null }
   };
 }
