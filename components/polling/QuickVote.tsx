@@ -54,6 +54,8 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
   const voteIsPending = txId !== null;
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
 
+  console.log(choice);
+
   useEffect(() => {
     if (!choice) setChoice(currentVote);
   }, [allUserVotes]);

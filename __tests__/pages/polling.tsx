@@ -1,9 +1,11 @@
 import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers'; 
 import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
+import PollingReview from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
 import useBreakpointIndex from '@theme-ui/match-media';
+import { accountsApi } from '../../stores/accounts';
 
 let maker;
 
@@ -13,29 +15,11 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-jest.mock('../../components/polling/RankedChoiceSelect.tsx', () => {
-  return {
-    default: ({poll, choice, setChoice}) => {
-      return (
-        <div
-          onChange={(v) => setChoice(v)}
-        ></div>
-      );
-    }
-  }
-});
-
-jest.mock('../../components/polling/SingleSelect.tsx', () => {
-  return {
-    default: ({poll, choice, setChoice}) => {
-      return (
-        <div
-          onChange={(v) => setChoice(v)}
-        ></div>
-      );
-    }
-  }
-});
+// Listbox opens on mousedown, not click event
+function fireMouseClick(element: HTMLElement) {
+  fireEvent.mouseDown(element);
+  fireEvent.mouseUp(element);
+}
 
 async function createTestPolls() {
   // first poll is ranked choice, second is single select
@@ -59,10 +43,11 @@ beforeAll(async () => {
   await createTestPolls();
 });
 
-let component;
+let pollingOverview;
 beforeEach(async() => {
-  component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(fireEvent.click, component);
+  accountsApi.setState({ currentAccount: undefined });
+  pollingOverview = render(<PollingOverviewPage polls={mockPolls as any} />);
+  await connectAccount(fireEvent.click, pollingOverview);
 });
 
 describe('can vote in a poll', () => {
@@ -70,22 +55,28 @@ describe('can vote in a poll', () => {
   console.error = () => {};
   console.warn = () => {};
 
-  xtest('renders voting options when account is connected', async () => {
-    expect(await component.findByText('Active Polls')).toBeDefined();
-    expect(await component.findByText('Your Ballot')).toBeDefined();
+  test('renders voting options when account is connected', async () => {
+    expect(await pollingOverview.findAllByText('Active Polls')).toBeDefined();
+    expect(await pollingOverview.findByText('Your Ballot')).toBeDefined();
   });
 
   describe('quick vote', () => {
-    test.only('ranked choice', async () => {
-      const polls = await component.findAllByLabelText('Poll overview');
+    xtest('ranked choice', async () => {
+      const polls = await pollingOverview.findAllByLabelText('Poll overview');
       const pollCard = polls[0];
-      // component.debug(pollCard);
       // expect(menu).toBeDefined();
       // fireEvent.change(menu, { target: { value: '0.25' }})
     });
 
-    test('single select', async () => {
-      const select = await component.findByLabelText('Single select');
+    test.only('single select', async () => {
+      const select = await pollingOverview.findByTestId('Single select');
+      fireMouseClick(select);
+      const option = await pollingOverview.findByText('Yes');
+      fireEvent.mouseUp(option);
+      fireEvent.click((await pollingOverview.findAllByText('Add vote to ballot'))[1]);
+      fireEvent.click(await pollingOverview.findByText('Review & Submit Your Ballot'));
+      // fireEvent.click(await pollingOverview.findByText('Submit Your Ballot'));
+      pollingOverview.debug();
       expect(select).toBeDefined();
     });
   });
