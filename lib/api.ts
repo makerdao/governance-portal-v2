@@ -1,17 +1,15 @@
 import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
-import validUrl from 'valid-url';
 import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
-import { markdownToHtml, timeoutPromise, backoffRetry, fetchJson } from './utils';
-import { CMS_ENDPOINTS, POLL_CATEGORIZATION_ENDPOINT } from './constants';
+import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
+import { CMS_ENDPOINTS } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import Poll, { PartialPoll } from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
-import VoteTypes from '../types/voteTypes';
-import { fetchCategoryMap, parsePollMetadata } from './polling/parser';
+import { parsePollMetadata } from './polling/parser';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (process.env.USE_FS_CACHE) {
