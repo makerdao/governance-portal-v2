@@ -67,6 +67,29 @@ export function validateText(text: string): ValidationResult {
       if (invalidCategories.length > 0) errors.push(`Invalid categories: ${invalidCategories.join(', ')}`);
     }
 
+    let startDate, endDate;
+
+    // start date
+    if (!data.start_date) {
+      errors.push('Start date is missing');
+    } else {
+      if (!(data.start_date instanceof Date) || isNaN(data.start_date.getTime()))
+        errors.push('Invalid start date (should be like "2020-08-16T08:00:00")');
+      else startDate = data.start_date;
+    }
+
+    // end date
+    if (!data.end_date) {
+      errors.push('End date is missing');
+    } else {
+      if (!(data.end_date instanceof Date) || isNaN(data.end_date.getTime()))
+        errors.push('Invalid end date (should be like "2020-08-16T08:00:00")');
+      else endDate = data.end_date;
+    }
+
+    if (startDate && endDate && endDate.getTime() - startDate.getTime() < 3600000)
+      errors.push('Poll duration is too short');
+
     return { valid: errors.length === 0, errors };
   } catch (err) {
     return { valid: false, errors: [err.message] };

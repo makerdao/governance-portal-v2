@@ -10,8 +10,12 @@ options:
    0: Abstain
    1: Yes
    2: No
+start_date: 2021-01-18T16:00:00
+end_date: 2021-01-21T16:00:00
 ---
 # Poll: Increase the Dust Parameter - January 18, 2021
+
+Note to developers: start_date and end_date in the front matter above were not part of the original markdown.
 
 The Governance Facilitators have placed a Governance Poll into the voting system on behalf of the Maker Governance Community. This Governance [Poll](https://community-development.makerdao.com/en/learn/governance/on-chain-gov) will be active for three days beginning on Monday, January 18 at 16:00 UTC.
 

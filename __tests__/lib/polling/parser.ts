@@ -31,7 +31,7 @@ test('return the expected values', () => {
 });
 
 test('return the expected values for an old uncategorized poll', () => {
-  const actual = parsePollMetadata(pollJson327 as PartialPoll, pollMetadata327, { '327': ['Technical'] });
+  const actual = parsePollMetadata(pollJson327 as PartialPoll, pollMetadata327);
   expect(actual).toEqual(
     expect.objectContaining({
       pollId: 327,

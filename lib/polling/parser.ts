@@ -18,11 +18,23 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     ...(pollMeta?.category ? [pollMeta?.category] : []),
     ...(categoryMap[poll.pollId] || [])
   ];
+
+  let startDate, endDate;
+  if (!pollMeta.start_date) {
+    // old polls: read from poll
+    startDate = `${poll.startDate}`;
+    endDate = `${poll.endDate}`;
+  } else {
+    // new polls: read from metadata
+    startDate = (pollMeta.start_date.getTime() / 1000).toString();
+    endDate = (pollMeta.end_date.getTime() / 1000).toString();
+  }
+
   return {
     ...poll,
     slug: poll.multiHash.slice(0, 8),
-    startDate: `${poll.startDate}`,
-    endDate: `${poll.endDate}`,
+    startDate,
+    endDate,
     content,
     summary,
     title,

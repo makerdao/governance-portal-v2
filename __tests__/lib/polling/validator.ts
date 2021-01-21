@@ -80,3 +80,25 @@ test('reject a document with invalid category', () => {
   expect(result.valid).toBeFalsy();
   expect(result.errors).toContain('Invalid categories: Zisk Zariable, Jechnical');
 });
+
+test('reject a document with a missing date', () => {
+  const result = validateText(pollMetadata.replace('start_date', 'x').replace('end_date', 'y'));
+  expect(result.valid).toBeFalsy();
+  expect(result.errors).toContain('Start date is missing');
+  expect(result.errors).toContain('End date is missing');
+});
+
+test('reject a document with an invalid date', () => {
+  const result = validateText(
+    pollMetadata.replace(/start_date: .*/, 'start_date: foo').replace(/end_date: .*/, 'end_date: bar')
+  );
+  expect(result.valid).toBeFalsy();
+  expect(result.errors).toContain('Invalid start date (should be like "2020-08-16T08:00:00")');
+  expect(result.errors).toContain('Invalid end date (should be like "2020-08-16T08:00:00")');
+});
+
+test('reject a document with an invalid duration', () => {
+  const result = validateText(pollMetadata.replace(/end_date: .*/, 'end_date: 2021-01-18T16:59:00'));
+  expect(result.valid).toBeFalsy();
+  expect(result.errors).toContain('Poll duration is too short');
+});
