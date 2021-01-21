@@ -15,7 +15,7 @@ export async function fetchCategoryMap(): Promise<CategoryMap> {
   return categoryMapCache;
 }
 
-export function parsePollMetadata(poll: PartialPoll, document: string, categoryMap: CategoryMap): Poll {
+export function parsePollMetadata(poll: PartialPoll, document: string, categoryMap?: CategoryMap): Poll {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
