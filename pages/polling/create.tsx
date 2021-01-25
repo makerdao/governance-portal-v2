@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Heading, Box, jsx, Button, Flex, Input, Label, Textarea, Select, Radio } from 'theme-ui';
+import { Heading, Text, Box, jsx, Button, Flex, Input, Label, Textarea, Select, Radio } from 'theme-ui';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -16,6 +16,13 @@ import ResourceBox from '../../components/ResourceBox';
 import { validateUrl } from '../../lib/polling/validator';
 import Poll from '../../types/poll';
 
+const CreateText = ({ children }) => {
+  return (
+    <Text mb={3} sx={{ width: '100%', border: '1px solid #d5d9e0', borderRadius: 'small', height: '42px' }}>
+      {children}
+    </Text>
+  );
+};
 const PollingCreate = () => {
   const bpi = useBreakpointIndex();
   const [pollUrl, setPollUrl] = useState('');
@@ -71,47 +78,35 @@ const PollingCreate = () => {
                         </Flex>
                       </Box>
                       <Label htmlFor="pollId">Poll ID</Label>
-                      <Input name="pollId" mb={3} disabled value={parsedPoll?.pollId} />
+                      <CreateText>{parsedPoll?.pollId}</CreateText>
                       <Label htmlFor="title">Title</Label>
-                      <Input name="title" mb={3} disabled value={parsedPoll?.title} />
+                      <CreateText>{parsedPoll?.title}</CreateText>
                       <Label htmlFor="summary">Summary</Label>
-                      <Input name="summary" mb={3} disabled value={parsedPoll?.summary} />
+                      <CreateText>{parsedPoll?.summary}</CreateText>
                       <Label htmlFor="options">Vote Options</Label>
-                      <Input name="options" mb={3} disabled value={JSON.stringify(parsedPoll?.options)} />
+                      <CreateText>{JSON.stringify(parsedPoll?.options)}</CreateText>
                       <Label htmlFor="type">Vote Type</Label>
-                      <Input name="type" disabled mb={3} value={parsedPoll?.voteType} />
+                      <CreateText>{parsedPoll?.voteType}</CreateText>
                       <Label htmlFor="category">Category</Label>
-                      <Input name="category" disabled value={parsedPoll?.categories.join(', ')} />
+                      <CreateText>{parsedPoll?.categories.join(', ')}</CreateText>
                       <Label htmlFor="start">Poll Start Time (UTC)</Label>
-                      <Input
-                        name="start"
-                        value={
-                          parsedPoll && new Date(parseInt(parsedPoll?.startDate) * 1000).toLocaleDateString()
-                        }
-                        mb={3}
-                        disabled
-                      />
+                      <CreateText>
+                        {parsedPoll && new Date(parseInt(parsedPoll?.startDate) * 1000).toLocaleDateString()}
+                      </CreateText>
                       <Label htmlFor="end">Poll End Time (UTC)</Label>
-                      <Input
-                        name="end"
-                        mb={3}
-                        value={
-                          parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleDateString()
-                        }
-                        disabled
-                      />
-                      {/* <Label htmlFor="discussion">Discussion Link</Label>
-                      <Input name="discussion" mb={3} disabled value={parsedPoll && parsedPoll.discussionLink } /> */}
+                      <CreateText>
+                        {parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleDateString()}
+                      </CreateText>
+                      <Label htmlFor="discussion">Discussion Link</Label>
+                      <CreateText>{parsedPoll && parsedPoll.discussionLink}</CreateText>
                       <Label htmlFor="proposal">Proposal</Label>
-                      <Textarea name="proposal" mb={3} disabled value={parsedPoll?.content} />
+                      <CreateText>{parsedPoll?.content}</CreateText>
                       <Flex>
                         <Button variant="primary">Create Poll</Button>
-                        <Button variant="outline" onClick={() => setParsedPoll(undefined)} sx={{ ml: 4 }}>
+                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => setParsedPoll(undefined)}>
                           Reset Form
                         </Button>
                       </Flex>
-
-                      {/* </Box> */}
                     </div>,
                     <div key={1} sx={{ p: [3, 4] }}>
                       <table sx={{ width: '100%', textAlign: 'center', border: '1px solid black' }}>
