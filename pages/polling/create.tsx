@@ -106,7 +106,7 @@ const PollingCreate = () => {
                       <Textarea name="proposal" mb={3} disabled value={parsedPoll?.content} />
                       <Flex>
                         <Button variant="primary">Create Poll</Button>
-                        <Button variant="outline" sx={{ ml: 4 }}>
+                        <Button variant="outline" onClick={() => setParsedPoll(undefined)} sx={{ ml: 4 }}>
                           Reset Form
                         </Button>
                       </Flex>
