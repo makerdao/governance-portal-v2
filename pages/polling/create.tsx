@@ -27,9 +27,15 @@ const PollingCreate = () => {
   const bpi = useBreakpointIndex();
   const [pollUrl, setPollUrl] = useState('');
   const [parsedPoll, setParsedPoll] = useState<Poll | undefined>();
+  const [pollErrors, setPollErrors] = useState<string[]>([]);
   const urlValidation = async url => {
     const result = await validateUrl(url);
-    if (result.valid) setParsedPoll(result.parsedData);
+    // console.log(result)
+    if (result.valid) {
+      setParsedPoll(result.parsedData);
+    } else {
+      setPollErrors(result.errors);
+    }
   };
 
   return (
@@ -77,6 +83,9 @@ const PollingCreate = () => {
                           </Button>
                         </Flex>
                       </Box>
+                      <Text color="red" sx={{ display: pollErrors?.length > 0 ? 'inherit' : 'none' }}>
+                        Poll URL Invalid: {pollErrors.join(', ')}
+                      </Text>
                       <Label htmlFor="pollId">Poll ID</Label>
                       <CreateText>{parsedPoll?.pollId}</CreateText>
                       <Label htmlFor="title">Title</Label>
