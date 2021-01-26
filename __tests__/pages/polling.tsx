@@ -1,6 +1,5 @@
 import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers'; 
 import { fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
@@ -15,11 +14,6 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-function fireMouseClick(element: HTMLElement) {
-  fireEvent.mouseDown(element);
-  fireEvent.mouseUp(element);
-}
-
 // jest.mock('../../components/polling/RankedChoiceSelect.tsx', () => {
 //   return {
 //     default: ({poll, choice, setChoice}) => {
@@ -32,20 +26,20 @@ function fireMouseClick(element: HTMLElement) {
 //   }
 // });
 
-// jest.mock('../../components/polling/SingleSelect.tsx', () => {
-//   return ({poll, choice, setChoice}) => {
-//     return (
-//       <select
-//         onChange={(v) => setChoice(v)}
-//         data-testid="Single select"
-//         >
-//           <option>Yes</option>
-//           <option>No</option>
-//           <option>Abstain</option>
-//         </select>
-//     );
-//   }
-// });
+jest.mock('../../components/polling/SingleSelect.tsx', () => {
+  return ({poll, choice, setChoice}) => {
+    return (
+      <select
+        onChange={(v) => setChoice(v)}
+        data-testid="Single select"
+        >
+          <option>Yes</option>
+          <option>No</option>
+          <option>Abstain</option>
+        </select>
+    );
+  }
+});
 
 // jest.mock('@reach/listbox', () => {
 //   // const options = 
@@ -104,9 +98,13 @@ describe('can vote in a poll', () => {
     test('single select', async () => {
       const select = await component.findByTestId('Single select');
       expect(select).toBeDefined();
-      fireMouseClick(select);
       const option = await component.findByText('Yes');
-      userEvent.click(option);
+      fireEvent.click((await component.findAllByText('Add vote to ballot'))[1]);
+      const reviewButton = await component.findByText('Review & Submit Your Ballot');
+      component.debug(reviewButton);
+      fireEvent.click(reviewButton);
+      fireEvent.click(await component.findByText('Submit Your Ballot'));
+      console.log('clicked');
     });
   });
   
