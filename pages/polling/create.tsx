@@ -14,7 +14,9 @@ import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import MkrLiquiditySidebar from '../../components/MkrLiquiditySidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { validateUrl } from '../../lib/polling/validator';
+import getMaker from '../../lib/maker';
 import Poll from '../../types/poll';
+import { transactionsApi } from '../../stores/transactions';
 
 const CreateText = ({ children }) => {
   return (
@@ -33,9 +35,26 @@ const PollingCreate = () => {
     // console.log(result)
     if (result.valid) {
       setParsedPoll(result.parsedData);
+      setPollErrors([]);
     } else {
       setPollErrors(result.errors);
     }
+  };
+
+  const createPoll = async () => {
+    const maker = await getMaker();
+    const voteTxCreator = () =>
+      maker
+        .service('govPolling')
+        .createPoll(parsedPoll?.startDate, parsedPoll?.endDate, parsedPoll?.multiHash, parsedPoll?.url);
+    const txId = await transactionsApi
+      .getState()
+      .track(voteTxCreator, `Creating poll with id ${parsedPoll?.pollId}`, {
+        mined: txId => {
+          setParsedPoll(undefined);
+          transactionsApi.getState().setMessage(txId, `Created poll with id ${parsedPoll?.pollId}`);
+        }
+      });
   };
 
   return (
@@ -111,7 +130,13 @@ const PollingCreate = () => {
                       <Label htmlFor="proposal">Proposal</Label>
                       <CreateText>{parsedPoll?.content}</CreateText>
                       <Flex>
-                        <Button variant="primary">Create Poll</Button>
+                        <Button
+                          variant="primary"
+                          onClick={createPoll}
+                          disabled={typeof parsedPoll === 'undefined' || pollErrors.length > 0}
+                        >
+                          Create Poll
+                        </Button>
                         <Button variant="outline" sx={{ ml: 4 }} onClick={() => setParsedPoll(undefined)}>
                           Reset Form
                         </Button>
