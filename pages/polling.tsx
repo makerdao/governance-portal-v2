@@ -4,6 +4,7 @@ import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
@@ -150,6 +151,11 @@ const PollingOverview = ({ polls }: Props) => {
           <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
+        <Link href="/polling/create">
+          <Button variant="primary" sx={{ width: 6, mt: 4 }}>
+            Create Poll
+          </Button>
+        </Link>
         <SidebarLayout>
           <Box>
             {filteredPolls.length > 0 ? (
