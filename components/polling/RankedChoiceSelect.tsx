@@ -45,8 +45,6 @@ export default function RankedChoiceSelect({
   if (numConfirmed === 0 && !showListboxInput) setShowListboxInput(true);
   if (showListboxInput && showAddButton) setShowAddButton(false);
 
-  console.log('numConfirmed', numConfirmed);
-
   return (
     <Box {...props}>
       <Stack gap={2}>
@@ -74,7 +72,7 @@ export default function RankedChoiceSelect({
           <ListboxInput
             defaultValue={choice[numConfirmed] ? choice[numConfirmed].toString() : 'default'}
             key={numConfirmed}
-            data-testid="Ranked choice select"
+            data-testid="ranked choice"
             onChange={value => {
               const newChoice = [...choice];
               newChoice[numConfirmed] = parseInt(value);
@@ -91,7 +89,7 @@ export default function RankedChoiceSelect({
             />
             <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
               <ListboxList sx={{ variant: 'listboxes.default.list' }}>
-                <ListboxOption value="default" sx={{ display: 'none' }}>
+                <ListboxOption data-testid="ranked choice option" value="default" sx={{ display: 'none' }}>
                   {getNumberWithOrdinal(numConfirmed + 1)} choice
                 </ListboxOption>
                 {map(availableChoices, (label, optionId) => (

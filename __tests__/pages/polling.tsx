@@ -3,50 +3,15 @@ import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
-import useBreakpointIndex from '@theme-ui/match-media';
 import { accountsApi } from '../../stores/accounts';
 
 let maker;
 
 jest.mock('@theme-ui/match-media', () => {
   return {
-      useBreakpointIndex: jest.fn(() => 3)
+    useBreakpointIndex: jest.fn(() => 3)
   };
 });
-
-// jest.mock('../../components/polling/RankedChoiceSelect.tsx', () => {
-//   return {
-//     default: ({poll, choice, setChoice}) => {
-//       return (
-//         <div
-//           onChange={(v) => setChoice(v)}
-//         ></div>
-//       );
-//     }
-//   }
-// });
-
-jest.mock('../../components/polling/SingleSelect.tsx', () => {
-  return ({poll, choice, setChoice}) => {
-    return (
-      <select
-        onChange={(v) => setChoice(v)}
-        data-testid="Single select"
-        >
-          <option>Yes</option>
-          <option>No</option>
-          <option>Abstain</option>
-        </select>
-    );
-  }
-});
-
-// jest.mock('@reach/listbox', () => {
-//   // const options = 
-//   return {
-//     ListboxInput: ({ children, props }) => <select {...props}>{children}</select>
-//   }
-// })
 
 async function createTestPolls() {
   // first poll is ranked choice, second is single select
@@ -77,39 +42,42 @@ beforeEach(async() => {
   await connectAccount(fireEvent.click, component);
 });
 
-describe('can vote in a poll', () => {
-  // temporary hack to hide spam errors and warnings from dependencies
-  console.error = () => {};
-  console.warn = () => {};
+// temporary hack to hide spam errors and warnings from dependencies
+console.error = () => {};
+console.warn = () => {};
 
-  test('renders voting options when account is connected', async () => {
-    expect(await component.findAllByText('Active Polls')).toBeDefined();
+// todo: split into appropriate test files for child components
+describe('renders expected voting options for each poll type', () => {
+  test('allows users to vote when account is connected', async () => {
+    expect(await component.findByText('Active Polls')).toBeDefined();
     expect(await component.findByText('Your Ballot')).toBeDefined();
+    expect(await component.findAllByText('You have not voted')).toBeDefined();
+    expect((await component.findAllByText('View Details')).length).toBe(2);
+    expect((await component.findAllByText('Add vote to ballot')).length).toBe(2);
+    expect((await component.findAllByTestId('countdown timer')).length).toBe(2);
   });
 
-  describe('quick vote', () => {
-    xtest('ranked choice', async () => {
-      const polls = await component.findAllByLabelText('Poll overview');
-      const pollCard = polls[0];
-      // expect(menu).toBeDefined();
-      // fireEvent.change(menu, { target: { value: '0.25' }})
-    });
+  test('ranked choice options render properly', async () => {
+    const select = await component.findByTestId('ranked choice');
+    const options = await component.findAllByTestId('ranked choice option');
 
-    test('single select', async () => {
-      const select = await component.findByTestId('Single select');
-      expect(select).toBeDefined();
-      const option = await component.findByText('Yes');
-      fireEvent.click((await component.findAllByText('Add vote to ballot'))[1]);
-      const reviewButton = await component.findByText('Review & Submit Your Ballot');
-      component.debug(reviewButton);
-      fireEvent.click(reviewButton);
-      fireEvent.click(await component.findByText('Submit Your Ballot'));
-      console.log('clicked');
-    });
+    expect(select).toBeDefined();
+    expect(options.length).toBe(7);
+    expect(await component.findByText('0')).toBeDefined();
+    expect(await component.findByText('0.25')).toBeDefined();
+    expect(await component.findByText('0.5')).toBeDefined();
+    expect(await component.findByText('1')).toBeDefined();
+    expect(await component.findByText('2')).toBeDefined();
+    expect(await component.findByText('4')).toBeDefined();
   });
-  
-  xdescribe('ballot', () => {
-    test('ranked choice', async () => {});
-    test('single select', async () => {});
+
+  test('single select options render properly', async () => {
+    const select = await component.findByTestId('single select');
+    const options = await component.findAllByTestId('single select option');
+
+    expect(select).toBeDefined();
+    expect(options.length).toBe(2);
+    expect(await component.findByText('Yes')).toBeDefined();
+    expect(await component.findByText('No')).toBeDefined();
   });
 });

@@ -9,12 +9,10 @@ import { ABSTAIN } from '../../lib/constants';
 
 type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
 export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
-  console.log('choice in single select', choice);
   return (
     <ListboxInput
-      data-testid="Single select"
+      data-testid="single select"
       onChange={x => {
-        console.log('hiiiiiii', x);
         setChoice(parseInt(x));
       }}
       defaultValue={choice !== null ? choice.toString() : 'default'}
@@ -30,7 +28,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
             Your choice
           </ListboxOption>
           {map(poll.options, (label, id) => (
-            <ListboxOption key={id} value={id}>
+            <ListboxOption data-testid={'single select option'} key={id} value={id}>
               {label}
             </ListboxOption>
           ))}
