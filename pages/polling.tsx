@@ -151,11 +151,11 @@ const PollingOverview = ({ polls }: Props) => {
           <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
-        <Link href="/polling/create">
+        {/* <Link href="/polling/create">
           <Button variant="primary" sx={{ width: 6, mt: 4 }}>
             Create Poll
           </Button>
-        </Link>
+        </Link> */}
         <SidebarLayout>
           <Box>
             {filteredPolls.length > 0 ? (

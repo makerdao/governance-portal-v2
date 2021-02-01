@@ -105,29 +105,29 @@ const PollingCreate = () => {
                       <Text color="red" sx={{ display: pollErrors?.length > 0 ? 'inherit' : 'none' }}>
                         Poll URL Invalid: {pollErrors.join(', ')}
                       </Text>
-                      <Label htmlFor="pollId">Poll ID</Label>
+                      <Label>Poll ID</Label>
                       <CreateText>{parsedPoll?.pollId}</CreateText>
-                      <Label htmlFor="title">Title</Label>
+                      <Label>Title</Label>
                       <CreateText>{parsedPoll?.title}</CreateText>
-                      <Label htmlFor="summary">Summary</Label>
+                      <Label>Summary</Label>
                       <CreateText>{parsedPoll?.summary}</CreateText>
-                      <Label htmlFor="options">Vote Options</Label>
+                      <Label>Vote Options</Label>
                       <CreateText>{JSON.stringify(parsedPoll?.options)}</CreateText>
-                      <Label htmlFor="type">Vote Type</Label>
+                      <Label>Vote Type</Label>
                       <CreateText>{parsedPoll?.voteType}</CreateText>
-                      <Label htmlFor="category">Category</Label>
+                      <Label>Category</Label>
                       <CreateText>{parsedPoll?.categories.join(', ')}</CreateText>
-                      <Label htmlFor="start">Poll Start Time (UTC)</Label>
+                      <Label>Poll Start Time (UTC)</Label>
                       <CreateText>
-                        {parsedPoll && new Date(parseInt(parsedPoll?.startDate) * 1000).toLocaleDateString()}
+                        {parsedPoll && new Date(parseInt(parsedPoll?.startDate) * 1000).toLocaleString()}
                       </CreateText>
-                      <Label htmlFor="end">Poll End Time (UTC)</Label>
+                      <Label>Poll End Time (UTC)</Label>
                       <CreateText>
-                        {parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleDateString()}
+                        {parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleString()}
                       </CreateText>
-                      <Label htmlFor="discussion">Discussion Link</Label>
+                      <Label>Discussion Link</Label>
                       <CreateText>{parsedPoll && parsedPoll.discussionLink}</CreateText>
-                      <Label htmlFor="proposal">Proposal</Label>
+                      <Label>Proposal</Label>
                       <CreateText>{parsedPoll?.content}</CreateText>
                       <Flex>
                         <Button
@@ -141,33 +141,33 @@ const PollingCreate = () => {
                           Reset Form
                         </Button>
                       </Flex>
-                    </div>,
-                    <div key={1} sx={{ p: [3, 4] }}>
-                      <table sx={{ width: '100%', textAlign: 'center', border: '1px solid black' }}>
-                        <thead>
-                          <tr>
-                            <th>Poll ID</th>
-                            <th>Link</th>
-                            <th>Status</th>
-                            <th>Poll Title</th>
-                            <th>Select</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>411</td>
-                            <td>Icon</td>
-                            <td>Pending</td>
-                            <td sx={{ textAlign: 'left' }}>Increase System Surplus Buffer</td>
-                            <td>
-                              <Flex sx={{ justifyContent: 'center' }}>
-                                <Radio name="pollSelect" />
-                              </Flex>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </div>
+                    // <div key={1} sx={{ p: [3, 4] }}>
+                    //   <table sx={{ width: '100%', textAlign: 'center', border: '1px solid black' }}>
+                    //     <thead>
+                    //       <tr>
+                    //         <th>Poll ID</th>
+                    //         <th>Link</th>
+                    //         <th>Status</th>
+                    //         <th>Poll Title</th>
+                    //         <th>Select</th>
+                    //       </tr>
+                    //     </thead>
+                    //     <tbody>
+                    //       <tr>
+                    //         <td>411</td>
+                    //         <td>Icon</td>
+                    //         <td>Pending</td>
+                    //         <td sx={{ textAlign: 'left' }}>Increase System Surplus Buffer</td>
+                    //         <td>
+                    //           <Flex sx={{ justifyContent: 'center' }}>
+                    //             <Radio name="pollSelect" />
+                    //           </Flex>
+                    //         </td>
+                    //       </tr>
+                    //     </tbody>
+                    //   </table>
+                    // </div>
                   ]}
                 />
               </Stack>
