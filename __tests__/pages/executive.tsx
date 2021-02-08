@@ -17,7 +17,6 @@ async function setup() {
   </SWRConfig>
   );
   await connectAccount(click, comp);
-  comp.debug();
   return comp;
 }
 
