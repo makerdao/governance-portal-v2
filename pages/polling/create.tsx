@@ -17,10 +17,22 @@ import { validateUrl } from '../../lib/polling/validator';
 import getMaker from '../../lib/maker';
 import Poll from '../../types/poll';
 import { transactionsApi } from '../../stores/transactions';
+import Hash from 'ipfs-only-hash';
+
+const generateIPFSHash = async (data, options) => {
+  // options object has the key encoding which defines the encoding type
+  // of the data string that has been passed in
+  const bufferData = Buffer.from(data, options.encoding || 'ascii');
+  const hash = await Hash.of(bufferData);
+  return hash;
+};
 
 const CreateText = ({ children }) => {
   return (
-    <Text mb={3} sx={{ width: '100%', border: '1px solid #d5d9e0', borderRadius: 'small', height: '42px' }}>
+    <Text
+      mb={3}
+      sx={{ width: '100%', border: '1px solid #d5d9e0', borderRadius: 'small', minHeight: '42px' }}
+    >
       {children}
     </Text>
   );
@@ -31,10 +43,21 @@ const PollingCreate = () => {
   const [parsedPoll, setParsedPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
   const urlValidation = async url => {
-    const result = await validateUrl(url);
-    // console.log(result)
+    const result = await validateUrl(url, {
+      pollId: 0,
+      multiHash: '',
+      startDate: 0,
+      endDate: 0,
+      url: pollUrl
+    });
     if (result.valid) {
-      setParsedPoll(result.parsedData);
+      const poll = result.parsedData;
+      if (poll) {
+        poll.multiHash = await generateIPFSHash(poll.content, {});
+        poll.slug = poll.multiHash.slice(0, 8);
+      }
+
+      setParsedPoll(poll);
       setPollErrors([]);
     } else {
       setPollErrors(result.errors);
@@ -105,8 +128,12 @@ const PollingCreate = () => {
                       <Text color="red" sx={{ display: pollErrors?.length > 0 ? 'inherit' : 'none' }}>
                         Poll URL Invalid: {pollErrors.join(', ')}
                       </Text>
-                      <Label>Poll ID</Label>
-                      <CreateText>{parsedPoll?.pollId}</CreateText>
+                      {/* <Label>Poll ID</Label>
+                      <CreateText>{parsedPoll?.pollId}</CreateText> */}
+                      <Label>MultiHash</Label>
+                      <CreateText>{parsedPoll?.multiHash}</CreateText>
+                      <Label>Slug</Label>
+                      <CreateText>{parsedPoll?.slug}</CreateText>
                       <Label>Title</Label>
                       <CreateText>{parsedPoll?.title}</CreateText>
                       <Label>Summary</Label>
@@ -125,10 +152,21 @@ const PollingCreate = () => {
                       <CreateText>
                         {parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleString()}
                       </CreateText>
-                      <Label>Discussion Link</Label>
-                      <CreateText>{parsedPoll && parsedPoll.discussionLink}</CreateText>
+                      {/* <Label>Discussion Link</Label>
+                      <CreateText>{parsedPoll && parsedPoll.discussionLink}</CreateText> */}
                       <Label>Proposal</Label>
-                      <CreateText>{parsedPoll?.content}</CreateText>
+                      <Text
+                        mb={3}
+                        sx={{
+                          width: '100%',
+                          border: '1px solid #d5d9e0',
+                          borderRadius: 'small',
+                          height: '140px',
+                          overflow: 'scroll'
+                        }}
+                      >
+                        {parsedPoll?.content}
+                      </Text>
                       <Flex>
                         <Button
                           variant="primary"
