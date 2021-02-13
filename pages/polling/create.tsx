@@ -10,6 +10,7 @@ import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
 import Tabs from '../../components/Tabs';
+import PollCreateModal from '../../components/PollCreateModal';
 import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import MkrLiquiditySidebar from '../../components/MkrLiquiditySidebar';
 import ResourceBox from '../../components/ResourceBox';
@@ -40,8 +41,9 @@ const CreateText = ({ children }) => {
 const PollingCreate = () => {
   const bpi = useBreakpointIndex();
   const [pollUrl, setPollUrl] = useState('');
-  const [parsedPoll, setParsedPoll] = useState<Poll | undefined>();
+  const [poll, setPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
+  const [creating, setCreating] = useState(false);
   const urlValidation = async url => {
     const result = await validateUrl(url, {
       pollId: 0,
@@ -57,27 +59,11 @@ const PollingCreate = () => {
         poll.slug = poll.multiHash.slice(0, 8);
       }
 
-      setParsedPoll(poll);
+      setPoll(poll);
       setPollErrors([]);
     } else {
       setPollErrors(result.errors);
     }
-  };
-
-  const createPoll = async () => {
-    const maker = await getMaker();
-    const voteTxCreator = () =>
-      maker
-        .service('govPolling')
-        .createPoll(parsedPoll?.startDate, parsedPoll?.endDate, parsedPoll?.multiHash, parsedPoll?.url);
-    const txId = await transactionsApi
-      .getState()
-      .track(voteTxCreator, `Creating poll with id ${parsedPoll?.pollId}`, {
-        mined: txId => {
-          setParsedPoll(undefined);
-          transactionsApi.getState().setMessage(txId, `Created poll with id ${parsedPoll?.pollId}`);
-        }
-      });
   };
 
   return (
@@ -129,31 +115,36 @@ const PollingCreate = () => {
                         Poll URL Invalid: {pollErrors.join(', ')}
                       </Text>
                       {/* <Label>Poll ID</Label>
-                      <CreateText>{parsedPoll?.pollId}</CreateText> */}
+                      <CreateText>{poll?.pollId}</CreateText> */}
                       <Label>MultiHash</Label>
-                      <CreateText>{parsedPoll?.multiHash}</CreateText>
+                      <CreateText>{poll?.multiHash}</CreateText>
                       <Label>Slug</Label>
-                      <CreateText>{parsedPoll?.slug}</CreateText>
+                      <CreateText>{poll?.slug}</CreateText>
                       <Label>Title</Label>
-                      <CreateText>{parsedPoll?.title}</CreateText>
+                      <CreateText>{poll?.title}</CreateText>
                       <Label>Summary</Label>
-                      <CreateText>{parsedPoll?.summary}</CreateText>
+                      <CreateText>{poll?.summary}</CreateText>
                       <Label>Vote Options</Label>
-                      <CreateText>{JSON.stringify(parsedPoll?.options)}</CreateText>
+                      <CreateText>{JSON.stringify(poll?.options)}</CreateText>
                       <Label>Vote Type</Label>
-                      <CreateText>{parsedPoll?.voteType}</CreateText>
+                      <CreateText>{poll?.voteType}</CreateText>
                       <Label>Category</Label>
-                      <CreateText>{parsedPoll?.categories.join(', ')}</CreateText>
+                      <CreateText>{poll?.categories.join(', ')}</CreateText>
                       <Label>Poll Start Time (UTC)</Label>
                       <CreateText>
-                        {parsedPoll && new Date(parseInt(parsedPoll?.startDate) * 1000).toLocaleString()}
+                        {poll && new Date(parseInt(poll?.startDate) * 1000).toLocaleString()}
                       </CreateText>
                       <Label>Poll End Time (UTC)</Label>
                       <CreateText>
-                        {parsedPoll && new Date(parseInt(parsedPoll?.endDate) * 1000).toLocaleString()}
+                        {poll && new Date(parseInt(poll?.endDate) * 1000).toLocaleString()}
                       </CreateText>
+                      <Label>Poll Duration</Label>
+                      <CreateText>
+                        {poll && (parseInt(poll?.endDate) - parseInt(poll?.startDate)) / 86400}
+                      </CreateText>
+
                       {/* <Label>Discussion Link</Label>
-                      <CreateText>{parsedPoll && parsedPoll.discussionLink}</CreateText> */}
+                      <CreateText>{poll && poll.discussionLink}</CreateText> */}
                       <Label>Proposal</Label>
                       <Text
                         mb={3}
@@ -165,17 +156,17 @@ const PollingCreate = () => {
                           overflow: 'scroll'
                         }}
                       >
-                        {parsedPoll?.content}
+                        {poll?.content}
                       </Text>
                       <Flex>
                         <Button
                           variant="primary"
-                          onClick={createPoll}
-                          disabled={typeof parsedPoll === 'undefined' || pollErrors.length > 0}
+                          onClick={() => setCreating(true)}
+                          disabled={typeof poll === 'undefined' || pollErrors.length > 0}
                         >
                           Create Poll
                         </Button>
-                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => setParsedPoll(undefined)}>
+                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => setPoll(undefined)}>
                           Reset Form
                         </Button>
                       </Flex>
@@ -208,6 +199,9 @@ const PollingCreate = () => {
                     // </div>
                   ]}
                 />
+                {creating && (
+                  <PollCreateModal close={() => setCreating(false)} poll={poll} setPoll={setPoll} />
+                )}
               </Stack>
             </Stack>
           </Box>
