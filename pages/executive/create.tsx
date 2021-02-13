@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text } from 'theme-ui';
+import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
 import Head from 'next/head';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import PrimaryLayout from '../../components/layouts/Primary';
@@ -10,6 +10,8 @@ import { URL_REGEX } from '../../lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from '../../lib/utils';
+import { getEtherscanLink } from '../../lib/utils';
+import { SupportedNetworks } from '../../lib/constants';
 
 const ExecutiveCreate = () => {
   const bpi = useBreakpointIndex();
@@ -21,15 +23,12 @@ const ExecutiveCreate = () => {
   const [date, setDate] = useState('');
   const [mainnetAddress, setMainnetAddress] = useState('');
   const [kovanAddress, setKovanAddress] = useState('');
-  const [error, setError] = useState();
+  const [error, setError] = useState([]);
   const [fetchFinished, setFetchFinished] = useState(false);
-
   const fields = [
     ['Title', title],
     ['Summary', summary],
-    ['Date', date],
-    ['Mainnet Address', mainnetAddress],
-    ['Kovan Address', kovanAddress]
+    ['Date', date]
   ];
 
   const isValidUrl = url.match(URL_REGEX);
@@ -39,7 +38,6 @@ const ExecutiveCreate = () => {
     setError([]);
     setFetchFinished(false);
     try {
-      console.log('1');
       const rawMd = await (await fetch(url, { cache: 'no-cache' })).text();
       const { data, content } = matter(rawMd);
       metadata = data;
@@ -53,11 +51,6 @@ const ExecutiveCreate = () => {
     if (!metadata.summary) setError(e => [...e, 'missing summary']);
     if (!execMarkdown) setError(e => [...e, 'missing markdown']);
     if (!metadata.date) setError(e => [...e, 'missing date']);
-    if (
-      metadata.date &&
-      Math.abs(new Date(metadata.date).getTime() - Date.now()) > 1000 * 60 * 60 * 24 * 7 * 2
-    )
-      setError(e => [...e, 'date is more than two weeks from now']);
     if (!metadata.address) setError(e => [...e, 'missing mainnet address']);
     else {
       try {
@@ -78,7 +71,7 @@ const ExecutiveCreate = () => {
     setFetchFinished(true);
     setTitle(metadata.title);
     setSummary(metadata.summary);
-    setDate(metadata.date);
+    setDate(metadata.date ? new Date(metadata.date).toUTCString() : '');
     setMainnetAddress(metadata.address);
     setKovanAddress(metadata.kovanAddress);
     setMarkdown(await markdownToHtml(execMarkdown));
@@ -109,7 +102,7 @@ const ExecutiveCreate = () => {
                     Validate
                   </Button>
                 </Flex>
-                {error ? (
+                {error.length > 0 ? (
                   <Flex
                     color="warning"
                     sx={{
@@ -139,6 +132,25 @@ const ExecutiveCreate = () => {
                       </Flex>
                     ))}
                   </Flex>
+                ) : fetchFinished ? (
+                  <Flex
+                    color="success"
+                    sx={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      border: '1px solid',
+                      borderColor: 'success',
+                      borderRadius: '5px',
+                      p: 2,
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    <Text>
+                      Valid executive proposal. Review details below, then update the list of active proposals
+                      to post it to the vote portal
+                    </Text>
+                  </Flex>
                 ) : null}
               </Box>
               {fetchFinished && (
@@ -150,8 +162,32 @@ const ExecutiveCreate = () => {
                         <td>{value}</td>
                       </tr>
                     ))}
+                    <tr key={'Mainnet Address'}>
+                      <td>Mainnet Address</td>
+                      <td>
+                        <Link
+                          target="_blank"
+                          href={getEtherscanLink(SupportedNetworks.MAINNET, mainnetAddress, 'address')}
+                          sx={{ p: 0 }}
+                        >
+                          {mainnetAddress}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr key={'Kovan Address'}>
+                      <td>Kovan Address</td>
+                      <td>
+                        <Link
+                          target="_blank"
+                          href={getEtherscanLink(SupportedNetworks.KOVAN, kovanAddress, 'address')}
+                          sx={{ p: 0 }}
+                        >
+                          {kovanAddress}
+                        </Link>
+                      </td>
+                    </tr>
                     <tr key={'Markdown'}>
-                      <td>{'Markdown'}</td>
+                      <td>Markdown</td>
                       <td>
                         <div dangerouslySetInnerHTML={{ __html: markdown }} />
                       </td>
