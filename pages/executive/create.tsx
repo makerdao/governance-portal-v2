@@ -23,7 +23,7 @@ const ExecutiveCreate = () => {
   const [date, setDate] = useState('');
   const [mainnetAddress, setMainnetAddress] = useState('');
   const [kovanAddress, setKovanAddress] = useState('');
-  const [error, setError] = useState([]);
+  const [error, setError] = useState(['']);
   const [fetchFinished, setFetchFinished] = useState(false);
   const fields = [
     ['Title', title],
@@ -102,7 +102,7 @@ const ExecutiveCreate = () => {
                     Validate
                   </Button>
                 </Flex>
-                {error.length > 0 ? (
+                {error[0] ? (
                   <Flex
                     color="warning"
                     sx={{
