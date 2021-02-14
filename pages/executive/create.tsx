@@ -77,6 +77,16 @@ const ExecutiveCreate = () => {
     setMarkdown(await markdownToHtml(execMarkdown));
   };
 
+  const TD = ({ children }) => (
+    <td
+      style={{
+        border: '1px solid black'
+      }}
+    >
+      {children}
+    </td>
+  );
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       <Head>
@@ -154,17 +164,21 @@ const ExecutiveCreate = () => {
                 ) : null}
               </Box>
               {fetchFinished && (
-                <table border="1px">
+                <table
+                  style={{
+                    border: '1px solid black'
+                  }}
+                >
                   <tbody>
                     {fields.map(([name, value]) => (
                       <tr key={name}>
-                        <td>{name}</td>
-                        <td>{value}</td>
+                        <TD>{name}</TD>
+                        <TD>{value}</TD>
                       </tr>
                     ))}
                     <tr key={'Mainnet Address'}>
-                      <td>Mainnet Address</td>
-                      <td>
+                      <TD>Mainnet Address</TD>
+                      <TD>
                         <Link
                           target="_blank"
                           href={getEtherscanLink(SupportedNetworks.MAINNET, mainnetAddress, 'address')}
@@ -172,11 +186,11 @@ const ExecutiveCreate = () => {
                         >
                           {mainnetAddress}
                         </Link>
-                      </td>
+                      </TD>
                     </tr>
                     <tr key={'Kovan Address'}>
-                      <td>Kovan Address</td>
-                      <td>
+                      <TD>Kovan Address</TD>
+                      <TD>
                         <Link
                           target="_blank"
                           href={getEtherscanLink(SupportedNetworks.KOVAN, kovanAddress, 'address')}
@@ -184,13 +198,13 @@ const ExecutiveCreate = () => {
                         >
                           {kovanAddress}
                         </Link>
-                      </td>
+                      </TD>
                     </tr>
                     <tr key={'Markdown'}>
-                      <td>Markdown</td>
-                      <td>
+                      <TD>Markdown</TD>
+                      <TD>
                         <div dangerouslySetInnerHTML={{ __html: markdown }} />
-                      </td>
+                      </TD>
                     </tr>
                   </tbody>
                 </table>
