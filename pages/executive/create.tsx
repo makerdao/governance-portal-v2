@@ -59,8 +59,7 @@ const ExecutiveCreate = () => {
         setError(e => [...e, 'invalid mainnet address']);
       }
     }
-    if (!metadata.kovanAddress) setError(e => [...e, 'missing kovan address']);
-    else {
+    if (metadata.kovanAddress) {
       try {
         ethers.utils.getAddress(metadata.kovanAddress);
       } catch (_) {
