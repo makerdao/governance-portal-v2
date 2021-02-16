@@ -140,7 +140,7 @@ const PollingCreate = () => {
                       </CreateText>
                       <Label>Poll Duration</Label>
                       <CreateText>
-                        {poll && (parseInt(poll?.endDate) - parseInt(poll?.startDate)) / 86400}
+                        {poll && `${(parseInt(poll?.endDate) - parseInt(poll?.startDate)) / 86400} days`}
                       </CreateText>
 
                       {/* <Label>Discussion Link</Label>

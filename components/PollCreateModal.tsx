@@ -69,7 +69,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
         <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
           You are creating the following poll:
         </Text>
-        <Box
+        {/* <Box
           sx={{
             mt: 2,
             p: 3,
@@ -81,7 +81,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
           }}
         >
           <Text>Poll Content</Text>
-        </Box>
+        </Box> */}
         <Box sx={{ width: '100%', my: 3 }}>
           <Box
             sx={{
@@ -89,8 +89,8 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
               my: 2,
               mb: 4,
               width: '100%',
-              borderColor: 'secondaryMuted',
-              height: '96px'
+              borderColor: 'secondaryMuted'
+              // height: '96px'
             }}
           >
             <Text variant="text" sx={{ fontSize: 1, color: 'textMuted' }}>
