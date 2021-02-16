@@ -4,14 +4,15 @@ import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS } from './constants';
+import { CMS_ENDPOINTS, EXEC_PROPOSAL_INDEX, EXEC_PROPOSAL_CMS } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
+import { slugify } from '../lib/utils';
 import Poll, { PartialPoll } from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import { parsePollMetadata } from './polling/parser';
 
-export async function getExecutiveProposals(): Promise<CMSProposal[]> {
+export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
   if (process.env.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet('proposals');
     if (cachedProposals) return JSON.parse(cachedProposals);
@@ -20,6 +21,29 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
+
+  const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
+  // const proposals: CMSProposal[] = [];
+  // for (let proposalMeta of proposalIndex) {
+  //   const proposalDoc = await (await fetch(`${EXEC_PROPOSAL_CMS}/${proposalMeta.name}`)).json();
+  //   const { address } = proposalMeta;
+  //   const {
+  //     content,
+  //     data: { title, blurb, date }
+  //   } = matter(proposalDoc);
+  //   invariant(content && title && blurb && proposalDoc && date, 'Invalid proposal document');
+
+  //   proposals.push({
+  //     about: content,
+  //     title,
+  //     proposalBlurb: blurb,
+  //     key: slugify(title),
+  //     address: proposalMeta.address,
+  //     date,
+  //     active: true
+  //   });
+  // }
+
   let proposals: Array<any> = topics
     .filter(topic => topic.active)
     .filter(topic => !topic.govVote)
@@ -55,6 +79,8 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   proposals.push(...oldSpells);
   proposals = proposals.slice(0, 100);
+
+  console.log(proposals, 'proposals');
 
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
