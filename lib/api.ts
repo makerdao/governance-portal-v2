@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS, EXEC_PROPOSAL_INDEX, EXEC_PROPOSAL_CMS } from './constants';
+import { CMS_ENDPOINTS, EXEC_PROPOSAL_INDEX } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import { slugify } from '../lib/utils';
 import Poll, { PartialPoll } from '../types/poll';
@@ -13,54 +13,37 @@ import BlogPost from '../types/blogPost';
 import { parsePollMetadata } from './polling/parser';
 
 export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
-  if (process.env.USE_FS_CACHE) {
-    const cachedProposals = fsCacheGet('proposals');
-    if (cachedProposals) return JSON.parse(cachedProposals);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
   const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
-  // const proposals: CMSProposal[] = [];
-  // for (let proposalMeta of proposalIndex) {
-  //   const proposalDoc = await (await fetch(`${EXEC_PROPOSAL_CMS}/${proposalMeta.name}`)).json();
-  //   const { address } = proposalMeta;
-  //   const {
-  //     content,
-  //     data: { title, blurb, date }
-  //   } = matter(proposalDoc);
-  //   invariant(content && title && blurb && proposalDoc && date, 'Invalid proposal document');
 
-  //   proposals.push({
-  //     about: content,
-  //     title,
-  //     proposalBlurb: blurb,
-  //     key: slugify(title),
-  //     address: proposalMeta.address,
-  //     date,
-  //     active: true
-  //   });
-  // }
+  let proposals: Partial<CMSProposal>[] = [];
+  for (const proposalLink of proposalIndex[network]) {
+    const proposalDoc = await (await fetch(proposalLink)).text();
 
-  let proposals: Array<any> = topics
-    .filter(topic => topic.active)
-    .filter(topic => !topic.govVote)
-    .map(topic => topic.proposals)
-    .flat();
+    const {
+      content,
+      data: { title, summary, address, date }
+    } = matter(proposalDoc);
+
+    invariant(content && title && summary && address && date, 'Invalid proposal document');
+
+    proposals.push({
+      about: content,
+      title,
+      proposalBlurb: summary,
+      key: slugify(title),
+      address: address,
+      date: String(date),
+      active: true
+    });
+  }
 
   spells.forEach(spell => {
     spell.address = spell.source;
     delete spell.source;
-  });
-
-  proposals.forEach(proposal => {
-    proposal.proposalBlurb = proposal.proposal_blurb;
-    proposal.address = proposal.source;
-    proposal.active = true;
-    delete proposal.proposal_blurb;
-    delete proposal.source;
   });
 
   const oldSpells = spells
@@ -79,8 +62,6 @@ export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
 
   proposals.push(...oldSpells);
   proposals = proposals.slice(0, 100);
-
-  console.log(proposals, 'proposals');
 
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
