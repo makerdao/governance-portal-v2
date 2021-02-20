@@ -74,7 +74,9 @@ const ProposalTimingBanner = ({ proposal }): JSX.Element => {
               ) : (
                 <>
                   Available for execution on{' '}
-                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] || formatDateWithTime(spellData.eta)}.
+                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
+                    formatDateWithTime(spellData.nextCastTime || spellData.eta)}
+                  .
                 </>
               )}
             </Text>
