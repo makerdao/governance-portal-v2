@@ -9,15 +9,19 @@ import withApiHandler from '../../_lib/withApiHandler';
 import SpellData from '../../../../types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [done, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+  const [done, eta, nextCastTime, datePassed, dateExecuted, mkrSupport] = await Promise.all([
     maker
       .service('spell')
       .getDone(address)
       .catch(_ => null), // this fails if the spell doesn't have the right ABI,
     maker
       .service('spell')
+      .getNextCastTime(address)
+      .catch(_ => null),
+    maker
+      .service('spell')
       .getEta(address)
-      .catch(_ => null), // this fails if the spell doesn't have the right ABI,
+      .catch(_ => null),
     maker
       .service('spell')
       .getScheduledDate(address)
@@ -35,6 +39,7 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     hasBeenCast: done,
     hasBeenScheduled: !!eta,
     eta,
+    nextCastTime,
     datePassed,
     dateExecuted,
     mkrSupport: mkrSupport.toBigNumber().toString()

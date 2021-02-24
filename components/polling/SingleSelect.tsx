@@ -11,7 +11,10 @@ type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
 export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
   return (
     <ListboxInput
-      onChange={x => setChoice(parseInt(x))}
+      data-testid="single select"
+      onChange={x => {
+        setChoice(parseInt(x));
+      }}
       defaultValue={choice !== null ? choice.toString() : 'default'}
       {...props}
     >
@@ -25,7 +28,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
             Your choice
           </ListboxOption>
           {map(poll.options, (label, id) => (
-            <ListboxOption key={id} value={id}>
+            <ListboxOption data-testid={'single select option'} key={id} value={id}>
               {label}
             </ListboxOption>
           ))}

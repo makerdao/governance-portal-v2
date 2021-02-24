@@ -33,7 +33,11 @@ export default function PollOverviewCard({
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   return (
-    <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }} {...props}>
+    <Flex
+      aria-label="Poll overview"
+      sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}
+      {...props}
+    >
       <Stack gap={3}>
         {bpi === 0 && (
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
