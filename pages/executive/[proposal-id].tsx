@@ -40,6 +40,7 @@ import mixpanel from 'mixpanel-browser';
 import { formatDateWithTime } from '../../lib/utils';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
 import SpellData from '../../types/spellData';
+import SpellStateDiff from '../../types/spellStateDiff';
 import { ZERO_ADDRESS } from '../../stores/accounts';
 
 type Props = {
@@ -96,14 +97,20 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
 
-  const { data: stateDiff, error: stateDiffError } = useSWR(
-    `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`,
-    async url => parseSpellStateDiff(await fetchJson(url)),
-    {
-      refreshInterval: 0,
-      shouldRetryOnError: network === 'mainnet'
-    }
-  );
+  const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
+  const [stateDiffError, setStateDiffError] = useState();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
+        const _stateDiff = parseSpellStateDiff(await fetchJson(url));
+        setStateDiff(_stateDiff);
+      } catch (error) {
+        setStateDiffError(error);
+      }
+    })();
+  }, []);
 
   const { data: allSupporters, error: supportersError } = useSWR(
     `/api/executive/supporters?network=${getNetwork()}`

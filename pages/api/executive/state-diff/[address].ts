@@ -30,12 +30,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     'function sig() returns (bytes)',
     'function action() returns (address)',
     'function done() returns (bool)',
-    'function exec(address, bytes)'
+    'function exec(address, bytes)',
+    'function actions()'
   ]);
 
-  async function ethCall(method) {
+  async function ethCall(method, to = spellAddress) {
     const calldata = {
-      to: spellAddress,
+      to,
       data: encoder.encodeFunctionData(method)
     };
 
@@ -48,6 +49,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   let trace;
   let executedOn: number | null = null;
 
+  console.log(hasBeenCast, 'hasBeenCast', spellAddress);
   if (hasBeenCast) {
     const pauseExecSelector = `${ethers.utils
       .id('exec(address,bytes32,bytes,uint256)')
@@ -72,6 +74,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       toBlock: 'latest',
       topics: [pauseExecSelector, spellAddressBytes32, usrBytes32]
     });
+    console.log(transactionHash, 'transactionHash');
 
     invariant(transactionHash, `Unable to find cast transaction for spell ${spellAddress}`);
     trace = await getTrace('trace_replayTransaction', transactionHash, network);
@@ -79,13 +82,15 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   } else {
     const [fax] = await ethCall('sig');
     console.log('hasNotBeenCast', usr, fax);
+    // const a = await ethCall('actions', usr);
+    // console.log(a, 'a');
 
     trace = await getTrace(
       'trace_call',
       {
         from: MCD_PAUSE,
         to: MCD_PAUSE_PROXY,
-        data: encoder.encodeFunctionData('exec', [usr, fax])
+        data: encoder.encodeFunctionData('exec', [usr, encoder.encodeFunctionData('actions')])
       },
       network
     );
