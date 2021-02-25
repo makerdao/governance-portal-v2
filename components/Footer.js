@@ -412,7 +412,7 @@ export default function Foot({ shorten = false }) {
           Status
         </NavLink>
         <div sx={{ mx: 'auto' }} />
-        <div sx={{ p: 2 }}>© 2020 Maker</div>
+        <div sx={{ p: 2 }}>© 2021 Maker</div>
       </footer>
     );
   } else {
