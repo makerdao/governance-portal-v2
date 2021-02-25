@@ -52,6 +52,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             "img-src 'self' https: data:"
           }
         />
+        <meta
+          name="description"
+          content="MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community."
+        />
       </Head>
       <SWRConfig
         value={{

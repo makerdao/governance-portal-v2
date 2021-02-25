@@ -163,6 +163,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                     setVoting(true);
                     ev.stopPropagation();
                   }}
+                  data-testid="vote-button-exec-overview-card"
                 >
                   Vote
                 </Button>
@@ -179,6 +180,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   setVoting(true);
                   ev.stopPropagation();
                 }}
+                data-testid="vote-button-exec-overview-card"
               >
                 Vote
               </Button>
@@ -207,7 +209,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                       <>
                         Available for execution on{' '}
                         {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                          formatDateWithTime(spellData.eta)}
+                          formatDateWithTime(spellData.nextCastTime || spellData.eta)}
                         .
                       </>
                     )}

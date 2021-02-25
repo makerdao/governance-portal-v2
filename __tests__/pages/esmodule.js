@@ -131,7 +131,6 @@ describe('emergency shutdown render', () => {
     // Third Step Render
     await findByText('Burn amount', {}, { timeout: 5000 });
     await findByText('New ESM total');
-    // debug()
 
     let confirmInput = await findByTestId('confirm-input');
     let burnMKRbutton = await findByText('Continue');

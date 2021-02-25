@@ -189,6 +189,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             });
             setTxId(txId);
           }}
+          data-testid="deposit-approve-button"
         >
           Approve
         </Button>
@@ -267,6 +268,7 @@ const Deposit = (props): JSX.Element => {
             });
             open();
           }}
+          data-testid="deposit-button"
           {...props}
         >
           Deposit
