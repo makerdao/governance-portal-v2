@@ -22,10 +22,7 @@ const Header = ({ stateDiff }) => (
           MCD Docs
         </ExternalLink>{' '}
         for definitions.{' '}
-        <strong>
-          NOTE: This currently shows only changes to the Vat and Jug contracts. The rest of the MCD contracts
-          will be added soon.
-        </strong>
+        <strong>NOTE: This currently shows only changes to the Vat and Jug contracts.</strong>
       </>
     ) : (
       'This spell has no on-chain effects.'
