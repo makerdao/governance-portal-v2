@@ -26,7 +26,7 @@ import useAccountsStore from '../../stores/accounts';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
-const walletButtonStyle: ThemeUICSSObject = {
+const walletButtonStyle = {
   cursor: 'pointer',
   width: '100%',
   p: 3,
@@ -42,7 +42,7 @@ const walletButtonStyle: ThemeUICSSObject = {
   }
 };
 
-const closeButtonStyle: ThemeUICSSObject = {
+const closeButtonStyle = {
   height: 4,
   width: 4,
   p: 0,
@@ -122,7 +122,7 @@ const AccountSelect = props => {
     const [loading, setLoading] = useState(false);
     return (
       <Flex
-        sx={walletButtonStyle}
+        sx={walletButtonStyle as any}
         onClick={async () => {
           setLoading(true);
           const maker = await getMaker();
@@ -156,7 +156,7 @@ const AccountSelect = props => {
 
   const TrezorButton = () => (
     <Flex
-      sx={walletButtonStyle}
+      sx={walletButtonStyle as any}
       onClick={async () => {
         const maker = await getMaker();
 
@@ -191,7 +191,7 @@ const AccountSelect = props => {
   const walletOptions = connectors
     .map(([name, connector]) => (
       <Flex
-        sx={walletButtonStyle}
+        sx={walletButtonStyle as any}
         key={name}
         onClick={() => {
           activate(connector).then(() => {
@@ -213,7 +213,7 @@ const AccountSelect = props => {
         <Icon name="chevron_left" color="primary" size="10px" mr="2" />
         Back
       </Button>
-      <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
+      <Close sx={closeButtonStyle as any} aria-label="close" onClick={close} />
     </Flex>
   );
 
@@ -237,7 +237,7 @@ const AccountSelect = props => {
             <>
               <BackButton onClick={() => setShowHwAddressSelector(false)} />
               {addresses.map(address => (
-                <Flex sx={walletButtonStyle} key={address} onClick={() => addHwAccount(address)}>
+                <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
                   <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
                 </Flex>
               ))}
@@ -254,7 +254,7 @@ const AccountSelect = props => {
                     setAccountName(undefined);
                     close();
                   }}
-                  sx={walletButtonStyle}
+                  sx={walletButtonStyle as any}
                 >
                   Disconnect
                 </Flex>
@@ -266,7 +266,7 @@ const AccountSelect = props => {
                 <Text variant="microHeading" color="onBackgroundAlt">
                   {address ? 'Account' : 'Select a Wallet'}
                 </Text>
-                <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
+                <Close aria-label="close" sx={closeButtonStyle as any} onClick={close} />
               </Flex>
               {address ? (
                 <>
