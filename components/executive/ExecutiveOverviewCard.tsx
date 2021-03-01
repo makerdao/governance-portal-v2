@@ -209,7 +209,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                       <>
                         Available for execution on{' '}
                         {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                          formatDateWithTime(spellData.eta)}
+                          formatDateWithTime(spellData.nextCastTime || spellData.eta)}
                         .
                       </>
                     )}

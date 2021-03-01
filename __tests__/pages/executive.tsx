@@ -16,7 +16,7 @@ async function setup() {
     <ExecutiveOverview proposals={proposals} />
   </SWRConfig>
   );
-  await connectAccount(click, comp.findByText, comp.findByLabelText);
+  await connectAccount(click, comp);
   return comp;
 }
 
