@@ -17,6 +17,7 @@ type Poll = {
     prev: Poll | null;
     next: Poll | null;
   };
+  url?: string;
 };
 
 export default Poll;
