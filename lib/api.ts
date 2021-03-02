@@ -29,7 +29,6 @@ export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
     } = matter(proposalDoc);
 
     invariant(content && title && summary && address && date, 'Invalid proposal document');
-
     proposals.push({
       about: content,
       title,
@@ -37,11 +36,11 @@ export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
       key: slugify(title),
       address: address,
       date: String(date),
-      active: proposalIndex[network].includes(proposalLink)
+      active: proposalIndex[network] ? proposalIndex[network].includes(proposalLink) : true
     });
   }
 
-  proposals = proposals.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  proposals = proposals.sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime());
   proposals = proposals.slice(0, 100);
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
