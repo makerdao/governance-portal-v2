@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS, EXEC_PROPOSAL_INDEX } from './constants';
+import { EXEC_PROPOSAL_INDEX, EXEC_PROPOSAL_REPO } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import { slugify } from '../lib/utils';
 import Poll, { PartialPoll } from '../types/poll';
@@ -14,15 +14,15 @@ import { parsePollMetadata } from './polling/parser';
 
 export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
   const network = getNetwork();
-  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  let proposals: Partial<CMSProposal>[] = [];
-  for (const proposalLink of proposalIndex[network]) {
-    const proposalDoc = await (await fetch(proposalLink)).text();
+  const githubResponse = await (await fetch(EXEC_PROPOSAL_REPO)).json();
+  const proposalUrls = githubResponse.filter(x => x.type === 'file').map(x => x.download_url);
 
+  let proposals: Partial<CMSProposal>[] = [];
+  for (const proposalLink of proposalUrls) {
+    const proposalDoc = await (await fetch(proposalLink)).text();
     const {
       content,
       data: { title, summary, address, date }
@@ -37,32 +37,12 @@ export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
       key: slugify(title),
       address: address,
       date: String(date),
-      active: true
+      active: proposalIndex[network].includes(proposalLink)
     });
   }
 
-  spells.forEach(spell => {
-    spell.address = spell.source;
-    delete spell.source;
-  });
-
-  const oldSpells = spells
-    .filter(
-      spell => proposals.findIndex(proposal => proposal.address === spell.address) === -1 // filter out active spells
-    )
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-  oldSpells.forEach(spell => {
-    spell.active = false;
-    spell.proposalBlurb = spell.proposal_blurb;
-    spell.key = spell._id;
-    delete spell.proposal_blurb;
-    delete spell._id;
-  });
-
-  proposals.push(...oldSpells);
+  proposals = proposals.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   proposals = proposals.slice(0, 100);
-
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
 }
