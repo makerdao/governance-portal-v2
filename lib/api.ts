@@ -22,15 +22,17 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-  const { data: githubResponse } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: 'tyler17', //FIXME change to makerdao before merging
     repo: 'community',
     path: 'governance/votes'
   });
+  const githubResponse = Array.isArray(data) ? data : [];
   const proposalUrls = githubResponse.filter(x => x.type === 'file').map(x => x.download_url);
 
   let proposals: CMSProposal[] = [];
   for (const proposalLink of proposalUrls) {
+    if (!proposalLink) continue;
     const proposalDoc = await (await fetch(proposalLink)).text();
     const {
       content,
