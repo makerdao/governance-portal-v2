@@ -2,7 +2,7 @@ export type CMSProposal = {
   active: boolean;
   address: string;
   key: string;
-  content: string;
+  content?: string;
   about: string;
   proposalBlurb: string;
   title: string;

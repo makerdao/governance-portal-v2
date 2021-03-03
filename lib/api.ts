@@ -4,23 +4,32 @@ import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { EXEC_PROPOSAL_INDEX, EXEC_PROPOSAL_REPO } from './constants';
+import { EXEC_PROPOSAL_INDEX } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import { slugify } from '../lib/utils';
 import Poll, { PartialPoll } from '../types/poll';
 import { CMSProposal } from '../types/proposal';
 import BlogPost from '../types/blogPost';
 import { parsePollMetadata } from './polling/parser';
+import { Octokit } from '@octokit/core';
 
-export async function getExecutiveProposals(): Promise<Partial<CMSProposal>[]> {
+export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   const network = getNetwork();
+
+  if (isTestnet()) return [];
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  const githubResponse = await (await fetch(EXEC_PROPOSAL_REPO)).json();
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+  const { data: githubResponse } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner: 'tyler17', //FIXME change to makerdao before merging
+    repo: 'community',
+    path: 'governance/votes'
+  });
   const proposalUrls = githubResponse.filter(x => x.type === 'file').map(x => x.download_url);
 
-  let proposals: Partial<CMSProposal>[] = [];
+  let proposals: CMSProposal[] = [];
   for (const proposalLink of proposalUrls) {
     const proposalDoc = await (await fetch(proposalLink)).text();
     const {
@@ -52,7 +61,6 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');
-
   return {
     ...proposal,
     content

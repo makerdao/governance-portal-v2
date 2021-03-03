@@ -7,6 +7,7 @@ import { getPostsAndPhotos, getExecutiveProposals, getPolls } from '../../lib/ap
 let blogPosts, proposals, polls;
 
 beforeAll(async () => {
+  jest.setTimeout(10000);
   [blogPosts, proposals, polls] = await Promise.all([
     getPostsAndPhotos(),
     getExecutiveProposals(),
