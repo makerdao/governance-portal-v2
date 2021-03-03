@@ -14,9 +14,11 @@ import { parsePollMetadata } from './polling/parser';
 import { Octokit } from '@octokit/core';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
+  if (process.env.USE_FS_CACHE) {
+    const cachedProposals = fsCacheGet('proposals');
+    if (cachedProposals) return JSON.parse(cachedProposals);
+  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
-
-  if (isTestnet()) return [];
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
@@ -47,7 +49,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
       key: slugify(title),
       address: address,
       date: String(date),
-      active: proposalIndex[network] ? proposalIndex[network].includes(proposalLink) : true
+      active: proposalIndex[network].includes(proposalLink)
     });
   }
 
