@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.11",
-    "@makerdao/dai-plugin-governance": "0.12.44-rc.2",
+    "@makerdao/dai-plugin-governance": "0.13.0",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
-    "@makerdao/dai-plugin-mcd": "^1.6.21",
+    "@makerdao/dai-plugin-mcd": "^1.6.31",
     "@makerdao/dai-plugin-trezor-web": "^0.9.6",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@makerdao/test-helpers": "^0.3.0",
-    "@makerdao/testchain": "^1.1.27",
+    "@makerdao/testchain": "^1.1.31",
     "@testing-library/dom": "^7.29.4",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
