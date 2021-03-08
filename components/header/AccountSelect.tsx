@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box, Flex, Text, Spinner, Button, Close } from 'theme-ui';
+import { ThemeUICSSObject } from '@theme-ui/css';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import mixpanel from 'mixpanel-browser';
