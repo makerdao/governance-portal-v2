@@ -41,10 +41,15 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
       data: { title, summary, address, date }
     } = matter(proposalDoc);
 
-    invariant(content && title && summary && address && date, 'Invalid proposal document');
+    if (!(content && title && summary && address && date)) continue;
+
+    //remove `Template - [Executive Vote] ` from title
+    const split = title.split('Template - [Executive Vote] ');
+    const editedTitle = split.length > 1 ? split[1] : title;
+
     proposals.push({
       about: content,
-      title,
+      title: editedTitle,
       proposalBlurb: summary,
       key: slugify(title),
       address: address,
