@@ -190,35 +190,33 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         {voting && (
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
-        {(spellData?.hasBeenScheduled || proposal.address === ZERO_ADDRESS) && (
-          <>
-            <Divider my={0} />
-            <Flex p={3} sx={{ justifyContent: 'center' }}>
-              {proposal.address === ZERO_ADDRESS ? (
-                <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                  This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the
-                  new chief has been activated!
-                </Text>
+        <Divider my={0} />
+        <Flex p={3} sx={{ justifyContent: 'center' }}>
+          {proposal.address === ZERO_ADDRESS ? (
+            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
+              chief has been activated!
+            </Text>
+          ) : spellData && spellData.hasBeenScheduled ? (
+            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
+              {typeof spellData.dateExecuted === 'string' ? (
+                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
               ) : (
-                spellData && (
-                  <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-                    Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-                    {typeof spellData.dateExecuted === 'string' ? (
-                      <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-                    ) : (
-                      <>
-                        Available for execution on{' '}
-                        {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                          formatDateWithTime(spellData.nextCastTime || spellData.eta)}
-                        .
-                      </>
-                    )}
-                  </Text>
-                )
+                <>
+                  Available for execution on{' '}
+                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
+                    formatDateWithTime(spellData.nextCastTime || spellData.eta)}
+                  .
+                </>
               )}
-            </Flex>
-          </>
-        )}
+            </Text>
+          ) : (
+            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+              This proposal has not yet passed and is not available for execution.
+            </Text>
+          )}
+        </Flex>
       </Card>
     </Link>
   );
