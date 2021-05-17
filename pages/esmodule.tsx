@@ -27,7 +27,6 @@ async function getModuleStats() {
     esmService.getTotalStaked(),
     esmService.canFire(),
     esmService.thresholdAmount(),
-    esmService.fired(),
     account.address ? esmService.getTotalStakedByAddress(account.address) : null,
     maker.service('smartContract').getContract('END').when(),
     account.address ? maker.service('chief').getNumDeposits(account?.address) : null
@@ -43,7 +42,7 @@ if (typeof window !== 'undefined') {
 
 const ESModule = () => {
   const { data } = useSWR('/es-module', getModuleStats);
-  const [totalStaked, canFire, thresholdAmount, fired, mkrInEsm, cageTime, lockedInChief] = data || [];
+  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief] = data || [];
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
   const [showDialog, setShowDialog] = useState(false);
@@ -145,7 +144,7 @@ const ESModule = () => {
                 totalStaked={totalStaked}
               />
             ) : (
-              <ShutdownModal setShowDialog={setShowDialog} />
+              <ShutdownModal setShowDialog={setShowDialog} thresholdAmount={thresholdAmount} />
             )
           ) : (
             <Box pl="14px" pr="14px">
@@ -154,7 +153,7 @@ const ESModule = () => {
           )}
         </DialogContent>
       </DialogOverlay>
-      {fired && (
+      {cageTime && cageTime.gt(0) && (
         <Flex
           sx={{
             flexDirection: 'column',
@@ -178,8 +177,9 @@ const ESModule = () => {
       )}
       <Text variant="heading">Emergency Shutdown Module</Text>
       <Text variant="text" sx={{ mt: 2, color: 'onSecondary' }}>
-        The ESM allows MKR holders to shutdown the system without a central authority. Once 50,000 MKR are
-        entered into the ESM, emergency shutdown can be executed.{' '}
+        The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
+        {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
+        emergency shutdown can be executed.{' '}
         <Link
           href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
           target="_blank"

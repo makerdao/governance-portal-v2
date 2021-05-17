@@ -8,8 +8,15 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
 import { TXMined } from '../../types/transaction';
+import CurrencyObject from '../../types/currency';
 
-const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => void }) => {
+const ModalContent = ({
+  setShowDialog,
+  thresholdAmount
+}: {
+  setShowDialog: (value: boolean) => void;
+  thresholdAmount: CurrencyObject;
+}) => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
 
@@ -48,8 +55,9 @@ const ModalContent = ({ setShowDialog }: { setShowDialog: (value: boolean) => vo
         Shutting down the Dai Credit System
       </Text>
       <Text variant="text" sx={{ mt: 3 }}>
-        The 50,000 MKR limit for the emergency shutdown module has been reached. By continuing past this
-        alert, emergency shutdown will be initiated for the Dai Credit System.
+        The {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR limit for the emergency
+        shutdown module has been reached. By continuing past this alert, emergency shutdown will be initiated
+        for the Dai Credit System.
       </Text>
       <Grid columns={2} mt={4}>
         <Button
