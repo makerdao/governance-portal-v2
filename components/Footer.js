@@ -267,12 +267,6 @@ class LongFooter extends React.Component {
             <LinkListHeader>{t('Foundation')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to="https://makerdao.com/team">{t('Team')}</Link>
-              </li>
-              <li>
-                <Link to="https://makerdao.com/careers">{t('Careers')}</Link>
-              </li>
-              <li>
                 <Link to="https://makerdao.com/contact">{t('Contact')}</Link>
               </li>
             </LinkList>
