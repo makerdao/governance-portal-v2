@@ -267,12 +267,6 @@ class LongFooter extends React.Component {
             <LinkListHeader>{t('Foundation')}</LinkListHeader>
             <LinkList>
               <li>
-                <Link to="https://makerdao.com/team">{t('Team')}</Link>
-              </li>
-              <li>
-                <Link to="https://makerdao.com/careers">{t('Careers')}</Link>
-              </li>
-              <li>
                 <Link to="https://makerdao.com/contact">{t('Contact')}</Link>
               </li>
             </LinkList>
@@ -412,7 +406,7 @@ export default function Foot({ shorten = false }) {
           Status
         </NavLink>
         <div sx={{ mx: 'auto' }} />
-        <div sx={{ p: 2 }}>© 2020 Maker</div>
+        <div sx={{ p: 2 }}>© 2021 Maker</div>
       </footer>
     );
   } else {
