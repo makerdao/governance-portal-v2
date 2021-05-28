@@ -37,18 +37,24 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.showHistorical,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -145,6 +151,11 @@ const PollingOverview = ({ polls }: Props) => {
           <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
+        {/* <Link href="/polling/create">
+          <Button variant="primary" sx={{ width: 6, mt: 4 }}>
+            Create Poll
+          </Button>
+        </Link> */}
         <SidebarLayout>
           <Box>
             {filteredPolls.length > 0 ? (
