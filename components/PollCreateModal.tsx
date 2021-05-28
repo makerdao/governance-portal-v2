@@ -37,19 +37,17 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
     const maker = await getMaker();
     const voteTxCreator = () =>
       maker.service('govPolling').createPoll(poll?.startDate, poll?.endDate, poll?.multiHash, poll?.url);
-    const txId = await transactionsApi
-      .getState()
-      .track(voteTxCreator, `Creating poll with id ${poll?.pollId}`, {
-        pending: txHash => {
-          setStep('pending');
-        },
-        mined: txId => {
-          setPoll(undefined);
-          transactionsApi.getState().setMessage(txId, `Created poll with id ${poll?.pollId}`);
-          close();
-        },
-        error: () => setStep('failed')
-      });
+    const txId = await track(voteTxCreator, `Creating poll with id ${poll?.pollId}`, {
+      pending: () => {
+        setStep('pending');
+      },
+      mined: txId => {
+        setPoll(undefined);
+        transactionsApi.getState().setMessage(txId, 'Created poll');
+        close();
+      },
+      error: () => setStep('failed')
+    });
     setTxId(txId);
     setStep('signing');
   };
@@ -179,7 +177,7 @@ const Pending = ({ tx, close }) => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Vote will update once the blockchain has confirmed the transaction.
+        Poll will be created once the blockchain confirms the transaction
       </Text>
       <ExternalLink
         target="_blank"
