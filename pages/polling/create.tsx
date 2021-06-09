@@ -15,9 +15,7 @@ import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import MkrLiquiditySidebar from '../../components/MkrLiquiditySidebar';
 import ResourceBox from '../../components/ResourceBox';
 import { validateUrl } from '../../lib/polling/validator';
-import getMaker from '../../lib/maker';
 import Poll from '../../types/poll';
-import { transactionsApi } from '../../stores/transactions';
 import Hash from 'ipfs-only-hash';
 
 const generateIPFSHash = async (data, options) => {
@@ -58,7 +56,6 @@ const PollingCreate = () => {
         poll.multiHash = await generateIPFSHash(poll.content, {});
         poll.slug = poll.multiHash.slice(0, 8);
       }
-
       setPoll(poll);
       setPollErrors([]);
     } else {
@@ -130,17 +127,34 @@ const PollingCreate = () => {
                       <CreateText>{poll?.voteType}</CreateText>
                       <Label>Category</Label>
                       <CreateText>{poll?.categories.join(', ')}</CreateText>
-                      <Label>Poll Start Time (UTC)</Label>
+                      <Label>Poll Start Time</Label>
                       <CreateText>
-                        {poll && new Date(parseInt(poll?.startDate) * 1000).toLocaleString()}
+                        {poll &&
+                          new Date(poll.startDate).toLocaleString('default', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            timeZone: 'UTC',
+                            timeZoneName: 'short'
+                          })}
                       </CreateText>
-                      <Label>Poll End Time (UTC)</Label>
+                      <Label>Poll End Time</Label>
                       <CreateText>
-                        {poll && new Date(parseInt(poll?.endDate) * 1000).toLocaleString()}
+                        {poll &&
+                          new Date(poll.endDate).toLocaleString('default', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                            timeZone: 'UTC',
+                            timeZoneName: 'short'
+                          })}
                       </CreateText>
                       <Label>Poll Duration</Label>
                       <CreateText>
-                        {poll && `${(parseInt(poll?.endDate) - parseInt(poll?.startDate)) / 86400} days`}
+                        {poll &&
+                          `${
+                            (new Date(poll.endDate).getTime() - new Date(poll.startDate).getTime()) / 86400000
+                          } days`}
                       </CreateText>
 
                       {/* <Label>Discussion Link</Label>

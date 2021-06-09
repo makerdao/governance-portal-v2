@@ -36,7 +36,14 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
   const createPoll = async () => {
     const maker = await getMaker();
     const voteTxCreator = () =>
-      maker.service('govPolling').createPoll(poll?.startDate, poll?.endDate, poll?.multiHash, poll?.url);
+      maker
+        .service('govPolling')
+        .createPoll(
+          poll?.startDate.getTime() / 1000,
+          poll?.endDate.getTime() / 1000,
+          poll?.multiHash,
+          poll?.url
+        );
     const txId = await track(voteTxCreator, `Creating poll with id ${poll?.pollId}`, {
       pending: () => {
         setStep('pending');

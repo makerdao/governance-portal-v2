@@ -19,8 +19,16 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     ...(categoryMap[poll.pollId] || [])
   ];
 
-  const startDate = poll.startDate.toString();
-  const endDate = poll.endDate.toString();
+  let startDate, endDate;
+  //poll coming from poll create page
+  if (poll.startDate === 0 && poll.endDate === 0) {
+    startDate = pollMeta.start_date;
+    endDate = pollMeta.end_date;
+  } else {
+    //poll coming from onchain
+    startDate = poll.startDate;
+    endDate = poll.endDate;
+  }
 
   return {
     ...poll,
