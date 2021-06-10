@@ -17,6 +17,7 @@ import ResourceBox from '../../components/ResourceBox';
 import { validateUrl } from '../../lib/polling/validator';
 import Poll from '../../types/poll';
 import Hash from 'ipfs-only-hash';
+import useAccountsStore from '../../stores/accounts';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -42,6 +43,7 @@ const PollingCreate = () => {
   const [poll, setPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
   const [creating, setCreating] = useState(false);
+  const account = useAccountsStore(state => state.currentAccount);
   const urlValidation = async url => {
     const result = await validateUrl(url, {
       pollId: 0,
@@ -176,7 +178,7 @@ const PollingCreate = () => {
                         <Button
                           variant="primary"
                           onClick={() => setCreating(true)}
-                          disabled={typeof poll === 'undefined' || pollErrors.length > 0}
+                          disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
                         >
                           Create Poll
                         </Button>
