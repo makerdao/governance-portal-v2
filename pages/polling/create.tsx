@@ -46,8 +46,8 @@ const PollingCreate = () => {
     const result = await validateUrl(url, {
       pollId: 0,
       multiHash: '',
-      startDate: 0,
-      endDate: 0,
+      startDate: new Date(0),
+      endDate: new Date(0),
       url: pollUrl
     });
     if (result.valid) {

@@ -21,7 +21,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
 
   let startDate, endDate;
   //poll coming from poll create page
-  if (poll.startDate === 0 && poll.endDate === 0) {
+  if (poll.startDate === new Date(0) && poll.endDate === new Date(0)) {
     startDate = pollMeta.start_date;
     endDate = pollMeta.end_date;
   } else {
