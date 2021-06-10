@@ -35,7 +35,7 @@ const ExecutiveCreate = () => {
 
   const editMarkdown = content => {
     // hide the duplicate proposal title
-    return content.replace(/^<h1>.*<\/h1>/, '');
+    return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
   };
 
   const getFieldsFromUrl = async () => {
