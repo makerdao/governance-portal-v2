@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useInterval from '../lib/useInterval';
 
 type Props = {
-  endDate: string;
+  endDate: Date;
   endText: string;
 };
 

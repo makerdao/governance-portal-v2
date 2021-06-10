@@ -20,14 +20,14 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   ];
 
   let startDate, endDate;
-  if (!pollMeta.start_date) {
-    // old polls: read from poll
-    startDate = `${poll.startDate}`;
-    endDate = `${poll.endDate}`;
+  //poll coming from poll create page
+  if (poll.startDate.getTime() === 0 && poll.endDate.getTime() === 0) {
+    startDate = pollMeta.start_date;
+    endDate = pollMeta.end_date;
   } else {
-    // new polls: read from metadata
-    startDate = (pollMeta.start_date.getTime() / 1000).toString();
-    endDate = (pollMeta.end_date.getTime() / 1000).toString();
+    //poll coming from onchain
+    startDate = poll.startDate;
+    endDate = poll.endDate;
   }
 
   return {
