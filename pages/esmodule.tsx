@@ -16,20 +16,19 @@ import { formatDateWithTime } from '../lib/utils';
 async function getModuleStats() {
   const maker = await getMaker();
   const esmService = await maker.service('esm');
-  let account;
+  let address;
   try {
-    account = await maker.currentAddress();
+    address = maker.currentAddress();
   } catch (e) {
-    account = { address: null };
+    address = null;
   }
-
   return Promise.all([
     esmService.getTotalStaked(),
     esmService.canFire(),
     esmService.thresholdAmount(),
-    account.address ? esmService.getTotalStakedByAddress(account.address) : null,
+    address ? esmService.getTotalStakedByAddress(address) : null,
     maker.service('smartContract').getContract('END').when(),
-    account.address ? maker.service('chief').getNumDeposits(account?.address) : null
+    address ? maker.service('chief').getNumDeposits(address) : null
   ]);
 }
 
