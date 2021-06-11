@@ -12,7 +12,6 @@ import getMaker, { getNetwork } from '../lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '../stores/transactions';
 import { getEtherscanLink } from '../lib/utils';
 import { TXMined } from '../types/transaction';
-import Proposal from '../types/proposal';
 import Poll from '../types/poll';
 
 type Props = {
@@ -70,19 +69,6 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
         <Text sx={{ display: ['none', 'block'], marginTop: 3, color: 'onSecondary', fontSize: [3, 4] }}>
           You are creating the following poll:
         </Text>
-        {/* <Box
-          sx={{
-            mt: 2,
-            p: 3,
-            width: '100%',
-            mx: 3,
-            backgroundColor: 'background',
-            textAlign: 'center',
-            fontSize: [3, 4]
-          }}
-        >
-          <Text>Poll Content</Text>
-        </Box> */}
         <Box sx={{ width: '100%', my: 3 }}>
           <Box
             sx={{
@@ -91,7 +77,6 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
               mb: 4,
               width: '100%',
               borderColor: 'secondaryMuted'
-              // height: '96px'
             }}
           >
             <Text variant="text" sx={{ fontSize: 1, color: 'textMuted' }}>
@@ -159,9 +144,6 @@ const Signing = ({ close }) => (
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
         Please use your wallet to sign this transaction.
       </Text>
-      {/* <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
-        Cancel vote submission
-      </Button> */}
     </Flex>
   </Flex>
 );
