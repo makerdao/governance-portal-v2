@@ -28,7 +28,8 @@ async function getModuleStats() {
     esmService.thresholdAmount(),
     address ? esmService.getTotalStakedByAddress(address) : null,
     maker.service('smartContract').getContract('END').when(),
-    address ? maker.service('chief').getNumDeposits(address) : null
+    address ? maker.service('chief').getNumDeposits(address) : null,
+    maker.service('esm').getStakingHistory()
   ]);
 }
 
@@ -41,7 +42,8 @@ if (typeof window !== 'undefined') {
 
 const ESModule = () => {
   const { data } = useSWR('/es-module', getModuleStats);
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief] = data || [];
+  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
+    data || [];
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
   const [showDialog, setShowDialog] = useState(false);
@@ -227,7 +229,7 @@ const ESModule = () => {
       <Text variant="microHeading" mt={5}>
         ESM History
       </Text>
-      <ESMHistory />
+      <ESMHistory stakingHistory={stakingHistory} />
     </PrimaryLayout>
   );
 };
