@@ -1,21 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Card, Text, Link } from 'theme-ui';
-import getMaker, { getNetwork } from '../../lib/maker';
+import { getNetwork } from '../../lib/maker';
 import { getEtherscanLink, cutMiddle, formatDateWithTime, formatRound } from '../../lib/utils';
 import CurrencyObject from '../../types/currency';
+import { StakingHistoryRow } from '../../types/esmodule';
 
-const ESMHistory = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [rows, setRows] = useState([]);
+type Props = {
+  stakingHistory: StakingHistoryRow[] | undefined;
+};
 
-  useEffect(() => {
-    (async () => {
-      const maker = await getMaker();
-      const stakingHistory = await maker.service('esm').getStakingHistory();
-      setRows(stakingHistory);
-      setIsLoading(false);
-    })();
-  }, []);
+const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
   return (
     <Card mt={3} p={3} pb={4}>
       <table
@@ -37,7 +30,7 @@ const ESMHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {isLoading ? (
+          {!stakingHistory ? (
             <tr key={0}>
               <td colSpan={3}>
                 <Text color="darkLavender" variant="allcaps">
@@ -45,8 +38,8 @@ const ESMHistory = () => {
                 </Text>
               </td>
             </tr>
-          ) : rows && rows.length > 0 ? (
-            rows.map(
+          ) : stakingHistory.length > 0 ? (
+            stakingHistory.map(
               (
                 action: {
                   time: string;

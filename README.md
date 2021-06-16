@@ -29,6 +29,10 @@ _Requires node version >= v11.15.0_
 4. Set `TRACING_RPC_NODE` to an ethereum RPC parity node with tracing enabled
 5. Set `MONGODB_URI` to a full mongodb uri (ex: `mongodb+srv://...`)
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
-6. Set `USE_PROD_SPOCK` to true to use the production spock instance
+7. Set `USE_PROD_SPOCK` to true to use the production spock instance
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
+
+### Contributing
+
+See our [contributing guide](./CONTRIBUTING.md)
