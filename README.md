@@ -33,3 +33,7 @@ _Requires node version >= v11.15.0_
 8. Set `USE_FS_CACHE` to true if you want to use file system cache
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
+
+### Contributing
+
+See our [contributing guide](./CONTRIBUTING.md)

@@ -2,6 +2,7 @@ import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
 import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
+import os from 'os';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS } from './constants';
@@ -95,7 +96,9 @@ const fsCacheCache = {};
 
 const fsCacheGet = name => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
-  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
+    .toISOString()
+    .substring(0, 10)}`;
   if (fsCacheCache[path]) {
     console.log(`mem cache hit: ${path}`);
     return fsCacheCache[path];
@@ -108,7 +111,9 @@ const fsCacheGet = name => {
 
 const fsCacheSet = (name, data) => {
   const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
-  const path = `/tmp/gov-portal-${getNetwork()}-${name}-${new Date().toISOString().substring(0, 10)}`;
+  const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
+    .toISOString()
+    .substring(0, 10)}`;
   fs.writeFileSync(path, data, err => console.error(err));
   fsCacheCache[path] = data;
 };
