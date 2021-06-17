@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
-import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
+
+import { Heading, Box, Flex } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
 
@@ -8,48 +8,57 @@ import { isDefaultNetwork } from '../../lib/maker';
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
+import SystemStatsSidebar from '../../components/SystemStatsSidebar';
+import ResourceBox from '../../components/ResourceBox';
 
 import Head from 'next/head';
+import { Delegate } from 'types/delegate';
+import DelegateCard from '../../components/delegations/DelegateCard';
 
 type Props = {
-  delegates: any[];
+  delegates: Delegate[];
 };
 
 const Delegates = ({ delegates }: Props) => {
-  
   return (
-    <PrimaryLayout  sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
         <title>Maker Governance - Delegates</title>
       </Head>
-      
-      <Stack gap={3}>
-        
-        <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3}>
-            Filters
-          </Heading>
-          TBD
-        </Flex>
 
-        <SidebarLayout>
+      <SidebarLayout>
+        <Box>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Heading variant="microHeading" mr={3}>
+              Filters
+            </Heading>
+            TBD
+          </Flex>
+
+          <Heading mb={3} mt={4} as="h4">
+            Recognized delegates
+          </Heading>
+
           <Box>
-            HEY
+            {delegates.map(delegate => (
+              <Box key={delegate.id} sx={{ mb: 4 }}>
+                <DelegateCard delegate={delegate} />
+              </Box>
+            ))}
           </Box>
-         
-        </SidebarLayout>
-      </Stack>
+        </Box>
+        <Stack gap={3}>
+          <SystemStatsSidebar
+            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+          />
+          <ResourceBox />
+        </Stack>
+      </SidebarLayout>
     </PrimaryLayout>
   );
 };
 
 export default function DelegatesPage({ delegates }: Props): JSX.Element {
- 
-  useEffect(() => {
-    if (!isDefaultNetwork()) {
-      
-    }
-  }, []);
 
 
   if (!isDefaultNetwork()) {
@@ -64,7 +73,19 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates = [];
+  const delegates: Delegate[] = [{
+    id: 'abc', 
+    name: 'Joe Ponzi',
+    address: 'asxxasdad213',
+    description: 'Followed marc cubans advice',
+    picture: ''
+  }, {
+    id: 'a22bc', 
+    name: 'Marc Cuban',
+    address: 'asxxasdad213',
+    description: 'I got rug pulled and now i want the police here',
+    picture: ''
+  }];
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
