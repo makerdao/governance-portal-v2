@@ -8,7 +8,7 @@ type ContractDiff = {
   }[];
 };
 
-type SpellStateDiff =
+export type SpellStateDiff =
   | {
       hasBeenCast: true;
       executedOn: number;
@@ -19,5 +19,3 @@ type SpellStateDiff =
       executedOn: null;
       groupedDiff: ContractDiff;
     };
-
-export default SpellStateDiff;

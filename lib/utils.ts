@@ -6,17 +6,17 @@ import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { MKR } from './maker';
-import CurrencyObject from '@types/currency';
-import PollTally from '@types/pollTally';
-import Poll from '@types/poll';
-import SpellStateDiff from '@types/spellStateDiff';
+import { CurrencyObject } from 'types/currency';
+import { PollTally } from 'types/pollTally';
+import { Poll } from 'types/poll';
+import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from '../mocks/polls.json';
-import PollVote from '@types/pollVote';
+import { PollVote } from 'types/pollVote';
 import round from 'lodash/round';
 
-export function bigNumberKFormat(num: CurrencyObject) {
+export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
   const units = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
   let typeIndex = Math.floor(num.div(10).toFixed(0).length / 3) - 1;
@@ -27,7 +27,7 @@ export function bigNumberKFormat(num: CurrencyObject) {
   return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
 }
 
-export async function markdownToHtml(markdown: string) {
+export async function markdownToHtml(markdown: string): Promise<string> {
   const result = await remark().use(html).process(markdown);
   return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
@@ -50,7 +50,7 @@ export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> 
   });
 }
 
-export function wait(duration: number) {
+export function wait(duration: number): Promise<void> {
   return new Promise(res => setTimeout(res, duration));
 }
 

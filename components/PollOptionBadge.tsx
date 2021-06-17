@@ -5,7 +5,7 @@ import { isActivePoll } from '@lib/utils';
 import { getNetwork } from '@lib/maker';
 import useSWR from 'swr';
 import { parsePollTally, fetchJson } from '@lib/utils';
-import Poll from '@types/poll';
+import { Poll } from 'types/poll';
 
 const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);

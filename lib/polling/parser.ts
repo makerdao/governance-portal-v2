@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
-import Poll, { PartialPoll } from '@types/poll';
-import VoteTypes from '@types/voteTypes';
+import { Poll, PartialPoll } from 'types/poll';
+import { VoteTypes } from 'types/voteTypes';
 import categoryMap from './oldPollCategories';
 
 export function parsePollMetadata(poll: PartialPoll, document: string): Poll {

@@ -4,7 +4,7 @@ import { Grid, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 
 import Stack from '../layouts/Stack';
-import SpellStateDiff from '@types/spellStateDiff';
+import { SpellStateDiff } from 'types/spellStateDiff';
 import { formatAddress } from '../../lib/utils';
 import { ethers } from 'ethers';
 

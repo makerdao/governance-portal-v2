@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import Stack from '../layouts/Stack';
 import getMaker, { MKR, getNetwork } from '../../lib/maker';
 import useAccountsStore from '@stores/accounts';
-import CurrencyObject from '@types/currency';
+import { CurrencyObject } from 'types/currency';
 import { fadeIn, slideUp } from '../../lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '@stores/transactions';

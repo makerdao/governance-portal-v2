@@ -34,13 +34,13 @@ import ResourceBox from '@components/ResourceBox';
 import { getExecutiveProposal, getExecutiveProposals } from '../../lib/api';
 import getMaker, { getNetwork, isDefaultNetwork } from '../../lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from '../../lib/utils';
-import Proposal from '@types/proposal';
+import { Proposal } from 'types/proposal';
 import useAccountsStore from '@stores/accounts';
 import mixpanel from 'mixpanel-browser';
 import { formatDateWithTime } from '../../lib/utils';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
-import SpellData from '@types/spellData';
-import SpellStateDiff from '@types/spellStateDiff';
+import { SpellData } from 'types/spellData';
+import { SpellStateDiff } from 'types/spellStateDiff';
 import { ZERO_ADDRESS } from '@stores/accounts';
 
 type Props = {

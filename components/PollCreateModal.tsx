@@ -11,8 +11,8 @@ import { fadeIn, slideUp } from '@lib/keyframes';
 import getMaker, { getNetwork } from '@lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from '@stores/transactions';
 import { getEtherscanLink } from '@lib/utils';
-import { TXMined } from '@types/transaction';
-import Poll from '@types/poll';
+import { TXMined } from 'types/transaction';
+import { Poll } from 'types/poll';
 
 type Props = {
   close: () => void;

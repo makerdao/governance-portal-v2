@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
 import useTransactionStore, { transactionsSelectors } from '@stores/transactions';
-import TX from '@types/transaction';
+import {Transaction} from 'types/transaction';
 import useBallotStore from '@stores/ballot';
 import { getNetwork } from '../../lib/maker';
 
@@ -65,7 +65,7 @@ const StatusText = ({
   transaction,
   ballotLength
 }: {
-  transaction: TX | null;
+  transaction: Transaction | null;
   ballotLength: number;
 }): JSX.Element => {
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;

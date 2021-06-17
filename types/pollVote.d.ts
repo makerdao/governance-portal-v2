@@ -10,6 +10,4 @@ type RankedChoicePollVote = {
   rankedChoiceOption: number[];
 };
 
-type PollVote = LegacyPollVote | RankedChoicePollVote;
-
-export default PollVote;
+export type PollVote = LegacyPollVote | RankedChoicePollVote;

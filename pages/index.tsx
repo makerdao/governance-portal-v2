@@ -19,9 +19,9 @@ import IntroCard from '@components/index/IntroCard';
 import PollingIndicator from '@components/index/PollingIndicator';
 import ExecutiveIndicator from '@components/index/ExecutiveIndicator';
 import BlogPostCard from '@components/index/BlogPostCard';
-import { CMSProposal } from '@types/proposal';
-import Poll from '@types/poll';
-import BlogPost from '@types/blogPost';
+import { CMSProposal } from 'types/proposal';
+import { Poll } from 'types/poll';
+import { BlogPost } from 'types/blogPost';
 import { initTestchainPolls } from '@lib/utils';
 import { isActivePoll } from '@lib/utils';
 

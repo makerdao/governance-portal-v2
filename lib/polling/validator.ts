@@ -1,9 +1,11 @@
 import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
-import { VoteTypesArray } from '@types/voteTypes';
-import Poll, { PartialPoll } from '@types/poll';
+import { Poll, PartialPoll } from 'types/poll';
 import { parsePollMetadata } from './parser';
+import { VoteTypes } from 'types/voteTypes';
+
+const VoteTypesArray: VoteTypes[] = ['Plurality Voting', 'Ranked Choice IRV'];
 
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json

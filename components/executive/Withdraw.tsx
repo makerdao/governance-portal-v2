@@ -11,7 +11,7 @@ import Stack from '../layouts/Stack';
 import MKRInput from '../MKRInput';
 import getMaker, { MKR } from '../../lib/maker';
 import useAccountsStore from '@stores/accounts';
-import CurrencyObject from '@types/currency';
+import { CurrencyObject } from 'types/currency';
 import { fadeIn, slideUp } from '../../lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from '@stores/transactions';

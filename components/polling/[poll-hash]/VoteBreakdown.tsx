@@ -4,8 +4,8 @@ import Skeleton from 'react-loading-skeleton';
 import Tooltip from '../../Tooltip';
 
 import Delay from '@components/Delay';
-import PollTally from '@types/pollTally';
-import Poll from '@types/poll';
+import { PollTally } from 'types/pollTally';
+import { Poll } from 'types/poll';
 
 export default function VoteBreakdown({
   poll,

@@ -1,8 +1,8 @@
 import { Card, Text, Link } from 'theme-ui';
 import { getNetwork } from '../../lib/maker';
 import { getEtherscanLink, cutMiddle, formatDateWithTime, formatRound } from '../../lib/utils';
-import CurrencyObject from '@types/currency';
-import { StakingHistoryRow } from '@types/esmodule';
+import { CurrencyObject } from 'types/currency';
+import { StakingHistoryRow } from 'types/esmodule';
 
 type Props = {
   stakingHistory: StakingHistoryRow[] | undefined;

@@ -1,4 +1,4 @@
-type CurrencyObject = {
+export type CurrencyObject = {
   toString: () => string;
   toBigNumber: () => any;
   mul: (n: string | number | CurrencyObject) => CurrencyObject;
@@ -15,4 +15,3 @@ type CurrencyObject = {
   symbol: string;
 };
 
-export default CurrencyObject;

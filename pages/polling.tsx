@@ -11,7 +11,7 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
-import Poll from '@types/poll';
+import { Poll } from 'types/poll';
 import { isDefaultNetwork, getNetwork } from '@lib/maker';
 import { getPolls } from '@lib/api';
 import { isActivePoll, formatDateWithTime } from '@lib/utils';

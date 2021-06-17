@@ -8,8 +8,8 @@ import isNil from 'lodash/isNil';
 import { isActivePoll } from '../../lib/utils';
 import getMaker from '../../lib/maker';
 import useAccountsStore from '@stores/accounts';
-import Poll from '@types/poll';
-import PollVote from '@types/pollVote';
+import { Poll } from 'types/poll';
+import { PollVote } from 'types/pollVote';
 import useBallotStore from '@stores/ballot';
 import useTransactionStore, { transactionsSelectors } from '@stores/transactions';
 

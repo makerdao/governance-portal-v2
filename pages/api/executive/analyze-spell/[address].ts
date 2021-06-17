@@ -6,7 +6,7 @@ import { isSupportedNetwork } from '../../../../lib/maker';
 import { getConnectedMakerObj } from '../../_lib/utils';
 import { DEFAULT_NETWORK } from '../../../../lib/constants';
 import withApiHandler from '../../_lib/withApiHandler';
-import SpellData from '@types/spellData';
+import { SpellData } from 'types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
   const [done, eta, nextCastTime, datePassed, dateExecuted, mkrSupport] = await Promise.all([
