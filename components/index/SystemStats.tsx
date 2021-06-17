@@ -5,8 +5,9 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import getMaker, { DAI } from '../../lib/maker';
 import CurrencyObject from '../../types/currency';
+import BigNumber from 'bignumber.js';
 
-async function getSystemStats(): Promise<CurrencyObject[]> {
+async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
@@ -25,9 +26,11 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<CurrencyObject[]>('/system-stats-index', getSystemStats);
+  const { data } = useSWR<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
+    '/system-stats-index',
+    getSystemStats
+  );
   const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
-
   return (
     <>
       {/* Desktop */}
@@ -56,26 +59,26 @@ export default function SystemStats(): JSX.Element {
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}
+                {savingsRate ? `${savingsRate.multipliedBy(100).toFixed(2)}%` : <Skeleton />}
               </Text>
             </div>
 
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+                {totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+                {debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
             <div>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
               <Text mt={2} sx={{ fontSize: 5 }}>
-                {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+                {systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
               </Text>
             </div>
           </Flex>
@@ -99,25 +102,27 @@ export default function SystemStats(): JSX.Element {
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Savings Rate</Text>
-            <Text sx={{ fontSize: 2 }}>{data ? `${savingsRate.toFixed(2)}%` : <Skeleton />}</Text>
+            <Text sx={{ fontSize: 2 }}>
+              {data ? `${savingsRate?.multipliedBy(100).toFixed(2)}%` : <Skeleton />}
+            </Text>
           </Flex>
 
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Total Dai</Text>
             <Text sx={{ fontSize: 2 }}>
-              {data ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+              {totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
             </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
             <Text sx={{ fontSize: 2 }}>
-              {data ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+              {debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
             </Text>
           </Flex>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text sx={{ fontSize: 2, color: 'textSecondary' }}>System Surplus</Text>
             <Text sx={{ fontSize: 2 }}>
-              {data ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
+              {systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
             </Text>
           </Flex>
         </Grid>
