@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getEtherscanLink } from '../../lib/utils';
 import { getNetwork } from '../../lib/maker';
-import Transaction, { TXPending } from '../../types/transaction';
+import Transaction, { TXPending } from '@types/transaction';
 
 type Props = {
   tx: Transaction;

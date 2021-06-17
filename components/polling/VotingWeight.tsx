@@ -3,7 +3,7 @@ import { Box, Flex, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from '../Tooltip';
 import useSWR from 'swr';
-import useAccountsStore from '../../stores/accounts';
+import useAccountsStore from '@stores/accounts';
 import getMaker from '../../lib/maker';
 
 export default function VotingWeight(props): JSX.Element {

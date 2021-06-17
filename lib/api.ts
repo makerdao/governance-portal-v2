@@ -7,9 +7,9 @@ import os from 'os';
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
-import Poll, { PartialPoll } from '../types/poll';
-import { CMSProposal } from '../types/proposal';
-import BlogPost from '../types/blogPost';
+import Poll, { PartialPoll } from '@types/poll';
+import { CMSProposal } from '@types/proposal';
+import BlogPost from '@types/blogPost';
 import { parsePollMetadata } from './polling/parser';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {

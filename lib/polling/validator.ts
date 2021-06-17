@@ -1,8 +1,8 @@
 import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
-import { VoteTypesArray } from '../../types/voteTypes';
-import Poll, { PartialPoll } from '../../types/poll';
+import { VoteTypesArray } from '@types/voteTypes';
+import Poll, { PartialPoll } from '@types/poll';
 import { parsePollMetadata } from './parser';
 
 // find the most up-to-date list here:

@@ -9,10 +9,10 @@ import invariant from 'tiny-invariant';
 
 import getMaker, { getNetwork } from '../../lib/maker';
 import { isActivePoll } from '../../lib/utils';
-import useAccountsStore from '../../stores/accounts';
-import Poll from '../../types/poll';
-import PollVote from '../../types/poll';
-import Account from '../../types/account';
+import useAccountsStore from '@stores/accounts';
+import Poll from '@types/poll';
+import PollVote from '@types/poll';
+import Account from '@types/account';
 
 type Props = {
   account?: Account;

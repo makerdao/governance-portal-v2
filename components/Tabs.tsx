@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { slugify } from '../lib/utils';
+import { slugify } from '@lib/utils';
 
 import { jsx } from 'theme-ui';
 import { useState, useEffect } from 'react';

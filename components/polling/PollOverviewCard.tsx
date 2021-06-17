@@ -9,11 +9,11 @@ import { getNetwork } from '../../lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './PollVotingStatus';
-import Poll from '../../types/poll';
+import Poll from '@types/poll';
 import PollOptionBadge from '../PollOptionBadge';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from '../../stores/accounts';
-import useBallotStore from '../../stores/ballot';
+import useAccountsStore from '@stores/accounts';
+import useBallotStore from '@stores/ballot';
 import QuickVote from './QuickVote';
 import mixpanel from 'mixpanel-browser';
 

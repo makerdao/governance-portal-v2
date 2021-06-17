@@ -4,14 +4,14 @@ import { useState, useRef } from 'react';
 import useSWR, { mutate } from 'swr';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import getMaker from '../lib/maker';
-import PrimaryLayout from '../components/layouts/Primary';
-import BurnModal from '../components/es/BurnModal';
-import ShutdownModal from '../components/es/ShutdownModal';
-import ProgressRing from '../components/es/ProgressRing';
-import ESMHistory from '../components/es/ESMHistory';
-import useAccountsStore from '../stores/accounts';
-import { formatDateWithTime } from '../lib/utils';
+import getMaker from '@lib/maker';
+import PrimaryLayout from '@components/layouts/Primary';
+import BurnModal from '@components/es/BurnModal';
+import ShutdownModal from '@components/es/ShutdownModal';
+import ProgressRing from '@components/es/ProgressRing';
+import ESMHistory from '@components/es/ESMHistory';
+import useAccountsStore from '@stores/accounts';
+import { formatDateWithTime } from '@lib/utils';
 
 async function getModuleStats() {
   const maker = await getMaker();

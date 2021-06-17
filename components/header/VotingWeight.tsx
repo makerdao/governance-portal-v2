@@ -1,6 +1,6 @@
 import { Flex, Text } from 'theme-ui';
 import useSWR from 'swr';
-import useAccountsStore from '../../stores/accounts';
+import useAccountsStore from '@stores/accounts';
 import getMaker from '../../lib/maker';
 
 export default function VotingWeight(props): JSX.Element {

@@ -1,3 +1,5 @@
+const path = require('path');
+
 require('dotenv').config({ path: './.env' });
 
 module.exports = {
@@ -17,6 +19,11 @@ module.exports = {
     } else {
       config.node = { fs: 'empty' };
     }
+
+    config.resolve.alias['@lib'] = path.join(__dirname, 'lib');
+    config.resolve.alias['@components'] = path.join(__dirname, 'components');
+    config.resolve.alias['@types'] = path.join(__dirname, 'types');
+    config.resolve.alias['@stores'] = path.join(__dirname, 'stores');
     return config;
   }
 };

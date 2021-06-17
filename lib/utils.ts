@@ -6,14 +6,14 @@ import { jsx, SxStyleProp } from 'theme-ui';
 import { css } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { MKR } from './maker';
-import CurrencyObject from '../types/currency';
-import PollTally from '../types/pollTally';
-import Poll from '../types/poll';
-import SpellStateDiff from '../types/spellStateDiff';
+import CurrencyObject from '@types/currency';
+import PollTally from '@types/pollTally';
+import Poll from '@types/poll';
+import SpellStateDiff from '@types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from '../mocks/polls.json';
-import PollVote from '../types/pollVote';
+import PollVote from '@types/pollVote';
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject) {

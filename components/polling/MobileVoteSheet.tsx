@@ -11,10 +11,10 @@ import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 import useSWR from 'swr';
 
-import Account from '../../types/account';
-import Poll from '../../types/poll';
-import PollVote from '../../types/pollVote';
-import useBallotStore from '../../stores/ballot';
+import Account from '@types/account';
+import Poll from '@types/poll';
+import PollVote from '@types/pollVote';
+import useBallotStore from '@stores/ballot';
 import { isRankedChoicePoll, extractCurrentPollVote } from '../../lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';

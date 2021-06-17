@@ -5,10 +5,10 @@ import shallow from 'zustand/shallow';
 import getMaker, { getNetwork } from '../../lib/maker';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from '@stores/transactions';
 import { getEtherscanLink } from '../../lib/utils';
-import { TXMined } from '../../types/transaction';
-import CurrencyObject from '../../types/currency';
+import { TXMined } from '@types/transaction';
+import CurrencyObject from '@types/currency';
 
 const ModalContent = ({
   setShowDialog,

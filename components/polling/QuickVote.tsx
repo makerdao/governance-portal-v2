@@ -9,12 +9,12 @@ import Tooltip from '../Tooltip';
 import useSWR from 'swr';
 
 import getMaker from '../../lib/maker';
-import PollVote from '../../types/pollVote';
+import PollVote from '@types/pollVote';
 import { isRankedChoicePoll, extractCurrentPollVote } from '../../lib/utils';
 import Stack from '../layouts/Stack';
-import Poll from '../../types/poll';
-import Account from '../../types/account';
-import useBallotStore from '../../stores/ballot';
+import Poll from '@types/poll';
+import Account from '@types/account';
+import useBallotStore from '@stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';

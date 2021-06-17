@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from '../../TxIndicators';
 import { getNetwork } from '../../../lib/maker';
 import { getEtherscanLink } from '../../../lib/utils';
-import { TXMined } from '../../../types/transaction';
+import { TXMined } from '@types/transaction';
 
 const BurnPending = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
