@@ -41,6 +41,7 @@ const Header = (props): JSX.Element => {
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
         <Link href={{ pathname: '/polling', query: { network } }} passHref>
           <NavLink
+            title="Polling"
             p={0}
             sx={{
               display: ['none', 'block'],
@@ -55,6 +56,7 @@ const Header = (props): JSX.Element => {
         <Link href={{ pathname: '/executive', query: { network } }} passHref>
           <NavLink
             p={0}
+            title="Executive"
             sx={{
               display: ['none', 'block'],
               ml: [0, 4, 4, 5],
@@ -65,8 +67,23 @@ const Header = (props): JSX.Element => {
           </NavLink>
         </Link>
 
+        <Link href={{ pathname: '/delegates', query: { network } }} passHref>
+          <NavLink
+            title="Delegates"
+            p={0}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
+            }}
+          >
+            Delegates
+          </NavLink>
+        </Link>
+
         <Link href={{ pathname: '/esmodule', query: { network } }} passHref>
           <NavLink
+            title="ES Module"
             p={0}
             sx={{
               display: ['none', 'block'],
