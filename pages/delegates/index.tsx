@@ -1,4 +1,3 @@
-
 import { Heading, Box, Flex } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
@@ -59,33 +58,42 @@ const Delegates = ({ delegates }: Props) => {
 };
 
 export default function DelegatesPage({ delegates }: Props): JSX.Element {
-
-
-  if (!isDefaultNetwork()) {
-    return (
-      <PrimaryLayout>
-        <p>Loading…</p>
-      </PrimaryLayout>
-    );
-  }
+  // if (!isDefaultNetwork()) {
+  //   return (
+  //     <PrimaryLayout>
+  //       <p>Loading…</p>
+  //     </PrimaryLayout>
+  //   );
+  // }
 
   return <Delegates delegates={delegates} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates: Delegate[] = [{
-    id: 'abc', 
-    name: 'Joe Ponzi',
-    address: 'asxxasdad213',
-    description: 'Followed marc cubans advice',
-    picture: ''
-  }, {
-    id: 'a22bc', 
-    name: 'Marc Cuban',
-    address: 'asxxasdad213',
-    description: 'I got rug pulled and now i want the police here',
-    picture: ''
-  }];
+  const delegates: Delegate[] = [
+    {
+      id: 'abc',
+      name: 'Joe Ponzi',
+      address: 'asxxasdad213',
+      description: 'Followed marc cubans advice',
+      picture: ''
+    },
+    {
+      id: 'a22bc',
+      name: 'Marc Cuban',
+      address: 'asxxasdad213',
+      description: 'I got rug pulled and now i want the police here',
+      picture: ''
+    },
+    {
+      id: 'a22bcd',
+      name: 'Dai.js Test Account',
+      address: '0x051aD7842f4259608957437c46926E0FA29b182D',
+      description:
+        'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
+      picture: ''
+    }
+  ];
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
