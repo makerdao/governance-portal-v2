@@ -57,7 +57,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <PrimaryLayout sx={{ maxWidth: 'page', background: 'red' }}>
+      <PrimaryLayout sx={{ maxWidth: 'page' }}>
         <Flex sx={{ justifyContent: 'center' }}>
           <Badge
             variant="primary"

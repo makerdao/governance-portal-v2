@@ -1,5 +1,5 @@
-
-import { Heading, Box, Flex } from 'theme-ui';
+/** @jsx jsx */
+import { Heading, Box, jsx, Flex } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
 
@@ -59,8 +59,6 @@ const Delegates = ({ delegates }: Props) => {
 };
 
 export default function DelegatesPage({ delegates }: Props): JSX.Element {
-
-
   if (!isDefaultNetwork()) {
     return (
       <PrimaryLayout>
@@ -73,19 +71,22 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates: Delegate[] = [{
-    id: 'abc', 
-    name: 'Joe Ponzi',
-    address: 'asxxasdad213',
-    description: 'Followed marc cubans advice',
-    picture: ''
-  }, {
-    id: 'a22bc', 
-    name: 'Marc Cuban',
-    address: 'asxxasdad213',
-    description: 'I got rug pulled and now i want the police here',
-    picture: ''
-  }];
+  const delegates: Delegate[] = [
+    {
+      id: 'abc',
+      name: 'Joe Ponzi',
+      address: 'asxxasdad213',
+      description: 'Followed marc cubans advice',
+      picture: ''
+    },
+    {
+      id: 'a22bc',
+      name: 'Marc Cuban',
+      address: 'asxxasdad213',
+      description: 'I got rug pulled and now i want the police here',
+      picture: ''
+    }
+  ];
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
