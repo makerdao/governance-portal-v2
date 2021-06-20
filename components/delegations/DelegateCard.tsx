@@ -40,7 +40,16 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const lockMkr = async () => {
     const maker = await getMaker();
     const tx = await maker.service('voteDelegate').lock(delegate.address, 0.1);
-    console.log(tx);
+  };
+
+  const approveIou = async () => {
+    const maker = await getMaker();
+    const tx = maker.getToken('IOU').approveUnlimited(delegate.address);
+  };
+
+  const freeMkr = async () => {
+    const maker = await getMaker();
+    const tx = await maker.service('voteDelegate').free(delegate.address, 0.1);
   };
 
   return (
@@ -63,6 +72,8 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
         <Text>MKR delegated: {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}</Text>
         <Button onClick={approveMkr}>Approve MKR</Button>
         <Button onClick={lockMkr}>Lock 0.1 MKR</Button>
+        <Button onClick={approveIou}>Approve IOU</Button>
+        <Button onClick={freeMkr}>Free 0.1 MKR</Button>
       </Box>
     </Box>
   );
