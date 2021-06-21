@@ -7,6 +7,7 @@ import { Delegate } from 'types/delegate';
 import { getEtherscanLink } from '../../lib/utils';
 import DelegatePicture from './DelegatePicture';
 import DelegateModal from './DelegateModal';
+import UndelegateModal from './UndelegateModal';
 
 type PropTypes = {
   delegate: Delegate;
@@ -14,6 +15,7 @@ type PropTypes = {
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
+  const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const delegateAddress = delegate.address;
@@ -35,26 +37,6 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
       return balance;
     }
   );
-
-  const approveMkr = async () => {
-    const maker = await getMaker();
-    const tx = maker.getToken(MKR).approveUnlimited(delegate.address);
-  };
-
-  const lockMkr = async () => {
-    const maker = await getMaker();
-    const tx = await maker.service('voteDelegate').lock(delegate.address, 0.1);
-  };
-
-  const approveIou = async () => {
-    const maker = await getMaker();
-    const tx = maker.getToken('IOU').approveUnlimited(delegate.address);
-  };
-
-  const freeMkr = async () => {
-    const maker = await getMaker();
-    const tx = await maker.service('voteDelegate').free(delegate.address, 0.1);
-  };
 
   return (
     <Box sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}>
@@ -90,15 +72,21 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
         </Text>
         <Text>Your MKR balance: {mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}</Text>
         <Text>MKR delegated: {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}</Text>
-        <Button onClick={approveMkr}>Approve MKR</Button>
         <Button onClick={() => setShowDelegateModal(true)}>Delegate</Button>
-        <Button onClick={approveIou}>Approve IOU</Button>
-        <Button onClick={freeMkr}>Free 0.1 MKR</Button>
+        <Button onClick={() => setShowUndelegateModal(true)} variant="outline">
+          Undelegate
+        </Button>
       </Box>
+      {/* TODO: consider using same component for both delegate + undelegate */}
       <DelegateModal
         delegate={delegate}
         isOpen={showDelegateModal}
         onDismiss={() => setShowDelegateModal(false)}
+      />
+      <UndelegateModal
+        delegate={delegate}
+        isOpen={showUndelegateModal}
+        onDismiss={() => setShowUndelegateModal(false)}
       />
     </Box>
   );

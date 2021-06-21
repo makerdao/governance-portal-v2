@@ -24,20 +24,21 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
   const bpi = useBreakpointIndex();
   const input = useRef<HTMLInputElement>(null);
 
+  // TODO: update to delegate contract balance for this user
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
   );
 
   // TODO: add approval tx and state
-  const approveMkr = async () => {
+  const approveIou = async () => {
     const maker = await getMaker();
-    const tx = maker.getToken(MKR).approveUnlimited(delegate.address);
+    const tx = maker.getToken('IOU').approveUnlimited(delegate.address);
   };
 
-  const lockMkr = async () => {
+  const freeMkr = async () => {
     const maker = await getMaker();
     // TODO: track this tx property in tx store
-    const tx = await maker.service('voteDelegate').lock(delegate.address, mkrToDeposit);
+    const tx = await maker.service('voteDelegate').free(delegate.address, 0.1);
   };
 
   return (
@@ -48,7 +49,7 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
         onDismiss={onDismiss}
       >
         <DialogContent
-          aria-label="Delegate modal"
+          aria-label="Undelegate modal"
           sx={
             bpi === 0
               ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
@@ -63,10 +64,10 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
         >
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
-              Deposit into delegate contract
+              Withdraw from delegate contract
             </Text>
             <Text sx={{ color: 'secondaryEmphasis', mt: 2 }}>
-              Input the amount of MKR to deposit into the delegate contract.
+              Input the amount of MKR to withdraw from the delegate contract.
             </Text>
             <Box sx={{ mt: 3, width: '20rem' }}>
               <Flex sx={{ border: '1px solid #D8E0E3', justifyContent: 'space-between' }}>
@@ -116,8 +117,8 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
                   </Box>
                 )}
               </Flex>
-              <Button onClick={lockMkr} sx={{ width: '100%' }}>
-                Delegate MKR
+              <Button onClick={freeMkr} sx={{ width: '100%' }}>
+                Undelegate MKR
               </Button>
             </Box>
           </Flex>
