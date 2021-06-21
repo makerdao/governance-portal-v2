@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 
 import Stack from '../layouts/Stack';
 import { SpellStateDiff } from 'types/spellStateDiff';
-import { formatAddress } from '../../lib/utils';
+import { formatAddress } from 'lib/utils';
 import { ethers } from 'ethers';
 
 const Header = ({ stateDiff }) => (

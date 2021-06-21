@@ -3,15 +3,15 @@
 import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
 import Head from 'next/head';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import PrimaryLayout from '@components/layouts/Primary';
-import Stack from '@components/layouts/Stack';
+import PrimaryLayout from 'components/layouts/Primary';
+import Stack from 'components/layouts/Stack';
 import { useState } from 'react';
-import { URL_REGEX } from '../../lib/constants';
+import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
-import { markdownToHtml } from '../../lib/utils';
-import { getEtherscanLink } from '../../lib/utils';
-import { SupportedNetworks } from '../../lib/constants';
+import { markdownToHtml } from 'lib/utils';
+import { getEtherscanLink } from 'lib/utils';
+import { SupportedNetworks } from 'lib/constants';
 
 const ExecutiveCreate = () => {
   const bpi = useBreakpointIndex();

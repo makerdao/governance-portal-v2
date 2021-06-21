@@ -6,18 +6,18 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 import Stack from '../layouts/Stack';
-import getMaker, { MKR, getNetwork } from '../../lib/maker';
-import useAccountsStore from '@stores/accounts';
+import getMaker, { MKR, getNetwork } from 'lib/maker';
+import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
-import { fadeIn, slideUp } from '../../lib/keyframes';
+import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from '@stores/transactions';
+import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
-import oldChiefAbi from '../../lib/abis/oldChiefAbi.json';
-import oldVoteProxyAbi from '../../lib/abis/oldVoteProxyAbi.json';
-import oldIouAbi from '../../lib/abis/oldIouAbi.json';
-import { oldChiefAddress, oldIouAddress } from '../../lib/constants';
+import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
+import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
+import oldIouAbi from 'lib/abis/oldIouAbi.json';
+import { oldChiefAddress, oldIouAddress } from 'lib/constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);

@@ -3,9 +3,9 @@ import invariant from 'tiny-invariant';
 
 import withApiHandler from '../../_lib/withApiHandler';
 import { getConnectedMakerObj } from '../../_lib/utils';
-import { isSupportedNetwork } from '../../../../lib/maker';
-import { DEFAULT_NETWORK } from '../../../../lib/constants';
-import { backoffRetry } from '../../../../lib/utils';
+import { isSupportedNetwork } from 'lib/maker';
+import { DEFAULT_NETWORK } from 'lib/constants';
+import { backoffRetry } from 'lib/utils';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {

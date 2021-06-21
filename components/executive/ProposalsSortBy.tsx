@@ -3,7 +3,7 @@ import { Flex, Text, jsx } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { MenuItem } from '@reach/menu-button';
 
-import useUiFiltersStore from '@stores/uiFilters';
+import useUiFiltersStore from 'stores/uiFilters';
 import FilterButton from '../FilterButton';
 
 export default function ProposalsSortBy(props): JSX.Element {

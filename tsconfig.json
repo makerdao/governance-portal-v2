@@ -15,11 +15,6 @@
     "jsx": "preserve",
     "strictNullChecks": true,
     "baseUrl": "./",
-    "paths": {
-      "@lib/*": ["lib/*"],
-      "@components/*": ["components/*"],
-      "@stores/*": ["stores/*"],
-    },
     "typeRoots": [
       "./types"
     ]

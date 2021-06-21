@@ -2,8 +2,8 @@
 import { Flex, Button, Text, jsx, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from '../../../lib/maker';
-import { getEtherscanLink } from '../../../lib/utils';
+import { getNetwork } from 'lib/maker';
+import { getEtherscanLink } from 'lib/utils';
 import { TXMined } from 'types/transaction';
 
 const BurnTxSuccess = ({ tx, close }) => (

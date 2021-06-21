@@ -3,8 +3,8 @@
 import { Flex, Text, Spinner, Button, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getEtherscanLink } from '../../lib/utils';
-import { getNetwork } from '../../lib/maker';
+import { getEtherscanLink } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
 import { Transaction, TXPending } from 'types/transaction';
 
 type Props = {

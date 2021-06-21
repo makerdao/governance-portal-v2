@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import map from 'lodash/map';
 import omitBy from 'lodash/omitBy';
 
-import { getNumberWithOrdinal } from '../../lib/utils';
+import { getNumberWithOrdinal } from 'lib/utils';
 import { Poll } from 'types/poll';
 import Stack from '../layouts/Stack';
 import mixpanel from 'mixpanel-browser';

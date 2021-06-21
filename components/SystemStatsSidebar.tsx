@@ -5,8 +5,8 @@ import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
 
 import Stack from './layouts/Stack';
-import getMaker, { DAI, getNetwork } from '@lib/maker';
-import { bigNumberKFormat, formatAddress, getEtherscanLink } from '@lib/utils';
+import getMaker, { DAI, getNetwork } from 'lib/maker';
+import { bigNumberKFormat, formatAddress, getEtherscanLink } from 'lib/utils';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'types/currency';
 

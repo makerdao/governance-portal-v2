@@ -3,9 +3,9 @@ import { jsx } from 'theme-ui';
 import { useEffect } from 'react';
 import lottie from 'lottie-web';
 
-import txFailedAnimation from '@lib/animation/txFailed.json';
-import txSuccessAnimation from '@lib/animation/txSuccess.json';
-import txPendingAnimation from '@lib/animation/txPending.json';
+import txFailedAnimation from 'lib/animation/txFailed.json';
+import txSuccessAnimation from 'lib/animation/txSuccess.json';
+import txPendingAnimation from 'lib/animation/txPending.json';
 
 const Failed = ({ done, ...props }: { done?: () => void }) => {
   useEffect(() => {

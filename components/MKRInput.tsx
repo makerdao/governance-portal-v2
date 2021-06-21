@@ -1,7 +1,7 @@
 import { useState, forwardRef } from 'react';
 import { Input, Text, Box } from 'theme-ui';
 
-import { MKR } from '@lib/maker';
+import { MKR } from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
 
 type Props = {

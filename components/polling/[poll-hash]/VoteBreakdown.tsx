@@ -3,7 +3,7 @@ import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import Tooltip from '../../Tooltip';
 
-import Delay from '@components/Delay';
+import Delay from 'components/Delay';
 import { PollTally } from 'types/pollTally';
 import { Poll } from 'types/poll';
 

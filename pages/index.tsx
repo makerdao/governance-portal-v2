@@ -8,22 +8,22 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork, getNetwork } from '@lib/maker';
-import { getPolls, getExecutiveProposals, getPostsAndPhotos } from '@lib/api';
-import PrimaryLayout from '@components/layouts/Primary';
-import Stack from '@components/layouts/Stack';
-import SystemStats from '@components/index/SystemStats';
-import PollPreviewCard from '@components/index/PollPreviewCard';
-import ExecutiveCard from '@components/index/ExecutiveCard';
-import IntroCard from '@components/index/IntroCard';
-import PollingIndicator from '@components/index/PollingIndicator';
-import ExecutiveIndicator from '@components/index/ExecutiveIndicator';
-import BlogPostCard from '@components/index/BlogPostCard';
+import getMaker, { isDefaultNetwork, getNetwork } from 'lib/maker';
+import { getPolls, getExecutiveProposals, getPostsAndPhotos } from 'lib/api';
+import PrimaryLayout from 'components/layouts/Primary';
+import Stack from 'components/layouts/Stack';
+import SystemStats from 'components/index/SystemStats';
+import PollPreviewCard from 'components/index/PollPreviewCard';
+import ExecutiveCard from 'components/index/ExecutiveCard';
+import IntroCard from 'components/index/IntroCard';
+import PollingIndicator from 'components/index/PollingIndicator';
+import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
+import BlogPostCard from 'components/index/BlogPostCard';
 import { CMSProposal } from 'types/proposal';
 import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
-import { initTestchainPolls } from '@lib/utils';
-import { isActivePoll } from '@lib/utils';
+import { initTestchainPolls } from 'lib/utils';
+import { isActivePoll } from 'lib/utils';
 
 type Props = {
   proposals: CMSProposal[];

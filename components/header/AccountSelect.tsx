@@ -10,18 +10,18 @@ import mixpanel from 'mixpanel-browser';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
-import getMaker, { getNetwork, chainIdToNetworkName } from '../../lib/maker';
-import { getLibrary, connectors, ConnectorName } from '../../lib/maker/web3react';
-import { syncMakerAccount, useEagerConnect } from '../../lib/maker/web3react/hooks';
-import { formatAddress } from '../../lib/utils';
-import useTransactionStore from '@stores/transactions';
-import { fadeIn, slideUp } from '../../lib/keyframes';
+import getMaker, { getNetwork, chainIdToNetworkName } from 'lib/maker';
+import { getLibrary, connectors, ConnectorName } from 'lib/maker/web3react';
+import { syncMakerAccount, useEagerConnect } from 'lib/maker/web3react/hooks';
+import { formatAddress } from 'lib/utils';
+import useTransactionStore from 'stores/transactions';
+import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import AddressIcon from './AddressIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
-import useAccountsStore from '@stores/accounts';
+import useAccountsStore from 'stores/accounts';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 

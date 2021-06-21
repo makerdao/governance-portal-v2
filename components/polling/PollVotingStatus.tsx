@@ -5,13 +5,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import isNil from 'lodash/isNil';
 
-import { isActivePoll } from '../../lib/utils';
-import getMaker from '../../lib/maker';
-import useAccountsStore from '@stores/accounts';
+import { isActivePoll } from 'lib/utils';
+import getMaker from 'lib/maker';
+import useAccountsStore from 'stores/accounts';
 import { Poll } from 'types/poll';
 import { PollVote } from 'types/pollVote';
-import useBallotStore from '@stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '@stores/transactions';
+import useBallotStore from 'stores/ballot';
+import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';

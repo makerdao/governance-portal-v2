@@ -1,7 +1,7 @@
 import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
-import getMaker from '@lib/maker';
+import getMaker from 'lib/maker';
 import { transactionsApi } from './transactions';
 import { Ballot } from 'types/ballot';
 

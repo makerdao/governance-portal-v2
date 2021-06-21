@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, jsx, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from '@lib/maker';
+import { getNetwork } from 'lib/maker';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from './polling/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from '@stores/accounts';
+import useAccountsStore from 'stores/accounts';
 
 const Header = (props): JSX.Element => {
   const network = getNetwork();

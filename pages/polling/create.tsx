@@ -5,19 +5,19 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { isDefaultNetwork, getNetwork } from '../../lib/maker';
-import PrimaryLayout from '@components/layouts/Primary';
-import SidebarLayout from '@components/layouts/Sidebar';
-import Stack from '@components/layouts/Stack';
-import Tabs from '@components/Tabs';
-import PollCreateModal from '@components/PollCreateModal';
-import SystemStatsSidebar from '@components/SystemStatsSidebar';
-import MkrLiquiditySidebar from '@components/MkrLiquiditySidebar';
-import ResourceBox from '@components/ResourceBox';
-import { validateUrl } from '../../lib/polling/validator';
+import { isDefaultNetwork, getNetwork } from 'lib/maker';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import Tabs from 'components/Tabs';
+import PollCreateModal from 'components/PollCreateModal';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
+import ResourceBox from 'components/ResourceBox';
+import { validateUrl } from 'lib/polling/validator';
 import { Poll } from 'types/poll';
 import Hash from 'ipfs-only-hash';
-import useAccountsStore from '@stores/accounts';
+import useAccountsStore from 'stores/accounts';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type

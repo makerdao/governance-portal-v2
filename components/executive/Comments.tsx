@@ -7,9 +7,9 @@ import Stack from '../layouts/Stack';
 import CommentSortBy from './CommentSortBy';
 import { Comment } from 'types/comment';
 import { Proposal } from 'types/proposal';
-import { getEtherscanLink, formatAddress, formatDateWithTime } from '../../lib/utils';
-import { getNetwork } from '../../lib/maker';
-import useUiFiltersStore from '@stores/uiFilters';
+import { getEtherscanLink, formatAddress, formatDateWithTime } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
+import useUiFiltersStore from 'stores/uiFilters';
 
 export default function CommentsTab({
   proposal,

@@ -3,7 +3,7 @@ import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from '../FilterButton';
-import useUiFiltersStore from '@stores/uiFilters';
+import useUiFiltersStore from 'stores/uiFilters';
 
 const displayDate = date => {
   try {
