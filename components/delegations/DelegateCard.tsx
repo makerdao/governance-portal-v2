@@ -3,23 +3,24 @@ import React from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../../types/delegate';
 import { getEtherscanLink } from '../../lib/utils';
 import DelegatePicture from './DelegatePicture';
 import Link from 'next/link';
 import { useState } from 'react';
+import DelegateModal from './DelegateModal';
+import UndelegateModal from './UndelegateModal';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const [showDelegateModal, setShowDelegateModal] = useState(false);
+  const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const delegateAddress = delegate.address;
-
-  // TODO : Change approver
-  const [approved, setApproved] = useState(false);
 
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
@@ -38,27 +39,6 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
       return balance;
     }
   );
-
-  const approveMkr = async () => {
-    const maker = await getMaker();
-    maker.getToken(MKR).approveUnlimited(delegate.address);
-    setApproved(true);
-  };
-
-  const lockMkr = async () => {
-    const maker = await getMaker();
-    await maker.service('voteDelegate').lock(delegate.address, 0.1);
-  };
-
-  const approveIou = async () => {
-    const maker = await getMaker();
-    maker.getToken('IOU').approveUnlimited(delegate.address);
-  };
-
-  const freeMkr = async () => {
-    const maker = await getMaker();
-    await maker.service('voteDelegate').free(delegate.address, 0.1);
-  };
 
   return (
     <Box sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}>
@@ -129,31 +109,32 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
             <Box>
               <Box sx={{ mb: 3 }}>
-                {!approved ? (
-                  <Button onClick={approveMkr} sx={{ width: '150px' }}>
-                    Approve
-                  </Button>
-                ) : (
-                  <Button onClick={lockMkr} sx={{ width: '150px' }}>
+                <Button onClick={() => setShowDelegateModal(true)} sx={{ width: '150px' }}>
                     Delegate
                   </Button>
-                )}
               </Box>
               <Box>
-                {!approved ? (
-                  <Button onClick={approveMkr} sx={{ width: '150px' }}>
-                    Approve
-                  </Button>
-                ) : (
-                  <Button variant="outline" onClick={lockMkr} sx={{ width: '150px' }}>
+              <Button variant="outline"  onClick={() => setShowUndelegateModal(true)}  sx={{ width: '150px' }}>
                     Undelegate
                   </Button>
-                )}
               </Box>
             </Box>
           </Grid>
         </Box>
       </Box>
+
+   
+      {/* TODO: consider using same component for both delegate + undelegate */}
+      <DelegateModal
+        delegate={delegate}
+        isOpen={showDelegateModal}
+        onDismiss={() => setShowDelegateModal(false)}
+      />
+      <UndelegateModal
+        delegate={delegate}
+        isOpen={showUndelegateModal}
+        onDismiss={() => setShowUndelegateModal(false)}
+      />
     </Box>
   );
 }

@@ -12,7 +12,7 @@ import SystemStatsSidebar from '../../components/SystemStatsSidebar';
 import ResourceBox from '../../components/ResourceBox';
 
 import Head from 'next/head';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../../types/delegate';
 import DelegateCard from '../../components/delegations/DelegateCard';
 import { fetchDelegates } from '../../lib/delegates/fetchDelegates';
 
