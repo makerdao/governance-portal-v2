@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import getMaker, { MKR } from '../../lib/maker';
 import { fadeIn, slideUp } from '../../lib/keyframes';
 import { changeInputValue } from '../../lib/utils';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../../types/delegate';
 import useAccountsStore from '../../stores/accounts';
 import MKRInput from '../MKRInput';
 

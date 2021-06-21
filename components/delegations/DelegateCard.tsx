@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../../types/delegate';
 import { getEtherscanLink } from '../../lib/utils';
 import DelegatePicture from './DelegatePicture';
 import DelegateModal from './DelegateModal';
