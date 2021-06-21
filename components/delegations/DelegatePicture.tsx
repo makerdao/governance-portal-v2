@@ -3,7 +3,7 @@ import { Delegate } from '../../types/delegate';
 
 export default function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
   return (
-    <Box>
+    <Box sx={{ width: '41px', position: 'relative'}}> 
       <Image
         src={delegate.picture || '/assets/empty-profile-picture.svg'}
         sx={{
@@ -12,6 +12,12 @@ export default function DelegatePicture({ delegate }: { delegate: Delegate }): R
           borderRadius: '100%'
         }}
       />
+      <Image src="/assets/verified-check.svg"  sx={{
+        position: 'absolute', 
+        bottom : '5px',
+        right: '0',
+        width: '12px'
+      }} />
     </Box>
   );
 }

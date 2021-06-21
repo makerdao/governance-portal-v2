@@ -14,6 +14,7 @@ import ResourceBox from '../../components/ResourceBox';
 import Head from 'next/head';
 import { Delegate } from 'types/delegate';
 import DelegateCard from '../../components/delegations/DelegateCard';
+import { fetchDelegates } from '../../lib/delegates/fetchDelegates';
 
 type Props = {
   delegates: Delegate[];
@@ -71,16 +72,7 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates: Delegate[] = [
-    {
-      id: 'a22bcd',
-      name: 'Dai.js Test Account',
-      address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-      description:
-        'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-      picture: ''
-    }
-  ];
+  const delegates = await fetchDelegates();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
