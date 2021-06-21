@@ -1,17 +1,19 @@
 import { Box, Button, Flex, Text, Link as ExternalLink } from '@theme-ui/components';
-import React from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from '../../lib/maker';
 import useAccountsStore from '../../stores/accounts';
 import { Delegate } from 'types/delegate';
 import { getEtherscanLink } from '../../lib/utils';
 import DelegatePicture from './DelegatePicture';
+import DelegateModal from './DelegateModal';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const [showDelegateModal, setShowDelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const delegateAddress = delegate.address;
@@ -89,10 +91,15 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
         <Text>Your MKR balance: {mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}</Text>
         <Text>MKR delegated: {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}</Text>
         <Button onClick={approveMkr}>Approve MKR</Button>
-        <Button onClick={lockMkr}>Lock 0.1 MKR</Button>
+        <Button onClick={() => setShowDelegateModal(true)}>Delegate</Button>
         <Button onClick={approveIou}>Approve IOU</Button>
         <Button onClick={freeMkr}>Free 0.1 MKR</Button>
       </Box>
+      <DelegateModal
+        delegate={delegate}
+        isOpen={showDelegateModal}
+        onDismiss={() => setShowDelegateModal(false)}
+      />
     </Box>
   );
 }
