@@ -1,4 +1,6 @@
-import { Box, Button, Grid, Text, Link as ExternalLink } from '@theme-ui/components';
+/** @jsx jsx */
+
+import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import React from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from 'lib/maker';
@@ -12,7 +14,7 @@ import DelegateModal from './DelegateModal';
 import UndelegateModal from './UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
-
+import Icon from 'components/Icon';
 
 type PropTypes = {
   delegate: Delegate;
@@ -43,6 +45,18 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
     }
   );
 
+  const styles = {
+    dateWrapper: {
+      display: 'flex',
+      alignItems: 'center'
+    },
+    dateIcon: {
+      display: 'flex',
+      alignContent: 'center',
+      marginRight: 1
+    }
+  };
+
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -68,33 +82,56 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            {delegate.status === DelegateStatusEnum.active && <Link href={`/delegates/${delegate.address}`}>
-              <a title="Profile details">
-                <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
-                  View Profile Details
-                </Button>
-              </a>
-            </Link>}
+            {delegate.status === DelegateStatusEnum.active && (
+              <Link href={`/delegates/${delegate.address}`}>
+                <a title="Profile details">
+                  <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
+                    View Profile Details
+                  </Button>
+                </a>
+              </Link>
+            )}
 
             {delegate.status === DelegateStatusEnum.unrecognized && (
               <Box>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
+                <Box sx={styles.dateWrapper}>
+                  <Box sx={styles.dateIcon}>
+                    <Icon name="calendar" sx={{ fill: 'primary', stroke: 'primary' }} />
+                  </Box>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
                     LAST VOTED {delegate.lastVote.toDateString()}
                   </Text>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
+                </Box>
+                <Box sx={styles.dateWrapper}>
+                  <Box sx={styles.dateIcon}>
+                    <Icon name="calendarcross" sx={{ fill: 'primary', stroke: 'primary' }} />
+                  </Box>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
                     EXPIRES {delegate.contractExpireDate.toDateString()}
                   </Text>
+                </Box>
+               
               </Box>
             )}
 
             {delegate.status === DelegateStatusEnum.expired && (
               <Box>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
+                <Box sx={styles.dateWrapper}>
+                  <Box sx={styles.dateIcon}>
+                    <Icon name="calendar" sx={{ fill: '#D8E0E3', stroke: '#D8E0E3' }} />
+                  </Box>
+                  <Text variant="secondary" color="#D8E0E3" sx={{ textTransform: 'uppercase' }}>
                     LAST VOTED {delegate.lastVote.toDateString()}
                   </Text>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
+                </Box>
+                <Box sx={styles.dateWrapper}>
+                  <Box sx={styles.dateIcon}>
+                    <Icon name="calendarcross" sx={{ fill: 'error', stroke: 'error' }} />
+                  </Box>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
                     CONTRACT DELEGATION EXPIRED
                   </Text>
+                </Box>
               </Box>
             )}
           </Box>
@@ -107,13 +144,17 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary" color="onSecondary">Total MKR delegated</Text>
+                <Text variant="secondary" color="onSecondary">
+                  Total MKR delegated
+                </Text>
               </Box>
               <Box>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   0.51%
                 </Text>
-                <Text variant="secondary" color="onSecondary">Pool participation</Text>
+                <Text variant="secondary" color="onSecondary">
+                  Pool participation
+                </Text>
               </Box>
             </Box>
 
@@ -122,32 +163,42 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary" color="onSecondary">MKR delegated by you</Text>
+                <Text variant="secondary" color="onSecondary">
+                  MKR delegated by you
+                </Text>
               </Box>
               <Box>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   23.23%
                 </Text>
-                <Text variant="secondary" color="onSecondary">Executive participation</Text>
+                <Text variant="secondary" color="onSecondary">
+                  Executive participation
+                </Text>
               </Box>
             </Box>
 
-            <Box sx={{ textAlign: 'right' }}>
-              <Box sx={{ mb: 3 }}>
-                <Button variant="primaryLarge" onClick={() => setShowDelegateModal(true)} sx={{ width: '150px' }}>
-                  Delegate
-                </Button>
+            {account && (
+              <Box sx={{ textAlign: 'right' }}>
+                <Box sx={{ mb: 3 }}>
+                  <Button
+                    variant="primaryLarge"
+                    onClick={() => setShowDelegateModal(true)}
+                    sx={{ width: '150px' }}
+                  >
+                    Delegate
+                  </Button>
+                </Box>
+                <Box>
+                  <Button
+                    variant="primaryOutline"
+                    onClick={() => setShowUndelegateModal(true)}
+                    sx={{ width: '150px' }}
+                  >
+                    Undelegate
+                  </Button>
+                </Box>
               </Box>
-              <Box>
-                <Button
-                  variant="primaryOutline"
-                  onClick={() => setShowUndelegateModal(true)}
-                  sx={{ width: '150px' }}
-                >
-                  Undelegate
-                </Button>
-              </Box>
-            </Box>
+            )}
           </Grid>
         </Box>
       </Box>

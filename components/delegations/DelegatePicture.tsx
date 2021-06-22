@@ -1,3 +1,4 @@
+import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { Box, Image } from 'theme-ui';
 import { Delegate } from '../../types/delegate';
 
@@ -12,7 +13,7 @@ export default function DelegatePicture({ delegate }: { delegate: Delegate }): R
           borderRadius: '100%'
         }}
       />
-      <Image
+      {delegate.status === DelegateStatusEnum.active && <Image
         src="/assets/verified-check.svg"
         sx={{
           position: 'absolute',
@@ -20,7 +21,7 @@ export default function DelegatePicture({ delegate }: { delegate: Delegate }): R
           right: '0',
           width: '12px'
         }}
-      />
+      />}
     </Box>
   );
 }
