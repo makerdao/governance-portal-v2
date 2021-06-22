@@ -8,7 +8,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/setup', '/helpers', '/__tests__/__mocks__', '__tests__/lib/polling/poll-327.js', '__tests__/lib/polling/poll-431.js'],
   transformIgnorePatterns: ['/node_modules/'],
-  moduleDirectories: ['node_modules'],
+  moduleDirectories: ['node_modules', '.'],
   globals: {
     __TESTCHAIN__: true
   }
