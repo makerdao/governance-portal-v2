@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Box, Flex, jsx, SxStyleProp } from 'theme-ui';
 
-import { fadeIn } from '../../lib/keyframes';
+import { fadeIn } from 'lib/keyframes';
 import Footer from '../Footer';
 
 type Props = {

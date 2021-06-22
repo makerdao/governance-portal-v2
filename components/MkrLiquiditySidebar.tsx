@@ -3,8 +3,8 @@ import { Card, Flex, Text, Box, Heading, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import Stack from './layouts/Stack';
-import getMaker from '../lib/maker';
-import { MKR } from '../lib/maker';
+import getMaker from 'lib/maker';
+import { MKR } from 'lib/maker';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';

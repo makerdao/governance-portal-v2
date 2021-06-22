@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getNumberWithOrdinal } from '../../lib/utils';
-import { ABSTAIN } from '../../lib/constants';
+import { getNumberWithOrdinal } from 'lib/utils';
+import { ABSTAIN } from 'lib/constants';
 import mixpanel from 'mixpanel-browser';
 
 const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {

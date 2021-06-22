@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Card } from 'theme-ui';
-import { markdownToHtml } from '../lib/utils';
+import { markdownToHtml } from 'lib/utils';
 import useSWR from 'swr';
 
 const terms = `

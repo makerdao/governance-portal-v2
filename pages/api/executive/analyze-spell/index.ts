@@ -4,9 +4,9 @@ import zipObject from 'lodash/zipObject';
 import withApiHandler from '../../_lib/withApiHandler';
 import { analyzeSpell } from './[address]';
 import { getConnectedMakerObj } from '../../_lib/utils';
-import { DEFAULT_NETWORK } from '../../../../lib/constants';
+import { DEFAULT_NETWORK } from 'lib/constants';
 import invariant from 'tiny-invariant';
-import { isSupportedNetwork } from '../../../../lib/maker';
+import { isSupportedNetwork } from 'lib/maker';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 
 import { connectToDatabase } from '../../../_lib/utils';
 import withApiHandler from '../../../_lib/withApiHandler';
-import { SupportedNetworks } from '../../../../../lib/constants';
+import { SupportedNetworks } from 'lib/constants';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;

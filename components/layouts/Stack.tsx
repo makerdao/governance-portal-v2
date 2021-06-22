@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex } from 'theme-ui';
-import { styledClone } from '../../lib/utils';
+import { styledClone } from 'lib/utils';
 import { ThemeUICSSProperties } from '@theme-ui/css';
 
 type Props = ThemeUICSSProperties & {

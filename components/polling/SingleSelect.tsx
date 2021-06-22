@@ -4,8 +4,8 @@ import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption
 import { Icon } from '@makerdao/dai-ui-icons';
 import map from 'lodash/map';
 
-import Poll from '../../types/poll';
-import { ABSTAIN } from '../../lib/constants';
+import { Poll } from 'types/poll';
+import { ABSTAIN } from 'lib/constants';
 
 type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
 export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
