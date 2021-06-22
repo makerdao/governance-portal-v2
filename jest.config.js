@@ -13,8 +13,8 @@ module.exports = {
     __TESTCHAIN__: true
   },
   moduleNameMapper: {
-    '^@/components(.*)$': '<rootDir>/components$1',
-    '^@/lib(.*)$': '<rootDir>/lib$1',
-    '^@/stores(.*)$': '<rootDir>/stores$1',
+    '^components(.*)$': '<rootDir>/components$1',
+    '^lib(.*)$': '<rootDir>/lib$1',
+    '^stores(.*)$': '<rootDir>/stores$1',
   }
 };
