@@ -3,6 +3,7 @@
   "license": "AGPL-3.0-only",
   "version": "0.1.0",
   "scripts": {
+    "prepare": "npx husky install",
     "dev": "next",
     "dev-https": "node server.js",
     "build": "next build",
