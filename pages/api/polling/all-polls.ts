@@ -1,10 +1,10 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { parsePollsMetadata } from '../../../lib/api';
+import { parsePollsMetadata } from 'lib/api';
 import { getConnectedMakerObj } from '../_lib/utils';
-import { isSupportedNetwork } from '../../../lib/maker';
-import { DEFAULT_NETWORK } from '../../../lib/constants';
+import { isSupportedNetwork } from 'lib/maker';
+import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from '../_lib/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {

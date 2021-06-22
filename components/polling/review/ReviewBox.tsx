@@ -6,12 +6,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { getEtherscanLink } from '../../../lib/utils';
-import { getNetwork } from '../../../lib/maker';
-import Poll from '../../../types/poll';
-import { TXMined } from '../../../types/transaction';
-import useBallotStore from '../../../stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '../../../stores/transactions';
+import { getEtherscanLink } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
+import { Poll } from 'types/poll';
+import { TXMined } from 'types/transaction';
+import useBallotStore from 'stores/ballot';
+import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';

@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
-import { CMSProposal } from '../../types/proposal';
-import getMaker, { getNetwork } from '../../lib/maker';
-import useAccountsStore from '../../stores/accounts';
-import SpellData from '../../types/spellData';
-import { fetchJson } from '../../lib/utils';
+import { CMSProposal } from 'types/proposal';
+import getMaker, { getNetwork } from 'lib/maker';
+import useAccountsStore from 'stores/accounts';
+import { SpellData } from 'types/spellData';
+import { fetchJson } from 'lib/utils';
 
 type Props = {
   numProposals: number;

@@ -3,12 +3,12 @@ import { Box, Text, Flex, jsx } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 import useSWR from 'swr';
 
-import Poll from '../../types/poll';
-import PollVote from '../../types/pollVote';
-import Ballot from '../../types/ballot';
-import getMaker from '../../lib/maker';
-import { isActivePoll, findPollById } from '../../lib/utils';
-import useAccountsStore from '../../stores/accounts';
+import { Poll } from 'types/poll';
+import { PollVote } from 'types/pollVote';
+import { Ballot } from 'types/ballot';
+import getMaker from 'lib/maker';
+import { isActivePoll, findPollById } from 'lib/utils';
+import useAccountsStore from 'stores/accounts';
 
 type Props = { ballot: Ballot; polls: Poll[]; activePolls: Poll[] };
 

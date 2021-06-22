@@ -2,7 +2,7 @@ import { Flex, Checkbox, Label } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from '../FilterButton';
-import useUiFiltersStore from '../../stores/uiFilters';
+import useUiFiltersStore from 'stores/uiFilters';
 
 export default function CategoryFilter({ categories, ...props }: { categories: string[] }) {
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Flex } from 'theme-ui';
-import { styledClone } from '../../lib/utils';
-import theme from '../../lib/theme';
+import { styledClone } from 'lib/utils';
+import theme from 'lib/theme';
 
 type Props = {
   children: React.ReactNode;

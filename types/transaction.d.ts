@@ -37,6 +37,4 @@ export type TXError = {
   errorType: string;
 };
 
-type TX = TXInitialized | TXPending | TXMined | TXError;
-
-export default TX;
+export type Transaction = TXInitialized | TXPending | TXMined | TXError;

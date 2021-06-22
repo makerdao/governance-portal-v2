@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { connectToDatabase } from '../../../_lib/utils';
 import withApiHandler from '../../../_lib/withApiHandler';
-import { SupportedNetworks } from '../../../../../lib/constants';
+import { SupportedNetworks } from 'lib/constants';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

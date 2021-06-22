@@ -14,6 +14,4 @@ export type RawAddressProposal = {
   key: string;
 };
 
-type Proposal = CMSProposal | RawAddressProposal;
-
-export default Proposal;
+export type Proposal = CMSProposal | RawAddressProposal;
