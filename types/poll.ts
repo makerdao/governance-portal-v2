@@ -7,8 +7,8 @@ type Poll = {
   pollId: number;
   summary: string;
   options: { [optionId: string]: string };
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
   discussionLink: string | null;
   voteType: VoteTypes;
   categories: string[];
@@ -17,6 +17,7 @@ type Poll = {
     prev: Poll | null;
     next: Poll | null;
   };
+  url?: string;
 };
 
 export default Poll;
@@ -24,7 +25,7 @@ export default Poll;
 export type PartialPoll = {
   pollId: number;
   multiHash: string;
-  startDate: number;
-  endDate: number;
+  startDate: Date;
+  endDate: Date;
   url: string;
 };

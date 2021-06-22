@@ -55,23 +55,15 @@ describe('emergency shutdown render', () => {
     getByTestId('progress-ring');
   });
 
-  //temporarily skip while we fix spock
-  xtest('show esm history', async () => {
+  test('show esm history', async () => {
     jest.setTimeout(10000);
     const { findByText } = renderWithTheme(<ESModule />);
 
     await findByText('ESM History');
-    await findByText('Dec 5, 2019, 11:04 UTC', {}, { timeout: 5000 });
+    await findByText('Jun 20, 2021, 15:20 UTC', {}, { timeout: 5000 });
   });
 
-  test('show "Burn your MKR" button', async () => {
-    jest.setTimeout(10000);
-    const { findByText } = renderWithTheme(<ESModule />);
-
-    await findByText('Burn Your MKR', {}, { timeout: 5000 });
-  });
-
-  test('Burn MKR Modal Flow', async () => {
+  test.only('Burn MKR Modal Flow', async () => {
     jest.setTimeout(10000);
     const token = maker.service('smartContract').getContract('MCD_GOV');
     const account = maker.currentAccount();

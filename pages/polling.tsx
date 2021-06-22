@@ -4,6 +4,7 @@ import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
@@ -36,24 +37,18 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [
-    startDate,
-    endDate,
-    categoryFilter,
-    showHistorical,
-    setShowHistorical,
-    resetPollFilters
-  ] = useUiFiltersStore(
-    state => [
-      state.pollFilters.startDate,
-      state.pollFilters.endDate,
-      state.pollFilters.categoryFilter,
-      state.pollFilters.showHistorical,
-      state.setShowHistorical,
-      state.resetPollFilters
-    ],
-    shallow
-  );
+  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
+    useUiFiltersStore(
+      state => [
+        state.pollFilters.startDate,
+        state.pollFilters.endDate,
+        state.pollFilters.categoryFilter,
+        state.pollFilters.showHistorical,
+        state.setShowHistorical,
+        state.resetPollFilters
+      ],
+      shallow
+    );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);

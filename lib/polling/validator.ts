@@ -28,7 +28,7 @@ type ValidationResult = {
 
 export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
-  const text = await resp.json();
+  const text = await resp.text();
   const result = validateText(text);
   if (result.valid && poll) result.parsedData = parsePollMetadata(poll, text);
   return result;

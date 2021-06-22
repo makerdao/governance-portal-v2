@@ -7,9 +7,12 @@ import Skeleton from 'react-loading-skeleton';
 import Stack from './layouts/Stack';
 import getMaker, { DAI, getNetwork } from '../lib/maker';
 import { bigNumberKFormat, formatAddress, getEtherscanLink } from '../lib/utils';
+import BigNumber from 'bignumber.js';
 import CurrencyObject from '../types/currency';
 
-async function getSystemStats(): Promise<CurrencyObject[]> {
+async function getSystemStats(): Promise<
+  [CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]
+> {
   const maker = await getMaker();
   const hat = await maker.service('chief').getHat();
   return Promise.all([
@@ -39,7 +42,10 @@ type StatField =
   | 'system surplus';
 
 export default function SystemStatsSidebar({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
-  const { data } = useSWR<CurrencyObject[]>('/system-stats-sidebar', getSystemStats);
+  const { data } = useSWR<[CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
+    '/system-stats-sidebar',
+    getSystemStats
+  );
   const { data: chiefAddress } = useSWR<string>('/chief-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('MCD_ADM').address)
   );
@@ -88,7 +94,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {data ? (
+          {mkrOnHat ? (
             `${mkrOnHat.toBigNumber().toFormat(2)} MKR`
           ) : (
             <Box sx={{ width: 6 }}>
@@ -103,8 +109,8 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {data ? (
-            `${savingsRate.toFixed(2)}%`
+          {savingsRate ? (
+            `${savingsRate.multipliedBy(100).toFixed(2)}%`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -118,7 +124,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {data ? (
+          {totalDai ? (
             `${bigNumberKFormat(totalDai)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>
@@ -133,7 +139,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {data ? (
+          {debtCeiling ? (
             `${bigNumberKFormat(debtCeiling)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>
@@ -148,7 +154,7 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {data ? (
+          {systemSurplus ? (
             `${systemSurplus.toBigNumber().toFormat(0)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>

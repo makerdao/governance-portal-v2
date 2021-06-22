@@ -1,4 +1,5 @@
-import CurrencyObject from './currency'
+import CurrencyObject from './currency';
+
 type ESModuleObject = {
   totalStaked: () => CurrencyObject;
   canFire: () => boolean;
@@ -6,7 +7,6 @@ type ESModuleObject = {
   fired: () => boolean;
   mkrInEsm: () => CurrencyObject;
   cageTime: () => string;
-
   // toString: () => string;
   // toBigNumber: () => any;
   mul: (n: string | number | CurrencyObject) => CurrencyObject;
@@ -23,3 +23,10 @@ type ESModuleObject = {
 };
 
 export default ESModuleObject;
+
+export type StakingHistoryRow = {
+  transactionHash: string;
+  senderAddress: string;
+  amount: CurrencyObject;
+  time: string;
+};

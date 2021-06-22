@@ -1,6 +1,6 @@
 import { parsePollMetadata } from '../../../lib/polling/parser';
-import pollJson327 from './poll-327.json';
-import pollJson431 from './poll-431.json';
+import pollJson327 from './poll-327.js';
+import pollJson431 from './poll-431.js';
 import fs from 'fs';
 import { PartialPoll } from '../../../types/poll';
 import matter from 'gray-matter';
@@ -14,8 +14,8 @@ test('return the expected values', () => {
     expect.objectContaining({
       pollId: 431,
       multiHash: 'QmWPAu5zvDkBeVKqq9MGy4sYBgQfm5H1BtrYENMmq9J7xA',
-      startDate: '1610985600',
-      endDate: '1611244800',
+      startDate: new Date(1610985600 * 1000),
+      endDate: new Date(1611244800 * 1000),
       url:
         'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Adjust%20the%20Dust%20Parameter%20-%20January%2018%2C%202021.md',
       slug: 'QmWPAu5z',
@@ -36,8 +36,8 @@ test('return the expected values for an old uncategorized poll', () => {
     expect.objectContaining({
       pollId: 327,
       multiHash: 'QmXhKW6B1QuuMoTkvnx2V4JESkiVWWhgmHXK6JQkkgERGH',
-      startDate: '1601913600',
-      endDate: '1602172800',
+      startDate: new Date(1601913600 * 1000),
+      endDate: new Date(1602172800 * 1000),
       url:
         'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/Add%20an%20ETH-B%20Vault%20Type%20-%20October%205%2C%202020.md',
       slug: 'QmXhKW6B',
