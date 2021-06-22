@@ -3,7 +3,7 @@ import React from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
-import { Delegate, DelegateStatus } from 'types/delegate';
+import { Delegate } from 'types/delegate';
 import { getEtherscanLink } from 'lib/utils';
 import DelegatePicture from './DelegatePicture';
 import Link from 'next/link';
@@ -11,6 +11,8 @@ import { useState } from 'react';
 import DelegateModal from './DelegateModal';
 import UndelegateModal from './UndelegateModal';
 import { limitString } from 'lib/string';
+import { DelegateStatusEnum } from 'lib/delegates/constants';
+
 
 type PropTypes = {
   delegate: Delegate;
@@ -66,7 +68,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            {delegate.status === DelegateStatus.active && <Link href={`/delegates/${delegate.address}`}>
+            {delegate.status === DelegateStatusEnum.active && <Link href={`/delegates/${delegate.address}`}>
               <a title="Profile details">
                 <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
                   View Profile Details
@@ -74,23 +76,23 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </a>
             </Link>}
 
-            {delegate.status === DelegateStatus.unrecognized && (
+            {delegate.status === DelegateStatusEnum.unrecognized && (
               <Box>
-                  <Text>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
                     LAST VOTED {delegate.lastVote.toDateString()}
                   </Text>
-                  <Text>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
                     EXPIRES {delegate.contractExpireDate.toDateString()}
                   </Text>
               </Box>
             )}
 
-            {delegate.status === DelegateStatus.expired && (
+            {delegate.status === DelegateStatusEnum.expired && (
               <Box>
-                  <Text>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
                     LAST VOTED {delegate.lastVote.toDateString()}
                   </Text>
-                  <Text>
+                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase'}}>
                     CONTRACT DELEGATION EXPIRED
                   </Text>
               </Box>
@@ -105,13 +107,13 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary">Total MKR delegated</Text>
+                <Text variant="secondary" color="onSecondary">Total MKR delegated</Text>
               </Box>
               <Box>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   0.51%
                 </Text>
-                <Text variant="secondary">Pool participation</Text>
+                <Text variant="secondary" color="onSecondary">Pool participation</Text>
               </Box>
             </Box>
 
@@ -120,13 +122,13 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary">MKR delegated by you</Text>
+                <Text variant="secondary" color="onSecondary">MKR delegated by you</Text>
               </Box>
               <Box>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   23.23%
                 </Text>
-                <Text variant="secondary">Executive participation</Text>
+                <Text variant="secondary" color="onSecondary">Executive participation</Text>
               </Box>
             </Box>
 

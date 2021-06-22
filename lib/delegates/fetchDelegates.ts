@@ -1,4 +1,5 @@
-import { Delegate, DelegateStatus } from '../../types/delegate';
+import { Delegate } from '../../types/delegate';
+import { DelegateStatusEnum } from './constants';
 
 const delegates: Delegate[] = [
   {
@@ -8,7 +9,7 @@ const delegates: Delegate[] = [
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     picture: '',
-    status: DelegateStatus.active,
+    status: DelegateStatusEnum.active,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },
@@ -18,7 +19,7 @@ const delegates: Delegate[] = [
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description: 'Another profile',
     picture: 'https://i.pravatar.cc/300',
-    status: DelegateStatus.active,
+    status: DelegateStatusEnum.active,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },
@@ -28,7 +29,7 @@ const delegates: Delegate[] = [
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description: 'Mr delegate',
     picture: 'https://i.pravatar.cc/300',
-    status: DelegateStatus.active,
+    status: DelegateStatusEnum.active,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },
@@ -39,7 +40,7 @@ const delegates: Delegate[] = [
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     picture: '',
-    status: DelegateStatus.active,
+    status: DelegateStatusEnum.active,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },
@@ -50,7 +51,7 @@ const delegates: Delegate[] = [
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     picture: '',
-    status: DelegateStatus.unrecognized,
+    status: DelegateStatusEnum.unrecognized,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },{
@@ -60,7 +61,7 @@ const delegates: Delegate[] = [
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     picture: '',
-    status: DelegateStatus.unrecognized,
+    status: DelegateStatusEnum.unrecognized,
     lastVote: new Date(),
     contractExpireDate: new Date()
   },{
@@ -70,7 +71,7 @@ const delegates: Delegate[] = [
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     picture: '',
-    status: DelegateStatus.expired,
+    status: DelegateStatusEnum.expired,
     lastVote: new Date(),
     contractExpireDate: new Date()
   }

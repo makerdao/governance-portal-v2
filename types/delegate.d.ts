@@ -1,8 +1,4 @@
-export enum DelegateStatus {
-    expired = 'expired',
-    unrecognized = 'unrecognized',
-    active = 'active'
-}
+export type DelegateStatus = 'active' | 'expired' | 'unrecognized';
 
 export type Delegate = {
     id: string;
