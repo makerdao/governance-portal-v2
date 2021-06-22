@@ -1,16 +1,16 @@
 import { Box, Button, Grid, Text, Link as ExternalLink } from '@theme-ui/components';
 import React from 'react';
 import useSWR from 'swr';
-import getMaker, { getNetwork, MKR } from '../../lib/maker';
-import useAccountsStore from '../../stores/accounts';
-import { Delegate } from '../../types/delegate';
-import { getEtherscanLink } from '../../lib/utils';
+import getMaker, { getNetwork, MKR } from 'lib/maker';
+import useAccountsStore from 'stores/accounts';
+import { Delegate, DelegateStatus } from 'types/delegate';
+import { getEtherscanLink } from 'lib/utils';
 import DelegatePicture from './DelegatePicture';
 import Link from 'next/link';
 import { useState } from 'react';
 import DelegateModal from './DelegateModal';
 import UndelegateModal from './UndelegateModal';
-import { limitString } from '../../lib/string';
+import { limitString } from 'lib/string';
 
 type PropTypes = {
   delegate: Delegate;
@@ -66,13 +66,35 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            <Link href={`/delegates/${delegate.address}`}>
+            {delegate.status === DelegateStatus.active && <Link href={`/delegates/${delegate.address}`}>
               <a title="Profile details">
                 <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
                   View Profile Details
                 </Button>
               </a>
-            </Link>
+            </Link>}
+
+            {delegate.status === DelegateStatus.unrecognized && (
+              <Box>
+                  <Text>
+                    LAST VOTED {delegate.lastVote.toDateString()}
+                  </Text>
+                  <Text>
+                    EXPIRES {delegate.contractExpireDate.toDateString()}
+                  </Text>
+              </Box>
+            )}
+
+            {delegate.status === DelegateStatus.expired && (
+              <Box>
+                  <Text>
+                    LAST VOTED {delegate.lastVote.toDateString()}
+                  </Text>
+                  <Text>
+                    CONTRACT DELEGATION EXPIRED
+                  </Text>
+              </Box>
+            )}
           </Box>
         </Box>
 
@@ -108,15 +130,15 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
             </Box>
 
-            <Box>
+            <Box sx={{ textAlign: 'right' }}>
               <Box sx={{ mb: 3 }}>
-                <Button onClick={() => setShowDelegateModal(true)} sx={{ width: '150px' }}>
+                <Button variant="primaryLarge" onClick={() => setShowDelegateModal(true)} sx={{ width: '150px' }}>
                   Delegate
                 </Button>
               </Box>
               <Box>
                 <Button
-                  variant="outline"
+                  variant="primaryOutline"
                   onClick={() => setShowUndelegateModal(true)}
                   sx={{ width: '150px' }}
                 >

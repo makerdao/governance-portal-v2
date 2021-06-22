@@ -1,4 +1,4 @@
-import { Delegate } from '../../types/delegate';
+import { Delegate, DelegateStatus } from '../../types/delegate';
 
 const delegates: Delegate[] = [
   {
@@ -7,21 +7,30 @@ const delegates: Delegate[] = [
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: ''
+    picture: '',
+    status: DelegateStatus.active,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
   },
   {
     id: 'a22bcd',
     name: 'John Mcaffee',
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description: 'Another profile',
-    picture: 'https://i.pravatar.cc/300'
+    picture: 'https://i.pravatar.cc/300',
+    status: DelegateStatus.active,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
   },
   {
     id: 'a22bcd',
     name: 'William Anon',
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description: 'Mr delegate',
-    picture: 'https://i.pravatar.cc/300'
+    picture: 'https://i.pravatar.cc/300',
+    status: DelegateStatus.active,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
   },
   {
     id: 'a22bcd',
@@ -29,7 +38,41 @@ const delegates: Delegate[] = [
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
     description:
       'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: ''
+    picture: '',
+    status: DelegateStatus.active,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
+  },
+  {
+    id: 'a22bcd',
+    name: 'Mr Unrecognized',
+    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
+    description:
+      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
+    picture: '',
+    status: DelegateStatus.unrecognized,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
+  },{
+    id: 'a22bcd',
+    name: 'Mr Unrecognized 2',
+    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
+    description:
+      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
+    picture: '',
+    status: DelegateStatus.unrecognized,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
+  },{
+    id: 'a22bcd',
+    name: 'Mr Expired',
+    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
+    description:
+      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
+    picture: '',
+    status: DelegateStatus.expired,
+    lastVote: new Date(),
+    contractExpireDate: new Date()
   }
 ];
 

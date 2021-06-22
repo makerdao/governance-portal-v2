@@ -3,24 +3,32 @@ import { Heading, Box, jsx, Flex } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
 
-import { isDefaultNetwork } from '../../lib/maker';
+import { isDefaultNetwork } from 'lib/maker';
 
-import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
-import Stack from '../../components/layouts/Stack';
-import SystemStatsSidebar from '../../components/SystemStatsSidebar';
-import ResourceBox from '../../components/ResourceBox';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import ResourceBox from 'components/ResourceBox';
 
 import Head from 'next/head';
-import { Delegate } from '../../types/delegate';
-import DelegateCard from '../../components/delegations/DelegateCard';
-import { fetchDelegates } from '../../lib/delegates/fetchDelegates';
+import { Delegate, DelegateStatus } from 'types/delegate';
+import DelegateCard from 'components/delegations/DelegateCard';
+import { fetchDelegates } from 'lib/delegates/fetchDelegates';
 
 type Props = {
   delegates: Delegate[];
 };
 
 const Delegates = ({ delegates }: Props) => {
+
+  const styles = {
+    delegateGroup: {
+      marginBottom: 2
+    }
+  };
+
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
@@ -36,17 +44,34 @@ const Delegates = ({ delegates }: Props) => {
             TBD
           </Flex>
 
-          <Heading mb={3} mt={4} as="h4">
-            Recognized delegates
-          </Heading>
+          <Box sx={styles.delegateGroup}>
+            <Heading mb={3} mt={4} as="h4">
+              Recognized delegates
+            </Heading>
 
-          <Box>
-            {delegates.map(delegate => (
-              <Box key={delegate.id} sx={{ mb: 4 }}>
-                <DelegateCard delegate={delegate} />
-              </Box>
-            ))}
+            <Box>
+              {delegates.filter(delegate => delegate.status === DelegateStatus.active).map(delegate => (
+                <Box key={delegate.id} sx={{ mb: 4 }}>
+                  <DelegateCard delegate={delegate} />
+                </Box>
+              ))}
+            </Box>
           </Box>
+          
+          <Box sx={styles.delegateGroup}>
+            <Heading mb={3} mt={4} as="h4">
+              Unrecognized Delegates
+            </Heading>
+
+            <Box>
+              {delegates.filter(delegate => delegate.status === DelegateStatus.unrecognized).map(delegate => (
+                <Box key={delegate.id} sx={{ mb: 4 }}>
+                  <DelegateCard delegate={delegate} />
+                </Box>
+              ))}
+            </Box>
+          </Box>
+
         </Box>
         <Stack gap={3}>
           <SystemStatsSidebar
