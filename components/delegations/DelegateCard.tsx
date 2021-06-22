@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import DelegateModal from './DelegateModal';
 import UndelegateModal from './UndelegateModal';
+import { limitString } from '../../lib/string';
 
 type PropTypes = {
   delegate: Delegate;
@@ -41,15 +42,15 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   );
 
   return (
-    <Box sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Box sx={{ variant: 'cards.primary' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
         <Box>
           <Box sx={{ display: 'flex' }}>
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
               <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
-                {delegate.name}
+                {limitString(delegate.name, 16, '...')}
               </Text>
               <ExternalLink
                 title="View on etherescan"
@@ -110,20 +111,23 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box>
               <Box sx={{ mb: 3 }}>
                 <Button onClick={() => setShowDelegateModal(true)} sx={{ width: '150px' }}>
-                    Delegate
-                  </Button>
+                  Delegate
+                </Button>
               </Box>
               <Box>
-              <Button variant="outline"  onClick={() => setShowUndelegateModal(true)}  sx={{ width: '150px' }}>
-                    Undelegate
-                  </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowUndelegateModal(true)}
+                  sx={{ width: '150px' }}
+                >
+                  Undelegate
+                </Button>
               </Box>
             </Box>
           </Grid>
         </Box>
       </Box>
 
-   
       {/* TODO: consider using same component for both delegate + undelegate */}
       <DelegateModal
         delegate={delegate}
