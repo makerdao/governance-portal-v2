@@ -2,12 +2,32 @@ import { Button, Box, Flex, Text } from '@theme-ui/components';
 import MKRInput from 'components/MKRInput';
 import Skeleton from 'react-loading-skeleton';
 
-const InputContent = ({ onChange, error, ref, bpi, disabled, onMkrClick, mkrBalance, onClick }) => (
-  <Flex sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+type Props = {
+  onChange: any;
+  error: string;
+  ref: any;
+  bpi: number;
+  disabled: boolean;
+  onMkrClick: () => void;
+  mkrBalance: any;
+  onClick: () => void;
+};
+
+const InputContent = ({
+  onChange,
+  error,
+  ref,
+  bpi,
+  disabled,
+  onMkrClick,
+  mkrBalance,
+  onClick
+}: Props): JSX.Element => (
+  <Flex sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
     <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
       Deposit into delegate contract
     </Text>
-    <Text sx={{ color: 'secondaryEmphasis', mt: 2 }}>
+    <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>
       Input the amount of MKR to deposit into the delegate contract.
     </Text>
     <Box sx={{ mt: 3, width: '20rem' }}>
@@ -49,7 +69,7 @@ const InputContent = ({ onChange, error, ref, bpi, disabled, onMkrClick, mkrBala
           </Box>
         )}
       </Flex>
-      <Button onClick={onClick} sx={{ width: '100%' }}>
+      <Button onClick={onClick} sx={{ width: '100%', mt: 3 }}>
         Delegate MKR
       </Button>
     </Box>
