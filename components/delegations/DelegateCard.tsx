@@ -10,8 +10,8 @@ import { getEtherscanLink } from 'lib/utils';
 import DelegatePicture from './DelegatePicture';
 import Link from 'next/link';
 import { useState } from 'react';
-import DelegateModal from './DelegateModal';
-import UndelegateModal from './UndelegateModal';
+import DelegateModal from './modals/DelegateModal';
+import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import Icon from 'components/Icon';
@@ -110,7 +110,6 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                     EXPIRES {delegate.contractExpireDate.toDateString()}
                   </Text>
                 </Box>
-               
               </Box>
             )}
 

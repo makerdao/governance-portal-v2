@@ -4,12 +4,12 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
-import getMaker, { MKR } from '../../lib/maker';
-import { fadeIn, slideUp } from '../../lib/keyframes';
-import { changeInputValue } from '../../lib/utils';
-import { Delegate } from '../../types/delegate';
-import useAccountsStore from '../../stores/accounts';
-import MKRInput from '../MKRInput';
+import getMaker, { MKR } from '../../../lib/maker';
+import { fadeIn, slideUp } from '../../../lib/keyframes';
+import { changeInputValue } from '../../../lib/utils';
+import { Delegate } from '../../../types/delegate';
+import useAccountsStore from '../../../stores/accounts';
+import MKRInput from '../../MKRInput';
 
 type Props = {
   isOpen: boolean;
