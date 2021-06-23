@@ -17,7 +17,7 @@ import TxIndicators from '../TxIndicators';
 import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { changeInputValue } from 'lib/utils';
-import { BoxWithClose } from './Withdraw';
+import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
 
