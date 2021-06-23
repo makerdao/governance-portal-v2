@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import zipObject from 'lodash/zipObject';
 
-import withApiHandler from '../../_lib/withApiHandler';
+import withApiHandler from 'lib/api/withApiHandler';
 import { analyzeSpell } from './[address]';
-import { getConnectedMakerObj } from '../../_lib/utils';
+import { getConnectedMakerObj } from 'lib/api/utils';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import invariant from 'tiny-invariant';
 import { isSupportedNetwork } from 'lib/maker';

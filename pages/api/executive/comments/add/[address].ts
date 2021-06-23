@@ -2,8 +2,8 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { connectToDatabase } from '../../../_lib/utils';
-import withApiHandler from '../../../_lib/withApiHandler';
+import { connectToDatabase } from 'lib/api/utils';
+import withApiHandler from 'lib/api/withApiHandler';
 import { SupportedNetworks } from 'lib/constants';
 
 export default withApiHandler(

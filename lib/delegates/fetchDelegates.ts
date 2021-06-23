@@ -1,4 +1,6 @@
-import { Delegate } from '../../types/delegate';
+import matter from 'gray-matter';
+import { fetchPage } from 'lib/github';
+import { Delegate, DelegateRepoInformation } from '../../types/delegate';
 import { DelegateStatusEnum } from './constants';
 
 const delegates: Delegate[] = [
@@ -85,3 +87,56 @@ export function fetchDelegate(address: string): Promise<Delegate | undefined> {
 export function fetchDelegates(): Promise<Delegate[]> {
   return Promise.resolve(delegates);
 }
+
+
+export async function fetchDelegatesGithub(): Promise<DelegateRepoInformation[]> {
+  const owner = process.env.GITHUB_DELEGATES_OWNER || 'makerdao-dux';
+  const repo =  process.env.GITHUB_DELEGATES_REPO || 'voting-delegates';
+  const page = 'delegates';
+
+
+  // Fetch all folders inside the delegates folder
+  const folders = await fetchPage(owner, repo, page);
+  
+  // Get the information of all the delegates, filter errored ones
+  const promises = folders.map(async (folder): Promise<DelegateRepoInformation | null> => {
+    try {
+      const folderContents = await fetchPage(owner, repo, folder.path);
+
+      const readme = folderContents.find(item => item.name === 'README.md');
+
+      // No readme found
+      if (!readme) {
+        return null;
+      }
+
+      const readmeDoc = await (await fetch(readme?.download_url)).text();
+
+      const {
+        content,
+        data: {
+          name,
+          url
+        }
+      } = matter(readmeDoc);
+
+      const picture = folderContents.find(item => item.name.indexOf('profile') !== -1);
+
+      return {
+        address: folder.name,
+        name,
+        picture: picture ? picture.download_url: '',
+        externalUrl: url,
+        description: content
+      };
+
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const results = await Promise.all(promises);
+
+  // Filter out negatives 
+  return results.filter(i => !!i) as DelegateRepoInformation[];
+} 

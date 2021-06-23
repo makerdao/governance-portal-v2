@@ -2,10 +2,10 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
-import { getConnectedMakerObj, getTrace } from '../../_lib/utils';
+import { getConnectedMakerObj, getTrace } from 'lib/api/utils';
 import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'lib/constants';
 import { fetchJson } from 'lib/utils';
-import withApiHandler from '../../_lib/withApiHandler';
+import withApiHandler from 'lib/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
