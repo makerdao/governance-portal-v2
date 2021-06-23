@@ -8,6 +8,7 @@ type SystemConfig = {
   MONGODB_URI: string;
   MONGODB_COMMENTS_DB: string;
   NODE_ENV: 'development' | 'production' | 'test';
+  TESTNET: string;
 };
 
 export const config: SystemConfig = {
@@ -19,5 +20,6 @@ export const config: SystemConfig = {
   TRACING_RPC_NODE: process.env.TRACING_RPC_NODE || '',
   MONGODB_URI: process.env.MONGODB_URI || '',
   MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
-  NODE_ENV: process.env.NODE_ENV || 'development'
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  TESTNET: process.env.TESTNET || ''
 };
