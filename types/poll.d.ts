@@ -1,6 +1,6 @@
 import VoteTypes from './voteTypes';
 
-type Poll = {
+export type Poll = {
   title: string;
   multiHash: string;
   content: string;
@@ -19,8 +19,6 @@ type Poll = {
   };
   url?: string;
 };
-
-export default Poll;
 
 export type PartialPoll = {
   pollId: number;

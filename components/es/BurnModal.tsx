@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { jsx } from 'theme-ui';
 import useSWR from 'swr';
 import shallow from 'zustand/shallow';
-import getMaker, { MKR } from '../../lib/maker';
-import CurrencyObject from '../../types/currency';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
-import useAccountsStore from '../../stores/accounts';
+import getMaker, { MKR } from 'lib/maker';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import useAccountsStore from 'stores/accounts';
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
@@ -14,6 +13,7 @@ import BurnSigning from './burnModal/BurnSigning';
 import BurnPending from './burnModal/BurnPending';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
+import { CurrencyObject } from 'types/currency';
 
 const ModalContent = ({
   setShowDialog,
@@ -23,7 +23,7 @@ const ModalContent = ({
   setShowDialog: (value: boolean) => void;
   lockedInChief: number;
   totalStaked: CurrencyObject;
-}) => {
+}): React.ReactElement => {
   const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
@@ -44,7 +44,7 @@ const ModalContent = ({
     const esm = await maker.service('esm');
     const burnTxObject = () => esm.stake(burnAmount);
     const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
-      pending: txHash => {
+      pending: () => {
         setStep('pending');
       },
       mined: txId => {

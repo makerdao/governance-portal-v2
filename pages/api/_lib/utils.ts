@@ -7,9 +7,9 @@ import { ethers } from 'ethers';
 import { MongoClient } from 'mongodb';
 import invariant from 'tiny-invariant';
 
-import { networkToRpc } from '../../../lib/maker/network';
-import { SupportedNetworks } from '../../../lib/constants';
-import { config } from '../../../lib/config';
+import { networkToRpc } from 'lib/maker/network';
+import { SupportedNetworks } from 'lib/constants';
+import { config } from 'lib/config';
 
 const cachedMakerObjs = {};
 export async function getConnectedMakerObj(network: SupportedNetworks): Promise<any> {

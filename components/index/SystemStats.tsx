@@ -3,8 +3,8 @@ import { Flex, Link as ExternalLink, Text, Box, Grid, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'react-loading-skeleton';
-import getMaker, { DAI } from '../../lib/maker';
-import CurrencyObject from '../../types/currency';
+import getMaker, { DAI } from 'lib/maker';
+import { CurrencyObject } from 'types/currency';
 import BigNumber from 'bignumber.js';
 
 async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]> {

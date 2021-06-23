@@ -5,8 +5,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { SupportedNetworks } from '../../lib/constants';
-import { fadeIn, slideUp } from '../../lib/keyframes';
+import { SupportedNetworks } from 'lib/constants';
+import { fadeIn, slideUp } from 'lib/keyframes';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 

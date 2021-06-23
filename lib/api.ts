@@ -7,9 +7,9 @@ import os from 'os';
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { CMS_ENDPOINTS } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
-import Poll, { PartialPoll } from '../types/poll';
-import { CMSProposal } from '../types/proposal';
-import BlogPost from '../types/blogPost';
+import { Poll, PartialPoll } from 'types/poll';
+import { CMSProposal } from 'types/proposal';
+import { BlogPost } from 'types/blogPost';
 import { parsePollMetadata } from './polling/parser';
 import { config } from './config';
 
@@ -95,7 +95,7 @@ export async function getPolls(): Promise<Poll[]> {
 const fsCacheCache = {};
 
 const fsCacheGet = name => {
-  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
   const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
     .toISOString()
     .substring(0, 10)}`;
@@ -110,7 +110,7 @@ const fsCacheGet = name => {
 };
 
 const fsCacheSet = (name, data) => {
-  const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-var-requires
+  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
   const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
     .toISOString()
     .substring(0, 10)}`;

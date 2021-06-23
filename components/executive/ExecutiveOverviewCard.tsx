@@ -7,17 +7,17 @@ import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import Bignumber from 'bignumber.js';
 
-import Proposal from '../../types/proposal';
-import getMaker, { getNetwork } from '../../lib/maker';
-import { formatDateWithTime } from '../../lib/utils';
+import { Proposal } from 'types/proposal';
+import getMaker, { getNetwork } from 'lib/maker';
+import { formatDateWithTime } from 'lib/utils';
 import Stack from '../layouts/Stack';
-import useAccountsStore from '../../stores/accounts';
+import useAccountsStore from 'stores/accounts';
 import VoteModal from './VoteModal';
 import { useState } from 'react';
-import SpellData from '../../types/spellData';
+import { SpellData } from 'types/spellData';
 import mixpanel from 'mixpanel-browser';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from '../../lib/constants';
-import { ZERO_ADDRESS } from '../../stores/accounts';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
+import { ZERO_ADDRESS } from 'stores/accounts';
 
 type Props = {
   proposal: Proposal;

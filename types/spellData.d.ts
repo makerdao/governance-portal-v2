@@ -1,4 +1,4 @@
-type SpellData = {
+export type SpellData = {
   hasBeenCast: boolean;
   hasBeenScheduled: boolean;
   eta?: Date;
@@ -7,5 +7,3 @@ type SpellData = {
   dateExecuted?: Date;
   mkrSupport: number;
 };
-
-export default SpellData;

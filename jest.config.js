@@ -11,5 +11,10 @@ module.exports = {
   moduleDirectories: ['node_modules'],
   globals: {
     __TESTCHAIN__: true
+  },
+  moduleNameMapper: {
+    '^components(.*)$': '<rootDir>/components$1',
+    '^lib(.*)$': '<rootDir>/lib$1',
+    '^stores(.*)$': '<rootDir>/stores$1',
   }
 };

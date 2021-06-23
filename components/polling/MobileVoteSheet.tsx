@@ -11,19 +11,19 @@ import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 import useSWR from 'swr';
 
-import Account from '../../types/account';
-import Poll from '../../types/poll';
-import PollVote from '../../types/pollVote';
-import useBallotStore from '../../stores/ballot';
-import { isRankedChoicePoll, extractCurrentPollVote } from '../../lib/utils';
+import { Account } from 'types/account';
+import { Poll } from 'types/poll';
+import { PollVote } from 'types/pollVote';
+import useBallotStore from 'stores/ballot';
+import { isRankedChoicePoll, extractCurrentPollVote } from 'lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
-import getMaker, { getNetwork } from '../../lib/maker';
+import getMaker, { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
-import ballotAnimation from '../../lib/animation/ballotSuccess.json';
-import { slideUp } from '../../lib/keyframes';
+import ballotAnimation from 'lib/animation/ballotSuccess.json';
+import { slideUp } from 'lib/keyframes';
 import mixpanel from 'mixpanel-browser';
 
 enum ViewState {
