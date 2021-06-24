@@ -9,7 +9,7 @@ try {
   console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed')
 }
 
-type GithubPage = {
+export type GithubPage = {
   name: string;
   path: string;
   url: string;

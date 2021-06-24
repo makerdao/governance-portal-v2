@@ -15,6 +15,7 @@ import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import Icon from 'components/Icon';
+import moment from 'moment';
 
 type PropTypes = {
   delegate: Delegate;
@@ -57,6 +58,9 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
     }
   };
 
+  const dateFormat = 'MMM DD YYYY HH:mm zz';
+  const expiryDate = moment(delegate.contractExpireDate);
+
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -66,7 +70,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
             <Box sx={{ ml: 2 }}>
               <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
-                {limitString(delegate.name, 16, '...')}
+                {delegate.name ? limitString(delegate.name, 16, '...') : 'Unknown'}
               </Text>
               <ExternalLink
                 title="View on etherescan"
@@ -82,7 +86,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            {delegate.status === DelegateStatusEnum.active && (
+            {delegate.status === DelegateStatusEnum.active && !delegate.expired &&(
               <Link href={`/delegates/${delegate.address}`}>
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
@@ -92,7 +96,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Link>
             )}
 
-            {delegate.status === DelegateStatusEnum.unrecognized && (
+            {delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired && (
               <Box>
                 <Box sx={styles.dateWrapper}>
                   <Box sx={styles.dateIcon}>
@@ -107,13 +111,13 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                     <Icon name="calendarcross" sx={{ fill: 'primary', stroke: 'primary' }} />
                   </Box>
                   <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
-                    EXPIRES {delegate.contractExpireDate.toDateString()}
+                    EXPIRES {expiryDate.format(dateFormat)}
                   </Text>
                 </Box>
               </Box>
             )}
 
-            {delegate.status === DelegateStatusEnum.expired && (
+            {delegate.expired && (
               <Box>
                 <Box sx={styles.dateWrapper}>
                   <Box sx={styles.dateIcon}>

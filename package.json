@@ -44,6 +44,7 @@
     "lodash": "^4.7.0",
     "lottie-web": "^5.7.1",
     "mixpanel-browser": "^2.39.0",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.2",
     "next": "^10.0.3",
     "react": "^16.13.1",

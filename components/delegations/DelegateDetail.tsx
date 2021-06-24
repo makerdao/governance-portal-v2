@@ -1,9 +1,9 @@
-import { Box, Button, Text, Link as ExternalLink } from '@theme-ui/components';
+import { Box, Text, Link as ExternalLink } from '@theme-ui/components';
 import React from 'react';
 import { Delegate } from 'types/delegate';
-import { getEtherscanLink } from '../../lib/utils';
+import { getEtherscanLink } from 'lib/utils';
 import DelegatePicture from './DelegatePicture';
-import { getNetwork } from '../../lib/maker';
+import { getNetwork } from 'lib/maker';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,17 +33,9 @@ export default function DelegateDetail({ delegate }: PropTypes): React.ReactElem
             </ExternalLink>
           </Box>
         </Box>
-
-        <Text
-          sx={{
-            fontSize: [2, 3],
-            color: 'textSecondary',
-            mt: 1
-          }}
-        >
-          {delegate.description}
-        </Text>
-        
+        <Box>
+          <div dangerouslySetInnerHTML={{ __html: delegate.description }} />
+        </Box>
       </Box>
     </Box>
   );

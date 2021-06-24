@@ -1,150 +1,73 @@
-import matter from 'gray-matter';
-import { fetchPage } from 'lib/github';
-import { Delegate, DelegateRepoInformation } from '../../types/delegate';
+import { Delegate, DelegateOnchainInformation, DelegateRepoInformation } from '../../types/delegate';
 import { DelegateStatusEnum } from './constants';
+import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 
-const delegates: Delegate[] = [
+// TODO: Fetch onchain
+
+const millisecondsMonth = 1000 * 60 * 60 * 24 * 31;
+
+const onChainDelegates: DelegateOnchainInformation[] = [
   {
-    id: 'a22bcd',
-    name: 'Dai.js Test Account',
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description:
-      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: '',
-    status: DelegateStatusEnum.active,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
+    expirationDate:  new Date(Date.now() + millisecondsMonth * 3)
   },
   {
-    id: 'a22bcd',
-    name: 'John Mcaffee',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description: 'Another profile',
-    picture: 'https://i.pravatar.cc/300',
-    status: DelegateStatusEnum.active,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
+    address: '0x0000000000000000000000000000000000000000',
+    expirationDate: new Date(Date.now() + millisecondsMonth * 3)
   },
   {
-    id: 'a22bcd',
-    name: 'William Anon',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description: 'Mr delegate',
-    picture: 'https://i.pravatar.cc/300',
-    status: DelegateStatusEnum.active,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
+    address: '0x8200000000033434000000000000000000000000',
+    expirationDate: new Date(Date.now() + millisecondsMonth * 4)
   },
   {
-    id: 'a22bcd',
-    name: 'A person with a long name that may break the UI if not contemplated',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description:
-      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: '',
-    status: DelegateStatusEnum.active,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
-  },
-  {
-    id: 'a22bcd',
-    name: 'Mr Unrecognized',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description:
-      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: '',
-    status: DelegateStatusEnum.unrecognized,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
-  },
-  {
-    id: 'a22bcd',
-    name: 'Mr Unrecognized 2',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description:
-      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: '',
-    status: DelegateStatusEnum.unrecognized,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
-  },
-  {
-    id: 'a22bcd',
-    name: 'Mr Expired',
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    description:
-      'Actual vote delegate contract, deployed by dai.js test account 0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
-    picture: '',
-    status: DelegateStatusEnum.expired,
-    lastVote: new Date(),
-    contractExpireDate: new Date()
+    address: '0x5600000000033434033444450000000000000000',
+    expirationDate: new Date(Date.now() - millisecondsMonth * 3)
   }
 ];
 
-export function fetchDelegate(address: string): Promise<Delegate | undefined> {
-  return Promise.resolve(delegates.find(i => i.address === address));
+function mergeDelegateInformaation(onChainDelegate: DelegateOnchainInformation, githubDelegate?: DelegateRepoInformation): Delegate {
+  // Check if contract is expired to assing the status
+  const isExpired = onChainDelegate.expirationDate.getTime() < Date.now();
+
+  return {
+    address: onChainDelegate.address,
+    status: githubDelegate ? DelegateStatusEnum.active : DelegateStatusEnum.unrecognized,
+    expired: isExpired,
+    contractExpireDate: onChainDelegate.expirationDate,
+    description: githubDelegate?.description || '',
+    name: githubDelegate?.name || '',
+    picture: githubDelegate?.picture || '',
+    id: onChainDelegate.address,
+    lastVote: new Date() // TODO: See where to get this info
+  };
 }
 
-export function fetchDelegates(): Promise<Delegate[]> {
-  return Promise.resolve(delegates);
+
+// Returns info for one delegate mixing onchain and repo info
+export async function fetchDelegate(address: string): Promise<Delegate | undefined> {
+  const onChainDelegate = onChainDelegates.find(i => i.address === address);
+
+  if (!onChainDelegate) {
+    return Promise.resolve(undefined);
+  }
+
+
+  const { data: githubDelegate } = await fetchGithubDelegate(address);
+
+  return mergeDelegateInformaation(onChainDelegate, githubDelegate);
 }
 
 
-export async function fetchDelegatesGithub(): Promise<DelegateRepoInformation[]> {
-  const owner = process.env.GITHUB_DELEGATES_OWNER || 'makerdao-dux';
-  const repo =  process.env.GITHUB_DELEGATES_REPO || 'voting-delegates';
-  const page = 'delegates';
+// Returns a list of delegates, mixin onchain and repo information
+export async function fetchDelegates(): Promise<Delegate[]> {
+  const { data: gitHubDelegates } = await fetchGithubDelegates();
 
+  // Map all the raw delegates info and map it to Delegate structure with the github info
+  const delegates: Delegate[] = onChainDelegates.map((onChainDelegate) => {
+    const githubDelegate = gitHubDelegates ? gitHubDelegates.find(i => i.address === onChainDelegate.address) : undefined;
 
-  // Fetch all folders inside the delegates folder
-  const folders = await fetchPage(owner, repo, page);
-  
-  // Get the information of all the delegates, filter errored ones
-  const promises = folders.map(async (folder): Promise<DelegateRepoInformation | null> => {
-    try {
-      const folderContents = await fetchPage(owner, repo, folder.path);
-
-      const readme = folderContents.find(item => item.name === 'README.md');
-
-      // No readme found
-      if (!readme) {
-        return null;
-      }
-
-      const readmeDoc = await (await fetch(readme?.download_url)).text();
-
-      const {
-        content,
-        data: {
-          name,
-          url
-        }
-      } = matter(readmeDoc);
-
-      const picture = folderContents.find(item => item.name.indexOf('profile') !== -1);
-
-      return {
-        address: folder.name,
-        name,
-        picture: picture ? picture.download_url: '',
-        externalUrl: url,
-        description: content
-      };
-
-    } catch (e) {
-      return null;
-    }
+    return mergeDelegateInformaation(onChainDelegate, githubDelegate);
   });
 
-  const results = await Promise.all(promises);
-
-  // Filter out negatives 
-  return results.filter(i => !!i) as DelegateRepoInformation[];
-} 
+  return Promise.resolve(delegates);
+}
