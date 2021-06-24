@@ -3,6 +3,8 @@ import MKRInput from 'components/MKRInput';
 import Skeleton from 'react-loading-skeleton';
 
 type Props = {
+  title: string;
+  description: string;
   onChange: any;
   error: string;
   ref: any;
@@ -14,6 +16,8 @@ type Props = {
 };
 
 const InputContent = ({
+  title,
+  description,
   onChange,
   error,
   ref,
@@ -25,11 +29,9 @@ const InputContent = ({
 }: Props): JSX.Element => (
   <Flex sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
     <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
-      Deposit into delegate contract
+      {title}
     </Text>
-    <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>
-      Input the amount of MKR to deposit into the delegate contract.
-    </Text>
+    <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
     <Box sx={{ mt: 3, width: '20rem' }}>
       <Flex sx={{ border: '1px solid #D8E0E3', justifyContent: 'space-between' }}>
         <MKRInput
