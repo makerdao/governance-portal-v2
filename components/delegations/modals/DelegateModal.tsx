@@ -5,7 +5,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import useSWR from 'swr';
 import shallow from 'zustand/shallow';
-
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { changeInputValue } from 'lib/utils';
@@ -121,6 +120,8 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
                         />
                       ) : (
                         <InputContent
+                          title="Deposit into delegate contract"
+                          description="Input the amount of MKR to deposit into the delegate contract."
                           onChange={setMkrToDeposit}
                           error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
                           ref={input}
