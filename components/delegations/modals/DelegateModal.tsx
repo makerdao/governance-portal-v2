@@ -15,7 +15,7 @@ import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
 import ConfirmContent from './Confirm';
 import InputContent from './Input';
-import TransactionInProgress from './TransactionInProgress';
+import TxDisplay from './TxDisplay';
 
 type Props = {
   isOpen: boolean;
@@ -23,7 +23,7 @@ type Props = {
   delegate: Delegate;
 };
 
-export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): JSX.Element {
+const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -70,24 +70,25 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
     const txId = await track(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
-        // TODO: set to success state
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-        // TODO: set to error state
       }
     });
     setTxId(txId);
   };
 
-  const txPending = tx?.status === 'pending';
+  const onClose = () => {
+    setTxId(null);
+    onDismiss();
+  };
 
   return (
     <>
       <DialogOverlay
         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         isOpen={isOpen}
-        onDismiss={onDismiss}
+        onDismiss={onClose}
       >
         <DialogContent
           aria-label="Delegate modal"
@@ -107,7 +108,7 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
             content={
               <Box>
                 {tx ? (
-                  <TransactionInProgress txPending={txPending} setTxId={setTxId} />
+                  <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
                 ) : (
                   <>
                     {mkrBalance && hasLargeMkrAllowance ? (
@@ -132,6 +133,7 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
                             changeInputValue(input.current, mkrBalance.toBigNumber().toString());
                           }}
                           mkrBalance={mkrBalance}
+                          buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
                         />
                       )
@@ -149,10 +151,12 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
                 )}
               </Box>
             }
-            close={onDismiss}
+            close={onClose}
           />
         </DialogContent>
       </DialogOverlay>
     </>
   );
-}
+};
+
+export default DelegateModal;
