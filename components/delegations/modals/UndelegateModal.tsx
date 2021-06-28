@@ -14,27 +14,35 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from 'sto
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
 import InputContent from './Input';
-import TransactionInProgress from './TransactionInProgress';
+import TxDisplay from './TxDisplay';
 
 type Props = {
   isOpen: boolean;
-  onDismiss: (boolean) => void;
+  onDismiss: () => void;
   delegate: Delegate;
 };
 
-export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): JSX.Element {
+const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
 
-  // TODO: update to delegate contract balance for this user
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const { data: mkrStaked, error } = useSWR(
+    ['/user/mkr-delegated', delegate.address, address],
+    async (_, delegateAddress, address) => {
+      const maker = await getMaker();
 
+      const balance = await maker
+        .service('voteDelegate')
+        .getStakedBalanceForAddress(delegateAddress, address)
+        .then(MKR.wei);
+
+      return balance;
+    }
+  );
   const { data: iouAllowance } = useSWR(['/user/iou-allowance', address], (_, address) =>
     getMaker().then(maker => maker.getToken('IOU').allowance(address, delegate.address))
   );
@@ -64,28 +72,29 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
 
   const freeMkr = async () => {
     const maker = await getMaker();
-    const freeTxCreator = () => maker.service('voteDelegate').free(delegate.address, mkrToDeposit);
+    const freeTxCreator = () => maker.service('voteDelegate').free(delegate.address, mkrToWithdraw);
     const txId = await track(freeTxCreator, 'Withdrawing MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
-        // TODO: set to success state
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'MKR withdrawal failed');
-        // TODO: set to error state
       }
     });
     setTxId(txId);
   };
 
-  const txPending = tx?.status === 'pending';
+  const onClose = () => {
+    setTxId(null);
+    onDismiss();
+  };
 
   return (
     <>
       <DialogOverlay
         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         isOpen={isOpen}
-        onDismiss={onDismiss}
+        onDismiss={onClose}
       >
         <DialogContent
           aria-label="Undelegate modal"
@@ -105,23 +114,24 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
             content={
               <Box>
                 {tx ? (
-                  <TransactionInProgress txPending={txPending} setTxId={setTxId} />
+                  <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
                 ) : (
                   <>
-                    {mkrBalance && hasLargeIouAllowance ? (
+                    {mkrStaked && hasLargeIouAllowance ? (
                       <InputContent
                         title="Withdraw from delegate contract"
                         description="Input the amount of MKR to withdraw from the delegate contract."
-                        onChange={setMkrToDeposit}
-                        error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
+                        onChange={setMkrToWithdraw}
+                        error={mkrToWithdraw.gt(mkrStaked) && 'MKR balance too low'}
                         ref={input}
                         bpi={bpi}
-                        disabled={mkrBalance === undefined}
+                        disabled={mkrStaked === undefined}
                         onMkrClick={() => {
-                          if (!input.current || mkrBalance === undefined) return;
-                          changeInputValue(input.current, mkrBalance.toBigNumber().toString());
+                          if (!input.current || mkrStaked === undefined) return;
+                          changeInputValue(input.current, mkrStaked.toBigNumber().toString());
                         }}
-                        mkrBalance={mkrBalance}
+                        mkrBalance={mkrStaked}
+                        buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
                       />
                     ) : (
@@ -138,10 +148,12 @@ export default function DelegateModal({ isOpen, onDismiss, delegate }: Props): J
                 )}
               </Box>
             }
-            close={onDismiss}
+            close={onClose}
           />
         </DialogContent>
       </DialogOverlay>
     </>
   );
-}
+};
+
+export default UndelegateModal;

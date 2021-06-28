@@ -164,7 +164,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
                 <Text variant="secondary" color="onSecondary">
                   MKR delegated by you
@@ -206,7 +206,6 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
         </Box>
       </Box>
 
-      {/* TODO: consider using same component for both delegate + undelegate */}
       <DelegateModal
         delegate={delegate}
         isOpen={showDelegateModal}
