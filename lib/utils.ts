@@ -2,8 +2,8 @@ import remark from 'remark';
 import html from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
-import { jsx, SxStyleProp } from 'theme-ui';
-import { css } from '@theme-ui/css';
+import { jsx } from 'theme-ui';
+import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { MKR } from './maker';
 import { CurrencyObject } from 'types/currency';
@@ -179,7 +179,7 @@ export function getNumberWithOrdinal(n) {
 }
 
 /** Add sx styles to the passed in component. Provided styles override component styles if there's a clash. */
-export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp }): React.ReactNode {
+export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyleObject }): React.ReactNode {
   if ('css' in component.props) {
     return cloneElement(component, {
       css: theme => [component.props.css(theme), css(stylesToMerge)(theme)]
@@ -191,6 +191,7 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp 
       ...componentProps,
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
+
   }
 }
 

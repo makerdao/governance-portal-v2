@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
     "baseUrl": "./",
     "typeRoots": [

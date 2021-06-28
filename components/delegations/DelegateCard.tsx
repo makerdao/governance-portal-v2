@@ -1,5 +1,6 @@
 /** @jsx jsx */
 
+
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import React from 'react';
 import useSWR from 'swr';
@@ -14,6 +15,8 @@ import DelegateModal from './modals/DelegateModal';
 import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+
 import Icon from 'components/Icon';
 import moment from 'moment';
 
@@ -27,6 +30,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const delegateAddress = delegate.address;
+  const bpi = useBreakpointIndex();
 
   const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
@@ -140,8 +144,11 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
         </Box>
 
-        <Box>
-          <Grid columns={3}>
+        <Box mt={[4, 0]} sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+        }}>
+          <Grid columns={[2]}>
             <Box sx={{ mr: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
@@ -180,29 +187,30 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
             </Box>
 
-            {account && (
-              <Box sx={{ textAlign: 'right' }}>
-                <Box sx={{ mb: 3 }}>
-                  <Button
-                    variant="primaryLarge"
-                    onClick={() => setShowDelegateModal(true)}
-                    sx={{ width: '150px' }}
-                  >
-                    Delegate
-                  </Button>
-                </Box>
-                <Box>
-                  <Button
-                    variant="primaryOutline"
-                    onClick={() => setShowUndelegateModal(true)}
-                    sx={{ width: '150px' }}
-                  >
-                    Undelegate
-                  </Button>
-                </Box>
-              </Box>
-            )}
           </Grid>
+
+          <Box sx={{ textAlign: 'right' }}>
+              <Box sx={{ mb: 3 }}>
+                <Button
+                  variant="primaryLarge"
+                  disabled={!account}
+                  onClick={() => setShowDelegateModal(true)}
+                  sx={{ width: '150px' }}
+                >
+                  Delegates
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  variant="primaryOutline"
+                  disabled={!account}
+                  onClick={() => setShowUndelegateModal(true)}
+                  sx={{ width: '150px' }}
+                >
+                  Undelegate
+                </Button>
+              </Box>
+            </Box>
         </Box>
       </Box>
 

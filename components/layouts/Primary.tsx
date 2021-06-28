@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Flex, jsx, SxStyleProp } from 'theme-ui';
+import { Box, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
 
 import { fadeIn } from 'lib/keyframes';
 import Footer from '../Footer';
@@ -7,6 +7,7 @@ import Footer from '../Footer';
 type Props = {
   shortenFooter?: boolean;
   fade?: boolean;
+  sx?: ThemeUIStyleObject
 };
 
 const PrimaryLayout = ({
