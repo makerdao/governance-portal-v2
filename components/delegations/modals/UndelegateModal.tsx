@@ -8,6 +8,7 @@ import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { changeInputValue } from 'lib/utils';
+import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
@@ -43,9 +44,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
       return balance;
     }
   );
-  const { data: iouAllowance } = useSWR(['/user/iou-allowance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken('IOU').allowance(address, delegate.address))
-  );
+  const { data: iouAllowance } = useTokenAllowance('IOU', address, delegate.address);
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 

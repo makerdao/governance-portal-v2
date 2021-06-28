@@ -3,11 +3,11 @@ import { useState, useRef } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import useSWR from 'swr';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { changeInputValue } from 'lib/utils';
+import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
@@ -32,13 +32,9 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const [confirmStep, setConfirmStep] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const { data: mkrBalance } = useMkrBalance(address);
 
-  const { data: mkrAllowance } = useSWR(['/user/mkr-allowance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).allowance(address, delegate.address))
-  );
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.address);
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
@@ -111,7 +107,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                   <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
                 ) : (
                   <>
-                    {mkrBalance && hasLargeMkrAllowance ? (
+                    {mkrAllowance && hasLargeMkrAllowance ? (
                       confirmStep ? (
                         <ConfirmContent
                           mkrToDeposit={mkrToDeposit}
