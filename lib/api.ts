@@ -12,7 +12,8 @@ import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
 import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
-import { Octokit } from '@octokit/core';
+import { fetchGitHubPage } from './github';
+import fs from 'fs';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (process.env.USE_FS_CACHE) {
@@ -23,46 +24,61 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  // TODO: change to makerdao before merging
+  const owner = 'tyler17';
+  const repo = 'community';
+  const path = 'governance/votes';
 
-  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: 'tyler17', //FIXME change to makerdao before merging
-    repo: 'community',
-    path: 'governance/votes'
-  });
-  const githubResponse = Array.isArray(data) ? data : [];
-  const proposalUrls = githubResponse.filter(x => x.type === 'file').map(x => x.download_url);
+  const githubResponse = await fetchGitHubPage(owner, repo, path);
+  const proposalUrls = githubResponse
+    .filter(x => x.type === 'file')
+    .map(x => x.download_url)
+    .filter(x => !!x);
 
-  let proposals: CMSProposal[] = [];
-  for (const proposalLink of proposalUrls) {
-    if (!proposalLink) continue;
-    const proposalDoc = await (await fetch(proposalLink)).text();
-    const {
-      content,
-      data: { title, summary, address, date }
-    } = matter(proposalDoc);
+  const proposals = await Promise.all(proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
+    try {
+      const proposalDoc = await (await fetch(proposalLink)).text();
+      
+      const {
+        content,
+        data: { title, summary, address, date }
+      } = matter(proposalDoc);
 
-    if (!(content && title && summary && address && date)) continue;
+      // Remove empty docs
+      if (!(content && title && summary && address && date)) {
+        return null;
+      }
 
-    //remove `Template - [Executive Vote] ` from title
-    const split = title.split('Template - [Executive Vote] ');
-    const editedTitle = split.length > 1 ? split[1] : title;
+      //remove `Template - [Executive Vote] ` from title
+      const editedTitle = title.replace('Template - [Executive Vote] ', '');
 
-    proposals.push({
-      about: content,
-      title: editedTitle,
-      proposalBlurb: summary,
-      key: slugify(title),
-      address: address,
-      date: String(date),
-      active: proposalIndex[network].includes(proposalLink)
-    });
-  }
+      return {
+        about: content,
+        content: content,
+        title: editedTitle,
+        proposalBlurb: summary,
+        key: slugify(title),
+        address: address,
+        date: String(date),
+        active: proposalIndex[network].includes(proposalLink)
+      };
+    } catch(e) {
 
-  proposals = proposals.sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime());
-  proposals = proposals.slice(0, 100);
-  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
-  return proposals;
+      // Catch error and return null if failed fetching one proposal
+      return null;
+    }
+  }));
+
+
+  const filteredProposals: CMSProposal[] = proposals.filter(x => !!x) as CMSProposal[];
+  
+  const sortedProposals = filteredProposals
+    .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
+    .slice(0, 100);
+
+  
+  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(sortedProposals));
+  return sortedProposals;
 }
 
 export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
@@ -97,7 +113,6 @@ export async function getPolls(): Promise<Poll[]> {
 const fsCacheCache = {};
 
 const fsCacheGet = name => {
-  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
   const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
     .toISOString()
     .substring(0, 10)}`;
@@ -112,7 +127,6 @@ const fsCacheGet = name => {
 };
 
 const fsCacheSet = (name, data) => {
-  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
   const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
     .toISOString()
     .substring(0, 10)}`;
