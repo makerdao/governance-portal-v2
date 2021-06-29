@@ -9,18 +9,22 @@ const millisecondsMonth = 1000 * 60 * 60 * 24 * 31;
 const onChainDelegates: DelegateOnchainInformation[] = [
   {
     address: '0x051aD7842f4259608957437c46926E0FA29b182D',
+    owner: '0x051aD7842f4259608957437c46926E0FA29b182D',
     expirationDate:  new Date(Date.now() + millisecondsMonth * 3)
   },
   {
     address: '0x0000000000000000000000000000000000000000',
+    owner: '0x0000000000000000000000000000000000000000',
     expirationDate: new Date(Date.now() + millisecondsMonth * 3)
   },
   {
     address: '0x8200000000033434000000000000000000000000',
+    owner: '0x8200000000033434000000000000000000000000',
     expirationDate: new Date(Date.now() + millisecondsMonth * 4)
   },
   {
     address: '0x5600000000033434033444450000000000000000',
+    owner: '0x5600000000033434033444450000000000000000',
     expirationDate: new Date(Date.now() - millisecondsMonth * 3)
   }
 ];
@@ -31,6 +35,7 @@ function mergeDelegateInformaation(onChainDelegate: DelegateOnchainInformation, 
 
   return {
     address: onChainDelegate.address,
+    owner: onChainDelegate.owner,
     status: githubDelegate ? DelegateStatusEnum.active : DelegateStatusEnum.unrecognized,
     expired: isExpired,
     contractExpireDate: onChainDelegate.expirationDate,

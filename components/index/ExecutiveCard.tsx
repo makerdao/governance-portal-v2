@@ -39,9 +39,6 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             <Text
               variant="microHeading"
               sx={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
                 fontSize: [3, 4],
                 cursor: 'pointer'
               }}
@@ -51,22 +48,24 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           </InternalLink>
         </Link>
       </div>
-      <Text
-        sx={
-          {
-            textOverflow: 'ellipsis',
-            fontSize: [2, 3],
-            opacity: 0.8,
-            mb: [1, 3],
-            display: '-webkit-box',
-            overflow: 'hidden',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2
-          } as any
-        }
-      >
-        {proposal.proposalBlurb}
-      </Text>
+      <Box>
+        <Text
+          sx={
+            {
+              textOverflow: 'ellipsis',
+              fontSize: [2, 3],
+              opacity: 0.8,
+              mb: [1, 3],
+              display: '-webkit-box',
+              overflow: 'hidden',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 2
+            } as any
+          }
+        >
+          {proposal.proposalBlurb}
+        </Text>
+      </Box>
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Link
           href={{

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { forwardRef, useMemo } from 'react';
-import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
+import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -52,7 +52,7 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSProposal[] }): JSX.Element => {
+const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSProposal[], sx?: ThemeUIStyleObject }): JSX.Element => {
   const { data: spellData } = useSWR<Record<string, SpellData>>(
     `/api/executive/analyze-spell?network=${getNetwork()}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter

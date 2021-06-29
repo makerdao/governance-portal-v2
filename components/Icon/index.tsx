@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { Box, jsx } from 'theme-ui';
+import { jsx } from 'theme-ui';
 
 import React from 'react';
-import theme from 'lib/theme';
 
 const icons = {
 
@@ -50,18 +49,17 @@ export default function Icon({
   }
 
   return (
-    <Box
-      as='svg'
-      sx={{ ...sx, size: size }}
+    <svg
       viewBox={icons[name].viewBox || '0 0 24 24'}
+      sx={{ ...sx, size: size, verticalAlign: 'middle' }}
       color={color}
       display='inline-block'
-      verticalAlign='middle'
       focusable={focusable}
       role={role}
       {...rest}
     >
+
       {icons[name].path}
-    </Box>
+    </svg>
   );
 };

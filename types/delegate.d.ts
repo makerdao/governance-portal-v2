@@ -10,12 +10,14 @@ export type DelegateRepoInformation = {
 
 export type DelegateOnchainInformation = {
   address: string;
+  owner: string;
   expirationDate: Date;
 }
 
 export type Delegate = {
   id: string;
   name: string;
+  owner: string;
   address: string;
   description: string;
   picture: string;

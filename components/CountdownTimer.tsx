@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Text, Flex, jsx } from 'theme-ui';
+import { Text, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from 'lib/useInterval';
@@ -8,6 +8,7 @@ import useInterval from 'lib/useInterval';
 type Props = {
   endDate: Date;
   endText: string;
+  sx?: ThemeUIStyleObject;
 };
 
 const pad = (val: number): string => (val < 10 ? '0' + val : String(val));

@@ -31,6 +31,25 @@ export default function SystemStats(): JSX.Element {
     getSystemStats
   );
   const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
+
+  const infoUnits = [
+    {
+      title: 'Dai Savings Rate',
+      value: savingsRate ? `${savingsRate.multipliedBy(100).toFixed(2)}%` : <Skeleton />
+    },
+    {
+      title: 'Total Dai',
+      value: totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+    },
+    {
+      title: 'Dai Debt Ceiling',
+      value: debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+    },
+    {
+      title: 'System Surplus',
+      value: systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+    }
+  ];
   return (
     <>
       {/* Desktop */}
@@ -56,31 +75,16 @@ export default function SystemStats(): JSX.Element {
 
         <Flex sx={{ mx: 0, px: 5, py: 3, backgroundColor: 'background', borderRadius: 'small' }}>
           <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <div>
-              <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
-              <Text mt={2} sx={{ fontSize: 5 }}>
-                {savingsRate ? `${savingsRate.multipliedBy(100).toFixed(2)}%` : <Skeleton />}
-              </Text>
-            </div>
-
-            <div>
-              <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
-              <Text mt={2} sx={{ fontSize: 5 }}>
-                {totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-              </Text>
-            </div>
-            <div>
-              <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-              <Text mt={2} sx={{ fontSize: 5 }}>
-                {debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-              </Text>
-            </div>
-            <div>
-              <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
-              <Text mt={2} sx={{ fontSize: 5 }}>
-                {systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-              </Text>
-            </div>
+            {infoUnits.map(unit => (
+              <Box key={unit.title}>
+                <Box>
+                  <Text sx={{ fontSize: 3, color: 'textSecondary' }}>{unit.title}</Text>
+                </Box>
+                <Box mt={2}>
+                  <Text sx={{ fontSize: 5 }}>{unit.value}</Text>
+                </Box>
+              </Box>
+            ))}
           </Flex>
         </Flex>
       </Box>
@@ -100,31 +104,12 @@ export default function SystemStats(): JSX.Element {
             </ExternalLink>
           </Flex>
 
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Savings Rate</Text>
-            <Text sx={{ fontSize: 2 }}>
-              {data ? `${savingsRate?.multipliedBy(100).toFixed(2)}%` : <Skeleton />}
-            </Text>
-          </Flex>
-
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Total Dai</Text>
-            <Text sx={{ fontSize: 2 }}>
-              {totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-            </Text>
-          </Flex>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 2, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-            <Text sx={{ fontSize: 2 }}>
-              {debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-            </Text>
-          </Flex>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 2, color: 'textSecondary' }}>System Surplus</Text>
-            <Text sx={{ fontSize: 2 }}>
-              {systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />}
-            </Text>
-          </Flex>
+          {infoUnits.map(unit => (
+            <Flex key={`${unit.title}-mobile`} sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text sx={{ fontSize: 2, color: 'textSecondary' }}>{unit.title}</Text>
+              <Text sx={{ fontSize: 2 }}>{unit.value}</Text>
+            </Flex>
+          ))}
         </Grid>
       </Box>
     </>
