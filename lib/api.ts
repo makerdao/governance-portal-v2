@@ -5,12 +5,14 @@ import chunk from 'lodash/chunk';
 import os from 'os';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS } from './constants';
+import { EXEC_PROPOSAL_INDEX } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import { Poll, PartialPoll } from 'types/poll';
 import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
+import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
+import { Octokit } from '@octokit/core';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (process.env.USE_FS_CACHE) {
@@ -18,45 +20,47 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
     if (cachedProposals) return JSON.parse(cachedProposals);
   } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
-  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
-  const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
-  let proposals: Array<any> = topics
-    .filter(topic => topic.active)
-    .filter(topic => !topic.govVote)
-    .map(topic => topic.proposals)
-    .flat();
 
-  spells.forEach(spell => {
-    spell.address = spell.source;
-    delete spell.source;
+  const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
+
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+
+  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner: 'tyler17', //FIXME change to makerdao before merging
+    repo: 'community',
+    path: 'governance/votes'
   });
+  const githubResponse = Array.isArray(data) ? data : [];
+  const proposalUrls = githubResponse.filter(x => x.type === 'file').map(x => x.download_url);
 
-  proposals.forEach(proposal => {
-    proposal.proposalBlurb = proposal.proposal_blurb;
-    proposal.address = proposal.source;
-    proposal.active = true;
-    delete proposal.proposal_blurb;
-    delete proposal.source;
-  });
+  let proposals: CMSProposal[] = [];
+  for (const proposalLink of proposalUrls) {
+    if (!proposalLink) continue;
+    const proposalDoc = await (await fetch(proposalLink)).text();
+    const {
+      content,
+      data: { title, summary, address, date }
+    } = matter(proposalDoc);
 
-  const oldSpells = spells
-    .filter(
-      spell => proposals.findIndex(proposal => proposal.address === spell.address) === -1 // filter out active spells
-    )
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    if (!(content && title && summary && address && date)) continue;
 
-  oldSpells.forEach(spell => {
-    spell.active = false;
-    spell.proposalBlurb = spell.proposal_blurb;
-    spell.key = spell._id;
-    delete spell.proposal_blurb;
-    delete spell._id;
-  });
+    //remove `Template - [Executive Vote] ` from title
+    const split = title.split('Template - [Executive Vote] ');
+    const editedTitle = split.length > 1 ? split[1] : title;
 
-  proposals.push(...oldSpells);
+    proposals.push({
+      about: content,
+      title: editedTitle,
+      proposalBlurb: summary,
+      key: slugify(title),
+      address: address,
+      date: String(date),
+      active: proposalIndex[network].includes(proposalLink)
+    });
+  }
+
+  proposals = proposals.sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime());
   proposals = proposals.slice(0, 100);
-
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
 }
@@ -67,7 +71,6 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');
-
   return {
     ...proposal,
     content

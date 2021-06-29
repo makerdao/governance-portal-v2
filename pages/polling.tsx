@@ -37,18 +37,24 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.showHistorical,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
