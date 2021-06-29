@@ -8,7 +8,6 @@ type Props = {
   description: string;
   onChange: any;
   error: string;
-  ref: any;
   bpi: number;
   disabled: boolean;
   onMkrClick: () => void;
@@ -17,7 +16,7 @@ type Props = {
   onClick: () => void;
 };
 
-const InputContent = forwardRef(
+const InputContent = forwardRef<HTMLInputElement, Props>(
   (
     {
       title,
