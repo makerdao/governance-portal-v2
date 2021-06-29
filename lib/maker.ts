@@ -7,6 +7,7 @@ import { Web3ReactPlugin } from './maker/web3react';
 
 import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
 import { networkToRpc } from './maker/network';
+import { config } from './config';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
@@ -47,8 +48,8 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.TESTNET;
     }
     // 2) check the browser provider if there is one
-    if (typeof (window as any).ethereum !== 'undefined') {
-      const chainId = parseInt((window as any).ethereum.chainId);
+    if (typeof window.ethereum !== 'undefined') {
+      const chainId = parseInt(window.ethereum.chainId);
       try {
         const providerNetwork = chainIdToNetworkName(chainId);
         return providerNetwork;
@@ -67,7 +68,7 @@ function getMaker(): Promise<Maker> {
     makerSingleton = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork(), staging: !process.env.USE_PROD_SPOCK }],
+        [GovernancePlugin, { network: getNetwork(), staging: !config.USE_PROD_SPOCK }],
         Web3ReactPlugin,
         LedgerPlugin,
         TrezorPlugin
@@ -82,7 +83,7 @@ function getMaker(): Promise<Maker> {
       log: false,
       multicall: true
     }).then(maker => {
-      if (typeof window !== 'undefined') (window as any).maker = maker;
+      if (typeof window !== 'undefined') window.maker = maker;
       return maker;
     });
   }
@@ -105,7 +106,7 @@ function isSupportedNetwork(_network: string): _network is SupportedNetworks {
 }
 
 function isTestnet(): boolean {
-  return getNetwork() === 'testnet' || !!process.env.TESTNET;
+  return getNetwork() === 'testnet' || !!config.TESTNET;
 }
 
 async function personalSign(message) {

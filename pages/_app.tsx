@@ -18,11 +18,12 @@ import { mixpanelInit } from 'lib/analytics';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import mixpanel from 'mixpanel-browser';
+import { config } from '../lib/config';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const dev = process.env.NODE_ENV === 'development';
+  const dev = config.NODE_ENV === 'development';
   const router = useRouter();
   useEffect(() => {
     mixpanelInit();

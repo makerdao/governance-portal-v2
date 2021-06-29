@@ -14,12 +14,13 @@ import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
 import { fetchGitHubPage } from './github';
 import fs from 'fs';
+import { config } from './config';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet('proposals');
     if (cachedProposals) return JSON.parse(cachedProposals);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
@@ -96,17 +97,17 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
 export async function getPolls(): Promise<Poll[]> {
   const maker = await getMaker();
 
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet('polls');
     if (cachedPolls) return JSON.parse(cachedPolls);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return require('../mocks/polls.json');
   }
 
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
-  if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
+  if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return polls;
 }
 

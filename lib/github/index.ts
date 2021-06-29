@@ -1,12 +1,14 @@
 import { Octokit } from '@octokit/core';
+import { config } from 'lib/config';
+
 
 // Handle errors of configuration by disabling oktokit
 
 let octokit;
 try {
-  octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  octokit = new Octokit({ auth: config.GITHUB_TOKEN });
 } catch(e) {
-  console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed')
+  console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed');
 }
 
 export type GithubPage = {
