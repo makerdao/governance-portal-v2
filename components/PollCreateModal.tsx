@@ -169,7 +169,7 @@ const Pending = ({ tx, close }) => (
         href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
         sx={{ p: 0 }}
       >
-        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+        <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>

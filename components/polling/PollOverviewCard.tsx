@@ -46,16 +46,18 @@ export default function PollOverviewCard({
           </Flex>
         )}
         <Box sx={{ cursor: 'pointer' }}>
-          <Link
-            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-          >
-            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
-              <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                {poll.title}
-              </Text>
-            </InternalLink>
-          </Link>
+          <Box>
+            <Link
+              href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+              as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+            >
+              <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  {poll.title}
+                </Text>
+              </InternalLink>
+            </Link>
+          </Box>
           <Link
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}

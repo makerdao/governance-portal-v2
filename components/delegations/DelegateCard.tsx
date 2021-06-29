@@ -73,9 +73,11 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
-              <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
-                {delegate.name ? limitString(delegate.name, 16, '...') : 'Unknown'}
-              </Text>
+              <Box>
+                <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
+                  {delegate.name ? limitString(delegate.name, 16, '...') : 'Unknown'}
+                </Text>
+              </Box>
               <ExternalLink
                 title="View on etherescan"
                 href={getEtherscanLink(getNetwork(), delegate.address, 'address')}
