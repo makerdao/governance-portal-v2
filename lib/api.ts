@@ -25,8 +25,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  // TODO: change to makerdao before merging
-  const owner = 'tyler17';
+  const owner = 'makerdao';
   const repo = 'community';
   const path = 'governance/votes';
 
