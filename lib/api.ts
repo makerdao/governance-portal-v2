@@ -128,11 +128,16 @@ const fsCacheGet = name => {
 };
 
 const fsCacheSet = (name, data) => {
-  const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
-    .toISOString()
-    .substring(0, 10)}`;
-  fs.writeFileSync(path, data, err => console.error(err));
-  fsCacheCache[path] = data;
+  try {
+    const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
+      .toISOString()
+      .substring(0, 10)}`;
+    fs.writeFileSync(path, data);
+    fsCacheCache[path] = data;
+  } catch (e) {
+    console.error(e);
+  }
+
 };
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
