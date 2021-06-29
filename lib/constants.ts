@@ -60,4 +60,4 @@ export const URL_REGEX = new RegExp(expr);
 
 // FIXME: this should be changed to the master branch of makerdao/community before being merged
 export const EXEC_PROPOSAL_INDEX =
-  'https://raw.githubusercontent.com/tyler17/community/portal-testing/governance/votes/active/proposals.json';
+  'https://raw.githubusercontent.com/tyler17/community/master/governance/votes/active/proposals.json';
