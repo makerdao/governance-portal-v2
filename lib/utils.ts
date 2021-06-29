@@ -224,8 +224,10 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   return { hasBeenCast, executedOn, groupedDiff };
 }
 
-export const formatDateWithTime = dateString => {
-  if (!dateString) return;
+export const formatDateWithTime = (dateString: Date | undefined | number | string ): string => {
+  if (!dateString) {
+    return '';
+  }
   const date = new Date(dateString);
   const options = {
     year: 'numeric',
@@ -236,7 +238,8 @@ export const formatDateWithTime = dateString => {
     hourCycle: 'h23',
     timeZone: 'UTC',
     timeZoneName: 'short'
-  };
+  } as const;
+
   try {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   } catch (err) {
@@ -265,11 +268,11 @@ function now() {
   return Math.floor(new Date().getTime());
 }
 
-export function formatAddress(address: string) {
+export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
 
-export function cutMiddle(text = '', left = 6, right = 4) {
+export function cutMiddle(text = '', left = 6, right = 4): string {
   if (text.length <= left + right) return text;
   return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
 }

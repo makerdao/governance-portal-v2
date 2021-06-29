@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Box, Badge, jsx, Text } from 'theme-ui';
+import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -45,6 +45,7 @@ const VotingStatus = ({
 }: {
   poll: Poll;
   desktopStyle?: boolean;
+  sx?: ThemeUIStyleObject
 }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(
