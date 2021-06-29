@@ -33,6 +33,11 @@ const ExecutiveCreate = () => {
 
   const isValidUrl = url.match(URL_REGEX);
 
+  const editMarkdown = content => {
+    // hide the duplicate proposal title
+    return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+  };
+
   const getFieldsFromUrl = async () => {
     let metadata, execMarkdown;
     setError([]);
@@ -67,8 +72,12 @@ const ExecutiveCreate = () => {
       }
     }
 
+    //remove `Template - [Executive Vote] ` from title
+    const split = metadata.title.split('Template - [Executive Vote] ');
+    const editedTitle = split.length > 1 ? split[1] : title;
+
     setFetchFinished(true);
-    setTitle(metadata.title);
+    setTitle(editedTitle);
     setSummary(metadata.summary);
     setDate(metadata.date ? new Date(metadata.date).toUTCString() : '');
     setMainnetAddress(metadata.address);
@@ -202,7 +211,7 @@ const ExecutiveCreate = () => {
                     <tr key={'Markdown'}>
                       <TD>Markdown</TD>
                       <TD>
-                        <div dangerouslySetInnerHTML={{ __html: markdown }} />
+                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(markdown) }} />
                       </TD>
                     </tr>
                   </tbody>

@@ -24,6 +24,7 @@
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
     "@makerdao/i18n-helper": "^0.1.8",
     "@metamask/jazzicon": "^2.0.0",
+    "@octokit/core": "^3.2.5",
     "@reach/dialog": "^0.10.5",
     "@reach/listbox": "^0.10.5",
     "@reach/menu-button": "^0.10.5",

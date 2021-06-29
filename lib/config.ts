@@ -9,6 +9,7 @@ type SystemConfig = {
   MONGODB_COMMENTS_DB: string;
   NODE_ENV: 'development' | 'production' | 'test';
   TESTNET: string;
+  GITHUB_TOKEN: string;
 };
 
 export const config: SystemConfig = {
@@ -21,5 +22,6 @@ export const config: SystemConfig = {
   MONGODB_URI: process.env.MONGODB_URI || '',
   MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
-  TESTNET: process.env.TESTNET || ''
+  TESTNET: process.env.TESTNET || '',
+  GITHUB_TOKEN: process.env.GITHUB_TOKEN || ''
 };
