@@ -11,12 +11,13 @@ import { Poll, PartialPoll } from 'types/poll';
 import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
 import { parsePollMetadata } from './polling/parser';
+import { config } from './config';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet('proposals');
     if (cachedProposals) return JSON.parse(cachedProposals);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
   invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
   const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
@@ -57,7 +58,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   proposals.push(...oldSpells);
   proposals = proposals.slice(0, 100);
 
-  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
+  if (config.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
   return proposals;
 }
 
@@ -77,17 +78,17 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
 export async function getPolls(): Promise<Poll[]> {
   const maker = await getMaker();
 
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet('polls');
     if (cachedPolls) return JSON.parse(cachedPolls);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return require('../mocks/polls.json');
   }
 
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
-  if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
+  if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return polls;
 }
 

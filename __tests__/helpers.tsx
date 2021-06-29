@@ -3,13 +3,14 @@ import { ThemeProvider } from 'theme-ui';
 import { ethers } from 'ethers';
 import WrappedAccountSelect from '../components/header/AccountSelect';
 import theme from '../lib/theme';
+import React from 'react';
 
-export function renderWithTheme(component): RenderResult {
+export function renderWithTheme(component: React.ReactNode): RenderResult {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 }
 
-export function injectProvider() {
-  (window as any).ethereum = new Proxy (new ethers.providers.JsonRpcProvider('http://localhost:2000'), {
+export function injectProvider(): void {
+  window.ethereum = new Proxy (new ethers.providers.JsonRpcProvider('http://localhost:2000'), {
     get(target, key) {
       if (key === 'enable') {
         return async () => ['0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6'];
@@ -26,7 +27,7 @@ export function injectProvider() {
   });
 }
 
-export function renderWithAccountSelect(component): RenderResult {
+export function renderWithAccountSelect(component: React.ReactNode): RenderResult {
   return render(
     <>
       <ThemeProvider theme={theme}>

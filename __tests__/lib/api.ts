@@ -1,14 +1,15 @@
 import { getPolls } from '../../lib/api';
 import fs from 'fs';
+import { config } from '../../lib/config';
 
 const cacheFile = `/tmp/gov-portal-testnet-polls-${new Date().toISOString().substring(0, 10)}`;
 
 beforeAll(() => {
-  process.env.USE_FS_CACHE = '1';
+  config.USE_FS_CACHE = '1';
 });
 
 afterAll(() => {
-  delete process.env.USE_FS_CACHE;
+  config.USE_FS_CACHE = '';
   if (fs.existsSync(cacheFile)) fs.unlinkSync(cacheFile);
 });
 
