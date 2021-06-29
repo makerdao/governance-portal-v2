@@ -1,4 +1,4 @@
-import { Box, Link as ExternalLink, Text, Flex } from 'theme-ui';
+import { Box, Link as ExternalLink, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 type Props = {
@@ -6,6 +6,7 @@ type Props = {
   linkDest?: string;
   icon?: string;
   children: React.ReactNode;
+  sx?: ThemeUIStyleObject;
 };
 
 const IntroCard = ({ icon, title, children, linkDest, ...otherProps }: Props): JSX.Element => (

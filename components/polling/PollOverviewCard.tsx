@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, jsx } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
@@ -17,7 +17,12 @@ import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
 import mixpanel from 'mixpanel-browser';
 
-type Props = { poll: Poll; startMobileVoting?: () => void; reviewPage: boolean };
+type Props = { 
+  poll: Poll; 
+  startMobileVoting?: () => void; 
+  reviewPage: boolean;
+  sx?: ThemeUIStyleObject;
+};
 export default function PollOverviewCard({
   poll,
   startMobileVoting,
