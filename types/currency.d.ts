@@ -14,4 +14,3 @@ export type CurrencyObject = {
   toNumber: () => number;
   symbol: string;
 };
-

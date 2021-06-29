@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Flex, Button, Text, jsx, Close, Spinner } from 'theme-ui';
 
-const BurnSigning = ({close}) => (
+const BurnSigning = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"

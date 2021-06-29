@@ -267,7 +267,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               mixpanel.track('btn-click', {
                 id: 'vote',
                 product: 'governance-portal-v2',
-                page: 'Executive',
+                page: 'Executive'
               });
               vote(hatChecked, comment);
             }}
