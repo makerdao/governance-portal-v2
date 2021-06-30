@@ -5,60 +5,80 @@ import chunk from 'lodash/chunk';
 import os from 'os';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
-import { CMS_ENDPOINTS } from './constants';
+import { EXEC_PROPOSAL_INDEX } from './constants';
 import getMaker, { getNetwork, isTestnet } from './maker';
 import { Poll, PartialPoll } from 'types/poll';
 import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
+import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
+import { fetchGitHubPage } from './github';
+import fs from 'fs';
+import { config } from './config';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet('proposals');
     if (cachedProposals) return JSON.parse(cachedProposals);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
   const network = getNetwork();
-  invariant(network in CMS_ENDPOINTS, `no cms endpoint known for network ${network}`);
-  const topics = await (await fetch(CMS_ENDPOINTS[network].allTopics)).json();
-  const spells = await (await fetch(CMS_ENDPOINTS[network].allSpells)).json();
-  let proposals: Array<any> = topics
-    .filter(topic => topic.active)
-    .filter(topic => !topic.govVote)
-    .map(topic => topic.proposals)
-    .flat();
 
-  spells.forEach(spell => {
-    spell.address = spell.source;
-    delete spell.source;
-  });
+  const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
-  proposals.forEach(proposal => {
-    proposal.proposalBlurb = proposal.proposal_blurb;
-    proposal.address = proposal.source;
-    proposal.active = true;
-    delete proposal.proposal_blurb;
-    delete proposal.source;
-  });
+  const owner = 'makerdao';
+  const repo = 'community';
+  const path = 'governance/votes';
 
-  const oldSpells = spells
-    .filter(
-      spell => proposals.findIndex(proposal => proposal.address === spell.address) === -1 // filter out active spells
-    )
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const githubResponse = await fetchGitHubPage(owner, repo, path);
+  const proposalUrls = githubResponse
+    .filter(x => x.type === 'file')
+    .map(x => x.download_url)
+    .filter(x => !!x);
 
-  oldSpells.forEach(spell => {
-    spell.active = false;
-    spell.proposalBlurb = spell.proposal_blurb;
-    spell.key = spell._id;
-    delete spell.proposal_blurb;
-    delete spell._id;
-  });
+  const proposals = await Promise.all(proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
+    try {
+      const proposalDoc = await (await fetch(proposalLink)).text();
+      
+      const {
+        content,
+        data: { title, summary, address, date }
+      } = matter(proposalDoc);
 
-  proposals.push(...oldSpells);
-  proposals = proposals.slice(0, 100);
+      // Remove empty docs
+      if (!(content && title && summary && address && date)) {
+        return null;
+      }
 
-  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(proposals));
-  return proposals;
+      //remove `Template - [Executive Vote] ` from title
+      const editedTitle = title.replace('Template - [Executive Vote] ', '');
+
+      return {
+        about: content,
+        content: content,
+        title: editedTitle,
+        proposalBlurb: summary,
+        key: slugify(title),
+        address: address,
+        date: String(date),
+        active: proposalIndex[network].includes(proposalLink)
+      };
+    } catch(e) {
+
+      // Catch error and return null if failed fetching one proposal
+      return null;
+    }
+  }));
+
+
+  const filteredProposals: CMSProposal[] = proposals.filter(x => !!x) as CMSProposal[];
+  
+  const sortedProposals = filteredProposals
+    .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
+    .slice(0, 100);
+
+  
+  if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(sortedProposals));
+  return sortedProposals;
 }
 
 export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
@@ -67,7 +87,6 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');
-
   return {
     ...proposal,
     content
@@ -77,24 +96,23 @@ export async function getExecutiveProposal(proposalId: string): Promise<CMSPropo
 export async function getPolls(): Promise<Poll[]> {
   const maker = await getMaker();
 
-  if (process.env.USE_FS_CACHE) {
+  if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet('polls');
     if (cachedPolls) return JSON.parse(cachedPolls);
-  } else if (process.env.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return require('../mocks/polls.json');
   }
 
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 
-  if (process.env.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
+  if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return polls;
 }
 
 const fsCacheCache = {};
 
 const fsCacheGet = name => {
-  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
   const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
     .toISOString()
     .substring(0, 10)}`;
@@ -109,12 +127,16 @@ const fsCacheGet = name => {
 };
 
 const fsCacheSet = (name, data) => {
-  const fs = require('fs'); // eslint-disable-line typescript-eslint/no-var-requires
-  const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
-    .toISOString()
-    .substring(0, 10)}`;
-  fs.writeFileSync(path, data, err => console.error(err));
-  fsCacheCache[path] = data;
+  try {
+    const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
+      .toISOString()
+      .substring(0, 10)}`;
+    fs.writeFileSync(path, data);
+    fsCacheCache[path] = data;
+  } catch (e) {
+    console.error(e);
+  }
+
 };
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {

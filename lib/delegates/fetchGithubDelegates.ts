@@ -1,5 +1,5 @@
 import matter from 'gray-matter';
-import { fetchPage, GithubPage } from 'lib/github';
+import { fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/utils';
 import { DelegateRepoInformation } from 'types/delegate';
 
@@ -10,7 +10,7 @@ async function extractGithubInformation(
   folder: GithubPage
 ): Promise<DelegateRepoInformation | undefined> {
   try {
-    const folderContents = await fetchPage(owner, repo, folder.path);
+    const folderContents = await fetchGitHubPage(owner, repo, folder.path);
 
     const readme = folderContents.find(item => item.name === 'README.md');
 
@@ -49,7 +49,7 @@ export async function fetchGithubDelegates(): Promise<{ error: boolean; data?: D
 
   try {
     // Fetch all folders inside the delegates folder
-    const folders = await fetchPage(owner, repo, page);
+    const folders = await fetchGitHubPage(owner, repo, page);
 
     // Get the information of all the delegates, filter errored ones
     const promises = folders.map(
@@ -81,7 +81,7 @@ export async function fetchGithubDelegate(
 
   try {
     // Fetch all folders inside the delegates folder
-    const folders = await fetchPage(owner, repo, page);
+    const folders = await fetchGitHubPage(owner, repo, page);
     const folder = folders.find(f => f.name === address);
 
     const userInfo = folder ? await extractGithubInformation(owner, repo, folder) : undefined;

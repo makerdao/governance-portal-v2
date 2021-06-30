@@ -1,12 +1,14 @@
 import { Octokit } from '@octokit/core';
+import { config } from 'lib/config';
+
 
 // Handle errors of configuration by disabling oktokit
 
 let octokit;
 try {
-  octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+  octokit = new Octokit({ auth: config.GITHUB_TOKEN });
 } catch(e) {
-  console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed')
+  console.warn('WARNING: GitHub token not configured correctly. Vote delegates will not be fetcheed');
 }
 
 export type GithubPage = {
@@ -14,9 +16,10 @@ export type GithubPage = {
   path: string;
   url: string;
   download_url: string;
+  type: string;
 };
 
-export async function fetchPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
+export async function fetchGitHubPage(owner: string, repo: string, path: string): Promise<GithubPage[]> {
   if (!octokit) {
     return Promise.resolve([]);
   }
