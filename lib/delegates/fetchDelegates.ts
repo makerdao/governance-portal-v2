@@ -8,8 +8,8 @@ const millisecondsMonth = 1000 * 60 * 60 * 24 * 31;
 
 const onChainDelegates: DelegateOnchainInformation[] = [
   {
-    address: '0x051aD7842f4259608957437c46926E0FA29b182D',
-    owner: '0x051aD7842f4259608957437c46926E0FA29b182D',
+    address: '0x889bA247C9C768ca0047db8804c03011E06eE6B3',
+    owner: '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6',
     expirationDate: new Date(Date.now() + millisecondsMonth * 3)
   },
   {
