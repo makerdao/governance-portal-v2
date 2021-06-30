@@ -3,7 +3,7 @@
   "license": "AGPL-3.0-only",
   "version": "0.1.0",
   "scripts": {
-    "prepare": "npx husky install",
+    "prepare": "husky install",
     "dev": "next",
     "dev-https": "node server.js",
     "build": "next build",
@@ -11,7 +11,9 @@
     "export": "next export",
     "test": "yarn testchain --ci jest --runInBand  --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
-    "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast"
+    "testchain": "./node_modules/@makerdao/testchain/scripts/launch -s default --fast",
+    "prettier": "prettier --config .prettierrc --write pages/ components/ lib/ stores/ types/",
+    "lint": "eslint --ext .tsx,.ts pages/ components/ lib/ stores/ types/"
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.11",
@@ -72,25 +74,15 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.20.5",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "husky": "^6.0.0",
     "jest": "^26.0.1",
-    "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "typescript": "^3.9.3",
     "wait-for-expect": "^3.0.2"
   },
   "resolutions": {
     "trezor-connect": "8.1.15"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "node lint-staged"
-    }
-  },
-  "lint-staged": {
-    "./{components,lib,pages,stores,types}/**/*.{js,ts,jsx,tsx}": [
-      "prettier --single-quote --write",
-      "eslint"
-    ]
   }
 }

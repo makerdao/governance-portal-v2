@@ -10,7 +10,7 @@ type Props = {
   min?: CurrencyObject;
   max?: CurrencyObject;
   error?: string | false;
-  style?: {} 
+  style?: Record<string, unknown>;
 };
 
 const MKRInput = forwardRef<HTMLInputElement, Props>(
@@ -32,7 +32,7 @@ const MKRInput = forwardRef<HTMLInputElement, Props>(
       onChange(newValue);
       setCurrentValueStr(newValueStr);
     }
-    
+
     return (
       <Box>
         <Input

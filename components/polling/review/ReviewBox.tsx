@@ -62,7 +62,7 @@ export default function ReviewBox({
               mixpanel.track('btn-click', {
                 id: 'submitBallot',
                 product: 'governance-portal-v2',
-                page: 'PollingReview',
+                page: 'PollingReview'
               });
               submitBallot();
             }}
@@ -146,15 +146,19 @@ export default function ReviewBox({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button onClick={() => {
-          mixpanel.track('btn-click', {
-            id: 'submitBallot',
-            product: 'governance-portal-v2',
-            page: 'PollingReview',
-          });
-          submitBallot();
+        <Button
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'submitBallot',
+              product: 'governance-portal-v2',
+              page: 'PollingReview'
+            });
+            submitBallot();
           }}
-          variant="primaryLarge" disabled={!ballotLength} sx={{ width: '100%' }}>
+          variant="primaryLarge"
+          disabled={!ballotLength}
+          sx={{ width: '100%' }}
+        >
           Submit Your Ballot
         </Button>
       </Flex>

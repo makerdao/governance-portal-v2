@@ -25,11 +25,11 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
         ))
       )}
       <Button
-        onClick={()=>{
+        onClick={() => {
           mixpanel.track('btn-click', {
             id: 'editChoice',
             product: 'governance-portal-v2',
-            page: 'PollingReview',
+            page: 'PollingReview'
           });
           edit();
         }}

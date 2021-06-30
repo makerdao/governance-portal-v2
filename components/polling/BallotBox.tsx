@@ -64,11 +64,11 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
-              onClick={()=>{
+              onClick={() => {
                 mixpanel.track('btn-click', {
                   id: 'reviewAndSubmitBallot',
                   product: 'governance-portal-v2',
-                  page: 'Polling',
+                  page: 'Polling'
                 });
                 startReview();
               }}

@@ -2,7 +2,7 @@
 import { Flex, Button, Text, jsx, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-const BurnFailed = ({close}) => (
+const BurnFailed = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
     <Close
       aria-label="close"
