@@ -87,6 +87,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   {Object.keys(ballot).map((pollId, index) => {
                     const poll = findPollById(polls, pollId);
                     invariant(poll !== undefined, 'Unknown poll found on voter ballot');
+
+                    if (!poll) {
+                      return null;
+                    }
                     return (
                       <PollOverviewCard
                         key={poll.multiHash}
