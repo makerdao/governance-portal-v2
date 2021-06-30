@@ -3,7 +3,6 @@ import { Heading, Box, jsx, Flex } from 'theme-ui';
 import ErrorPage from 'next/error';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
-
 import PrimaryLayout from '../../components/layouts/Primary';
 import SidebarLayout from '../../components/layouts/Sidebar';
 import Stack from '../../components/layouts/Stack';
@@ -15,11 +14,7 @@ import { Delegate } from 'types/delegate';
 import DelegateDetail from '../../components/delegations/DelegateDetail';
 import { fetchDelegate, fetchDelegates } from '../../lib/delegates/fetchDelegates';
 
-
-const DelegateView = ({ delegate }: {
-  delegate: Delegate;
-}) => {
-
+const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
@@ -32,10 +27,8 @@ const DelegateView = ({ delegate }: {
             <Heading variant="microHeading" mr={3}>
               Back to delegates
             </Heading>
-            
           </Flex>
 
-  
           <Box>
             <DelegateDetail delegate={delegate} />
           </Box>
@@ -51,14 +44,9 @@ const DelegateView = ({ delegate }: {
   );
 };
 
-export default function DelegatesPage({ delegate }: {
-  delegate?: Delegate;
-}): JSX.Element {
+export default function DelegatesPage({ delegate }: { delegate?: Delegate }): JSX.Element {
   if (!delegate) {
-    return <ErrorPage
-      statusCode={404}
-      title="Delegate address not found."
-    />;
+    return <ErrorPage statusCode={404} title="Delegate address not found." />;
   }
 
   return <DelegateView delegate={delegate} />;
@@ -66,9 +54,9 @@ export default function DelegatesPage({ delegate }: {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const delegate = await fetchDelegate(params?.address as string);
-  
-  if (!delegate ) {
-    return { revalidate: 30, props: { delegate : null } };
+
+  if (!delegate) {
+    return { revalidate: 30, props: { delegate: null } };
   }
 
   return {

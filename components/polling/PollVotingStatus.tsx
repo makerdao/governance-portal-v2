@@ -45,7 +45,7 @@ const VotingStatus = ({
 }: {
   poll: Poll;
   desktopStyle?: boolean;
-  sx?: ThemeUIStyleObject
+  sx?: ThemeUIStyleObject;
 }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
   const { data: allUserVotes } = useSWR<PollVote[]>(

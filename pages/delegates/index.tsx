@@ -22,17 +22,19 @@ type Props = {
 };
 
 const Delegates = ({ delegates }: Props) => {
-
   const styles = {
     delegateGroup: {
       marginBottom: 2
     }
   };
 
-
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
-  const activeDelegates = delegates.filter(delegate => delegate.status === DelegateStatusEnum.active && !delegate.expired);
-  const unrecognizedDelegates = delegates.filter(delegate => delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired);
+  const activeDelegates = delegates.filter(
+    delegate => delegate.status === DelegateStatusEnum.active && !delegate.expired
+  );
+  const unrecognizedDelegates = delegates.filter(
+    delegate => delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired
+  );
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -49,47 +51,53 @@ const Delegates = ({ delegates }: Props) => {
             TBD
           </Flex>
 
-          {activeDelegates.length > 0 && <Box sx={styles.delegateGroup}>
-            <Heading mb={3} mt={4} as="h4">
-              Recognized delegates
-            </Heading>
+          {activeDelegates.length > 0 && (
+            <Box sx={styles.delegateGroup}>
+              <Heading mb={3} mt={4} as="h4">
+                Recognized delegates
+              </Heading>
 
-            <Box>
-              {activeDelegates.map(delegate => (
-                <Box key={delegate.id} sx={{ mb: 4 }}>
-                  <DelegateCard delegate={delegate} />
-                </Box>
-              ))}
+              <Box>
+                {activeDelegates.map(delegate => (
+                  <Box key={delegate.id} sx={{ mb: 4 }}>
+                    <DelegateCard delegate={delegate} />
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>}
-          
-          {unrecognizedDelegates.length > 0 && <Box sx={styles.delegateGroup}>
-            <Heading mb={3} mt={4} as="h4">
-              Unrecognized Delegates
-            </Heading>
+          )}
 
-            <Box>
-              {unrecognizedDelegates.map(delegate => (
-                <Box key={delegate.id} sx={{ mb: 4 }}>
-                  <DelegateCard delegate={delegate} />
-                </Box>
-              ))}
+          {unrecognizedDelegates.length > 0 && (
+            <Box sx={styles.delegateGroup}>
+              <Heading mb={3} mt={4} as="h4">
+                Unrecognized Delegates
+              </Heading>
+
+              <Box>
+                {unrecognizedDelegates.map(delegate => (
+                  <Box key={delegate.id} sx={{ mb: 4 }}>
+                    <DelegateCard delegate={delegate} />
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>}
+          )}
 
-          {expiredDelegates.length > 0 && <Box sx={styles.delegateGroup}>
-            <Heading mb={3} mt={4} as="h4">
-              Expired Delegates
-            </Heading>
+          {expiredDelegates.length > 0 && (
+            <Box sx={styles.delegateGroup}>
+              <Heading mb={3} mt={4} as="h4">
+                Expired Delegates
+              </Heading>
 
-            <Box>
-              {expiredDelegates.map(delegate => (
-                <Box key={delegate.id} sx={{ mb: 4 }}>
-                  <DelegateCard delegate={delegate} />
-                </Box>
-              ))}
+              <Box>
+                {expiredDelegates.map(delegate => (
+                  <Box key={delegate.id} sx={{ mb: 4 }}>
+                    <DelegateCard delegate={delegate} />
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>}
+          )}
         </Box>
         <Stack gap={3}>
           <SystemStatsSidebar

@@ -180,7 +180,7 @@ const ESModule = () => {
         <Text variant="heading">Emergency Shutdown Module</Text>
       </Box>
       <Box mt={2}>
-        <Text  variant="text" sx={{ color: 'onSecondary' }}>
+        <Text variant="text" sx={{ color: 'onSecondary' }}>
           The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
           {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
           emergency shutdown can be executed.{' '}
@@ -193,9 +193,7 @@ const ESModule = () => {
         </Text>
       </Box>
       <Box sx={{ mt: 4 }}>
-        <Text variant="microHeading" >
-          Total MKR Burned
-        </Text>
+        <Text variant="microHeading">Total MKR Burned</Text>
       </Box>
       <Card mt={3}>
         {bpi < 1 ? <MobileView /> : <DesktopView />}
@@ -237,9 +235,7 @@ const ESModule = () => {
         </Flex>
       </Card>
       <Box mt={5}>
-        <Text variant="microHeading" >
-          ESM History
-        </Text>
+        <Text variant="microHeading">ESM History</Text>
       </Box>
       <ESMHistory stakingHistory={stakingHistory} />
     </PrimaryLayout>

@@ -13,15 +13,17 @@ export default function DelegatePicture({ delegate }: { delegate: Delegate }): R
           borderRadius: '100%'
         }}
       />
-      {delegate.status === DelegateStatusEnum.active && <Image
-        src="/assets/verified-check.svg"
-        sx={{
-          position: 'absolute',
-          bottom: '3px',
-          right: '0',
-          width: '12px'
-        }}
-      />}
+      {delegate.status === DelegateStatusEnum.active && (
+        <Image
+          src="/assets/verified-check.svg"
+          sx={{
+            position: 'absolute',
+            bottom: '3px',
+            right: '0',
+            width: '12px'
+          }}
+        />
+      )}
     </Box>
   );
 }

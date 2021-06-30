@@ -10,7 +10,6 @@ type PropTypes = {
 };
 
 export default function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
-
   return (
     <Box sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}>
       <Box>

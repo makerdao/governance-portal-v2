@@ -55,7 +55,7 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
           </Link>
         </Flex>
 
-        <Box sx={ {mb: [1, 2]}}>
+        <Box sx={{ mb: [1, 2] }}>
           <Text
             sx={
               {

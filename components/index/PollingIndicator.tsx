@@ -68,7 +68,13 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const PollingIndicatorComponent = ({ polls, ...props }: { polls: Poll[], sx?: ThemeUIStyleObject }): JSX.Element => {
+const PollingIndicatorComponent = ({
+  polls,
+  ...props
+}: {
+  polls: Poll[];
+  sx?: ThemeUIStyleObject;
+}): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 
