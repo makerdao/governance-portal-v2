@@ -7,7 +7,7 @@ import Footer from '../Footer';
 type Props = {
   shortenFooter?: boolean;
   fade?: boolean;
-  sx?: ThemeUIStyleObject
+  sx?: ThemeUIStyleObject;
 };
 
 const PrimaryLayout = ({

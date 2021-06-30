@@ -6,13 +6,13 @@ export type DelegateRepoInformation = {
   name: string;
   externalUrl: string;
   description: string;
-}
+};
 
 export type DelegateOnchainInformation = {
   address: string;
   owner: string;
   expirationDate: Date;
-}
+};
 
 export type Delegate = {
   id: string;

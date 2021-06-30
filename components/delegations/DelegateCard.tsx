@@ -1,6 +1,5 @@
 /** @jsx jsx */
 
-
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import React from 'react';
 import useSWR from 'swr';
@@ -92,7 +91,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            {delegate.status === DelegateStatusEnum.active && !delegate.expired &&(
+            {delegate.status === DelegateStatusEnum.active && !delegate.expired && (
               <Link href={`/delegates/${delegate.address}`}>
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
@@ -146,10 +145,13 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
         </Box>
 
-        <Box mt={[4, 0]} sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-        }}>
+        <Box
+          mt={[4, 0]}
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap'
+          }}
+        >
           <Grid columns={[2]}>
             <Box sx={{ mr: 4 }}>
               <Box sx={{ mb: 3 }}>
@@ -188,31 +190,30 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 </Text>
               </Box>
             </Box>
-
           </Grid>
 
           <Box sx={{ textAlign: 'right' }}>
-              <Box sx={{ mb: 3 }}>
-                <Button
-                  variant="primaryLarge"
-                  disabled={!account}
-                  onClick={() => setShowDelegateModal(true)}
-                  sx={{ width: '150px' }}
-                >
-                  Delegates
-                </Button>
-              </Box>
-              <Box>
-                <Button
-                  variant="primaryOutline"
-                  disabled={!account}
-                  onClick={() => setShowUndelegateModal(true)}
-                  sx={{ width: '150px' }}
-                >
-                  Undelegate
-                </Button>
-              </Box>
+            <Box sx={{ mb: 3 }}>
+              <Button
+                variant="primaryLarge"
+                disabled={!account}
+                onClick={() => setShowDelegateModal(true)}
+                sx={{ width: '150px' }}
+              >
+                Delegates
+              </Button>
             </Box>
+            <Box>
+              <Button
+                variant="primaryOutline"
+                disabled={!account}
+                onClick={() => setShowUndelegateModal(true)}
+                sx={{ width: '150px' }}
+              >
+                Undelegate
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </Box>
 

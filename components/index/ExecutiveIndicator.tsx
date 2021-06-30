@@ -52,7 +52,13 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSProposal[], sx?: ThemeUIStyleObject }): JSX.Element => {
+const ExecutiveIndicatorComponent = ({
+  proposals,
+  ...props
+}: {
+  proposals: CMSProposal[];
+  sx?: ThemeUIStyleObject;
+}): JSX.Element => {
   const { data: spellData } = useSWR<Record<string, SpellData>>(
     `/api/executive/analyze-spell?network=${getNetwork()}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter

@@ -7,7 +7,7 @@ import useSWR from 'swr';
 import { parsePollTally, fetchJson } from 'lib/utils';
 import { Poll } from 'types/poll';
 
-const PollOptionBadge = ({ poll, ...props }: { poll: Poll, sx?: ThemeUIStyleObject}): JSX.Element => {
+const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
   const network = getNetwork();
   const { data: tally } = useSWR(

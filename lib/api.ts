@@ -35,48 +35,49 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
     .map(x => x.download_url)
     .filter(x => !!x);
 
-  const proposals = await Promise.all(proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
-    try {
-      const proposalDoc = await (await fetch(proposalLink)).text();
-      
-      const {
-        content,
-        data: { title, summary, address, date }
-      } = matter(proposalDoc);
+  const proposals = await Promise.all(
+    proposalUrls.map(
+      async (proposalLink): Promise<CMSProposal | null> => {
+        try {
+          const proposalDoc = await (await fetch(proposalLink)).text();
 
-      // Remove empty docs
-      if (!(content && title && summary && address && date)) {
-        return null;
+          const {
+            content,
+            data: { title, summary, address, date }
+          } = matter(proposalDoc);
+
+          // Remove empty docs
+          if (!(content && title && summary && address && date)) {
+            return null;
+          }
+
+          //remove `Template - [Executive Vote] ` from title
+          const editedTitle = title.replace('Template - [Executive Vote] ', '');
+
+          return {
+            about: content,
+            content: content,
+            title: editedTitle,
+            proposalBlurb: summary,
+            key: slugify(title),
+            address: address,
+            date: String(date),
+            active: proposalIndex[network].includes(proposalLink)
+          };
+        } catch (e) {
+          // Catch error and return null if failed fetching one proposal
+          return null;
+        }
       }
-
-      //remove `Template - [Executive Vote] ` from title
-      const editedTitle = title.replace('Template - [Executive Vote] ', '');
-
-      return {
-        about: content,
-        content: content,
-        title: editedTitle,
-        proposalBlurb: summary,
-        key: slugify(title),
-        address: address,
-        date: String(date),
-        active: proposalIndex[network].includes(proposalLink)
-      };
-    } catch(e) {
-
-      // Catch error and return null if failed fetching one proposal
-      return null;
-    }
-  }));
-
+    )
+  );
 
   const filteredProposals: CMSProposal[] = proposals.filter(x => !!x) as CMSProposal[];
-  
+
   const sortedProposals = filteredProposals
     .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
     .slice(0, 100);
 
-  
   if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(sortedProposals));
   return sortedProposals;
 }
@@ -136,7 +137,6 @@ const fsCacheSet = (name, data) => {
   } catch (e) {
     console.error(e);
   }
-
 };
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {

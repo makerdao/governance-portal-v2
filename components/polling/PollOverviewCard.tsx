@@ -17,9 +17,9 @@ import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
 import mixpanel from 'mixpanel-browser';
 
-type Props = { 
-  poll: Poll; 
-  startMobileVoting?: () => void; 
+type Props = {
+  poll: Poll;
+  startMobileVoting?: () => void;
   reviewPage: boolean;
   sx?: ThemeUIStyleObject;
 };

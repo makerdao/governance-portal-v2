@@ -191,7 +191,6 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyle
       ...componentProps,
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
-
   }
 }
 
@@ -224,7 +223,7 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   return { hasBeenCast, executedOn, groupedDiff };
 }
 
-export const formatDateWithTime = (dateString: Date | undefined | number | string ): string => {
+export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
   if (!dateString) {
     return '';
   }
