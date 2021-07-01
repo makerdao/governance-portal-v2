@@ -2,9 +2,9 @@ import create from 'zustand';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
 
-import { parseTxError } from '../lib/errors';
-import getMaker from '../lib/maker';
-import TX, { TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
+import { parseTxError } from 'lib/errors';
+import getMaker from 'lib/maker';
+import { Transaction, TXMined, TXPending, TXInitialized, TXError } from 'types/transaction';
 
 type Hooks = {
   pending?: (txHash: string) => void;
@@ -13,7 +13,7 @@ type Hooks = {
 };
 
 type Store = {
-  transactions: TX[];
+  transactions: Transaction[];
   initTx: (txId: string, from: string, message: string | null) => void;
   setMessage: (txId: string, message: string | null) => void;
   setPending: (txId: string, hash: string) => void;
@@ -94,7 +94,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     set(({ transactions }) => {
       const transactionIndex = transactions.findIndex(tx => tx.id === txId);
       invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
-      const prevState = transactions[transactionIndex] as TX;
+      const prevState = transactions[transactionIndex] as Transaction;
       const nextState: TXError = {
         ...prevState,
         status,
@@ -139,7 +139,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
 }));
 
 const transactionsSelectors = {
-  getTransaction: (state, txId): TX => {
+  getTransaction: (state, txId): Transaction => {
     const tx = state.transactions.find(tx => tx.id === txId);
     invariant(tx, `Unable to find tx id ${txId}`);
     return tx;

@@ -6,12 +6,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { getEtherscanLink } from '../../../lib/utils';
-import { getNetwork } from '../../../lib/maker';
-import Poll from '../../../types/poll';
-import { TXMined } from '../../../types/transaction';
-import useBallotStore from '../../../stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '../../../stores/transactions';
+import { getEtherscanLink } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
+import { Poll } from 'types/poll';
+import { TXMined } from 'types/transaction';
+import useBallotStore from 'stores/ballot';
+import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
@@ -62,7 +62,7 @@ export default function ReviewBox({
               mixpanel.track('btn-click', {
                 id: 'submitBallot',
                 product: 'governance-portal-v2',
-                page: 'PollingReview',
+                page: 'PollingReview'
               });
               submitBallot();
             }}
@@ -146,15 +146,19 @@ export default function ReviewBox({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button onClick={() => {
-          mixpanel.track('btn-click', {
-            id: 'submitBallot',
-            product: 'governance-portal-v2',
-            page: 'PollingReview',
-          });
-          submitBallot();
+        <Button
+          onClick={() => {
+            mixpanel.track('btn-click', {
+              id: 'submitBallot',
+              product: 'governance-portal-v2',
+              page: 'PollingReview'
+            });
+            submitBallot();
           }}
-          variant="primaryLarge" disabled={!ballotLength} sx={{ width: '100%' }}>
+          variant="primaryLarge"
+          disabled={!ballotLength}
+          sx={{ width: '100%' }}
+        >
           Submit Your Ballot
         </Button>
       </Flex>

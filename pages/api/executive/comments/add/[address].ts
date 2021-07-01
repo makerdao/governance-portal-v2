@@ -4,7 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { connectToDatabase } from '../../../_lib/utils';
 import withApiHandler from '../../../_lib/withApiHandler';
-import { SupportedNetworks } from '../../../../../lib/constants';
+import { config } from '../../../../../lib/config';
+import { SupportedNetworks } from 'lib/constants';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,8 +21,8 @@ export default withApiHandler(
     );
 
     const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
-      infura: process.env.INFURA_KEY,
-      alchemy: process.env.ALCHEMY_KEY
+      infura: config.INFURA_KEY,
+      alchemy: config.ALCHEMY_KEY
     });
 
     // verify tx

@@ -8,21 +8,22 @@ import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
-import { fetchJson } from '../lib/utils';
-import theme from '../lib/theme';
-import Header from '../components/Header';
+import { fetchJson } from 'lib/utils';
+import theme from 'lib/theme';
+import Header from 'components/Header';
 import Head from 'next/head';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
-import { mixpanelInit } from '../lib/analytics';
+import { mixpanelInit } from 'lib/analytics';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import mixpanel from 'mixpanel-browser';
+import { config } from '../lib/config';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const dev = process.env.NODE_ENV === 'development';
+  const dev = config.NODE_ENV === 'development';
   const router = useRouter();
   useEffect(() => {
     mixpanelInit();

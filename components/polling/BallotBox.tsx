@@ -2,13 +2,13 @@ import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-import { SupportedNetworks } from '../../lib/constants';
-import { getNetwork } from '../../lib/maker';
-import Poll from '../../types/poll';
-import Ballot from '../../types/ballot';
-import useBallotStore from '../../stores/ballot';
-import useTransactionStore, { transactionsSelectors } from '../../stores/transactions';
-import { getEtherscanLink } from '../../lib/utils';
+import { SupportedNetworks } from 'lib/constants';
+import { getNetwork } from 'lib/maker';
+import { Poll } from 'types/poll';
+import { Ballot } from 'types/ballot';
+import useBallotStore from 'stores/ballot';
+import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
+import { getEtherscanLink } from 'lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
 import mixpanel from 'mixpanel-browser';
@@ -64,11 +64,11 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
-              onClick={()=>{
+              onClick={() => {
                 mixpanel.track('btn-click', {
                   id: 'reviewAndSubmitBallot',
                   product: 'governance-portal-v2',
-                  page: 'Polling',
+                  page: 'Polling'
                 });
                 startReview();
               }}

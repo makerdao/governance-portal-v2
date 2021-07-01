@@ -3,9 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
 import { getConnectedMakerObj, getTrace } from '../../_lib/utils';
-import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from '../../../../lib/constants';
-import { fetchJson } from '../../../../lib/utils';
+import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'lib/constants';
+import { fetchJson } from 'lib/utils';
 import withApiHandler from '../../_lib/withApiHandler';
+import { config } from '../../../../lib/config';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
@@ -21,11 +22,11 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
   const provider = ethers.getDefaultProvider(network, {
-    infura: process.env.INFURA_KEY,
-    alchemy: process.env.ALCHEMY_KEY
+    infura: config.INFURA_KEY,
+    alchemy: config.ALCHEMY_KEY
   });
 
-  console.log(process.env.INFURA_KEY, process.env.ALCHEMY_KEY, 'infura and alchemy keys state diff');
+  console.log(config.INFURA_KEY, config.ALCHEMY_KEY, 'infura and alchemy keys state diff');
   const encoder = new ethers.utils.Interface([
     'function sig() returns (bytes)',
     'function action() returns (address)',
@@ -66,7 +67,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
     const [{ transactionHash, blockNumber }] = await new ethers.providers.InfuraProvider(
       network,
-      process.env.INFURA_KEY
+      config.INFURA_KEY
     ).getLogs({
       address: MCD_PAUSE,
       fromBlock: 0,

@@ -4,15 +4,14 @@ import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
-import Skeleton from 'react-loading-skeleton';
 import invariant from 'tiny-invariant';
 
-import getMaker, { getNetwork } from '../../lib/maker';
-import { isActivePoll } from '../../lib/utils';
-import useAccountsStore from '../../stores/accounts';
-import Poll from '../../types/poll';
-import PollVote from '../../types/poll';
-import Account from '../../types/account';
+import getMaker, { getNetwork } from 'lib/maker';
+import { isActivePoll } from 'lib/utils';
+import useAccountsStore from 'stores/accounts';
+import { Poll } from 'types/poll';
+import { PollVote } from 'types/pollVote';
+import { Account } from 'types/account';
 
 type Props = {
   account?: Account;

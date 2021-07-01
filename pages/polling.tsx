@@ -11,24 +11,24 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
-import Poll from '../types/poll';
-import { isDefaultNetwork, getNetwork } from '../lib/maker';
-import { getPolls } from '../lib/api';
-import { isActivePoll, formatDateWithTime } from '../lib/utils';
-import PrimaryLayout from '../components/layouts/Primary';
-import SidebarLayout from '../components/layouts/Sidebar';
-import Stack from '../components/layouts/Stack';
-import PollOverviewCard from '../components/polling/PollOverviewCard';
-import DateFilter from '../components/polling/DateFilter';
-import CategoryFilter from '../components/polling/CategoryFilter';
-import BallotBox from '../components/polling/BallotBox';
-import ResourceBox from '../components/ResourceBox';
-import SystemStatsSidebar from '../components/SystemStatsSidebar';
-import useBallotStore from '../stores/ballot';
-import useAccountsStore from '../stores/accounts';
-import useUiFiltersStore from '../stores/uiFilters';
-import MobileVoteSheet from '../components/polling/MobileVoteSheet';
-import BallotStatus from '../components/polling/BallotStatus';
+import { Poll } from 'types/poll';
+import { isDefaultNetwork, getNetwork } from 'lib/maker';
+import { getPolls } from 'lib/api';
+import { isActivePoll, formatDateWithTime } from 'lib/utils';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import PollOverviewCard from 'components/polling/PollOverviewCard';
+import DateFilter from 'components/polling/DateFilter';
+import CategoryFilter from 'components/polling/CategoryFilter';
+import BallotBox from 'components/polling/BallotBox';
+import ResourceBox from 'components/ResourceBox';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import useBallotStore from 'stores/ballot';
+import useAccountsStore from 'stores/accounts';
+import useUiFiltersStore from 'stores/uiFilters';
+import MobileVoteSheet from 'components/polling/MobileVoteSheet';
+import BallotStatus from 'components/polling/BallotStatus';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
 
@@ -37,18 +37,24 @@ type Props = {
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.showHistorical,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);

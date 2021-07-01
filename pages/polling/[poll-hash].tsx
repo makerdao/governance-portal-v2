@@ -11,25 +11,25 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'react-loading-skeleton';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import CountdownTimer from '../../components/CountdownTimer';
-import { getNetwork, isDefaultNetwork } from '../../lib/maker';
-import { getPolls, getPoll } from '../../lib/api';
-import { parsePollTally, fetchJson, isActivePoll } from '../../lib/utils';
-import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
-import Stack from '../../components/layouts/Stack';
-import Tabs from '../../components/Tabs';
-import VotingStatus from '../../components/polling/PollVotingStatus';
-import VoteBreakdown from '../../components/polling/[poll-hash]/VoteBreakdown';
-import VoteBox from '../../components/polling/[poll-hash]/VoteBox';
-import SystemStatsSidebar from '../../components/SystemStatsSidebar';
-import ResourceBox from '../../components/ResourceBox';
-import Poll from '../../types/poll';
-import PollTally from '../../types/pollTally';
-import useAccountsStore from '../../stores/accounts';
-import MobileVoteSheet from '../../components/polling/MobileVoteSheet';
-import useBallotStore from '../../stores/ballot';
-import PollOptionBadge from '../../components/PollOptionBadge';
+import CountdownTimer from 'components/CountdownTimer';
+import { getNetwork, isDefaultNetwork } from 'lib/maker';
+import { getPolls, getPoll } from 'lib/api';
+import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import Tabs from 'components/Tabs';
+import VotingStatus from 'components/polling/PollVotingStatus';
+import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
+import VoteBox from 'components/polling/[poll-hash]/VoteBox';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import ResourceBox from 'components/ResourceBox';
+import { Poll } from 'types/poll';
+import { PollTally } from 'types/pollTally';
+import useAccountsStore from 'stores/accounts';
+import MobileVoteSheet from 'components/polling/MobileVoteSheet';
+import useBallotStore from 'stores/ballot';
+import PollOptionBadge from 'components/PollOptionBadge';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -46,7 +46,7 @@ function prefetchTally(poll) {
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
-  return content.replace(/^<h1>.*<\/h1>/, '');
+  return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {

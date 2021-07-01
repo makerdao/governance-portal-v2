@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Flex, Text, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { ConnectorName } from '../../lib/maker/web3react';
+import { ConnectorName } from 'lib/maker/web3react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { formatAddress, getEtherscanLink } from '../../lib/utils';
-import { getNetwork } from '../../lib/maker';
+import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
 import AddressIcon from './AddressIcon';
 
 type Props = {

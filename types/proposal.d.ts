@@ -2,7 +2,7 @@ export type CMSProposal = {
   active: boolean;
   address: string;
   key: string;
-  content: string;
+  content?: string;
   about: string;
   proposalBlurb: string;
   title: string;
@@ -14,6 +14,4 @@ export type RawAddressProposal = {
   key: string;
 };
 
-type Proposal = CMSProposal | RawAddressProposal;
-
-export default Proposal;
+export type Proposal = CMSProposal | RawAddressProposal;

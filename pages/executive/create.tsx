@@ -3,15 +3,15 @@
 import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
 import Head from 'next/head';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import PrimaryLayout from '../../components/layouts/Primary';
-import Stack from '../../components/layouts/Stack';
+import PrimaryLayout from 'components/layouts/Primary';
+import Stack from 'components/layouts/Stack';
 import { useState } from 'react';
-import { URL_REGEX } from '../../lib/constants';
+import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
-import { markdownToHtml } from '../../lib/utils';
-import { getEtherscanLink } from '../../lib/utils';
-import { SupportedNetworks } from '../../lib/constants';
+import { markdownToHtml } from 'lib/utils';
+import { getEtherscanLink } from 'lib/utils';
+import { SupportedNetworks } from 'lib/constants';
 
 const ExecutiveCreate = () => {
   const bpi = useBreakpointIndex();
@@ -32,6 +32,11 @@ const ExecutiveCreate = () => {
   ];
 
   const isValidUrl = url.match(URL_REGEX);
+
+  const editMarkdown = content => {
+    // hide the duplicate proposal title
+    return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+  };
 
   const getFieldsFromUrl = async () => {
     let metadata, execMarkdown;
@@ -67,8 +72,12 @@ const ExecutiveCreate = () => {
       }
     }
 
+    //remove `Template - [Executive Vote] ` from title
+    const split = metadata.title.split('Template - [Executive Vote] ');
+    const editedTitle = split.length > 1 ? split[1] : title;
+
     setFetchFinished(true);
-    setTitle(metadata.title);
+    setTitle(editedTitle);
     setSummary(metadata.summary);
     setDate(metadata.date ? new Date(metadata.date).toUTCString() : '');
     setMainnetAddress(metadata.address);
@@ -202,7 +211,7 @@ const ExecutiveCreate = () => {
                     <tr key={'Markdown'}>
                       <TD>Markdown</TD>
                       <TD>
-                        <div dangerouslySetInnerHTML={{ __html: markdown }} />
+                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(markdown) }} />
                       </TD>
                     </tr>
                   </tbody>

@@ -5,9 +5,9 @@ import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme
 import Skeleton from 'react-loading-skeleton';
 
 import Stack from '../layouts/Stack';
-import getMaker, { getNetwork } from '../../lib/maker';
-import CurrencyObject from '../../types/currency';
-import { CMSProposal } from '../../types/proposal';
+import getMaker, { getNetwork } from 'lib/maker';
+import { CurrencyObject } from 'types/currency';
+import { CMSProposal } from 'types/proposal';
 
 type Props = {
   proposal: CMSProposal;

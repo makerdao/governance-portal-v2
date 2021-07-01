@@ -22,14 +22,14 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
 
-import { fadeIn, slideUp } from '../../lib/keyframes';
-import SpellData from '../../types/spellData';
-import getMaker, { getNetwork, personalSign } from '../../lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from '../../stores/transactions';
-import { getEtherscanLink, sortBytesArray, fetchJson } from '../../lib/utils';
-import { TXMined } from '../../types/transaction';
-import useAccountsStore from '../../stores/accounts';
-import Proposal, { CMSProposal } from '../../types/proposal';
+import { fadeIn, slideUp } from 'lib/keyframes';
+import { SpellData } from 'types/spellData';
+import getMaker, { getNetwork, personalSign } from 'lib/maker';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
+import { TXMined } from 'types/transaction';
+import useAccountsStore from 'stores/accounts';
+import { Proposal, CMSProposal } from 'types/proposal';
 import mixpanel from 'mixpanel-browser';
 
 type Props = {
@@ -267,7 +267,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               mixpanel.track('btn-click', {
                 id: 'vote',
                 product: 'governance-portal-v2',
-                page: 'Executive',
+                page: 'Executive'
               });
               vote(hatChecked, comment);
             }}

@@ -1,26 +1,25 @@
 import mixpanel from 'mixpanel-browser';
+import { config } from './config';
 
-const env = process.env.NODE_ENV === 'production' ? 'prod' : 'test';
-
-const config = {
-  test: {
+const analyticsConfig = {
+  development: {
     mixpanel: {
       token: '4ff3f85397ffc3c6b6f0d4120a4ea40a',
       config: { debug: true, ip: false, api_host: 'https://api.mixpanel.com' }
     }
   },
-  prod: {
+  production: {
     mixpanel: {
       token: 'a030d8845e34bfdc11be3d9f3054ad67',
       config: { ip: false, api_host: 'https://api.mixpanel.com' }
     }
   }
-}[env];
+}[config.NODE_ENV];
 
-export const mixpanelInit = () => {
+export const mixpanelInit = (): void => {
   console.debug(
-    `[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`
+    `[Mixpanel] Tracking initialized for ${config.NODE_ENV} env using ${analyticsConfig.mixpanel.token}`
   );
-  mixpanel.init(config.mixpanel.token, config.mixpanel.config);
-  mixpanel.track('Pageview', { product: 'governance-portal-v2'});
+  mixpanel.init(analyticsConfig.mixpanel.token, analyticsConfig.mixpanel.config);
+  mixpanel.track('Pageview', { product: 'governance-portal-v2' });
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Flex } from 'theme-ui';
-import { styledClone } from '../../lib/utils';
-import theme from '../../lib/theme';
+import { styledClone } from 'lib/utils';
+import theme from 'lib/theme';
 
 type Props = {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ const WrapLayout = React.forwardRef<any, Props>(
       <Flex
         ref={ref}
         sx={{
-          flexWrap: breakpoints ? breakpoints.map(x => x ? 'wrap' : 'nowrap') : 'wrap',
+          flexWrap: breakpoints ? breakpoints.map(x => (x ? 'wrap' : 'nowrap')) : 'wrap',
           justifyContent,
           alignItems: 'center',
           flexDirection: 'row',

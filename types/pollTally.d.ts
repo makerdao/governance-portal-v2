@@ -12,7 +12,7 @@ type Result = {
   transferPct: BigNumber;
 };
 
-type PollTally = {
+export type PollTally = {
   winner: string | null;
   winningOptionName: string;
   rounds: number;
@@ -20,5 +20,3 @@ type PollTally = {
   results: Result[];
   numVoters: number;
 };
-
-export default PollTally;
