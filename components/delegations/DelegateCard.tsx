@@ -54,7 +54,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
         <Box>
-          <Box sx={{ display: 'flex' }}>
+          <Box sx={{ display: 'flex', mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
@@ -97,14 +97,21 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
         </Box>
 
         <Box
-          mt={[4, 0]}
           sx={{
             display: 'flex',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            width: bpi > 1 ? 'auto' : '100%',
+            marginTop: bpi > 1 ? 0 : 4
           }}
         >
-          <Grid columns={[2]}>
-            <Box sx={{ mr: 4 }}>
+          <Grid
+            columns={[2]}
+            sx={{
+              width: bpi > 1 ? 'auto' : '100%',
+              marginBottom: bpi > 1 ? 0 : 4
+            }}
+          >
+            <Box sx={{ mr: [4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
@@ -123,7 +130,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
             </Box>
 
-            <Box sx={{ mr: 4 }}>
+            <Box sx={{ mr: [0, 0, 4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
@@ -143,7 +150,14 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             </Box>
           </Grid>
 
-          <Box sx={{ textAlign: 'right' }}>
+          <Box
+            sx={{
+              textAlign: 'right',
+              width: ['100%', '100%', 'auto'],
+              display: ['flex', 'flex', 'block'],
+              justifyContent: 'space-between'
+            }}
+          >
             <Box sx={{ mb: 3 }}>
               <Button
                 variant="primaryLarge"

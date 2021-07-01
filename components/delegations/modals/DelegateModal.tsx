@@ -120,7 +120,9 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           title="Deposit into delegate contract"
                           description="Input the amount of MKR to deposit into the delegate contract."
                           onChange={setMkrToDeposit}
-                          error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
+                          error={
+                            mkrBalance !== undefined && mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'
+                          }
                           ref={input}
                           bpi={bpi}
                           disabled={mkrBalance === undefined}
