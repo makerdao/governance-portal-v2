@@ -16,8 +16,8 @@ import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import Icon from 'components/Icon';
-import moment from 'moment';
+import { DelegateLastVoted } from './DelegateLastVoted';
+import { DelegateContractExpiration } from './DelegateContractExpiration';
 
 type PropTypes = {
   delegate: Delegate;
@@ -49,21 +49,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
     }
   );
 
-  const styles = {
-    dateWrapper: {
-      display: 'flex',
-      alignItems: 'center'
-    },
-    dateIcon: {
-      display: 'flex',
-      alignContent: 'center',
-      marginRight: 1
-    }
-  };
-
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const expiryDate = moment(delegate.contractExpireDate);
-
+  const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -91,7 +77,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           </Box>
 
           <Box sx={{ mt: 3 }}>
-            {delegate.status === DelegateStatusEnum.active && !delegate.expired && (
+            {showLinkToDetail && (
               <Link href={`/delegates/${delegate.address}`}>
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
@@ -101,45 +87,10 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Link>
             )}
 
-            {delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired && (
+            {!showLinkToDetail && (
               <Box>
-                <Box sx={styles.dateWrapper}>
-                  <Box sx={styles.dateIcon}>
-                    <Icon name="calendar" sx={{ fill: 'primary', stroke: 'primary' }} />
-                  </Box>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
-                    LAST VOTED {delegate.lastVote.toDateString()}
-                  </Text>
-                </Box>
-                <Box sx={styles.dateWrapper}>
-                  <Box sx={styles.dateIcon}>
-                    <Icon name="calendarcross" sx={{ fill: 'primary', stroke: 'primary' }} />
-                  </Box>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
-                    EXPIRES {expiryDate.format(dateFormat)}
-                  </Text>
-                </Box>
-              </Box>
-            )}
-
-            {delegate.expired && (
-              <Box>
-                <Box sx={styles.dateWrapper}>
-                  <Box sx={styles.dateIcon}>
-                    <Icon name="calendar" sx={{ fill: '#D8E0E3', stroke: '#D8E0E3' }} />
-                  </Box>
-                  <Text variant="secondary" color="#D8E0E3" sx={{ textTransform: 'uppercase' }}>
-                    LAST VOTED {delegate.lastVote.toDateString()}
-                  </Text>
-                </Box>
-                <Box sx={styles.dateWrapper}>
-                  <Box sx={styles.dateIcon}>
-                    <Icon name="calendarcross" sx={{ fill: 'error', stroke: 'error' }} />
-                  </Box>
-                  <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
-                    CONTRACT DELEGATION EXPIRED
-                  </Text>
-                </Box>
+                <DelegateLastVoted delegate={delegate} />
+                <DelegateContractExpiration delegate={delegate} />
               </Box>
             )}
           </Box>
@@ -155,18 +106,18 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
           <Grid columns={[2]}>
             <Box sx={{ mr: 4 }}>
               <Box sx={{ mb: 3 }}>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary">
                   Total MKR delegated
                 </Text>
               </Box>
               <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  0.51%
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  -.--%
                 </Text>
-                <Text variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary">
                   Pool participation
                 </Text>
               </Box>
@@ -174,18 +125,18 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
             <Box sx={{ mr: 4 }}>
               <Box sx={{ mb: 3 }}>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary">
                   MKR delegated by you
                 </Text>
               </Box>
               <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  23.23%
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  -.--%
                 </Text>
-                <Text variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary">
                   Executive participation
                 </Text>
               </Box>
@@ -200,7 +151,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 onClick={() => setShowDelegateModal(true)}
                 sx={{ width: '150px' }}
               >
-                Delegates
+                Delegate
               </Button>
             </Box>
             <Box>

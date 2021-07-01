@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Heading, Box, jsx, Flex } from 'theme-ui';
+import { Heading, Box, jsx } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
 
@@ -44,13 +44,6 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3}>
-              Filters
-            </Heading>
-            TBD
-          </Flex>
-
           {activeDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
