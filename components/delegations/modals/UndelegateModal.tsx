@@ -44,7 +44,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
       return balance;
     }
   );
-  const { data: iouAllowance } = useTokenAllowance('IOU', address, delegate.address);
+  const { data: iouAllowance } = useTokenAllowance('IOU', address || '', delegate.address);
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 

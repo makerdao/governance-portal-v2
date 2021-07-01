@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import { useState, forwardRef } from 'react';
-import { Input, Text, Box } from 'theme-ui';
+import { Input, Text, Box, jsx, ThemeUIStyleObject } from 'theme-ui';
 
 import { MKR } from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
@@ -10,12 +11,12 @@ type Props = {
   min?: CurrencyObject;
   max?: CurrencyObject;
   error?: string | false;
-  style?: Record<string, unknown>;
+  sx?: ThemeUIStyleObject;
 };
 
 const MKRInput = forwardRef<HTMLInputElement, Props>(
   ({ placeholder = '0.00', error, ...props }: Props, ref): JSX.Element => {
-    const { onChange, min, max, style } = props;
+    const { onChange, min, max, sx } = props;
     const [currentValueStr, setCurrentValueStr] = useState('');
 
     function updateValue(e: { currentTarget: { value: string } }) {
@@ -42,7 +43,7 @@ const MKRInput = forwardRef<HTMLInputElement, Props>(
           onChange={updateValue}
           value={currentValueStr}
           placeholder={placeholder}
-          sx={style}
+          sx={sx}
         />
         {error && <Text sx={{ color: 'error', fontSize: 2 }}>{error}</Text>}
       </Box>

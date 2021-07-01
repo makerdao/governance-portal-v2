@@ -34,7 +34,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
 
   const { data: mkrBalance } = useMkrBalance(address);
 
-  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.address);
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address || '', delegate.address);
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
