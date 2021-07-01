@@ -86,7 +86,7 @@ describe('emergency shutdown render', () => {
       });
     });
 
-    test('Burn MKR Modal Flow', async () => {
+    test.only('Burn MKR Modal Flow', async () => {
       jest.setTimeout(15000);
       
       const {
