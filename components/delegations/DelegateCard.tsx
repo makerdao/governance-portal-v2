@@ -14,7 +14,6 @@ import DelegateModal from './modals/DelegateModal';
 import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { DelegateLastVoted } from './DelegateLastVoted';
 import { DelegateContractExpiration } from './DelegateContractExpiration';
@@ -28,12 +27,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const delegateAddress = delegate.address;
-  const bpi = useBreakpointIndex();
-
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const delegateAddress = delegate.voteDelegateAddress;
 
   const { data: mkrStaked, error } = useSWR(
     ['/user/mkr-delegated', delegateAddress, address],
@@ -65,12 +59,15 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
               <ExternalLink
                 title="View on etherescan"
-                href={getEtherscanLink(getNetwork(), delegate.address, 'address')}
+                href={getEtherscanLink(getNetwork(), delegate.voteDelegateAddress, 'address')}
                 target="_blank"
               >
                 <Text>
-                  {delegate.address.substr(0, 6)}...
-                  {delegate.address.substr(delegate.address.length - 5, delegate.address.length - 1)}
+                  {delegate.voteDelegateAddress.substr(0, 6)}...
+                  {delegate.voteDelegateAddress.substr(
+                    delegate.voteDelegateAddress.length - 5,
+                    delegate.voteDelegateAddress.length - 1
+                  )}
                 </Text>
               </ExternalLink>
             </Box>
@@ -78,7 +75,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
           <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
-              <Link href={`/delegates/${delegate.address}`}>
+              <Link href={`/delegates/${delegate.voteDelegateAddress}`}>
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
                     View Profile Details
