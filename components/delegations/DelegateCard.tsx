@@ -15,7 +15,6 @@ import DelegateModal from './modals/DelegateModal';
 import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
-
 import { DelegateLastVoted } from './DelegateLastVoted';
 import { DelegateContractExpiration } from './DelegateContractExpiration';
 

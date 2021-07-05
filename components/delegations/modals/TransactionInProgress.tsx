@@ -18,10 +18,14 @@ const TransactionContent = ({ txPending, setTxId }: Props): JSX.Element => (
 
     {!txPending && (
       <Box sx={{ mt: 4 }}>
-        <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+        <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
           Please use your wallet to confirm this transaction.
         </Text>
-        <Text sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }} onClick={() => setTxId(null)}>
+        <Text
+          as="p"
+          sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+          onClick={() => setTxId(null)}
+        >
           Cancel
         </Text>
       </Box>
