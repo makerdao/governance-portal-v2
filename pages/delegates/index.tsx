@@ -1,21 +1,19 @@
 /** @jsx jsx */
+import { useState, useEffect } from 'react';
 import { Heading, Box, Text, jsx } from 'theme-ui';
-
 import { GetStaticProps } from 'next';
-
+import Head from 'next/head';
+import ErrorPage from 'next/error';
 import { isDefaultNetwork } from 'lib/maker';
-
+import { fetchDelegates } from 'lib/delegates/fetchDelegates';
+import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { Delegate } from 'types/delegate';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-
-import Head from 'next/head';
-import { Delegate } from 'types/delegate';
 import DelegateCard from 'components/delegations/DelegateCard';
-import { fetchDelegates } from 'lib/delegates/fetchDelegates';
-import { DelegateStatusEnum } from 'lib/delegates/constants';
 
 type Props = {
   delegates: Delegate[];
@@ -106,15 +104,29 @@ const Delegates = ({ delegates }: Props) => {
 };
 
 export default function DelegatesPage({ delegates }: Props): JSX.Element {
-  // if (!isDefaultNetwork()) {
-  //   return (
-  //     <PrimaryLayout>
-  //       <p>Loading…</p>
-  //     </PrimaryLayout>
-  //   );
-  // }
+  const [_delegates, _setDelegates] = useState<Delegate[]>();
+  const [error, setError] = useState<string>();
 
-  return <Delegates delegates={delegates} />;
+  // fetch polls at run-time if on any network other than the default
+  useEffect(() => {
+    if (!isDefaultNetwork()) {
+      fetchDelegates().then(_setDelegates).catch(setError);
+    }
+  }, []);
+
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching delegates" />;
+  }
+
+  if (!isDefaultNetwork() && !_delegates) {
+    return (
+      <PrimaryLayout>
+        <p>Loading…</p>
+      </PrimaryLayout>
+    );
+  }
+
+  return <Delegates delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {

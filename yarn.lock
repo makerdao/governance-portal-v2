@@ -1187,10 +1187,10 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.14.0-beta1":
-  version "0.14.0-beta1"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.0-beta1.tgz#3dcda2ddc8f53f5d831844b58765340942958bd1"
-  integrity sha512-lSYgjGW3CtyXz9o3R36GGgulqrklnyndymb/5tac0e4l8km+Ltl9fDYgMGf+j/U4pNVKnOcP8RqmdwoyYweROg==
+"@makerdao/dai-plugin-governance@0.14.0-beta2":
+  version "0.14.0-beta2"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.0-beta2.tgz#2a2b143eeec617f999a8e332b08477175862d389"
+  integrity sha512-tgc/NgP6GZIZazaaXjOS4Bmi1b8C2FZMKqivf1WgiQ+tCcfSjTkRAstWQa4/k1fRWOV+X/RS8okBYS4F8NMCkw==
   dependencies:
     "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.10.0"
