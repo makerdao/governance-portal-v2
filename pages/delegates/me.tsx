@@ -1,12 +1,14 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Box, Button, Text, jsx } from 'theme-ui';
+import { Box, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
+import { getEtherscanLink } from 'lib/utils';
+import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import PrimaryLayout from 'components/layouts/Primary';
@@ -18,7 +20,7 @@ import TxDisplay from 'components/delegations/modals/TxDisplay';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const account = useAccountsStore(state => state.currentAccount);
+  const [account, delegateInfo] = useAccountsStore(state => [state.currentAccount, state.delegateInfo]);
   const address = account?.address;
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -52,6 +54,17 @@ const CreateDelegate = (): JSX.Element => {
       <SidebarLayout>
         {!address ? (
           <Text>Connect your wallet to create a delegate contract</Text>
+        ) : delegateInfo && delegateInfo.hasDelegate ? (
+          <Box>
+            <Text>Your delegate contract address:</Text>
+            <ExternalLink
+              title="View on etherescan"
+              href={getEtherscanLink(getNetwork(), delegateInfo.voteDelegate._delegateAddress, 'address')}
+              target="_blank"
+            >
+              <Text as="p">{delegateInfo.voteDelegate._delegateAddress}</Text>
+            </ExternalLink>
+          </Box>
         ) : (
           <Box>
             <Text as="h3" variant="smallHeading">
