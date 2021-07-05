@@ -10,7 +10,7 @@ function mergeDelegateInfo(
 ): Delegate {
   // check if contract is expired to assing the status
   const expirationDate = moment(onChainDelegate.blockTimestamp).add(365, 'days');
-  const isExpired = expirationDate.isAfter(moment());
+  const isExpired = expirationDate.isBefore(moment());
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
