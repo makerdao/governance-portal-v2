@@ -11,11 +11,11 @@ type TokenAllowanceResponse = {
 // Checks if the user allowed the spending of a token and contract address
 const useTokenAllowance = (
   token: string,
-  userAddress: string,
-  contractAddress: string
+  userAddress?: string,
+  contractAddress?: string
 ): TokenAllowanceResponse => {
   const { data, error } = useSWR(
-    ['token-balance', token, userAddress, contractAddress],
+    userAddress && contractAddress ? ['token-balance', token, userAddress, contractAddress] : null,
     (_, token, userAddress, contractAddress) =>
       getMaker().then(maker => maker.getToken(token).allowance(userAddress, contractAddress))
   );

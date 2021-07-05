@@ -27,12 +27,13 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
+  const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
 
   const { data: mkrStaked, error } = useSWR(
-    ['/user/mkr-delegated', delegate.address, address],
+    ['/user/mkr-delegated', voteDelegateAddress, address],
     async (_, delegateAddress, address) => {
       const maker = await getMaker();
 
@@ -44,7 +45,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
       return balance;
     }
   );
-  const { data: iouAllowance } = useTokenAllowance('IOU', address, delegate.address);
+  const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 
@@ -55,7 +56,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
 
   const approveIou = async () => {
     const maker = await getMaker();
-    const approveTxCreator = () => maker.getToken('IOU').approveUnlimited(delegate.address);
+    const approveTxCreator = () => maker.getToken('IOU').approveUnlimited(voteDelegateAddress);
     const txId = await track(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
@@ -71,7 +72,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
 
   const freeMkr = async () => {
     const maker = await getMaker();
-    const freeTxCreator = () => maker.service('voteDelegate').free(delegate.address, mkrToWithdraw);
+    const freeTxCreator = () => maker.service('voteDelegate').free(voteDelegateAddress, mkrToWithdraw);
     const txId = await track(freeTxCreator, 'Withdrawing MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR withdrawn');

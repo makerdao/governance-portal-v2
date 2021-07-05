@@ -27,6 +27,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
+  const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
@@ -34,7 +35,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
 
   const { data: mkrBalance } = useMkrBalance(address);
 
-  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.address);
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address, voteDelegateAddress);
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
@@ -45,7 +46,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
 
   const approveMkr = async () => {
     const maker = await getMaker();
-    const approveTxCreator = () => maker.getToken(MKR).approveUnlimited(delegate.address);
+    const approveTxCreator = () => maker.getToken(MKR).approveUnlimited(voteDelegateAddress);
     const txId = await track(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
@@ -62,7 +63,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const lockMkr = async () => {
     const maker = await getMaker();
 
-    const lockTxCreator = () => maker.service('voteDelegate').lock(delegate.address, mkrToDeposit);
+    const lockTxCreator = () => maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
     const txId = await track(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
