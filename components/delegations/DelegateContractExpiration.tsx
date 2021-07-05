@@ -28,7 +28,7 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
   };
 
   const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const expiryDate = moment(delegate.contractExpireDate);
+  const expiryDate = moment(delegate.expirationDate);
 
   return (
     <Box sx={styles.itemWrapper}>

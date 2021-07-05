@@ -84,7 +84,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const delegates = await fetchDelegates();
-  const paths = delegates.map(d => `/delegates/${d.address}`);
+  const paths = delegates.map(d => `/delegates/${d.voteDelegateAddress}`);
 
   return {
     paths,

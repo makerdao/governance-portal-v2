@@ -30,7 +30,7 @@ async function extractGithubInformation(
     const html = await markdownToHtml(content);
 
     return {
-      address: folder.name,
+      voteDelegateAddress: folder.name,
       name,
       picture: picture ? picture.download_url : '',
       externalUrl: url,

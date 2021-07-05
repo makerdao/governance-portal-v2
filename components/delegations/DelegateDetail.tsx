@@ -12,6 +12,7 @@ type PropTypes = {
 };
 
 export default function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
+  const { voteDelegateAddress } = delegate;
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ display: 'flex', p: 3 }}>
@@ -23,12 +24,12 @@ export default function DelegateDetail({ delegate }: PropTypes): React.ReactElem
           </Text>
           <ExternalLink
             title="View on etherescan"
-            href={getEtherscanLink(getNetwork(), delegate.address, 'address')}
+            href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
             target="_blank"
           >
             <Text as="p">
-              {delegate.address.substr(0, 6)}...
-              {delegate.address.substr(delegate.address.length - 5, delegate.address.length - 1)}
+              {voteDelegateAddress.substr(0, 6)}...
+              {voteDelegateAddress.substr(voteDelegateAddress.length - 5, voteDelegateAddress.length - 1)}
             </Text>
           </ExternalLink>
         </Box>

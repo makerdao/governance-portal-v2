@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import React from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from 'lib/maker';
@@ -23,6 +24,7 @@ type PropTypes = {
 };
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const bpi = useBreakpointIndex();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
@@ -44,6 +46,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   );
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
+
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
