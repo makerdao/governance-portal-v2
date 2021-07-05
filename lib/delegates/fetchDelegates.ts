@@ -2,22 +2,22 @@ import { getChainDelegates } from 'lib/api';
 import { Delegate, DelegateContractInformation, DelegateRepoInformation } from 'types/delegate';
 import { DelegateStatusEnum } from './constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
-
-const millisecondsYear = 1000 * 60 * 60 * 24 * 365;
+import moment from 'moment';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
   githubDelegate?: DelegateRepoInformation
 ): Delegate {
   // check if contract is expired to assing the status
-  const isExpired = onChainDelegate.expirationDate.getTime() < Date.now();
+  const expirationDate = moment(onChainDelegate.blockTimestamp).add(365, 'days');
+  const isExpired = expirationDate.isAfter(moment());
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     delegateAddress: onChainDelegate.delegateAddress,
     status: githubDelegate ? DelegateStatusEnum.active : DelegateStatusEnum.unrecognized,
     expired: isExpired,
-    expirationDate: onChainDelegate.expirationDate,
+    expirationDate: expirationDate.toDate(),
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || '',
     picture: githubDelegate?.picture || '',

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Heading, Box, jsx } from 'theme-ui';
+import { Heading, Box, Text, jsx } from 'theme-ui';
 
 import { GetStaticProps } from 'next';
 
@@ -45,6 +45,7 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
+          {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {activeDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">

@@ -11,7 +11,7 @@ export type DelegateRepoInformation = {
 export type DelegateContractInformation = {
   delegateAddress: string;
   voteDelegateAddress: string;
-  expirationDate: Date;
+  blockTimestamp: Date;
 };
 
 export type Delegate = {
