@@ -10,7 +10,8 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
   const styles = {
     itemWrapper: {
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      mb: 1
     },
     dateIcon: {
       display: 'flex',
@@ -35,7 +36,11 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
       <Box sx={styles.dateIcon}>
         <Icon name="calendarcross" sx={delegate.expired ? styles.expiredIcon : styles.activeIcon} />
       </Box>
-      <Text variant="secondary" color="onSecondary" sx={{ textTransform: 'uppercase' }}>
+      <Text
+        variant="secondary"
+        color="onSecondary"
+        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', ml: 1 }}
+      >
         {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate.format(dateFormat)}`}
       </Text>
     </Box>
