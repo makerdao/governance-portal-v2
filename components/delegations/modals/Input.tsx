@@ -45,7 +45,7 @@ const InputContent = forwardRef<HTMLInputElement, Props>(
             onChange={onChange}
             placeholder="0.00 MKR"
             error={error}
-            style={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+            sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
             ref={ref}
           />
           <Button

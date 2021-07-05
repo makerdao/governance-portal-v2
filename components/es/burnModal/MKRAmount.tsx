@@ -35,7 +35,7 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewP
           onChange={updateInputValue}
           placeholder="0.00 MKR"
           error={mkrBalance && burnAmount.gt(mkrBalance) && 'MKR balance too low'}
-          style={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
+          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
           ref={input}
         />
         <Button
