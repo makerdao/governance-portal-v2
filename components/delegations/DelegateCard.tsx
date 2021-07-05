@@ -122,7 +122,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
               <Box>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  -.--%
+                  --
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Pool participation
@@ -141,7 +141,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
               <Box>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  -.--%
+                  --
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Executive participation
