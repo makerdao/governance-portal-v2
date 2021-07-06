@@ -3,10 +3,10 @@ import getMaker, { MKR } from 'lib/maker';
 import useSWR from 'swr';
 
 type MkrBalanceResponse = {
-  data?: BigNumber,
-  loading: boolean,
-  error?: any
-}
+  data?: BigNumber;
+  loading: boolean;
+  error?: any;
+};
 
 export const useMkrBalance = (address): MkrBalanceResponse => {
   const { data, error } = useSWR(['/user/mkr-balance', address], (_, address) =>
