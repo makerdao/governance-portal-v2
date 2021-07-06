@@ -10,7 +10,8 @@ export function DelegateLastVoted({ delegate }: { delegate: Delegate }): React.R
   const styles = {
     itemWrapper: {
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      mb: 1
     },
     dateIcon: {
       display: 'flex',
@@ -40,7 +41,7 @@ export function DelegateLastVoted({ delegate }: { delegate: Delegate }): React.R
       <Text
         variant="secondary"
         color={delegate.expired ? '#D8E0E3' : 'onSecondary'}
-        sx={{ textTransform: 'uppercase' }}
+        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', ml: 1 }}
       >
         LAST VOTED {lastVoteDate.format(dateFormat)}
       </Text>

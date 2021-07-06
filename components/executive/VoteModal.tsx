@@ -15,22 +15,23 @@ import {
   jsx,
   Textarea
 } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
+import mixpanel from 'mixpanel-browser';
+import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
+import { Icon } from '@makerdao/dai-ui-icons';
 
-import { fadeIn, slideUp } from 'lib/keyframes';
-import { SpellData } from 'types/spellData';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
-import { TXMined } from 'types/transaction';
+import { useLockedMkr } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import { SpellData } from 'types/spellData';
+import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
-import mixpanel from 'mixpanel-browser';
 
 type Props = {
   close: () => void;
@@ -44,14 +45,12 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
-  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
+  const [voteProxy, delegateInfo] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.delegateInfo] : [null, null]
   );
+  const voteDelegateAddress = delegateInfo?.voteDelegate._delegateAddress;
+  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`

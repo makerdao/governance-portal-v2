@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import React from 'react';
 import useSWR from 'swr';
 import getMaker, { getNetwork, MKR } from 'lib/maker';
@@ -14,42 +15,27 @@ import DelegateModal from './modals/DelegateModal';
 import UndelegateModal from './modals/UndelegateModal';
 import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
-import { useBreakpointIndex } from '@theme-ui/match-media';
-
 import { DelegateLastVoted } from './DelegateLastVoted';
 import { DelegateContractExpiration } from './DelegateContractExpiration';
+import { useMkrDelegated, useTokenAllowance } from 'lib/hooks';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const bpi = useBreakpointIndex();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const delegateAddress = delegate.address;
-  const bpi = useBreakpointIndex();
 
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-  const { data: mkrStaked, error } = useSWR(
-    ['/user/mkr-delegated', delegateAddress, address],
-    async (_, delegateAddress, address) => {
-      const maker = await getMaker();
-
-      const balance = await maker
-        .service('voteDelegate')
-        .getStakedBalanceForAddress(delegateAddress, address)
-        .then(MKR.wei);
-
-      return balance;
-    }
-  );
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.voteDelegateAddress);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
+
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
@@ -65,12 +51,15 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
               </Box>
               <ExternalLink
                 title="View on etherescan"
-                href={getEtherscanLink(getNetwork(), delegate.address, 'address')}
+                href={getEtherscanLink(getNetwork(), delegate.voteDelegateAddress, 'address')}
                 target="_blank"
               >
                 <Text>
-                  {delegate.address.substr(0, 6)}...
-                  {delegate.address.substr(delegate.address.length - 5, delegate.address.length - 1)}
+                  {delegate.voteDelegateAddress.substr(0, 6)}...
+                  {delegate.voteDelegateAddress.substr(
+                    delegate.voteDelegateAddress.length - 5,
+                    delegate.voteDelegateAddress.length - 1
+                  )}
                 </Text>
               </ExternalLink>
             </Box>
@@ -78,7 +67,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
           <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
-              <Link href={`/delegates/${delegate.address}`}>
+              <Link href={`/delegates/${delegate.voteDelegateAddress}`}>
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
                     View Profile Details
@@ -114,7 +103,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Total MKR delegated
@@ -133,7 +122,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [0, 0, 4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   MKR delegated by you
