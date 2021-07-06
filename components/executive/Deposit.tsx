@@ -17,7 +17,7 @@ import TxIndicators from '../TxIndicators';
 import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { changeInputValue } from 'lib/utils';
-import { BoxWithClose } from './Withdraw';
+import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
 
@@ -153,10 +153,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
+          <Text as="p" variant="microHeading" color="onBackgroundAlt">
             Approve voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
             Approve the transfer of MKR to the voting contract.
           </Text>
         </Box>

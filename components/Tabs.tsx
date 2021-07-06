@@ -3,7 +3,7 @@ import { slugify } from 'lib/utils';
 
 import { jsx } from 'theme-ui';
 import { useState, useEffect } from 'react';
-import { Flex, Divider, SxStyleProp } from 'theme-ui';
+import { Flex, Divider, ThemeUIStyleObject } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Router from 'next/router';
@@ -11,7 +11,7 @@ import Router from 'next/router';
 type Props = {
   tabTitles: string[];
   tabPanels: React.ReactNode[];
-  tabListStyles?: SxStyleProp;
+  tabListStyles?: ThemeUIStyleObject;
   hashRoute?: boolean;
   banner?: JSX.Element;
 };
@@ -72,7 +72,7 @@ const TabbedLayout = ({
   );
 };
 
-const baseTabStyles: SxStyleProp = {
+const baseTabStyles: ThemeUIStyleObject = {
   flex: 1,
   appearance: 'none',
   mx: 3,

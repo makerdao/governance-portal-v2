@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Box, Flex, jsx } from 'theme-ui';
+import { Box, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
 
 import { fadeIn } from 'lib/keyframes';
 import Footer from '../Footer';
@@ -7,9 +7,7 @@ import Footer from '../Footer';
 type Props = {
   shortenFooter?: boolean;
   fade?: boolean;
-  sxAlt?: {
-    maxWidth: string;
-  };
+  sx?: ThemeUIStyleObject;
 };
 
 const PrimaryLayout = ({
@@ -17,7 +15,7 @@ const PrimaryLayout = ({
   shortenFooter = false,
   fade = true,
   ...props
-}: React.PropsWithChildren<Props>) => {
+}: React.PropsWithChildren<Props>): React.ReactElement => {
   return (
     <Flex
       sx={{

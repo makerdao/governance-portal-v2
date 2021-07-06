@@ -31,7 +31,9 @@ _Requires node version >= v11.15.0_
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
 7. Set `USE_PROD_SPOCK` to true to use the production spock instance
 8. Set `USE_FS_CACHE` to true if you want to use file system cache
-9. Set `GITHUB_TOKEN` to the GitHub token to fetch content for executive proposals
+9. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
+10. Set `GITHUB_DELEGATES_OWNER` to indicate the owner of the delegates repo
+11. Set `GITHUB_DELEGATES_REPO` to indicate the name of the repo that contains the delegates folder
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 

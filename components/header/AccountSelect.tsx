@@ -304,6 +304,7 @@ const ConnectWalletButton = ({ open, address, pending, ...props }) => (
       variant: 'buttons.card',
       borderRadius: 'round',
       color: 'textSecondary',
+      p: 2,
       px: [2, 3],
       py: 2,
       alignSelf: 'flex-end',
@@ -331,7 +332,9 @@ const ConnectWalletButton = ({ open, address, pending, ...props }) => (
         </Flex>
       ) : (
         <Flex sx={{ alignItems: 'center', mr: 2 }}>
-          <AddressIcon address={address} sx={{ mr: 2 }} />
+          <Box sx={{ mr: 2 }}>
+            <AddressIcon address={address} />
+          </Box>
           <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
         </Flex>
       )

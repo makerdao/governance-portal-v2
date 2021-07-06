@@ -1,4 +1,5 @@
 /** @jsx jsx */
+
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
@@ -24,6 +25,7 @@ import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
 import { initTestchainPolls } from 'lib/utils';
 import { isActivePoll } from 'lib/utils';
+import theme from 'lib/theme';
 
 type Props = {
   proposals: CMSProposal[];
@@ -274,9 +276,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         </Stack>
       </PrimaryLayout>
       <Global
-        styles={theme => ({
+        styles={() => ({
           body: {
-            backgroundColor: theme.colors.surface
+            backgroundColor: 'transparent'
+          },
+          ':root': {
+            background: 'white'
           }
         })}
       />

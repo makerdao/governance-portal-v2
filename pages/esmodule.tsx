@@ -176,21 +176,25 @@ const ESModule = () => {
           </Text>
         </Flex>
       )}
-      <Text variant="heading">Emergency Shutdown Module</Text>
-      <Text variant="text" sx={{ mt: 2, color: 'onSecondary' }}>
-        The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
-        {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
-        emergency shutdown can be executed.{' '}
-        <Link
-          href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
-          target="_blank"
-        >
-          Read the documentation here.
-        </Link>
-      </Text>
-      <Text variant="microHeading" sx={{ mt: 4 }}>
-        Total MKR Burned
-      </Text>
+      <Box>
+        <Text variant="heading">Emergency Shutdown Module</Text>
+      </Box>
+      <Box mt={2}>
+        <Text variant="text" sx={{ color: 'onSecondary' }}>
+          The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
+          {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
+          emergency shutdown can be executed.{' '}
+          <Link
+            href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
+            target="_blank"
+          >
+            Read the documentation here.
+          </Link>
+        </Text>
+      </Box>
+      <Box sx={{ mt: 4 }}>
+        <Text variant="microHeading">Total MKR Burned</Text>
+      </Box>
       <Card mt={3}>
         {bpi < 1 ? <MobileView /> : <DesktopView />}
         <Flex
@@ -202,9 +206,11 @@ const ESModule = () => {
           }}
         >
           {!account && (
-            <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2 }}>
-              No Account Connected
-            </Text>
+            <Box p={2}>
+              <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center' }}>
+                No Account Connected
+              </Text>
+            </Box>
           )}
           {totalStaked && account ? (
             <Button
@@ -215,20 +221,22 @@ const ESModule = () => {
               {totalStaked.gte(thresholdAmount) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
           ) : null}
-          <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center', p: 2 }}>
-            {mkrInEsm && mkrInEsm.gt(0) ? (
-              <Box>
-                You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString()}</strong> in the ESM
-              </Box>
-            ) : (
-              'You have no MKR in the ESM'
-            )}
-          </Text>
+          <Box p={2}>
+            <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center' }}>
+              {mkrInEsm && mkrInEsm.gt(0) ? (
+                <Box>
+                  You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString()}</strong> in the ESM
+                </Box>
+              ) : (
+                'You have no MKR in the ESM'
+              )}
+            </Text>
+          </Box>
         </Flex>
       </Card>
-      <Text variant="microHeading" mt={5}>
-        ESM History
-      </Text>
+      <Box mt={5}>
+        <Text variant="microHeading">ESM History</Text>
+      </Box>
       <ESMHistory stakingHistory={stakingHistory} />
     </PrimaryLayout>
   );
