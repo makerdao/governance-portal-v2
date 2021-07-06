@@ -85,7 +85,6 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
     setConfirmStep(false);
   }, [isOpen]);
 
-  console.log(mkrAllowance, voteDelegateAddress);
   return (
     <>
       <DialogOverlay

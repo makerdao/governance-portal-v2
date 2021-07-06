@@ -12,7 +12,7 @@ type Props = {
   bpi: number;
   disabled: boolean;
   onMkrClick: () => void;
-  mkrBalance: BigNumber;
+  mkrBalance?: BigNumber;
   buttonLabel: string;
   onClick: () => void;
 };
