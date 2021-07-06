@@ -153,10 +153,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
+          <Text as="p" variant="microHeading" color="onBackgroundAlt">
             Approve voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
             Approve the transfer of MKR to the voting contract.
           </Text>
         </Box>

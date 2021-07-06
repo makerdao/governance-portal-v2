@@ -2,12 +2,24 @@
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
-import { GetStaticProps } from 'next';
 import useSWR from 'swr';
+import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
+import Head from 'next/head';
+import mixpanel from 'mixpanel-browser';
 import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
+import { Icon } from '@makerdao/dai-ui-icons';
 
+// lib
+import { getExecutiveProposals } from 'lib/api';
+import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
+import { useLockedMkr } from 'lib/hooks';
+import { fetchJson } from 'lib/utils';
+import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
+import { oldChiefAddress } from 'lib/constants';
+
+// components
 import Deposit from 'components/executive/Deposit';
 import Withdraw from 'components/executive/Withdraw';
 import WithdrawOldChief from 'components/executive/WithdrawOldChief';
@@ -18,22 +30,17 @@ import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
 import ResourceBox from 'components/ResourceBox';
 import Stack from 'components/layouts/Stack';
 import ExecutiveOverviewCard from 'components/executive/ExecutiveOverviewCard';
-import { getExecutiveProposals } from 'lib/api';
-import getMaker, { isDefaultNetwork, getNetwork } from 'lib/maker';
 import PrimaryLayout from 'components/layouts/Primary';
 import { Proposal, CMSProposal } from 'types/proposal';
 import SidebarLayout from 'components/layouts/Sidebar';
+import ProgressBar from 'components/executive/ProgressBar';
+
+// stores
 import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
+
+// types
 import { SpellData } from 'types/spellData';
-import { fetchJson } from 'lib/utils';
-import Head from 'next/head';
-import mixpanel from 'mixpanel-browser';
-import { MKR } from 'lib/maker';
-import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import { Icon } from '@makerdao/dai-ui-icons';
-import { oldChiefAddress } from 'lib/constants';
-import ProgressBar from 'components/executive/ProgressBar';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -78,19 +85,18 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
+  const [voteProxy, oldProxyAddress, delegateInfo] = useAccountsStore(state =>
+    account
+      ? [state.proxies[account.address], state.oldProxy.address, state.delegateInfo]
+      : [null, null, null]
   );
+  const voteDelegateAddress = delegateInfo?.voteDelegate._delegateAddress;
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
-  );
+  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -370,7 +376,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
             <Flex>
-              <Text>In voting contract:&nbsp;</Text>
+              <Text sx={{ mr: 1 }}>{voteDelegateAddress ? 'Delegated MKR:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
                 <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
               ) : (
@@ -379,10 +385,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
-              <Deposit sx={{ ml: [0, 3] }} />
-              <Withdraw sx={{ ml: 3 }} />
-            </Flex>
+            {!voteDelegateAddress && (
+              <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
+                <Deposit sx={{ ml: [0, 3] }} />
+                <Withdraw sx={{ ml: 3 }} />
+              </Flex>
+            )}
           </Flex>
         )}
 
