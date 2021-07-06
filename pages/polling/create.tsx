@@ -18,6 +18,8 @@ import { validateUrl } from 'lib/polling/validator';
 import { Poll } from 'types/poll';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
+import { formatDateWithTime } from 'lib/utils';
+import { markdownToHtml } from 'lib/utils';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -42,6 +44,7 @@ const PollingCreate = () => {
   const [pollUrl, setPollUrl] = useState('');
   const [poll, setPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
+  const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const urlValidation = async url => {
@@ -60,6 +63,7 @@ const PollingCreate = () => {
       }
       setPoll(poll);
       setPollErrors([]);
+      if (poll) setContentHtml(await markdownToHtml(poll.content));
     } else {
       setPollErrors(result.errors);
     }
@@ -120,27 +124,9 @@ const PollingCreate = () => {
                       <Label>Category</Label>
                       <CreateText>{poll?.categories.join(', ')}</CreateText>
                       <Label>Poll Start Time</Label>
-                      <CreateText>
-                        {poll &&
-                          new Date(poll.startDate).toLocaleString('default', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            timeZone: 'UTC',
-                            timeZoneName: 'short'
-                          })}
-                      </CreateText>
+                      <CreateText>{poll && formatDateWithTime(poll.startDate)}</CreateText>
                       <Label>Poll End Time</Label>
-                      <CreateText>
-                        {poll &&
-                          new Date(poll.endDate).toLocaleString('default', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            timeZone: 'UTC',
-                            timeZoneName: 'short'
-                          })}
-                      </CreateText>
+                      <CreateText>{poll && formatDateWithTime(poll.endDate)}</CreateText>
                       <Label>Poll Duration</Label>
                       <CreateText>
                         {poll &&
@@ -160,12 +146,10 @@ const PollingCreate = () => {
                         sx={{
                           width: '100%',
                           border: '1px solid #d5d9e0',
-                          borderRadius: 'small',
-                          height: '140px',
-                          overflow: 'scroll'
+                          borderRadius: 'small'
                         }}
                       >
-                        {poll?.content}
+                        <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
                       </Text>
                       <Flex>
                         <Button
