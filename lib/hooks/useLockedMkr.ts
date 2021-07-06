@@ -13,7 +13,7 @@ type LockedMkrData = {
   error: Error;
 };
 
-const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: Inputs): LockedMkrData => {
+export const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: Inputs): LockedMkrData => {
   const { data, error } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
     getMaker().then(maker =>
       voteProxy
@@ -28,5 +28,3 @@ const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: Inputs):
     error
   };
 };
-
-export default useLockedMkr;
