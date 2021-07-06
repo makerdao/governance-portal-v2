@@ -1,2 +1,4 @@
-export { default as useMkrBalance } from './useMkrBalance';
-export { default as useTokenAllowance } from './useTokenAllowance';
+export * from './useMkrBalance';
+export * from './useTokenAllowance';
+export * from './useAllDelegates';
+export * from './useMkrDelegated';

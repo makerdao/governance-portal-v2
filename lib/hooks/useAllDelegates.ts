@@ -9,7 +9,7 @@ type AllDelegatesResponse = {
 };
 
 // fetches all delegates created by factory contract
-const useAllDelegates = (): AllDelegatesResponse => {
+export const useAllDelegates = (): AllDelegatesResponse => {
   const { data, error } = useSWR('/all-delegates', () => getChainDelegates());
 
   return {
@@ -18,5 +18,3 @@ const useAllDelegates = (): AllDelegatesResponse => {
     error
   };
 };
-
-export default useAllDelegates;

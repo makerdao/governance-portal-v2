@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import useSWR from 'swr';
+
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -11,6 +11,7 @@ import { changeInputValue } from 'lib/utils';
 import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
+import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
@@ -32,19 +33,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const { data: mkrStaked, error } = useSWR(
-    ['/user/mkr-delegated', voteDelegateAddress, address],
-    async (_, delegateAddress, address) => {
-      const maker = await getMaker();
-
-      const balance = await maker
-        .service('voteDelegate')
-        .getStakedBalanceForAddress(delegateAddress, address)
-        .then(MKR.wei);
-
-      return balance;
-    }
-  );
+  const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
   const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
@@ -128,7 +117,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
                         disabled={mkrStaked === undefined}
                         onMkrClick={() => {
                           if (!input.current || mkrStaked === undefined) return;
-                          changeInputValue(input.current, mkrStaked.toBigNumber().toString());
+                          changeInputValue(input.current, mkrStaked.toString());
                         }}
                         mkrBalance={mkrStaked}
                         buttonLabel="Undelegate MKR"

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -80,6 +80,12 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
     onDismiss();
   };
 
+  useEffect(() => {
+    // Reset the confirmation step
+    setConfirmStep(false);
+  }, [isOpen]);
+
+  console.log(mkrAllowance, voteDelegateAddress);
   return (
     <>
       <DialogOverlay
@@ -129,7 +135,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           disabled={mkrBalance === undefined}
                           onMkrClick={() => {
                             if (!input.current || mkrBalance === undefined) return;
-                            changeInputValue(input.current, mkrBalance.toBigNumber().toString());
+                            changeInputValue(input.current, mkrBalance.toString());
                           }}
                           mkrBalance={mkrBalance}
                           buttonLabel="Delegate MKR"

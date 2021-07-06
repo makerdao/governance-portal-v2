@@ -17,6 +17,7 @@ import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { DelegateLastVoted } from './DelegateLastVoted';
 import { DelegateContractExpiration } from './DelegateContractExpiration';
+import { useMkrDelegated, useTokenAllowance } from 'lib/hooks';
 
 type PropTypes = {
   delegate: Delegate;
@@ -28,21 +29,10 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const delegateAddress = delegate.voteDelegateAddress;
 
-  const { data: mkrStaked, error } = useSWR(
-    ['/user/mkr-delegated', delegateAddress, address],
-    async (_, delegateAddress, address) => {
-      const maker = await getMaker();
+  const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-      const balance = await maker
-        .service('voteDelegate')
-        .getStakedBalanceForAddress(delegateAddress, address)
-        .then(MKR.wei);
-
-      return balance;
-    }
-  );
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.voteDelegateAddress);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
 
@@ -113,7 +103,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Total MKR delegated
@@ -132,7 +122,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [0, 0, 4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   MKR delegated by you

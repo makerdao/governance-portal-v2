@@ -9,7 +9,7 @@ type TokenAllowanceResponse = {
 };
 
 // Checks if the user allowed the spending of a token and contract address
-const useTokenAllowance = (
+export const useTokenAllowance = (
   token: string,
   userAddress?: string,
   contractAddress?: string
@@ -26,5 +26,3 @@ const useTokenAllowance = (
     error
   };
 };
-
-export default useTokenAllowance;

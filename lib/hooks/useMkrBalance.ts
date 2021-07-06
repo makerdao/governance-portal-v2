@@ -1,7 +1,7 @@
 import getMaker, { MKR } from 'lib/maker';
 import useSWR from 'swr';
 
-const useMkrBalance = address => {
+export const useMkrBalance = address => {
   const { data, error } = useSWR(['/user/mkr-balance', address], (_, address) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
   );
@@ -12,5 +12,3 @@ const useMkrBalance = address => {
     error
   };
 };
-
-export default useMkrBalance;
