@@ -61,7 +61,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
           }
 
           //remove if date is invalid
-          if (date instanceof Date && !isNaN(date.getTime())) {
+          if (!(date instanceof Date) || isNaN(date.getTime())) {
             return null;
           }
 
