@@ -63,7 +63,7 @@ const PollingCreate = () => {
     if (result.valid) {
       const poll = result.parsedData;
       if (poll) {
-        poll.multiHash = await generateIPFSHash(poll.content, {});
+        poll.multiHash = await generateIPFSHash(result.wholeDoc, {});
         poll.slug = poll.multiHash.slice(0, 8);
       }
       setPoll(poll);
@@ -124,11 +124,10 @@ const PollingCreate = () => {
                       <CreateText>{poll?.summary}</CreateText>
                       <Label>Vote Options</Label>
                       <CreateText>
-                        {Object.keys(poll?.options).map((option, i) => (
-                          <div key={i}>
-                            <Text sx={{ width: '20%' }}>{`${option}: ${poll?.options[option]}`}</Text>
-                          </div>
-                        ))}
+                        {poll &&
+                          Object.keys(poll.options).map((option, i) => (
+                            <Text key={i}>{`${option}: ${poll.options[option]}`}</Text>
+                          ))}
                       </CreateText>
                       <Label>Vote Type</Label>
                       <CreateText>{poll?.voteType}</CreateText>
