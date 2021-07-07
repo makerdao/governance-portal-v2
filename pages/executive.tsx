@@ -96,7 +96,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
 
   const lockedMkrKey =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegate });
+  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy });
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(

@@ -48,9 +48,9 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [voteProxy, voteDelegate] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
-  const voteDelegateAddress = voteDelegate.getVoteDelegateAddress();
-  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
+  const lockedMkrKey =
+    voteDelegate.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy });
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
@@ -105,7 +105,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
     const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
-    const voteTxCreator = voteDelegateAddress
+    const voteTxCreator = voteDelegate
       ? () => voteDelegate.voteExec(slateOrProposals)
       : voteProxy
       ? () => voteProxy.voteExec(slateOrProposals)

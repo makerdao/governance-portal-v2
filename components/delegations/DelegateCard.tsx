@@ -3,8 +3,7 @@
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import React from 'react';
-import useSWR from 'swr';
-import getMaker, { getNetwork, MKR } from 'lib/maker';
+import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
 import { getEtherscanLink } from 'lib/utils';
@@ -17,7 +16,7 @@ import { limitString } from 'lib/string';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { DelegateLastVoted } from './DelegateLastVoted';
 import { DelegateContractExpiration } from './DelegateContractExpiration';
-import { useMkrDelegated, useTokenAllowance } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 
 type PropTypes = {
   delegate: Delegate;
@@ -30,9 +29,9 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
-  const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: totalStaked } = useLockedMkr({ lockedMkrKey: delegate.voteDelegateAddress });
 
-  const { data: mkrAllowance } = useTokenAllowance(MKR, address, delegate.voteDelegateAddress);
+  const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
 
@@ -103,7 +102,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
+                  {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Total MKR delegated
