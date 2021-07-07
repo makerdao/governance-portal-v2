@@ -110,7 +110,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 </Text>
               </Box>
               <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: "secondaryMuted" }}>
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                   Untracked
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
@@ -129,7 +129,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 </Text>
               </Box>
               <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: "secondaryMuted" }}>
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                   Untracked
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">

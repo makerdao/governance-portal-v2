@@ -15,7 +15,7 @@ import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
-import {InputDelegateMkr} from './InputDelegateMkr';
+import { InputDelegateMkr } from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
 
 type Props = {

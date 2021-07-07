@@ -8,7 +8,7 @@ import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
 import Stack from '../layouts/Stack';
-import {MKRInput} from '../MKRInput';
+import { MKRInput } from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
@@ -40,9 +40,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy );
-
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -99,7 +97,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             balanceText="MKR in contract:"
           />
         </Box>
-        
+
         {voteProxy && address === voteProxy.getHotAddress() && (
           <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
             You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.

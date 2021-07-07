@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { Button, Box, Flex, Text } from '@theme-ui/components';
-import {MKRInput} from 'components/MKRInput';
+import { MKRInput } from 'components/MKRInput';
 import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 
@@ -21,8 +21,7 @@ export function InputDelegateMkr({
   buttonLabel,
   onClick
 }: Props): React.ReactElement {
-
-  const [value, setValue] = useState(new BigNumber(0))
+  const [value, setValue] = useState(new BigNumber(0));
 
   function handleChange(val: BigNumber): void {
     setValue(val);
@@ -38,16 +37,11 @@ export function InputDelegateMkr({
       </Text>
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       <Box sx={{ mt: 3, width: '20rem' }}>
-        <MKRInput
-            value={value}
-            onChange={handleChange}
-            balance={balance}
-          />
+        <MKRInput value={value} onChange={handleChange} balance={balance} />
         <Button onClick={onClick} sx={{ width: '100%', mt: 3 }}>
           {buttonLabel}
         </Button>
       </Box>
     </Flex>
-  )
+  );
 }
-

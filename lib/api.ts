@@ -23,10 +23,10 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
     const cachedProposals = fsCacheGet('proposals');
     if (cachedProposals) {
       return JSON.parse(cachedProposals);
-    };
+    }
   } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return mockProposals;
-  };
+  }
 
   const network = getNetwork();
 

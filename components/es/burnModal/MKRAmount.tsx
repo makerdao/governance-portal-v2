@@ -9,7 +9,6 @@ import { MKRInput } from 'components/MKRInput';
 import { changeInputValue } from 'lib/utils';
 import BigNumber from 'bignumber.js';
 
-
 type Props = {
   setBurnAmount: (burnAmount: BigNumber) => void;
   burnAmount: BigNumber;
@@ -33,11 +32,7 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
         Enter the amount of MKR to burn.
       </Text>
       <Box>
-        <MKRInput
-          onChange={updateInputValue}
-          balance={mkrBalance}
-          value={burnAmount}
-        />
+        <MKRInput onChange={updateInputValue} balance={mkrBalance} value={burnAmount} />
       </Box>
 
       <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>

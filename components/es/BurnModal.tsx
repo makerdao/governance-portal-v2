@@ -30,7 +30,7 @@ const ModalContent = ({
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
   const [burnAmount, setBurnAmount] = useState<BigNumber>(new BigNumber(0));
-  
+
   const { data: mkrBalance } = useMkrBalance(account);
 
   const [track, tx] = useTransactionStore(

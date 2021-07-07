@@ -50,7 +50,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   );
   const voteDelegateAddress = delegateInfo?.voteDelegate?._delegateAddress;
 
-  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress );
+  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress);
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`

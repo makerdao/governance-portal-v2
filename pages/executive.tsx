@@ -95,8 +95,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  
-  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress );
+  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -217,8 +216,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               >
                 <Text sx={{ py: 2 }}>
                   An executive vote has passed to update the Chief to a new version. You have{' '}
-                  <b>{lockedMkrOldChief.toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
-                  to withdraw from the old chief.
+                  <b>{lockedMkrOldChief.toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b> to withdraw
+                  from the old chief.
                 </Text>
                 <Flex>
                   <WithdrawOldChief />

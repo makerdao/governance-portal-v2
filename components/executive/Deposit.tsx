@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from '../layouts/Stack';
-import {MKRInput} from '../MKRInput';
+import { MKRInput } from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
@@ -94,14 +94,9 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Box>
-         
-          <MKRInput
-            value={mkrToDeposit}
-            onChange={setMkrToDeposit}
-            balance={mkrBalance}
-          />
+          <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
         </Box>
-        
+
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || new BigNumber(0))}

@@ -335,8 +335,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       getPolls(),
       getPostsAndPhotos()
     ]);
-  
-    console.log('EEEE')
+
+    console.log('EEEE');
     return {
       revalidate: 30, // allow revalidation every 30 seconds
       props: {
@@ -345,9 +345,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         blogPosts
       }
     };
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
     throw e;
   }
-  
 };
