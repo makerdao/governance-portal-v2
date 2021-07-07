@@ -1,20 +1,20 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
+import BigNumber from 'bignumber.js';
 
-type Inputs = {
-  lockedMkrKey: string;
-  voteProxy: any;
-  voteDelegateAddress: string;
-};
 
 type LockedMkrData = {
-  data: any;
+  data?: BigNumber;
   loading: boolean;
   error: Error;
 };
 
-export const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: Inputs): LockedMkrData => {
-  const { data, error } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
+
+export const useLockedMkr = (address?: string, voteProxy?: any, voteDelegateAddress?: string): LockedMkrData => {
+
+  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || address;
+
+  const { data, error } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, () =>
     getMaker().then(maker =>
       voteProxy
         ? voteProxy.getNumDeposits()
@@ -23,7 +23,7 @@ export const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: I
   );
 
   return {
-    data,
+    data: data ? data.toBigNumber() : data,
     loading: !error && !data,
     error
   };

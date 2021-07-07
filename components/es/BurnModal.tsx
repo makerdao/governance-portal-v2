@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useState } from 'react';
 import { jsx } from 'theme-ui';
-import useSWR from 'swr';
+
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
@@ -14,6 +14,8 @@ import BurnPending from './burnModal/BurnPending';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'types/currency';
+import { useMkrBalance } from 'lib/hooks';
+import BigNumber from 'bignumber.js';
 
 const ModalContent = ({
   setShowDialog,
@@ -22,15 +24,14 @@ const ModalContent = ({
 }: {
   setShowDialog: (value: boolean) => void;
   lockedInChief: number;
-  totalStaked: CurrencyObject;
+  totalStaked: BigNumber;
 }): React.ReactElement => {
   const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
-  const { data: mkrBalance } = useSWR<CurrencyObject>(['/user/mkr-balance', account?.address], (_, account) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(account))
-  );
+  const [burnAmount, setBurnAmount] = useState<BigNumber>(new BigNumber(0));
+  
+  const { data: mkrBalance } = useMkrBalance(account);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

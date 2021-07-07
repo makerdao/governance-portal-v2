@@ -8,7 +8,7 @@ import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
 import Stack from '../layouts/Stack';
-import MKRInput from '../MKRInput';
+import {MKRInput} from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
@@ -19,6 +19,7 @@ import { changeInputValue } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
 import { BoxWithClose } from 'components/BoxWithClose';
+import { useLockedMkr } from 'lib/hooks';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
@@ -39,12 +40,9 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const lockedMkrKey = voteProxy?.getProxyAddress() || address;
-  const { data: lockedMkr } = useSWR(['/user/mkr-locked', lockedMkrKey], (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
-  );
+
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy );
+
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -57,7 +55,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     const txPending = tx.status === 'pending';
     content = (
       <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
+        <Text as="p" variant="microHeading" color="onBackgroundAlt">
           {txPending ? 'Transaction pending' : 'Confirm transaction'}
         </Text>
 
@@ -67,10 +65,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
         {!txPending && (
           <Box>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+            <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
               Please use your wallet to confirm this transaction.
             </Text>
             <Text
+              as="p"
               sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
               onClick={() => setTxId(null)}
             >
@@ -84,10 +83,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+          <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
             Withdraw from voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Input the amount of MKR to withdraw from the voting contract.
           </Text>
         </Box>
@@ -95,31 +94,12 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Box>
           <MKRInput
             onChange={setMkrToWithdraw}
-            placeholder="0.00 MKR"
-            error={mkrToWithdraw.gt(lockedMkr) && 'MKR balance too low'}
-            ref={input}
+            balance={lockedMkr}
+            value={mkrToWithdraw}
+            balanceText="MKR in contract:"
           />
         </Box>
-        <Flex sx={{ alignItems: 'baseline' }}>
-          <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
-            MKR in contract:&nbsp;
-          </Text>
-          {lockedMkr ? (
-            <Text
-              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => {
-                if (!input.current) return;
-                changeInputValue(input.current, lockedMkr.toBigNumber().toString());
-              }}
-            >
-              {lockedMkr.toBigNumber().toFormat(6)}
-            </Text>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Flex>
+        
         {voteProxy && address === voteProxy.getHotAddress() && (
           <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
             You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
@@ -162,10 +142,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+          <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
             Approve voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
           </Text>
         </Box>

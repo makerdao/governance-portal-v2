@@ -16,12 +16,18 @@ import { parsePollMetadata } from './polling/parser';
 import { fetchGitHubPage } from './github';
 import fs from 'fs';
 import { config } from './config';
+import mockProposals from '../mocks/proposals.json';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet('proposals');
-    if (cachedProposals) return JSON.parse(cachedProposals);
-  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) return require('../mocks/proposals.json');
+    if (cachedProposals) {
+      return JSON.parse(cachedProposals);
+    };
+  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+    return mockProposals;
+  };
+
   const network = getNetwork();
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();

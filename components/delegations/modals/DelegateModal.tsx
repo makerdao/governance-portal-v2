@@ -14,7 +14,7 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from 'sto
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
 import ConfirmContent from './Confirm';
-import InputContent from './Input';
+import { InputDelegateMkr } from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
 
 type Props = {
@@ -122,21 +122,11 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           onBack={() => setConfirmStep(false)}
                         />
                       ) : (
-                        <InputContent
+                        <InputDelegateMkr
                           title="Deposit into delegate contract"
                           description="Input the amount of MKR to deposit into the delegate contract."
                           onChange={setMkrToDeposit}
-                          error={
-                            mkrBalance !== undefined && mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'
-                          }
-                          ref={input}
-                          bpi={bpi}
-                          disabled={mkrBalance === undefined}
-                          onMkrClick={() => {
-                            if (!input.current || mkrBalance === undefined) return;
-                            changeInputValue(input.current, mkrBalance.toString());
-                          }}
-                          mkrBalance={mkrBalance}
+                          balance={mkrBalance}
                           buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
                         />

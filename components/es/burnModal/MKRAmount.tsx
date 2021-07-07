@@ -5,16 +5,18 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { CurrencyObject } from 'types/currency';
 import { MKR } from 'lib/maker';
-import MKRInput from 'components/MKRInput';
+import { MKRInput } from 'components/MKRInput';
 import { changeInputValue } from 'lib/utils';
+import BigNumber from 'bignumber.js';
 
-type MKRAmoutnViewProps = {
-  setBurnAmount: (burnAmount: CurrencyObject) => void;
-  burnAmount: CurrencyObject;
-  mkrBalance: CurrencyObject | undefined;
+
+type Props = {
+  setBurnAmount: (burnAmount: BigNumber) => void;
+  burnAmount: BigNumber;
+  mkrBalance: BigNumber | undefined;
 };
 
-const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewProps) => {
+const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
   const bpi = useBreakpointIndex();
   const input = useRef<HTMLInputElement>(null);
   const updateInputValue = newVal => {
@@ -30,26 +32,13 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewP
       >
         Enter the amount of MKR to burn.
       </Text>
-      <Flex sx={{ border: '1px solid #D8E0E3', mt: 3, width: '100%' }}>
+      <Box>
         <MKRInput
           onChange={updateInputValue}
-          placeholder="0.00 MKR"
-          error={mkrBalance && burnAmount.gt(mkrBalance) && 'MKR balance too low'}
-          sx={{ border: '0px solid', width: bpi < 1 ? '100%' : null, m: 0 }}
-          ref={input}
+          balance={mkrBalance}
+          value={burnAmount}
         />
-        <Button
-          disabled={mkrBalance === undefined}
-          variant="textual"
-          sx={{ width: '100px', fontWeight: 'bold' }}
-          onClick={() => {
-            if (!input.current || mkrBalance === undefined) return;
-            changeInputValue(input.current, mkrBalance.toBigNumber().toString());
-          }}
-        >
-          Set max
-        </Button>
-      </Flex>
+      </Box>
 
       <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
         <Text variant="caps">MKR Balance In Wallet</Text>
@@ -61,11 +50,11 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: MKRAmoutnViewP
 
 type MKRAmountProps = {
   lockedInChief: number;
-  setBurnAmount: (burnAmount: CurrencyObject) => void;
-  burnAmount: CurrencyObject;
+  setBurnAmount: (burnAmount: BigNumber) => void;
+  burnAmount: BigNumber;
   setShowDialog: (bool: boolean) => void;
   setStep: (step: string) => void;
-  mkrBalance: CurrencyObject | undefined;
+  mkrBalance?: BigNumber;
 };
 
 const MKRAmount = ({

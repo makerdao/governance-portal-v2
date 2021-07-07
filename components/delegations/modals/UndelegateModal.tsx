@@ -15,7 +15,7 @@ import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
-import InputContent from './Input';
+import {InputDelegateMkr} from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
 
 type Props = {
@@ -107,19 +107,11 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
                 ) : (
                   <>
                     {mkrStaked && hasLargeIouAllowance ? (
-                      <InputContent
+                      <InputDelegateMkr
                         title="Withdraw from delegate contract"
                         description="Input the amount of MKR to withdraw from the delegate contract."
                         onChange={setMkrToWithdraw}
-                        error={mkrToWithdraw.gt(mkrStaked) && 'MKR balance too low'}
-                        ref={input}
-                        bpi={bpi}
-                        disabled={mkrStaked === undefined}
-                        onMkrClick={() => {
-                          if (!input.current || mkrStaked === undefined) return;
-                          changeInputValue(input.current, mkrStaked.toString());
-                        }}
-                        mkrBalance={mkrStaked}
+                        balance={mkrStaked}
                         buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
                       />

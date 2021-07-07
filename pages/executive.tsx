@@ -90,13 +90,13 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
       ? [state.proxies[account.address], state.oldProxy.address, state.delegateInfo]
       : [null, null, null]
   );
-  const voteDelegateAddress = delegateInfo?.voteDelegate._delegateAddress;
+  const voteDelegateAddress = delegateInfo?.voteDelegate?._delegateAddress;
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
+  
+  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress );
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -217,7 +217,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
               >
                 <Text sx={{ py: 2 }}>
                   An executive vote has passed to update the Chief to a new version. You have{' '}
-                  <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
+                  <b>{lockedMkrOldChief.toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
                   to withdraw from the old chief.
                 </Text>
                 <Flex>
@@ -378,7 +378,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             <Flex>
               <Text sx={{ mr: 1 }}>{voteDelegateAddress ? 'Delegated MKR:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
+                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toFormat(6)} MKR</Text>
               ) : (
                 <Box sx={{ width: 6 }}>
                   <Skeleton />

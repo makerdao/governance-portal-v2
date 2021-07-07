@@ -48,9 +48,9 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [voteProxy, delegateInfo] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.delegateInfo] : [null, null]
   );
-  const voteDelegateAddress = delegateInfo?.voteDelegate._delegateAddress;
-  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
+  const voteDelegateAddress = delegateInfo?.voteDelegate?._delegateAddress;
+
+  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress );
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
@@ -74,12 +74,12 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
 
-  const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
+  const votingWeight = lockedMkr?.toFormat(6);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
   const afterVote = currentSlate.includes(proposal.address)
     ? mkrSupporting
     : lockedMkr && spellData
-    ? lockedMkr.toBigNumber().plus(new Bignumber(spellData.mkrSupport)).toFormat(3)
+    ? lockedMkr.plus(new Bignumber(spellData.mkrSupport)).toFormat(3)
     : 0;
 
   const GridBox = ({ bpi, children }) => (

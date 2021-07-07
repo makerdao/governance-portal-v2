@@ -25,7 +25,6 @@ import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
 import { initTestchainPolls } from 'lib/utils';
 import { isActivePoll } from 'lib/utils';
-import theme from 'lib/theme';
 
 type Props = {
   proposals: CMSProposal[];
@@ -329,18 +328,26 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls, proposals, blog posts at build-time
-  const [proposals, polls, blogPosts] = await Promise.all([
-    getExecutiveProposals(),
-    getPolls(),
-    getPostsAndPhotos()
-  ]);
 
-  return {
-    revalidate: 30, // allow revalidation every 30 seconds
-    props: {
-      proposals,
-      polls,
-      blogPosts
-    }
-  };
+  try {
+    const [proposals, polls, blogPosts] = await Promise.all([
+      getExecutiveProposals(),
+      getPolls(),
+      getPostsAndPhotos()
+    ]);
+  
+    console.log('EEEE')
+    return {
+      revalidate: 30, // allow revalidation every 30 seconds
+      props: {
+        proposals,
+        polls,
+        blogPosts
+      }
+    };
+  } catch(e) {
+    console.log(e)
+    throw e;
+  }
+  
 };

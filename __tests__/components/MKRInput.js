@@ -2,7 +2,7 @@ import React from 'react';
 import { render, cleanup, fireEvent } from '@testing-library/react';
 
 import { MKR } from '../../lib/maker';
-import MKRInput from '../../components/MKRInput';
+import {MKRInput} from '../../components/MKRInput';
 
 afterEach(cleanup);
 

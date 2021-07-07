@@ -9,7 +9,7 @@ import useSWR from 'swr';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from '../layouts/Stack';
-import MKRInput from '../MKRInput';
+import {MKRInput} from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
@@ -20,16 +20,16 @@ import { changeInputValue } from 'lib/utils';
 import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
+import { useMkrBalance } from 'lib/hooks';
+import BigNumber from 'bignumber.js';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
-  const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const input = useRef<HTMLInputElement>(null);
 
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const { data: mkrBalance } = useMkrBalance(address);
 
   const { data: chiefAllowance } = useSWR<CurrencyObject>(
     ['/user/chief-allowance', address, !!voteProxy],
@@ -58,11 +58,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     const txPending = tx.status === 'pending';
     content = (
       <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
+        <Text as="p" variant="microHeading" color="onBackgroundAlt">
           {txPending ? 'Transaction pending' : 'Confirm transaction'}
         </Text>
 
-        <Flex sx={{ justifyContent: 'center' }}>
+        <Flex as="p" sx={{ justifyContent: 'center' }}>
           <TxIndicators.Pending sx={{ width: 6 }} />
         </Flex>
 
@@ -85,43 +85,26 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
+          <Text as="p" variant="microHeading" color="onBackgroundAlt">
             Deposit into voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Input the amount of MKR to deposit into the voting contract.
           </Text>
         </Box>
 
         <Box>
+         
           <MKRInput
+            value={mkrToDeposit}
             onChange={setMkrToDeposit}
-            placeholder="0.00 MKR"
-            error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
-            ref={input}
+            balance={mkrBalance}
           />
         </Box>
-        <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
-          <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR Balance:&nbsp;</Text>
-          {mkrBalance ? (
-            <Text
-              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => {
-                if (!input.current) return;
-                changeInputValue(input.current, mkrBalance.toBigNumber().toString());
-              }}
-            >
-              {mkrBalance.toBigNumber().toFormat(6)}
-            </Text>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Flex>
+        
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
+          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || new BigNumber(0))}
           onClick={async () => {
             mixpanel.track('btn-click', {
               id: 'DepositMkr',
