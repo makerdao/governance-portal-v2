@@ -1,11 +1,11 @@
 import create from 'zustand';
-
 import getMaker from 'lib/maker';
-import { Account } from 'types/account';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
+import { Account } from 'types/account';
+
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 type VoteProxy = {
   getProxyAddress: () => string;

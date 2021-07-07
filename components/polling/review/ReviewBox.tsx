@@ -190,7 +190,7 @@ export default function ReviewBox({
     if (isPendingOrMined) return <Sent />;
     if (hasFailed) return <Error />;
     return <Default />;
-  }, [isInitialized, isPendingOrMined, hasFailed]);
+  }, [isInitialized, isPendingOrMined, hasFailed, bpi]);
 
   return <Box {...props}>{view}</Box>;
 }
