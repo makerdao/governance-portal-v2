@@ -29,6 +29,11 @@ const generateIPFSHash = async (data, options) => {
   return hash;
 };
 
+const editMarkdown = (content, title) => {
+  // hide the duplicate proposal title
+  return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, `<h2>${title}</h2>`);
+};
+
 const CreateText = ({ children }) => {
   return (
     <Text
@@ -118,7 +123,13 @@ const PollingCreate = () => {
                       <Label>Summary</Label>
                       <CreateText>{poll?.summary}</CreateText>
                       <Label>Vote Options</Label>
-                      <CreateText>{JSON.stringify(poll?.options)}</CreateText>
+                      <CreateText>
+                        {Object.keys(poll?.options).map((option, i) => (
+                          <div key={i}>
+                            <Text sx={{ width: '20%' }}>{`${option}: ${poll?.options[option]}`}</Text>
+                          </div>
+                        ))}
+                      </CreateText>
                       <Label>Vote Type</Label>
                       <CreateText>{poll?.voteType}</CreateText>
                       <Label>Category</Label>
@@ -149,7 +160,7 @@ const PollingCreate = () => {
                           borderRadius: 'small'
                         }}
                       >
-                        <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }} />
                       </Text>
                       <Flex>
                         <Button
