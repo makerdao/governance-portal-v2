@@ -95,7 +95,11 @@ export function MKRInput({
         </Text>
 
         {balance ? (
-          <Text sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }} onClick={onClickSetMax} data-testid="mkr-input-balance">
+          <Text
+            sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }}
+            onClick={onClickSetMax}
+            data-testid="mkr-input-balance"
+          >
             {balance.toFormat(6)}
           </Text>
         ) : (
@@ -105,9 +109,16 @@ export function MKRInput({
         )}
       </Flex>
 
-      {errorMax && <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">{errorMaxMessage}</Text>}
-      {errorMin && <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">Please enter a valid amount.</Text>}
-
+      {errorMax && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          {errorMaxMessage}
+        </Text>
+      )}
+      {errorMin && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          Please enter a valid amount.
+        </Text>
+      )}
     </Box>
   );
 }

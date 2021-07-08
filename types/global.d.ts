@@ -16,7 +16,6 @@ declare global {
       window: Window;
       navigator: Navigator;
       __TESTCHAIN__: boolean | undefined;
-    } 
-    
+    }
   }
 }

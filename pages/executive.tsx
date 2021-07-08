@@ -85,7 +85,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
-  
+
   const [voteProxy, oldProxyAddress, delegateInfo] = useAccountsStore(state =>
     account
       ? [state.proxies[account.address], state.oldProxy.address, state.delegateInfo]
@@ -378,7 +378,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
             <Flex>
               <Text sx={{ mr: 1 }}>{voteDelegateAddress ? 'Delegated MKR:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">{lockedMkr.toFormat(6)} MKR</Text>
+                <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
+                  {lockedMkr.toFormat(6)} MKR
+                </Text>
               ) : (
                 <Box sx={{ width: 6 }}>
                   <Skeleton />

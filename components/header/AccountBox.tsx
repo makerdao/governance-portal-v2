@@ -77,7 +77,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           data-testid="copy-address"
         >
           <Icon name="copy" sx={{ pr: 1 }} />
-          {copied ? 'Copied!': 'Copy Address'}
+          {copied ? 'Copied!' : 'Copy Address'}
         </Flex>
         <ExternalLink
           href={getEtherscanLink(getNetwork(), address, 'address')}

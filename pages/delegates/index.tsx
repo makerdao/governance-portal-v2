@@ -20,7 +20,6 @@ type Props = {
 };
 
 const Delegates = ({ delegates }: Props) => {
-
   const styles = {
     delegateGroup: {
       marginBottom: 2

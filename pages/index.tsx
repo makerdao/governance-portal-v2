@@ -302,7 +302,7 @@ export default function Index({
     if (isTestnet()) {
       initTestchainPolls(); // this is async but we don't need to await
     }
-    
+
     if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
@@ -336,7 +336,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     getPostsAndPhotos()
   ]);
 
-  
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
