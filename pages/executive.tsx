@@ -14,7 +14,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { getExecutiveProposals } from 'lib/api';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr, useVotedProposals } from 'lib/hooks';
 import { fetchJson } from 'lib/utils';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
@@ -120,16 +120,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     { refreshInterval: 0 }
   );
 
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
