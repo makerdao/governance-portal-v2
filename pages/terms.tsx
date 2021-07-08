@@ -90,7 +90,7 @@ Fraud: Activity which operates to defraud MakerDAO, Dai System and Software user
 Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of MakerDAO intellectual property, name, or logo, including use of MakerDAO trade or service marks, without express consent from MakerDAO or in a manner that otherwise harms MakerDAO; any action that implies an untrue endorsement by or affiliation with MakerDAO.
 `;
 
-export default function Terms(props: {content: string}) {
+export default function Terms(props: { content: string }) {
   return (
     <Box>
       <Text sx={{ textAlign: 'center' }}>
@@ -102,7 +102,6 @@ export default function Terms(props: {content: string}) {
     </Box>
   );
 }
-
 
 export const getStaticProps: GetStaticProps = async () => {
   const content = await markdownToHtml(terms);
