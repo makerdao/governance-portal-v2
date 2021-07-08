@@ -30,7 +30,7 @@ const generateIPFSHash = async (data, options) => {
 };
 
 const editMarkdown = (content, title) => {
-  // hide the duplicate proposal title
+  //replace title from markdown content with the title in the frontmatter
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, `<h2>${title}</h2>`);
 };
 
