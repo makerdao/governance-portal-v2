@@ -2,13 +2,18 @@ import { Flex, Text } from 'theme-ui';
 import useSWR from 'swr';
 import useAccountsStore from 'stores/accounts';
 import getMaker from 'lib/maker';
+import { getVotingWeightCopy } from 'lib/utils';
 
 export default function VotingWeight(props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: votingWeight } = useSWR(
-    account?.address ? ['/user/polling-voting-weight', account.address] : null,
+    addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
   );
+
+  const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);
 
   return (
     <>
@@ -24,8 +29,7 @@ export default function VotingWeight(props): JSX.Element {
       </Flex>
       <Flex sx={{ py: 1 }}>
         <Text sx={{ fontSize: 2 }} color="textSecondary">
-          Your voting weight is made up of the MKR in your wallet, vote proxy, and voting contract. This
-          amount is applied to all polls you vote on.
+          {votingWeightCopy}
         </Text>
       </Flex>
     </>

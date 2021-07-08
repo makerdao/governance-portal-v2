@@ -117,7 +117,7 @@ export default function ReviewBox({
         href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
         sx={{ p: 0 }}
       >
-        <Text sx={{ px: 3, textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+        <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
