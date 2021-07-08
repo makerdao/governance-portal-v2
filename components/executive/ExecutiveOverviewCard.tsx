@@ -27,7 +27,9 @@ type Props = {
 
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
+  );
   const [voting, setVoting] = useState(false);
 
   const { data: votedProposals } = useSWR<string[]>(
@@ -36,7 +38,13 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
       getMaker().then(maker =>
         maker
           .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
+          .getVotedSlate(
+            voteDelegate
+              ? voteDelegate.getVoteDelegateAddress()
+              : voteProxy
+              ? voteProxy.getProxyAddress()
+              : address
+          )
           .then(slate => maker.service('chief').getSlateAddresses(slate))
       )
   );
