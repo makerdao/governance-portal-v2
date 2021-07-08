@@ -6,7 +6,6 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { changeInputValue } from 'lib/utils';
 import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
@@ -16,6 +15,7 @@ import ApprovalContent from './Approval';
 import ConfirmContent from './Confirm';
 import { InputDelegateMkr } from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
+import BigNumber from 'bignumber.js';
 
 type Props = {
   isOpen: boolean;
@@ -28,7 +28,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
   const input = useRef<HTMLInputElement>(null);

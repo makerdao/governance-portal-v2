@@ -15,7 +15,6 @@ import { CurrencyObject } from 'types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
-import { changeInputValue } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
 import { BoxWithClose } from 'components/BoxWithClose';

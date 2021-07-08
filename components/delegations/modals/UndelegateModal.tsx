@@ -7,7 +7,6 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { changeInputValue } from 'lib/utils';
 import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';

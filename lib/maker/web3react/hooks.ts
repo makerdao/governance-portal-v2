@@ -61,6 +61,4 @@ export function useEagerConnect() {
       setTried(true);
     }
   }, [tried, active]);
-
-  return tried;
 }

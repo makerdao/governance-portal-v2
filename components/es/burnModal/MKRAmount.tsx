@@ -3,10 +3,8 @@ import { useRef } from 'react';
 import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { CurrencyObject } from 'types/currency';
 import { MKR } from 'lib/maker';
 import { MKRInput } from 'components/MKRInput';
-import { changeInputValue } from 'lib/utils';
 import BigNumber from 'bignumber.js';
 
 type Props = {

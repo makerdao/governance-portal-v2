@@ -30,7 +30,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
-  if (typeof (global as any).__TESTCHAIN__ !== 'undefined' && (global as any).__TESTCHAIN__) {
+  if (typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) {
     // if the testhchain global is set, connect to the testchain
     return SupportedNetworks.TESTNET;
   } else if (typeof window === 'undefined') {
@@ -106,7 +106,7 @@ function isSupportedNetwork(_network: string): _network is SupportedNetworks {
 }
 
 function isTestnet(): boolean {
-  return getNetwork() === 'testnet' || !!config.TESTNET;
+  return getNetwork() === SupportedNetworks.TESTNET || !!config.TESTNET;
 }
 
 async function personalSign(message) {

@@ -11,5 +11,12 @@ declare global {
       REACT_APP_GRO_API_BASE_URL: string | undefined;
       REACT_APP_ETHEREUM_NETWORK: TpMetaMaskSupportNetworks | undefined;
     }
+    interface Global {
+      document: Document;
+      window: Window;
+      navigator: Navigator;
+      __TESTCHAIN__: boolean | undefined;
+    } 
+    
   }
 }

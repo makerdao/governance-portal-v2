@@ -61,7 +61,7 @@ const AccountSelect = props => {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
-  const triedEager = useEagerConnect();
+  useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
@@ -193,6 +193,7 @@ const AccountSelect = props => {
         sx={walletButtonStyle as any}
         key={name}
         onClick={() => {
+          
           activate(connector).then(() => {
             if (chainId) mixpanel.people.set({ wallet: name });
             setAccountName(name);

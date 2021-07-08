@@ -2,9 +2,10 @@ import { Button, Flex, Text, Link as ExternalLink } from 'theme-ui';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import { Delegate } from 'types/delegate';
+import BigNumber from 'bignumber.js';
 
 type Props = {
-  mkrToDeposit: any;
+  mkrToDeposit: BigNumber;
   delegate: Delegate;
   onClick: () => void;
   onBack: () => void;
@@ -20,7 +21,7 @@ const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX
       <Text sx={{ mt: 4 }}>
         You are delegating{' '}
         <Text sx={{ fontWeight: 'bold', display: 'inline' }}>
-          {mkrToDeposit.toBigNumber().toFormat(6)} MKR
+          {mkrToDeposit.toFormat(6)} MKR
         </Text>{' '}
         to delegate contract{' '}
         <ExternalLink

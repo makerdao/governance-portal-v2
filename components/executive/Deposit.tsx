@@ -3,7 +3,6 @@ import { useState, useRef } from 'react';
 import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
@@ -16,7 +15,6 @@ import { CurrencyObject } from 'types/currency';
 import TxIndicators from '../TxIndicators';
 import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
-import { changeInputValue } from 'lib/utils';
 import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import mixpanel from 'mixpanel-browser';
