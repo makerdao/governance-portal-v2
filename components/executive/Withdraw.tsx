@@ -24,7 +24,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
     ['/user/iou-allowance', address, !!voteProxy],

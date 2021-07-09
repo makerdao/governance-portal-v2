@@ -126,7 +126,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           title="Deposit into delegate contract"
                           description="Input the amount of MKR to deposit into the delegate contract."
                           onChange={setMkrToDeposit}
-                          balance={mkrBalance}
+                          balance={mkrBalance?.toBigNumber()}
                           buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
                         />

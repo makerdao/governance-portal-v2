@@ -14,7 +14,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { getExecutiveProposals } from 'lib/api';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr, useVotedProposals } from 'lib/hooks';
 import { fetchJson } from 'lib/utils';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
@@ -83,20 +83,20 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-
-  const [voteProxy, oldProxyAddress, delegateInfo] = useAccountsStore(state =>
+  const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
     account
-      ? [state.proxies[account.address], state.oldProxy.address, state.delegateInfo]
+      ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
       : [null, null, null]
   );
-  const voteDelegateAddress = delegateInfo?.voteDelegate?._delegateAddress;
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const { data: lockedMkr } = useLockedMkr(account?.address, voteProxy, voteDelegateAddress);
+  const address =
+    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -120,16 +120,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     { refreshInterval: 0 }
   );
 
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
@@ -376,10 +367,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
         {account && (
           <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
             <Flex>
-              <Text sx={{ mr: 1 }}>{voteDelegateAddress ? 'Delegated MKR:' : 'In voting contract:'} </Text>
+              <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
                 <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
-                  {lockedMkr.toFormat(6)} MKR
+                  {lockedMkr.toBigNumber().toFormat(6)} MKR
                 </Text>
               ) : (
                 <Box sx={{ width: 6 }}>
@@ -387,7 +378,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 </Box>
               )}
             </Flex>
-            {!voteDelegateAddress && (
+            {!voteDelegate && (
               <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
                 <Deposit sx={{ ml: [0, 3] }} />
                 <Withdraw sx={{ ml: 3 }} />

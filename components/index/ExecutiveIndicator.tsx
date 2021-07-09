@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
-import { CMSProposal } from 'types/proposal';
-import getMaker, { getNetwork } from 'lib/maker';
-import useAccountsStore from 'stores/accounts';
-import { SpellData } from 'types/spellData';
+import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import { useVotedProposals } from 'lib/hooks';
+import useAccountsStore from 'stores/accounts';
+import { CMSProposal } from 'types/proposal';
+import { SpellData } from 'types/spellData';
 
 type Props = {
   numProposals: number;
@@ -72,18 +73,7 @@ const ExecutiveIndicatorComponent = ({
     ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
     : activeProposals;
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
   const newUnvotedProposals =
     votedProposals && account
       ? unscheduledProposals.filter(

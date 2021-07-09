@@ -48,8 +48,12 @@ const VotingStatus = ({
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? ['/user/voting-for', account.address] : null,
+    addressToCheck
+      ? ['/user/voting-for', voteDelegate ? voteDelegate.getVoteDelegateAddress() : addressToCheck]
+      : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
     { refreshInterval: 0 }
   );

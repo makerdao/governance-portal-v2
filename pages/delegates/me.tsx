@@ -20,7 +20,7 @@ import TxDisplay from 'components/delegations/modals/TxDisplay';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [account, delegateInfo] = useAccountsStore(state => [state.currentAccount, state.delegateInfo]);
+  const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
   const address = account?.address;
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,15 +54,15 @@ const CreateDelegate = (): JSX.Element => {
       <SidebarLayout>
         {!address ? (
           <Text>Connect your wallet to create a delegate contract</Text>
-        ) : delegateInfo && delegateInfo.hasDelegate ? (
+        ) : voteDelegate ? (
           <Box>
             <Text>Your delegate contract address:</Text>
             <ExternalLink
               title="View on etherescan"
-              href={getEtherscanLink(getNetwork(), delegateInfo.voteDelegate._delegateAddress, 'address')}
+              href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
               target="_blank"
             >
-              <Text as="p">{delegateInfo.voteDelegate._delegateAddress}</Text>
+              <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
             </ExternalLink>
           </Box>
         ) : (

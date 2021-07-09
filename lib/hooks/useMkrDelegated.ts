@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import useSWR from 'swr';
+import { CurrencyObject } from 'types/currency';
 
 type TokenAllowanceResponse = {
-  data?: BigNumber;
-  loading: boolean;
+  data?: CurrencyObject;
+  loading?: boolean;
   error?: Error;
 };
 
@@ -14,7 +14,7 @@ export const useMkrDelegated = (
   voteDelegateAddress?: string
 ): TokenAllowanceResponse => {
   const { data, error } = useSWR(
-    ['/user/mkr-delegated', voteDelegateAddress, userAddress],
+    userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async (_, delegateAddress, address) => {
       const maker = await getMaker();
 
@@ -28,7 +28,7 @@ export const useMkrDelegated = (
   );
 
   return {
-    data: data ? data.toBigNumber() : data,
+    data,
     loading: !error && !data,
     error
   };

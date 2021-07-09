@@ -1,11 +1,11 @@
 import create from 'zustand';
-
 import getMaker from 'lib/maker';
-import { Account } from 'types/account';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
+import { Account } from 'types/account';
+
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 type VoteProxy = {
   getProxyAddress: () => string;
@@ -28,7 +28,7 @@ type Store = {
   proxies: Record<string, VoteProxy | null>;
   oldProxy: OldVoteProxy;
   // TODO type this
-  delegateInfo: any;
+  voteDelegate: any;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
 };
@@ -50,7 +50,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   currentAccount: undefined,
   proxies: {},
   oldProxy: { role: '', address: '' },
-  delegateInfo: undefined,
+  voteDelegate: undefined,
 
   addAccountsListener: async () => {
     const maker = await getMaker();
@@ -66,12 +66,12 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
         getOldProxyStatus(address, maker)
       ]);
 
-      const delegateInfo = await maker.service('voteDelegateFactory').getVoteDelegate(address);
+      const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
       set({
         currentAccount: account,
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
         oldProxy,
-        delegateInfo
+        voteDelegate
       });
     });
   },

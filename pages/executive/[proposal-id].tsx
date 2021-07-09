@@ -21,8 +21,15 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import mixpanel from 'mixpanel-browser';
 import invariant from 'tiny-invariant';
-
+import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
+import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
+import { useVotedProposals } from 'lib/hooks';
+import { getNetwork, isDefaultNetwork } from 'lib/maker';
+import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle, formatDateWithTime } from 'lib/utils';
+import useAccountsStore from 'stores/accounts';
+import { ZERO_ADDRESS } from 'stores/accounts';
 import OnChainFx from 'components/executive/OnChainFx';
 import Comments from 'components/executive/Comments';
 import VoteModal from 'components/executive/VoteModal';
@@ -31,17 +38,9 @@ import Tabs from 'components/Tabs';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
-import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
-import getMaker, { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from 'lib/utils';
 import { Proposal } from 'types/proposal';
-import useAccountsStore from 'stores/accounts';
-import mixpanel from 'mixpanel-browser';
-import { formatDateWithTime } from 'lib/utils';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from 'types/spellData';
 import { SpellStateDiff } from 'types/spellStateDiff';
-import { ZERO_ADDRESS } from 'stores/accounts';
 
 type Props = {
   proposal: Proposal;
@@ -118,16 +117,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     `/api/executive/supporters?network=${getNetwork()}`
   );
 
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
 
   const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
 

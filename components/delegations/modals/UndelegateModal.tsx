@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -30,7 +30,6 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
   const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
@@ -110,7 +109,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
                         title="Withdraw from delegate contract"
                         description="Input the amount of MKR to withdraw from the delegate contract."
                         onChange={setMkrToWithdraw}
-                        balance={mkrStaked}
+                        balance={mkrStaked.toBigNumber()}
                         buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
                       />

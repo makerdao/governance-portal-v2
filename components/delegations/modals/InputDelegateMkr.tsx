@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { Button, Box, Flex, Text } from '@theme-ui/components';
 import { MKRInput } from 'components/MKRInput';
 import BigNumber from 'bignumber.js';
