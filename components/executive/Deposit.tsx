@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -25,7 +25,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: mkrBalance } = useMkrBalance(address);
 
@@ -92,12 +91,12 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Box>
-          <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
+          <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance?.toBigNumber()} />
         </Box>
 
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || new BigNumber(0))}
+          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
           onClick={async () => {
             mixpanel.track('btn-click', {
               id: 'DepositMkr',

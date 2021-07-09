@@ -1,5 +1,4 @@
 /** @jsx jsx */
-import { useRef } from 'react';
 import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
@@ -15,7 +14,6 @@ type Props = {
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
   const bpi = useBreakpointIndex();
-  const input = useRef<HTMLInputElement>(null);
   const updateInputValue = newVal => {
     setBurnAmount(MKR(newVal));
   };

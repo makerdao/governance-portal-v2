@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
@@ -90,7 +89,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Box>
           <MKRInput
             onChange={setMkrToWithdraw}
-            balance={lockedMkr}
+            balance={lockedMkr?.toBigNumber()}
             value={mkrToWithdraw}
             balanceText="MKR in contract:"
           />
