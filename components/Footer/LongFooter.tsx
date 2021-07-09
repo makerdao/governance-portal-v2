@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, Container, jsx, Text} from 'theme-ui';
+import { Flex, Grid, Box, Container, jsx, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import React from 'react';
@@ -7,7 +7,6 @@ import { translate } from '@makerdao/i18n-helper';
 import Link from 'next/link';
 
 export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
- 
   const t = text => translate(text, locale);
 
   const links = [
@@ -151,8 +150,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           </div>
         ))}
 
-        <Box >
-          
+        <Box>
           <Flex
             mt="1.8rem"
             sx={{
