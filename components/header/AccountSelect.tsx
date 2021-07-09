@@ -65,7 +65,7 @@ const AccountSelect = props => {
 
   // Detect previously authorized connections and force log-in
   useEagerConnect();
-  
+
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
@@ -212,7 +212,7 @@ const AccountSelect = props => {
       setLoadingConnectors({
         [name]: false
       });
-    } catch(e) {
+    } catch (e) {
       setLoadingConnectors({
         [name]: false
       });
@@ -221,13 +221,9 @@ const AccountSelect = props => {
 
   const walletOptions = connectors
     .map(([name, connector]) => (
-      <Flex
-        sx={walletButtonStyle as any}
-        key={name}
-        onClick={() => onClickConnector(connector, name)}
-      >
+      <Flex sx={walletButtonStyle as any} key={name} onClick={() => onClickConnector(connector, name)}>
         <Icon name={name} />
-        <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...': name}</Text>
+        <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...' : name}</Text>
       </Flex>
     ))
     .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);
@@ -324,12 +320,10 @@ const AccountSelect = props => {
 export default WrappedAccountSelect;
 
 const ConnectWalletButton = ({ open, address, pending, ...props }) => {
-  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '' ));
-  
+  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
 
-  async function fetchENSName(address:string) {
+  async function fetchENSName(address: string) {
     try {
-      
       if (!address) {
         return;
       }
@@ -347,48 +341,48 @@ const ConnectWalletButton = ({ open, address, pending, ...props }) => {
 
   return (
     <Button
-    aria-label="Connect wallet"
-    sx={{
-      variant: 'buttons.card',
-      borderRadius: 'round',
-      color: 'textSecondary',
-      p: 2,
-      px: [2, 3],
-      py: 2,
-      alignSelf: 'flex-end',
-      '&:hover': {
-        color: 'text',
-        borderColor: 'onSecondary',
-        backgroundColor: 'white'
-      }
-    }}
-    {...props}
-    onClick={open}
-  >
-    {address ? (
-      pending ? (
-        <Flex sx={{ display: 'inline-flex' }}>
-          <Spinner
-            size={16}
-            sx={{
-              color: 'mutedOrange',
-              alignSelf: 'center',
-              mr: 2
-            }}
-          />
-          <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
-        </Flex>
+      aria-label="Connect wallet"
+      sx={{
+        variant: 'buttons.card',
+        borderRadius: 'round',
+        color: 'textSecondary',
+        p: 2,
+        px: [2, 3],
+        py: 2,
+        alignSelf: 'flex-end',
+        '&:hover': {
+          color: 'text',
+          borderColor: 'onSecondary',
+          backgroundColor: 'white'
+        }
+      }}
+      {...props}
+      onClick={open}
+    >
+      {address ? (
+        pending ? (
+          <Flex sx={{ display: 'inline-flex' }}>
+            <Spinner
+              size={16}
+              sx={{
+                color: 'mutedOrange',
+                alignSelf: 'center',
+                mr: 2
+              }}
+            />
+            <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
+          </Flex>
+        ) : (
+          <Flex sx={{ alignItems: 'center', mr: 2 }}>
+            <Box sx={{ mr: 2 }}>
+              <AddressIcon address={address} />
+            </Box>
+            <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
+          </Flex>
+        )
       ) : (
-        <Flex sx={{ alignItems: 'center', mr: 2 }}>
-          <Box sx={{ mr: 2 }}>
-            <AddressIcon address={address} />
-          </Box>
-          <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
-        </Flex>
-      )
-    ) : (
-      <Box mx={2}>Connect wallet</Box>
-    )}
-  </Button>
+        <Box mx={2}>Connect wallet</Box>
+      )}
+    </Button>
   );
 };
