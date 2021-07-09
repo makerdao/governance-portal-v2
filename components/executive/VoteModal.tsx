@@ -45,12 +45,12 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, delegateInfo] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.delegateInfo] : [null, null]
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
-  const voteDelegateAddress = delegateInfo?.voteDelegate._delegateAddress;
-  const lockedMkrKey = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy, voteDelegateAddress });
+  const lockedMkrKey =
+    voteDelegate.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy });
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
@@ -94,7 +94,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     </Box>
   );
 
-  const [step, setStep] = useState('confirm');
+  const [step, setStep] = useState<ModalStep>('confirm');
 
   const vote = async (hatChecked, comment) => {
     const maker = await getMaker();
@@ -105,7 +105,9 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
     const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
-    const voteTxCreator = voteProxy
+    const voteTxCreator = voteDelegate
+      ? () => voteDelegate.voteExec(slateOrProposals)
+      : voteProxy
       ? () => voteProxy.voteExec(slateOrProposals)
       : () => maker.service('chief').vote(slateOrProposals);
 
@@ -114,6 +116,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: txHash => {
         setStep('pending');
+        // if comment included, add to comments db
         if (comment.length > 0) {
           fetchJson(`/api/executive/comments/add/${proposal.address}`, {
             method: 'POST',

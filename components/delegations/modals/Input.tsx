@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { Button, Box, Flex, Text } from '@theme-ui/components';
 import MKRInput from 'components/MKRInput';
 import Skeleton from 'react-loading-skeleton';
-import BigNumber from 'bignumber.js';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
   title: string;
@@ -12,7 +12,7 @@ type Props = {
   bpi: number;
   disabled: boolean;
   onMkrClick: () => void;
-  mkrBalance?: BigNumber;
+  mkrBalance?: CurrencyObject;
   buttonLabel: string;
   onClick: () => void;
 };
@@ -71,7 +71,7 @@ const InputContent = forwardRef<HTMLInputElement, Props>(
           </Text>
           {mkrBalance ? (
             <Text sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }} onClick={onMkrClick}>
-              {mkrBalance.toFormat(6)}
+              {mkrBalance.toBigNumber().toFormat(6)}
             </Text>
           ) : (
             <Box sx={{ width: 6 }}>

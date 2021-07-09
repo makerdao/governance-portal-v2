@@ -134,7 +134,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           disabled={mkrBalance === undefined}
                           onMkrClick={() => {
                             if (!input.current || mkrBalance === undefined) return;
-                            changeInputValue(input.current, mkrBalance.toString());
+                            changeInputValue(input.current, mkrBalance.toBigNumber().toString());
                           }}
                           mkrBalance={mkrBalance}
                           buttonLabel="Delegate MKR"

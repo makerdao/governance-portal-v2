@@ -1,24 +1,22 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
+import { CurrencyObject } from 'types/currency';
 
 type Inputs = {
-  lockedMkrKey: string;
-  voteProxy: any;
-  voteDelegateAddress: string;
+  lockedMkrKey?: string;
+  voteProxy?: any;
 };
 
 type LockedMkrData = {
-  data: any;
-  loading: boolean;
-  error: Error;
+  data?: CurrencyObject;
+  loading?: boolean;
+  error?: Error;
 };
 
-export const useLockedMkr = ({ lockedMkrKey, voteProxy, voteDelegateAddress }: Inputs): LockedMkrData => {
+export const useLockedMkr = ({ lockedMkrKey, voteProxy }: Inputs): LockedMkrData => {
   const { data, error } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
     getMaker().then(maker =>
-      voteProxy
-        ? voteProxy.getNumDeposits()
-        : maker.service('chief').getNumDeposits(voteDelegateAddress ? voteDelegateAddress : address)
+      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
     )
   );
 

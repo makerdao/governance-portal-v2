@@ -1,23 +1,22 @@
 /** @jsx jsx */
+import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR from 'swr';
 import Skeleton from 'react-loading-skeleton';
 import Bignumber from 'bignumber.js';
-
-import { Proposal } from 'types/proposal';
-import getMaker, { getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
-import Stack from '../layouts/Stack';
-import useAccountsStore from 'stores/accounts';
-import VoteModal from './VoteModal';
-import { useState } from 'react';
-import { SpellData } from 'types/spellData';
 import mixpanel from 'mixpanel-browser';
+import { getNetwork } from 'lib/maker';
+import { formatDateWithTime } from 'lib/utils';
+import { useVotedProposals } from 'lib/hooks';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
+import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
+import Stack from 'components/layouts/Stack';
+import { Proposal } from 'types/proposal';
+import { SpellData } from 'types/spellData';
+import VoteModal from './VoteModal';
 
 type Props = {
   proposal: Proposal;
@@ -27,28 +26,16 @@ type Props = {
 
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const [voting, setVoting] = useState(false);
-
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
-
+  const { data: votedProposals } = useVotedProposals();
   const network = getNetwork();
   const bpi = useBreakpointIndex();
+  const canVote = !!account;
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
-  const canVote = !!account;
 
   if (!('about' in proposal)) {
     return (
