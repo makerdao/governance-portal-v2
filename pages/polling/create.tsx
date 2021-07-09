@@ -38,39 +38,55 @@ const CreateText = ({ children }) => {
   return (
     <Text
       mb={3}
-      sx={{ width: '100%', border: '1px solid #d5d9e0', borderRadius: 'small', minHeight: '42px' }}
+      sx={{
+        width: '100%',
+        border: '1px solid #d5d9e0',
+        borderRadius: 'small',
+        minHeight: '42px',
+        padding: 2
+      }}
     >
       {children}
     </Text>
   );
 };
-const PollingCreate = () => {
+const PollingCreate = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
+  const [loading, setLoading] = useState(false);
   const [pollUrl, setPollUrl] = useState('');
   const [poll, setPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
   const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
+
   const urlValidation = async url => {
-    const result = await validateUrl(url, {
-      pollId: 0,
-      multiHash: '',
-      startDate: new Date(0),
-      endDate: new Date(0),
-      url: pollUrl
-    });
-    if (result.valid) {
-      const poll = result.parsedData;
-      if (poll) {
-        poll.multiHash = await generateIPFSHash(result.wholeDoc, {});
-        poll.slug = poll.multiHash.slice(0, 8);
+    setLoading(true);
+
+    try {
+      const result = await validateUrl(url, {
+        pollId: 0,
+        multiHash: '',
+        startDate: new Date(0),
+        endDate: new Date(0),
+        url: pollUrl
+      });
+      if (result.valid) {
+        const poll = result.parsedData;
+        if (poll) {
+          poll.multiHash = await generateIPFSHash(result.wholeDoc, {});
+          poll.slug = poll.multiHash.slice(0, 8);
+        }
+        setPoll(poll);
+        setPollErrors([]);
+        if (poll) setContentHtml(await markdownToHtml(poll.content));
+      } else {
+        setPollErrors(result.errors);
       }
-      setPoll(poll);
-      setPollErrors([]);
-      if (poll) setContentHtml(await markdownToHtml(poll.content));
-    } else {
-      setPollErrors(result.errors);
+      setLoading(false);
+    } catch (e) {
+      setPollErrors(['Error loading poll data']);
+      setLoading(false);
     }
   };
 
@@ -107,7 +123,7 @@ const PollingCreate = () => {
                             onClick={() => urlValidation(pollUrl)}
                             sx={{ height: '42px', width: '80px', ml: 3 }}
                           >
-                            Validate
+                            {loading ? 'Loading...' : 'Validate'}
                           </Button>
                         </Flex>
                       </Box>
@@ -156,7 +172,8 @@ const PollingCreate = () => {
                         sx={{
                           width: '100%',
                           border: '1px solid #d5d9e0',
-                          borderRadius: 'small'
+                          borderRadius: 'small',
+                          padding: 2
                         }}
                       >
                         <div dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }} />
