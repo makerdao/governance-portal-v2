@@ -28,7 +28,11 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
         Enter the amount of MKR to burn.
       </Text>
       <Box>
-        <MKRInput onChange={updateInputValue} balance={mkrBalance?.toBigNumber()} value={burnAmount.toBigNumber()} />
+        <MKRInput
+          onChange={updateInputValue}
+          balance={mkrBalance?.toBigNumber()}
+          value={burnAmount.toBigNumber()}
+        />
       </Box>
 
       <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
