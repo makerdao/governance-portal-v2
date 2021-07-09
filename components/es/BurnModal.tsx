@@ -15,7 +15,6 @@ import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'types/currency';
 import { useMkrBalance } from 'lib/hooks';
-import BigNumber from 'bignumber.js';
 
 const ModalContent = ({
   setShowDialog,
@@ -24,12 +23,12 @@ const ModalContent = ({
 }: {
   setShowDialog: (value: boolean) => void;
   lockedInChief: number;
-  totalStaked: BigNumber;
+  totalStaked: CurrencyObject;
 }): React.ReactElement => {
   const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState<BigNumber>(new BigNumber(0));
+  const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
 
   const { data: mkrBalance } = useMkrBalance(account);
 

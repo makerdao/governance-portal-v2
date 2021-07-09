@@ -4,12 +4,12 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { MKR } from 'lib/maker';
 import { MKRInput } from 'components/MKRInput';
-import BigNumber from 'bignumber.js';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
-  setBurnAmount: (burnAmount: BigNumber) => void;
-  burnAmount: BigNumber;
-  mkrBalance: BigNumber | undefined;
+  setBurnAmount: (burnAmount: CurrencyObject) => void;
+  burnAmount: CurrencyObject;
+  mkrBalance: CurrencyObject | undefined;
 };
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
@@ -28,7 +28,7 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
         Enter the amount of MKR to burn.
       </Text>
       <Box>
-        <MKRInput onChange={updateInputValue} balance={mkrBalance} value={burnAmount} />
+        <MKRInput onChange={updateInputValue} balance={mkrBalance?.toBigNumber()} value={burnAmount.toBigNumber()} />
       </Box>
 
       <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
@@ -41,11 +41,11 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
 
 type MKRAmountProps = {
   lockedInChief: number;
-  setBurnAmount: (burnAmount: BigNumber) => void;
-  burnAmount: BigNumber;
+  setBurnAmount: (burnAmount: CurrencyObject) => void;
+  burnAmount: CurrencyObject;
   setShowDialog: (bool: boolean) => void;
   setStep: (step: string) => void;
-  mkrBalance?: BigNumber;
+  mkrBalance?: CurrencyObject;
 };
 
 const MKRAmount = ({
@@ -55,7 +55,7 @@ const MKRAmount = ({
   burnAmount,
   setStep,
   mkrBalance
-}: MKRAmountProps) => {
+}: MKRAmountProps): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   return (
