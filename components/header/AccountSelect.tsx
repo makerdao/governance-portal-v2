@@ -22,6 +22,8 @@ import AddressIcon from './AddressIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'stores/accounts';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { getENS } from 'lib/web3/ens';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -61,7 +63,9 @@ const AccountSelect = props => {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
-  const triedEager = useEagerConnect();
+  // Detect previously authorized connections and force log-in
+  useEagerConnect();
+  
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
@@ -187,21 +191,43 @@ const AccountSelect = props => {
     </Flex>
   );
 
+  // Handles UI state for loading
+  const [loadingConnectors, setLoadingConnectors] = useState({});
+
+  // Handles the logic when clicking on a connector
+  const onClickConnector = async (connector: AbstractConnector, name: ConnectorName) => {
+    try {
+      setLoadingConnectors({
+        [name]: true
+      });
+
+      await activate(connector);
+
+      if (chainId) {
+        mixpanel.people.set({ wallet: name });
+      }
+      setAccountName(name);
+      setChangeWallet(false);
+
+      setLoadingConnectors({
+        [name]: false
+      });
+    } catch(e) {
+      setLoadingConnectors({
+        [name]: false
+      });
+    }
+  };
+
   const walletOptions = connectors
     .map(([name, connector]) => (
       <Flex
         sx={walletButtonStyle as any}
         key={name}
-        onClick={() => {
-          activate(connector).then(() => {
-            if (chainId) mixpanel.people.set({ wallet: name });
-            setAccountName(name);
-            setChangeWallet(false);
-          });
-        }}
+        onClick={() => onClickConnector(connector, name)}
       >
         <Icon name={name} />
-        <Text sx={{ ml: 3 }}>{name}</Text>
+        <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...': name}</Text>
       </Flex>
     ))
     .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);
@@ -297,8 +323,30 @@ const AccountSelect = props => {
 
 export default WrappedAccountSelect;
 
-const ConnectWalletButton = ({ open, address, pending, ...props }) => (
-  <Button
+const ConnectWalletButton = ({ open, address, pending, ...props }) => {
+  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '' ));
+  
+
+  async function fetchENSName(address:string) {
+    try {
+      
+      if (!address) {
+        return;
+      }
+
+      const ens = await getENS(address);
+      setAddressFormatted(ens);
+    } catch (e) {
+      setAddressFormatted(formatAddress(address));
+    }
+  }
+
+  useEffect(() => {
+    fetchENSName(address);
+  }, [address]);
+
+  return (
+    <Button
     aria-label="Connect wallet"
     sx={{
       variant: 'buttons.card',
@@ -335,11 +383,12 @@ const ConnectWalletButton = ({ open, address, pending, ...props }) => (
           <Box sx={{ mr: 2 }}>
             <AddressIcon address={address} />
           </Box>
-          <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
+          <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
         </Flex>
       )
     ) : (
       <Box mx={2}>Connect wallet</Box>
     )}
   </Button>
-);
+  );
+};
