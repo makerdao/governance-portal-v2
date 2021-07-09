@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, Badge, jsx } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, Badge, jsx, Box } from 'theme-ui';
 import useSWR from 'swr';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -26,6 +26,8 @@ import { BlogPost } from 'types/blogPost';
 import { initTestchainPolls } from 'lib/utils';
 import { isActivePoll } from 'lib/utils';
 import theme from 'lib/theme';
+import Skeleton from 'react-loading-skeleton';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 type Props = {
   proposals: CMSProposal[];
@@ -320,7 +322,7 @@ export default function Index({
   if (!isDefaultNetwork() && (!polls || !proposals))
     return (
       <PrimaryLayout>
-        <p>Loading…</p>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 

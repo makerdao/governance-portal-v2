@@ -14,6 +14,7 @@ import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import DelegateCard from 'components/delegations/DelegateCard';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 type Props = {
   delegates: Delegate[];
@@ -106,7 +107,7 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [error, setError] = useState<string>();
 
-  // fetch polls at run-time if on any network other than the default
+  // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
       fetchDelegates().then(_setDelegates).catch(setError);
@@ -119,8 +120,8 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 
   if (!isDefaultNetwork() && !_delegates) {
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder /> 
       </PrimaryLayout>
     );
   }

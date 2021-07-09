@@ -22,6 +22,8 @@ import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import mixpanel from 'mixpanel-browser';
+import Skeleton from 'react-loading-skeleton';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const bpi = useBreakpointIndex();
@@ -158,8 +160,8 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
 
   if (!isDefaultNetwork() && !_polls)
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
