@@ -48,10 +48,10 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [voteProxy, voteDelegate] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
-  
+
   const addressLockedMKR =
     voteDelegate.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy );
+  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy);
 
   const { data: spellData } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`

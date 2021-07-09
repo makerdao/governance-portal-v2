@@ -2,7 +2,6 @@ import useSWR from 'swr';
 import getMaker from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
 
-
 type LockedMkrData = {
   data?: CurrencyObject;
   loading?: boolean;
@@ -17,7 +16,7 @@ export const useLockedMkr = (address: string, voteProxy?: any): LockedMkrData =>
   );
 
   return {
-    data: data ? data.toBigNumber() : data,
+    data: data,
     loading: !error && !data,
     error
   };
