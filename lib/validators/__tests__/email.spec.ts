@@ -1,5 +1,5 @@
-import { test } from "gray-matter";
-import { isValidEmail } from "../email";
+import { test } from 'gray-matter';
+import { isValidEmail } from '../email';
 
 describe('Email validator', () => {
   test('Should validate a correct email', () => {
@@ -10,5 +10,5 @@ describe('Email validator', () => {
   test('Should say is not valid', () => {
     const valid = isValidEmail('foot');
     expect(valid).toBe(false);
-  })
-})
+  });
+});

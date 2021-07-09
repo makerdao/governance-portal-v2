@@ -503,7 +503,6 @@ export default function ExecutiveOverviewPage({
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
-
       </PrimaryLayout>
     );
 

@@ -8,14 +8,14 @@ export default function PageLoadingPlaceholder(): React.ReactElement {
       <p>Loading…</p>
 
       <Box mb={3}>
-        <Skeleton width='100%' height={'100px'} />
+        <Skeleton width="100%" height={'100px'} />
       </Box>
       <Box mb={3}>
-        <Skeleton width='100%' height={'100px'} />
+        <Skeleton width="100%" height={'100px'} />
       </Box>
       <Box mb={3}>
-        <Skeleton width='100%' height={'100px'} />
+        <Skeleton width="100%" height={'100px'} />
       </Box>
-    </Box>  
+    </Box>
   );
 }
