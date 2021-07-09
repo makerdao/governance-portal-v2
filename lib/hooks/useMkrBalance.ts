@@ -1,11 +1,11 @@
-import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import useSWR from 'swr';
+import { CurrencyObject } from 'types/currency';
 
 type MkrBalanceResponse = {
-  data?: BigNumber;
-  loading: boolean;
-  error?: any;
+  data?: CurrencyObject;
+  loading?: boolean;
+  error?: Error;
 };
 
 export const useMkrBalance = (address): MkrBalanceResponse => {
@@ -14,7 +14,7 @@ export const useMkrBalance = (address): MkrBalanceResponse => {
   );
 
   return {
-    data: data ? data.toBigNumber() : data,
+    data: data,
     loading: !error && !data,
     error
   };

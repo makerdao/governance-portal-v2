@@ -121,7 +121,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             <Box sx={{ mr: [0, 0, 4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toFormat(2) : '0.00'}
+                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   MKR delegated by you

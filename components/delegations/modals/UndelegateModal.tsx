@@ -117,7 +117,7 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
                         disabled={mkrStaked === undefined}
                         onMkrClick={() => {
                           if (!input.current || mkrStaked === undefined) return;
-                          changeInputValue(input.current, mkrStaked.toString());
+                          changeInputValue(input.current, mkrStaked.toBigNumber().toString());
                         }}
                         mkrBalance={mkrStaked}
                         buttonLabel="Undelegate MKR"

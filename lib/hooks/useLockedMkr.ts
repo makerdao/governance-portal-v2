@@ -1,5 +1,6 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
+import { CurrencyObject } from 'types/currency';
 
 type Inputs = {
   lockedMkrKey?: string;
@@ -7,9 +8,9 @@ type Inputs = {
 };
 
 type LockedMkrData = {
-  data: any;
-  loading: boolean;
-  error: Error;
+  data?: CurrencyObject;
+  loading?: boolean;
+  error?: Error;
 };
 
 export const useLockedMkr = ({ lockedMkrKey, voteProxy }: Inputs): LockedMkrData => {
