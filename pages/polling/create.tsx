@@ -60,8 +60,13 @@ const PollingCreate = (): React.ReactElement => {
   const [creating, setCreating] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
 
+  const resetForm = () => {
+    setPoll(undefined);
+    setContentHtml('');
+  };
   const urlValidation = async url => {
     setLoading(true);
+    resetForm();
 
     try {
       const result = await validateUrl(url, {
@@ -161,23 +166,17 @@ const PollingCreate = (): React.ReactElement => {
                           } days`}
                       </CreateText>
                       <Label>Discussion Link</Label>
-                      {poll && poll.discussionLink && (
+                      {poll && poll.discussionLink ? (
                         <ExternalLink target="_blank" href={poll.discussionLink} sx={{ p: 0 }}>
                           <CreateText>{poll && poll.discussionLink}</CreateText>
                         </ExternalLink>
+                      ) : (
+                        <CreateText> </CreateText>
                       )}
                       <Label>Proposal</Label>
-                      <Text
-                        mb={3}
-                        sx={{
-                          width: '100%',
-                          border: '1px solid #d5d9e0',
-                          borderRadius: 'small',
-                          padding: 2
-                        }}
-                      >
+                      <CreateText>
                         <div dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }} />
-                      </Text>
+                      </CreateText>
                       <Flex>
                         <Button
                           variant="primary"
@@ -186,7 +185,7 @@ const PollingCreate = (): React.ReactElement => {
                         >
                           Create Poll
                         </Button>
-                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => setPoll(undefined)}>
+                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => resetForm()}>
                           Reset Form
                         </Button>
                       </Flex>
