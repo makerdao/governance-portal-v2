@@ -44,7 +44,6 @@ export function MKRInput({
     setErrorInvalidFormat(false);
 
     onChange(newValue);
-    
   }
 
   const disabledButton = balance === undefined;
@@ -57,7 +56,6 @@ export function MKRInput({
 
   const errorMax = value !== undefined && value.isGreaterThan(balance || new BigNumber(0));
   const errorMin = value !== undefined && value.isLessThan(0);
-
 
   return (
     <Box data-testid="mkr-input-wrapper">
