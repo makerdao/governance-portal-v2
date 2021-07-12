@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Card } from 'theme-ui';
 import { markdownToHtml } from 'lib/utils';
-import useSWR from 'swr';
+import { GetStaticProps } from 'next';
 
 const terms = `
 #### 1. Acceptance of Terms
@@ -90,18 +90,25 @@ Fraud: Activity which operates to defraud MakerDAO, Dai System and Software user
 Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of MakerDAO intellectual property, name, or logo, including use of MakerDAO trade or service marks, without express consent from MakerDAO or in a manner that otherwise harms MakerDAO; any action that implies an untrue endorsement by or affiliation with MakerDAO.
 `;
 
-const Terms = () => {
-  const { data: content } = useSWR('/terms', () => markdownToHtml(terms));
+export default function Terms(props: { content: string }) {
   return (
     <Box>
       <Text sx={{ textAlign: 'center' }}>
         <h2>Terms of Use</h2>
       </Text>
       <Card sx={{ overflowY: 'auto' }}>
-        <div dangerouslySetInnerHTML={{ __html: content || '' }} />
+        <div dangerouslySetInnerHTML={{ __html: props.content || '' }} />
       </Card>
     </Box>
   );
-};
+}
 
-export default Terms;
+export const getStaticProps: GetStaticProps = async () => {
+  const content = await markdownToHtml(terms);
+
+  return {
+    props: {
+      content
+    }
+  };
+};

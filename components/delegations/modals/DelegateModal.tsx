@@ -6,7 +6,6 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { changeInputValue } from 'lib/utils';
 import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
@@ -14,8 +13,9 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from 'sto
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
 import ConfirmContent from './Confirm';
-import InputContent from './Input';
+import { InputDelegateMkr } from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
+import BigNumber from 'bignumber.js';
 
 type Props = {
   isOpen: boolean;
@@ -28,7 +28,7 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
   const input = useRef<HTMLInputElement>(null);
@@ -122,21 +122,11 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
                           onBack={() => setConfirmStep(false)}
                         />
                       ) : (
-                        <InputContent
+                        <InputDelegateMkr
                           title="Deposit into delegate contract"
                           description="Input the amount of MKR to deposit into the delegate contract."
                           onChange={setMkrToDeposit}
-                          error={
-                            mkrBalance !== undefined && mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'
-                          }
-                          ref={input}
-                          bpi={bpi}
-                          disabled={mkrBalance === undefined}
-                          onMkrClick={() => {
-                            if (!input.current || mkrBalance === undefined) return;
-                            changeInputValue(input.current, mkrBalance.toBigNumber().toString());
-                          }}
-                          mkrBalance={mkrBalance}
+                          balance={mkrBalance?.toBigNumber()}
                           buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
                         />

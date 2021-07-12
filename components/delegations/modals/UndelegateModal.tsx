@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -7,7 +7,6 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { changeInputValue } from 'lib/utils';
 import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
@@ -15,7 +14,7 @@ import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import ApprovalContent from './Approval';
-import InputContent from './Input';
+import { InputDelegateMkr } from './InputDelegateMkr';
 import TxDisplay from './TxDisplay';
 
 type Props = {
@@ -31,7 +30,6 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
   const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
@@ -107,19 +105,11 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
                 ) : (
                   <>
                     {mkrStaked && hasLargeIouAllowance ? (
-                      <InputContent
+                      <InputDelegateMkr
                         title="Withdraw from delegate contract"
                         description="Input the amount of MKR to withdraw from the delegate contract."
                         onChange={setMkrToWithdraw}
-                        error={mkrToWithdraw.gt(mkrStaked) && 'MKR balance too low'}
-                        ref={input}
-                        bpi={bpi}
-                        disabled={mkrStaked === undefined}
-                        onMkrClick={() => {
-                          if (!input.current || mkrStaked === undefined) return;
-                          changeInputValue(input.current, mkrStaked.toBigNumber().toString());
-                        }}
-                        mkrBalance={mkrStaked}
+                        balance={mkrStaked.toBigNumber()}
                         buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
                       />

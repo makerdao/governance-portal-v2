@@ -94,9 +94,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const lockedMkrKey =
-    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy });
+  const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -369,7 +368,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
             <Flex>
               <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
+                <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
+                  {lockedMkr.toBigNumber().toFormat(6)} MKR
+                </Text>
               ) : (
                 <Box sx={{ width: 6 }}>
                   <Skeleton />
