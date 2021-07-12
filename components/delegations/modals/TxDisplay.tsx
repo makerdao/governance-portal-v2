@@ -1,7 +1,7 @@
 import TxFinal from './TxFinal';
 import TransactionInProgress from './TransactionInProgress';
 
-const TxDisplay = ({ tx, setTxId, onDismiss }) => {
+const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
   switch (tx?.status) {
     case 'mined':
       return (

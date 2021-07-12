@@ -1,9 +1,8 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Input, Text, Button, Box, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
+import { Input, Text, Button, Box, Flex, jsx } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
 import BigNumber from 'bignumber.js';
-import { useEffect } from 'react';
 
 export type MKRInputProps = {
   placeholder?: string;
@@ -27,17 +26,25 @@ export function MKRInput({
   value
 }: MKRInputProps): React.ReactElement {
   const [currentValueStr, setCurrentValueStr] = useState('');
+  const [errorInvalidFormat, setErrorInvalidFormat] = useState(false);
 
   function updateValue(e: { currentTarget: { value: string } }) {
     const newValueStr = e.currentTarget.value;
+
+    setCurrentValueStr(newValueStr);
+
     const newValue = new BigNumber(newValueStr || '0');
 
     const invalidValue = newValue.lt(min) || (max && newValue.gt(max));
     if (invalidValue || newValue.isNaN()) {
+      setErrorInvalidFormat(true);
       return;
     }
+
+    setErrorInvalidFormat(false);
+
     onChange(newValue);
-    setCurrentValueStr(newValueStr);
+    
   }
 
   const disabledButton = balance === undefined;
@@ -51,9 +58,6 @@ export function MKRInput({
   const errorMax = value !== undefined && value.isGreaterThan(balance || new BigNumber(0));
   const errorMin = value !== undefined && value.isLessThan(0);
 
-  useEffect(() => {
-    setCurrentValueStr(value.toString());
-  }, [value]);
 
   return (
     <Box data-testid="mkr-input-wrapper">
@@ -117,6 +121,11 @@ export function MKRInput({
       {errorMin && (
         <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
           Please enter a valid amount.
+        </Text>
+      )}
+      {errorInvalidFormat && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          Please, enter a valid number.
         </Text>
       )}
     </Box>
