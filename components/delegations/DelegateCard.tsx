@@ -29,7 +29,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
-  const { data: totalStaked } = useLockedMkr({ lockedMkrKey: delegate.voteDelegateAddress });
+  const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
@@ -109,8 +109,8 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 </Text>
               </Box>
               <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  --
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
+                  Untracked
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Pool participation
@@ -128,8 +128,8 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
                 </Text>
               </Box>
               <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  --
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
+                  Untracked
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary">
                   Executive participation

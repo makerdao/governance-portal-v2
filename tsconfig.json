@@ -15,11 +15,12 @@
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
+    "types": ["jest"],
     "baseUrl": "./",
     "typeRoots": [
-      "./types"
+      "./types", "./node_modules/@types"
     ]
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
 }

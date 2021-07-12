@@ -9,7 +9,7 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork, getNetwork } from 'lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from 'lib/api';
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
@@ -25,7 +25,6 @@ import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
 import { initTestchainPolls } from 'lib/utils';
 import { isActivePoll } from 'lib/utils';
-import theme from 'lib/theme';
 
 type Props = {
   proposals: CMSProposal[];
@@ -300,9 +299,10 @@ export default function Index({
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (getNetwork() === 'testnet') {
+    if (isTestnet()) {
       initTestchainPolls(); // this is async but we don't need to await
     }
+
     if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
@@ -329,6 +329,7 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls, proposals, blog posts at build-time
+
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),

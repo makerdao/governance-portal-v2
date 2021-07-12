@@ -61,7 +61,7 @@ const AccountSelect = props => {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
-  const triedEager = useEagerConnect();
+  useEagerConnect();
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 

@@ -276,18 +276,6 @@ export function cutMiddle(text = '', left = 6, right = 4): string {
   return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
 }
 
-/**
- * sets the value of an input in a way that triggers the onChange handler.
- * this is a workaround for logic in React that dedupes change events.
- * see: https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
- */
-export function changeInputValue(inputRef: HTMLInputElement, value: string): void {
-  const valueProp = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
-  invariant(valueProp?.set);
-  valueProp.set.call(inputRef, value);
-  inputRef.dispatchEvent(new Event('input', { bubbles: true }));
-}
-
 export const sortBytesArray = _array =>
   [..._array].sort((a, b) => {
     return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;
