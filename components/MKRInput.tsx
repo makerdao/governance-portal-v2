@@ -123,7 +123,7 @@ export function MKRInput({
       )}
       {errorInvalidFormat && (
         <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
-          Please, enter a valid number.
+          Please enter a valid number.
         </Text>
       )}
     </Box>
