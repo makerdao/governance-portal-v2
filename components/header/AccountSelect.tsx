@@ -80,7 +80,7 @@ const AccountSelect = (): React.ReactElement => {
     w3rAddress,
     chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()
   );
-  
+
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
     state.transactions
@@ -92,9 +92,7 @@ const AccountSelect = (): React.ReactElement => {
   const [addresses, setAddresses] = useState<string[]>([]);
 
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
-  const [hwSelectCallback, setHwSelectCallback] = useState<
-    (err: Error | null, address?: string) => void
-  >();
+  const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
 
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
@@ -212,7 +210,6 @@ const AccountSelect = (): React.ReactElement => {
         [name]: false
       });
     } catch (e) {
-      
       setLoadingConnectors({
         [name]: false
       });
@@ -244,14 +241,15 @@ const AccountSelect = (): React.ReactElement => {
         chainIdError={chainIdError}
         walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
       />
-      
-      <ConnectWalletButton 
+
+      <ConnectWalletButton
         onClickConnect={() => {
-          setShowDialog(true)
-        }} 
-        address={address} 
-        pending={pending} />
-        
+          setShowDialog(true);
+        }}
+        address={address}
+        pending={pending}
+      />
+
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
         <DialogContent
           aria-label="Change Wallet"

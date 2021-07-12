@@ -8,8 +8,8 @@ import { getENS } from 'lib/web3/ens';
 type Props = {
   onClickConnect: () => void;
   address?: string;
-  pending: boolean
-}
+  pending: boolean;
+};
 
 export default function ConnectWalletButton({ onClickConnect, address, pending }: Props): React.ReactElement {
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
@@ -28,7 +28,7 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
   }
 
   useEffect(() => {
-    if(address) {
+    if (address) {
       fetchENSName(address);
     }
   }, [address]);
@@ -50,7 +50,6 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
           backgroundColor: 'white'
         }
       }}
-
       onClick={onClickConnect}
     >
       {address ? (
@@ -80,5 +79,3 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
     </Button>
   );
 }
-
-
