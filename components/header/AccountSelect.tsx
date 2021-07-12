@@ -18,12 +18,11 @@ import useTransactionStore from 'stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
-import AddressIcon from './AddressIcon';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { getENS } from 'lib/web3/ens';
+import ConnectWalletButton from 'components/web3/ConnectWalletButton';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -52,13 +51,13 @@ const closeButtonStyle = {
   left: '8px'
 };
 
-const WrappedAccountSelect = (props): JSX.Element => (
+const WrappedAccountSelect = (): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
-    <AccountSelect {...props} />
+    <AccountSelect />
   </Web3ReactProvider>
 );
 
-const AccountSelect = props => {
+const AccountSelect = (): React.ReactElement => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -81,22 +80,22 @@ const AccountSelect = props => {
     w3rAddress,
     chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()
   );
+  
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
     state.transactions
   ]);
 
-  const [showDialog, setShowDialog] = React.useState(false);
-  const [accountName, setAccountName] = React.useState<ConnectorName>();
-  const [changeWallet, setChangeWallet] = React.useState(false);
-  const [addresses, setAddresses] = React.useState<string[]>([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [accountName, setAccountName] = useState<ConnectorName>();
+  const [changeWallet, setChangeWallet] = useState(false);
+  const [addresses, setAddresses] = useState<string[]>([]);
 
-  const [showHwAddressSelector, setShowHwAddressSelector] = React.useState(false);
-  const [hwSelectCallback, setHwSelectCallback] = React.useState<
+  const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
+  const [hwSelectCallback, setHwSelectCallback] = useState<
     (err: Error | null, address?: string) => void
   >();
 
-  const open = () => setShowDialog(true);
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
@@ -213,6 +212,7 @@ const AccountSelect = props => {
         [name]: false
       });
     } catch (e) {
+      
       setLoadingConnectors({
         [name]: false
       });
@@ -239,12 +239,19 @@ const AccountSelect = props => {
   );
 
   return (
-    <Box>
+    <Box sx={{ ml: ['auto', 3, 0] }}>
       <NetworkAlertModal
         chainIdError={chainIdError}
         walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
       />
-      <ConnectWalletButton open={open} address={address} pending={pending} {...props} />
+      
+      <ConnectWalletButton 
+        onClickConnect={() => {
+          setShowDialog(true)
+        }} 
+        address={address} 
+        pending={pending} />
+        
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
         <DialogContent
           aria-label="Change Wallet"
@@ -318,71 +325,3 @@ const AccountSelect = props => {
 };
 
 export default WrappedAccountSelect;
-
-const ConnectWalletButton = ({ open, address, pending, ...props }) => {
-  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
-
-  async function fetchENSName(address: string) {
-    try {
-      if (!address) {
-        return;
-      }
-
-      const ens = await getENS(address);
-      setAddressFormatted(ens);
-    } catch (e) {
-      setAddressFormatted(formatAddress(address));
-    }
-  }
-
-  useEffect(() => {
-    fetchENSName(address);
-  }, [address]);
-
-  return (
-    <Button
-      aria-label="Connect wallet"
-      sx={{
-        variant: 'buttons.card',
-        borderRadius: 'round',
-        color: 'textSecondary',
-        p: 2,
-        px: [2, 3],
-        py: 2,
-        alignSelf: 'flex-end',
-        '&:hover': {
-          color: 'text',
-          borderColor: 'onSecondary',
-          backgroundColor: 'white'
-        }
-      }}
-      {...props}
-      onClick={open}
-    >
-      {address ? (
-        pending ? (
-          <Flex sx={{ display: 'inline-flex' }}>
-            <Spinner
-              size={16}
-              sx={{
-                color: 'mutedOrange',
-                alignSelf: 'center',
-                mr: 2
-              }}
-            />
-            <Text sx={{ color: 'mutedOrange' }}>TX Pending</Text>
-          </Flex>
-        ) : (
-          <Flex sx={{ alignItems: 'center', mr: 2 }}>
-            <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} />
-            </Box>
-            <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
-          </Flex>
-        )
-      ) : (
-        <Box mx={2}>Connect wallet</Box>
-      )}
-    </Button>
-  );
-};
