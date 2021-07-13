@@ -24,7 +24,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
   const router = useRouter();
   const startReview = () => {
     clearTx();
-    router.push({ pathname: '/polling/review', query: network });
+    router.push({ pathname: '/polling/review', query: { network } });
   };
 
   return (

@@ -197,7 +197,7 @@ export default function MobileVoteSheet({
               <Button
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={() => router.push({ pathname: '/polling/review', query: network })}
+                onClick={() => router.push({ pathname: '/polling/review', query: { network } })}
               >
                 Review &amp; Submit Ballot
               </Button>
