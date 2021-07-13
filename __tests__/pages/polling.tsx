@@ -1,5 +1,4 @@
 import { injectProvider, connectAccount, createTestPolls, renderWithAccountSelect as render } from '../helpers'; 
-import { fireEvent } from '@testing-library/react';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
@@ -23,7 +22,7 @@ let component;
 beforeEach(async() => {
   accountsApi.setState({ currentAccount: undefined });
   component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(fireEvent.click, component);
+  await connectAccount( component);
 });
 
 describe('renders expected voting options for each poll type', () => {

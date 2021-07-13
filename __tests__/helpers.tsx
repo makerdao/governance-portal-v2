@@ -41,20 +41,9 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
-export async function connectAccount(click, component) {
+export async function connectAccount(component) {
   
-  await act(async () => {
-    click(await component.findByText('Connect wallet'));
-  });
 
-  await act(async () => {
-    click(await component.findByText('MetaMask'));
-  });
-
-  await act(async () => {
-    click(await component.findByLabelText('close'));
-  });
-  
   try {
     accountsApi.setState({ currentAccount: {
       address: DEMO_ACCOUNT_TESTS,

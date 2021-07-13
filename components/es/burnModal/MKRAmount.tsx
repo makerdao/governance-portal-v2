@@ -35,10 +35,6 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
         />
       </Box>
 
-      <Flex mt={3} sx={{ alignItems: 'center', justifyContent: 'flex-start', width: '100%' }}>
-        <Text variant="caps">MKR Balance In Wallet</Text>
-        <Text ml={3}>{mkrBalance ? mkrBalance.toString() : '---'}</Text>
-      </Flex>
     </>
   );
 };
@@ -61,7 +57,8 @@ const MKRAmount = ({
   mkrBalance
 }: MKRAmountProps): React.ReactElement => {
   const bpi = useBreakpointIndex();
-
+  console.log(mkrBalance?.toString(), burnAmount.toString());
+  console.log('AAAAAAAAAAAAAA')
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
@@ -111,7 +108,7 @@ const MKRAmount = ({
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance))}
+          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance.toBigNumber()))}
           variant="outline"
           sx={{
             color: 'onNotice',

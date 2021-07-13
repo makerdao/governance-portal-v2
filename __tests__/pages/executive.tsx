@@ -24,7 +24,7 @@ async function setup() {
   </SWRConfig>
   );
   await act(async () => {
-    await connectAccount(click, comp);
+    await connectAccount(comp);
   });
   return comp;
 }
