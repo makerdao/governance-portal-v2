@@ -80,13 +80,10 @@ const ESModule = (): React.ReactElement => {
       <>
         <ProgressRing
           progress={
-            typeof totalStaked !== 'undefined' && thresholdAmount 
+            typeof totalStaked !== 'undefined' && thresholdAmount
               ? canFire
                 ? 100
-                : totalStaked
-                    .mul(100)
-                    .div(thresholdAmount)
-                    .toNumber()
+                : totalStaked.mul(100).div(thresholdAmount).toNumber()
               : 0
           }
           totalStaked={totalStaked}
