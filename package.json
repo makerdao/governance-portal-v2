@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@makerdao/test-helpers": "^0.3.0",
-    "@makerdao/testchain": "^1.1.31",
+    "@makerdao/testchain": "makerdao/testchain#vote-delegate",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
