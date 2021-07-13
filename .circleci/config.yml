@@ -19,7 +19,7 @@ jobs:
           key: dependency-cache-{{ checksum "yarn.lock" }}
   test:
     docker:
-      - image: makerdao-dux/dapptools-node-circleci-docker
+      - image: makerdaodux/dapptools-node-circleci-docker
     steps:
       - checkout
       - restore_cache:
