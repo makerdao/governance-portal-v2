@@ -83,6 +83,5 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   }
 }));
 
-
 export default useAccountsStore;
 export { accountsApi };

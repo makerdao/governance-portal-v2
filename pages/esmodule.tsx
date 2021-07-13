@@ -12,8 +12,6 @@ import useAccountsStore from 'stores/accounts';
 import { formatDateWithTime } from 'lib/utils';
 import { useESModuleStats } from 'lib/esmodule/hooks/useESModuleStats';
 
-
-
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
@@ -21,7 +19,8 @@ const ESModule = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] = data || [];
+  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
+    data || [];
 
   const DesktopView = () => {
     return (
@@ -36,9 +35,11 @@ const ESModule = (): React.ReactElement => {
               </Box>
             )}
           </Text>
-          {thresholdAmount && <Text color="#708390" sx={{ fontWeight: '400' }}>
-            &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
-          </Text>}
+          {thresholdAmount && (
+            <Text color="#708390" sx={{ fontWeight: '400' }}>
+              &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
+            </Text>
+          )}
         </Flex>
         <Box
           sx={{
@@ -50,23 +51,25 @@ const ESModule = (): React.ReactElement => {
           }}
           data-testid="progress-bar"
         >
-          {thresholdAmount && <Box
-            as="div"
-            style={{
-              borderRadius: 'inherit',
-              height: '100%',
-              transition: 'width 0.2s ease-in',
-              backgroundColor: '#f75625',
-              minHeight: '20px',
-              width: totalStaked
-                ? `${
-                    totalStaked.gte(thresholdAmount)
-                      ? '100'
-                      : totalStaked.mul(100).div(thresholdAmount).toFixed()
-                  }%`
-                : '0%'
-            }}
-          />}
+          {thresholdAmount && (
+            <Box
+              as="div"
+              style={{
+                borderRadius: 'inherit',
+                height: '100%',
+                transition: 'width 0.2s ease-in',
+                backgroundColor: '#f75625',
+                minHeight: '20px',
+                width: totalStaked
+                  ? `${
+                      totalStaked.gte(thresholdAmount)
+                        ? '100'
+                        : totalStaked.mul(100).div(thresholdAmount).toFixed()
+                    }%`
+                  : '0%'
+              }}
+            />
+          )}
         </Box>
       </>
     );
@@ -80,7 +83,10 @@ const ESModule = (): React.ReactElement => {
             typeof totalStaked !== 'undefined'
               ? canFire
                 ? 100
-                : totalStaked.mul(100).div(thresholdAmount || 1).toNumber()
+                : totalStaked
+                    .mul(100)
+                    .div(thresholdAmount || 1)
+                    .toNumber()
               : 0
           }
           totalStaked={totalStaked}

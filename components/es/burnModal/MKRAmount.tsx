@@ -34,7 +34,6 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
           value={burnAmount.toBigNumber()}
         />
       </Box>
-
     </>
   );
 };
@@ -58,7 +57,7 @@ const MKRAmount = ({
 }: MKRAmountProps): React.ReactElement => {
   const bpi = useBreakpointIndex();
   console.log(mkrBalance?.toString(), burnAmount.toString());
-  console.log('AAAAAAAAAAAAAA')
+  console.log('AAAAAAAAAAAAAA');
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />

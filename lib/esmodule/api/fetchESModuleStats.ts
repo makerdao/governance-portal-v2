@@ -10,7 +10,7 @@ export type ESModuleStats = [
   Date | null,
   CurrencyObject | null,
   StakingHistoryRow[] | undefined
-]
+];
 
 export async function fetchESModuleStats(address?: string): Promise<ESModuleStats> {
   const maker = await getMaker();

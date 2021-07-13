@@ -1,5 +1,3 @@
-
-
 import useSWR from 'swr';
 import { ESModuleStats, fetchESModuleStats } from '../api/fetchESModuleStats';
 
@@ -9,10 +7,8 @@ type MkrBalanceResponse = {
   error?: Error;
 };
 
-export const useESModuleStats = (address? : string): MkrBalanceResponse => {
-  const { data, error } = useSWR(['/es-module', address], () =>
-    fetchESModuleStats(address)
-  );
+export const useESModuleStats = (address?: string): MkrBalanceResponse => {
+  const { data, error } = useSWR(['/es-module', address], () => fetchESModuleStats(address));
 
   return {
     data: data,

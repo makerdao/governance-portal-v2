@@ -31,7 +31,7 @@ const ModalContent = ({
   const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
 
   const { data: mkrBalance } = useMkrBalance(account?.address);
-  
+
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
