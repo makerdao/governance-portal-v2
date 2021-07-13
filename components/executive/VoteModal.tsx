@@ -26,7 +26,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
-import { useLockedMkr, useSpellData } from 'lib/hooks';
+import { useLockedMkr, useSpellData, useHat } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
@@ -63,9 +63,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     getMaker().then(maker => maker.service('chief').getAllSlates())
   );
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { data: hat } = useHat();
 
   const isHat = hat && hat === proposal.address;
 

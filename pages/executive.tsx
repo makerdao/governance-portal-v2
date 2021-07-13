@@ -14,7 +14,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { getExecutiveProposals } from 'lib/api';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr, useVotedProposals } from 'lib/hooks';
+import { useLockedMkr, useVotedProposals, useHat } from 'lib/hooks';
 import { fetchJson } from 'lib/utils';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
@@ -183,9 +183,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { data: hat } = useHat();
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
