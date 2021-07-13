@@ -26,10 +26,9 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr, useSpellData } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
-import { SpellData } from 'types/spellData';
 import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
 
@@ -53,9 +52,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy);
 
-  const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
-  );
+  const { data: spellData } = useSpellData(proposal.address);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -193,13 +190,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               Your voting weight
             </Text>
             {lockedMkr ? (
-              <Text as="p" color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {votingWeight} MKR
               </Text>
             ) : (
-              <Text as="p" color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </GridBox>
           <GridBox bpi={bpi}>
@@ -207,13 +204,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               MKR supporting
             </Text>
             {spellData ? (
-              <Text as="p" color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {mkrSupporting} MKR
               </Text>
             ) : (
-              <Text as="p" color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </GridBox>
           <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
@@ -221,13 +218,13 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               After vote cast
             </Text>
             {lockedMkr && spellData ? (
-              <Text as="p" color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {afterVote} MKR
               </Text>
             ) : (
-              <Text as="p" color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </Box>
         </Grid>
@@ -324,7 +321,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'failed':
         return <Error close={close} />;
     }
-  }, [step, lockedMkr, spellData, tx]);
+  }, [step, lockedMkr, spellData, tx, bpi]);
 
   return (
     <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>

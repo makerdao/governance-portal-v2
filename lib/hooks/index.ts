@@ -4,3 +4,4 @@ export * from './useAllDelegates';
 export * from './useMkrDelegated';
 export * from './useLockedMkr';
 export * from './useVotedProposals';
+export * from './useSpellData';
