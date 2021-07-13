@@ -83,9 +83,5 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   }
 }));
 
-// if we are on the browser start listening for account changes as soon as possible
-if (typeof window !== 'undefined') {
-  accountsApi.getState().addAccountsListener();
-}
 export default useAccountsStore;
 export { accountsApi };

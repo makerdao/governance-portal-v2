@@ -16,7 +16,7 @@ type Props = {
 
 const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [copyAddressText, setCopyAddressText] = useState('Copy Address');
+  const [copied, setCopied] = useState(false);
 
   return (
     <Flex
@@ -71,12 +71,13 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           }}
           onClick={() => {
             navigator.clipboard.writeText(address);
-            setCopyAddressText('Copied!');
-            setTimeout(() => setCopyAddressText('Copy Address'), 1000);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1000);
           }}
+          data-testid="copy-address"
         >
           <Icon name="copy" sx={{ pr: 1 }} />
-          {copyAddressText}
+          {copied ? 'Copied!' : 'Copy Address'}
         </Flex>
         <ExternalLink
           href={getEtherscanLink(getNetwork(), address, 'address')}

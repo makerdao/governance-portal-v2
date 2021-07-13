@@ -14,7 +14,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { getExecutiveProposals } from 'lib/api';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr, useVotedProposals } from 'lib/hooks';
+import { useLockedMkr, useVotedProposals, useHat } from 'lib/hooks';
 import { fetchJson } from 'lib/utils';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
@@ -95,9 +95,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const lockedMkrKey =
-    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr({ lockedMkrKey, voteProxy });
+  const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -185,9 +184,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { data: hat } = useHat();
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -370,7 +367,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
             <Flex>
               <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
               {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
+                <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
+                  {lockedMkr.toBigNumber().toFormat(6)} MKR
+                </Text>
               ) : (
                 <Box sx={{ width: 6 }}>
                   <Skeleton />

@@ -1,23 +1,26 @@
-import { render, RenderResult } from '@testing-library/react';
+import { act, render, RenderResult } from '@testing-library/react';
 import { ThemeProvider } from 'theme-ui';
 import { ethers } from 'ethers';
 import WrappedAccountSelect from '../components/header/AccountSelect';
 import theme from '../lib/theme';
 import React from 'react';
+import { accountsApi } from 'stores/accounts';
 
 export function renderWithTheme(component: React.ReactNode): RenderResult {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 }
 
+export const DEMO_ACCOUNT_TESTS = '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6';
+
 export function injectProvider(): void {
   window.ethereum = new Proxy (new ethers.providers.JsonRpcProvider('http://localhost:2000'), {
     get(target, key) {
       if (key === 'enable') {
-        return async () => ['0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6'];
+        return async () => [DEMO_ACCOUNT_TESTS];
       }
       if (key === '_state') {
         return {
-          accounts: ['0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6']
+          accounts: [DEMO_ACCOUNT_TESTS]
         }
       }
       // uncomment the following to debug window.ethereum errors
@@ -38,13 +41,15 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
-export async function connectAccount(click, component) {
-  click(await component.findByText('Connect wallet'));
-  click(await component.findByText('MetaMask'));
-  click(await component.findByLabelText('close'));
-
+export async function connectAccount(component) {
   try {
-    await component.findAllByText('0x16F', { exact: false });
+    accountsApi.setState({ currentAccount: {
+      address: DEMO_ACCOUNT_TESTS,
+      name: '',
+      type: ''
+    } });
+
+    await component.findAllByText('0x16F', { exact: false }, { timeout: 15000 });
   } catch (err) {
     throw new Error('Failed to connect account in helpers.tsx.');
   }

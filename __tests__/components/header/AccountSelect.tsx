@@ -1,39 +1,45 @@
-import { injectProvider, renderWithTheme as render } from '../../helpers'; 
-import { fireEvent } from '@testing-library/react';
+import { DEMO_ACCOUNT_TESTS, injectProvider, renderWithTheme as render } from '../../helpers'; 
+import { act, fireEvent } from '@testing-library/react';
 import WrappedAccountSelect from '../../../components/header/AccountSelect';
+import { accountsApi } from 'stores/accounts';
 
 const { click } = fireEvent;
 
-let warn;
+describe('Account select', () => {
 
-beforeAll(() => {
-  injectProvider();
-  warn = console.warn;
-  console.warn = (...args) => {
-    if (args[0].match(/falling back to/)) return;
-    return warn(...args);
-  };
-});
+  beforeAll(() => {
+    injectProvider();
+  });
 
-afterAll(() => {
-  console.warn = warn;
-});
+  test('can connect an account', async () => {
+    const { findByText, findAllByText, findByTestId } = render(<WrappedAccountSelect />);
+    const connectButton = await findByText('Connect wallet');
+    expect(connectButton).toBeDefined();
+    
+    await act(async () => {
+      click(connectButton);
+    });
+    
+    await act(async () => {
+      await click(await findByText('MetaMask'));
+    });
 
-test('can connect an account', async () => {
-  // temporary hack to hide spam warnings from web3react
-  console.warn = () => {};
+    accountsApi.setState({ currentAccount: {
+      address: DEMO_ACCOUNT_TESTS,
+      name: '',
+      type: ''
+    } });
 
-  const { findByText, findAllByText } = render(<WrappedAccountSelect />);
-  const connectButton = await findByText('Connect wallet');
-  expect(connectButton).toBeDefined();
-  
-  click(connectButton);
-  click(await findByText('MetaMask'));
+    await act(async () => {
+      await click(connectButton);
+    });
 
-  const copyButton = await findByText('Copy Address');
-  expect(copyButton).toBeDefined();
-  const etherscanButton = await findByText('etherscan', { exact: false });
-  expect(etherscanButton).toBeDefined();
-  const displayedAddress = await findAllByText('0x16F', { exact: false });
-  expect(displayedAddress.length).toBe(2);
+    const copyButton = await findByTestId('copy-address');
+    expect(copyButton).toBeDefined();
+    const etherscanButton = await findByText('etherscan', { exact: false });
+    expect(etherscanButton).toBeDefined();
+    const displayedAddress = await findAllByText('0x16F', { exact: false });
+    expect(displayedAddress.length).toBe(1);
+  });
+
 });
