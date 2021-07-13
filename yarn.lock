@@ -287,7 +287,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.3.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.3.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.9.2":
   version "7.12.18"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.18.tgz#af137bd7e7d9705a412b3caaf991fe6aaa97831b"
   integrity sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg==
@@ -1424,16 +1424,16 @@
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
 
-"@makerdao/dai-plugin-trezor-web@^0.9.6":
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-trezor-web/-/dai-plugin-trezor-web-0.9.6.tgz#e966a6297be3108a5287ad75fb2ace8c4ea7f972"
-  integrity sha512-q16lu4f6MOaPxOVl7neeEAqogNuK/B+pufGcEG17AamplUrhmCLHzcIDU6nxe8NU2UxT2v+v5sqoOIvI2xaLqA==
+"@makerdao/dai-plugin-trezor-web@^0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-trezor-web/-/dai-plugin-trezor-web-0.9.7.tgz#74e2ff7cfe721e5405273e0b654f4b40593d1437"
+  integrity sha512-la9Vo1G+sQmhBgP80z3AmHn8mJUwVDDmEN0yPZWlJ62ytfZkiSJkQBstukZts7dG8xnp27xaJr97XpkOD6denQ==
   dependencies:
     babel-runtime "^6.26.0"
     ethereumjs-tx "^1.3.6"
     ethereumjs-util "^5.2.0"
     hdkey "^1.0.0"
-    trezor-connect "^7.0.2"
+    trezor-connect "^8.1.27"
     web3-provider-engine "14.0.4"
 
 "@makerdao/dai-ui-icons-branding@^0.0.39":
@@ -11851,14 +11851,14 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
-trezor-connect@8.1.15, trezor-connect@^7.0.2:
-  version "8.1.15"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.15.tgz#a7d183669d1e51acfb0bc88b8c4fc9091aceb888"
-  integrity sha512-txRKNCUkxi0oIWIfzAkZdqemP0ltqAiyVpzPk1mvX8TjZ+tcT3Rm6m7odtETuvbAsDB7M1ROPNI/Mllbq8SQLA==
+trezor-connect@^8.1.27:
+  version "8.1.27"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.27.tgz#7e45839d26e4c859a3ddd69213e8c7f00ba5525e"
+  integrity sha512-U6vP8kehQ5enCTY0k01R6jR3EORC+GIzTl4pM80lu9gJB5e988sM5YwK1hED6KZx7LJvFjWuOxB2J3W0pwv7lw==
   dependencies:
-    "@babel/runtime" "^7.11.2"
+    "@babel/runtime" "^7.12.5"
     events "^3.2.0"
-    whatwg-fetch "^3.4.1"
+    whatwg-fetch "^3.5.0"
 
 trim-lines@^1.0.0:
   version "1.1.3"
@@ -12995,10 +12995,15 @@ whatwg-fetch@2.0.4:
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
   integrity sha512-dcQ1GWpOD/eEQ97k66aiEVpNnapVj90/+R+SXTPYGHpYBBypfKJEQjLrvMZ7YXbKm21gXd4NcuxUTjiv1YtLng==
 
-whatwg-fetch@>=0.10.0, whatwg-fetch@^3.4.1:
+whatwg-fetch@>=0.10.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.1.tgz#93bc4005af6c2cc30ba3e42ec3125947c8f54ed3"
   integrity sha512-IEmN/ZfmMw6G1hgZpVd0LuZXOQDisrMOZrzYd5x3RAK4bMPlJohKUZWZ9t/QsTvH0dV9TbPDcc2OSuIDcihnHA==
+
+whatwg-fetch@^3.5.0:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
+  integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
 
 whatwg-mimetype@^2.3.0:
   version "2.3.0"
