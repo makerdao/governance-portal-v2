@@ -12,23 +12,28 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-beforeAll(async () => {
-  injectProvider();
-  maker = await getMaker();
-  await createTestPolls(maker);
-});
+describe('QuickVote', () => {
+    
+  beforeAll(async () => {
+    injectProvider();
+    maker = await getMaker();
+    accountsApi.getState().addAccountsListener();
+    await createTestPolls(maker);
+    jest.setTimeout(30000);
+  });
 
-let component;
-beforeEach(async() => {
-  accountsApi.setState({ currentAccount: undefined });
-  component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(component);
-});
+  let component;
+  beforeEach(async() => {
+    accountsApi.setState({ currentAccount: undefined });
+    component = render(<PollingOverviewPage polls={mockPolls as any} />);
+    await connectAccount(component);
+  });
 
-test('renders QuickVote component', async () => {
-  expect(await component.findByText('Your Ballot')).toBeDefined();
-  expect(await component.findAllByText('You have not voted')).toBeDefined();
-  expect((await component.findAllByText('View Details')).length).toBe(2);
-  expect((await component.findAllByText('Add vote to ballot')).length).toBe(2);
-  expect((await component.findAllByTestId('countdown timer')).length).toBe(2);
+  test('renders QuickVote component', async () => {
+    expect(await component.findByText('Your Ballot')).toBeDefined();
+    expect(await component.findAllByText('You have not voted')).toBeDefined();
+    expect((await component.findAllByText('View Details')).length).toBe(2);
+    expect((await component.findAllByText('Add vote to ballot')).length).toBe(2);
+    expect((await component.findAllByTestId('countdown timer')).length).toBe(2);
+  });
 });

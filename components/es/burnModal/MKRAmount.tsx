@@ -56,8 +56,7 @@ const MKRAmount = ({
   mkrBalance
 }: MKRAmountProps): React.ReactElement => {
   const bpi = useBreakpointIndex();
-  console.log(mkrBalance?.toString(), burnAmount.toString());
-  console.log('AAAAAAAAAAAAAA');
+
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
