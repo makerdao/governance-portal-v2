@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
-import useSWR from 'swr';
 import {
   Grid,
   Button,
@@ -26,7 +25,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
-import { useLockedMkr, useSpellData, useHat } from 'lib/hooks';
+import { useLockedMkr, useSpellData, useHat, useAllSlates } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
@@ -59,9 +58,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     shallow
   );
 
-  const { data: slateLogs } = useSWR('/executive/all-slates', () =>
-    getMaker().then(maker => maker.service('chief').getAllSlates())
-  );
+  const { data: allSlates } = useAllSlates();
 
   const { data: hat } = useHat();
 
@@ -99,7 +96,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
     const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
     const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
-    const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
+    const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
     const voteTxCreator = voteDelegate
       ? () => voteDelegate.voteExec(slateOrProposals)
