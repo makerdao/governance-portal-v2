@@ -19,12 +19,14 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import mixpanel from 'mixpanel-browser';
 import { config } from '../lib/config';
+import { useAccountChange } from 'lib/web3/hooks/useAccountChange';
 
 export const reportWebVitals = vitalslog;
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const dev = config.NODE_ENV === 'development';
   const router = useRouter();
+
   useEffect(() => {
     mixpanelInit();
     const handleRouteChange = url => {
@@ -38,6 +40,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, []);
+
+  useAccountChange();
+
   return (
     <ThemeProvider theme={theme}>
       <Head>

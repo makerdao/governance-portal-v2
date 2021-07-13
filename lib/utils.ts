@@ -242,7 +242,6 @@ export const formatDateWithTime = (dateString: Date | undefined | number | strin
   try {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   } catch (err) {
-    console.error(err);
     return '??';
   }
 };

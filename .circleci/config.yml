@@ -2,7 +2,7 @@ version: 2
 jobs:
   install:
     docker:
-      - image: circleci/node:lts
+      - image: circleci/node:14.17.3
     steps:
       - checkout
       - restore_cache:
@@ -19,7 +19,7 @@ jobs:
           key: dependency-cache-{{ checksum "yarn.lock" }}
   test:
     docker:
-      - image: levity/dapptools-node-latest
+      - image: makerdaodux/dapptools-node-circleci-docker
     steps:
       - checkout
       - restore_cache:

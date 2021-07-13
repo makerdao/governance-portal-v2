@@ -1,4 +1,3 @@
-import { fireEvent } from '@testing-library/react';
 import mockPolls from '../../../mocks/polls.json';
 import { accountsApi } from '../../../stores/accounts';
 import { injectProvider, connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers'; 
@@ -25,7 +24,7 @@ describe('RankedChoiceSelect', () => {
   beforeEach(async() => {
     accountsApi.setState({ currentAccount: undefined });
     component = render(<PollingOverviewPage polls={mockPolls as any} />);
-    await connectAccount(fireEvent.click, component);
+    await connectAccount( component);
   });
   
   test('ranked choice options render properly', async () => {

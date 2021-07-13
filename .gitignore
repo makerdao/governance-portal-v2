@@ -30,3 +30,5 @@ yalc.lock
 
 .vercel
 .vscode
+
+package-lock.json
