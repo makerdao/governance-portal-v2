@@ -1,7 +1,16 @@
 import { useRef } from 'react';
 import { Box, Flex } from 'theme-ui';
+import { CurrencyObject } from 'types/currency';
 
-const ProgressRing = ({ progress, totalStaked, thresholdAmount }) => {
+const ProgressRing = ({
+  progress,
+  totalStaked,
+  thresholdAmount
+}: {
+  progress: number;
+  totalStaked?: CurrencyObject;
+  thresholdAmount?: CurrencyObject;
+}): React.ReactElement => {
   const radius = 116;
   const stroke = 10;
   const normalizedRadius = radius - stroke * 2;

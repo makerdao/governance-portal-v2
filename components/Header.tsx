@@ -97,7 +97,7 @@ const Header = (props): JSX.Element => {
         </Link>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <AccountSelect sx={{ ml: ['auto', 3, 0] }} />
+        <AccountSelect />
 
         <IconButton
           aria-label="Show menu"

@@ -39,7 +39,7 @@ describe('Account select', () => {
     const etherscanButton = await findByText('etherscan', { exact: false });
     expect(etherscanButton).toBeDefined();
     const displayedAddress = await findAllByText('0x16F', { exact: false });
-    expect(displayedAddress.length).toBe(2);
+    expect(displayedAddress.length).toBe(1);
   });
 
 });

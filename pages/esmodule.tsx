@@ -1,10 +1,8 @@
 /** @jsx jsx */
 import { Flex, Box, Button, Text, Card, Link, jsx } from 'theme-ui';
 import { useState, useRef } from 'react';
-import useSWR, { mutate } from 'swr';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import getMaker from 'lib/maker';
 import PrimaryLayout from 'components/layouts/Primary';
 import BurnModal from 'components/es/BurnModal';
 import ShutdownModal from 'components/es/ShutdownModal';
@@ -12,42 +10,17 @@ import ProgressRing from 'components/es/ProgressRing';
 import ESMHistory from 'components/es/ESMHistory';
 import useAccountsStore from 'stores/accounts';
 import { formatDateWithTime } from 'lib/utils';
+import { useESModuleStats } from 'lib/esmodule/hooks/useESModuleStats';
 
-async function getModuleStats() {
-  const maker = await getMaker();
-  const esmService = await maker.service('esm');
-  let address;
-  try {
-    address = maker.currentAddress();
-  } catch (e) {
-    address = null;
-  }
-  return Promise.all([
-    esmService.getTotalStaked(),
-    esmService.canFire(),
-    esmService.thresholdAmount(),
-    address ? esmService.getTotalStakedByAddress(address) : null,
-    maker.service('smartContract').getContract('END').when(),
-    address ? maker.service('chief').getNumDeposits(address) : null,
-    maker.service('esm').getStakingHistory()
-  ]);
-}
-
-// if we are on the browser, trigger a prefetch as soon as possible
-if (typeof window !== 'undefined') {
-  getModuleStats().then(stats => {
-    mutate('/es-module', stats, false);
-  });
-}
-
-const ESModule = () => {
-  const { data } = useSWR('/es-module', getModuleStats);
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
-    data || [];
+const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
+  const { data } = useESModuleStats(account?.address);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
+
+  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
+    data || [];
 
   const DesktopView = () => {
     return (
@@ -62,9 +35,11 @@ const ESModule = () => {
               </Box>
             )}
           </Text>
-          <Text color="#708390" sx={{ fontWeight: '400' }}>
-            &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
-          </Text>
+          {thresholdAmount && (
+            <Text color="#708390" sx={{ fontWeight: '400' }}>
+              &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
+            </Text>
+          )}
         </Flex>
         <Box
           sx={{
@@ -76,23 +51,25 @@ const ESModule = () => {
           }}
           data-testid="progress-bar"
         >
-          <Box
-            as="div"
-            style={{
-              borderRadius: 'inherit',
-              height: '100%',
-              transition: 'width 0.2s ease-in',
-              backgroundColor: '#f75625',
-              minHeight: '20px',
-              width: totalStaked
-                ? `${
-                    totalStaked.gte(thresholdAmount)
-                      ? '100'
-                      : totalStaked.mul(100).div(thresholdAmount).toFixed()
-                  }%`
-                : '0%'
-            }}
-          />
+          {thresholdAmount && (
+            <Box
+              as="div"
+              style={{
+                borderRadius: 'inherit',
+                height: '100%',
+                transition: 'width 0.2s ease-in',
+                backgroundColor: '#f75625',
+                minHeight: '20px',
+                width: totalStaked
+                  ? `${
+                      totalStaked.gte(thresholdAmount)
+                        ? '100'
+                        : totalStaked.mul(100).div(thresholdAmount).toFixed()
+                    }%`
+                  : '0%'
+              }}
+            />
+          )}
         </Box>
       </>
     );
@@ -103,10 +80,13 @@ const ESModule = () => {
       <>
         <ProgressRing
           progress={
-            typeof totalStaked !== 'undefined'
+            typeof totalStaked !== 'undefined' && thresholdAmount 
               ? canFire
                 ? 100
-                : totalStaked.mul(100).div(thresholdAmount).toFixed()
+                : totalStaked
+                    .mul(100)
+                    .div(thresholdAmount)
+                    .toNumber()
               : 0
           }
           totalStaked={totalStaked}
@@ -154,7 +134,7 @@ const ESModule = () => {
           )}
         </DialogContent>
       </DialogOverlay>
-      {cageTime && cageTime.gt(0) && (
+      {cageTime && (
         <Flex
           sx={{
             flexDirection: 'column',
@@ -218,7 +198,7 @@ const ESModule = () => {
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
             >
-              {totalStaked.gte(thresholdAmount) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
+              {totalStaked.gte(thresholdAmount || 0) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
           ) : null}
           <Box p={2}>

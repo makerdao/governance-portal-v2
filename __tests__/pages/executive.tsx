@@ -24,7 +24,7 @@ async function setup() {
   </SWRConfig>
   );
   await act(async () => {
-    await connectAccount(click, comp);
+    await connectAccount(comp);
   });
   return comp;
 }
@@ -33,6 +33,7 @@ async function setup() {
 describe('Executive page', () => {
   
   beforeAll(async () => {
+    jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
     injectProvider();
     mixpanel.track = () => {};
@@ -41,7 +42,7 @@ describe('Executive page', () => {
   beforeEach(async () => {
     await act(async () => {
       component = await setup();
-    })
+    });
   });
 
   afterEach(async () => {
@@ -80,7 +81,7 @@ describe('Executive page', () => {
     });
 
     await component.findByText('Approve voting contract');
-    const approveButtonWithdraw = component.getByTestId('withdraw-approve-button');
+    const approveButtonWithdraw = component.getByTestId('withdraw-approve-button', {}, { timeout: 15000});
 
     await act(() => {
       click(approveButtonWithdraw);
@@ -108,7 +109,7 @@ describe('Executive page', () => {
   test('can vote', async () => {
     const [voteButtonOne, ] = await component.findAllByTestId('vote-button-exec-overview-card');
     click(voteButtonOne);
-    const submitButton = await component.findByText('Submit Vote');
+    const submitButton = await component.findByText('Submit Vote', {}, { timeout: 15000 });
     click(submitButton);
     //TODO: get the UI to reflect the vote and test for that
   });

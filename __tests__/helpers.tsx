@@ -41,20 +41,7 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
-export async function connectAccount(click, component) {
-  
-  await act(async () => {
-    click(await component.findByText('Connect wallet'));
-  });
-
-  await act(async () => {
-    click(await component.findByText('MetaMask'));
-  });
-
-  await act(async () => {
-    click(await component.findByLabelText('close'));
-  });
-  
+export async function connectAccount(component) {
   try {
     accountsApi.setState({ currentAccount: {
       address: DEMO_ACCOUNT_TESTS,
@@ -62,7 +49,7 @@ export async function connectAccount(click, component) {
       type: ''
     } });
 
-    await component.findAllByText('0x16F', { exact: false });
+    await component.findAllByText('0x16F', { exact: false }, { timeout: 15000 });
   } catch (err) {
     throw new Error('Failed to connect account in helpers.tsx.');
   }
