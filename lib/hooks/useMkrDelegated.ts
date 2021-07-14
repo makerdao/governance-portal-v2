@@ -1,4 +1,4 @@
-import getMaker, { MKR } from 'lib/maker';
+import getMaker from 'lib/maker';
 import useSWR from 'swr';
 import { CurrencyObject } from 'types/currency';
 
@@ -20,8 +20,7 @@ export const useMkrDelegated = (
 
       const balance = await maker
         .service('voteDelegate')
-        .getStakedBalanceForAddress(delegateAddress, address)
-        .then(MKR.wei);
+        .getStakedBalanceForAddress(delegateAddress, address);
 
       return balance;
     }
