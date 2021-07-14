@@ -30,6 +30,7 @@ import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import BallotStatus from 'components/polling/BallotStatus';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 type Props = {
   polls: Poll[];
@@ -301,8 +302,8 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): 
 
   if (!isDefaultNetwork() && !_polls)
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 

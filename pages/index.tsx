@@ -29,6 +29,7 @@ import BlogPostCard from 'components/index/BlogPostCard';
 import { CMSProposal } from 'types/proposal';
 import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 type Props = {
   proposals: CMSProposal[];
@@ -323,7 +324,7 @@ export default function Index({
   if (!isDefaultNetwork() && (!polls || !proposals))
     return (
       <PrimaryLayout>
-        <p>Loading…</p>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 

@@ -34,6 +34,7 @@ import PrimaryLayout from 'components/layouts/Primary';
 import { Proposal, CMSProposal } from 'types/proposal';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ProgressBar from 'components/executive/ProgressBar';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -499,8 +500,8 @@ export default function ExecutiveOverviewPage({
 
   if (!isDefaultNetwork() && !_proposals)
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
