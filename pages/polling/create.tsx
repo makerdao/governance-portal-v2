@@ -18,6 +18,8 @@ import { validateUrl } from 'lib/polling/validator';
 import { Poll } from 'types/poll';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
+import { formatDateWithTime } from 'lib/utils';
+import { markdownToHtml } from 'lib/utils';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -27,41 +29,69 @@ const generateIPFSHash = async (data, options) => {
   return hash;
 };
 
+const editMarkdown = (content, title) => {
+  //replace title from markdown content with the title in the frontmatter
+  return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, `<h2>${title}</h2>`);
+};
+
 const CreateText = ({ children }) => {
   return (
     <Text
       mb={3}
-      sx={{ width: '100%', border: '1px solid #d5d9e0', borderRadius: 'small', minHeight: '42px' }}
+      sx={{
+        width: '100%',
+        border: '1px solid #d5d9e0',
+        borderRadius: 'small',
+        minHeight: '42px',
+        padding: 2
+      }}
     >
       {children}
     </Text>
   );
 };
-const PollingCreate = () => {
+const PollingCreate = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
+  const [loading, setLoading] = useState(false);
   const [pollUrl, setPollUrl] = useState('');
   const [poll, setPoll] = useState<Poll | undefined>();
   const [pollErrors, setPollErrors] = useState<string[]>([]);
+  const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
+
+  const resetForm = () => {
+    setPoll(undefined);
+    setContentHtml('');
+  };
   const urlValidation = async url => {
-    const result = await validateUrl(url, {
-      pollId: 0,
-      multiHash: '',
-      startDate: new Date(0),
-      endDate: new Date(0),
-      url: pollUrl
-    });
-    if (result.valid) {
-      const poll = result.parsedData;
-      if (poll) {
-        poll.multiHash = await generateIPFSHash(poll.content, {});
-        poll.slug = poll.multiHash.slice(0, 8);
+    setLoading(true);
+    resetForm();
+
+    try {
+      const result = await validateUrl(url, {
+        pollId: 0,
+        multiHash: '',
+        startDate: new Date(0),
+        endDate: new Date(0),
+        url: pollUrl
+      });
+      if (result.valid) {
+        const poll = result.parsedData;
+        if (poll) {
+          poll.multiHash = await generateIPFSHash(result.wholeDoc, {});
+          poll.slug = poll.multiHash.slice(0, 8);
+        }
+        setPoll(poll);
+        setPollErrors([]);
+        if (poll) setContentHtml(await markdownToHtml(poll.content));
+      } else {
+        setPollErrors(result.errors);
       }
-      setPoll(poll);
-      setPollErrors([]);
-    } else {
-      setPollErrors(result.errors);
+      setLoading(false);
+    } catch (e) {
+      setPollErrors(['Error loading poll data']);
+      setLoading(false);
     }
   };
 
@@ -98,7 +128,7 @@ const PollingCreate = () => {
                             onClick={() => urlValidation(pollUrl)}
                             sx={{ height: '42px', width: '80px', ml: 3 }}
                           >
-                            Validate
+                            {loading ? 'Loading...' : 'Validate'}
                           </Button>
                         </Flex>
                       </Box>
@@ -114,33 +144,20 @@ const PollingCreate = () => {
                       <Label>Summary</Label>
                       <CreateText>{poll?.summary}</CreateText>
                       <Label>Vote Options</Label>
-                      <CreateText>{JSON.stringify(poll?.options)}</CreateText>
+                      <CreateText>
+                        {poll &&
+                          Object.keys(poll.options).map((option, i) => (
+                            <Text key={i}>{`${option}: ${poll.options[option]}`}</Text>
+                          ))}
+                      </CreateText>
                       <Label>Vote Type</Label>
                       <CreateText>{poll?.voteType}</CreateText>
                       <Label>Category</Label>
                       <CreateText>{poll?.categories.join(', ')}</CreateText>
                       <Label>Poll Start Time</Label>
-                      <CreateText>
-                        {poll &&
-                          new Date(poll.startDate).toLocaleString('default', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            timeZone: 'UTC',
-                            timeZoneName: 'short'
-                          })}
-                      </CreateText>
+                      <CreateText>{poll && formatDateWithTime(poll.startDate)}</CreateText>
                       <Label>Poll End Time</Label>
-                      <CreateText>
-                        {poll &&
-                          new Date(poll.endDate).toLocaleString('default', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                            timeZone: 'UTC',
-                            timeZoneName: 'short'
-                          })}
-                      </CreateText>
+                      <CreateText>{poll && formatDateWithTime(poll.endDate)}</CreateText>
                       <Label>Poll Duration</Label>
                       <CreateText>
                         {poll &&
@@ -149,24 +166,17 @@ const PollingCreate = () => {
                           } days`}
                       </CreateText>
                       <Label>Discussion Link</Label>
-                      {poll && poll.discussionLink && (
+                      {poll && poll.discussionLink ? (
                         <ExternalLink target="_blank" href={poll.discussionLink} sx={{ p: 0 }}>
                           <CreateText>{poll && poll.discussionLink}</CreateText>
                         </ExternalLink>
+                      ) : (
+                        <CreateText> </CreateText>
                       )}
                       <Label>Proposal</Label>
-                      <Text
-                        mb={3}
-                        sx={{
-                          width: '100%',
-                          border: '1px solid #d5d9e0',
-                          borderRadius: 'small',
-                          height: '140px',
-                          overflow: 'scroll'
-                        }}
-                      >
-                        {poll?.content}
-                      </Text>
+                      <CreateText>
+                        <div dangerouslySetInnerHTML={{ __html: editMarkdown(contentHtml, poll?.title) }} />
+                      </CreateText>
                       <Flex>
                         <Button
                           variant="primary"
@@ -175,7 +185,7 @@ const PollingCreate = () => {
                         >
                           Create Poll
                         </Button>
-                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => setPoll(undefined)}>
+                        <Button variant="outline" sx={{ ml: 4 }} onClick={() => resetForm()}>
                           Reset Form
                         </Button>
                       </Flex>

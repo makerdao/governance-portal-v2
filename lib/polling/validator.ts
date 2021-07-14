@@ -26,13 +26,17 @@ type ValidationResult = {
   valid: boolean;
   errors: string[];
   parsedData?: Poll;
+  wholeDoc?: string;
 };
 
 export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
   const text = await resp.text();
   const result = validateText(text);
-  if (result.valid && poll) result.parsedData = parsePollMetadata(poll, text);
+  if (result.valid && poll) {
+    result.wholeDoc = text;
+    result.parsedData = parsePollMetadata(poll, text);
+  }
   return result;
 }
 
