@@ -1,7 +1,9 @@
 import matter from 'gray-matter';
+import { SupportedNetworks } from 'lib/constants';
 import { fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/utils';
 import { DelegateRepoInformation } from 'types/delegate';
+import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object
 async function extractGithubInformation(
@@ -23,7 +25,7 @@ async function extractGithubInformation(
 
     const {
       content,
-      data: { name, url }
+      data: { name, url, profile_picture_url }
     } = matter(readmeDoc);
 
     const picture = folderContents.find(item => item.name.indexOf('profile') !== -1);
@@ -32,7 +34,7 @@ async function extractGithubInformation(
     return {
       voteDelegateAddress: folder.name,
       name,
-      picture: picture ? picture.download_url : '',
+      picture: picture ? picture.download_url : profile_picture_url,
       externalUrl: url,
       description: html
     };
@@ -42,19 +44,27 @@ async function extractGithubInformation(
   }
 }
 
-export async function fetchGithubDelegates(): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
-  const owner = process.env.GITHUB_DELEGATES_OWNER || 'makerdao-dux';
-  const repo = process.env.GITHUB_DELEGATES_REPO || 'voting-delegates';
-  const page = 'delegates';
+export async function fetchGithubDelegates(
+  network: SupportedNetworks
+): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
+  const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
   try {
     // Fetch all folders inside the delegates folder
-    const folders = await fetchGitHubPage(owner, repo, page);
+    const folders = await fetchGitHubPage(
+      delegatesRepositoryInfo.owner,
+      delegatesRepositoryInfo.repo,
+      delegatesRepositoryInfo.page
+    );
 
     // Get the information of all the delegates, filter errored ones
     const promises = folders.map(
       async (folder): Promise<DelegateRepoInformation | undefined> => {
-        return await extractGithubInformation(owner, repo, folder);
+        return await extractGithubInformation(
+          delegatesRepositoryInfo.owner,
+          delegatesRepositoryInfo.repo,
+          folder
+        );
       }
     );
 
@@ -67,31 +77,36 @@ export async function fetchGithubDelegates(): Promise<{ error: boolean; data?: D
       data
     };
   } catch (e) {
-    console.error('Error fetching Github delegates ', e.message);
+    console.error('Error fetching Github delegates ', e.message, 'Network', network);
     return { error: true };
   }
 }
 
 export async function fetchGithubDelegate(
-  address: string
+  address: string,
+  network: SupportedNetworks
 ): Promise<{ error: boolean; data?: DelegateRepoInformation }> {
-  const owner = process.env.GITHUB_DELEGATES_OWNER || 'makerdao-dux';
-  const repo = process.env.GITHUB_DELEGATES_REPO || 'voting-delegates';
-  const page = 'delegates';
+  const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
   try {
     // Fetch all folders inside the delegates folder
-    const folders = await fetchGitHubPage(owner, repo, page);
+    const folders = await fetchGitHubPage(
+      delegatesRepositoryInfo.owner,
+      delegatesRepositoryInfo.repo,
+      delegatesRepositoryInfo.page
+    );
     const folder = folders.find(f => f.name === address);
 
-    const userInfo = folder ? await extractGithubInformation(owner, repo, folder) : undefined;
+    const userInfo = folder
+      ? await extractGithubInformation(delegatesRepositoryInfo.owner, delegatesRepositoryInfo.repo, folder)
+      : undefined;
 
     return {
       error: false,
       data: userInfo
     };
   } catch (e) {
-    console.error('Error fetching Github delegate ', address, e.message);
+    console.error('Error fetching Github delegate ', address, e.message, 'Network: ', network);
     return { error: true };
   }
 }

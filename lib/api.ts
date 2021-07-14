@@ -10,7 +10,6 @@ import getMaker, { getNetwork, isTestnet } from './maker';
 import { Poll, PartialPoll } from 'types/poll';
 import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
-import { DelegateContractInformation } from 'types/delegate';
 import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
 import { fetchGitHubPage } from './github';
@@ -116,18 +115,6 @@ export async function getPolls(): Promise<Poll[]> {
 
   if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return polls;
-}
-
-export async function getChainDelegates(): Promise<DelegateContractInformation[]> {
-  const maker = await getMaker();
-
-  const delegates = await maker.service('voteDelegate').getAllDelegates();
-
-  return delegates.map(d => ({
-    ...d,
-    delegateAddress: d.delegate,
-    voteDelegateAddress: d.voteDelegate
-  }));
 }
 
 const fsCacheCache = {};

@@ -4,18 +4,19 @@ import ErrorPage from 'next/error';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
-import Stack from '../../components/layouts/Stack';
-import SystemStatsSidebar from '../../components/SystemStatsSidebar';
-import ResourceBox from '../../components/ResourceBox';
+import PrimaryLayout from '../../../components/layouts/Primary';
+import SidebarLayout from '../../../components/layouts/Sidebar';
+import Stack from '../../../components/layouts/Stack';
+import SystemStatsSidebar from '../../../components/SystemStatsSidebar';
+import ResourceBox from '../../../components/ResourceBox';
 import Link from 'next/link';
 import Head from 'next/head';
 import { Delegate } from 'types/delegate';
-import DelegateDetail from '../../components/delegations/DelegateDetail';
-import { fetchDelegate, fetchDelegates } from '../../lib/delegates/fetchDelegates';
+import DelegateDetail from '../../../components/delegations/DelegateDetail';
+import { fetchDelegate, fetchDelegates } from '../../../lib/delegates/fetchDelegates';
 import { getNetwork } from 'lib/maker';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { SupportedNetworks } from 'lib/constants';
 
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();
@@ -68,7 +69,7 @@ export default function DelegatesPage({ delegate }: { delegate?: Delegate }): JS
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const delegate = await fetchDelegate(params?.address as string);
+  const delegate = await fetchDelegate(params?.address as string, params?.network as SupportedNetworks);
 
   if (!delegate) {
     return { revalidate: 30, props: { delegate: null } };
@@ -83,11 +84,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const delegates = await fetchDelegates();
-  const paths = delegates.map(d => `/delegates/${d.voteDelegateAddress}`);
+  const delegatesMainnet = await fetchDelegates(SupportedNetworks.MAINNET);
+  const delegatesKovan = await fetchDelegates(SupportedNetworks.KOVAN);
+  const pathsMainnet = delegatesMainnet.map(d => `/delegates/mainnet/${d.voteDelegateAddress}`);
+  const pathsKovan = delegatesKovan.map(d => `/delegates/kovan/${d.voteDelegateAddress}`);
 
   return {
-    paths,
+    paths: pathsMainnet.concat(pathsKovan),
     fallback: true
   };
 };
