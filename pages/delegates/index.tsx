@@ -17,6 +17,7 @@ import DelegateCard from 'components/delegations/DelegateCard';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import { fsCacheDel } from 'lib/fscache';
 
 type Props = {
   delegates: Delegate[];
@@ -132,6 +133,7 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+
   const delegates = await fetchDelegates();
 
   return {
