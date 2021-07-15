@@ -10,7 +10,7 @@ import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/utils';
 import { useVotedProposals } from 'lib/hooks';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
+import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
 import Stack from 'components/layouts/Stack';
@@ -179,30 +179,9 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         )}
         <Divider my={0} />
         <Flex p={3} sx={{ justifyContent: 'center' }}>
-          {proposal.address === ZERO_ADDRESS ? (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
-              chief has been activated!
-            </Text>
-          ) : spellData && spellData.hasBeenScheduled ? (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-              {typeof spellData.dateExecuted === 'string' ? (
-                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-              ) : (
-                <>
-                  Available for execution on{' '}
-                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                    formatDateWithTime(spellData.nextCastTime || spellData.eta)}
-                  .
-                </>
-              )}
-            </Text>
-          ) : (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              This proposal has not yet passed and is not available for execution.
-            </Text>
-          )}
+          <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+            {getStatusText(proposal.address, spellData)}
+          </Text>
         </Flex>
       </Card>
     </Link>
