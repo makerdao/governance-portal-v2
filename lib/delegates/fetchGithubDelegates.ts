@@ -1,5 +1,6 @@
 import matter from 'gray-matter';
 import { SupportedNetworks } from 'lib/constants';
+import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/utils';
 import { DelegateRepoInformation } from 'types/delegate';
@@ -49,6 +50,16 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
+  const delegatesCacheKey = `${network}-delegates`;
+  const existingDelegates = fsCacheGet(delegatesCacheKey);
+  
+  if (existingDelegates) {
+    return Promise.resolve({
+      error: false,
+      data: JSON.parse(existingDelegates)
+    });
+  }
+
   try {
     // Fetch all folders inside the delegates folder
     const folders = await fetchGitHubPage(
@@ -72,6 +83,10 @@ export async function fetchGithubDelegates(
 
     // Filter out negatives
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
+
+    // Store in cache
+    fsCacheSet(delegatesCacheKey, JSON.stringify(data), 30000);
+
     return {
       error: false,
       data

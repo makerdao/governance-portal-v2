@@ -83,7 +83,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
             {!showLinkToDetail && (
               <Box>
-                <DelegateLastVoted delegate={delegate} />
+                {/*<DelegateLastVoted delegate={delegate} /> */}
                 <DelegateContractExpiration delegate={delegate} />
               </Box>
             )}

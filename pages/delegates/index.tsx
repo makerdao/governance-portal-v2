@@ -16,6 +16,7 @@ import ResourceBox from 'components/ResourceBox';
 import DelegateCard from 'components/delegations/DelegateCard';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
+import { fetchJson } from 'lib/utils';
 
 type Props = {
   delegates: Delegate[];
@@ -111,9 +112,10 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      fetchDelegates(getNetwork()).then(_setDelegates).catch(setError);
+      fetchJson(`/api/delegates?network=${getNetwork()}`).then(_setDelegates).catch(setError);
     }
   }, []);
+
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching delegates" />;
@@ -132,7 +134,7 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 
 export const getStaticProps: GetStaticProps = async () => {
   const delegates = await fetchDelegates();
-
+  
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
