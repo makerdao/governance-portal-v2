@@ -20,7 +20,7 @@ export const fsCacheDel = (path: string): void => {
 export const fsCacheGet = (name: string, expiryMs?: number): any => {
   const path = getFilePath(name);
   const memCached = fsCacheCache[path];
-  
+
   if (memCached) {
     console.log(`mem cache hit: ${path}`);
 
@@ -42,7 +42,7 @@ export const fsCacheGet = (name: string, expiryMs?: number): any => {
       fsCacheDel(path);
       return null;
     }
-    
+
     console.log(`fs cache hit: ${path}`);
     return fs.readFileSync(path).toString();
   }
@@ -50,7 +50,6 @@ export const fsCacheGet = (name: string, expiryMs?: number): any => {
 
 export const fsCacheSet = (name: string, data: any, expiryMs?: number): void => {
   try {
-    
     const path = getFilePath(name);
     console.log('fs cache set', path);
     fs.writeFileSync(path, data);

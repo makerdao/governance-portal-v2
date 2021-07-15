@@ -133,7 +133,6 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-
   const delegates = await fetchDelegates();
 
   return {
