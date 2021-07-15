@@ -8,7 +8,7 @@ import { fetchDelegate } from 'lib/delegates/fetchDelegates';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
-  const address = (req.query.address as string);
+  const address = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const delegate = await fetchDelegate(address, network);

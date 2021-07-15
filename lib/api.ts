@@ -116,7 +116,6 @@ export async function getPolls(): Promise<Poll[]> {
   return polls;
 }
 
-
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];

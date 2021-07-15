@@ -52,7 +52,7 @@ export async function fetchGithubDelegates(
 
   const delegatesCacheKey = `${network}-delegates`;
   const existingDelegates = fsCacheGet(delegatesCacheKey);
-  
+
   if (existingDelegates) {
     return Promise.resolve({
       error: false,

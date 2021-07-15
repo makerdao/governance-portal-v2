@@ -116,7 +116,6 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
     }
   }, []);
 
-
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching delegates" />;
   }
@@ -134,7 +133,7 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
 
 export const getStaticProps: GetStaticProps = async () => {
   const delegates = await fetchDelegates();
-  
+
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {

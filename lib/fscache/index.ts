@@ -21,7 +21,7 @@ export const fsCacheGet = (name: string): any => {
       console.log('Mem cache expired');
       fs.unlinkSync(path);
       fsCacheCache[path] = null;
-    
+
       return null;
     }
 
@@ -41,10 +41,9 @@ export const fsCacheSet = (name: string, data: any, expiryMs?: number): void => 
     fs.writeFileSync(path, data);
 
     fsCacheCache[path] = {
-      expiry: expiryMs ? Date.now() + expiryMs: null,
+      expiry: expiryMs ? Date.now() + expiryMs : null,
       data
     };
-
   } catch (e) {
     console.error(e);
   }

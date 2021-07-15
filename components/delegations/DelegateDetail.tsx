@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx,  Box, Text, Link as ExternalLink, Divider } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import React from 'react';
 import { Delegate } from 'types/delegate';
 import { getEtherscanLink } from 'lib/utils';
@@ -36,7 +36,10 @@ export default function DelegateDetail({ delegate }: PropTypes): React.ReactElem
         </Box>
       </Box>
       <Box sx={{ p: 3 }}>
-        <div  sx={{ variant: 'markdown.default' }} dangerouslySetInnerHTML={{ __html: delegate.description }} />
+        <div
+          sx={{ variant: 'markdown.default' }}
+          dangerouslySetInnerHTML={{ __html: delegate.description }}
+        />
       </Box>
 
       <Divider my={0} />
