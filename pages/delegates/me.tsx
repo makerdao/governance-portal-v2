@@ -40,7 +40,7 @@ const CreateDelegate = (): JSX.Element => {
     const txId = await track(createTxCreator, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
-        setVoteDelegate(maker.currentAccount());
+        setVoteDelegate(maker.currentAccount().address);
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
