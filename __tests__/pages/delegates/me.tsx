@@ -45,13 +45,6 @@ describe('Delegate Create page', () => {
     });
   });
 
-  //TODO does it need to be async?
-  afterEach(async () => {
-    await act(async () => {
-      await accountsApi.getState().disconnectAccount();
-    });
-  });
-
   test('can create a delegate contract', async () => {
     const createButton = component.getByTestId('create-button');
 
