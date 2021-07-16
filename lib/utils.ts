@@ -244,6 +244,22 @@ export const formatDateWithTime = dateString => {
   }
 };
 
+export const formatDateWithoutTime = dateString => {
+  if (!dateString) return;
+  const date = new Date(dateString);
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
+  try {
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+  } catch (err) {
+    console.error(err);
+    return '??';
+  }
+};
+
 export async function initTestchainPolls() {
   const maker = await getMaker();
   const pollingService = maker.service('govPolling');

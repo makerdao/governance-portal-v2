@@ -9,7 +9,7 @@ import Bignumber from 'bignumber.js';
 
 import { Proposal } from 'types/proposal';
 import getMaker, { getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime, formatDateWithoutTime } from 'lib/utils';
 import Stack from '../layouts/Stack';
 import useAccountsStore from 'stores/accounts';
 import VoteModal from './VoteModal';
@@ -83,7 +83,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                posted {formatDateWithTime(proposal.date)}
+                posted {formatDateWithoutTime(proposal.date)}
               </Text>
             </Flex>
             <Box>
