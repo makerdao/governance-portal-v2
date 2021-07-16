@@ -1,9 +1,5 @@
 import { act, fireEvent, configure } from '@testing-library/react';
-import { TestAccountProvider } from '@makerdao/test-helpers';
-// import { ExecutiveOverview } from '../../pages/executive';
 import CreateDelegate from '../../../pages/delegates/me';
-import proposals from '../../../mocks/proposals.json';
-import getMaker from '../../../lib/maker';
 import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../../helpers';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
@@ -15,21 +11,18 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
+// TODO: The address is deterministic when using the default account, but we should programmatically retrieve this
+const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
+
 const { click } = fireEvent;
-let component, maker;
+let component;
 
 async function setup() {
-  console.log('running setup');
   const comp = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
       <CreateDelegate />
     </SWRConfig>
   );
-
-  act(() => {
-    // This adds the account to the provider (ethers)
-    injectProvider();
-  });
 
   await act(async () => {
     // This sets the account in state
@@ -42,7 +35,7 @@ describe('Delegate Create page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
-    // injectProvider();
+    injectProvider();
     mixpanel.track = () => {};
   });
 
@@ -52,63 +45,35 @@ describe('Delegate Create page', () => {
     });
   });
 
+  //TODO does it need to be async?
   afterEach(async () => {
-    accountsApi.getState().disconnectAccount();
+    await act(async () => {
+      await accountsApi.getState().disconnectAccount();
+    });
   });
 
   test('can create a delegate contract', async () => {
     const createButton = component.getByTestId('create-button');
-    // const createButton = await component.getByText('Create a delegate contract', { selector: 'button' });
-    console.log('Current Account:', accountsApi.getState().currentAccount);
+
     act(() => {
       click(createButton);
     });
 
+    // Transaction is initialized
     await component.findByText('Confirm transaction');
-    // component.debug();
-    await component.findByText('Your delegate contract');
-    // const approveButton = component.getByTestId('deposit-approve-button');
-    // act(() => {
-    //   click(approveButton);
-    // });
-    // await component.findByText('Deposit into voting contract');
-    // const input = component.getByTestId('mkr-input');
-    // fireEvent.change(input, { target: { value: '10' } });
-    // const finalDepositButton = await component.findByText('Deposit MKR');
-    // expect(finalDepositButton.disabled).toBe(false);
-    // act(() => {
-    //   click(finalDepositButton);
-    // });
-    // const withdrawButton = await component.findByTestId('withdraw-button');
-    // act(() => {
-    //   click(withdrawButton);
-    // });
-    // await component.findByText('Approve voting contract');
-    // const approveButtonWithdraw = component.getByTestId('withdraw-approve-button', {}, { timeout: 15000 });
-    // act(() => {
-    //   click(approveButtonWithdraw);
-    // });
-    // await component.findByText('Withdraw from voting contract');
-    // const inputWithdraw = component.getByTestId('mkr-input');
-    // fireEvent.change(inputWithdraw, { target: { value: '10' } });
-    // const finalDepositButtonWithdraw = await component.findByText('Withdraw MKR');
-    // expect(finalDepositButtonWithdraw.disabled).toBe(false);
-    // act(() => {
-    //   click(finalDepositButtonWithdraw);
-    // });
-    // const lockedMKR = await component.findByTestId('locked-mkr');
-    // expect(lockedMKR).toHaveTextContent('0.00');
-  });
 
-  // test('can vote', async () => {
-  //   const [voteButtonOne] = await component.findAllByTestId('vote-button-exec-overview-card');
-  //   act(() => {
-  //     click(voteButtonOne);
-  //   });
-  //   const submitButton = await component.findByText('Submit Vote', {}, { timeout: 15000 });
-  //   act(() => {
-  //     click(submitButton);
-  //   });
-  //   //TODO: get the UI to reflect the vote and test for that
-  // });
+    // Transaction state moved to pending
+    await component.findByText('Transaction pending');
+
+    // Transaction state moved to mined
+    await component.findByText('Transaction Sent');
+
+    const closeButton = component.getByText('Close');
+
+    act(() => {
+      click(closeButton);
+    });
+
+    await component.findByText(DELEGATE_ADDRESS);
+  });
 });
