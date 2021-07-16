@@ -1,21 +1,20 @@
 /** @jsx jsx */
 import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import { Icon } from '@makerdao/dai-ui-icons';
-
-import PrimaryLayout from '../../components/layouts/Primary';
-import SidebarLayout from '../../components/layouts/Sidebar';
-import Stack from '../../components/layouts/Stack';
-import SystemStatsSidebar from '../../components/SystemStatsSidebar';
-import ResourceBox from '../../components/ResourceBox';
 import Link from 'next/link';
 import Head from 'next/head';
-import { Delegate } from 'types/delegate';
-import DelegateDetail from '../../components/delegations/DelegateDetail';
-import { fetchDelegate, fetchDelegates } from '../../lib/delegates/fetchDelegates';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { fetchDelegate, fetchDelegates } from 'lib/delegates/fetchDelegates';
 import { getNetwork } from 'lib/maker';
-import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Delegate } from 'types/delegate';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import ResourceBox from 'components/ResourceBox';
+import { DelegateDetail } from 'components/delegations';
 
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();

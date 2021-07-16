@@ -16,7 +16,7 @@ import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import TxDisplay from 'components/delegations/modals/TxDisplay';
+import { TxDisplay } from 'components/delegations';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();

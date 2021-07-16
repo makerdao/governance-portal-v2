@@ -1,28 +1,30 @@
 /** @jsx jsx */
 
+import React, { useState } from 'react';
 import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import React from 'react';
+import Link from 'next/link';
+
 import { getNetwork } from 'lib/maker';
+import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { limitString } from 'lib/string';
+import { getEtherscanLink } from 'lib/utils';
+import { DelegateStatusEnum } from 'lib/delegates/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
-import { getEtherscanLink } from 'lib/utils';
-import DelegatePicture from './DelegatePicture';
-import Link from 'next/link';
-import { useState } from 'react';
-import DelegateModal from './modals/DelegateModal';
-import UndelegateModal from './modals/UndelegateModal';
-import { limitString } from 'lib/string';
-import { DelegateStatusEnum } from 'lib/delegates/constants';
-import { DelegateLastVoted } from './DelegateLastVoted';
-import { DelegateContractExpiration } from './DelegateContractExpiration';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import {
+  DelegatePicture,
+  DelegateModal,
+  UndelegateModal,
+  DelegateLastVoted,
+  DelegateContractExpiration
+} from 'components/delegations';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
-export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);

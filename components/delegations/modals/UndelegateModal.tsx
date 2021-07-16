@@ -13,9 +13,7 @@ import useAccountsStore from 'stores/accounts';
 import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
-import ApprovalContent from './Approval';
-import { InputDelegateMkr } from './InputDelegateMkr';
-import TxDisplay from './TxDisplay';
+import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'components/delegations';
 
 type Props = {
   isOpen: boolean;
@@ -23,7 +21,7 @@ type Props = {
   delegate: Delegate;
 };
 
-const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -134,5 +132,3 @@ const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element =>
     </>
   );
 };
-
-export default UndelegateModal;

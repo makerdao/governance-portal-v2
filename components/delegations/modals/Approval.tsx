@@ -1,6 +1,6 @@
 import { Button, Flex, Text } from '@theme-ui/components';
 
-const ApprovalContent = ({ title, description, buttonLabel, onClick }) => (
+export const ApprovalContent = ({ title, description, buttonLabel, onClick }) => (
   <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
     <Text variant="microHeading" color="onBackgroundAlt">
       {title}
@@ -11,5 +11,3 @@ const ApprovalContent = ({ title, description, buttonLabel, onClick }) => (
     </Button>
   </Flex>
 );
-
-export default ApprovalContent;

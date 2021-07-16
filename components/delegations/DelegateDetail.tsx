@@ -1,17 +1,15 @@
 import { Box, Text, Link as ExternalLink, Divider } from '@theme-ui/components';
 import React from 'react';
-import { Delegate } from 'types/delegate';
-import { getEtherscanLink } from 'lib/utils';
-import DelegatePicture from './DelegatePicture';
 import { getNetwork } from 'lib/maker';
-import { DelegateContractExpiration } from './DelegateContractExpiration';
-import { DelegateLastVoted } from './DelegateLastVoted';
+import { getEtherscanLink } from 'lib/utils';
+import { Delegate } from 'types/delegate';
+import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
-export default function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
+export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>

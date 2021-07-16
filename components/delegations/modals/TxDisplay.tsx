@@ -1,7 +1,6 @@
-import TxFinal from './TxFinal';
-import TransactionInProgress from './TransactionInProgress';
+import { TxFinal, TransactionInProgress } from 'components/delegations';
 
-const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
+export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
   switch (tx?.status) {
     case 'mined':
       return (
@@ -29,5 +28,3 @@ const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
       return <TransactionInProgress txPending={tx?.status === 'pending'} setTxId={setTxId} />;
   }
 };
-
-export default TxDisplay;

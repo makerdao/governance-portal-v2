@@ -6,7 +6,7 @@ import { TXMined } from 'types/transaction';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 
-const TxComplete = ({ title, description, buttonLabel, onClick, tx, success }) => (
+export const TxFinal = ({ title, description, buttonLabel, onClick, tx, success }) => (
   <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
     <Text variant="microHeading" color="onBackgroundAlt">
       {title}
@@ -36,5 +36,3 @@ const TxComplete = ({ title, description, buttonLabel, onClick, tx, success }) =
     </Button>
   </Flex>
 );
-
-export default TxComplete;

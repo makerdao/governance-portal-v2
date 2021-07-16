@@ -11,7 +11,7 @@ type Props = {
   onBack: () => void;
 };
 
-const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
+export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
   const { delegateAddress, voteDelegateAddress } = delegate;
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
@@ -53,5 +53,3 @@ const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX
     </Flex>
   );
 };
-
-export default ConfirmContent;
