@@ -59,7 +59,7 @@ const CreateDelegate = (): JSX.Element => {
       <SidebarLayout>
         {!address ? (
           <Text>Connect your wallet to create a delegate contract</Text>
-        ) : voteDelegate ? (
+        ) : voteDelegate && !modalOpen ? (
           <Box>
             <Text>Your delegate contract address:</Text>
             <ExternalLink
