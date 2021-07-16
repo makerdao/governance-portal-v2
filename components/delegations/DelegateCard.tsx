@@ -79,7 +79,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
             {!showLinkToDetail && (
               <Box>
-                <DelegateLastVoted delegate={delegate} />
+                {/* <DelegateLastVoted delegate={delegate} /> */}
                 <DelegateContractExpiration delegate={delegate} />
               </Box>
             )}
@@ -141,28 +141,31 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
           <Flex
             sx={{
-              textAlign: 'right',
               width: ['100%', '100%', 'auto', '100%', 'auto'],
               flexDirection: ['row', 'row', 'column', 'row', 'column'],
               justifyContent: 'space-between'
             }}
           >
-            <Button
-              variant="primaryLarge"
-              disabled={!account}
-              onClick={() => setShowDelegateModal(true)}
-              sx={{ width: '150px' }}
-            >
-              Delegate
-            </Button>
-            <Button
-              variant="primaryOutline"
-              disabled={!account}
-              onClick={() => setShowUndelegateModal(true)}
-              sx={{ width: '150px' }}
-            >
-              Undelegate
-            </Button>
+            <Box sx={{ width: '100%' }}>
+              <Button
+                variant="primaryLarge"
+                disabled={!account}
+                onClick={() => setShowDelegateModal(true)}
+                sx={{ width: '150px' }}
+              >
+                Delegate
+              </Button>
+            </Box>
+            <Box sx={{ width: '100%' }}>
+              <Button
+                variant="primaryOutline"
+                disabled={!account}
+                onClick={() => setShowUndelegateModal(true)}
+                sx={{ width: '150px' }}
+              >
+                Undelegate
+              </Button>
+            </Box>
           </Flex>
         </Flex>
       </Flex>

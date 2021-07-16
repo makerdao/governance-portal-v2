@@ -38,9 +38,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
 
       <Divider my={0} />
       <Box sx={{ p: 3, display: 'flex' }}>
-        <Box sx={{ mr: 3 }}>
+        {/* <Box sx={{ mr: 3 }}>
           <DelegateLastVoted delegate={delegate} />
-        </Box>
+        </Box> */}
         <DelegateContractExpiration delegate={delegate} />
       </Box>
     </Box>
