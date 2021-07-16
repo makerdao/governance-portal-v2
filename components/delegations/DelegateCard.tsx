@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Box, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Box, Flex, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Link from 'next/link';
 
@@ -140,35 +140,31 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             </Box>
           </Grid>
 
-          <Box
+          <Flex
             sx={{
               textAlign: 'right',
               width: ['100%', '100%', 'auto'],
-              display: ['flex', 'flex', 'block'],
+              flexDirection: ['row', 'row', 'column'],
               justifyContent: 'space-between'
             }}
           >
-            <Box sx={{ mb: 3 }}>
-              <Button
-                variant="primaryLarge"
-                disabled={!account}
-                onClick={() => setShowDelegateModal(true)}
-                sx={{ width: '150px' }}
-              >
-                Delegate
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                variant="primaryOutline"
-                disabled={!account}
-                onClick={() => setShowUndelegateModal(true)}
-                sx={{ width: '150px' }}
-              >
-                Undelegate
-              </Button>
-            </Box>
-          </Box>
+            <Button
+              variant="primaryLarge"
+              disabled={!account}
+              onClick={() => setShowDelegateModal(true)}
+              sx={{ width: '150px' }}
+            >
+              Delegate
+            </Button>
+            <Button
+              variant="primaryOutline"
+              disabled={!account}
+              onClick={() => setShowUndelegateModal(true)}
+              sx={{ width: '150px' }}
+            >
+              Undelegate
+            </Button>
+          </Flex>
         </Box>
       </Box>
 
