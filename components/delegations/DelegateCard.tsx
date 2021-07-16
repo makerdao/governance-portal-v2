@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Box, Flex, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import Link from 'next/link';
 
 import { getNetwork } from 'lib/maker';
@@ -25,7 +24,6 @@ type PropTypes = {
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
-  const bpi = useBreakpointIndex();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
@@ -39,9 +37,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   return (
     <Box sx={{ variant: 'cards.primary' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+      <Flex
+        sx={{ justifyContent: 'space-between', flexDirection: ['column', 'column', 'row', 'column', 'row'] }}
+      >
         <Box>
-          <Box sx={{ display: 'flex', mr: [0, 2] }}>
+          <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
@@ -64,7 +64,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 </Text>
               </ExternalLink>
             </Box>
-          </Box>
+          </Flex>
 
           <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
@@ -86,27 +86,26 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Box>
         </Box>
 
-        <Box
+        <Flex
           sx={{
-            display: 'flex',
             flexWrap: 'wrap',
-            width: bpi > 1 ? 'auto' : '100%',
-            marginTop: bpi > 1 ? 0 : 4
+            width: ['100%', '100%', 'auto', '100%', 'auto'],
+            mt: [4, 4, 0, 4, 0]
           }}
         >
           <Grid
             columns={[2]}
             sx={{
-              width: bpi > 1 ? 'auto' : '100%',
-              marginBottom: bpi > 1 ? 0 : 4
+              width: ['100%', '100%', 'auto', '100%', 'auto'],
+              mb: [4, 4, 0, 4, 0]
             }}
           >
-            <Box>
+            <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between' }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text as="p" variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
                   Total MKR delegated
                 </Text>
               </Box>
@@ -114,18 +113,18 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                   Untracked
                 </Text>
-                <Text as="p" variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
                   Pool participation
                 </Text>
               </Box>
-            </Box>
+            </Flex>
 
-            <Box sx={{ mr: [0, 0, 4] }}>
+            <Box sx={{ mr: [0, 0, 4, 0, 4] }}>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
-                <Text as="p" variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
                   MKR delegated by you
                 </Text>
               </Box>
@@ -133,7 +132,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                   Untracked
                 </Text>
-                <Text as="p" variant="secondary" color="onSecondary">
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
                   Executive participation
                 </Text>
               </Box>
@@ -143,8 +142,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           <Flex
             sx={{
               textAlign: 'right',
-              width: ['100%', '100%', 'auto'],
-              flexDirection: ['row', 'row', 'column'],
+              width: ['100%', '100%', 'auto', '100%', 'auto'],
+              flexDirection: ['row', 'row', 'column', 'row', 'column'],
               justifyContent: 'space-between'
             }}
           >
@@ -165,8 +164,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               Undelegate
             </Button>
           </Flex>
-        </Box>
-      </Box>
+        </Flex>
+      </Flex>
 
       <DelegateModal
         delegate={delegate}
