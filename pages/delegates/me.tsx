@@ -20,7 +20,11 @@ import TxDisplay from 'components/delegations/modals/TxDisplay';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
+  const [account, voteDelegate, setVoteDelegate] = useAccountsStore(state => [
+    state.currentAccount,
+    state.voteDelegate,
+    state.setVoteDelegate
+  ]);
   const address = account?.address;
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -36,6 +40,7 @@ const CreateDelegate = (): JSX.Element => {
     const txId = await track(createTxCreator, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
+        setVoteDelegate(maker.currentAccount().address);
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
