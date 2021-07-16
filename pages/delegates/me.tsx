@@ -36,6 +36,7 @@ const CreateDelegate = (): JSX.Element => {
     const txId = await track(createTxCreator, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
+        //TODO close the modal when mined
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
@@ -97,7 +98,7 @@ const CreateDelegate = (): JSX.Element => {
                 </DialogContent>
               </DialogOverlay>
             )}
-            <Button onClick={onCreateDelegate} sx={{ mt: 3 }}>
+            <Button onClick={onCreateDelegate} sx={{ mt: 3 }} data-testid="create-button">
               Create a delegate contract
             </Button>
           </Box>

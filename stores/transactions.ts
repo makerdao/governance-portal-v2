@@ -44,7 +44,8 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   setMessage: (txId, message) => {
     set(({ transactions }) => {
       const transactionIndex = transactions.findIndex(tx => tx.id === txId);
-      invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
+      // TODO figure out if there's any side effects:
+      // invariant(transactionIndex >= 0, `Unable to find tx id ${txId}`);
       const prevState = transactions[transactionIndex];
       const nextState = {
         ...prevState,
