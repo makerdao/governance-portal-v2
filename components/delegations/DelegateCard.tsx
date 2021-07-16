@@ -70,7 +70,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             {showLinkToDetail && (
               <Link href={`/delegates/${delegate.voteDelegateAddress}`}>
                 <a title="Profile details">
-                  <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
+                  <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
                     View Profile Details
                   </Button>
                 </a>
@@ -101,7 +101,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               marginBottom: bpi > 1 ? 0 : 4
             }}
           >
-            <Box sx={{ mr: [4] }}>
+            <Box>
               <Box sx={{ mb: 3 }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
