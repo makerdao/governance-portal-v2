@@ -6,7 +6,7 @@ type Props = {
   setTxId: any;
 };
 
-const TransactionContent = ({ txPending, setTxId }: Props): JSX.Element => (
+export const TransactionInProgress = ({ txPending, setTxId }: Props): JSX.Element => (
   <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
     <Text variant="microHeading" color="onBackgroundAlt">
       {txPending ? 'Transaction pending' : 'Confirm transaction'}
@@ -32,5 +32,3 @@ const TransactionContent = ({ txPending, setTxId }: Props): JSX.Element => (
     )}
   </Flex>
 );
-
-export default TransactionContent;

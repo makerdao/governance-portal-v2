@@ -1,21 +1,18 @@
 /** @jsx jsx */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
+import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
-import { Delegate } from 'types/delegate';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { Delegate } from 'types/delegate';
 import { BoxWithClose } from 'components/BoxWithClose';
-import ApprovalContent from './Approval';
-import ConfirmContent from './Confirm';
-import { InputDelegateMkr } from './InputDelegateMkr';
-import TxDisplay from './TxDisplay';
-import BigNumber from 'bignumber.js';
+import { ApprovalContent, ConfirmContent, TxDisplay, InputDelegateMkr } from 'components/delegations';
 
 type Props = {
   isOpen: boolean;
@@ -23,7 +20,7 @@ type Props = {
   delegate: Delegate;
 };
 
-const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -31,7 +28,6 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: mkrBalance } = useMkrBalance(address);
 
@@ -152,5 +148,3 @@ const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
     </>
   );
 };
-
-export default DelegateModal;

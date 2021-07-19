@@ -13,7 +13,7 @@ import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import DelegateCard from 'components/delegations/DelegateCard';
+import { DelegateCard } from 'components/delegations';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';

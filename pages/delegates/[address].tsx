@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -11,9 +12,8 @@ import ResourceBox from 'components/ResourceBox';
 import Link from 'next/link';
 import Head from 'next/head';
 import { Delegate } from 'types/delegate';
-import DelegateDetail from 'components/delegations/DelegateDetail';
+import { DelegateDetail } from 'components/delegations';
 import { getNetwork } from 'lib/maker';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useEffect, useState } from 'react';
 import { fetchJson } from 'lib/utils';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
