@@ -1,22 +1,24 @@
 /** @jsx jsx */
 import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
-import { GetStaticPaths, GetStaticProps } from 'next';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import PrimaryLayout from '../../../components/layouts/Primary';
-import SidebarLayout from '../../../components/layouts/Sidebar';
-import Stack from '../../../components/layouts/Stack';
-import SystemStatsSidebar from '../../../components/SystemStatsSidebar';
-import ResourceBox from '../../../components/ResourceBox';
+import PrimaryLayout from 'components/layouts/Primary';
+import SidebarLayout from 'components/layouts/Sidebar';
+import Stack from 'components/layouts/Stack';
+import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import ResourceBox from 'components/ResourceBox';
 import Link from 'next/link';
 import Head from 'next/head';
 import { Delegate } from 'types/delegate';
-import DelegateDetail from '../../../components/delegations/DelegateDetail';
-import { fetchDelegate, fetchDelegates } from '../../../lib/delegates/fetchDelegates';
+import DelegateDetail from 'components/delegations/DelegateDetail';
 import { getNetwork } from 'lib/maker';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { SupportedNetworks } from 'lib/constants';
+import { useEffect, useState } from 'react';
+import { fetchJson } from 'lib/utils';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { useRouter } from 'next/router';
+
 
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();
@@ -60,37 +62,30 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   );
 };
 
-export default function DelegatesPage({ delegate }: { delegate?: Delegate }): JSX.Element {
-  if (!delegate) {
-    return <ErrorPage statusCode={404} title="Delegate address not found." />;
+export default function DelegatesPage(): JSX.Element {
+  const [delegate, setDelegate] = useState<Delegate>();
+  const [error, setError] = useState<string>();
+  const router = useRouter();
+  const { address } = router.query;
+  // fetch delegates at run-time if on any network other than the default
+  useEffect(() => {
+    if(address) {
+      fetchJson(`/api/delegates/${address}?network=${getNetwork()}`).then(setDelegate).catch(setError);
+    }
+  }, [address]);
+
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching delegate" />;
   }
+
+  if (!delegate ) {
+    return (
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
+      </PrimaryLayout>
+    );
+  }
+
 
   return <DelegateView delegate={delegate} />;
 }
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const delegate = await fetchDelegate(params?.address as string, params?.network as SupportedNetworks);
-
-  if (!delegate) {
-    return { revalidate: 30, props: { delegate: null } };
-  }
-
-  return {
-    revalidate: 30, // allow revalidation every 30 seconds
-    props: {
-      delegate
-    }
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const delegatesMainnet = await fetchDelegates(SupportedNetworks.MAINNET);
-  const delegatesKovan = await fetchDelegates(SupportedNetworks.KOVAN);
-  const pathsMainnet = delegatesMainnet.map(d => `/delegates/mainnet/${d.voteDelegateAddress}`);
-  const pathsKovan = delegatesKovan.map(d => `/delegates/kovan/${d.voteDelegateAddress}`);
-
-  return {
-    paths: pathsMainnet.concat(pathsKovan),
-    fallback: true
-  };
-};

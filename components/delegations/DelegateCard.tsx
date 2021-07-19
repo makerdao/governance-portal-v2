@@ -69,7 +69,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
             {showLinkToDetail && (
               <Link
                 href={{
-                  pathname: `/delegates/${network}/${delegate.voteDelegateAddress}`,
+                  pathname: `/delegates/${delegate.voteDelegateAddress}`,
                   query: { network }
                 }}
               >

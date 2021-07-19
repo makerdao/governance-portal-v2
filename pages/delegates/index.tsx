@@ -17,7 +17,6 @@ import DelegateCard from 'components/delegations/DelegateCard';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
-import { fsCacheDel } from 'lib/fscache';
 
 type Props = {
   delegates: Delegate[];
