@@ -19,7 +19,6 @@ import { fetchJson } from 'lib/utils';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useRouter } from 'next/router';
 
-
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -69,7 +68,7 @@ export default function DelegatesPage(): JSX.Element {
   const { address } = router.query;
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
-    if(address) {
+    if (address) {
       fetchJson(`/api/delegates/${address}?network=${getNetwork()}`).then(setDelegate).catch(setError);
     }
   }, [address]);
@@ -78,14 +77,13 @@ export default function DelegatesPage(): JSX.Element {
     return <ErrorPage statusCode={404} title="Error fetching delegate" />;
   }
 
-  if (!delegate ) {
+  if (!delegate) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
   }
-
 
   return <DelegateView delegate={delegate} />;
 }
