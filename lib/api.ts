@@ -2,7 +2,6 @@ import uniqBy from 'lodash/uniqBy';
 import matter from 'gray-matter';
 import invariant from 'tiny-invariant';
 import chunk from 'lodash/chunk';
-import os from 'os';
 
 import { markdownToHtml, timeoutPromise, backoffRetry } from './utils';
 import { EXEC_PROPOSAL_INDEX } from './constants';
@@ -10,13 +9,12 @@ import getMaker, { getNetwork, isTestnet } from './maker';
 import { Poll, PartialPoll } from 'types/poll';
 import { CMSProposal } from 'types/proposal';
 import { BlogPost } from 'types/blogPost';
-import { DelegateContractInformation } from 'types/delegate';
 import { slugify } from '../lib/utils';
 import { parsePollMetadata } from './polling/parser';
 import { fetchGitHubPage } from './github';
-import fs from 'fs';
 import { config } from './config';
 import mockProposals from '../mocks/proposals.json';
+import { fsCacheGet, fsCacheSet } from './fscache';
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (config.USE_FS_CACHE) {
@@ -117,46 +115,6 @@ export async function getPolls(): Promise<Poll[]> {
   if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
   return polls;
 }
-
-export async function getChainDelegates(): Promise<DelegateContractInformation[]> {
-  const maker = await getMaker();
-
-  const delegates = await maker.service('voteDelegate').getAllDelegates();
-
-  return delegates.map(d => ({
-    ...d,
-    delegateAddress: d.delegate,
-    voteDelegateAddress: d.voteDelegate
-  }));
-}
-
-const fsCacheCache = {};
-
-const fsCacheGet = name => {
-  const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
-    .toISOString()
-    .substring(0, 10)}`;
-  if (fsCacheCache[path]) {
-    console.log(`mem cache hit: ${path}`);
-    return fsCacheCache[path];
-  }
-  if (fs.existsSync(path)) {
-    console.log(`fs cache hit: ${path}`);
-    return fs.readFileSync(path).toString();
-  }
-};
-
-const fsCacheSet = (name, data) => {
-  try {
-    const path = `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${new Date()
-      .toISOString()
-      .substring(0, 10)}`;
-    fs.writeFileSync(path, data);
-    fsCacheCache[path] = data;
-  } catch (e) {
-    console.error(e);
-  }
-};
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;

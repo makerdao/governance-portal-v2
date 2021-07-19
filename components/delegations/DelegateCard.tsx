@@ -23,6 +23,7 @@ type PropTypes = {
 };
 
 export default function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const network = getNetwork();
   const bpi = useBreakpointIndex();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
@@ -66,7 +67,12 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
           <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
-              <Link href={`/delegates/${delegate.voteDelegateAddress}`}>
+              <Link
+                href={{
+                  pathname: `/delegates/${delegate.voteDelegateAddress}`,
+                  query: { network }
+                }}
+              >
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', width: '169px', color: 'text' }} variant="outline">
                     View Profile Details
@@ -77,7 +83,7 @@ export default function DelegateCard({ delegate }: PropTypes): React.ReactElemen
 
             {!showLinkToDetail && (
               <Box>
-                <DelegateLastVoted delegate={delegate} />
+                {/*<DelegateLastVoted delegate={delegate} /> */}
                 <DelegateContractExpiration delegate={delegate} />
               </Box>
             )}

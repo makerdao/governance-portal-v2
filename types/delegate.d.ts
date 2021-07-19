@@ -9,7 +9,7 @@ export type DelegateRepoInformation = {
 };
 
 export type DelegateContractInformation = {
-  delegateAddress: string;
+  address: string;
   voteDelegateAddress: string;
   blockTimestamp: Date;
 };
@@ -17,7 +17,7 @@ export type DelegateContractInformation = {
 export type Delegate = {
   id: string;
   name: string;
-  delegateAddress: string;
+  address: string;
   voteDelegateAddress: string;
   description: string;
   picture: string;

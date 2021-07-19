@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import mixpanel from 'mixpanel-browser';
 import { useWeb3React } from '@web3-react/core';
 
-import getMaker from '../../maker';
+import getMaker from '../index';
 import { injectedConnector } from './index';
 
 export const syncMakerAccount = (library, account, chainIdError) => {
