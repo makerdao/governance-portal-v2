@@ -34,17 +34,16 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           </ExternalLink>
         </Box>
 
-        {delegate.externalUrl && <Flex sx={{ alignItems: 'flex-end' }}>
-          <ExternalLink
-            title="See external profile"
-            href={delegate.externalUrl}
-            target="_blank" >
-              <Text sx={{ fontSize: 1}}>
+        {delegate.externalUrl && (
+          <Flex sx={{ alignItems: 'flex-end' }}>
+            <ExternalLink title="See external profile" href={delegate.externalUrl} target="_blank">
+              <Text sx={{ fontSize: 1 }}>
                 See external profile
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>
-              </ExternalLink>
-          </Flex>}
+            </ExternalLink>
+          </Flex>
+        )}
       </Box>
       <Box sx={{ p: 3 }}>
         <div
