@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { jsx, Box, Text, Link as ExternalLink, Divider } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Divider, Flex } from 'theme-ui';
 import React from 'react';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import { Delegate } from 'types/delegate';
 import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 type PropTypes = {
   delegate: Delegate;
@@ -32,6 +33,18 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             </Text>
           </ExternalLink>
         </Box>
+
+        {delegate.externalUrl && <Flex sx={{ alignItems: 'flex-end' }}>
+          <ExternalLink
+            title="See external profile"
+            href={delegate.externalUrl}
+            target="_blank" >
+              <Text sx={{ fontSize: 1}}>
+                See external profile
+                <Icon ml={2} name="arrowTopRight" size={2} />
+              </Text>
+              </ExternalLink>
+          </Flex>}
       </Box>
       <Box sx={{ p: 3 }}>
         <div
