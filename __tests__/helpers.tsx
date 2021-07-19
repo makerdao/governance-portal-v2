@@ -1,4 +1,5 @@
 import { act, render, RenderResult } from '@testing-library/react';
+import { TestAccountProvider } from '@makerdao/test-helpers';
 import { formatAddress } from 'lib/utils';
 import { ThemeProvider } from 'theme-ui';
 import { ethers } from 'ethers';
@@ -76,4 +77,22 @@ export async function createTestPolls(maker) {
       'test',
       'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/MIP4c2-SP2%3A%20Inclusion%20Poll%20for%20MIP8%20Amendments%20-%20June%208%2C%202020.md'
     );
+}
+
+export async function createDelegate(maker, account = DEMO_ACCOUNT_TESTS) {
+  return await maker.service('voteDelegateFactory').createDelegateContract();
+}
+
+// Convenience function to add a new account maker & browser provider
+export async function nextAccount(maker) {
+  const nextAccount = TestAccountProvider.nextAccount();
+  await maker.service('accounts').addAccount('test-account', {
+    type: 'privateKey',
+    key: nextAccount.key
+  });
+
+  maker.useAccount('test-account');
+  injectProvider();
+
+  return nextAccount;
 }
