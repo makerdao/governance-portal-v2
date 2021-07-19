@@ -32,9 +32,7 @@ _Requires node version >= v11.15.0_
 7. Set `USE_PROD_SPOCK` to true to use the production spock instance
 8. Set `USE_FS_CACHE` to true if you want to use file system cache
 9. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
-10. Set `GITHUB_DELEGATES_OWNER` to indicate the owner of the delegates repo
-11. Set `GITHUB_DELEGATES_REPO` to indicate the name of the repo that contains the delegates folder
-12. Set `NEXT_PUBLIC_USE_MOCK` to indicate to use mock data.
+10. Set `NEXT_PUBLIC_USE_MOCK` to indicate to use mock data.
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 

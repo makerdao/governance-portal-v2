@@ -3,11 +3,11 @@ import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
 import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
-import { Web3ReactPlugin } from './maker/web3react';
+import { Web3ReactPlugin } from './web3react';
 
-import { SupportedNetworks, DEFAULT_NETWORK } from './constants';
-import { networkToRpc } from './maker/network';
-import { config } from './config';
+import { SupportedNetworks, DEFAULT_NETWORK } from '../constants';
+import { networkToRpc } from './network';
+import { config } from '../config';
 
 export const ETH = Maker.ETH;
 export const USD = Maker.USD;
@@ -62,19 +62,33 @@ function determineNetwork(): SupportedNetworks {
   }
 }
 
-let makerSingleton: Promise<Maker>;
-function getMaker(): Promise<Maker> {
-  if (!makerSingleton) {
-    makerSingleton = Maker.create('http', {
+type MakerSingletons = {
+  [SupportedNetworks.MAINNET]: null | Promise<Maker>;
+  [SupportedNetworks.KOVAN]: null | Promise<Maker>;
+  [SupportedNetworks.TESTNET]: null | Promise<Maker>;
+};
+
+const makerSingletons: MakerSingletons = {
+  [SupportedNetworks.MAINNET]: null,
+  [SupportedNetworks.KOVAN]: null,
+  [SupportedNetworks.TESTNET]: null
+};
+
+function getMaker(network?: SupportedNetworks): Promise<Maker> {
+  // Chose the network we are referring to or default to the one set by the system
+  const currentNetwork = network ? network : getNetwork();
+
+  if (!makerSingletons[currentNetwork]) {
+    makerSingletons[currentNetwork] = Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
-        [GovernancePlugin, { network: getNetwork(), staging: !config.USE_PROD_SPOCK }],
+        [GovernancePlugin, { network: currentNetwork, staging: !config.USE_PROD_SPOCK }],
         Web3ReactPlugin,
         LedgerPlugin,
         TrezorPlugin
       ],
       provider: {
-        url: networkToRpc(getNetwork(), 'infura'),
+        url: networkToRpc(currentNetwork, 'infura'),
         type: 'HTTP'
       },
       web3: {
@@ -88,10 +102,11 @@ function getMaker(): Promise<Maker> {
     });
   }
 
-  return makerSingleton;
+  return makerSingletons[currentNetwork] as Promise<Maker>;
 }
 
 let networkSingleton: SupportedNetworks;
+
 function getNetwork(): SupportedNetworks {
   if (!networkSingleton) networkSingleton = determineNetwork();
   return networkSingleton;

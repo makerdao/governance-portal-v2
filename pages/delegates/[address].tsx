@@ -2,19 +2,22 @@
 import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
-import Head from 'next/head';
-import { GetStaticPaths, GetStaticProps } from 'next';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { fetchDelegate, fetchDelegates } from 'lib/delegates/fetchDelegates';
-import { getNetwork } from 'lib/maker';
-import { Delegate } from 'types/delegate';
+
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
+import Link from 'next/link';
+import Head from 'next/head';
+import { Delegate } from 'types/delegate';
 import { DelegateDetail } from 'components/delegations';
+import { getNetwork } from 'lib/maker';
+import { useEffect, useState } from 'react';
+import { fetchJson } from 'lib/utils';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { useRouter } from 'next/router';
 
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();
@@ -58,35 +61,29 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   );
 };
 
-export default function DelegatesPage({ delegate }: { delegate?: Delegate }): JSX.Element {
+export default function DelegatesPage(): JSX.Element {
+  const [delegate, setDelegate] = useState<Delegate>();
+  const [error, setError] = useState<string>();
+  const router = useRouter();
+  const { address } = router.query;
+  // fetch delegates at run-time if on any network other than the default
+  useEffect(() => {
+    if (address) {
+      fetchJson(`/api/delegates/${address}?network=${getNetwork()}`).then(setDelegate).catch(setError);
+    }
+  }, [address]);
+
+  if (error) {
+    return <ErrorPage statusCode={404} title="Error fetching delegate" />;
+  }
+
   if (!delegate) {
-    return <ErrorPage statusCode={404} title="Delegate address not found." />;
+    return (
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
+      </PrimaryLayout>
+    );
   }
 
   return <DelegateView delegate={delegate} />;
 }
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const delegate = await fetchDelegate(params?.address as string);
-
-  if (!delegate) {
-    return { revalidate: 30, props: { delegate: null } };
-  }
-
-  return {
-    revalidate: 30, // allow revalidation every 30 seconds
-    props: {
-      delegate
-    }
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const delegates = await fetchDelegates();
-  const paths = delegates.map(d => `/delegates/${d.voteDelegateAddress}`);
-
-  return {
-    paths,
-    fallback: true
-  };
-};

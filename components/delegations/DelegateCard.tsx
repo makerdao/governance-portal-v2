@@ -24,6 +24,7 @@ type PropTypes = {
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const network = getNetwork();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const account = useAccountsStore(state => state.currentAccount);
@@ -70,7 +71,12 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
           <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
-              <Link href={`/delegates/${delegate.voteDelegateAddress}`}>
+              <Link
+                href={{
+                  pathname: `/delegates/${delegate.voteDelegateAddress}`,
+                  query: { network }
+                }}
+              >
                 <a title="Profile details">
                   <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
                     View Profile Details

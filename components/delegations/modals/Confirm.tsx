@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
-  const { delegateAddress, voteDelegateAddress } = delegate;
+  const { address, voteDelegateAddress } = delegate;
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
       <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
@@ -36,11 +36,11 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
         This delegate contract was created by{' '}
         <ExternalLink
           title="View on etherescan"
-          href={getEtherscanLink(getNetwork(), delegateAddress, 'address')}
+          href={getEtherscanLink(getNetwork(), address, 'address')}
           target="_blank"
         >
           <Text sx={{ fontWeight: 'bold', color: 'text', display: 'inline', ':hover': { color: 'inherit' } }}>
-            {delegateAddress}
+            {address}
           </Text>
         </ExternalLink>
       </Text>

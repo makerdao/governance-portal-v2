@@ -24,10 +24,10 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import mixpanel from 'mixpanel-browser';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
-import { useVotedProposals } from 'lib/hooks';
+import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle, formatDateWithTime } from 'lib/utils';
+import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from 'lib/utils';
+import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
 import OnChainFx from 'components/executive/OnChainFx';
@@ -39,7 +39,6 @@ import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
 import { Proposal } from 'types/proposal';
-import { SpellData } from 'types/spellData';
 import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
@@ -52,39 +51,14 @@ const editMarkdown = content => {
 };
 
 const ProposalTimingBanner = ({ proposal }): JSX.Element => {
-  const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`,
-    url => fetchJson(url)
-  );
+  const { data: spellData } = useSpellData(proposal.address);
+
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          {proposal.address === ZERO_ADDRESS ? (
-            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
-              chief has been activated!
-            </Text>
-          ) : spellData && spellData.hasBeenScheduled ? (
-            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-              {typeof spellData.dateExecuted === 'string' ? (
-                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-              ) : (
-                <>
-                  Available for execution on{' '}
-                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                    formatDateWithTime(spellData.nextCastTime || spellData.eta)}
-                  .
-                </>
-              )}
-            </Text>
-          ) : (
-            <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-              This proposal has not yet passed and is not available for execution.
-            </Text>
-          )}
+          <Text sx={{ textAlign: 'center', px: [3, 4] }}>{getStatusText(proposal.address, spellData)}</Text>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -96,7 +70,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
 
   const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
   const [stateDiffError, setStateDiffError] = useState();

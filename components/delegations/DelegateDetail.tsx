@@ -1,4 +1,5 @@
-import { Box, Text, Link as ExternalLink, Divider } from '@theme-ui/components';
+/** @jsx jsx */
+import { jsx, Box, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import React from 'react';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -33,7 +34,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         </Box>
       </Box>
       <Box sx={{ p: 3 }}>
-        <div dangerouslySetInnerHTML={{ __html: delegate.description }} />
+        <div
+          sx={{ variant: 'markdown.default' }}
+          dangerouslySetInnerHTML={{ __html: delegate.description }}
+        />
       </Box>
 
       <Divider my={0} />
