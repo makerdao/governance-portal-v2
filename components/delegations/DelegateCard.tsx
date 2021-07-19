@@ -42,7 +42,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
       >
-        <Box sx={{ minWidth: '200px' }}>
+        <Box sx={{ minWidth: '230px' }}>
           <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
@@ -94,7 +94,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             mt: [4, 4, 0, 4, 0],
             mb: [2, 2, 0, 2, 0],
             ml: [2, 2, 0, 2, 0],
-            flexDirection: ['row', 'row', 'column', 'row', 'column']
+            flexDirection: ['row', 'row', 'column-reverse', 'row', 'column-reverse']
           }}
         >
           <Flex
@@ -104,15 +104,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ mb: 4, flex: 1 }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                 Untracked
               </Text>
               <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Pool participation
+                Poll participation
               </Text>
             </Box>
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ flex: 1 }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
                 Untracked
               </Text>
@@ -120,14 +120,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Executive participation
               </Text>
             </Box>
-            <Button
-              variant="primaryOutline"
-              disabled={!account}
-              onClick={() => setShowUndelegateModal(true)}
-              sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
-            >
-              Undelegate
-            </Button>
+            <Box>
+              <Button
+                variant="primaryOutline"
+                disabled={!account}
+                onClick={() => setShowUndelegateModal(true)}
+                sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
+              >
+                Undelegate
+              </Button>
+            </Box>
           </Flex>
           <Flex
             sx={{
@@ -136,7 +138,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ mb: 4, flex: 1 }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -144,7 +146,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Total MKR delegated
               </Text>
             </Box>
-            <Box>
+            <Box sx={{ flex: 1 }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -152,14 +154,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 MKR delegated by you
               </Text>
             </Box>
-            <Button
-              variant="primaryLarge"
-              disabled={!account}
-              onClick={() => setShowDelegateModal(true)}
-              sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
-            >
-              Delegate
-            </Button>
+            <Box>
+              <Button
+                variant="primaryLarge"
+                disabled={!account}
+                onClick={() => setShowDelegateModal(true)}
+                sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
+              >
+                Delegate
+              </Button>
+            </Box>
           </Flex>
         </Flex>
       </Flex>
