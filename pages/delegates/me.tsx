@@ -102,7 +102,7 @@ const CreateDelegate = (): JSX.Element => {
                 </DialogContent>
               </DialogOverlay>
             )}
-            <Button onClick={onCreateDelegate} sx={{ mt: 3 }}>
+            <Button onClick={onCreateDelegate} sx={{ mt: 3 }} data-testid="create-button">
               Create a delegate contract
             </Button>
           </Box>
