@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Box, Flex, Button, Grid, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 
 import { getNetwork } from 'lib/maker';
@@ -15,7 +15,7 @@ import {
   DelegatePicture,
   DelegateModal,
   UndelegateModal,
-  DelegateLastVoted,
+  // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
 
@@ -38,9 +38,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   return (
     <Box sx={{ variant: 'cards.primary' }}>
       <Flex
-        sx={{ justifyContent: 'space-between', flexDirection: ['column', 'column', 'row', 'column', 'row'] }}
+        sx={{
+          flexDirection: ['column', 'column', 'row', 'column', 'row']
+        }}
       >
-        <Box>
+        <Box sx={{ minWidth: '200px' }}>
           <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
@@ -88,84 +90,76 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
         <Flex
           sx={{
-            flexWrap: 'wrap',
-            width: ['100%', '100%', 'auto', '100%', 'auto'],
-            mt: [4, 4, 0, 4, 0]
+            width: '100%',
+            mt: [4, 4, 0, 4, 0],
+            mb: [2, 2, 0, 2, 0],
+            ml: [2, 2, 0, 2, 0],
+            flexDirection: ['row', 'row', 'column', 'row', 'column']
           }}
         >
-          <Grid
-            columns={[2]}
-            sx={{
-              width: ['100%', '100%', 'auto', '100%', 'auto'],
-              mb: [4, 4, 0, 4, 0]
-            }}
-          >
-            <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between' }}>
-              <Box sx={{ mb: 3 }}>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
-                  Total MKR delegated
-                </Text>
-              </Box>
-              <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
-                  Untracked
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
-                  Pool participation
-                </Text>
-              </Box>
-            </Flex>
-
-            <Box sx={{ mr: [0, 0, 4, 0, 4] }}>
-              <Box sx={{ mb: 3 }}>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
-                  MKR delegated by you
-                </Text>
-              </Box>
-              <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
-                  Untracked
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: ['13px', '15px'] }}>
-                  Executive participation
-                </Text>
-              </Box>
-            </Box>
-          </Grid>
-
           <Flex
             sx={{
-              width: ['100%', '100%', 'auto', '100%', 'auto'],
-              flexDirection: ['row', 'row', 'column', 'row', 'column'],
-              justifyContent: 'space-between'
+              flexDirection: ['column', 'column', 'row', 'column', 'row'],
+              justifyContent: 'space-between',
+              width: '100%'
             }}
           >
-            <Box sx={{ width: '100%' }}>
-              <Button
-                variant="primaryLarge"
-                disabled={!account}
-                onClick={() => setShowDelegateModal(true)}
-                sx={{ width: '150px' }}
-              >
-                Delegate
-              </Button>
+            <Box sx={{ mb: 4 }}>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
+                Untracked
+              </Text>
+              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                Pool participation
+              </Text>
             </Box>
-            <Box sx={{ width: '100%' }}>
-              <Button
-                variant="primaryOutline"
-                disabled={!account}
-                onClick={() => setShowUndelegateModal(true)}
-                sx={{ width: '150px' }}
-              >
-                Undelegate
-              </Button>
+            <Box sx={{ mb: 4 }}>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
+                Untracked
+              </Text>
+              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                Executive participation
+              </Text>
             </Box>
+            <Button
+              variant="primaryOutline"
+              disabled={!account}
+              onClick={() => setShowUndelegateModal(true)}
+              sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
+            >
+              Undelegate
+            </Button>
+          </Flex>
+          <Flex
+            sx={{
+              flexDirection: ['column', 'column', 'row', 'column', 'row'],
+              justifyContent: 'space-between',
+              width: '100%'
+            }}
+          >
+            <Box sx={{ mb: 4 }}>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
+              </Text>
+              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                Total MKR delegated
+              </Text>
+            </Box>
+            <Box>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+              </Text>
+              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                MKR delegated by you
+              </Text>
+            </Box>
+            <Button
+              variant="primaryLarge"
+              disabled={!account}
+              onClick={() => setShowDelegateModal(true)}
+              sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
+            >
+              Delegate
+            </Button>
           </Flex>
         </Flex>
       </Flex>
