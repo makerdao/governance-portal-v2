@@ -29,6 +29,7 @@ type Store = {
   oldProxy: OldVoteProxy;
   // TODO type this
   voteDelegate: any;
+  setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
 };
@@ -66,13 +67,22 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
         getOldProxyStatus(address, maker)
       ]);
 
-      const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
+      await get().setVoteDelegate(address);
+
       set({
         currentAccount: account,
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
-        oldProxy,
-        voteDelegate
+        oldProxy
       });
+    });
+  },
+
+  setVoteDelegate: async address => {
+    const maker = await getMaker();
+    const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
+
+    set({
+      voteDelegate: voteDelegate ?? undefined
     });
   },
 
