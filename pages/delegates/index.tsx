@@ -65,7 +65,7 @@ const Delegates = ({ delegates }: Props) => {
           {unrecognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
-                Unrecognized Delegates
+                Shadow Delegates
               </Heading>
 
               <Box>
