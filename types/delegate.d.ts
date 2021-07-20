@@ -25,4 +25,5 @@ export type Delegate = {
   expired: boolean;
   lastVote: Date;
   expirationDate: Date;
+  externalUrl?: string;
 };
