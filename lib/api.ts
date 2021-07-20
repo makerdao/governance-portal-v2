@@ -15,6 +15,53 @@ import { fetchGitHubPage } from './github';
 import { config } from './config';
 import mockProposals from '../mocks/proposals.json';
 import { fsCacheGet, fsCacheSet } from './fscache';
+import { ethers } from 'ethers';
+
+export function parseExecutive(
+  proposalDoc: string,
+  proposalIndex: Record<string, string[]>,
+  proposalLink: string
+): CMSProposal | null {
+  const network = getNetwork();
+
+  const {
+    content,
+    data: { title, summary, address, date }
+  } = matter(proposalDoc);
+  // Remove empty docs
+  if (!(content && title && summary && address && date)) {
+    console.log('executive missing required field, skipping executive: ', title);
+    return null;
+  }
+
+  //remove if address is not a valid address
+  try {
+    ethers.utils.getAddress(address);
+  } catch (_) {
+    console.log('invalid address: ', address, ' skipping executive: ', title);
+    return null;
+  }
+
+  //remove if date is invalid
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    console.log('invalid date: ', date, ' skipping executive: ', title);
+    return null;
+  }
+
+  //remove `Template - [Executive Vote] ` from title
+  const editedTitle = title.replace('Template - [Executive Vote] ', '');
+
+  return {
+    about: content,
+    content: content,
+    title: editedTitle,
+    proposalBlurb: summary,
+    key: slugify(title),
+    address: address,
+    date: String(date),
+    active: proposalIndex[network].includes(proposalLink)
+  };
+}
 
 export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   if (config.USE_FS_CACHE) {
@@ -25,8 +72,6 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
   } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return mockProposals;
   }
-
-  const network = getNetwork();
 
   const proposalIndex = await (await fetch(EXEC_PROPOSAL_INDEX)).json();
 
@@ -46,29 +91,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
         try {
           const proposalDoc = await (await fetch(proposalLink)).text();
 
-          const {
-            content,
-            data: { title, summary, address, date }
-          } = matter(proposalDoc);
-
-          // Remove empty docs
-          if (!(content && title && summary && address && date)) {
-            return null;
-          }
-
-          //remove `Template - [Executive Vote] ` from title
-          const editedTitle = title.replace('Template - [Executive Vote] ', '');
-
-          return {
-            about: content,
-            content: content,
-            title: editedTitle,
-            proposalBlurb: summary,
-            key: slugify(title),
-            address: address,
-            date: String(date),
-            active: proposalIndex[network].includes(proposalLink)
-          };
+          return parseExecutive(proposalDoc, proposalIndex, proposalLink);
         } catch (e) {
           // Catch error and return null if failed fetching one proposal
           return null;

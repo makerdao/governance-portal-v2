@@ -1,4 +1,5 @@
 import getMaker from 'lib/maker';
+import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'types/currency';
 import { StakingHistoryRow } from 'types/esmodule';
 
@@ -7,7 +8,7 @@ export type ESModuleStats = [
   boolean,
   CurrencyObject,
   CurrencyObject | null,
-  Date | null,
+  BigNumber | null,
   CurrencyObject | null,
   StakingHistoryRow[] | undefined
 ];
@@ -23,6 +24,6 @@ export async function fetchESModuleStats(address?: string): Promise<ESModuleStat
     address ? esmService.getTotalStakedByAddress(address) : null,
     maker.service('smartContract').getContract('END').when(),
     address ? maker.service('chief').getNumDeposits(address) : null,
-    maker.service('esm').getStakingHistory()
+    esmService.getStakingHistory()
   ]);
 }

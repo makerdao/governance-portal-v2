@@ -224,9 +224,8 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
 }
 
 export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
-  if (!dateString) {
-    return '';
-  }
+  if (!dateString) return '';
+
   const date = new Date(dateString);
   const options = {
     year: 'numeric',
@@ -241,6 +240,17 @@ export const formatDateWithTime = (dateString: Date | undefined | number | strin
 
   try {
     return new Intl.DateTimeFormat('en-US', options).format(date);
+  } catch (err) {
+    return '??';
+  }
+};
+
+export const formatDateWithoutTime = (dateString: Date | undefined | number | string): string => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+  try {
+    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
   } catch (err) {
     return '??';
   }

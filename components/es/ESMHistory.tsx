@@ -57,7 +57,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       text-overflow: ellipsis;
                       overflow: hidden;
                     `}
-                    style={{ borderBottom: '1px solid #EDEDED' }}
+                    style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
                     <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
                       {formatDateWithTime(action.time)}
@@ -67,7 +67,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                     css={`
                       white-space: nowrap;
                     `}
-                    style={{ borderBottom: '1px solid #EDEDED' }}
+                    style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
                     <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
                       {action.amount.gte(0.01)
@@ -76,7 +76,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       MKR
                     </Text>
                   </td>
-                  <td style={{ borderBottom: '1px solid #EDEDED' }}>
+                  <td style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}>
                     <Link
                       href={getEtherscanLink(getNetwork(), action.senderAddress, 'address')}
                       target="_blank"

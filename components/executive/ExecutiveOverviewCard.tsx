@@ -8,14 +8,14 @@ import Skeleton from 'react-loading-skeleton';
 import Bignumber from 'bignumber.js';
 import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithoutTime } from 'lib/utils';
 import { useVotedProposals } from 'lib/hooks';
 import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
-import Stack from 'components/layouts/Stack';
 import { Proposal } from 'types/proposal';
 import { SpellData } from 'types/spellData';
+import Stack from 'components/layouts/Stack';
 import VoteModal from './VoteModal';
 
 type Props = {
@@ -70,7 +70,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                posted {formatDateWithTime(proposal.date)}
+                posted {formatDateWithoutTime(proposal.date)}
               </Text>
             </Flex>
             <Box>
