@@ -7,6 +7,9 @@ import WrappedAccountSelect from '../components/header/AccountSelect';
 import theme from '../lib/theme';
 import React from 'react';
 import { accountsApi } from 'stores/accounts';
+import { createCurrency } from '@makerdao/currency';
+
+const MKR = createCurrency('MKR');
 
 export function renderWithTheme(component: React.ReactNode): RenderResult {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
@@ -84,15 +87,21 @@ export async function createDelegate(maker, account = DEMO_ACCOUNT_TESTS) {
 }
 
 // Convenience function to add a new account maker & browser provider
-export async function nextAccount(maker) {
-  const nextAccount = TestAccountProvider.nextAccount();
+export async function switchAccount(maker, account = null) {
+  const accountToUse = account ?? TestAccountProvider.nextAccount();
   await maker.service('accounts').addAccount('test-account', {
     type: 'privateKey',
-    key: nextAccount.key
+    key: accountToUse.key
   });
 
   maker.useAccount('test-account');
   injectProvider();
 
-  return nextAccount;
+  return accountToUse;
 }
+
+// TODO generalize this to any token & enable automatic switching to coinbase account & back
+export const sendMkrToAddress = async (maker, receiver, amount) => {
+  const mkr = await maker.getToken(MKR);
+  await mkr.transfer(receiver, amount);
+};
