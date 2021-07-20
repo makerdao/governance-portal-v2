@@ -58,6 +58,8 @@ async function setup(maker) {
 }
 
 describe('Delegate Create page', () => {
+  const mkrToDeposit = '3.2';
+
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
@@ -83,20 +85,45 @@ describe('Delegate Create page', () => {
   // });
 
   test('can delegate MKR to a delegate', async () => {
-    const delegateButton = await component.findByText('Recognized delegates');
-    // act(() => {
-    //   click(delegateButton);
-    // });
-    // // Transaction is initialized
-    // await component.findByText('Confirm transaction');
-    // // Transaction state moved to pending
-    // await component.findByText('Transaction pending');
-    // // Transaction state moved to mined
-    // await component.findByText('Transaction Sent');
-    // const closeButton = component.getByText('Close');
-    // act(() => {
-    //   click(closeButton);
-    // });
-    // await component.findByText(DELEGATE_ADDRESS);
+    await component.findByText('Recognized delegates');
+
+    // Open delegate modal
+    const delegateButton = component.getByText('Delegate');
+    act(() => {
+      click(delegateButton);
+    });
+
+    // Approval Process
+    const approveButton = component.getByText('Approve Delegate Contract', { selector: 'button' });
+    act(() => {
+      click(approveButton);
+    });
+
+    // Transaction is initialized
+    await component.findByText('Confirm transaction');
+    // Transaction state moved to pending
+    await component.findByText('Transaction pending');
+    // Deposit input appears
+    await component.findByText('Deposit into delegate contract');
+
+    const input = component.getByTestId('mkr-input');
+    act(() => {
+      fireEvent.change(input, { target: { value: mkrToDeposit } });
+    });
+
+    // Delegate Process
+    const delegateMKRButton = component.getByText('Delegate MKR', { selector: 'button' });
+    act(() => {
+      click(delegateMKRButton);
+    });
+
+    component.getByText(/You are delegating/);
+
+    const confirmButton = await component.findByText(/Confirm Transaction/, { selector: 'button' });
+    act(() => {
+      click(confirmButton);
+    });
+
+    //TODO verify delegate was a success
   });
 });
