@@ -5,6 +5,33 @@ import os from 'os';
 
 const cacheFile = `/${os.tmpdir()}/gov-portal-testnet-polls-${new Date().toISOString().substring(0, 10)}`;
 
+const Exec1 = `---
+title: mock title
+summary: mock summary
+date: 2021-04-19T00:00:00.000Z
+address: "0xDb0D1af4531F59E4E7EfA4ec0AcADec7518D42B6"
+---
+# mock markdown
+`;
+
+const Exec2 = `---
+title: mock title
+summary: mock summary
+date: invalid-date
+address: "0xDb0D1af4531F59E4E7EfA4ec0AcADec7518D42B6"
+---
+# mock markdown
+`;
+
+const Exec3 = `---
+title: mock title
+summary: mock summary
+date: 2021-04-19T00:00:00.000Z
+address: invalid-address
+---
+# mock markdown
+`;
+
 describe('API', () => {
   beforeAll(() => {
     config.USE_FS_CACHE = '1';
@@ -15,30 +42,6 @@ describe('API', () => {
     if (fs.existsSync(cacheFile)) fs.unlinkSync(cacheFile);
   });
 
-  const Exec1 = `---
-    title: mock title
-    summary: mock summary
-    date: 2021-04-19T00:00:00.000Z
-    address: "0xDb0D1af4531F59E4E7EfA4ec0AcADec7518D42B6"
-    ---
-    # mock markdown`;
-
-  const Exec2 = `---
-    title: mock title
-    summary: mock summary
-    date: invalid-date
-    address: "0xDb0D1af4531F59E4E7EfA4ec0AcADec7518D42B6"
-    ---
-    # mock markdown`;
-
-  const Exec3 = `---
-    title: mock title
-    summary: mock summary
-    date: 2021-04-19T00:00:00.000Z
-    address: invalid-address
-    ---
-    # mock markdown`;
-
   test('getPolls with filesystem caching', async () => {
     jest.setTimeout(25000);
     await getPolls();
@@ -47,6 +50,8 @@ describe('API', () => {
 
   test('parseExecutive', async () => {
     const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
+
+    console.log(parsedExec);
     expect(
       !!parsedExec.about &&
         !!parsedExec.content &&
