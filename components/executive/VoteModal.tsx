@@ -49,7 +49,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
   const addressLockedMKR =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy);
+  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy, voteDelegate);
 
   const { data: spellData } = useSpellData(proposal.address);
 
