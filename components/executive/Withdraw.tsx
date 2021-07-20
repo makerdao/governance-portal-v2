@@ -185,7 +185,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
 const Withdraw = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, voteDelegate] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : null
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
 
   const [showDialog, setShowDialog] = useState(false);
