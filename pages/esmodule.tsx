@@ -131,7 +131,7 @@ const ESModule = (): React.ReactElement => {
           )}
         </DialogContent>
       </DialogOverlay>
-      {cageTime && (
+      {cageTime && cageTime.gt(0) && (
         <Flex
           sx={{
             flexDirection: 'column',
@@ -148,8 +148,8 @@ const ESModule = (): React.ReactElement => {
           }}
         >
           <Text sx={{ textAlign: 'center' }}>
-            Emergency shutdown has been initiated on {formatDateWithTime(cageTime)}. This dashboard is
-            currently read-only. You can read more information about next steps here NEED LINK
+            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toFixed())}. This dashboard
+            is currently read-only. You can read more information about next steps here NEED LINK
           </Text>
         </Flex>
       )}
