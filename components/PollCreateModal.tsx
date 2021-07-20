@@ -79,9 +79,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
               borderColor: 'secondaryMuted'
             }}
           >
-            <Text variant="text" sx={{ fontSize: 1, color: 'textMuted' }}>
-              {poll?.content}
-            </Text>
+            <Text sx={{ fontWeight: 'bold', fontSize: '16px', textAlign: 'center' }}>{poll?.title}</Text>
           </Box>
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
