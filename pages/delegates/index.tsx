@@ -7,6 +7,7 @@ import ErrorPage from 'next/error';
 import { isDefaultNetwork } from 'lib/maker';
 import { fetchDelegates } from 'lib/delegates/fetchDelegates';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { shuffleArray } from 'lib/common/shuffleArray';
 import { Delegate } from 'types/delegate';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
@@ -30,11 +31,11 @@ const Delegates = ({ delegates }: Props) => {
   };
 
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
-  const activeDelegates = delegates.filter(
-    delegate => delegate.status === DelegateStatusEnum.active && !delegate.expired
+  const activeDelegates = shuffleArray(
+    delegates.filter(delegate => delegate.status === DelegateStatusEnum.active && !delegate.expired)
   );
-  const unrecognizedDelegates = delegates.filter(
-    delegate => delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired
+  const unrecognizedDelegates = shuffleArray(
+    delegates.filter(delegate => delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired)
   );
 
   return (
