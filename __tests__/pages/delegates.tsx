@@ -1,4 +1,4 @@
-import { act, fireEvent, configure } from '@testing-library/react';
+import { act, fireEvent, configure, screen } from '@testing-library/react';
 import getMaker from '../../lib/maker';
 import DelegatesPage from '../../pages/delegates';
 import {
@@ -44,10 +44,10 @@ jest.mock('@theme-ui/match-media', () => {
 });
 
 const { click } = fireEvent;
-let component, maker;
+let maker;
 
 async function setup(maker) {
-  const comp = render(
+  const view = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
       <DelegatesPage delegates={[]} />
     </SWRConfig>
@@ -55,9 +55,9 @@ async function setup(maker) {
 
   await act(async () => {
     // This sets the account in state
-    await connectAccount(comp, maker.currentAccount().address);
+    await connectAccount(view, maker.currentAccount().address);
   });
-  return comp;
+  return view;
 }
 
 describe('Delegate Create page', () => {
@@ -75,85 +75,91 @@ describe('Delegate Create page', () => {
     // Change to a new, non-delegate account
     await switchAccount(maker);
     mixpanel.track = () => {};
-  });
 
-  beforeEach(async () => {
-    component = await setup(maker);
+    await setup(maker);
   });
-
-  // //TODO does it need to be async?
-  // afterEach(async () => {
-  //   await act(async () => {
-  //     await accountsApi.getState().disconnectAccount();
-  //   });
-  // });
 
   test('can delegate MKR to a delegate', async () => {
-    await component.findByText('Recognized delegates');
+    await screen.findByText('Recognized delegates');
 
     // Open delegate modal
-    const delegateButton = component.getByText('Delegate');
+    const delegateButton = screen.getByText('Delegate');
     click(delegateButton);
 
     // Approval Process
-    const approveMKRButton = component.getByText('Approve Delegate Contract', { selector: 'button' });
+    const approveMKRButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
     click(approveMKRButton);
 
     // Transaction is initialized
-    await component.findByText('Confirm transaction');
+    await screen.findByText('Confirm transaction');
     // Transaction state moved to pending
-    await component.findByText('Transaction pending');
+    await screen.findByText('Transaction pending');
     // Deposit input appears
-    await component.findByText('Deposit into delegate contract');
+    await screen.findByText('Deposit into delegate contract');
 
-    const input = component.getByTestId('mkr-input');
+    const input = screen.getByTestId('mkr-input');
     fireEvent.change(input, { target: { value: mkrToDeposit } });
 
     // Delegate Process
-    const delegateMKRButton = component.getByText('Delegate MKR', { selector: 'button' });
+    const delegateMKRButton = screen.getByText('Delegate MKR', { selector: 'button' });
     click(delegateMKRButton);
 
     // Make sure modal displays etherscan links correctly
-    component.getByText(/You are delegating/);
-    //TODO install type defs
-    expect(component.getByText(DELEGATE_ADDRESS).closest('a')).toHaveAttribute(
-      'href',
-      `https://etherscan.io/address/${DELEGATE_ADDRESS}`
-    );
-    component.getByText(/This delegate contract was created by/);
-    expect(component.getByText(DEMO_ACCOUNT_TESTS).closest('a')).toHaveAttribute(
-      'href',
-      `https://etherscan.io/address/${DEMO_ACCOUNT_TESTS}`
-    );
+    screen.getByText(/You are delegating/);
+    const [delegateLink, creatorLink] = screen.getAllByRole('link');
 
-    const confirmButton = await component.findByText(/Confirm Transaction/, { selector: 'button' });
+    expect(delegateLink).toHaveAttribute('href', `https://etherscan.io/address/${DELEGATE_ADDRESS}`);
+    screen.getByText(/This delegate contract was created by/);
+    expect(creatorLink).toHaveAttribute('href', `https://etherscan.io/address/${DEMO_ACCOUNT_TESTS}`);
+
+    const confirmButton = await screen.findByText(/Confirm Transaction/, { selector: 'button' });
     click(confirmButton);
 
     // Wait for transactions again...
-    await component.findByText('Transaction pending');
-    await component.findByText('Transaction Sent');
+    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Sent');
 
     // UI updates to display totals correctly
-    const [delegatedTotal, delegatedByYou] = await component.findAllByText(/3.20/);
+    const [delegatedTotal, delegatedByYou] = await screen.findAllByText(/3.20/);
     expect(delegatedTotal.parentElement).toHaveTextContent(/Total MKR delegated/);
     expect(delegatedByYou.parentElement).toHaveTextContent(/MKR delegated by you/);
 
     // Open undelegate modal
-    const unDelegateButton = component.getByText('Undelegate');
+    const unDelegateButton = screen.getByText('Undelegate');
     click(unDelegateButton);
 
     // IOU Approval Process
-    const approveIOUButton = component.getByText('Approve Delegate Contract', { selector: 'button' });
+    const approveIOUButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
     click(approveIOUButton);
 
     // More transaction screens...
-    await component.findByText('Confirm transaction');
-    await component.findByText('Transaction pending');
-    await component.findByText('Withdraw from delegate contract');
+    await screen.findByText('Confirm transaction');
+    await screen.findByText('Transaction pending');
+    await screen.findByText('Withdraw from delegate contract');
 
     // Set max button adds input value correctly
-    const setMaxButton = component.getByText(/Set max/, { selector: 'button' });
+    const setMaxButton = screen.getByRole('button', { name: /Set max/ });
     click(setMaxButton);
-    expect(component.getByDisplayValue(/3.2/)).toBeInTheDocument();
+
+    const unInput = screen.getByRole('spinbutton') as HTMLInputElement;
+    expect(unInput.value).toBe('3.2');
+
+    const undelegateMKRButton = screen.getByText('Undelegate MKR', { selector: 'button' });
+    click(undelegateMKRButton);
+
+    // Wait for transactions again...
+    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Sent');
+
+    // Close the modal
+    const closeUndelegateBtn = screen.getByText(/Close/, { selector: 'button' });
+    click(closeUndelegateBtn);
+
+    // Voting weights are returned to 0 after undelegating
+    const newTotal = await screen.findByText(/Total MKR delegated/);
+    const newByYou = await screen.findByText(/MKR delegated by you/);
+
+    expect(newTotal.previousSibling).toHaveTextContent('0.00');
+    expect(newByYou.previousSibling).toHaveTextContent('0.00');
   });
 });
