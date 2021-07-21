@@ -96,7 +96,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const loader = useRef<HTMLDivElement>(null);
 
   const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(

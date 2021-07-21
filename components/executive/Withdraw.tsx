@@ -19,7 +19,7 @@ import mixpanel from 'mixpanel-browser';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { useLockedMkr } from 'lib/hooks';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
+const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
@@ -37,7 +37,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -184,7 +184,9 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
 const Withdraw = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
+  );
 
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
@@ -214,6 +216,7 @@ const Withdraw = (props): JSX.Element => {
             sx={{ px: [3, null] }}
             address={account?.address}
             voteProxy={voteProxy}
+            voteDelegate={voteDelegate}
             close={() => setShowDialog(false)}
           />
         </DialogContent>
