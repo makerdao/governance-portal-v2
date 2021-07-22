@@ -1,4 +1,4 @@
-export type DelegateStatus = 'active' | 'expired' | 'unrecognized';
+export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;

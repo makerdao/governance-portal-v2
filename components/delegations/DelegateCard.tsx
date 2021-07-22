@@ -33,7 +33,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-  const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
+  const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();

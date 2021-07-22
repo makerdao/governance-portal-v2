@@ -18,6 +18,7 @@ import { DelegateCard } from 'components/delegations';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import useAccountsStore from 'stores/accounts';
 
 type Props = {
   delegates: Delegate[];
@@ -29,14 +30,16 @@ const Delegates = ({ delegates }: Props) => {
       marginBottom: 2
     }
   };
-
+  const voteDelegate = useAccountsStore(state => state.voteDelegate);
+  const isOwner = d =>
+    d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
-  const activeDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.active && !delegate.expired)
-  );
-  const unrecognizedDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.unrecognized && !delegate.expired)
-  );
+  const recognizedDelegates = shuffleArray(
+    delegates.filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+  ).sort(d => (isOwner(d) ? -1 : 0));
+  const shadowDelegates = shuffleArray(
+    delegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+  ).sort(d => (isOwner(d) ? -1 : 0));
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -47,14 +50,14 @@ const Delegates = ({ delegates }: Props) => {
       <SidebarLayout>
         <Box>
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
-          {activeDelegates.length > 0 && (
+          {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
                 Recognized delegates
               </Heading>
 
               <Box>
-                {activeDelegates.map(delegate => (
+                {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
                     <DelegateCard delegate={delegate} />
                   </Box>
@@ -63,14 +66,14 @@ const Delegates = ({ delegates }: Props) => {
             </Box>
           )}
 
-          {unrecognizedDelegates.length > 0 && (
+          {shadowDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
                 Shadow Delegates
               </Heading>
 
               <Box>
-                {unrecognizedDelegates.map(delegate => (
+                {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
                     <DelegateCard delegate={delegate} />
                   </Box>

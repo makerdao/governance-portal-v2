@@ -17,7 +17,7 @@ function mergeDelegateInfo(
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
-    status: githubDelegate ? DelegateStatusEnum.active : DelegateStatusEnum.unrecognized,
+    status: githubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
     expired: isExpired,
     expirationDate: expirationDate.toDate(),
     description: githubDelegate?.description || '',
