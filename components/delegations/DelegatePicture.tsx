@@ -13,7 +13,7 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
           borderRadius: '100%'
         }}
       />
-      {delegate.status === DelegateStatusEnum.active && (
+      {delegate.status === DelegateStatusEnum.recognized && (
         <Image
           src="/assets/verified-check.svg"
           sx={{

@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
-
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
@@ -27,17 +26,20 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const network = getNetwork();
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const account = useAccountsStore(state => state.currentAccount);
+  const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
   const address = account?.address;
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-  const showLinkToDetail = delegate.status === DelegateStatusEnum.active && !delegate.expired;
+  const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
+
+  const isOwner =
+    delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
   return (
-    <Box sx={{ variant: 'cards.primary' }}>
+    <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
       <Flex
         sx={{
           flexDirection: ['column', 'column', 'row', 'column', 'row']

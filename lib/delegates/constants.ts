@@ -1,5 +1,5 @@
 export enum DelegateStatusEnum {
-  active = 'active',
+  recognized = 'recognized',
   expired = 'expired',
-  unrecognized = 'unrecognized'
+  shadow = 'shadow'
 }
