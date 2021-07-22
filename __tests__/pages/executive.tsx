@@ -1,9 +1,18 @@
 import { configure, act, fireEvent, screen, cleanup } from '@testing-library/react';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
-import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers';
+import getMaker from '../../lib/maker';
+import {
+  injectProvider,
+  connectAccount,
+  renderWithAccountSelect as render,
+  createDelegate,
+  switchAccount,
+  DEMO_ACCOUNT_TESTS
+} from '../helpers';
 import { ExecutiveOverview } from '../../pages/executive';
 import proposals from '../../mocks/proposals.json';
+import { accountsApi } from 'stores/accounts';
 
 jest.mock('@theme-ui/match-media', () => {
   return {
@@ -12,6 +21,7 @@ jest.mock('@theme-ui/match-media', () => {
 });
 
 const { click } = fireEvent;
+let maker;
 
 async function setup() {
   const view = render(
@@ -20,7 +30,7 @@ async function setup() {
     </SWRConfig>
   );
   await act(async () => {
-    await connectAccount(view);
+    await connectAccount(view, DEMO_ACCOUNT_TESTS);
   });
   return view;
 }
@@ -30,6 +40,10 @@ describe('Executive page', () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
     injectProvider();
+
+    maker = await getMaker();
+    await createDelegate(maker);
+
     mixpanel.track = () => {};
   });
 
@@ -101,5 +115,19 @@ describe('Executive page', () => {
     const submitButton = await screen.getByText('Submit Vote');
     click(submitButton);
     //TODO: get the UI to reflect the vote and test for that
+  });
+
+  test('shows delegated balance if account is a delegate', async () => {
+    accountsApi.getState().addAccountsListener();
+
+    // set delegate in state
+    accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');
+
+    await screen.findByText(/In delegate contract:/i);
+
+    // switch to non-delegate account
+    await switchAccount(maker);
+
+    await screen.findByText(/In voting contract:/i);
   });
 });
