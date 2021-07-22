@@ -152,7 +152,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Grid gap={[4, 5]} sx={{ px: [2, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Intro to Governance"
-                linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
+                linkDest="https://makerdao.world/learn/governance"
                 icon="govIntro"
                 sx={{
                   '&:hover': {
@@ -178,7 +178,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </IntroCard>
               <IntroCard
                 title="Community Tools"
-                linkDest="https://community-development.makerdao.com/learn/governance/participate"
+                linkDest="https://makerdao.world/learn/governance/participate"
                 icon="govCalls"
                 sx={{
                   '&:hover': {

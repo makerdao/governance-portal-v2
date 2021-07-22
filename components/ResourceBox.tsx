@@ -18,10 +18,7 @@ export default function ResourceBox(props): JSX.Element {
           </ExternalLink>
         </Flex>
         <Flex sx={{ alignItems: 'center', pt: 3 }}>
-          <ExternalLink
-            href="https://community-development.makerdao.com/governance/governance"
-            target="_blank"
-          >
+          <ExternalLink href="https://makerdao.world/learn/governance/governance-faq" target="_blank">
             <Text sx={{ color: 'accentBlue', fontSize: [2, 3], ':hover': { color: 'blueLinkHover' } }}>
               Governance FAQs
               <Icon ml={2} name="arrowTopRight" size={2} />
@@ -46,12 +43,9 @@ export default function ResourceBox(props): JSX.Element {
         </Flex>
 
         <Flex sx={{ alignItems: 'center', pt: 3 }}>
-          <ExternalLink
-            href="https://community-development.makerdao.com/contribute/governance_and_risk_meetings/"
-            target="_blank"
-          >
+          <ExternalLink href="https://makerdao.world/resources/governance_and_risk_meetings" target="_blank">
             <Text sx={{ color: 'accentBlue', fontSize: [2, 3], ':hover': { color: 'blueLinkHover' } }}>
-              Governance call schedule
+              Governance Call Schedule
               <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </ExternalLink>
@@ -63,7 +57,7 @@ export default function ResourceBox(props): JSX.Element {
             target="_blank"
           >
             <Text sx={{ color: 'accentBlue', fontSize: [2, 3], ':hover': { color: 'blueLinkHover' } }}>
-              MakerDAO events calendar
+              MakerDAO Events Calendar
               <Icon ml={2} name="arrowTopRight" size={2} />
             </Text>
           </ExternalLink>
