@@ -25,7 +25,9 @@ function mergeDelegateInfo(
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,
-    lastVote: new Date() // TODO: See where to get this info
+    lastVote: null,
+    communication: githubDelegate?.communication,
+    combinedParticipation: githubDelegate?.combinedParticipation
   };
 }
 

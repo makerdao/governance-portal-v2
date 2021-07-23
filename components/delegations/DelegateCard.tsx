@@ -113,19 +113,27 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             }}
           >
             <Box sx={{ mb: 4, flex: 1 }}>
-              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
-                Untracked
+              <Text
+                as="p"
+                variant="microHeading"
+                sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
+              >
+                {delegate.combinedParticipation ?? 'Untracked'}
               </Text>
               <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Poll participation
+                Participation
               </Text>
             </Box>
             <Box sx={{ flex: 1 }}>
-              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5], color: 'secondaryMuted' }}>
-                Untracked
+              <Text
+                as="p"
+                variant="microHeading"
+                sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
+              >
+                {delegate.communication ?? 'Untracked'}
               </Text>
               <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Executive participation
+                Communication
               </Text>
             </Box>
             <Box>

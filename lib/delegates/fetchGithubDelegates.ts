@@ -15,19 +15,30 @@ async function extractGithubInformation(
   try {
     const folderContents = await fetchGitHubPage(owner, repo, folder.path);
 
-    const readme = folderContents.find(item => item.name === 'README.md');
+    const profileMd = folderContents.find(item => item.name === 'profile.md');
 
-    // No readme found
-    if (!readme) {
+    const metricsMd = folderContents.find(item => item.name === 'metrics.md');
+
+    // No profile found
+    if (!profileMd) {
       return undefined;
     }
 
-    const readmeDoc = await (await fetch(readme?.download_url)).text();
+    const profileMdDoc = await (await fetch(profileMd?.download_url)).text();
+
+    let metricsMdDoc;
+    if (metricsMd) {
+      metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
+    }
 
     const {
       content,
       data: { name, url, profile_picture_url }
-    } = matter(readmeDoc);
+    } = matter(profileMdDoc);
+
+    const {
+      data: { combined_participation, communication }
+    } = matter(metricsMdDoc);
 
     const picture = folderContents.find(item => item.name.indexOf('profile') !== -1);
     const html = await markdownToHtml(content);
@@ -37,7 +48,9 @@ async function extractGithubInformation(
       name,
       picture: picture ? picture.download_url : profile_picture_url,
       externalUrl: url,
-      description: html
+      description: html,
+      combinedParticipation: combined_participation,
+      communication
     };
   } catch (e) {
     console.error('Error parsing folder from github delegate', e.message);

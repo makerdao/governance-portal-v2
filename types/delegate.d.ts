@@ -6,6 +6,8 @@ export type DelegateRepoInformation = {
   name: string;
   externalUrl: string;
   description: string;
+  combinedParticipation?: string;
+  communication?: string;
 };
 
 export type DelegateContractInformation = {
@@ -23,7 +25,9 @@ export type Delegate = {
   picture: string;
   status: DelegateStatus;
   expired: boolean;
-  lastVote: Date;
+  lastVote: Date | null;
   expirationDate: Date;
   externalUrl?: string;
+  combinedParticipation?: string;
+  communication?: string;
 };
