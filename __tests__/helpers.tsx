@@ -1,4 +1,4 @@
-import { act, render, RenderResult } from '@testing-library/react';
+import { act, render, RenderResult, screen } from '@testing-library/react';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import { formatAddress } from 'lib/utils';
 import { ThemeProvider } from 'theme-ui';
@@ -46,6 +46,7 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
+//TODO this no longer needs to be passed the component
 export async function connectAccount(component, address = DEMO_ACCOUNT_TESTS) {
   try {
     accountsApi.setState({
@@ -56,7 +57,7 @@ export async function connectAccount(component, address = DEMO_ACCOUNT_TESTS) {
       }
     });
 
-    await component.findAllByText(formatAddress(address), { exact: false }, { timeout: 15000 });
+    await screen.findAllByText(formatAddress(address), { exact: false }, { timeout: 15000 });
   } catch (err) {
     throw new Error('Failed to connect account in helpers.tsx.');
   }
@@ -88,7 +89,6 @@ export async function createDelegate(maker, account = DEMO_ACCOUNT_TESTS) {
 
 // Convenience function to add a new account maker & browser provider
 export async function switchAccount(maker, account = null) {
-  console.log({ account });
   const accountToUse = account ?? TestAccountProvider.nextAccount();
   await maker.service('accounts').addAccount(`test-account-${accountToUse.address}`, {
     type: 'privateKey',
@@ -96,7 +96,6 @@ export async function switchAccount(maker, account = null) {
   });
 
   maker.useAccount(`test-account-${accountToUse.address}`);
-  injectProvider();
 
   return accountToUse;
 }

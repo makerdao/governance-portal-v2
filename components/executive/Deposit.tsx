@@ -59,7 +59,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           {txPending ? 'Transaction pending' : 'Confirm transaction'}
         </Text>
 
-        <Flex as="p" sx={{ justifyContent: 'center' }}>
+        <Flex sx={{ justifyContent: 'center' }}>
           <TxIndicators.Pending sx={{ width: 6 }} />
         </Flex>
 

@@ -1,9 +1,8 @@
-import { configure, act, fireEvent, screen, cleanup } from '@testing-library/react';
+import { configure, act, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 import getMaker from '../../lib/maker';
 import {
-  injectProvider,
   connectAccount,
   renderWithAccountSelect as render,
   createDelegate,
@@ -39,7 +38,6 @@ describe('Executive page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
-    injectProvider();
 
     maker = await getMaker();
     await createDelegate(maker);
@@ -51,46 +49,32 @@ describe('Executive page', () => {
     await setup();
   });
 
-  afterEach(() => {
-    cleanup();
-  });
-
   test('can deposit and withdraw', async () => {
     const depositButton = await screen.findByTestId('deposit-button');
 
-    await act(() => {
-      click(depositButton);
-    });
+    click(depositButton);
 
     await screen.findByText('Approve voting contract');
     const approveButton = screen.getByTestId('deposit-approve-button');
 
-    await act(() => {
-      click(approveButton);
-    });
+    click(approveButton);
 
     await screen.findByText('Deposit into voting contract');
     const input = screen.getByTestId('mkr-input');
     fireEvent.change(input, { target: { value: '10' } });
     const finalDepositButton = await screen.findByText('Deposit MKR');
-    expect(finalDepositButton).not.toBeDisabled();
+    expect(finalDepositButton).toBeEnabled();
 
-    await act(() => {
-      click(finalDepositButton);
-    });
+    click(finalDepositButton);
 
     const withdrawButton = await screen.findByTestId('withdraw-button');
 
-    await act(() => {
-      click(withdrawButton);
-    });
+    click(withdrawButton);
 
     await screen.findByText('Approve voting contract');
     const approveButtonWithdraw = screen.getByTestId('withdraw-approve-button', {}, { timeout: 15000 });
 
-    await act(() => {
-      click(approveButtonWithdraw);
-    });
+    click(approveButtonWithdraw);
 
     await screen.findByText('Withdraw from voting contract');
     const inputWithdraw = screen.getByTestId('mkr-input');
@@ -98,23 +82,30 @@ describe('Executive page', () => {
 
     const finalDepositButtonWithdraw = await screen.findByText('Withdraw MKR');
 
-    expect(finalDepositButtonWithdraw).not.toBeDisabled();
+    expect(finalDepositButtonWithdraw).toBeEnabled();
 
-    await act(() => {
-      click(finalDepositButtonWithdraw);
-    });
+    click(finalDepositButtonWithdraw);
+
+    const dialog = screen.getByRole('dialog');
+    await waitForElementToBeRemoved(dialog);
 
     const lockedMKR = await screen.findByTestId('locked-mkr');
 
-    expect(lockedMKR).toHaveTextContent('0.00');
+    expect(lockedMKR).toHaveTextContent(/^0.000000 MKR$/); //find exact match
   });
 
   test('can vote', async () => {
-    const [voteButtonOne] = await screen.getAllByTestId('vote-button-exec-overview-card');
+    const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
     click(voteButtonOne);
-    const submitButton = await screen.getByText('Submit Vote');
+    const submitButton = screen.getByText('Submit Vote');
     click(submitButton);
+
+    await screen.findByText('Sign Transaction');
+    await screen.findByText('Transaction Sent!');
     //TODO: get the UI to reflect the vote and test for that
+
+    const dialog = screen.getByRole('dialog');
+    await waitForElementToBeRemoved(dialog);
   });
 
   test('shows delegated balance if account is a delegate', async () => {
