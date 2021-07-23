@@ -1,6 +1,7 @@
+import { act, screen } from '@testing-library/react';
 import mockPolls from '../../../mocks/polls.json';
 import { accountsApi } from '../../../stores/accounts';
-import { injectProvider, connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers'; 
+import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
 
@@ -13,24 +14,24 @@ jest.mock('@theme-ui/match-media', () => {
 });
 
 beforeAll(async () => {
-  injectProvider();
   maker = await getMaker();
   await createTestPolls(maker);
 });
 
-let component;
-beforeEach(async() => {
+beforeEach(async () => {
   accountsApi.setState({ currentAccount: undefined });
-  component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(component);
+  const view = render(<PollingOverviewPage polls={mockPolls as any} />);
+  await act(async () => {
+    await connectAccount();
+  });
 });
 
 test('single select options render properly', async () => {
-  const select = await component.findByTestId('single select');
-  const options = await component.findAllByTestId('single select option');
+  const select = await screen.findByTestId('single select');
+  const options = await screen.findAllByTestId('single select option');
 
-  expect(select).toBeDefined();
+  expect(select).toBeInTheDocument();
   expect(options.length).toBe(2);
-  expect(await component.findByText('Yes')).toBeDefined();
-  expect(await component.findByText('No')).toBeDefined();
+  expect(await screen.findByText('Yes')).toBeInTheDocument();
+  expect(await screen.findByText('No')).toBeInTheDocument();
 });
