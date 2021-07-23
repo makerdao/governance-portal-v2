@@ -2,7 +2,6 @@ import { act, fireEvent, configure, screen } from '@testing-library/react';
 import getMaker from '../../lib/maker';
 import DelegatesPage from '../../pages/delegates';
 import {
-  injectProvider,
   connectAccount,
   renderWithAccountSelect as render,
   createDelegate,
@@ -66,7 +65,6 @@ describe('Delegate Create page', () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
     maker = await getMaker();
-    injectProvider();
 
     sendMkrToAddress(maker, NEXT_ACCOUNT, '5');
 
