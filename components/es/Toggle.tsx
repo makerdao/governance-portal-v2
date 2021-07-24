@@ -20,7 +20,13 @@ const InnerToggle = ({ active }) => {
   );
 };
 
-export default function Toggle({ active, onClick, disabled }) {
+type Props = {
+  active: boolean, 
+  onClick: (newValue: boolean) => void,
+  disabled?: boolean
+}
+
+export default function Toggle({ active, onClick, disabled = false }: Props): React.ReactElement {
   return (
     <Button
       sx={{

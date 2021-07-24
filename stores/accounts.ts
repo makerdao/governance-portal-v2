@@ -23,15 +23,20 @@ type OldVoteProxy = {
   address: string;
 };
 
+type VoteDelegateContract = {
+  getVoteDelegateAddress: () => string
+}
+
 type Store = {
   currentAccount?: Account;
   proxies: Record<string, VoteProxy | null>;
   oldProxy: OldVoteProxy;
-  // TODO type this
-  voteDelegate: any;
+  voteDelegate: VoteDelegateContract | undefined;
   setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
+  isActingAsDelegate: boolean;
+  setIsActingAsDelegate: (isActingAsDelegate: boolean) => void;
 };
 
 const getOldProxyStatus = async (address, maker) => {
@@ -52,6 +57,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   proxies: {},
   oldProxy: { role: '', address: '' },
   voteDelegate: undefined,
+  isActingAsDelegate: false,
 
   addAccountsListener: async () => {
     const maker = await getMaker();
@@ -80,9 +86,16 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   setVoteDelegate: async address => {
     const maker = await getMaker();
     const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
-
+    console.log(voteDelegate);
     set({
       voteDelegate: voteDelegate ?? undefined
+    });
+  },
+
+  setIsActingAsDelegate: (isActingAsDelegate: boolean) => {
+    console.log(isActingAsDelegate)
+    set({
+      isActingAsDelegate
     });
   },
 
@@ -95,3 +108,4 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
 
 export default useAccountsStore;
 export { accountsApi };
+ 

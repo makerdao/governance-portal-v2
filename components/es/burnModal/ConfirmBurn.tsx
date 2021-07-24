@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { Flex, Box, Button, Text, Grid, Input, jsx, Close, Label, Checkbox, Link, Divider } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { MKR } from 'lib/maker';
 import Toggle from '../Toggle';

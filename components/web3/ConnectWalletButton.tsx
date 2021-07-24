@@ -9,9 +9,10 @@ type Props = {
   onClickConnect: () => void;
   address?: string;
   pending: boolean;
+  isActingAsDelegate: boolean;
 };
 
-export default function ConnectWalletButton({ onClickConnect, address, pending }: Props): React.ReactElement {
+export default function ConnectWalletButton({ onClickConnect, address, pending, isActingAsDelegate }: Props): React.ReactElement {
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
 
   async function fetchENSName(address: string) {
@@ -37,7 +38,7 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
     <Button
       aria-label="Connect wallet"
       sx={{
-        variant: 'buttons.card',
+        variant: isActingAsDelegate ? 'buttons.delegateAccount': 'buttons.card',
         borderRadius: 'round',
         color: 'textSecondary',
         p: 2,

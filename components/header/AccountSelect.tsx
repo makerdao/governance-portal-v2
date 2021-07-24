@@ -59,7 +59,7 @@ const WrappedAccountSelect = (): JSX.Element => (
 
 const AccountSelect = (): React.ReactElement => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
-  const account = useAccountsStore(state => state.currentAccount);
+  const [account, isActingAsDelegate] = useAccountsStore(state => [state.currentAccount, state.isActingAsDelegate]);
   const address = account?.address;
 
   // Detect previously authorized connections and force log-in
@@ -248,6 +248,7 @@ const AccountSelect = (): React.ReactElement => {
         }}
         address={address}
         pending={pending}
+        isActingAsDelegate={isActingAsDelegate}
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>

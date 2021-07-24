@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Heading, Box, Text, jsx } from 'theme-ui';
+import { Heading, Box, Text, jsx, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
@@ -19,12 +19,15 @@ import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
 import useAccountsStore from 'stores/accounts';
+import Link from 'next/link';
 
 type Props = {
   delegates: Delegate[];
 };
 
 const Delegates = ({ delegates }: Props) => {
+  const network = getNetwork();
+
   const styles = {
     delegateGroup: {
       marginBottom: 2
@@ -49,6 +52,20 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
+          <Box>
+            <Link
+                href={{
+                  pathname: '/delegates/me',
+                  query: { network }
+                }}
+              >
+                <a title="My delegate contract">
+                  <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
+                    Become a delegate
+                  </Button>
+                </a>
+              </Link>
+          </Box>
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
@@ -99,6 +116,7 @@ const Delegates = ({ delegates }: Props) => {
           )}
         </Box>
         <Stack gap={3}>
+          
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />

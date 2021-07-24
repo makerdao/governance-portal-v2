@@ -17,13 +17,16 @@ import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import { TxDisplay } from 'components/delegations';
+import Toggle from 'components/es/Toggle';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [account, voteDelegate, setVoteDelegate] = useAccountsStore(state => [
+  const [account, voteDelegate, setVoteDelegate, isActingAsDelegate, setIsActingAsDelegate] = useAccountsStore(state => [
     state.currentAccount,
     state.voteDelegate,
-    state.setVoteDelegate
+    state.setVoteDelegate,
+    state.isActingAsDelegate,
+    state.setIsActingAsDelegate
   ]);
   const address = account?.address;
   const [txId, setTxId] = useState(null);
@@ -69,6 +72,17 @@ const CreateDelegate = (): JSX.Element => {
             >
               <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
             </ExternalLink>
+
+            <Box>
+              { isActingAsDelegate ? 'You are acting as a delegate': 'You are not acting as a delegate' }
+              <Box>
+                <Toggle
+                  active={isActingAsDelegate}
+                  onClick={(newVal) => setIsActingAsDelegate(newVal)}
+                  data-testid="allowance-toggle"
+                />
+              </Box>
+            </Box>
           </Box>
         ) : (
           <Box>
@@ -76,7 +90,11 @@ const CreateDelegate = (): JSX.Element => {
               Create a delegate contract
             </Text>
             <Text as="p" sx={{ mt: 3 }}>
-              Use this page to create a delegate contract via the VoteDelegateFactory contract
+              Use this page to create a delegate contract via the VoteDelegateFactory contract.
+            </Text>
+            <Text as="p" sx={{ mt: 3 }}>
+              Once you become a delegate you will be available to choose between your delegate account and your normal account for voting using this page.
+              Please remember that when accessing your account, if you have a delegate contract, your account will default to it. You will have to switch back to your vote proxy to operate with it.
             </Text>
             {tx && (
               <DialogOverlay
