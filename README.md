@@ -36,6 +36,10 @@ _Requires node version >= v11.15.0_
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 
+### Architecture Diagram
+
+![](./architecture-diagram.png)
+
 ### Contributing
 
 See our [contributing guide](./CONTRIBUTING.md)
