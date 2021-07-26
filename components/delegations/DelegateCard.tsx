@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
@@ -17,6 +18,7 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
+import Tooltip from 'components/Tooltip';
 
 type PropTypes = {
   delegate: Delegate;
@@ -37,6 +39,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+
+  const participationTooltipLabel =
+    'The percentage of votes the delegate has participated in. Combines stats for polls and executives. Updated weekly by the GovAlpha Core Unit.';
+  const communicationTooltipLabel =
+    'The percentage of votes for which the delegate has publicly communicated their reasoning in addition to voting. Combines stats for polls and executives. Updated weekly by the GovAlpha Core Unit.';
 
   return (
     <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
@@ -120,9 +127,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.combinedParticipation ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Participation
-              </Text>
+              <Flex>
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                  Participation
+                </Text>
+                <Tooltip label={participationTooltipLabel}>
+                  <Box>
+                    <Icon name="question" ml={1} mt={'6px'} />
+                  </Box>
+                </Tooltip>
+              </Flex>
             </Box>
             <Box sx={{ flex: 1 }}>
               <Text
@@ -132,9 +146,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.communication ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Communication
-              </Text>
+              <Flex>
+                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                  Communication
+                </Text>
+                <Tooltip label={communicationTooltipLabel}>
+                  <Box>
+                    <Icon name="question" ml={1} mt={'6px'} />
+                  </Box>
+                </Tooltip>
+              </Flex>
             </Box>
             <Box>
               <Button
