@@ -8,11 +8,11 @@ import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'lib/polling/getVotingWeightCopy';
 
 export default function VotingWeight(props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  
+  const [address, isActingAsDelegate] = useAccountsStore(state => [state.activeAddress, state.isActingAsDelegate]);
+
   const { data: votingWeight } = useSWR(
-    addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
+    address ? ['/user/polling-voting-weight', address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
   );
 
@@ -36,7 +36,7 @@ export default function VotingWeight(props): JSX.Element {
   }
   votingWeightDescription = votingWeightDescription.slice(0, -2);
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);
+  const votingWeightCopy = getVotingWeightCopy(!!isActingAsDelegate);
 
   const tooltipLabel = (
     <>

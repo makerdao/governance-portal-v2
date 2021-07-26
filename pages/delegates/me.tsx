@@ -17,16 +17,14 @@ import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import { TxDisplay } from 'components/delegations';
-import Toggle from 'components/es/Toggle';
+import { DelegateSwitch } from 'components/delegations/DelegateSwitch';
 
 const CreateDelegate = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [account, voteDelegate, setVoteDelegate, isActingAsDelegate, setIsActingAsDelegate] = useAccountsStore(state => [
+  const [account, voteDelegate, setVoteDelegate] = useAccountsStore(state => [
     state.currentAccount,
     state.voteDelegate,
-    state.setVoteDelegate,
-    state.isActingAsDelegate,
-    state.setIsActingAsDelegate
+    state.setVoteDelegate
   ]);
   const address = account?.address;
   const [txId, setTxId] = useState(null);
@@ -64,7 +62,9 @@ const CreateDelegate = (): JSX.Element => {
           <Text>Connect your wallet to create a delegate contract</Text>
         ) : voteDelegate && !modalOpen ? (
           <Box>
-            <Text>Your delegate contract address:</Text>
+            <Text as="p" color="textSecondary" variant="caps" sx={{ pt: 2, pb: 2, fontSize: 1, fontWeight: '600' }}>
+              Your delegate contract address:
+            </Text>
             <ExternalLink
               title="View on etherescan"
               href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
@@ -74,14 +74,7 @@ const CreateDelegate = (): JSX.Element => {
             </ExternalLink>
 
             <Box>
-              { isActingAsDelegate ? 'You are acting as a delegate': 'You are not acting as a delegate' }
-              <Box>
-                <Toggle
-                  active={isActingAsDelegate}
-                  onClick={(newVal) => setIsActingAsDelegate(newVal)}
-                  data-testid="allowance-toggle"
-                />
-              </Box>
+              <DelegateSwitch />
             </Box>
           </Box>
         ) : (

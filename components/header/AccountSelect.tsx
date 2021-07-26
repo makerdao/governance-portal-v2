@@ -23,6 +23,7 @@ import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'components/web3/ConnectWalletButton';
+import { DelegateSwitch } from 'components/delegations/DelegateSwitch';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -59,8 +60,7 @@ const WrappedAccountSelect = (): JSX.Element => (
 
 const AccountSelect = (): React.ReactElement => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
-  const [account, isActingAsDelegate] = useAccountsStore(state => [state.currentAccount, state.isActingAsDelegate]);
-  const address = account?.address;
+  const activeAddress = useAccountsStore(state => state.activeAddress);
 
   // Detect previously authorized connections and force log-in
   useEagerConnect();
@@ -246,9 +246,7 @@ const AccountSelect = (): React.ReactElement => {
         onClickConnect={() => {
           setShowDialog(true);
         }}
-        address={address}
         pending={pending}
-        isActingAsDelegate={isActingAsDelegate}
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
@@ -291,19 +289,23 @@ const AccountSelect = (): React.ReactElement => {
             <>
               <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 3 }}>
                 <Text variant="microHeading" color="onBackgroundAlt">
-                  {address ? 'Account' : 'Select a Wallet'}
+                  {activeAddress ? 'Account' : 'Select a Wallet'}
                 </Text>
                 <Close aria-label="close" sx={closeButtonStyle as any} onClick={close} />
               </Flex>
-              {address ? (
+              {activeAddress ? (
                 <>
                   <AccountBox
-                    {...{ address, accountName }}
+                    accountName={accountName}
+                    address={activeAddress}
                     // This needs to be the change function for the wallet select dropdown
                     change={() => setChangeWallet(true)}
                   />
+                  
                   <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />
                   {txs?.length > 0 && <TransactionBox txs={txs} />}
+
+                  <DelegateSwitch />
                   <Button
                     variant="primaryOutline"
                     onClick={close}

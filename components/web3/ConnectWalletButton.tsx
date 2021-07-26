@@ -4,15 +4,21 @@ import { formatAddress } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { Button, Box, Flex, Text, jsx, Spinner } from 'theme-ui';
 import { getENS } from 'lib/web3/ens';
+import useAccountsStore from 'stores/accounts';
 
 type Props = {
   onClickConnect: () => void;
-  address?: string;
   pending: boolean;
-  isActingAsDelegate: boolean;
 };
 
-export default function ConnectWalletButton({ onClickConnect, address, pending, isActingAsDelegate }: Props): React.ReactElement {
+export default function ConnectWalletButton({ onClickConnect, pending }: Props): React.ReactElement {
+
+  const [address, isActingAsDelegate] = useAccountsStore(state => [
+    state.activeAddress,
+    state.isActingAsDelegate
+  ]);
+
+
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
 
   async function fetchENSName(address: string) {

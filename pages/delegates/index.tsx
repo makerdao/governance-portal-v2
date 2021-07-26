@@ -61,7 +61,7 @@ const Delegates = ({ delegates }: Props) => {
               >
                 <a title="My delegate contract">
                   <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
-                    Become a delegate
+                    {voteDelegate ? 'View my delegate contract' : 'Become a delegate'}
                   </Button>
                 </a>
               </Link>
