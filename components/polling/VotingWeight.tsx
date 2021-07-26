@@ -8,8 +8,10 @@ import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'lib/polling/getVotingWeightCopy';
 
 export default function VotingWeight(props): JSX.Element {
-  
-  const [address, isActingAsDelegate] = useAccountsStore(state => [state.activeAddress, state.isActingAsDelegate]);
+  const [address, isActingAsDelegate] = useAccountsStore(state => [
+    state.activeAddress,
+    state.isActingAsDelegate
+  ]);
 
   const { data: votingWeight } = useSWR(
     address ? ['/user/polling-voting-weight', address] : null,

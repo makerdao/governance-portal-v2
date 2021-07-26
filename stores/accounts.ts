@@ -24,8 +24,8 @@ type OldVoteProxy = {
 };
 
 type VoteDelegateContract = {
-  getVoteDelegateAddress: () => string
-}
+  getVoteDelegateAddress: () => string;
+};
 
 type Store = {
   // Holds the current active address for voting (delegate address, vote proxy or default account)
@@ -79,7 +79,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
       await get().setVoteDelegate(address);
 
       set({
-        activeAddress: hasProxy ? voteProxy: address,
+        activeAddress: hasProxy ? voteProxy : address,
         currentAccount: account,
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
         oldProxy,
@@ -91,7 +91,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   setVoteDelegate: async address => {
     const maker = await getMaker();
     const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
-  
+
     set({
       voteDelegate: voteDelegate ?? undefined
     });
@@ -100,10 +100,12 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   setIsActingAsDelegate: (isActingAsDelegate: boolean) => {
     // Toggles the active address
     const state = get();
-    const normalAddress = state.currentAccount && !isActingAsDelegate ? state.currentAccount.address : undefined;
-    const delegateAddress = state.voteDelegate && isActingAsDelegate ? state.voteDelegate.getVoteDelegateAddress(): undefined;
+    const normalAddress =
+      state.currentAccount && !isActingAsDelegate ? state.currentAccount.address : undefined;
+    const delegateAddress =
+      state.voteDelegate && isActingAsDelegate ? state.voteDelegate.getVoteDelegateAddress() : undefined;
     const address = delegateAddress || normalAddress;
-  
+
     set({
       isActingAsDelegate,
       activeAddress: address
@@ -113,10 +115,14 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   // explicitly setting this as `undefined` is an anti-pattern, but it's only a bandaid until
   // disconnect functionality is added to dai.js
   disconnectAccount: async () => {
-    set({ currentAccount: undefined, isActingAsDelegate: false, activeAddress: undefined, voteDelegate: undefined });
+    set({
+      currentAccount: undefined,
+      isActingAsDelegate: false,
+      activeAddress: undefined,
+      voteDelegate: undefined
+    });
   }
 }));
 
 export default useAccountsStore;
 export { accountsApi };
- 

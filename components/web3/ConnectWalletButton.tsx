@@ -12,12 +12,10 @@ type Props = {
 };
 
 export default function ConnectWalletButton({ onClickConnect, pending }: Props): React.ReactElement {
-
   const [address, isActingAsDelegate] = useAccountsStore(state => [
     state.activeAddress,
     state.isActingAsDelegate
   ]);
-
 
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
 
@@ -44,7 +42,7 @@ export default function ConnectWalletButton({ onClickConnect, pending }: Props):
     <Button
       aria-label="Connect wallet"
       sx={{
-        variant: isActingAsDelegate ? 'buttons.delegateAccount': 'buttons.card',
+        variant: isActingAsDelegate ? 'buttons.delegateAccount' : 'buttons.card',
         borderRadius: 'round',
         color: 'textSecondary',
         p: 2,

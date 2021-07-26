@@ -62,7 +62,12 @@ const CreateDelegate = (): JSX.Element => {
           <Text>Connect your wallet to create a delegate contract</Text>
         ) : voteDelegate && !modalOpen ? (
           <Box>
-            <Text as="p" color="textSecondary" variant="caps" sx={{ pt: 2, pb: 2, fontSize: 1, fontWeight: '600' }}>
+            <Text
+              as="p"
+              color="textSecondary"
+              variant="caps"
+              sx={{ pt: 2, pb: 2, fontSize: 1, fontWeight: '600' }}
+            >
               Your delegate contract address:
             </Text>
             <ExternalLink
@@ -86,8 +91,10 @@ const CreateDelegate = (): JSX.Element => {
               Use this page to create a delegate contract via the VoteDelegateFactory contract.
             </Text>
             <Text as="p" sx={{ mt: 3 }}>
-              Once you become a delegate you will be available to choose between your delegate account and your normal account for voting using this page.
-              Please remember that when accessing your account, if you have a delegate contract, your account will default to it. You will have to switch back to your vote proxy to operate with it.
+              Once you become a delegate you will be available to choose between your delegate account and
+              your normal account for voting using this page. Please remember that when accessing your
+              account, if you have a delegate contract, your account will default to it. You will have to
+              switch back to your vote proxy to operate with it.
             </Text>
             {tx && (
               <DialogOverlay

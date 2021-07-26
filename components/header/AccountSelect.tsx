@@ -301,7 +301,7 @@ const AccountSelect = (): React.ReactElement => {
                     // This needs to be the change function for the wallet select dropdown
                     change={() => setChangeWallet(true)}
                   />
-                  
+
                   <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />
                   {txs?.length > 0 && <TransactionBox txs={txs} />}
 

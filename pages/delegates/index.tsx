@@ -54,17 +54,17 @@ const Delegates = ({ delegates }: Props) => {
         <Box>
           <Box>
             <Link
-                href={{
-                  pathname: '/delegates/me',
-                  query: { network }
-                }}
-              >
-                <a title="My delegate contract">
-                  <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
-                    {voteDelegate ? 'View my delegate contract' : 'Become a delegate'}
-                  </Button>
-                </a>
-              </Link>
+              href={{
+                pathname: '/delegates/me',
+                query: { network }
+              }}
+            >
+              <a title="My delegate contract">
+                <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
+                  {voteDelegate ? 'View my delegate contract' : 'Become a delegate'}
+                </Button>
+              </a>
+            </Link>
           </Box>
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
@@ -116,7 +116,6 @@ const Delegates = ({ delegates }: Props) => {
           )}
         </Box>
         <Stack gap={3}>
-          
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
