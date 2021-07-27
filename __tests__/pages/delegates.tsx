@@ -53,7 +53,7 @@ async function setup(maker) {
 
   await act(async () => {
     // This sets the account in state
-    await connectAccount(view, maker.currentAccount().address);
+    await connectAccount(maker.currentAccount().address);
   });
   return view;
 }

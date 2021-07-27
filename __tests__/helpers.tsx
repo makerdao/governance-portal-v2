@@ -47,21 +47,17 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
-/* 
-  TODO:the component no longer needs to be passed to this function since we can use 'screen'.
-  Temporarily defaulting the argument to 'null' so that correct implementations (with no parameter)
-  aren't flagged by the linter. Once all the calls to connectAccount that still pass a component are fixed
-  we can remove the parameter altogether.
-*/
-export async function connectAccount(component = null, address = DEMO_ACCOUNT_TESTS) {
+export async function connectAccount(address = DEMO_ACCOUNT_TESTS) {
   try {
     accountsApi.setState({
       currentAccount: {
         address,
         name: '',
         type: ''
-      }
+      },
+      activeAddress: address
     });
+  
 
     await screen.findAllByText(formatAddress(address), { exact: false }, { timeout: 15000 });
   } catch (err) {
