@@ -1,6 +1,6 @@
 import { act, fireEvent, configure, screen } from '@testing-library/react';
-import CreateDelegate from '../../../pages/delegates/me';
-import { connectAccount, renderWithAccountSelect as render } from '../../helpers';
+import CreateDelegate from '../../pages/account';
+import { connectAccount, renderWithAccountSelect as render } from '../helpers';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 
