@@ -5,6 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
 import Link from 'next/link';
+import ColorModeToggle from './ColorModeToggle';
 
 export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const t = text => translate(text, locale);
@@ -181,6 +182,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             <Link href="https://www.youtube.com/MakerDAO">
               <Icon name="youtube" />
             </Link>
+            <ColorModeToggle />
           </Flex>
         </Box>
       </Grid>
