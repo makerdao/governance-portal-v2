@@ -27,7 +27,7 @@ const MOCK_DELEGATES = [
     name: 'Lee Robinson',
     picture:
       'https://raw.githubusercontent.com/makerdao-dux/voting-delegates/main/delegates/0xc8829647c8e4131a01354ccac993388568d12d00/profile.jpg',
-    status: 'active',
+    status: 'recognized',
     voteDelegateAddress: DELEGATE_ADDRESS
   }
 ];
