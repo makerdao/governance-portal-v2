@@ -47,7 +47,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
 
-  const addressLockedMKR = 
+  const addressLockedMKR =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useLockedMkr(addressLockedMKR || '', voteProxy, voteDelegate);
 
