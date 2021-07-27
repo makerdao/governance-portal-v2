@@ -11,6 +11,7 @@ import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { useLockedMkr } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -30,6 +31,8 @@ const CreateDelegate = (): JSX.Element => {
   );
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const { data: proxyLockedMkr } = useLockedMkr(address, voteProxy);
+  const { data: delegatedMkr } = useLockedMkr(voteDelegate.getVoteDelegateAddress());
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -79,6 +82,14 @@ const CreateDelegate = (): JSX.Element => {
                 >
                   <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
                 </ExternalLink>
+                {delegatedMkr && (
+                  <>
+                    <Text as="p" sx={{ mt: 3 }}>
+                      Delegated MKR:
+                    </Text>
+                    <Text>{delegatedMkr.toBigNumber().toFormat(6)}</Text>
+                  </>
+                )}
               </Box>
             ) : (
               <Box>
@@ -116,7 +127,7 @@ const CreateDelegate = (): JSX.Element => {
               Vote Proxy
             </Text>
             {voteProxy && !modalOpen ? (
-              <ExecutiveBalance lockedMkr={null /* TODO */} voteProxy={voteProxy} />
+              <ExecutiveBalance lockedMkr={proxyLockedMkr} voteProxy={voteProxy} />
             ) : (
               <Text as="p" sx={{ mt: 3 }}>
                 No vote proxy contract detected
