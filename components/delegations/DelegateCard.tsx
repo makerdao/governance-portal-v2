@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
+import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
@@ -140,7 +141,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Button
                 variant="primaryOutline"
                 disabled={!account}
-                onClick={() => setShowUndelegateModal(true)}
+                onClick={() => {
+                  mixpanel.track('btn-click', {
+                    id: 'openUndelegateModal',
+                    product: 'governance-portal-v2',
+                    page: 'Delegates'
+                  });
+                  setShowUndelegateModal(true);
+                }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
               >
                 Undelegate
@@ -174,7 +182,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Button
                 variant="primaryLarge"
                 disabled={!account}
-                onClick={() => setShowDelegateModal(true)}
+                onClick={() => {
+                  mixpanel.track('btn-click', {
+                    id: 'openDelegateModal',
+                    product: 'governance-portal-v2',
+                    page: 'Delegates'
+                  });
+                  setShowDelegateModal(true);
+                }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
               >
                 Delegate

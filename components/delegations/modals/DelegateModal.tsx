@@ -5,6 +5,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
+import mixpanel from 'mixpanel-browser';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
@@ -72,6 +73,11 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
   };
 
   const onClose = () => {
+    mixpanel.track('btn-click', {
+      id: 'closeDelegateModal',
+      product: 'governance-portal-v2',
+      page: 'Delegates'
+    });
     setTxId(null);
     onDismiss();
   };

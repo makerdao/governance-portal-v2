@@ -1,45 +1,33 @@
-import { DEMO_ACCOUNT_TESTS, injectProvider, renderWithTheme as render } from '../../helpers'; 
-import { act, fireEvent } from '@testing-library/react';
+import { renderWithTheme as render, connectAccount } from '../../helpers';
+import { act, fireEvent, screen } from '@testing-library/react';
 import WrappedAccountSelect from '../../../components/header/AccountSelect';
-import { accountsApi } from 'stores/accounts';
 
 const { click } = fireEvent;
 
 describe('Account select', () => {
-
-  beforeAll(() => {
-    injectProvider();
-  });
-
   test('can connect an account', async () => {
-    const { findByText, findAllByText, findByTestId } = render(<WrappedAccountSelect />);
-    const connectButton = await findByText('Connect wallet');
-    expect(connectButton).toBeDefined();
-    
-    await act(async () => {
-      click(connectButton);
-    });
-    
-    await act(async () => {
-      await click(await findByText('MetaMask'));
-    });
+    const view = render(<WrappedAccountSelect />);
+    const connectButton = await screen.findByText('Connect wallet');
+    expect(connectButton).toBeInTheDocument();
 
-    accountsApi.setState({ currentAccount: {
-      address: DEMO_ACCOUNT_TESTS,
-      name: '',
-      type: ''
-    } });
+    click(connectButton);
+
+    const metamaskButton = await screen.findByText('MetaMask');
+
+    click(metamaskButton);
 
     await act(async () => {
-      await click(connectButton);
+      await connectAccount();
     });
 
-    const copyButton = await findByTestId('copy-address');
-    expect(copyButton).toBeDefined();
-    const etherscanButton = await findByText('etherscan', { exact: false });
-    expect(etherscanButton).toBeDefined();
-    const displayedAddress = await findAllByText('0x16F', { exact: false });
+    const copyButton = await screen.findByTestId('copy-address');
+    expect(copyButton).toBeInTheDocument();
+    const etherscanButton = await screen.findByText('etherscan', { exact: false });
+    expect(etherscanButton).toBeInTheDocument();
+    const displayedAddress = await screen.findAllByText('0x16F', { exact: false });
     expect(displayedAddress.length).toBe(1);
-  });
 
+    // Wait for MKR balance to load
+    await screen.findByText(/400.00 MKR/i);
+  });
 });
