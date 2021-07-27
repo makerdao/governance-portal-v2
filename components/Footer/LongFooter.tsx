@@ -72,10 +72,6 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: 'Dai.js'
         },
         {
-          url: 'https://docs.makerdao.com/',
-          title: t('Documentation')
-        },
-        {
           url: 'https://github.com/makerdao/developerguides',
           title: 'Developer Guides'
         }

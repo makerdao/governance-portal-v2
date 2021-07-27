@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { takeSnapshot, restoreSnapshot } from '@makerdao/test-helpers';
 

@@ -1,6 +1,8 @@
+import { screen } from '@testing-library/react';
 import Header from '../../components/Header';
-import { renderWithTheme as render } from '../helpers'; 
+import { renderWithTheme as render } from '../helpers';
 
-test('rendering', () => {
-  const { debug } = render(<Header />);
+test('rendering', async () => {
+  const view = render(<Header />);
+  const [makerIcon, menuIcon] = await screen.findAllByRole('presentation');
 });
