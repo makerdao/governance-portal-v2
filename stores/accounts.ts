@@ -4,36 +4,19 @@ import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
 import { Account } from 'types/account';
+import { OldVoteProxyContract, VoteProxyContract } from 'types/voteProxyContract';
+import { VoteDelegateContract } from 'types/voteDelegateContract';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-type VoteProxy = {
-  getProxyAddress: () => string;
-  getColdAddress: () => string;
-  getHotAddress: () => string;
-  lock: () => Promise<any>;
-  free: () => Promise<any>;
-  voteExec: (picks: string[] | string) => Promise<any>;
-  getNumDeposits: () => Promise<any>;
-  getVotedProposalAddresses: () => Promise<any>;
-};
-
-type OldVoteProxy = {
-  role: string;
-  address: string;
-};
-
-type VoteDelegateContract = {
-  getVoteDelegateAddress: () => string;
-};
 
 type Store = {
   // Holds the current active address for voting (delegate address, vote proxy or default account)
-  activeAddress: string | undefined;
+  activeAddress?: string;
   currentAccount?: Account;
-  proxies: Record<string, VoteProxy | null>;
-  oldProxy: OldVoteProxy;
-  voteDelegate: VoteDelegateContract | undefined;
+  proxies: Record<string, VoteProxyContract | null>;
+  oldProxy: OldVoteProxyContract;
+  voteDelegate?: VoteDelegateContract;
   setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
@@ -55,7 +38,7 @@ const getOldProxyStatus = async (address, maker) => {
 };
 
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
-  activeAddress: undefined,
+  activeAddress: '',
   currentAccount: undefined,
   proxies: {},
   oldProxy: { role: '', address: '' },
@@ -64,6 +47,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
 
   addAccountsListener: async () => {
     const maker = await getMaker();
+
     maker.on('accounts/CHANGE', async ({ payload: { account } }) => {
       if (!account) {
         set({ currentAccount: account });
@@ -79,7 +63,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
       await get().setVoteDelegate(address);
 
       set({
-        activeAddress: hasProxy ? voteProxy : address,
+        activeAddress: address,
         currentAccount: account,
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
         oldProxy,
