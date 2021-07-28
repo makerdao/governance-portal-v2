@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Heading, Box, Text, jsx } from 'theme-ui';
+import { Heading, Box, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
@@ -19,18 +19,21 @@ import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
 import useAccountsStore from 'stores/accounts';
+import Link from 'next/link';
 
 type Props = {
   delegates: Delegate[];
 };
 
 const Delegates = ({ delegates }: Props) => {
+  const network = getNetwork();
+
   const styles = {
     delegateGroup: {
       marginBottom: 2
     }
   };
-  const voteDelegate = useAccountsStore(state => state.voteDelegate);
+  const [currentAccount, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
@@ -49,6 +52,19 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
+          {currentAccount && <Box>
+            <Link
+              href={{
+                pathname: '/account',
+                query: { network }
+              }}
+              passHref
+            >
+              <ThemeUILInk title="My account" >
+                <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
+              </ThemeUILInk>
+            </Link>
+          </Box>}
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
