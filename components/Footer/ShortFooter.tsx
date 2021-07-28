@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { NavLink, jsx } from 'theme-ui';
-import ColorModeToggle from './ColorModeToggle';
 
 export default function ShortFooter(): React.ReactElement {
   return (
@@ -40,7 +39,6 @@ export default function ShortFooter(): React.ReactElement {
       >
         Status
       </NavLink>
-      <ColorModeToggle />
       <div sx={{ mx: 'auto' }} />
       <div sx={{ p: 2 }}>© 2021 Maker</div>
     </footer>

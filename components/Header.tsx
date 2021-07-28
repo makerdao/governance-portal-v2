@@ -10,6 +10,7 @@ import BallotStatus from './polling/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
+import ColorModeToggle from './header/ColorModeToggle';
 
 const Header = (props): JSX.Element => {
   const network = getNetwork();
@@ -95,6 +96,10 @@ const Header = (props): JSX.Element => {
             ES Module
           </NavLink>
         </Link>
+
+        <Flex sx={{ pr: 2 }}>
+          <ColorModeToggle />
+        </Flex>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <AccountSelect />
