@@ -282,6 +282,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         </Stack>
       </PrimaryLayout>
       <Global
+        /* react-loading-skeleton uses an outdated version of @emotion/core which causes incorrect type errors.
+        see: https://github.com/emotion-js/emotion/issues/1800 */
+        // @ts-ignore
         styles={() => ({
           body: {
             backgroundColor: 'transparent'
