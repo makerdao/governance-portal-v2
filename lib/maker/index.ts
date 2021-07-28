@@ -109,7 +109,7 @@ let networkSingleton: SupportedNetworks;
 
 function getNetwork(): SupportedNetworks {
   if (!networkSingleton) networkSingleton = determineNetwork();
-  return networkSingleton;
+  return determineNetwork();
 }
 
 function isDefaultNetwork(): boolean {
