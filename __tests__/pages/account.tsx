@@ -41,6 +41,11 @@ describe('Delegate Create page', () => {
   });
 
   test('can create a delegate contract', async () => {
+    const checkbox = screen.getByRole('checkbox');
+    act(() => {
+      click(checkbox);
+    });
+
     const createButton = screen.getByTestId('create-button');
 
     act(() => {

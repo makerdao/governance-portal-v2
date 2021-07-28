@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Box, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Alert, Box, Button, Checkbox, Label, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Head from 'next/head';
 import shallow from 'zustand/shallow';
@@ -31,8 +31,9 @@ const CreateDelegate = (): JSX.Element => {
   );
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [warningRead, setWarningRead] = useState(false);
   const { data: proxyLockedMkr } = useLockedMkr(address, voteProxy);
-  const { data: delegatedMkr } = useLockedMkr(voteDelegate.getVoteDelegateAddress());
+  const { data: delegatedMkr } = useLockedMkr(voteDelegate ? voteDelegate.getVoteDelegateAddress() : null);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -118,9 +119,23 @@ const CreateDelegate = (): JSX.Element => {
                     </DialogContent>
                   </DialogOverlay>
                 )}
-                <Button onClick={onCreateDelegate} sx={{ mt: 3 }} data-testid="create-button">
-                  Create a delegate contract
-                </Button>
+                <Alert variant="notice" sx={{ mt: 3, flexDirection: 'column', alignItems: 'flex-start' }}>
+                  Warning: You will be unable to vote with a vote proxy contract through the UI after creating
+                  a delegate contract. This functionality is only affected in the user interface and not at
+                  the contract level. Future updates will address this issue soon. <br /> <br />
+                  <Label sx={{ py: 1, fontSize: 2, fontWeight: 'bold', alignItems: 'center' }}>
+                    <Checkbox checked={warningRead} onClick={event => setWarningRead(!warningRead)} /> I
+                    understand
+                  </Label>
+                  <Button
+                    disabled={!warningRead}
+                    onClick={onCreateDelegate}
+                    sx={{ mt: 3, mb: 1 }}
+                    data-testid="create-button"
+                  >
+                    Create a delegate contract
+                  </Button>
+                </Alert>
               </Box>
             )}
             <Text as="p" variant="microHeading" sx={{ mt: 5 }}>
