@@ -47,7 +47,7 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
         '&:hover': {
           color: 'text',
           borderColor: 'onSecondary',
-          backgroundColor: 'white'
+          backgroundColor: 'surface'
         }
       }}
       onClick={onClickConnect}
