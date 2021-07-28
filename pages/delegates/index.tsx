@@ -33,7 +33,10 @@ const Delegates = ({ delegates }: Props) => {
       marginBottom: 2
     }
   };
-  const [currentAccount, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
+  const [currentAccount, voteDelegate] = useAccountsStore(state => [
+    state.currentAccount,
+    state.voteDelegate
+  ]);
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
@@ -52,19 +55,21 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
-          {currentAccount && <Box>
-            <Link
-              href={{
-                pathname: '/account',
-                query: { network }
-              }}
-              passHref
-            >
-              <ThemeUILInk title="My account" >
-                <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
-              </ThemeUILInk>
-            </Link>
-          </Box>}
+          {currentAccount && (
+            <Box>
+              <Link
+                href={{
+                  pathname: '/account',
+                  query: { network }
+                }}
+                passHref
+              >
+                <ThemeUILInk title="My account">
+                  <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
+                </ThemeUILInk>
+              </Link>
+            </Box>
+          )}
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
