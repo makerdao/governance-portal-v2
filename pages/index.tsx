@@ -3,7 +3,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, Badge, jsx } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, Badge, jsx, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -38,10 +38,13 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
+  const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
 
   const { data: hat } = useHat();
+
+  const backgroundImage = mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)';
 
   return (
     <div>
@@ -56,7 +59,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           width: '100vw',
           zIndex: -1,
           position: 'absolute',
-          backgroundImage: 'url(/assets/heroVisual.svg)',
+          backgroundImage,
           backgroundSize: ['cover', 'contain'],
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat'
@@ -284,7 +287,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             backgroundColor: 'transparent'
           },
           ':root': {
-            background: 'white'
+            background: theme => theme.colors.surface
           }
         })}
       />
