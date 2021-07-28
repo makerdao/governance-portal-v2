@@ -83,10 +83,12 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         {
           url: 'https://makerdao.com/contact',
           title: t('Press & media')
-        }, {
+        },
+        {
           url: 'https://discord.gg/2sWcgCDWCX',
           title: 'Governance UI Discord'
-        }, {
+        },
+        {
           url: 'https://chat.makerdao.com/',
           title: 'MakerDAO chat'
         }
