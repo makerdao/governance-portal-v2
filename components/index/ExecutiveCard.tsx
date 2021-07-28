@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 
 import Stack from '../layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';

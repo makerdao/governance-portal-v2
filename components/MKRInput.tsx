@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useState } from 'react';
 import { Input, Text, Button, Box, Flex, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import BigNumber from 'bignumber.js';
 
 export type MKRInputProps = {

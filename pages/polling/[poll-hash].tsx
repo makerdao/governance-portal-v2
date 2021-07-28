@@ -8,7 +8,7 @@ import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
 import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import CountdownTimer from 'components/CountdownTimer';
