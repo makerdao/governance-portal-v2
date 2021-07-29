@@ -33,7 +33,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
           {!stakingHistory ? (
             <tr key={0}>
               <td colSpan={3}>
-                <Text color="darkLavender" variant="allcaps">
+                <Text color="text" variant="allcaps">
                   Loading
                 </Text>
               </td>
@@ -59,7 +59,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                     `}
                     style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
-                    <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
+                    <Text color="text" variant="caption" sx={{ paddingY: 3 }}>
                       {formatDateWithTime(action.time)}
                     </Text>
                   </td>
@@ -69,7 +69,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                     `}
                     style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
-                    <Text color="darkLavender" variant="caption" sx={{ paddingY: 3 }}>
+                    <Text color="text" variant="caption" sx={{ paddingY: 3 }}>
                       {action.amount.gte(0.01)
                         ? formatRound(action.amount.toNumber())
                         : formatRound(action.amount.toNumber(), 6)}{' '}
@@ -81,7 +81,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       href={getEtherscanLink(getNetwork(), action.senderAddress, 'address')}
                       target="_blank"
                       variant="caption"
-                      color="blue"
+                      color="accentBlue"
                     >
                       {cutMiddle(action.senderAddress, 8, 6)}
                     </Link>
@@ -92,7 +92,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
           ) : (
             <tr key={0}>
               <td colSpan={3}>
-                <Text color="darkLavender" variant="caption">
+                <Text color="text" variant="caption">
                   No history to show
                 </Text>
               </td>

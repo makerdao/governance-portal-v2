@@ -10,6 +10,7 @@ import BallotStatus from './polling/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
+import ColorModeToggle from './header/ColorModeToggle';
 
 const Header = (props): JSX.Element => {
   const network = getNetwork();
@@ -35,7 +36,7 @@ const Header = (props): JSX.Element => {
     >
       <Link href={{ pathname: '/', query: { network } }}>
         <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-          <Icon name="maker" size="40px" sx={{ cursor: 'pointer' }} />
+          <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -95,6 +96,10 @@ const Header = (props): JSX.Element => {
             ES Module
           </NavLink>
         </Link>
+
+        <Flex sx={{ pr: 2 }}>
+          <ColorModeToggle />
+        </Flex>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <AccountSelect />

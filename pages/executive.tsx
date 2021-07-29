@@ -7,7 +7,7 @@ import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
 import mixpanel from 'mixpanel-browser';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 

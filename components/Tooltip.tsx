@@ -22,7 +22,11 @@ export default function TooltipComponent({ children, label, ...props }): JSX.Ele
       </DialogOverlay>
     </Box>
   ) : (
-    <Tooltip sx={{ bg: 'white', fontSize: 3, borderRadius: 'medium' }} label={label} {...props}>
+    <Tooltip
+      sx={{ bg: 'surface', borderColor: 'muted', color: 'text', fontSize: 3, borderRadius: 'medium' }}
+      label={label}
+      {...props}
+    >
       {children}
     </Tooltip>
   );

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, Container, jsx, Text } from 'theme-ui';
+import { Flex, Grid, Box, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import React from 'react';
@@ -100,7 +100,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         pt: 5,
         pb: 3,
         width: '100%',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: 'background'
       }}
     >
       <Grid
@@ -116,7 +116,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               sx={{
                 fontWeight: '500',
                 marginBottom: '0.2rem',
-                color: 'black',
+                color: 'text',
                 fontSize: 14.3
               }}
             >
@@ -130,7 +130,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
                 lineHeight: '2.1rem',
                 fontSize: 14,
                 '& a': {
-                  color: 'footerText',
+                  color: 'textSecondary',
                   fontWeight: '400',
                   transition: 'color 0.2s ease-out',
                   textDecoration: 'none',

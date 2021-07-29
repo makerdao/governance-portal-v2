@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Card, Flex, Text, Box, Heading, jsx } from 'theme-ui';
 import useSWR from 'swr';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Stack from './layouts/Stack';
 import getMaker from 'lib/maker';
 import { MKR } from 'lib/maker';
