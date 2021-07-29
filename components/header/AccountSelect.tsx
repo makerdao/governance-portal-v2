@@ -146,7 +146,7 @@ const AccountSelect = (): React.ReactElement => {
             if (err.message !== 'already added') throw err;
           }
           if (chainId) {
-            setUserData({wallet: 'Ledger'});
+            setUserData({ wallet: 'Ledger' });
           }
           setAccountName('Ledger');
           setChangeWallet(false);
@@ -184,7 +184,7 @@ const AccountSelect = (): React.ReactElement => {
         }
 
         if (chainId) {
-          setUserData({wallet: 'Trezor'});
+          setUserData({ wallet: 'Trezor' });
         }
         setAccountName('Trezor');
         setChangeWallet(false);

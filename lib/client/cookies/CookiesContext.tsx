@@ -1,13 +1,18 @@
 import { localStorage } from 'lib/client/storage/localStorage';
 import React, { createContext, useEffect, useState } from 'react';
 
-
 type CookiesType = {
-  statistics: boolean,
-  functional: boolean
-}
+  statistics: boolean;
+  functional: boolean;
+};
 
-export const CookiesContext = createContext<{accepted: boolean, loaded: boolean, accept: () => void, cookies: CookiesType,  setCookies: (val: CookiesType) => void}>({
+export const CookiesContext = createContext<{
+  accepted: boolean;
+  loaded: boolean;
+  accept: () => void;
+  cookies: CookiesType;
+  setCookies: (val: CookiesType) => void;
+}>({
   accepted: false,
   loaded: false,
   accept: () => null,
@@ -18,7 +23,13 @@ export const CookiesContext = createContext<{accepted: boolean, loaded: boolean,
   setCookies: (val: CookiesType) => null
 });
 
-export const CookiesProvider = ({ disabled, children } : { disabled: boolean, children:  React.ReactElement }): React.ReactElement => {
+export const CookiesProvider = ({
+  disabled,
+  children
+}: {
+  disabled: boolean;
+  children: React.ReactElement;
+}): React.ReactElement => {
   const [accepted, setAccepted] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
@@ -27,9 +38,9 @@ export const CookiesProvider = ({ disabled, children } : { disabled: boolean, ch
     statistics: true
   });
 
-  const accept = (cookiesObject) => {
+  const accept = cookiesObject => {
     setAccepted(true);
-    localStorage.set('cookies', JSON.stringify({ accepted: true, cookies: cookiesObject, date: Date.now()}));
+    localStorage.set('cookies', JSON.stringify({ accepted: true, cookies: cookiesObject, date: Date.now() }));
   };
 
   // Load previous cookies storage
@@ -38,10 +49,10 @@ export const CookiesProvider = ({ disabled, children } : { disabled: boolean, ch
       // Logic for checking if the user accepted the cookies before
       const prevCookies = localStorage.get('cookies', true);
       setAccepted(prevCookies ? prevCookies.accepted : false);
-      setStateCookies(prevCookies && prevCookies.cookies ? prevCookies.cookies: cookies);
+      setStateCookies(prevCookies && prevCookies.cookies ? prevCookies.cookies : cookies);
       setLoaded(true);
     } else {
-      // The context is disabled (for testing or server side) 
+      // The context is disabled (for testing or server side)
       setStateCookies({
         functional: false,
         statistics: false

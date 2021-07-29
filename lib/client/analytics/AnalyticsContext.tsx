@@ -5,21 +5,21 @@ import { mixpanelInit } from './mixPanel';
 import mixpanel from 'mixpanel-browser';
 
 type TrackConfig = {
-  id: string,
-  product: string,
-  page: string
-}
+  id: string;
+  product: string;
+  page: string;
+};
 
 type AnalyticsContextType = {
-  trackUserEvent: (item: string, config: TrackConfig) => void,
-  setUserData: (item: any) => void,
-  identifyUser: (account: string) => void,
-}
+  trackUserEvent: (item: string, config: TrackConfig) => void;
+  setUserData: (item: any) => void;
+  identifyUser: (account: string) => void;
+};
 
 export const AnalyticsContext = createContext<AnalyticsContextType>({
   trackUserEvent: (item: string, config: TrackConfig) => null,
   setUserData: (item: any) => null,
-  identifyUser: (item: string) => null,
+  identifyUser: (item: string) => null
 });
 
 export const AnalyticsProvider = ({ children }: { children: React.ReactElement }): React.ReactElement => {
@@ -56,7 +56,6 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
     launchAnalytics();
   }, [accepted]);
 
-
   function trackUserEvent(item: string, config: TrackConfig): void {
     if (cookies.statistics && accepted) {
       mixpanel.track(item, config);
@@ -72,11 +71,13 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
   }
 
   return (
-    <AnalyticsContext.Provider value={{
-      trackUserEvent,
-      identifyUser,
-      setUserData
-    }}>
+    <AnalyticsContext.Provider
+      value={{
+        trackUserEvent,
+        identifyUser,
+        setUserData
+      }}
+    >
       {children}
     </AnalyticsContext.Provider>
   );

@@ -25,7 +25,7 @@ export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const dev = config.NODE_ENV === 'development';
-  
+
   // Initialize global hooks
   useAccountChange();
 
@@ -76,7 +76,6 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
               <Component {...pageProps} />
               <Cookies />
             </Flex>
-
           </SWRConfig>
         </AnalyticsProvider>
       </CookiesProvider>

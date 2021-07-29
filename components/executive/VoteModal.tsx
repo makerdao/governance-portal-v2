@@ -90,7 +90,6 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [step, setStep] = useState<ModalStep>('confirm');
 
   const vote = async (hatChecked, comment) => {
-
     const maker = await getMaker();
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
