@@ -120,9 +120,10 @@ const CreateDelegate = (): JSX.Element => {
                   </DialogOverlay>
                 )}
                 <Alert variant="notice" sx={{ mt: 3, flexDirection: 'column', alignItems: 'flex-start' }}>
-                  Warning: You will be unable to vote with a vote proxy contract through the UI after creating
-                  a delegate contract. This functionality is only affected in the user interface and not at
-                  the contract level. Future updates will address this issue soon. <br /> <br />
+                  Warning: You will be unable to vote with a vote proxy contract or your existing chief
+                  balance through the UI after creating a delegate contract. This functionality is only
+                  affected in the user interface and not at the contract level. Future updates will address
+                  this issue soon. <br /> <br />
                   <Label sx={{ py: 1, fontSize: 2, fontWeight: 'bold', alignItems: 'center' }}>
                     <Checkbox checked={warningRead} onClick={event => setWarningRead(!warningRead)} /> I
                     understand
