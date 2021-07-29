@@ -9,13 +9,13 @@ type CookiesType = {
 export const CookiesContext = createContext<{
   accepted: boolean;
   loaded: boolean;
-  accept: () => void;
+  accept: (val: CookiesType) => void;
   cookies: CookiesType;
   setCookies: (val: CookiesType) => void;
 }>({
   accepted: false,
   loaded: false,
-  accept: () => null,
+  accept: (val: CookiesType) => null,
   cookies: {
     statistics: true,
     functional: true
