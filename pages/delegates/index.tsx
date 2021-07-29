@@ -34,16 +34,15 @@ const Delegates = ({ delegates }: Props) => {
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
-  const shuffledDelegates = shuffleArray(delegates);
-  const expiredDelegates = shuffledDelegates.filter(delegate => delegate.expired === true);
-  const recognizedDelegates = shuffleArray(
-    shuffledDelegates.filter(
-      delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired
-    )
-  ).sort(d => (isOwner(d) ? -1 : 0));
-  const shadowDelegates = shuffleArray(
-    shuffledDelegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
-  ).sort(d => (isOwner(d) ? -1 : 0));
+  const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
+
+  const recognizedDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+    .sort(d => (isOwner(d) ? -1 : 0));
+
+  const shadowDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+    .sort(d => (isOwner(d) ? -1 : 0));
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -145,7 +144,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      delegates
+      delegates: shuffleArray(delegates)
     }
   };
 };
