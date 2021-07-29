@@ -2,7 +2,7 @@ export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 
 export type DelegateRepoInformation = {
   voteDelegateAddress: string;
-  picture: string;
+  picture?: string;
   name: string;
   externalUrl: string;
   description: string;

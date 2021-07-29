@@ -33,21 +33,21 @@ async function extractGithubInformation(
 
     const {
       content,
-      data: { name, url, profile_picture_url }
+      data: { name, external_profile_url }
     } = matter(profileMdDoc);
 
     const {
       data: { combined_participation, communication }
     } = matter(metricsMdDoc);
 
-    const picture = folderContents.find(item => item.name.indexOf('profile') !== -1);
+    const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
 
     return {
       voteDelegateAddress: folder.name,
       name,
-      picture: picture ? picture.download_url : profile_picture_url,
-      externalUrl: url,
+      picture: picture ? picture.download_url : undefined,
+      externalUrl: external_profile_url,
       description: html,
       combinedParticipation: combined_participation,
       communication
@@ -124,7 +124,7 @@ export async function fetchGithubDelegate(
       delegatesRepositoryInfo.repo,
       delegatesRepositoryInfo.page
     );
-    const folder = folders.find(f => f.name === address);
+    const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
 
     const userInfo = folder
       ? await extractGithubInformation(delegatesRepositoryInfo.owner, delegatesRepositoryInfo.repo, folder)

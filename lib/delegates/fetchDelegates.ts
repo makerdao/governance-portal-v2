@@ -39,7 +39,10 @@ export async function fetchDelegate(
   const currentNetwork = network ? network : getNetwork();
 
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
-  const onChainDelegate = onChainDelegates.find(i => i.voteDelegateAddress === voteDelegateAddress);
+
+  const onChainDelegate = onChainDelegates.find(
+    i => i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase()
+  );
 
   if (!onChainDelegate) {
     return Promise.resolve(undefined);
@@ -61,7 +64,9 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
   // Map all the raw delegates info and map it to Delegate structure with the github info
   const delegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
     const githubDelegate = gitHubDelegates
-      ? gitHubDelegates.find(i => i.voteDelegateAddress === onChainDelegate.voteDelegateAddress)
+      ? gitHubDelegates.find(
+          i => i.voteDelegateAddress.toLowerCase() === onChainDelegate.voteDelegateAddress.toLowerCase()
+        )
       : undefined;
 
     return mergeDelegateInfo(onChainDelegate, githubDelegate);

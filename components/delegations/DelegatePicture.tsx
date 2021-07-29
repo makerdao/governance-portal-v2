@@ -1,5 +1,6 @@
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { Box, Image } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'types/delegate';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
@@ -14,13 +15,14 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
         }}
       />
       {delegate.status === DelegateStatusEnum.recognized && (
-        <Image
-          src="/assets/verified-check.svg"
+        <Icon
+          name={'verified'}
           sx={{
             position: 'absolute',
-            bottom: '3px',
-            right: '0',
-            width: '12px'
+            bottom: '-2px',
+            right: '-5px',
+            width: '12px',
+            color: 'primary'
           }}
         />
       )}

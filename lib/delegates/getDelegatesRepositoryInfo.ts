@@ -19,7 +19,6 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
     page: 'delegates'
   };
 
-  // TODO: Change to mainnet once mainnet is supported and merged.
-  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoKovan : repoKovan;
+  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoKovan;
   return delegatesRepositoryInfo;
 }
