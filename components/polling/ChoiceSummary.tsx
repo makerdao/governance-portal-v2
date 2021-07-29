@@ -3,9 +3,12 @@ import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from 'lib/constants';
-import mixpanel from 'mixpanel-browser';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useContext } from 'react';
 
 const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof choice === 'number';
   return (
@@ -26,7 +29,7 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
       )}
       <Button
         onClick={() => {
-          mixpanel.track('btn-click', {
+          trackUserEvent('btn-click', {
             id: 'editChoice',
             product: 'governance-portal-v2',
             page: 'PollingReview'

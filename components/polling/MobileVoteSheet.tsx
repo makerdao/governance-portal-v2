@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex, jsx } from 'theme-ui';
 import invariant from 'tiny-invariant';
@@ -24,7 +24,7 @@ import getMaker, { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
-import mixpanel from 'mixpanel-browser';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 enum ViewState {
   START,
@@ -53,6 +53,8 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
@@ -217,7 +219,7 @@ export default function MobileVoteSheet({
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
+                  trackUserEvent('btn-click', {
                     id: 'addVoteToBallot',
                     product: 'governance-portal-v2',
                     page: 'Polling'

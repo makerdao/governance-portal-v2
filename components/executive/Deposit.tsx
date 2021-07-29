@@ -17,15 +17,16 @@ import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
 import { useMkrBalance } from 'lib/hooks';
 import BigNumber from 'bignumber.js';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
-
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const { data: mkrBalance } = useMkrBalance(address);
 
   const { data: chiefAllowance } = useSWR<CurrencyObject>(
@@ -98,7 +99,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'DepositMkr',
               product: 'governance-portal-v2',
               page: 'Executive'
@@ -139,7 +140,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'approveDeposit',
               product: 'governance-portal-v2',
               page: 'Executive'
@@ -177,7 +178,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 const Deposit = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
@@ -220,7 +221,7 @@ const Deposit = (props): JSX.Element => {
       {props.link ? (
         <Link
           onClick={() => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'OpenDepositModalFromMigration',
               product: 'governance-portal-v2',
               page: 'Executive'
@@ -236,7 +237,7 @@ const Deposit = (props): JSX.Element => {
         <Button
           variant="mutedOutline"
           onClick={() => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'OpenDepositModal',
               product: 'governance-portal-v2',
               page: 'Executive'

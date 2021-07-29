@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
-import mixpanel from 'mixpanel-browser';
 import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -42,6 +41,8 @@ import useUiFiltersStore from 'stores/uiFilters';
 
 // types
 import { SpellData } from 'types/spellData';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -86,6 +87,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
     account
       ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
@@ -229,7 +231,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                         ':hover svg': { color: 'blueLinkHover' }
                       }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
+                        trackUserEvent('btn-click', {
                           id: 'chiefMigrationForumPostButton',
                           product: 'governance-portal-v2',
                           page: 'Executive'
@@ -258,7 +260,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                 target="_blank"
                 sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
+                  trackUserEvent('btn-click', {
                     id: 'chiefMigrationMoreInfoLink',
                     product: 'governance-portal-v2',
                     page: 'Executive'
@@ -297,7 +299,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       href="https://v1.vote.makerdao.com/proxysetup"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
+                        trackUserEvent('btn-click', {
                           id: 'chiefMigrationLinkToProxySetup',
                           product: 'governance-portal-v2',
                           page: 'Executive'
@@ -312,7 +314,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       target="_blank"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
+                        trackUserEvent('btn-click', {
                           id: 'chiefMigrationLinkToVoteProxyBlog',
                           product: 'governance-portal-v2',
                           page: 'Executive'
@@ -417,7 +419,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                     <Button
                       variant="mutedOutline"
                       onClick={() => {
-                        mixpanel.track('btn-click', {
+                        trackUserEvent('btn-click', {
                           id: 'hideHistoricalExecs',
                           product: 'governance-portal-v2',
                           page: 'Executive'
@@ -451,7 +453,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                   <Button
                     variant="mutedOutline"
                     onClick={() => {
-                      mixpanel.track('btn-click', {
+                      trackUserEvent('btn-click', {
                         id: 'showHistoricalExecs',
                         product: 'governance-portal-v2',
                         page: 'Executive'

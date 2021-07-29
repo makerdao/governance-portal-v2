@@ -1,9 +1,8 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
-import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
@@ -18,6 +17,7 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 type PropTypes = {
   delegate: Delegate;
@@ -25,6 +25,8 @@ type PropTypes = {
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const network = getNetwork();
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
@@ -142,7 +144,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryOutline"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
+                  trackUserEvent('btn-click', {
                     id: 'openUndelegateModal',
                     product: 'governance-portal-v2',
                     page: 'Delegates'
@@ -183,7 +185,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryLarge"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
+                  trackUserEvent('btn-click', {
                     id: 'openDelegateModal',
                     product: 'governance-portal-v2',
                     page: 'Delegates'

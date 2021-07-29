@@ -11,10 +11,13 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { getEtherscanLink } from 'lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
-import mixpanel from 'mixpanel-browser';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useContext } from 'react';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
@@ -65,7 +68,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => {
-                mixpanel.track('btn-click', {
+                trackUserEvent('btn-click', {
                   id: 'reviewAndSubmitBallot',
                   product: 'governance-portal-v2',
                   page: 'Polling'

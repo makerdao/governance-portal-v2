@@ -15,7 +15,8 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
-import mixpanel from 'mixpanel-browser';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -31,6 +32,7 @@ export default function ReviewBox({
   activePolls: Poll[];
   polls: Poll[];
 }): JSX.Element {
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -59,7 +61,7 @@ export default function ReviewBox({
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
             onClick={() => {
-              mixpanel.track('btn-click', {
+              trackUserEvent('btn-click', {
                 id: 'submitBallot',
                 product: 'governance-portal-v2',
                 page: 'PollingReview'
@@ -148,7 +150,7 @@ export default function ReviewBox({
       <Flex p={3} sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'submitBallot',
               product: 'governance-portal-v2',
               page: 'PollingReview'

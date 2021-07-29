@@ -13,15 +13,17 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
 import { oldChiefAddress, oldIouAddress } from 'lib/constants';
 import { BoxWithClose } from 'components/BoxWithClose';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const [txId, setTxId] = useState(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
@@ -103,7 +105,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={!lockedMkr}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'withdrawMkrOldChief',
               product: 'governance-portal-v2',
               page: 'Executive'
@@ -155,7 +157,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'approveWithdrawOldChief',
               product: 'governance-portal-v2',
               page: 'Executive'

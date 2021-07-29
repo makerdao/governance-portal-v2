@@ -5,7 +5,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box, Flex, Text, Button, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import mixpanel from 'mixpanel-browser';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
@@ -23,6 +22,8 @@ import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'components/web3/ConnectWalletButton';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -58,6 +59,8 @@ const WrappedAccountSelect = (): JSX.Element => (
 );
 
 const AccountSelect = (): React.ReactElement => {
+  const { setUserData } = useContext(AnalyticsContext);
+
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -119,6 +122,7 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   const LedgerButton = () => {
+    const { setUserData } = useContext(AnalyticsContext);
     const [loading, setLoading] = useState(false);
     return (
       <Flex
@@ -141,7 +145,9 @@ const AccountSelect = (): React.ReactElement => {
           } catch (err) {
             if (err.message !== 'already added') throw err;
           }
-          if (chainId) mixpanel.people.set({ wallet: name });
+          if (chainId) {
+            setUserData({wallet: 'Ledger'});
+          }
           setAccountName('Ledger');
           setChangeWallet(false);
           setShowHwAddressSelector(false);
@@ -177,7 +183,9 @@ const AccountSelect = (): React.ReactElement => {
           if (err.message !== 'already added') throw err;
         }
 
-        if (chainId) mixpanel.people.set({ wallet: name });
+        if (chainId) {
+          setUserData({wallet: 'Trezor'});
+        }
         setAccountName('Trezor');
         setChangeWallet(false);
         close();
@@ -201,7 +209,7 @@ const AccountSelect = (): React.ReactElement => {
       await activate(connector);
 
       if (chainId) {
-        mixpanel.people.set({ wallet: name });
+        setUserData({ wallet: name });
       }
       setAccountName(name);
       setChangeWallet(false);

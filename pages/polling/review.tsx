@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Heading, Box, jsx, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -21,10 +21,12 @@ import ReviewBox from 'components/polling/review/ReviewBox';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import mixpanel from 'mixpanel-browser';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   const bpi = useBreakpointIndex();
   const [ballot, txId, submitBallot] = useBallotStore(
     state => [state.ballot, state.txId, state.submitBallot],
@@ -41,7 +43,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       <Flex sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'submitBallot',
               product: 'governance-portal-v2',
               page: 'PollingReview'

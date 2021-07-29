@@ -9,7 +9,6 @@ import {
   DEMO_ACCOUNT_TESTS,
   sendMkrToAddress
 } from '../helpers';
-import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 import * as utils from '../../lib/utils';
 
@@ -71,7 +70,6 @@ describe('Delegate Create page', () => {
     await createDelegate(maker);
     // Change to a new, non-delegate account
     await switchAccount(maker);
-    mixpanel.track = () => {};
 
     await setup(maker);
   });

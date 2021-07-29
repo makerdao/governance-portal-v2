@@ -1,7 +1,6 @@
 import { act, fireEvent, configure, screen } from '@testing-library/react';
 import CreateDelegate from '../../../pages/delegates/me';
 import { connectAccount, renderWithAccountSelect as render } from '../../helpers';
-import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 
 jest.mock('@theme-ui/match-media', () => {
@@ -33,7 +32,6 @@ describe('Delegate Create page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
-    mixpanel.track = () => {};
   });
 
   beforeEach(async () => {

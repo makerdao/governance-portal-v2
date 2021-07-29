@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -15,11 +15,13 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { useLockedMkr } from 'lib/hooks';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
+  const { trackUserEvent } = useContext(AnalyticsContext);
+
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
@@ -104,7 +106,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'withdrawMkr',
               product: 'governance-portal-v2',
               page: 'Executive'
@@ -148,7 +150,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
+            trackUserEvent('btn-click', {
               id: 'approveWithdraw',
               product: 'governance-portal-v2',
               page: 'Executive'

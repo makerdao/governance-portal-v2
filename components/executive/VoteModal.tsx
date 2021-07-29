@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import {
   Grid,
   Button,
@@ -16,7 +16,6 @@ import {
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import mixpanel from 'mixpanel-browser';
 import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'react-loading-skeleton';
@@ -30,6 +29,7 @@ import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 type Props = {
   close: () => void;
@@ -90,6 +90,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [step, setStep] = useState<ModalStep>('confirm');
 
   const vote = async (hatChecked, comment) => {
+
     const maker = await getMaker();
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
@@ -137,6 +138,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   };
 
   const Default = () => {
+    const { trackUserEvent } = useContext(AnalyticsContext);
+
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
     return (
@@ -263,7 +266,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => {
-              mixpanel.track('btn-click', {
+              trackUserEvent('btn-click', {
                 id: 'vote',
                 product: 'governance-portal-v2',
                 page: 'Executive'

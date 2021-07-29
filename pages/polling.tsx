@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo, useContext } from 'react';
 import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -29,14 +29,15 @@ import useUiFiltersStore from 'stores/uiFilters';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import BallotStatus from 'components/polling/BallotStatus';
 import Head from 'next/head';
-import mixpanel from 'mixpanel-browser';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const [
     startDate,
     endDate,
@@ -193,7 +194,7 @@ const PollingOverview = ({ polls }: Props) => {
                         Ended Polls
                         <Button
                           onClick={() => {
-                            mixpanel.track('btn-click', {
+                            trackUserEvent('btn-click', {
                               id: 'hideHistoricalPolls',
                               product: 'governance-portal-v2',
                               page: 'Polling'
@@ -227,7 +228,7 @@ const PollingOverview = ({ polls }: Props) => {
                 ) : (
                   <Button
                     onClick={() => {
-                      mixpanel.track('btn-click', {
+                      trackUserEvent('btn-click', {
                         id: 'showHistoricalPolls',
                         product: 'governance-portal-v2',
                         page: 'Polling'

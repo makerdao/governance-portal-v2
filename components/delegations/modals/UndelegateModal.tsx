@@ -4,7 +4,6 @@ import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
-import mixpanel from 'mixpanel-browser';
 
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -15,6 +14,8 @@ import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'components/delegations';
+import { useContext } from 'react';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 type Props = {
   isOpen: boolean;
@@ -24,6 +25,7 @@ type Props = {
 
 export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
+  const { trackUserEvent } = useContext(AnalyticsContext);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -35,7 +37,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 
-  const [track, tx] = useTransactionStore(
+  const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
@@ -43,7 +45,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
   const approveIou = async () => {
     const maker = await getMaker();
     const approveTxCreator = () => maker.getToken('IOU').approveUnlimited(voteDelegateAddress);
-    const txId = await track(approveTxCreator, 'Approving MKR', {
+    const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
         setTxId(null);
@@ -59,7 +61,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
   const freeMkr = async () => {
     const maker = await getMaker();
     const freeTxCreator = () => maker.service('voteDelegate').free(voteDelegateAddress, mkrToWithdraw);
-    const txId = await track(freeTxCreator, 'Withdrawing MKR', {
+    const txId = await trackTransaction(freeTxCreator, 'Withdrawing MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
       },
@@ -71,7 +73,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
   };
 
   const onClose = () => {
-    mixpanel.track('btn-click', {
+    trackUserEvent('btn-click', {
       id: 'closeUndelegateModal',
       product: 'governance-portal-v2',
       page: 'Delegates'
