@@ -39,6 +39,16 @@ export default function ShortFooter(): React.ReactElement {
       >
         Status
       </NavLink>
+      <NavLink
+        href="https://discord.gg/2sWcgCDWCX"
+        target="_blank"
+        variant="footer"
+        title="Bugs"
+        p={2}
+        sx={{ fontWeight: 400 }}
+      >
+        Support
+      </NavLink>
       <div sx={{ mx: 'auto' }} />
       <div sx={{ p: 2 }}>© 2021 Maker</div>
     </footer>
