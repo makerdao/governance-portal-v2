@@ -5,7 +5,7 @@ import { Delegate } from 'types/delegate';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
   return (
-    <Box sx={{ width: '41px', height: '41px', position: 'relative' }}>
+    <Box sx={{ width: '41px', height: '41px', position: 'relative', minWidth: '41px' }}>
       <Image
         src={delegate.picture || '/assets/empty-profile-picture.svg'}
         key={delegate.id}
@@ -13,7 +13,7 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
           objectFit: 'cover',
           width: '100%',
           borderRadius: '100%',
-          maxHeight: '41px'
+          maxHeight: '41px',
         }}
       />
       {delegate.status === DelegateStatusEnum.recognized && (

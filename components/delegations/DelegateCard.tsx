@@ -41,20 +41,19 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   return (
     <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
-      <Flex sx={{ 
-        mb: 3, 
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: ['column', 'column', 'row']
-      }}>
-        
-          <Flex >
+      <Flex
+        sx={{
+          flexDirection: ['column', 'column', 'row', 'column', 'row']
+        }}
+      >
+        <Box sx={{ maxWidth: ['100%', '300px'], flex: 1}}>
+          <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
               <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {delegate.name ? limitString(delegate.name, 30, '...') : 'Unknown'}
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
                 </Text>
               </Box>
               <ExternalLink
@@ -73,7 +72,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             </Box>
           </Flex>
 
-          <Box >
+          <Box sx={{ mt: 3 }}>
             {showLinkToDetail && (
               <Link
                 href={{
@@ -96,18 +95,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               </Box>
             )}
           </Box>
-       
-      </Flex>
-      <Flex
-        sx={{
-          flexDirection: ['column', 'column', 'row', 'column', 'row']
-        }}
-      >
-        
+        </Box>
 
         <Flex
           sx={{
-            width: '100%',
+            flex: 1,
             mt: [4, 4, 0, 4, 0],
             mb: [2, 2, 0, 2, 0],
             ml: [2, 2, 0, 2, 0],
@@ -121,7 +113,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4, flex: 1 }}>
+            <Box sx={{ width: '200px'}}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -133,7 +125,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Participation
               </Text>
             </Box>
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ width: '200px'}}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -170,7 +162,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4, flex: 1 }}>
+            <Box sx={{ mb: 4, width: '200px'}}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -178,7 +170,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Total MKR delegated
               </Text>
             </Box>
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ width: '200px'}}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
