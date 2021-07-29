@@ -33,12 +33,16 @@ const Delegates = ({ delegates }: Props) => {
   const voteDelegate = useAccountsStore(state => state.voteDelegate);
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
-  const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
+
+  const shuffledDelegates = shuffleArray(delegates);
+  const expiredDelegates = shuffledDelegates.filter(delegate => delegate.expired === true);
   const recognizedDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+    shuffledDelegates.filter(
+      delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired
+    )
   ).sort(d => (isOwner(d) ? -1 : 0));
   const shadowDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+    shuffledDelegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
   ).sort(d => (isOwner(d) ? -1 : 0));
 
   return (
