@@ -4,7 +4,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
-import Link from 'next/link';
 
 export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const t = text => translate(text, locale);
@@ -78,11 +77,15 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
       ]
     },
     {
-      header: t('Foundation'),
+      header: 'Contact',
       list: [
         {
           url: 'https://makerdao.com/contact',
-          title: t('Contact')
+          title: t('Press & media')
+        },
+        {
+          url: 'https://discord.gg/2sWcgCDWCX',
+          title: 'Support'
         }
       ]
     }
@@ -166,21 +169,21 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <Link href="https://twitter.com/MakerDAO">
+            <a href="https://twitter.com/MakerDAO" title="Twitter">
               <Icon name="twitter" />
-            </Link>
-            <Link href="https://www.reddit.com/r/MakerDAO/">
+            </a>
+            <a href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
               <Icon name="reddit" />
-            </Link>
-            <Link href="https://t.me/makerdaoOfficial">
+            </a>
+            <a href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
-            </Link>
-            <Link href="https://chat.makerdao.com/">
+            </a>
+            <a href="https://chat.makerdao.com/" title="MakerDAO official chat">
               <Icon name="rocket_chat" />
-            </Link>
-            <Link href="https://www.youtube.com/MakerDAO">
+            </a>
+            <a href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
-            </Link>
+            </a>
           </Flex>
         </Box>
       </Grid>
