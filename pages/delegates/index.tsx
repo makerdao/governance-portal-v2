@@ -77,7 +77,7 @@ const Delegates = ({ delegates }: Props) => {
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
-                Recognized delegates
+                Recognized Delegates
               </Heading>
 
               <Box>
@@ -129,7 +129,9 @@ const Delegates = ({ delegates }: Props) => {
             </Heading>
             <Card variant="compact">
               <Text as="p" sx={{ mb: 3 }}>
-                Interested in creating a delegate contract?
+                {voteDelegate
+                  ? 'Looking for delegate contract information?'
+                  : 'Interested in creating a delegate contract?'}
               </Text>
               <Box>
                 <Link
@@ -140,7 +142,7 @@ const Delegates = ({ delegates }: Props) => {
                   passHref
                 >
                   <ThemeUILInk title="My account">
-                    <Text>{voteDelegate ? 'View my delegate contract' : 'View Account Page'}</Text>
+                    <Text>View Account Page</Text>
                   </ThemeUILInk>
                 </Link>
               </Box>
