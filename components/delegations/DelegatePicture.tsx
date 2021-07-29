@@ -13,7 +13,7 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
           objectFit: 'cover',
           width: '100%',
           borderRadius: '100%',
-          maxHeight: '41px',
+          maxHeight: '41px'
         }}
       />
       {delegate.status === DelegateStatusEnum.recognized && (

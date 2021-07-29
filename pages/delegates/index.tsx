@@ -35,12 +35,13 @@ const Delegates = ({ delegates }: Props) => {
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
-  
-  const recognizedDelegates = delegates.filter(
-      delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired
-    ).sort(d => (isOwner(d) ? -1 : 0));
 
-  const shadowDelegates = delegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+  const recognizedDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+    .sort(d => (isOwner(d) ? -1 : 0));
+
+  const shadowDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
     .sort(d => (isOwner(d) ? -1 : 0));
 
   return (

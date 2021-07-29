@@ -46,7 +46,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
       >
-        <Box sx={{ maxWidth: ['100%', '300px'], flex: 1}}>
+        <Box sx={{ maxWidth: ['100%', '300px'], flex: 1 }}>
           <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
@@ -113,7 +113,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ width: '200px'}}>
+            <Box sx={{ width: '200px' }}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -125,7 +125,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Participation
               </Text>
             </Box>
-            <Box sx={{ width: '200px'}}>
+            <Box sx={{ width: '200px' }}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -162,7 +162,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4, width: '200px'}}>
+            <Box sx={{ mb: 4, width: '200px' }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -170,7 +170,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Total MKR delegated
               </Text>
             </Box>
-            <Box sx={{ width: '200px'}}>
+            <Box sx={{ width: '200px' }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
