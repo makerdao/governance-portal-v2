@@ -41,19 +41,20 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   return (
     <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
-      <Flex
-        sx={{
-          flexDirection: ['column', 'column', 'row', 'column', 'row']
-        }}
-      >
-        <Box sx={{ minWidth: '230px' }}>
-          <Flex sx={{ mr: [0, 2] }}>
+      <Flex sx={{ 
+        mb: 3, 
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: ['column', 'column', 'row']
+      }}>
+        
+          <Flex >
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
               <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
-                  {delegate.name ? limitString(delegate.name, 16, '...') : 'Unknown'}
+                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  {delegate.name ? limitString(delegate.name, 30, '...') : 'Unknown'}
                 </Text>
               </Box>
               <ExternalLink
@@ -72,7 +73,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             </Box>
           </Flex>
 
-          <Box sx={{ mt: 3 }}>
+          <Box >
             {showLinkToDetail && (
               <Link
                 href={{
@@ -95,7 +96,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               </Box>
             )}
           </Box>
-        </Box>
+       
+      </Flex>
+      <Flex
+        sx={{
+          flexDirection: ['column', 'column', 'row', 'column', 'row']
+        }}
+      >
+        
 
         <Flex
           sx={{

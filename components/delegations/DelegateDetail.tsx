@@ -16,7 +16,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ display: 'flex', p: 3 }}>
-        <DelegatePicture delegate={delegate} />
+        <DelegatePicture delegate={delegate} key={delegate.id}/>
 
         <Box sx={{ ml: 2 }}>
           <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
