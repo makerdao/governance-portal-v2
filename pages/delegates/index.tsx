@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Heading, Box, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
+import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
@@ -59,7 +59,7 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
-          {currentAccount && (
+          {/* {currentAccount && (
             <Box>
               <Link
                 href={{
@@ -73,7 +73,7 @@ const Delegates = ({ delegates }: Props) => {
                 </ThemeUILInk>
               </Link>
             </Box>
-          )}
+          )} */}
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
@@ -124,6 +124,29 @@ const Delegates = ({ delegates }: Props) => {
           )}
         </Box>
         <Stack gap={3}>
+          <Box>
+            <Heading mt={3} mb={2} as="h3" variant="microHeading">
+              Delegate Contracts
+            </Heading>
+            <Card variant="compact">
+              <Text as="p" sx={{ mb: 3 }}>
+                Interested in creating a delegate contract?
+              </Text>
+              <Box>
+                <Link
+                  href={{
+                    pathname: '/account',
+                    query: { network }
+                  }}
+                  passHref
+                >
+                  <ThemeUILInk title="My account">
+                    <Text>{voteDelegate ? 'View my delegate contract' : 'View Account Page'}</Text>
+                  </ThemeUILInk>
+                </Link>
+              </Box>
+            </Card>
+          </Box>
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
