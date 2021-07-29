@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
-import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated, useAnalytics } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { trackingPages } from 'lib/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
 import {
@@ -33,6 +33,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+
+  const { trackBtnClick } = useAnalytics(trackingPages.DELEGATES);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
@@ -142,11 +144,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryOutline"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'openUndelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackBtnClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
@@ -183,11 +181,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryLarge"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'openDelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackBtnClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
