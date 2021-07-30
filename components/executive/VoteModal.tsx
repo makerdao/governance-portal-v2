@@ -16,7 +16,6 @@ import {
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import mixpanel from 'mixpanel-browser';
 import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
 import Skeleton from 'components/SkeletonThemed';
@@ -30,6 +29,8 @@ import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   close: () => void;
@@ -137,6 +138,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   };
 
   const Default = () => {
+    const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
     return (
@@ -263,11 +266,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => {
-              mixpanel.track('btn-click', {
-                id: 'vote',
-                product: 'governance-portal-v2',
-                page: 'Executive'
-              });
+              trackButtonClick('vote');
               vote(hatChecked, comment);
             }}
             disabled={comment.length > 250}

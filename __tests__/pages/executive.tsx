@@ -1,5 +1,4 @@
 import { configure, act, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
-import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
 import getMaker from '../../lib/maker';
 import {
@@ -42,7 +41,6 @@ describe('Executive page', () => {
     maker = await getMaker();
     await createDelegate(maker);
 
-    mixpanel.track = () => {};
   });
 
   beforeEach(async () => {

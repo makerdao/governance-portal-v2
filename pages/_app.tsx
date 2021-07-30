@@ -14,33 +14,19 @@ import Header from 'components/Header';
 import Head from 'next/head';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
-import { mixpanelInit } from 'lib/analytics';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import mixpanel from 'mixpanel-browser';
+
 import { config } from '../lib/config';
 import { useAccountChange } from 'lib/web3/hooks/useAccountChange';
+import Cookies from 'components/Cookies';
+import { AnalyticsProvider } from 'lib/client/analytics/AnalyticsContext';
+import { CookiesProvider } from 'lib/client/cookies/CookiesContext';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const dev = config.NODE_ENV === 'development';
-  const router = useRouter();
 
-  useEffect(() => {
-    mixpanelInit();
-    const handleRouteChange = url => {
-      mixpanel.track('route-change', {
-        id: url,
-        product: 'governance-portal-v2'
-      });
-    };
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, []);
-
+  // Initialize global hooks
   useAccountChange();
 
   return (
@@ -63,31 +49,36 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
           content="MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community."
         />
       </Head>
-      <SWRConfig
-        value={{
-          refreshInterval: 5000,
-          fetcher: url => fetchJson(url)
-        }}
-      >
-        <Global
-          styles={{
-            '*': {
-              WebkitFontSmoothing: 'antialiased',
-              MozOsxFontSmoothing: 'grayscale'
-            }
-          }}
-        />
-        <Flex
-          sx={{
-            flexDirection: 'column',
-            variant: 'layout.root',
-            px: [3, 4]
-          }}
-        >
-          <Header />
-          <Component {...pageProps} />
-        </Flex>
-      </SWRConfig>
+      <CookiesProvider disabled={false}>
+        <AnalyticsProvider>
+          <SWRConfig
+            value={{
+              refreshInterval: 5000,
+              fetcher: url => fetchJson(url)
+            }}
+          >
+            <Global
+              styles={{
+                '*': {
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale'
+                }
+              }}
+            />
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                variant: 'layout.root',
+                px: [3, 4]
+              }}
+            >
+              <Header />
+              <Component {...pageProps} />
+              <Cookies />
+            </Flex>
+          </SWRConfig>
+        </AnalyticsProvider>
+      </CookiesProvider>
     </ThemeProvider>
   );
 };

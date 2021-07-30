@@ -1,5 +1,5 @@
 import mixpanel from 'mixpanel-browser';
-import { config } from './config';
+import { config } from '../../config';
 
 const analyticsConfig = {
   development: {
@@ -21,5 +21,4 @@ export const mixpanelInit = (): void => {
     `[Mixpanel] Tracking initialized for ${config.NODE_ENV} env using ${analyticsConfig.mixpanel.token}`
   );
   mixpanel.init(analyticsConfig.mixpanel.token, analyticsConfig.mixpanel.config);
-  mixpanel.track('Pageview', { product: 'governance-portal-v2' });
 };

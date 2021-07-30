@@ -21,7 +21,6 @@ import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import mixpanel from 'mixpanel-browser';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
@@ -40,6 +39,8 @@ import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
 import { Proposal } from 'types/proposal';
 import { SpellStateDiff } from 'types/spellStateDiff';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   proposal: Proposal;
@@ -67,6 +68,8 @@ const ProposalTimingBanner = ({ proposal }): JSX.Element => {
 };
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
+
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
@@ -160,11 +163,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
           <Button
             variant="primaryLarge"
             onClick={() => {
-              mixpanel.track('btn-click', {
-                id: 'openPollVoteModal',
-                product: 'governance-portal-v2',
-                page: 'PollDetail'
-              });
+              trackButtonClick('openPollVoteModal');
               setVoting(true);
             }}
             sx={{ width: '100%' }}
@@ -229,11 +228,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 <Button
                   variant="primaryLarge"
                   onClick={() => {
-                    mixpanel.track('btn-click', {
-                      id: 'openPollVoteModal',
-                      product: 'governance-portal-v2',
-                      page: 'PollDetail'
-                    });
+                    trackButtonClick('openPollVoteModal');
                     setVoting(true);
                   }}
                   sx={{ width: '100%', mt: 3 }}

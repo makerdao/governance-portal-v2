@@ -21,10 +21,13 @@ import ReviewBox from 'components/polling/review/ReviewBox';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import mixpanel from 'mixpanel-browser';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
+
   const bpi = useBreakpointIndex();
   const [ballot, txId, submitBallot] = useBallotStore(
     state => [state.ballot, state.txId, state.submitBallot],
@@ -41,11 +44,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       <Flex sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            mixpanel.track('btn-click', {
-              id: 'submitBallot',
-              product: 'governance-portal-v2',
-              page: 'PollingReview'
-            });
+            trackButtonClick('submitBallot');
             submitBallot();
           }}
           variant="primaryLarge"

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Flex, Grid, Box, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import Link from 'next/link';
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
 
@@ -23,6 +23,10 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         {
           url: 'https://makerdao.com/privacy',
           title: t('Privacy Policy')
+        },
+        {
+          url: '/cookies-policy',
+          title: 'Cookies policy'
         },
         {
           url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
@@ -140,9 +144,11 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             >
               {group.list.map(link => (
                 <li key={link.url}>
-                  <a href={link.url} title={link.title} target="_blank" rel="noreferrer">
-                    {link.title}
-                  </a>
+                  <Link href={link.url}>
+                    <a title={link.title} target="_blank" rel="noreferrer">
+                      {link.title}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </Box>

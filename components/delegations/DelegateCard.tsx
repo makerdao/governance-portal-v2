@@ -4,11 +4,10 @@ import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated, useAnalytics } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
-import { trackingPages } from 'lib/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
 import {
@@ -18,6 +17,8 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import Tooltip from 'components/Tooltip';
 
 type PropTypes = {
@@ -26,6 +27,7 @@ type PropTypes = {
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const network = getNetwork();
+
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
@@ -35,7 +37,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-  const { trackBtnClick } = useAnalytics(trackingPages.DELEGATES);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
@@ -175,7 +177,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryOutline"
                 disabled={!account}
                 onClick={() => {
-                  trackBtnClick('openUndelegateModal');
+                  trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
@@ -212,7 +214,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryLarge"
                 disabled={!account}
                 onClick={() => {
-                  trackBtnClick('openDelegateModal');
+                  trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}

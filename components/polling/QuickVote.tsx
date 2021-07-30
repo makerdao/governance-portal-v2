@@ -18,7 +18,8 @@ import useBallotStore from 'stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   poll: Poll;
@@ -39,6 +40,8 @@ const rankedChoiceBlurb = (
 );
 
 const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
@@ -112,11 +115,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={() => {
-              mixpanel.track('btn-click', {
-                id: 'addVoteToBallot',
-                product: 'governance-portal-v2',
-                page: 'Polling'
-              });
+              trackButtonClick('addVoteToBallot');
               submit();
             }}
             mt={gap}
