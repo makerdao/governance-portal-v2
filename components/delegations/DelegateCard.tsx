@@ -19,6 +19,7 @@ import {
 } from 'components/delegations';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import Tooltip from 'components/Tooltip';
 
 type PropTypes = {
   delegate: Delegate;
@@ -42,6 +43,22 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+
+  const participationTooltipLabel = (
+    <>
+      The percentage of votes the delegate has participated in. <br />
+      Combines stats for polls and executives. <br />
+      Updated weekly by the GovAlpha Core Unit. <br />
+    </>
+  );
+  const communicationTooltipLabel = (
+    <>
+      The percentage of votes for which the delegate has publicly <br />
+      communicated their reasoning in addition to voting. <br />
+      Combines stats for polls and executives. <br />
+      Updated weekly by the GovAlpha Core Unit. <br />
+    </>
+  );
 
   return (
     <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
@@ -125,9 +142,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.combinedParticipation ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Participation
-              </Text>
+              <Tooltip label={participationTooltipLabel}>
+                <Text
+                  as="p"
+                  variant="secondary"
+                  color="onSecondary"
+                  sx={{ fontSize: [2, 3], cursor: 'help' }}
+                >
+                  Participation
+                </Text>
+              </Tooltip>
             </Box>
             <Box sx={{ width: '200px' }}>
               <Text
@@ -137,9 +161,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.communication ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Communication
-              </Text>
+              <Tooltip label={communicationTooltipLabel}>
+                <Text
+                  as="p"
+                  variant="secondary"
+                  color="onSecondary"
+                  sx={{ fontSize: [2, 3], cursor: 'help' }}
+                >
+                  Communication
+                </Text>
+              </Tooltip>
             </Box>
             <Box>
               <Button
