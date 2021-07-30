@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, Container, jsx, Text } from 'theme-ui';
+import { Flex, Grid, Box, Container, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import Link from 'next/link';
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
-import Link from 'next/link';
 
 export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const t = text => translate(text, locale);
@@ -24,6 +23,10 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         {
           url: 'https://makerdao.com/privacy',
           title: t('Privacy Policy')
+        },
+        {
+          url: '/cookies-policy',
+          title: 'Cookies policy'
         },
         {
           url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
@@ -78,11 +81,15 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
       ]
     },
     {
-      header: t('Foundation'),
+      header: 'Contact',
       list: [
         {
           url: 'https://makerdao.com/contact',
-          title: t('Contact')
+          title: t('Press & media')
+        },
+        {
+          url: 'https://discord.gg/2sWcgCDWCX',
+          title: 'Support'
         }
       ]
     }
@@ -97,7 +104,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         pt: 5,
         pb: 3,
         width: '100%',
-        backgroundColor: '#FFFFFF'
+        backgroundColor: 'background'
       }}
     >
       <Grid
@@ -113,7 +120,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               sx={{
                 fontWeight: '500',
                 marginBottom: '0.2rem',
-                color: 'black',
+                color: 'text',
                 fontSize: 14.3
               }}
             >
@@ -127,7 +134,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
                 lineHeight: '2.1rem',
                 fontSize: 14,
                 '& a': {
-                  color: 'footerText',
+                  color: 'textSecondary',
                   fontWeight: '400',
                   transition: 'color 0.2s ease-out',
                   textDecoration: 'none',
@@ -137,9 +144,11 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             >
               {group.list.map(link => (
                 <li key={link.url}>
-                  <a href={link.url} title={link.title} target="_blank" rel="noreferrer">
-                    {link.title}
-                  </a>
+                  <Link href={link.url} >
+                    <a title={link.title} target="_blank" rel="noreferrer">
+                      {link.title}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </Box>
@@ -166,21 +175,21 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <Link href="https://twitter.com/MakerDAO">
+            <a href="https://twitter.com/MakerDAO" title="Twitter">
               <Icon name="twitter" />
-            </Link>
-            <Link href="https://www.reddit.com/r/MakerDAO/">
+            </a>
+            <a href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
               <Icon name="reddit" />
-            </Link>
-            <Link href="https://t.me/makerdaoOfficial">
+            </a>
+            <a href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
-            </Link>
-            <Link href="https://chat.makerdao.com/">
+            </a>
+            <a href="https://chat.makerdao.com/" title="MakerDAO official chat">
               <Icon name="rocket_chat" />
-            </Link>
-            <Link href="https://www.youtube.com/MakerDAO">
+            </a>
+            <a href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
-            </Link>
+            </a>
           </Flex>
         </Box>
       </Grid>

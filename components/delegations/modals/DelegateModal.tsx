@@ -13,8 +13,9 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from 'sto
 import { Delegate } from 'types/delegate';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { ApprovalContent, ConfirmContent, TxDisplay, InputDelegateMkr } from 'components/delegations';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   isOpen: boolean;
@@ -24,7 +25,7 @@ type Props = {
 
 export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -75,11 +76,7 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
   };
 
   const onClose = () => {
-    trackUserEvent('btn-click', {
-      id: 'closeDelegateModal',
-      product: 'governance-portal-v2',
-      page: 'Delegates'
-    });
+    trackButtonClick('closeDelegateModal');
     setTxId(null);
     onDismiss();
   };

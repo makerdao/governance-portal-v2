@@ -9,8 +9,8 @@ import omitBy from 'lodash/omitBy';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { Poll } from 'types/poll';
 import Stack from '../layouts/Stack';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type RankedChoiceSelectProps = {
   poll: Poll;
@@ -24,7 +24,7 @@ export default function RankedChoiceSelect({
   choice: _choice,
   ...props
 }: RankedChoiceSelectProps): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const choice = _choice || [];
   const [numConfirmed, setNumConfirmed] = useState(choice.length);
   const [showListboxInput, setShowListboxInput] = useState(true);
@@ -110,11 +110,7 @@ export default function RankedChoiceSelect({
           variant="caps"
           aria-label="Add button"
           onClick={() => {
-            trackUserEvent('btn-click', {
-              id: 'addAnotherRankedChoice',
-              product: 'governance-portal-v2',
-              page: 'Polling'
-            });
+            trackButtonClick('addAnotherRankedChoice');
             setShowListboxInput(true);
           }}
           sx={{

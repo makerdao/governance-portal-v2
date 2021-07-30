@@ -18,12 +18,12 @@ import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
 import { oldChiefAddress, oldIouAddress } from 'lib/constants';
 import { BoxWithClose } from 'components/BoxWithClose';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
@@ -105,11 +105,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={!lockedMkr}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'withdrawMkrOldChief',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('withdrawMkrOldChief');
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy.address
@@ -157,11 +153,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'approveWithdrawOldChief',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveWithdrawOldChief');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker

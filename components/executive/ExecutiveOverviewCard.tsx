@@ -1,10 +1,10 @@
 /** @jsx jsx */
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/utils';
@@ -16,7 +16,8 @@ import { Proposal } from 'types/proposal';
 import { SpellData } from 'types/spellData';
 import Stack from 'components/layouts/Stack';
 import VoteModal from './VoteModal';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   proposal: Proposal;
@@ -25,7 +26,7 @@ type Props = {
 };
 
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const account = useAccountsStore(state => state.currentAccount);
   const [voting, setVoting] = useState(false);
@@ -144,11 +145,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   sx={{ width: '100%' }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
-                    trackUserEvent('btn-click', {
-                      id: 'openExecVoteModal',
-                      product: 'governance-portal-v2',
-                      page: 'Executive'
-                    });
+                    trackButtonClick('openExecVoteModal');
                     setVoting(true);
                     ev.stopPropagation();
                   }}

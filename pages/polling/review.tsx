@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Heading, Box, jsx, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -22,10 +22,11 @@ import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
   const [ballot, txId, submitBallot] = useBallotStore(
@@ -43,11 +44,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       <Flex sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            trackUserEvent('btn-click', {
-              id: 'submitBallot',
-              product: 'governance-portal-v2',
-              page: 'PollingReview'
-            });
+            trackButtonClick('submitBallot');
             submitBallot();
           }}
           variant="primaryLarge"

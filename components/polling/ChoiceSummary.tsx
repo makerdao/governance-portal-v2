@@ -3,11 +3,11 @@ import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from 'lib/constants';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
-import { useContext } from 'react';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
-const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }): React.ReactElement => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof choice === 'number';
@@ -29,11 +29,7 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }) => {
       )}
       <Button
         onClick={() => {
-          trackUserEvent('btn-click', {
-            id: 'editChoice',
-            product: 'governance-portal-v2',
-            page: 'PollingReview'
-          });
+          trackButtonClick('editChoice');
           edit();
         }}
         variant={props.showHeader ? 'smallOutline' : 'outline'}

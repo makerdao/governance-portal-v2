@@ -41,8 +41,8 @@ import useUiFiltersStore from 'stores/uiFilters';
 
 // types
 import { SpellData } from 'types/spellData';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -87,7 +87,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
     account
       ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
@@ -231,11 +231,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                         ':hover svg': { color: 'blueLinkHover' }
                       }}
                       onClick={() => {
-                        trackUserEvent('btn-click', {
-                          id: 'chiefMigrationForumPostButton',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationForumPostButton');
                       }}
                     >
                       <Text>
@@ -260,11 +256,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                 target="_blank"
                 sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'chiefMigrationMoreInfoLink',
-                    product: 'governance-portal-v2',
-                    page: 'Executive'
-                  });
+                  trackButtonClick('chiefMigrationMoreInfoLink');
                 }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
@@ -299,11 +291,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       href="https://v1.vote.makerdao.com/proxysetup"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        trackUserEvent('btn-click', {
-                          id: 'chiefMigrationLinkToProxySetup',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationLinkToProxySetup');
                       }}
                     >
                       Click here
@@ -314,11 +302,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       target="_blank"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        trackUserEvent('btn-click', {
-                          id: 'chiefMigrationLinkToVoteProxyBlog',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
                       }}
                     >
                       here
@@ -419,11 +403,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                     <Button
                       variant="mutedOutline"
                       onClick={() => {
-                        trackUserEvent('btn-click', {
-                          id: 'hideHistoricalExecs',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('hideHistoricalExecs');
                         setShowHistorical(false);
                       }}
                     >
@@ -453,11 +433,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                   <Button
                     variant="mutedOutline"
                     onClick={() => {
-                      trackUserEvent('btn-click', {
-                        id: 'showHistoricalExecs',
-                        product: 'governance-portal-v2',
-                        page: 'Executive'
-                      });
+                      trackButtonClick('showHistoricalExecs');
                       setShowHistorical(true);
                     }}
                   >

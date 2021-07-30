@@ -14,8 +14,8 @@ import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'components/delegations';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   isOpen: boolean;
@@ -25,7 +25,7 @@ type Props = {
 
 export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
@@ -73,11 +73,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
   };
 
   const onClose = () => {
-    trackUserEvent('btn-click', {
-      id: 'closeUndelegateModal',
-      product: 'governance-portal-v2',
-      page: 'Delegates'
-    });
+    trackButtonClick('closeUndelegateModal');
     setTxId(null);
     onDismiss();
   };

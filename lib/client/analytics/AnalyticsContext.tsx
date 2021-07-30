@@ -3,6 +3,7 @@ import { CookiesContext } from '../cookies/CookiesContext';
 import { useRouter } from 'next/router';
 import { mixpanelInit } from './mixPanel';
 import mixpanel from 'mixpanel-browser';
+import { ANALYTICS_EVENTS, ANALYTICS_PRODUCT } from './analytics.constants';
 
 type TrackConfig = {
   id: string;
@@ -11,37 +12,43 @@ type TrackConfig = {
 };
 
 type AnalyticsContextType = {
-  trackUserEvent: (item: string, config: TrackConfig) => void;
+  emitAnalyticsEvent: (item: string, config: TrackConfig) => void;
   setUserData: (item: any) => void;
   identifyUser: (account: string) => void;
 };
 
 export const AnalyticsContext = createContext<AnalyticsContextType>({
-  trackUserEvent: (item: string, config: TrackConfig) => null,
+  emitAnalyticsEvent: (item: string, config: TrackConfig) => null,
   setUserData: (item: any) => null,
   identifyUser: (item: string) => null
 });
 
+
 export const AnalyticsProvider = ({ children }: { children: React.ReactElement }): React.ReactElement => {
   const { cookies, accepted } = useContext(CookiesContext);
+
+  const analyticCookiesEnabled = cookies.statistics && accepted;
 
   const router = useRouter();
 
   // Only track users that accepted analytics
   function launchAnalytics() {
-    if (accepted && cookies.statistics) {
+    if (analyticCookiesEnabled) {
       mixpanelInit();
 
       // First interaction
-      mixpanel.track('Pageview', { product: 'governance-portal-v2' });
+      mixpanel.track('Pageview', { product: ANALYTICS_PRODUCT });
 
       const handleRouteChange = url => {
-        mixpanel.track('route-change', {
+        mixpanel.track(ANALYTICS_EVENTS.ROUTE_CHANGE, {
           id: url,
-          product: 'governance-portal-v2'
+          product: ANALYTICS_PRODUCT
         });
       };
+
+      // Subscribe to route event changes and emit
       router.events.on('routeChangeStart', handleRouteChange);
+
       return () => {
         router.events.off('routeChangeStart', handleRouteChange);
       };
@@ -56,24 +63,29 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
     launchAnalytics();
   }, [accepted]);
 
-  function trackUserEvent(item: string, config: TrackConfig): void {
-    if (cookies.statistics && accepted) {
-      mixpanel.track(item, config);
+  // Mixpanel implementation protected by user cookies enabled or not
+  function emitAnalyticsEvent(event: string, config: TrackConfig): void {
+    if (analyticCookiesEnabled) {
+      mixpanel.track(event, config);
     }
   }
 
   function identifyUser(user: string): void {
-    mixpanel.identify(user);
+    if (analyticCookiesEnabled) {
+      mixpanel.identify(user);
+    }
   }
 
   function setUserData(data: any): void {
-    mixpanel.people.set(data);
+    if (analyticCookiesEnabled) {
+      mixpanel.people.set(data);
+    }
   }
 
   return (
     <AnalyticsContext.Provider
       value={{
-        trackUserEvent,
+        emitAnalyticsEvent,
         identifyUser,
         setUserData
       }}

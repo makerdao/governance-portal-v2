@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Grid,
   Button,
@@ -18,7 +18,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
@@ -29,7 +29,8 @@ import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   close: () => void;
@@ -137,7 +138,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   };
 
   const Default = () => {
-    const { trackUserEvent } = useContext(AnalyticsContext);
+    const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
@@ -265,11 +266,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => {
-              trackUserEvent('btn-click', {
-                id: 'vote',
-                product: 'governance-portal-v2',
-                page: 'Executive'
-              });
+              trackButtonClick('vote');
               vote(hatChecked, comment);
             }}
             disabled={comment.length > 250}

@@ -15,8 +15,8 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -32,7 +32,7 @@ export default function ReviewBox({
   activePolls: Poll[];
   polls: Poll[];
 }): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -61,11 +61,7 @@ export default function ReviewBox({
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
             onClick={() => {
-              trackUserEvent('btn-click', {
-                id: 'submitBallot',
-                product: 'governance-portal-v2',
-                page: 'PollingReview'
-              });
+              trackButtonClick('submitBallot');
               submitBallot();
             }}
             variant="primaryLarge"
@@ -150,11 +146,7 @@ export default function ReviewBox({
       <Flex p={3} sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            trackUserEvent('btn-click', {
-              id: 'submitBallot',
-              product: 'governance-portal-v2',
-              page: 'PollingReview'
-            });
+            trackButtonClick('submitBallot');
             submitBallot();
           }}
           variant="primaryLarge"

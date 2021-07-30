@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -17,10 +17,11 @@ import useTransactionStore, { transactionsSelectors, transactionsApi } from 'sto
 import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { useLockedMkr } from 'lib/hooks';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
@@ -106,11 +107,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'withdrawMkr',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('withdrawMkr');
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy
@@ -150,11 +147,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'approveWithdraw',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveWithdraw');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker

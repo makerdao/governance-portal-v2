@@ -19,14 +19,14 @@ import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import { useMkrBalance } from 'lib/hooks';
 import BigNumber from 'bignumber.js';
-import { useContext } from 'react';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { data: mkrBalance } = useMkrBalance(address);
 
   const { data: chiefAllowance } = useSWR<CurrencyObject>(
@@ -99,11 +99,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'DepositMkr',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('DepositMkr');
             const maker = await getMaker();
             const lockTxCreator = voteProxy
               ? () => voteProxy.lock(mkrToDeposit)
@@ -140,11 +136,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            trackUserEvent('btn-click', {
-              id: 'approveDeposit',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveDeposit');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker
@@ -178,7 +170,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 const Deposit = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
@@ -221,11 +213,7 @@ const Deposit = (props): JSX.Element => {
       {props.link ? (
         <Link
           onClick={() => {
-            trackUserEvent('btn-click', {
-              id: 'OpenDepositModalFromMigration',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('btn-click');
             open();
           }}
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
@@ -237,11 +225,7 @@ const Deposit = (props): JSX.Element => {
         <Button
           variant="mutedOutline"
           onClick={() => {
-            trackUserEvent('btn-click', {
-              id: 'OpenDepositModal',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('OpenDepositModal');
             open();
           }}
           data-testid="deposit-button"

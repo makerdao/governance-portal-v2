@@ -2,7 +2,7 @@
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 
 import Stack from './layouts/Stack';
 import getMaker, { DAI, getNetwork } from 'lib/maker';

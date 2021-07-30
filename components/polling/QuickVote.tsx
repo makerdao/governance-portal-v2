@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Text, Flex, Button, Box, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
@@ -18,7 +18,8 @@ import useBallotStore from 'stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   poll: Poll;
@@ -39,7 +40,7 @@ const rankedChoiceBlurb = (
 );
 
 const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
@@ -114,11 +115,7 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={() => {
-              trackUserEvent('btn-click', {
-                id: 'addVoteToBallot',
-                product: 'governance-portal-v2',
-                page: 'Polling'
-              });
+              trackButtonClick('addVoteToBallot');
               submit();
             }}
             mt={gap}

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useContext, useState } from 'react';
+import React, {  useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
@@ -17,7 +17,8 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 
 type PropTypes = {
   delegate: Delegate;
@@ -25,7 +26,6 @@ type PropTypes = {
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const network = getNetwork();
-  const { trackUserEvent } = useContext(AnalyticsContext);
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
@@ -35,6 +35,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
@@ -144,11 +146,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryOutline"
                 disabled={!account}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'openUndelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
@@ -185,11 +183,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryLarge"
                 disabled={!account}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'openDelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}

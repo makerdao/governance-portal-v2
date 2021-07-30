@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useEffect, useState, useRef, useMemo, useContext } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -30,14 +30,15 @@ import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import BallotStatus from 'components/polling/BallotStatus';
 import Head from 'next/head';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const [
     startDate,
     endDate,
@@ -194,11 +195,7 @@ const PollingOverview = ({ polls }: Props) => {
                         Ended Polls
                         <Button
                           onClick={() => {
-                            trackUserEvent('btn-click', {
-                              id: 'hideHistoricalPolls',
-                              product: 'governance-portal-v2',
-                              page: 'Polling'
-                            });
+                            trackButtonClick('hideHistoricalPolls');
                             setShowHistorical(false);
                           }}
                           variant="mutedOutline"
@@ -228,11 +225,7 @@ const PollingOverview = ({ polls }: Props) => {
                 ) : (
                   <Button
                     onClick={() => {
-                      trackUserEvent('btn-click', {
-                        id: 'showHistoricalPolls',
-                        product: 'governance-portal-v2',
-                        page: 'Polling'
-                      });
+                      trackButtonClick('showHistoricalPolls');
                       setShowHistorical(true);
                     }}
                     variant="outline"

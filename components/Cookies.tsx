@@ -41,9 +41,9 @@ export default function Cookies(): React.ReactElement | null {
           padding: 4
         }}
       >
-        <Text as="p" sx={{ maxWidth: '500px', textAlign: 'center', margin: '0 auto', mb: 2 }}>
+        <Text as="p" sx={{ maxWidth: '550px', textAlign: 'center', margin: '0 auto', mb: 2, fontSize: '13px' }}>
           This website uses cookies for analytic purposes only. Cookies are anonymous and do not link to user
-          data. For por information, please read our{' '}
+          data. We collect information to improve the governance experience and validate UI changes. You can still use the page without cookies. For por information, please read our{' '}
           <Link href="/cookies-policy">
             <a title="Cookies policy"> Cookies policy</a>
           </Link>

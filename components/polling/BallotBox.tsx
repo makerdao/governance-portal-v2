@@ -11,12 +11,12 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { getEtherscanLink } from 'lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
-import { useContext } from 'react';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
   const transaction = useTransactionStore(
@@ -68,11 +68,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => {
-                trackUserEvent('btn-click', {
-                  id: 'reviewAndSubmitBallot',
-                  product: 'governance-portal-v2',
-                  page: 'Polling'
-                });
+                trackButtonClick('reviewAndSubmitBallot');
                 startReview();
               }}
               variant="primaryLarge"

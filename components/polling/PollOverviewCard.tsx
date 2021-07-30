@@ -15,8 +15,8 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
-import { useContext } from 'react';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   poll: Poll;
@@ -30,7 +30,7 @@ export default function PollOverviewCard({
   reviewPage,
   ...props
 }: Props): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -97,11 +97,7 @@ export default function PollOverviewCard({
                 variant="outline"
                 mr={2}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'showHistoricalPolls',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('showHistoricalPolls');
                   startMobileVoting && startMobileVoting();
                 }}
                 sx={{
@@ -120,11 +116,7 @@ export default function PollOverviewCard({
                 mr={2}
                 px={4}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'startMobileVoting',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('startMobileVoting');
                   startMobileVoting && startMobileVoting();
                 }}
               >

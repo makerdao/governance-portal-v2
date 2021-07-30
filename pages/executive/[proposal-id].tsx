@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
@@ -39,7 +39,8 @@ import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
 import { Proposal } from 'types/proposal';
 import { SpellStateDiff } from 'types/spellStateDiff';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   proposal: Proposal;
@@ -67,7 +68,7 @@ const ProposalTimingBanner = ({ proposal }): JSX.Element => {
 };
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
 
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -162,11 +163,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
           <Button
             variant="primaryLarge"
             onClick={() => {
-              trackUserEvent('btn-click', {
-                id: 'openPollVoteModal',
-                product: 'governance-portal-v2',
-                page: 'PollDetail'
-              });
+              trackButtonClick('openPollVoteModal');
               setVoting(true);
             }}
             sx={{ width: '100%' }}
@@ -231,11 +228,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 <Button
                   variant="primaryLarge"
                   onClick={() => {
-                    trackUserEvent('btn-click', {
-                      id: 'openPollVoteModal',
-                      product: 'governance-portal-v2',
-                      page: 'PollDetail'
-                    });
+                    trackButtonClick('openPollVoteModal');
                     setVoting(true);
                   }}
                   sx={{ width: '100%', mt: 3 }}

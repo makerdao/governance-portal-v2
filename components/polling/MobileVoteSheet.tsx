@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex, jsx } from 'theme-ui';
 import invariant from 'tiny-invariant';
@@ -24,7 +24,8 @@ import getMaker, { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 enum ViewState {
   START,
@@ -53,7 +54,7 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
-  const { trackUserEvent } = useContext(AnalyticsContext);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
@@ -219,11 +220,7 @@ export default function MobileVoteSheet({
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => {
-                  trackUserEvent('btn-click', {
-                    id: 'addVoteToBallot',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('addVoteToBallot');
                   submit();
                 }}
                 disabled={!isChoiceValid || viewState == ViewState.ADDING}
