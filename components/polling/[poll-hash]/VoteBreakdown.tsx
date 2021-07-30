@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Tooltip from '../../Tooltip';
 
 import Delay from 'components/Delay';

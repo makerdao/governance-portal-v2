@@ -1,9 +1,8 @@
-import { act, fireEvent, configure } from '@testing-library/react';
-import CreateDelegate from '../../../pages/delegates/me';
-import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../../helpers';
+import { act, fireEvent, configure, screen } from '@testing-library/react';
+import CreateDelegate from '../../pages/account';
+import { connectAccount, renderWithAccountSelect as render } from '../helpers';
 import mixpanel from 'mixpanel-browser';
 import { SWRConfig } from 'swr';
-import { accountsApi } from '../../../stores/accounts';
 
 jest.mock('@theme-ui/match-media', () => {
   return {
@@ -15,10 +14,9 @@ jest.mock('@theme-ui/match-media', () => {
 const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
 
 const { click } = fireEvent;
-let component;
 
 async function setup() {
-  const comp = render(
+  const view = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
       <CreateDelegate />
     </SWRConfig>
@@ -26,47 +24,49 @@ async function setup() {
 
   await act(async () => {
     // This sets the account in state
-    await connectAccount(comp);
+    await connectAccount();
   });
-  return comp;
+  return view;
 }
 
 describe('Delegate Create page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
-    injectProvider();
     mixpanel.track = () => {};
   });
 
   beforeEach(async () => {
-    await act(async () => {
-      component = await setup();
-    });
+    await setup();
   });
 
   test('can create a delegate contract', async () => {
-    const createButton = component.getByTestId('create-button');
+    const checkbox = screen.getByRole('checkbox');
+    act(() => {
+      click(checkbox);
+    });
+
+    const createButton = screen.getByTestId('create-button');
 
     act(() => {
       click(createButton);
     });
 
     // Transaction is initialized
-    await component.findByText('Confirm transaction');
+    await screen.findByText('Confirm transaction');
 
     // Transaction state moved to pending
-    await component.findByText('Transaction pending');
+    await screen.findByText('Transaction pending');
 
     // Transaction state moved to mined
-    await component.findByText('Transaction Sent');
+    await screen.findByText('Transaction Sent');
 
-    const closeButton = component.getByText('Close');
+    const closeButton = screen.getByText('Close');
 
     act(() => {
       click(closeButton);
     });
 
-    await component.findByText(DELEGATE_ADDRESS);
+    await screen.findByText(DELEGATE_ADDRESS);
   });
 });

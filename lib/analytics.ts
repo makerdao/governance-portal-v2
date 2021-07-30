@@ -4,13 +4,13 @@ import { config } from './config';
 const analyticsConfig = {
   development: {
     mixpanel: {
-      token: '4ff3f85397ffc3c6b6f0d4120a4ea40a',
+      token: config.MIXPANEL_DEV,
       config: { debug: true, ip: false, api_host: 'https://api.mixpanel.com' }
     }
   },
   production: {
     mixpanel: {
-      token: 'a030d8845e34bfdc11be3d9f3054ad67',
+      token: config.MIXPANEL_PROD,
       config: { ip: false, api_host: 'https://api.mixpanel.com' }
     }
   }

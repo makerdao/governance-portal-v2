@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Heading, Box, Text, jsx } from 'theme-ui';
+import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
@@ -19,27 +19,36 @@ import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
 import useAccountsStore from 'stores/accounts';
+import Link from 'next/link';
 
 type Props = {
   delegates: Delegate[];
 };
 
 const Delegates = ({ delegates }: Props) => {
+  const network = getNetwork();
+
   const styles = {
     delegateGroup: {
       marginBottom: 2
     }
   };
-  const voteDelegate = useAccountsStore(state => state.voteDelegate);
+  const [currentAccount, voteDelegate] = useAccountsStore(state => [
+    state.currentAccount,
+    state.voteDelegate
+  ]);
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
-  const recognizedDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
-  ).sort(d => (isOwner(d) ? -1 : 0));
-  const shadowDelegates = shuffleArray(
-    delegates.filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
-  ).sort(d => (isOwner(d) ? -1 : 0));
+
+  const recognizedDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+    .sort(d => (isOwner(d) ? -1 : 0));
+
+  const shadowDelegates = delegates
+    .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+    .sort(d => (isOwner(d) ? -1 : 0));
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -49,11 +58,26 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
+          {/* {currentAccount && (
+            <Box>
+              <Link
+                href={{
+                  pathname: '/account',
+                  query: { network }
+                }}
+                passHref
+              >
+                <ThemeUILInk title="My account">
+                  <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
+                </ThemeUILInk>
+              </Link>
+            </Box>
+          )} */}
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={4} as="h4">
-                Recognized delegates
+                Recognized Delegates
               </Heading>
 
               <Box>
@@ -99,6 +123,31 @@ const Delegates = ({ delegates }: Props) => {
           )}
         </Box>
         <Stack gap={3}>
+          <Box>
+            <Heading mt={3} mb={2} as="h3" variant="microHeading">
+              Delegate Contracts
+            </Heading>
+            <Card variant="compact">
+              <Text as="p" sx={{ mb: 3 }}>
+                {voteDelegate
+                  ? 'Looking for delegate contract information?'
+                  : 'Interested in creating a delegate contract?'}
+              </Text>
+              <Box>
+                <Link
+                  href={{
+                    pathname: '/account',
+                    query: { network }
+                  }}
+                  passHref
+                >
+                  <ThemeUILInk title="My account">
+                    <Text>View Account Page</Text>
+                  </ThemeUILInk>
+                </Link>
+              </Box>
+            </Card>
+          </Box>
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
@@ -141,7 +190,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      delegates
+      delegates: shuffleArray(delegates)
     }
   };
 };

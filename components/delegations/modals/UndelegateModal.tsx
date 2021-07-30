@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-
 import shallow from 'zustand/shallow';
+import mixpanel from 'mixpanel-browser';
+
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useTokenAllowance } from 'lib/hooks';
@@ -70,6 +71,11 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
   };
 
   const onClose = () => {
+    mixpanel.track('btn-click', {
+      id: 'closeUndelegateModal',
+      product: 'governance-portal-v2',
+      page: 'Delegates'
+    });
     setTxId(null);
     onDismiss();
   };

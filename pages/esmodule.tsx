@@ -45,7 +45,7 @@ const ESModule = (): React.ReactElement => {
           sx={{
             borderRadius: 'medium',
             minHeight: 20,
-            backgroundColor: '#F6F8F9',
+            backgroundColor: 'muted',
             height: '20px',
             my: 3
           }}
@@ -106,6 +106,7 @@ const ESModule = (): React.ReactElement => {
             bpi === 0
               ? { variant: 'dialog.mobile' }
               : {
+                  variant: 'dialog.desktop',
                   boxShadow: '0px 10px 50px hsla(0, 0%, 0%, 0.33)',
                   borderRadius: '8px',
                   px: 5,

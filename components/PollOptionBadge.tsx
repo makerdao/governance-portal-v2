@@ -1,5 +1,5 @@
 import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 
 import { isActivePoll } from 'lib/utils';
 import { getNetwork } from 'lib/maker';

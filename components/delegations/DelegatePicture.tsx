@@ -1,26 +1,30 @@
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import { Box, Image } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'types/delegate';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
   return (
-    <Box sx={{ width: '41px', height: '41px', position: 'relative' }}>
+    <Box sx={{ width: '41px', height: '41px', position: 'relative', minWidth: '41px' }}>
       <Image
         src={delegate.picture || '/assets/empty-profile-picture.svg'}
+        key={delegate.id}
         sx={{
           objectFit: 'cover',
           width: '100%',
-          borderRadius: '100%'
+          borderRadius: '100%',
+          maxHeight: '41px'
         }}
       />
       {delegate.status === DelegateStatusEnum.recognized && (
-        <Image
-          src="/assets/verified-check.svg"
+        <Icon
+          name={'verified'}
           sx={{
             position: 'absolute',
-            bottom: '3px',
-            right: '0',
-            width: '12px'
+            bottom: '-2px',
+            right: '-5px',
+            width: '12px',
+            color: 'primary'
           }}
         />
       )}

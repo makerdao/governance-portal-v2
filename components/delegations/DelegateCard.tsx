@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated, useAnalytics } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { trackingPages } from 'lib/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
 import {
@@ -33,6 +34,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+
+  const { trackBtnClick } = useAnalytics(trackingPages.DELEGATES);
 
   const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
@@ -62,14 +65,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
       >
-        <Box sx={{ minWidth: '230px' }}>
+        <Box sx={{ maxWidth: ['100%', '300px'], flex: 1 }}>
           <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
             <Box sx={{ ml: 2 }}>
               <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5], maxWidth: '250px' }}>
-                  {delegate.name ? limitString(delegate.name, 16, '...') : 'Unknown'}
+                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
                 </Text>
               </Box>
               <ExternalLink
@@ -115,7 +118,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
         <Flex
           sx={{
-            width: '100%',
+            flex: 1,
             mt: [4, 4, 0, 4, 0],
             mb: [2, 2, 0, 2, 0],
             ml: [2, 2, 0, 2, 0],
@@ -129,7 +132,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4, flex: 1 }}>
+            <Box sx={{ width: '200px' }}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -148,7 +151,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 </Text>
               </Tooltip>
             </Box>
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ width: '200px' }}>
               <Text
                 as="p"
                 variant="microHeading"
@@ -171,7 +174,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Button
                 variant="primaryOutline"
                 disabled={!account}
-                onClick={() => setShowUndelegateModal(true)}
+                onClick={() => {
+                  trackBtnClick('openUndelegateModal');
+                  setShowUndelegateModal(true);
+                }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
               >
                 Undelegate
@@ -185,7 +191,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               width: '100%'
             }}
           >
-            <Box sx={{ mb: 4, flex: 1 }}>
+            <Box sx={{ mb: 4, width: '200px' }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -193,7 +199,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 Total MKR delegated
               </Text>
             </Box>
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ width: '200px' }}>
               <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                 {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
@@ -205,7 +211,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Button
                 variant="primaryLarge"
                 disabled={!account}
-                onClick={() => setShowDelegateModal(true)}
+                onClick={() => {
+                  trackBtnClick('openDelegateModal');
+                  setShowDelegateModal(true);
+                }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
               >
                 Delegate

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
 import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import isNil from 'lodash/isNil';
