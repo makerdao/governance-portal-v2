@@ -169,19 +169,19 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <a href="https://twitter.com/MakerDAO" title="Twitter">
+            <a sx={{ color: 'text' }} href="https://twitter.com/MakerDAO" title="Twitter">
               <Icon name="twitter" />
             </a>
-            <a href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
+            <a sx={{ color: 'text' }} href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
               <Icon name="reddit" />
             </a>
-            <a href="https://t.me/makerdaoOfficial" title="Telegram">
+            <a sx={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
             </a>
-            <a href="https://chat.makerdao.com/" title="MakerDAO official chat">
+            <a sx={{ color: 'text' }} href="https://chat.makerdao.com/" title="MakerDAO official chat">
               <Icon name="rocket_chat" />
             </a>
-            <a href="https://www.youtube.com/MakerDAO" title="Youtube">
+            <a sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
             </a>
           </Flex>
