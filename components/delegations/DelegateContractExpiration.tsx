@@ -10,8 +10,7 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
   const styles = {
     itemWrapper: {
       display: 'flex',
-      alignItems: 'center',
-      mb: 1
+      alignItems: 'center'
     },
     dateIcon: {
       display: 'flex',
