@@ -53,7 +53,10 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                 <tr
                   key={i}
                   style={{
-                    borderBottom: i > 0 && i < stakingHistory.length - 1 ? '1px solid #EDEDED' : 'none'
+                    borderBottom:
+                      stakingHistory.length > 0 && i < stakingHistory.length - 1
+                        ? '1px solid #EDEDED'
+                        : 'none'
                   }}
                 >
                   <td
