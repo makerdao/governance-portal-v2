@@ -19,7 +19,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import mixpanel from 'mixpanel-browser';
 import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import getMaker, { getNetwork, personalSign } from 'lib/maker';

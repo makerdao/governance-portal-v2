@@ -4,7 +4,7 @@ import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-u
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
 import { useVotedProposals } from 'lib/hooks';
