@@ -1,6 +1,18 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Alert, Box, Button, Card, Checkbox, Flex, Label, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Flex,
+  Heading,
+  Label,
+  Text,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Head from 'next/head';
 import shallow from 'zustand/shallow';
@@ -63,10 +75,15 @@ const AccountPage = (): JSX.Element => {
       </Head>
 
       <SidebarLayout>
-        {!address ? (
-          <Text>Connect your wallet to view information about your account</Text>
-        ) : (
-          <Box>
+        <Box>
+          <Box sx={{ mt: 4, mb: 2 }}>
+            <Heading as="h3" variant="microHeading">
+              Account
+            </Heading>
+          </Box>
+          {!address ? (
+            <Text>Connect your wallet to view information about your account</Text>
+          ) : (
             <Card>
               <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
                 Vote Delegation
@@ -152,8 +169,8 @@ const AccountPage = (): JSX.Element => {
                 </Flex>
               )}
             </Card>
-          </Box>
-        )}
+          )}
+        </Box>
         <Stack gap={3}>
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
