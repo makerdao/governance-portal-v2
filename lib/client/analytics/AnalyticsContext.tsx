@@ -23,7 +23,6 @@ export const AnalyticsContext = createContext<AnalyticsContextType>({
   identifyUser: (item: string) => null
 });
 
-
 export const AnalyticsProvider = ({ children }: { children: React.ReactElement }): React.ReactElement => {
   const { cookies, accepted } = useContext(CookiesContext);
 

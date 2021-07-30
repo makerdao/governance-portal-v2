@@ -8,7 +8,6 @@ type MixpanelTrackFunctions = {
 };
 
 export const useAnalytics = (page: string): MixpanelTrackFunctions => {
-
   const { emitAnalyticsEvent } = useContext(AnalyticsContext);
 
   const trackButtonClick = (id: string): void => {

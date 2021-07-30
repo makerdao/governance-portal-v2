@@ -144,7 +144,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             >
               {group.list.map(link => (
                 <li key={link.url}>
-                  <Link href={link.url} >
+                  <Link href={link.url}>
                     <a title={link.title} target="_blank" rel="noreferrer">
                       {link.title}
                     </a>
