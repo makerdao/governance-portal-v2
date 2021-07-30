@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
-import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -20,7 +19,6 @@ import { oldChiefAddress } from 'lib/constants';
 
 // components
 import Deposit from 'components/executive/Deposit';
-import Withdraw from 'components/executive/Withdraw';
 import WithdrawOldChief from 'components/executive/WithdrawOldChief';
 import ProposalsSortBy from 'components/executive/ProposalsSortBy';
 import DateFilter from 'components/executive/DateFilter';
@@ -34,6 +32,7 @@ import { Proposal, CMSProposal } from 'types/proposal';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ProgressBar from 'components/executive/ProgressBar';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { ExecutiveBalance } from 'components/ExecutiveBalance';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -348,29 +347,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           )}
       </Box>
       <Stack>
-        {account && (
-          <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
-            <Flex>
-              <Text sx={{ mr: 1 }}>{voteDelegate ? 'In delegate contract:' : 'In voting contract:'} </Text>
-              {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
-                  {lockedMkr.toBigNumber().toFormat(6)} MKR
-                </Text>
-              ) : (
-                <Box sx={{ width: 6 }}>
-                  <Skeleton />
-                </Box>
-              )}
-            </Flex>
-            {!voteDelegate && (
-              <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
-                <Deposit sx={{ ml: [0, 3] }} />
-                <Withdraw sx={{ ml: 3 }} />
-              </Flex>
-            )}
-          </Flex>
-        )}
-
+        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegate} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3}>
             Filters

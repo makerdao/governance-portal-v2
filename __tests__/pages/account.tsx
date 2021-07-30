@@ -1,6 +1,6 @@
 import { act, fireEvent, configure, screen } from '@testing-library/react';
-import CreateDelegate from '../../../pages/delegates/me';
-import { connectAccount, renderWithAccountSelect as render } from '../../helpers';
+import CreateDelegate from '../../pages/account';
+import { connectAccount, renderWithAccountSelect as render } from '../helpers';
 import { SWRConfig } from 'swr';
 
 jest.mock('@theme-ui/match-media', () => {
@@ -39,6 +39,11 @@ describe('Delegate Create page', () => {
   });
 
   test('can create a delegate contract', async () => {
+    const checkbox = screen.getByRole('checkbox');
+    act(() => {
+      click(checkbox);
+    });
+
     const createButton = screen.getByTestId('create-button');
 
     act(() => {
