@@ -69,6 +69,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               Please use your wallet to confirm this transaction.
             </Text>
             <Text
+              as="p"
               sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
               onClick={() => setTxId(null)}
             >

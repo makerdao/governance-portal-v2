@@ -1,6 +1,18 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Alert, Box, Button, Checkbox, Label, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Flex,
+  Heading,
+  Label,
+  Text,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import Head from 'next/head';
 import shallow from 'zustand/shallow';
@@ -18,9 +30,9 @@ import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import { TxDisplay } from 'components/delegations';
-import { ExecutiveBalance } from 'components/ExecutiveBalance';
+import Withdraw from 'components/executive/Withdraw';
 
-const CreateDelegate = (): JSX.Element => {
+const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -32,7 +44,7 @@ const CreateDelegate = (): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
-  const { data: proxyLockedMkr } = useLockedMkr(address, voteProxy);
+  const { data: chiefBalance } = useLockedMkr(address, voteProxy);
   const { data: delegatedMkr } = useLockedMkr(voteDelegate ? voteDelegate.getVoteDelegateAddress() : null);
 
   const [track, tx] = useTransactionStore(
@@ -63,68 +75,72 @@ const CreateDelegate = (): JSX.Element => {
       </Head>
 
       <SidebarLayout>
-        {!address ? (
-          <Text>Connect your wallet to view information about your account</Text>
-        ) : (
-          <Box>
-            <Text as="p" variant="mediumHeading" sx={{ mb: 3 }}>
+        <Box>
+          <Box sx={{ mt: 4, mb: 2 }}>
+            <Heading as="h3" variant="microHeading">
               Account
-            </Text>
-            <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
-              Delegation
-            </Text>
-            {voteDelegate && !modalOpen ? (
-              <Box>
-                <Text>Your delegate contract address:</Text>
-                <ExternalLink
-                  title="View on etherescan"
-                  href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
-                  target="_blank"
-                >
-                  <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
-                </ExternalLink>
-                {delegatedMkr && (
-                  <>
-                    <Text as="p" sx={{ mt: 3 }}>
-                      Delegated MKR:
-                    </Text>
-                    <Text>{delegatedMkr.toBigNumber().toFormat(6)}</Text>
-                  </>
-                )}
-              </Box>
-            ) : (
-              <Box>
-                <Text as="p">No vote delegate contract detected</Text>
-                {tx && (
-                  <DialogOverlay
-                    style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
-                    isOpen={modalOpen}
-                    onDismiss={() => setModalOpen(false)}
+            </Heading>
+          </Box>
+          {!address ? (
+            <Text>Connect your wallet to view information about your account</Text>
+          ) : (
+            <Card>
+              <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
+                Vote Delegation
+              </Text>
+              {voteDelegate && !modalOpen ? (
+                <Box>
+                  <Text>Your delegate contract address:</Text>
+                  <ExternalLink
+                    title="View on etherescan"
+                    href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
+                    target="_blank"
                   >
-                    <DialogContent
-                      aria-label="Delegate modal"
-                      sx={
-                        bpi === 0
-                          ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-                          : {
-                              variant: 'dialog.desktop',
-                              animation: `${fadeIn} 350ms ease`,
-                              width: '580px',
-                              px: 5,
-                              py: 4
-                            }
-                      }
+                    <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
+                  </ExternalLink>
+                  {delegatedMkr && (
+                    <>
+                      <Text as="p" sx={{ mt: 3 }}>
+                        Delegated MKR:
+                      </Text>
+                      <Text>{delegatedMkr.toBigNumber().toFormat(6)}</Text>
+                    </>
+                  )}
+                </Box>
+              ) : (
+                <Box>
+                  <Text as="p">No vote delegate contract detected</Text>
+                  {tx && (
+                    <DialogOverlay
+                      style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
+                      isOpen={modalOpen}
+                      onDismiss={() => setModalOpen(false)}
                     >
-                      <TxDisplay tx={tx} setTxId={setTxId} onDismiss={() => setModalOpen(false)} />
-                    </DialogContent>
-                  </DialogOverlay>
-                )}
-                <Alert variant="notice" sx={{ mt: 3, flexDirection: 'column', alignItems: 'flex-start' }}>
-                  Warning: You will be unable to vote with a vote proxy contract or your existing chief
-                  balance through the UI after creating a delegate contract. This functionality is only
-                  affected in the user interface and not at the contract level. Future updates will address
-                  this issue soon. <br /> <br />
-                  <Label sx={{ py: 1, fontSize: 2, fontWeight: 'bold', alignItems: 'center' }}>
+                      <DialogContent
+                        aria-label="Delegate modal"
+                        sx={
+                          bpi === 0
+                            ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+                            : {
+                                variant: 'dialog.desktop',
+                                animation: `${fadeIn} 350ms ease`,
+                                width: '580px',
+                                px: 5,
+                                py: 4
+                              }
+                        }
+                      >
+                        <TxDisplay tx={tx} setTxId={setTxId} onDismiss={() => setModalOpen(false)} />
+                      </DialogContent>
+                    </DialogOverlay>
+                  )}
+                  <Alert variant="notice" sx={{ mt: 3, flexDirection: 'column', alignItems: 'flex-start' }}>
+                    Warning: You will be unable to vote with a vote proxy contract or your existing chief
+                    balance through the UI after creating a delegate contract. This functionality is only
+                    affected in the user interface and not at the contract level. Future updates will address
+                    this issue soon.
+                  </Alert>
+                  <Label sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}>
                     <Checkbox checked={warningRead} onClick={event => setWarningRead(!warningRead)} /> I
                     understand
                   </Label>
@@ -136,21 +152,25 @@ const CreateDelegate = (): JSX.Element => {
                   >
                     Create a delegate contract
                   </Button>
-                </Alert>
-              </Box>
-            )}
-            <Text as="p" variant="microHeading" sx={{ mt: 5 }}>
-              Vote Proxy
-            </Text>
-            {voteProxy && !modalOpen ? (
-              <ExecutiveBalance lockedMkr={proxyLockedMkr} voteProxy={voteProxy} />
-            ) : (
-              <Text as="p" sx={{ mt: 3 }}>
-                No vote proxy contract detected
-              </Text>
-            )}
-          </Box>
-        )}
+                </Box>
+              )}
+              {chiefBalance?.gt(0) && (
+                <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
+                  <Text as="p">
+                    You have a DSChief balance of{' '}
+                    <Text sx={{ fontWeight: 'bold' }}>{chiefBalance.toBigNumber().toFormat(6)} MKR.</Text>
+                    <Text as="p" sx={{ my: 2 }}>
+                      {voteDelegate
+                        ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
+                        : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}
+                    </Text>
+                  </Text>
+                  <Withdraw sx={{ mt: 3 }} />
+                </Flex>
+              )}
+            </Card>
+          )}
+        </Box>
         <Stack gap={3}>
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
@@ -162,4 +182,4 @@ const CreateDelegate = (): JSX.Element => {
   );
 };
 
-export default CreateDelegate;
+export default AccountPage;
