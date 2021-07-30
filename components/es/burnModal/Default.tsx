@@ -9,7 +9,7 @@ const DefaultScreen = ({ setShowDialog, setStep }) => (
     <Text variant="heading" mt={4}>
       Are you sure you want to burn MKR?
     </Text>
-    <Text variant="text" sx={{ mt: 3 }}>
+    <Text variant="text" sx={{ mt: 3, textAlign: 'center' }}>
       By burning your MKR in the ESM, you are contributing to the shutdown of the Dai Credit System. Your MKR
       will be immediately burned and cannot be retrieved.
     </Text>

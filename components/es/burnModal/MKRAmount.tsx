@@ -19,22 +19,13 @@ const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
   };
 
   return (
-    <>
-      <Text
-        variant="microHeading"
-        mt={bpi < 1 ? 4 : null}
-        sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
-      >
-        Enter the amount of MKR to burn.
-      </Text>
-      <Box>
-        <MKRInput
-          onChange={updateInputValue}
-          balance={mkrBalance?.toBigNumber()}
-          value={burnAmount.toBigNumber()}
-        />
-      </Box>
-    </>
+    <Box sx={{ mt: 4 }}>
+      <MKRInput
+        onChange={updateInputValue}
+        balance={mkrBalance?.toBigNumber()}
+        value={burnAmount.toBigNumber()}
+      />
+    </Box>
   );
 };
 
@@ -60,14 +51,8 @@ const MKRAmount = ({
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
-      <Text variant="heading">Burn your MKR in the ESM</Text>
-      {bpi < 1 ? (
-        <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
-      ) : (
-        <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', px: [3, 5], py: 4 }}>
-          <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
-        </Box>
-      )}
+      <Text variant="heading">Enter the amount of MKR to burn</Text>
+      <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
       {lockedInChief ? (
         <Flex
           sx={{
