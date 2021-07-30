@@ -76,7 +76,7 @@ const Delegates = ({ delegates }: Props) => {
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={4} as="h4">
+              <Heading mb={3} mt={3} as="h4">
                 Recognized Delegates
               </Heading>
 
@@ -92,7 +92,7 @@ const Delegates = ({ delegates }: Props) => {
 
           {shadowDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={4} as="h4">
+              <Heading mb={3} mt={3} as="h4">
                 Shadow Delegates
               </Heading>
 
@@ -108,7 +108,7 @@ const Delegates = ({ delegates }: Props) => {
 
           {expiredDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={4} as="h4">
+              <Heading mb={3} mt={3} as="h4">
                 Expired Delegates
               </Heading>
 

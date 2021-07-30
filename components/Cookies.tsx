@@ -47,7 +47,7 @@ export default function Cookies(): React.ReactElement | null {
         >
           This website uses cookies for analytic purposes only. Cookies are anonymous and do not link to user
           data. We collect information to improve the governance experience and validate UI changes. You can
-          still use the page without cookies. For por information, please read our{' '}
+          still use the page without cookies. For more information, please read our{' '}
           <Link href="/cookies-policy">
             <a title="Cookies policy"> Cookies policy</a>
           </Link>

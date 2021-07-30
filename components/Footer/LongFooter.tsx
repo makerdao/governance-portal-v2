@@ -21,6 +21,10 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('FAQs')
         },
         {
+          url: '/terms',
+          title: t('Terms')
+        },
+        {
           url: 'https://makerdao.com/privacy',
           title: t('Privacy Policy')
         },
