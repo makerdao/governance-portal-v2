@@ -3,16 +3,15 @@ import Skeleton, { SkeletonTheme, SkeletonProps, SkeletonThemeProps } from 'reac
 import { jsx, useThemeUI } from 'theme-ui';
 
 const SkeletonThemed = (props: SkeletonProps): React.ReactElement => {
-  const { theme, colorMode } = useThemeUI();
-  const isDark = theme.rawColors && colorMode === 'dark';
+  const { theme } = useThemeUI();
 
-  const darkProps: SkeletonThemeProps = {
-    color: isDark ? (theme?.rawColors?.surface as string) : undefined,
-    highlightColor: isDark ? (theme?.rawColors?.background as string) : undefined
+  const colorProps: SkeletonThemeProps = {
+    color: theme?.colors?.skeletonColor as string,
+    highlightColor: theme?.colors?.skeletonHighlightColor as string
   };
 
   return (
-    <SkeletonTheme {...{ ...darkProps }}>
+    <SkeletonTheme {...{ ...colorProps }}>
       <Skeleton {...props} />
     </SkeletonTheme>
   );

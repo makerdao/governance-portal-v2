@@ -42,9 +42,13 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
 
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
+
   const { data: hat } = useHat();
 
-  const backgroundImage = mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)';
+  useEffect(() => {
+    setBackroundImage(mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)');
+  }, [mode]);
 
   return (
     <div>

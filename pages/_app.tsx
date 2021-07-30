@@ -40,7 +40,9 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
             "font-src 'self';" +
             "connect-src 'self' https: wss:;" +
             "style-src 'self' 'unsafe-inline';" +
-            `script-src 'self' ${dev ? "'unsafe-eval'" : ''};` +
+            `script-src 'self' ${
+              dev ? "'unsafe-eval'" : ''
+            } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
             "img-src 'self' https: data:"
           }
         />
