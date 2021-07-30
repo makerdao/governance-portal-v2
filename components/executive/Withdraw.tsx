@@ -15,11 +15,14 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
 import { BoxWithClose } from 'components/BoxWithClose';
 import { useLockedMkr } from 'lib/hooks';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
@@ -104,11 +107,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'withdrawMkr',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('withdrawMkr');
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy
@@ -148,11 +147,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'approveWithdraw',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveWithdraw');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker

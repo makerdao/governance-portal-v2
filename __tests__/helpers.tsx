@@ -8,6 +8,8 @@ import theme from '../lib/theme';
 import React from 'react';
 import { accountsApi } from 'stores/accounts';
 import { createCurrency } from '@makerdao/currency';
+import { AnalyticsProvider } from 'lib/client/analytics/AnalyticsContext';
+import { CookiesProvider } from 'lib/client/cookies/CookiesContext';
 
 const MKR = createCurrency('MKR');
 
@@ -39,10 +41,14 @@ export function injectProvider(address = DEMO_ACCOUNT_TESTS): void {
 export function renderWithAccountSelect(component: React.ReactNode): RenderResult {
   return render(
     <>
-      <ThemeProvider theme={theme}>
-        <WrappedAccountSelect />
-        {component}
-      </ThemeProvider>
+      <CookiesProvider disabled={true}>
+        <AnalyticsProvider>
+          <ThemeProvider theme={theme}>
+            <WrappedAccountSelect />
+            {component}
+          </ThemeProvider>
+        </AnalyticsProvider>
+      </CookiesProvider>
     </>
   );
 }

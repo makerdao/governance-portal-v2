@@ -3,18 +3,19 @@
 // TODO: handle account disconnection (e.g. when WalletConnect access is revoked)
 // by handling Web3ReactDeactivate event
 
-import { useEffect, useState } from 'react';
-import mixpanel from 'mixpanel-browser';
+import { useContext, useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 
 import getMaker from '../index';
 import { injectedConnector } from './index';
+import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
 
 export const syncMakerAccount = (library, account, chainIdError) => {
+  const { identifyUser } = useContext(AnalyticsContext);
   useEffect(() => {
     (async () => {
       if (!library || !account || !!chainIdError) return;
-      mixpanel.identify(account);
+      identifyUser(account);
       // check to see if the account already exists (i.e. switching back to one that was already added)
       // before adding it
       const maker = await getMaker();

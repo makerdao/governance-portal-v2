@@ -24,7 +24,8 @@ import getMaker, { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 enum ViewState {
   START,
@@ -53,6 +54,8 @@ export default function MobileVoteSheet({
   editingOnly,
   withStart
 }: Props): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+
   const { data: allUserVotes } = useSWR<PollVote[]>(
     account?.address ? ['/user/voting-for', account.address] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
@@ -217,11 +220,7 @@ export default function MobileVoteSheet({
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'addVoteToBallot',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('addVoteToBallot');
                   submit();
                 }}
                 disabled={!isChoiceValid || viewState == ViewState.ADDING}

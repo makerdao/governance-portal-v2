@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
-import mixpanel from 'mixpanel-browser';
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
@@ -18,6 +17,9 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import Tooltip from 'components/Tooltip';
 
 type PropTypes = {
   delegate: Delegate;
@@ -25,6 +27,7 @@ type PropTypes = {
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const network = getNetwork();
+
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
@@ -34,10 +37,28 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+
   const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+
+  const participationTooltipLabel = (
+    <>
+      The percentage of votes the delegate has participated in. <br />
+      Combines stats for polls and executives. <br />
+      Updated weekly by the GovAlpha Core Unit. <br />
+    </>
+  );
+  const communicationTooltipLabel = (
+    <>
+      The percentage of votes for which the delegate has publicly <br />
+      communicated their reasoning in addition to voting. <br />
+      Combines stats for polls and executives. <br />
+      Updated weekly by the GovAlpha Core Unit. <br />
+    </>
+  );
 
   return (
     <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
@@ -121,9 +142,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.combinedParticipation ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Participation
-              </Text>
+              <Tooltip label={participationTooltipLabel}>
+                <Text
+                  as="p"
+                  variant="secondary"
+                  color="onSecondary"
+                  sx={{ fontSize: [2, 3], cursor: 'help' }}
+                >
+                  Participation
+                </Text>
+              </Tooltip>
             </Box>
             <Box sx={{ width: '200px' }}>
               <Text
@@ -133,20 +161,23 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               >
                 {delegate.communication ?? 'Untracked'}
               </Text>
-              <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                Communication
-              </Text>
+              <Tooltip label={communicationTooltipLabel}>
+                <Text
+                  as="p"
+                  variant="secondary"
+                  color="onSecondary"
+                  sx={{ fontSize: [2, 3], cursor: 'help' }}
+                >
+                  Communication
+                </Text>
+              </Tooltip>
             </Box>
             <Box>
               <Button
                 variant="primaryOutline"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'openUndelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
@@ -183,11 +214,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 variant="primaryLarge"
                 disabled={!account}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'openDelegateModal',
-                    product: 'governance-portal-v2',
-                    page: 'Delegates'
-                  });
+                  trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
                 sx={{ width: '150px', mt: [4, 4, 0, 4, 0] }}
