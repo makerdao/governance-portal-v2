@@ -35,8 +35,6 @@ const AccountPage = (): JSX.Element => {
   const { data: chiefBalance } = useLockedMkr(address, voteProxy);
   const { data: delegatedMkr } = useLockedMkr(voteDelegate ? voteDelegate.getVoteDelegateAddress() : null);
 
-  console.log({ chiefBalance });
-
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
