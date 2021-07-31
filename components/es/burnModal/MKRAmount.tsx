@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
+import { Alert, Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { MKR } from 'lib/maker';
@@ -54,25 +54,9 @@ const MKRAmount = ({
       <Text variant="heading">Enter the amount of MKR to burn</Text>
       <MKRAmountView setBurnAmount={setBurnAmount} burnAmount={burnAmount} mkrBalance={mkrBalance} />
       {lockedInChief ? (
-        <Flex
-          sx={{
-            flexDirection: 'column',
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            border: '1px solid #FBCC5F',
-            borderRadius: 'medium',
-            backgroundColor: '#FFF9ED',
-            color: '#826318',
-            p: 3,
-            fontSize: 1,
-            mt: 3
-          }}
-          data-testid="voting-power"
-        >
-          <Text sx={{ textAlign: 'center' }}>You have {lockedInChief} MKR locked in DSChief.</Text>
-          <Text sx={{ textAlign: 'center' }}>Withdraw MKR from DSChief to burn it in the ESM.</Text>
-        </Flex>
+        <Alert variant="notice">
+          You have {lockedInChief} MKR locked in DSChief. Withdraw MKR from DSChief to burn it in the ESM.
+        </Alert>
       ) : null}
       <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
