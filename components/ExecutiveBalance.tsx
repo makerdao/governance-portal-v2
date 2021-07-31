@@ -1,5 +1,5 @@
 import { Flex, Box, Text } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Deposit from 'components/executive/Deposit';
 import Withdraw from 'components/executive/Withdraw';
 

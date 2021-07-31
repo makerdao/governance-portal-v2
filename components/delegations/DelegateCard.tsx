@@ -67,7 +67,13 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
       >
-        <Box sx={{ maxWidth: ['100%', '300px'], flex: 1 }}>
+        <Flex
+          sx={{
+            maxWidth: ['100%', '300px'],
+            flex: 1,
+            flexDirection: 'column'
+          }}
+        >
           <Flex sx={{ mr: [0, 2] }}>
             <DelegatePicture delegate={delegate} />
 
@@ -93,7 +99,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             </Box>
           </Flex>
 
-          <Box sx={{ mt: 3 }}>
+          <Flex sx={{ height: '100%' }}>
             {showLinkToDetail && (
               <Link
                 href={{
@@ -101,7 +107,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   query: { network }
                 }}
               >
-                <a title="Profile details">
+                <a sx={{ mt: 'auto' }} title="Profile details">
                   <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
                     View Profile Details
                   </Button>
@@ -110,13 +116,13 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             )}
 
             {!showLinkToDetail && (
-              <Box>
+              <Box sx={{ mt: 'auto' }}>
                 {/* <DelegateLastVoted delegate={delegate} /> */}
                 <DelegateContractExpiration delegate={delegate} />
               </Box>
             )}
-          </Box>
-        </Box>
+          </Flex>
+        </Flex>
 
         <Flex
           sx={{

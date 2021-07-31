@@ -13,7 +13,8 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
     <Card mt={3} p={3} pb={4}>
       <table
         style={{
-          width: '100%'
+          width: '100%',
+          borderCollapse: 'collapse'
         }}
       >
         <thead>
@@ -49,7 +50,15 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                 },
                 i
               ) => (
-                <tr key={i}>
+                <tr
+                  key={i}
+                  style={{
+                    borderBottom:
+                      stakingHistory.length > 0 && i < stakingHistory.length - 1
+                        ? '1px solid #EDEDED'
+                        : 'none'
+                  }}
+                >
                   <td
                     css={`
                       white-space: nowrap;
@@ -57,9 +66,8 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       text-overflow: ellipsis;
                       overflow: hidden;
                     `}
-                    style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
-                    <Text color="text" variant="caption" sx={{ paddingY: 3 }}>
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3 }}>
                       {formatDateWithTime(action.time)}
                     </Text>
                   </td>
@@ -67,16 +75,15 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                     css={`
                       white-space: nowrap;
                     `}
-                    style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}
                   >
-                    <Text color="text" variant="caption" sx={{ paddingY: 3 }}>
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3 }}>
                       {action.amount.gte(0.01)
                         ? formatRound(action.amount.toNumber())
                         : formatRound(action.amount.toNumber(), 6)}{' '}
                       MKR
                     </Text>
                   </td>
-                  <td style={{ borderBottom: stakingHistory.length > 1 ? '1px solid #EDEDED' : 'none' }}>
+                  <td>
                     <Link
                       href={getEtherscanLink(getNetwork(), action.senderAddress, 'address')}
                       target="_blank"
