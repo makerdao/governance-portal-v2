@@ -24,15 +24,15 @@ const BlogPostCard = ({ blogPost, ...otherProps }: Props): JSX.Element => (
           borderRadius: '5px 5px 0px 0px'
         }}
       />
-
       <Text
+        as="p"
         px={3}
-        pt={3}
+        pt={2}
         sx={
           {
             textOverflow: 'ellipsis',
             fontSize: 4,
-            textAlign: 'left',
+            textAlign: 'center',
             display: '-webkit-box',
             overflow: 'hidden',
             WebkitBoxOrient: 'vertical',
@@ -42,7 +42,7 @@ const BlogPostCard = ({ blogPost, ...otherProps }: Props): JSX.Element => (
       >
         {blogPost.title}
       </Text>
-      <Text p={3} sx={{ textAlign: 'left', color: 'onSecondary' }}>
+      <Text as="p" p={3} sx={{ textAlign: 'center', color: 'onSecondary' }}>
         {new Date(blogPost.date).toLocaleString('default', {
           month: 'long',
           day: 'numeric',
