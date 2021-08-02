@@ -1,11 +1,11 @@
 import create from 'zustand';
-
 import getMaker from 'lib/maker';
-import { Account } from 'types/account';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
+import { Account } from 'types/account';
+
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 type VoteProxy = {
   getProxyAddress: () => string;
@@ -27,6 +27,9 @@ type Store = {
   currentAccount?: Account;
   proxies: Record<string, VoteProxy | null>;
   oldProxy: OldVoteProxy;
+  // TODO type this
+  voteDelegate: any;
+  setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
 };
@@ -48,6 +51,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   currentAccount: undefined,
   proxies: {},
   oldProxy: { role: '', address: '' },
+  voteDelegate: undefined,
 
   addAccountsListener: async () => {
     const maker = await getMaker();
@@ -62,11 +66,23 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
         maker.service('voteProxy').getVoteProxy(address),
         getOldProxyStatus(address, maker)
       ]);
+
+      await get().setVoteDelegate(address);
+
       set({
         currentAccount: account,
         proxies: { ...get().proxies, [address]: hasProxy ? voteProxy : null },
         oldProxy
       });
+    });
+  },
+
+  setVoteDelegate: async address => {
+    const maker = await getMaker();
+    const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(address);
+
+    set({
+      voteDelegate: voteDelegate ?? undefined
     });
   },
 
@@ -77,9 +93,5 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   }
 }));
 
-// if we are on the browser start listening for account changes as soon as possible
-if (typeof window !== 'undefined') {
-  accountsApi.getState().addAccountsListener();
-}
 export default useAccountsStore;
 export { accountsApi };

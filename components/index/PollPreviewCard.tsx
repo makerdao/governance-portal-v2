@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Button, Text, Flex, Link as InternalLink, jsx } from 'theme-ui';
+import { Button, Text, Flex, Link as InternalLink, jsx, Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import Stack from '../layouts/Stack';
@@ -55,22 +55,24 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
           </Link>
         </Flex>
 
-        <Text
-          sx={
-            {
-              textOverflow: 'ellipsis',
-              fontSize: [2, 3],
-              opacity: 0.8,
-              mb: [1, 2],
-              display: '-webkit-box',
-              overflow: 'hidden',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2
-            } as any
-          }
-        >
-          {poll.summary}
-        </Text>
+        <Box sx={{ mb: [1, 2] }}>
+          <Text
+            sx={
+              {
+                textOverflow: 'ellipsis',
+                fontSize: [2, 3],
+                opacity: 0.8,
+                display: '-webkit-box',
+                overflow: 'hidden',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 2
+              } as any
+            }
+          >
+            {poll.summary}
+          </Text>
+        </Box>
+
         <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
           <PollOptionBadge poll={poll} sx={{ mb: 2, display: ['block', 'none'] }} />
           <Link

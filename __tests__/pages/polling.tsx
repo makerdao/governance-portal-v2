@@ -1,5 +1,11 @@
-import { injectProvider, connectAccount, createTestPolls, renderWithAccountSelect as render } from '../helpers'; 
-import { fireEvent } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
+import {
+  connectAccount,
+  createTestPolls,
+  renderWithAccountSelect as render,
+  DEMO_ACCOUNT_TESTS
+} from '../helpers';
+import { formatAddress } from 'lib/utils';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
 import mockPolls from '../../mocks/polls.json';
@@ -13,22 +19,27 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-beforeAll(async () => {
-  injectProvider();
-  maker = await getMaker();
-  await createTestPolls(maker);
-});
+describe('Polling', () => {
+  beforeAll(async () => {
+    jest.setTimeout(30000);
+    maker = await getMaker();
+    accountsApi.getState().addAccountsListener();
+    await createTestPolls(maker);
+  });
 
-let component;
-beforeEach(async() => {
-  accountsApi.setState({ currentAccount: undefined });
-  component = render(<PollingOverviewPage polls={mockPolls as any} />);
-  await connectAccount(fireEvent.click, component);
-});
+  beforeEach(async () => {
+    accountsApi.setState({ currentAccount: undefined });
+    const view = render(<PollingOverviewPage polls={mockPolls as any} />);
+    await act(async () => {
+      await connectAccount();
+    });
+  });
 
-describe('renders expected voting options for each poll type', () => {
-  test('allows users to vote when account is connected', async () => {
-    expect(await component.findByText('Active Polls')).toBeDefined();
-    expect(await component.findByText('Your Ballot')).toBeDefined();
+  describe('renders expected voting options for each poll type', () => {
+    test('allows users to vote when account is connected', async () => {
+      expect(await screen.findByText('Active Polls', {}, { timeout: 15000 })).toBeInTheDocument();
+      expect(await screen.findByText('Your Ballot', {}, { timeout: 15000 })).toBeInTheDocument();
+      await screen.findByText(formatAddress(DEMO_ACCOUNT_TESTS));
+    });
   });
 });

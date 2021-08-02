@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { forwardRef, useMemo } from 'react';
-import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
+import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
@@ -68,7 +68,13 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const PollingIndicatorComponent = ({ polls, ...props }: { polls: Poll[] }): JSX.Element => {
+const PollingIndicatorComponent = ({
+  polls,
+  ...props
+}: {
+  polls: Poll[];
+  sx?: ThemeUIStyleObject;
+}): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 

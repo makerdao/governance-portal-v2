@@ -1,5 +1,5 @@
-import { Flex, Box, Badge } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
+import Skeleton from 'components/SkeletonThemed';
 
 import { isActivePoll } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
@@ -7,14 +7,22 @@ import useSWR from 'swr';
 import { parsePollTally, fetchJson } from 'lib/utils';
 import { Poll } from 'types/poll';
 
-const PollOptionBadge = ({ poll, ...props }: { poll: Poll }): JSX.Element => {
+const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
   const network = getNetwork();
   const { data: tally } = useSWR(
     hasPollEnded
       ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
       : `/api/polling/tally/${poll.pollId}?network=${network}`,
-    async url => parsePollTally(await fetchJson(url), poll)
+    async url => parsePollTally(await fetchJson(url), poll),
+    {
+      // don't refresh is poll ended, otherwise refresh every 60 seconds
+      refreshInterval: hasPollEnded ? 0 : 60000,
+      onErrorRetry: ({ retryCount }) => {
+        // only retry up to 3 times
+        if (retryCount >= 3) return;
+      }
+    }
   );
 
   return (

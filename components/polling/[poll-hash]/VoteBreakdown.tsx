@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Tooltip from '../../Tooltip';
 
 import Delay from 'components/Delay';
@@ -16,7 +16,7 @@ export default function VoteBreakdown({
   poll: Poll;
   shownOptions: number;
   tally: PollTally | undefined;
-}) {
+}): JSX.Element {
   if (poll.voteType === 'Ranked Choice IRV') {
     return (
       <div key={2} sx={{ p: [3, 4] }} {...props}>

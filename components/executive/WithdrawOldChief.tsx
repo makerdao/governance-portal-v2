@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
-import { Button, Flex, Text, Close, Box, jsx, Card, Alert } from 'theme-ui';
+import { useState } from 'react';
+import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
-import Stack from '../layouts/Stack';
+import Stack from 'components/layouts/Stack';
 import getMaker, { MKR, getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
@@ -13,14 +13,17 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
 import { oldChiefAddress, oldIouAddress } from 'lib/constants';
+import { BoxWithClose } from 'components/BoxWithClose';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
@@ -102,11 +105,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={!lockedMkr}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'withdrawMkrOldChief',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('withdrawMkrOldChief');
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy.address
@@ -154,11 +153,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'approveWithdrawOldChief',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveWithdrawOldChief');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker
@@ -187,25 +182,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
   return <BoxWithClose content={content} close={close} {...props} />;
 };
-
-export const BoxWithClose = ({ content, close, ...props }): JSX.Element => (
-  <Box sx={{ position: 'relative' }} {...props}>
-    <Close
-      aria-label="close"
-      sx={{
-        height: 4,
-        width: 4,
-        position: 'absolute',
-        top: '-17px',
-        right: '-42px',
-        display: ['none', 'block'],
-        outline: 'none'
-      }}
-      onClick={close}
-    />
-    {content}
-  </Box>
-);
 
 const WithdrawOldChief = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);

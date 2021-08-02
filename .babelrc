@@ -1,6 +1,15 @@
 {
-  "presets": ["next/babel"],
-  "plugins": [
-    "superjson-next"
-  ]
+    "presets": [
+      [
+        "next/babel",
+        {
+          "preset-react": {
+            // "importSource": "theme-ui", // or "@theme-ui/core"
+            "runtime": "classic", // Change to automatic when v0.10.0 of theme-ui
+            "throwIfNamespace": false
+          }
+        }
+      ]
+    ],
+    "plugins": ["superjson-next"]
 }

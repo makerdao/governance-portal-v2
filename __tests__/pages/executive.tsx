@@ -1,72 +1,122 @@
+import { configure, act, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { SWRConfig } from 'swr';
+import getMaker from '../../lib/maker';
+import {
+  connectAccount,
+  renderWithAccountSelect as render,
+  createDelegate,
+  switchAccount,
+  DEMO_ACCOUNT_TESTS
+} from '../helpers';
 import { ExecutiveOverview } from '../../pages/executive';
 import proposals from '../../mocks/proposals.json';
-import { injectProvider, connectAccount, renderWithAccountSelect as render } from '../helpers'; 
-import { fireEvent } from '@testing-library/react';
-import mixpanel from 'mixpanel-browser';
-import { SWRConfig } from 'swr';
-import { accountsApi } from '../../stores/accounts';
-import { configure } from '@testing-library/react';
+import { accountsApi } from 'stores/accounts';
+
+jest.mock('@theme-ui/match-media', () => {
+  return {
+    useBreakpointIndex: jest.fn(() => 3)
+  };
+});
 
 const { click } = fireEvent;
-let component;
+let maker;
 
 async function setup() {
-  const comp = render(
-  <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
-    <ExecutiveOverview proposals={proposals} />
-  </SWRConfig>
+  const view = render(
+    <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
+      <ExecutiveOverview proposals={proposals} />
+    </SWRConfig>
   );
-  await connectAccount(click, comp);
-  return comp;
+  await act(async () => {
+    await connectAccount(view, DEMO_ACCOUNT_TESTS);
+  });
+  return view;
 }
 
-beforeAll(async () => {
-  configure({ asyncUtilTimeout: 4500 });
-  injectProvider();
-  mixpanel.track = () => {};
-  // temporary hack to hide spam errors and warnings from dependencies
-  console.error = () => {};
-  console.warn = () => {};
-});
+describe('Executive page', () => {
+  beforeAll(async () => {
+    jest.setTimeout(30000);
+    configure({ asyncUtilTimeout: 4500 });
 
-beforeEach(async () => {
-  component = await setup();
-});
+    maker = await getMaker();
+    await createDelegate(maker);
 
-afterEach(async () => {
-  accountsApi.getState().disconnectAccount();
-});
+  });
 
-test('can deposit and withdraw', async () => {
-  const depositButton = await component.findByTestId('deposit-button');
-  click(depositButton);
-  await component.findByText('Approve voting contract');
-  const approveButton = component.getByTestId('deposit-approve-button');
-  click(approveButton);
-  await component.findByText('Deposit into voting contract');
-  const input = component.getByLabelText('mkr-input');
-  fireEvent.change(input, { target: { value: '10' } });
-  const finalDepositButton = await component.findByText('Deposit MKR');
-  expect(finalDepositButton.disabled).toBe(false);
-  click(finalDepositButton);
+  beforeEach(async () => {
+    await setup();
+  });
 
-  const withdrawButton = await component.findByTestId('withdraw-button');
-  click(withdrawButton);
-  await component.findByText('Approve voting contract');
-  const approveButtonWithdraw = component.getByTestId('withdraw-approve-button');
-  click(approveButtonWithdraw);
-  await component.findByText('Withdraw from voting contract');
-  const inputWithdraw = component.getByLabelText('mkr-input');
-  fireEvent.change(inputWithdraw, { target: { value: '10' } });
-  const finalDepositButtonWithdraw = await component.findByText('Withdraw MKR');
-  expect(finalDepositButtonWithdraw.disabled).toBe(false);
-  click(finalDepositButtonWithdraw);
-}, 15000);
+  test('can deposit and withdraw', async () => {
+    const depositButton = await screen.findByTestId('deposit-button');
 
-test('can vote', async () => {
-  const [voteButtonOne, ] = await component.findAllByTestId('vote-button-exec-overview-card');
-  click(voteButtonOne);
-  const submitButton = await component.findByText('Submit Vote');
-  click(submitButton);
-  //TODO: get the UI to reflect the vote and test for that
+    click(depositButton);
+
+    await screen.findByText('Approve voting contract');
+    const approveButton = screen.getByTestId('deposit-approve-button');
+
+    click(approveButton);
+
+    await screen.findByText('Deposit into voting contract');
+    const input = screen.getByTestId('mkr-input');
+    fireEvent.change(input, { target: { value: '10' } });
+    const finalDepositButton = await screen.findByText('Deposit MKR');
+    expect(finalDepositButton).toBeEnabled();
+
+    click(finalDepositButton);
+
+    const withdrawButton = await screen.findByTestId('withdraw-button');
+
+    click(withdrawButton);
+
+    await screen.findByText('Approve voting contract');
+    const approveButtonWithdraw = screen.getByTestId('withdraw-approve-button', {}, { timeout: 15000 });
+
+    click(approveButtonWithdraw);
+
+    await screen.findByText('Withdraw from voting contract');
+    const inputWithdraw = screen.getByTestId('mkr-input');
+    fireEvent.change(inputWithdraw, { target: { value: '10' } });
+
+    const finalDepositButtonWithdraw = await screen.findByText('Withdraw MKR');
+
+    expect(finalDepositButtonWithdraw).toBeEnabled();
+
+    click(finalDepositButtonWithdraw);
+
+    const dialog = screen.getByRole('dialog');
+    await waitForElementToBeRemoved(dialog);
+
+    const lockedMKR = await screen.findByTestId('locked-mkr');
+
+    expect(lockedMKR).toHaveTextContent(/^0.000000 MKR$/); //find exact match
+  });
+
+  test('can vote', async () => {
+    const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
+    click(voteButtonOne);
+    const submitButton = screen.getByText('Submit Vote');
+    click(submitButton);
+
+    await screen.findByText('Sign Transaction');
+    await screen.findByText('Transaction Sent!');
+    //TODO: get the UI to reflect the vote and test for that
+
+    const dialog = screen.getByRole('dialog');
+    await waitForElementToBeRemoved(dialog);
+  });
+
+  test('shows delegated balance if account is a delegate', async () => {
+    accountsApi.getState().addAccountsListener();
+
+    // set delegate in state
+    accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');
+
+    await screen.findByText(/In delegate contract:/i);
+
+    // switch to non-delegate account
+    await switchAccount(maker);
+
+    await screen.findByText(/In voting contract:/i);
+  });
 });

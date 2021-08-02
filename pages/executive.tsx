@@ -2,14 +2,23 @@
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
-import { GetStaticProps } from 'next';
 import useSWR from 'swr';
+import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Skeleton from 'react-loading-skeleton';
+import Head from 'next/head';
 import shallow from 'zustand/shallow';
+import { Icon } from '@makerdao/dai-ui-icons';
 
+// lib
+import { getExecutiveProposals } from 'lib/api';
+import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
+import { useLockedMkr, useVotedProposals, useHat } from 'lib/hooks';
+import { fetchJson } from 'lib/utils';
+import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
+import { oldChiefAddress } from 'lib/constants';
+
+// components
 import Deposit from 'components/executive/Deposit';
-import Withdraw from 'components/executive/Withdraw';
 import WithdrawOldChief from 'components/executive/WithdrawOldChief';
 import ProposalsSortBy from 'components/executive/ProposalsSortBy';
 import DateFilter from 'components/executive/DateFilter';
@@ -18,22 +27,21 @@ import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
 import ResourceBox from 'components/ResourceBox';
 import Stack from 'components/layouts/Stack';
 import ExecutiveOverviewCard from 'components/executive/ExecutiveOverviewCard';
-import { getExecutiveProposals } from 'lib/api';
-import getMaker, { isDefaultNetwork, getNetwork } from 'lib/maker';
 import PrimaryLayout from 'components/layouts/Primary';
 import { Proposal, CMSProposal } from 'types/proposal';
 import SidebarLayout from 'components/layouts/Sidebar';
+import ProgressBar from 'components/executive/ProgressBar';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { ExecutiveBalance } from 'components/ExecutiveBalance';
+
+// stores
 import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
+
+// types
 import { SpellData } from 'types/spellData';
-import { fetchJson } from 'lib/utils';
-import Head from 'next/head';
-import mixpanel from 'mixpanel-browser';
-import { MKR } from 'lib/maker';
-import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import { Icon } from '@makerdao/dai-ui-icons';
-import { oldChiefAddress } from 'lib/constants';
-import ProgressBar from 'components/executive/ProgressBar';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -76,21 +84,20 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
+export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+  const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
+    account
+      ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
+      : [null, null, null]
   );
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
 
-  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
-  );
+  const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
@@ -114,16 +121,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     { refreshInterval: 0 }
   );
 
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
@@ -187,9 +185,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
     setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
   }, [filteredProposals]);
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { data: hat } = useHat();
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -234,11 +230,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                         ':hover svg': { color: 'blueLinkHover' }
                       }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
-                          id: 'chiefMigrationForumPostButton',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationForumPostButton');
                       }}
                     >
                       <Text>
@@ -263,11 +255,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                 target="_blank"
                 sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'chiefMigrationMoreInfoLink',
-                    product: 'governance-portal-v2',
-                    page: 'Executive'
-                  });
+                  trackButtonClick('chiefMigrationMoreInfoLink');
                 }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
@@ -302,11 +290,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       href="https://v1.vote.makerdao.com/proxysetup"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
-                          id: 'chiefMigrationLinkToProxySetup',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationLinkToProxySetup');
                       }}
                     >
                       Click here
@@ -317,11 +301,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                       target="_blank"
                       sx={{ textDecoration: 'underline' }}
                       onClick={() => {
-                        mixpanel.track('btn-click', {
-                          id: 'chiefMigrationLinkToVoteProxyBlog',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
                       }}
                     >
                       here
@@ -367,25 +347,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
           )}
       </Box>
       <Stack>
-        {account && (
-          <Flex sx={{ alignItems: [null, 'center'], flexDirection: ['column', 'row'] }}>
-            <Flex>
-              <Text>In voting contract:&nbsp;</Text>
-              {lockedMkr ? (
-                <Text sx={{ fontWeight: 'bold' }}>{lockedMkr.toBigNumber().toFormat(6)} MKR</Text>
-              ) : (
-                <Box sx={{ width: 6 }}>
-                  <Skeleton />
-                </Box>
-              )}
-            </Flex>
-            <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
-              <Deposit sx={{ ml: [0, 3] }} />
-              <Withdraw sx={{ ml: 3 }} />
-            </Flex>
-          </Flex>
-        )}
-
+        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegate} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3}>
             Filters
@@ -418,11 +380,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                     <Button
                       variant="mutedOutline"
                       onClick={() => {
-                        mixpanel.track('btn-click', {
-                          id: 'hideHistoricalExecs',
-                          product: 'governance-portal-v2',
-                          page: 'Executive'
-                        });
+                        trackButtonClick('hideHistoricalExecs');
                         setShowHistorical(false);
                       }}
                     >
@@ -452,11 +410,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }) => {
                   <Button
                     variant="mutedOutline"
                     onClick={() => {
-                      mixpanel.track('btn-click', {
-                        id: 'showHistoricalExecs',
-                        product: 'governance-portal-v2',
-                        page: 'Executive'
-                      });
+                      trackButtonClick('showHistoricalExecs');
                       setShowHistorical(true);
                     }}
                   >
@@ -501,8 +455,8 @@ export default function ExecutiveOverviewPage({
 
   if (!isDefaultNetwork() && !_proposals)
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 

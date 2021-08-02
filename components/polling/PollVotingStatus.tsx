@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { Flex, Box, Badge, jsx, Text } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
+import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import isNil from 'lodash/isNil';
@@ -45,10 +45,15 @@ const VotingStatus = ({
 }: {
   poll: Poll;
   desktopStyle?: boolean;
+  sx?: ThemeUIStyleObject;
 }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? ['/user/voting-for', account.address] : null,
+    addressToCheck
+      ? ['/user/voting-for', voteDelegate ? voteDelegate.getVoteDelegateAddress() : addressToCheck]
+      : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
     { refreshInterval: 0 }
   );

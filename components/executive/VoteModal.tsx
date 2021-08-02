@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
-import useSWR from 'swr';
 import {
   Grid,
   Button,
@@ -15,22 +14,23 @@ import {
   jsx,
   Textarea
 } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
+import shallow from 'zustand/shallow';
 import Bignumber from 'bignumber.js';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
+import { Icon } from '@makerdao/dai-ui-icons';
 
-import { fadeIn, slideUp } from 'lib/keyframes';
-import { SpellData } from 'types/spellData';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
-import { TXMined } from 'types/transaction';
+import { useLockedMkr, useSpellData, useHat, useAllSlates } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'types/proposal';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   close: () => void;
@@ -44,31 +44,24 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
-  const lockedMkrKey = voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useSWR(lockedMkrKey ? ['/user/mkr-locked', lockedMkrKey] : null, (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
 
-  const { data: spellData } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposal.address}?network=${getNetwork()}`
-  );
+  const addressLockedMKR =
+    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy, voteDelegate);
+
+  const { data: spellData } = useSpellData(proposal.address);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const { data: slateLogs } = useSWR('/executive/all-slates', () =>
-    getMaker().then(maker => maker.service('chief').getAllSlates())
-  );
+  const { data: allSlates } = useAllSlates();
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { data: hat } = useHat();
 
   const isHat = hat && hat === proposal.address;
 
@@ -95,7 +88,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     </Box>
   );
 
-  const [step, setStep] = useState('confirm');
+  const [step, setStep] = useState<ModalStep>('confirm');
 
   const vote = async (hatChecked, comment) => {
     const maker = await getMaker();
@@ -104,9 +97,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
 
     const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
     const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
-    const slateAlreadyExists = slateLogs && slateLogs.findIndex(l => l === slate) > -1;
+    const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
-    const voteTxCreator = voteProxy
+    const voteTxCreator = voteDelegate
+      ? () => voteDelegate.voteExec(slateOrProposals)
+      : voteProxy
       ? () => voteProxy.voteExec(slateOrProposals)
       : () => maker.service('chief').vote(slateOrProposals);
 
@@ -115,6 +110,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: txHash => {
         setStep('pending');
+        // if comment included, add to comments db
         if (comment.length > 0) {
           fetchJson(`/api/executive/comments/add/${proposal.address}`, {
             method: 'POST',
@@ -142,6 +138,8 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
   };
 
   const Default = () => {
+    const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
     return (
@@ -186,45 +184,45 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
           }}
         >
           <GridBox bpi={bpi}>
-            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+            <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
               Your voting weight
             </Text>
             {lockedMkr ? (
-              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {votingWeight} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </GridBox>
           <GridBox bpi={bpi}>
-            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+            <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
               MKR supporting
             </Text>
             {spellData ? (
-              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {mkrSupporting} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </GridBox>
           <Box sx={{ height: ['64px', '78px'], p: 3, pt: 2 }}>
-            <Text color="onSecondary" sx={{ fontSize: 3 }}>
+            <Text as="p" color="onSecondary" sx={{ fontSize: 3 }}>
               After vote cast
             </Text>
             {lockedMkr && spellData ? (
-              <Text color="text" m={[1, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
+              <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
                 {afterVote} MKR
               </Text>
             ) : (
-              <Text color="onSecondary" sx={{ fontSize: 3, m: [1, 2], width: 6 }}>
+              <Box sx={{ mt: [0, 2] }}>
                 <Skeleton />
-              </Text>
+              </Box>
             )}
           </Box>
         </Grid>
@@ -254,7 +252,11 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               onChange={event => setComment(event.target.value)}
               placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
-            <Text variant="text" sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted' }}>
+            <Text
+              as="p"
+              variant="text"
+              sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted' }}
+            >
               {250 - comment.length} characters remaining
             </Text>
           </Box>
@@ -264,11 +266,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             variant="primaryLarge"
             sx={{ width: '100%' }}
             onClick={() => {
-              mixpanel.track('btn-click', {
-                id: 'vote',
-                product: 'governance-portal-v2',
-                page: 'Executive'
-              });
+              trackButtonClick('vote');
               vote(hatChecked, comment);
             }}
             disabled={comment.length > 250}
@@ -317,7 +315,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'failed':
         return <Error close={close} />;
     }
-  }, [step, lockedMkr, spellData, tx]);
+  }, [step, lockedMkr, spellData, tx, bpi]);
 
   return (
     <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
@@ -343,12 +341,12 @@ const Signing = ({ close }) => (
       onClick={close}
     />
 
-    <Text variant="heading" sx={{ fontSize: 6 }}>
+    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
       Sign Transaction
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
+      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
         Please use your wallet to sign this transaction.
       </Text>
       {/* <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
@@ -366,12 +364,12 @@ const Pending = ({ tx, close }) => (
       onClick={close}
     />
 
-    <Text variant="heading" sx={{ fontSize: 6 }}>
+    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
       Transaction Sent!
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
         Vote will update once the blockchain has confirmed the transaction.
       </Text>
       <ExternalLink
@@ -379,7 +377,7 @@ const Pending = ({ tx, close }) => (
         href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
         sx={{ p: 0 }}
       >
-        <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+        <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
@@ -402,12 +400,12 @@ const Error = ({ close }) => (
       sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
       onClick={close}
     />
-    <Text variant="heading" sx={{ fontSize: 6 }}>
+    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
       Transaction Failed.
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewFailed" size={5} sx={{ my: 3 }} />
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
+      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px' }}>
         Something went wrong with your transaction. Please try again.
       </Text>
       <Button

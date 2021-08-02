@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import map from 'lodash/map';
 
 import { Poll } from 'types/poll';
-import { ABSTAIN } from 'lib/constants';
 
 type Props = { poll: Poll; choice: number | null; setChoice: (number) => void };
 export default function SingleSelect({ poll, choice, setChoice, ...props }: Props): JSX.Element {
@@ -19,7 +18,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
       {...props}
     >
       <ListboxButton
-        sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [3, 2] }}
+        sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [0, 2] }}
         arrow={<Icon name="chevron_down" size={2} />}
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>

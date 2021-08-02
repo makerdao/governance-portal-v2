@@ -1,23 +1,23 @@
 /** @jsx jsx */
+import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink, jsx } from 'theme-ui';
+import { Text, Flex, Box, Button, Badge, Divider, Card, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR from 'swr';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
-
-import { Proposal } from 'types/proposal';
-import getMaker, { getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
-import Stack from '../layouts/Stack';
+import { getNetwork } from 'lib/maker';
+import { formatDateWithoutTime } from 'lib/utils';
+import { useVotedProposals } from 'lib/hooks';
+import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';
-import VoteModal from './VoteModal';
-import { useState } from 'react';
-import { SpellData } from 'types/spellData';
-import mixpanel from 'mixpanel-browser';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { ZERO_ADDRESS } from 'stores/accounts';
+import { Proposal } from 'types/proposal';
+import { SpellData } from 'types/spellData';
+import Stack from 'components/layouts/Stack';
+import VoteModal from './VoteModal';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   proposal: Proposal;
@@ -26,29 +26,19 @@ type Props = {
 };
 
 export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const [voting, setVoting] = useState(false);
-
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
-
+  const { data: votedProposals } = useVotedProposals();
   const network = getNetwork();
   const bpi = useBreakpointIndex();
+  const canVote = !!account;
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
-  const canVote = !!account;
 
   if (!('about' in proposal)) {
     return (
@@ -83,7 +73,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <Stack gap={2}>
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
               <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                posted {formatDateWithTime(proposal.date)}
+                posted {formatDateWithoutTime(proposal.date)}
               </Text>
             </Flex>
             <Box>
@@ -155,11 +145,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
                   sx={{ width: '100%' }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
-                    mixpanel.track('btn-click', {
-                      id: 'openExecVoteModal',
-                      product: 'governance-portal-v2',
-                      page: 'Executive'
-                    });
+                    trackButtonClick('openExecVoteModal');
                     setVoting(true);
                     ev.stopPropagation();
                   }}
@@ -192,30 +178,9 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         )}
         <Divider my={0} />
         <Flex p={3} sx={{ justifyContent: 'center' }}>
-          {proposal.address === ZERO_ADDRESS ? (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              This proposal surpased the 80,000 MKR threshold on {formatDateWithTime(1607704862000)} – the new
-              chief has been activated!
-            </Text>
-          ) : spellData && spellData.hasBeenScheduled ? (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              Passed on {formatDateWithTime(spellData.datePassed)}.{' '}
-              {typeof spellData.dateExecuted === 'string' ? (
-                <>Executed on {formatDateWithTime(spellData.dateExecuted)}.</>
-              ) : (
-                <>
-                  Available for execution on{' '}
-                  {SPELL_SCHEDULED_DATE_OVERRIDES[proposal.address] ||
-                    formatDateWithTime(spellData.nextCastTime || spellData.eta)}
-                  .
-                </>
-              )}
-            </Text>
-          ) : (
-            <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
-              This proposal has not yet passed and is not available for execution.
-            </Text>
-          )}
+          <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+            {getStatusText(proposal.address, spellData)}
+          </Text>
         </Flex>
       </Card>
     </Link>

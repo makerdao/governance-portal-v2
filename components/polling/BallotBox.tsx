@@ -11,10 +11,13 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { getEtherscanLink } from 'lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+
   const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
@@ -24,7 +27,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
   const router = useRouter();
   const startReview = () => {
     clearTx();
-    router.push({ pathname: '/polling/review', query: network });
+    router.push({ pathname: '/polling/review', query: { network } });
   };
 
   return (
@@ -65,11 +68,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button
               onClick={() => {
-                mixpanel.track('btn-click', {
-                  id: 'reviewAndSubmitBallot',
-                  product: 'governance-portal-v2',
-                  page: 'Polling'
-                });
+                trackButtonClick('reviewAndSubmitBallot');
                 startReview();
               }}
               variant="primaryLarge"

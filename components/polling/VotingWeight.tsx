@@ -5,11 +5,14 @@ import Tooltip from '../Tooltip';
 import useSWR from 'swr';
 import useAccountsStore from 'stores/accounts';
 import getMaker from 'lib/maker';
+import { getVotingWeightCopy } from 'lib/polling/getVotingWeightCopy';
 
 export default function VotingWeight(props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: votingWeight } = useSWR(
-    account?.address ? ['/user/polling-voting-weight', account.address] : null,
+    addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
   );
 
@@ -33,11 +36,12 @@ export default function VotingWeight(props): JSX.Element {
   }
   votingWeightDescription = votingWeightDescription.slice(0, -2);
 
+  const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);
+
   const tooltipLabel = (
     <>
       {votingWeightDescription && <Box sx={{ fontWeight: 600, pb: 2 }}>{votingWeightDescription}</Box>}
-      Your voting weight is made up of MKR in your wallet, vote proxy, and voting contract. <br />
-      This amount is applied to all polls you vote on.
+      {votingWeightCopy}
     </>
   );
 

@@ -15,7 +15,8 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import VotingWeight from '../VotingWeight';
 import TxIndicators from '../../TxIndicators';
 import PollBar from '../PollBar';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -31,6 +32,7 @@ export default function ReviewBox({
   activePolls: Poll[];
   polls: Poll[];
 }): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
@@ -59,11 +61,7 @@ export default function ReviewBox({
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
           <Button
             onClick={() => {
-              mixpanel.track('btn-click', {
-                id: 'submitBallot',
-                product: 'governance-portal-v2',
-                page: 'PollingReview'
-              });
+              trackButtonClick('submitBallot');
               submitBallot();
             }}
             variant="primaryLarge"
@@ -117,7 +115,7 @@ export default function ReviewBox({
         href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
         sx={{ p: 0 }}
       >
-        <Text sx={{ px: 3, textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+        <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
@@ -148,11 +146,7 @@ export default function ReviewBox({
       <Flex p={3} sx={{ flexDirection: 'column' }}>
         <Button
           onClick={() => {
-            mixpanel.track('btn-click', {
-              id: 'submitBallot',
-              product: 'governance-portal-v2',
-              page: 'PollingReview'
-            });
+            trackButtonClick('submitBallot');
             submitBallot();
           }}
           variant="primaryLarge"
@@ -190,7 +184,7 @@ export default function ReviewBox({
     if (isPendingOrMined) return <Sent />;
     if (hasFailed) return <Error />;
     return <Default />;
-  }, [isInitialized, isPendingOrMined, hasFailed]);
+  }, [isInitialized, isPendingOrMined, hasFailed, bpi]);
 
   return <Box {...props}>{view}</Box>;
 }

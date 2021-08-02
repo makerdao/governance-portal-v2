@@ -15,8 +15,8 @@ const ModalContent = ({
   thresholdAmount
 }: {
   setShowDialog: (value: boolean) => void;
-  thresholdAmount: CurrencyObject;
-}) => {
+  thresholdAmount?: CurrencyObject;
+}): React.ReactElement => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
 
@@ -24,7 +24,6 @@ const ModalContent = ({
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
-  const bpi = useBreakpointIndex();
   const close = () => {
     setShowDialog(false);
   };
