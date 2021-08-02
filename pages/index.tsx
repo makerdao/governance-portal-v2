@@ -100,7 +100,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               new Chief contract, and vote on the new proposal on the Executive Voting page. For more
               information please refer to this{' '}
               <Link href="//blog.makerdao.com/maker-dschief-1-2-governance-security-update-requires-mkr-holder-actions/">
-                <a>blog</a>
+                <a sx={{ color: 'accentBlue' }}>blog</a>
               </Link>
               .
             </Text>
