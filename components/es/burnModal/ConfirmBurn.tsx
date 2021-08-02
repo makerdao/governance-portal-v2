@@ -44,12 +44,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         Enter the following phrase to continue.
       </Text>
       <Flex sx={{ flexDirection: 'column', mt: 3, width: '100%' }}>
-        <Input
-          defaultValue={passValue}
-          disabled={true}
-          backgroundColor={'#F6F8F9'}
-          sx={{ border: '1px solid', borderColor: '#D8E0E3' }}
-        />
+        <Input defaultValue={passValue} disabled={true} color={'text'} />
         <Input
           value={value}
           onChange={e => setValue(e.target.value)}
@@ -117,7 +112,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           totalStaked={totalStaked}
         />
       ) : (
-        <Box sx={{ mt: 3, border: '1px solid #D5D9E0', borderRadius: 'small', p: 4 }}>
+        <Box sx={{ mt: 3, p: 4 }}>
           <ConfirmBurnView
             passValue={passValue}
             value={value}
