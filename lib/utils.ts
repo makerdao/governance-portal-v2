@@ -2,8 +2,8 @@ import remark from 'remark';
 import html from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
-import { jsx, SxStyleProp } from 'theme-ui';
-import { css } from '@theme-ui/css';
+import { jsx } from 'theme-ui';
+import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { MKR } from './maker';
 import { CurrencyObject } from 'types/currency';
@@ -179,7 +179,7 @@ export function getNumberWithOrdinal(n) {
 }
 
 /** Add sx styles to the passed in component. Provided styles override component styles if there's a clash. */
-export function styledClone(component, { sx: stylesToMerge }: { sx: SxStyleProp }): React.ReactNode {
+export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyleObject }): React.ReactNode {
   if ('css' in component.props) {
     return cloneElement(component, {
       css: theme => [component.props.css(theme), css(stylesToMerge)(theme)]
@@ -223,8 +223,9 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   return { hasBeenCast, executedOn, groupedDiff };
 }
 
-export const formatDateWithTime = dateString => {
-  if (!dateString) return;
+export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
+  if (!dateString) return '';
+
   const date = new Date(dateString);
   const options = {
     year: 'numeric',
@@ -235,27 +236,22 @@ export const formatDateWithTime = dateString => {
     hourCycle: 'h23',
     timeZone: 'UTC',
     timeZoneName: 'short'
-  };
+  } as const;
+
   try {
     return new Intl.DateTimeFormat('en-US', options).format(date);
   } catch (err) {
-    console.error(err);
     return '??';
   }
 };
 
-export const formatDateWithoutTime = dateString => {
-  if (!dateString) return;
+export const formatDateWithoutTime = (dateString: Date | undefined | number | string): string => {
+  if (!dateString) return '';
+
   const date = new Date(dateString);
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  };
   try {
-    return new Intl.DateTimeFormat('en-US', options).format(date);
+    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
   } catch (err) {
-    console.error(err);
     return '??';
   }
 };
@@ -280,25 +276,13 @@ function now() {
   return Math.floor(new Date().getTime());
 }
 
-export function formatAddress(address: string) {
+export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
 
-export function cutMiddle(text = '', left = 6, right = 4) {
+export function cutMiddle(text = '', left = 6, right = 4): string {
   if (text.length <= left + right) return text;
   return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
-}
-
-/**
- * sets the value of an input in a way that triggers the onChange handler.
- * this is a workaround for logic in React that dedupes change events.
- * see: https://hustle.bizongo.in/simulate-react-on-change-on-controlled-components-baa336920e04
- */
-export function changeInputValue(inputRef: HTMLInputElement, value: string): void {
-  const valueProp = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
-  invariant(valueProp?.set);
-  valueProp.set.call(inputRef, value);
-  inputRef.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
 export const sortBytesArray = _array =>

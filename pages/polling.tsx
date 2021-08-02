@@ -4,7 +4,6 @@ import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
@@ -30,13 +29,16 @@ import useUiFiltersStore from 'stores/uiFilters';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import BallotStatus from 'components/polling/BallotStatus';
 import Head from 'next/head';
-import mixpanel from 'mixpanel-browser';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   polls: Poll[];
 };
 
 const PollingOverview = ({ polls }: Props) => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const [
     startDate,
     endDate,
@@ -193,11 +195,7 @@ const PollingOverview = ({ polls }: Props) => {
                         Ended Polls
                         <Button
                           onClick={() => {
-                            mixpanel.track('btn-click', {
-                              id: 'hideHistoricalPolls',
-                              product: 'governance-portal-v2',
-                              page: 'Polling'
-                            });
+                            trackButtonClick('hideHistoricalPolls');
                             setShowHistorical(false);
                           }}
                           variant="mutedOutline"
@@ -227,11 +225,7 @@ const PollingOverview = ({ polls }: Props) => {
                 ) : (
                   <Button
                     onClick={() => {
-                      mixpanel.track('btn-click', {
-                        id: 'showHistoricalPolls',
-                        product: 'governance-portal-v2',
-                        page: 'Polling'
-                      });
+                      trackButtonClick('showHistoricalPolls');
                       setShowHistorical(true);
                     }}
                     variant="outline"
@@ -302,8 +296,8 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): 
 
   if (!isDefaultNetwork() && !_polls)
     return (
-      <PrimaryLayout>
-        <p>Loading…</p>
+      <PrimaryLayout shortenFooter={true}>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 

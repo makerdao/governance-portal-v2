@@ -1,5 +1,5 @@
 export type CurrencyObject = {
-  toString: () => string;
+  toString: (decimals?: number) => string;
   toBigNumber: () => any;
   mul: (n: string | number | CurrencyObject) => CurrencyObject;
   div: (divisor: string | number | CurrencyObject) => CurrencyObject;

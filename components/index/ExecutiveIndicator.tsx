@@ -1,15 +1,16 @@
 /** @jsx jsx */
 import { forwardRef, useMemo } from 'react';
-import { Box, NavLink, Badge, jsx, Container } from 'theme-ui';
+import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
-import Skeleton from 'react-loading-skeleton';
-import { CMSProposal } from 'types/proposal';
-import getMaker, { getNetwork } from 'lib/maker';
-import useAccountsStore from 'stores/accounts';
-import { SpellData } from 'types/spellData';
+import Skeleton from 'components/SkeletonThemed';
+import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import { useVotedProposals } from 'lib/hooks';
+import useAccountsStore from 'stores/accounts';
+import { CMSProposal } from 'types/proposal';
+import { SpellData } from 'types/spellData';
 
 type Props = {
   numProposals: number;
@@ -52,7 +53,13 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
   }
 );
 
-const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSProposal[] }): JSX.Element => {
+const ExecutiveIndicatorComponent = ({
+  proposals,
+  ...props
+}: {
+  proposals: CMSProposal[];
+  sx?: ThemeUIStyleObject;
+}): JSX.Element => {
   const { data: spellData } = useSWR<Record<string, SpellData>>(
     `/api/executive/analyze-spell?network=${getNetwork()}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
@@ -66,18 +73,7 @@ const ExecutiveIndicatorComponent = ({ proposals, ...props }: { proposals: CMSPr
     ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
     : activeProposals;
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
-  const { data: votedProposals } = useSWR<string[]>(
-    ['/executive/voted-proposals', account?.address],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(voteProxy ? voteProxy.getProxyAddress() : address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
-      )
-  );
+  const { data: votedProposals } = useVotedProposals();
   const newUnvotedProposals =
     votedProposals && account
       ? unscheduledProposals.filter(

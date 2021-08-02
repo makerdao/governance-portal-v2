@@ -1,53 +1,131 @@
-import { useState, forwardRef } from 'react';
-import { Input, Text, Box } from 'theme-ui';
+/** @jsx jsx */
+import { useState } from 'react';
+import { Input, Text, Button, Box, Flex, jsx } from 'theme-ui';
+import Skeleton from 'components/SkeletonThemed';
+import BigNumber from 'bignumber.js';
 
-import { MKR } from 'lib/maker';
-import { CurrencyObject } from 'types/currency';
-
-type Props = {
+export type MKRInputProps = {
   placeholder?: string;
-  onChange: (value: CurrencyObject) => void;
-  min?: CurrencyObject;
-  max?: CurrencyObject;
-  error?: string | false;
-  style?: Record<string, unknown>;
+  onChange: (value: BigNumber) => void;
+  min?: BigNumber;
+  max?: BigNumber;
+  balance?: BigNumber;
+  balanceText?: string;
+  errorMaxMessage?: string;
+  value: BigNumber;
 };
 
-const MKRInput = forwardRef<HTMLInputElement, Props>(
-  ({ placeholder = '0.00', error, ...props }: Props, ref): JSX.Element => {
-    const { onChange, min, max, style } = props;
-    const [currentValueStr, setCurrentValueStr] = useState('');
+export function MKRInput({
+  placeholder = '0.00 MKR',
+  errorMaxMessage = 'MKR balance too low',
+  onChange,
+  min = new BigNumber(0),
+  max,
+  balance,
+  balanceText = 'MKR Balance:',
+  value
+}: MKRInputProps): React.ReactElement {
+  const [currentValueStr, setCurrentValueStr] = useState('');
+  const [errorInvalidFormat, setErrorInvalidFormat] = useState(false);
 
-    function updateValue(e: { currentTarget: { value: string } }) {
-      const newValueStr = e.currentTarget.value;
+  function updateValue(e: { currentTarget: { value: string } }) {
+    const newValueStr = e.currentTarget.value;
 
-      /* eslint-disable no-useless-escape */
-      if (!/^((0|[1-9]\d*)(\.\d+)?)?$/.test(newValueStr)) return; // only non-negative valid numbers
-      const newValue = MKR(newValueStr || '0');
-      const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max));
-      if (invalidValue) {
-        return;
-      }
+    setCurrentValueStr(newValueStr);
 
-      onChange(newValue);
-      setCurrentValueStr(newValueStr);
+    const newValue = new BigNumber(newValueStr || '0');
+
+    const invalidValue = newValue.lt(min) || (max && newValue.gt(max));
+    if (invalidValue || newValue.isNaN()) {
+      setErrorInvalidFormat(true);
+      return;
     }
 
-    return (
-      <Box>
+    setErrorInvalidFormat(false);
+
+    onChange(newValue);
+  }
+
+  const disabledButton = balance === undefined;
+
+  const onClickSetMax = () => {
+    const val = balance ? balance : new BigNumber(0);
+    onChange(val);
+    setCurrentValueStr(val.toString());
+  };
+
+  const errorMax = value !== undefined && value.isGreaterThan(balance || new BigNumber(0));
+  const errorMin = value !== undefined && value.isLessThan(0);
+
+  return (
+    <Box data-testid="mkr-input-wrapper">
+      <Flex sx={{ border: '1px solid #D8E0E3', justifyContent: 'space-between' }}>
         <Input
-          ref={ref}
           aria-label="mkr-input"
+          data-testid="mkr-input"
           type="number"
           onChange={updateValue}
           value={currentValueStr}
           placeholder={placeholder}
-          sx={style}
+          lang="en" // Forces dot for decimals
+          sx={{
+            border: 'none'
+          }}
         />
-        {error && <Text sx={{ color: 'error', fontSize: 2 }}>{error}</Text>}
-      </Box>
-    );
-  }
-);
+        <Button
+          disabled={disabledButton}
+          variant="textual"
+          data-testid="mkr-input-set-max"
+          sx={{ width: '80px', fontWeight: 'bold', paddingLeft: 0 }}
+          onClick={onClickSetMax}
+          title="Set max"
+        >
+          Set max
+        </Button>
+      </Flex>
+      <Flex sx={{ alignItems: 'baseline', mb: 3, alignSelf: 'flex-start' }}>
+        <Text
+          sx={{
+            textTransform: 'uppercase',
+            color: 'secondaryEmphasis',
+            fontSize: 1,
+            fontWeight: 'bold'
+          }}
+          data-testid="mkr-input-balance-text"
+        >
+          {balanceText}&nbsp;
+        </Text>
 
-export default MKRInput;
+        {balance ? (
+          <Text
+            sx={{ cursor: 'pointer', fontSize: 2, mt: 2 }}
+            onClick={onClickSetMax}
+            data-testid="mkr-input-balance"
+          >
+            {balance.toFormat(6)}
+          </Text>
+        ) : (
+          <Box sx={{ width: 6 }}>
+            <Skeleton />
+          </Box>
+        )}
+      </Flex>
+
+      {errorMax && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          {errorMaxMessage}
+        </Text>
+      )}
+      {errorMin && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          Please enter a valid amount.
+        </Text>
+      )}
+      {errorInvalidFormat && (
+        <Text sx={{ color: 'error', fontSize: 2 }} data-testid="mkr-input-error">
+          Please enter a valid number.
+        </Text>
+      )}
+    </Box>
+  );
+}

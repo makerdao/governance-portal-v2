@@ -1,15 +1,20 @@
 /** @jsx jsx */
+
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, Badge, jsx } from 'theme-ui';
-import useSWR from 'swr';
+import { Heading, Container, Grid, Text, Flex, Badge, jsx, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 
-import getMaker, { isDefaultNetwork, getNetwork } from 'lib/maker';
+// lib
+import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { getPolls, getExecutiveProposals, getPostsAndPhotos } from 'lib/api';
+import { initTestchainPolls, isActivePoll } from 'lib/utils';
+import { useHat } from 'lib/hooks';
+
+// components
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
 import SystemStats from 'components/index/SystemStats';
@@ -19,11 +24,12 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
+
+// types
 import { CMSProposal } from 'types/proposal';
 import { Poll } from 'types/poll';
 import { BlogPost } from 'types/blogPost';
-import { initTestchainPolls } from 'lib/utils';
-import { isActivePoll } from 'lib/utils';
+import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 
 type Props = {
   proposals: CMSProposal[];
@@ -32,12 +38,18 @@ type Props = {
 };
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
+  const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
 
-  const { data: hat } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
+
+  const { data: hat } = useHat();
+
+  useEffect(() => {
+    setBackroundImage(mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)');
+  }, [mode]);
+
   return (
     <div>
       <Head>
@@ -51,7 +63,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           width: '100vw',
           zIndex: -1,
           position: 'absolute',
-          backgroundImage: 'url(/assets/heroVisual.svg)',
+          backgroundImage,
           backgroundSize: ['cover', 'contain'],
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat'
@@ -147,7 +159,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
             <Grid gap={[4, 5]} sx={{ px: [2, 0] }} columns={[1, 3]}>
               <IntroCard
                 title="Intro to Governance"
-                linkDest="https://community-development.makerdao.com/onboarding/voter-onboarding"
+                linkDest="https://makerdao.world/learn/governance"
                 icon="govIntro"
                 sx={{
                   '&:hover': {
@@ -173,7 +185,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </IntroCard>
               <IntroCard
                 title="Community Tools"
-                linkDest="https://community-development.makerdao.com/learn/governance/participate"
+                linkDest="https://makerdao.world/learn/governance/participate"
                 icon="govCalls"
                 sx={{
                   '&:hover': {
@@ -274,9 +286,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         </Stack>
       </PrimaryLayout>
       <Global
-        styles={theme => ({
+        /* react-loading-skeleton uses an outdated version of @emotion/core which causes incorrect type errors.
+        see: https://github.com/emotion-js/emotion/issues/1800 */
+        // @ts-ignore
+        styles={() => ({
           body: {
-            backgroundColor: theme.colors.surface
+            backgroundColor: 'transparent'
+          },
+          ':root': {
+            background: theme => theme.colors.surface
           }
         })}
       />
@@ -295,9 +313,10 @@ export default function Index({
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (getNetwork() === 'testnet') {
+    if (isTestnet()) {
       initTestchainPolls(); // this is async but we don't need to await
     }
+
     if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([getPolls(), getExecutiveProposals()])
         .then(([polls, proposals]) => {
@@ -315,7 +334,7 @@ export default function Index({
   if (!isDefaultNetwork() && (!polls || !proposals))
     return (
       <PrimaryLayout>
-        <p>Loading…</p>
+        <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
@@ -324,6 +343,7 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch polls, proposals, blog posts at build-time
+
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),

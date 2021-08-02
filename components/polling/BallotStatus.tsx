@@ -36,7 +36,7 @@ const BallotStatus = (props: any): JSX.Element => {
       }}
       onClick={() => {
         if (transaction || !ballotLength) return;
-        router.push({ pathname: '/polling/review', query: network });
+        router.push({ pathname: '/polling/review', query: { network } });
       }}
       {...props}
       disabled={
@@ -51,7 +51,7 @@ const BallotStatus = (props: any): JSX.Element => {
         sx={{
           color:
             ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
-              ? 'white'
+              ? 'onPrimary'
               : 'textMuted',
           mr: 2
         }}
@@ -69,7 +69,7 @@ const StatusText = ({
   ballotLength: number;
 }): JSX.Element => {
   const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
-  const DEFAULT_COLOR = 'white';
+  const DEFAULT_COLOR = 'onPrimary';
   const color =
     ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
       ? DEFAULT_COLOR

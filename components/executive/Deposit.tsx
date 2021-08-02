@@ -1,35 +1,33 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from '../layouts/Stack';
-import MKRInput from '../MKRInput';
+import { MKRInput } from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
 import TxIndicators from '../TxIndicators';
 import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
-import { changeInputValue } from 'lib/utils';
-import { BoxWithClose } from './Withdraw';
+import { BoxWithClose } from 'components/BoxWithClose';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
+import { useMkrBalance } from 'lib/hooks';
+import BigNumber from 'bignumber.js';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
-  const [mkrToDeposit, setMkrToDeposit] = useState(MKR(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
-
-  const { data: mkrBalance } = useSWR(['/user/mkr-balance', address], (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
-  );
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+  const { data: mkrBalance } = useMkrBalance(address);
 
   const { data: chiefAllowance } = useSWR<CurrencyObject>(
     ['/user/chief-allowance', address, !!voteProxy],
@@ -58,7 +56,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     const txPending = tx.status === 'pending';
     content = (
       <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
+        <Text as="p" variant="microHeading" color="onBackgroundAlt">
           {txPending ? 'Transaction pending' : 'Confirm transaction'}
         </Text>
 
@@ -72,6 +70,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               Please use your wallet to confirm this transaction.
             </Text>
             <Text
+              as="p"
               sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
               onClick={() => setTxId(null)}
             >
@@ -85,49 +84,23 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
+          <Text as="p" variant="microHeading" color="onBackgroundAlt">
             Deposit into voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Input the amount of MKR to deposit into the voting contract.
           </Text>
         </Box>
 
         <Box>
-          <MKRInput
-            onChange={setMkrToDeposit}
-            placeholder="0.00 MKR"
-            error={mkrToDeposit.gt(mkrBalance) && 'MKR balance too low'}
-            ref={input}
-          />
+          <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance?.toBigNumber()} />
         </Box>
-        <Flex sx={{ alignItems: 'baseline', mb: 3 }}>
-          <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>MKR Balance:&nbsp;</Text>
-          {mkrBalance ? (
-            <Text
-              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => {
-                if (!input.current) return;
-                changeInputValue(input.current, mkrBalance.toBigNumber().toString());
-              }}
-            >
-              {mkrBalance.toBigNumber().toFormat(6)}
-            </Text>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Flex>
+
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance)}
+          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'DepositMkr',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('DepositMkr');
             const maker = await getMaker();
             const lockTxCreator = voteProxy
               ? () => voteProxy.lock(mkrToDeposit)
@@ -153,10 +126,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
+          <Text as="p" variant="microHeading" color="onBackgroundAlt">
             Approve voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
             Approve the transfer of MKR to the voting contract.
           </Text>
         </Box>
@@ -164,11 +137,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'approveDeposit',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveDeposit');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker
@@ -202,7 +171,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 const Deposit = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
@@ -245,11 +214,7 @@ const Deposit = (props): JSX.Element => {
       {props.link ? (
         <Link
           onClick={() => {
-            mixpanel.track('btn-click', {
-              id: 'OpenDepositModalFromMigration',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('btn-click');
             open();
           }}
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
@@ -261,11 +226,7 @@ const Deposit = (props): JSX.Element => {
         <Button
           variant="mutedOutline"
           onClick={() => {
-            mixpanel.track('btn-click', {
-              id: 'OpenDepositModal',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('OpenDepositModal');
             open();
           }}
           data-testid="deposit-button"

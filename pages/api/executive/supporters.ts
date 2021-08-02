@@ -2,9 +2,9 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { isSupportedNetwork } from 'lib/maker';
-import { getConnectedMakerObj } from '../_lib/utils';
+import { getConnectedMakerObj } from 'lib/api/utils';
 import { DEFAULT_NETWORK } from 'lib/constants';
-import withApiHandler from '../_lib/withApiHandler';
+import withApiHandler from 'lib/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;

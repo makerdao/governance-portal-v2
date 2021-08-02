@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { jsx, ThemeUIStyleObject } from 'theme-ui';
 import { useEffect } from 'react';
 import lottie from 'lottie-web';
 
@@ -7,7 +7,7 @@ import txFailedAnimation from 'lib/animation/txFailed.json';
 import txSuccessAnimation from 'lib/animation/txSuccess.json';
 import txPendingAnimation from 'lib/animation/txPending.json';
 
-const Failed = ({ done, ...props }: { done?: () => void }) => {
+const Failed = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject }): React.ReactElement => {
   useEffect(() => {
     const animation = lottie.loadAnimation({
       container: document.getElementById('tx-failed-animation-container') as HTMLElement,
@@ -22,7 +22,7 @@ const Failed = ({ done, ...props }: { done?: () => void }) => {
   return <div sx={{ width: '100%' }} id="tx-failed-animation-container" {...props} />;
 };
 
-const Success = ({ done, ...props }: { done?: () => void }) => {
+const Success = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject }): React.ReactElement => {
   useEffect(() => {
     const animation = lottie.loadAnimation({
       container: document.getElementById('tx-success-animation-container') as HTMLElement,
@@ -37,7 +37,7 @@ const Success = ({ done, ...props }: { done?: () => void }) => {
   return <div sx={{ width: '100%' }} id="tx-success-animation-container" {...props} />;
 };
 
-const Pending = ({ done, ...props }: { done?: () => void }) => {
+const Pending = ({ done, ...props }: { done?: () => void; sx?: ThemeUIStyleObject }): React.ReactElement => {
   useEffect(() => {
     const animation = lottie.loadAnimation({
       container: document.getElementById('tx-pending-animation-container') as HTMLElement,

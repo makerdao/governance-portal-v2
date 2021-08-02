@@ -1,29 +1,31 @@
 /** @jsx jsx */
-import { useState, useRef } from 'react';
-import { Button, Flex, Text, Close, Box, jsx, Card, Alert } from 'theme-ui';
+import { useState } from 'react';
+import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Skeleton from 'react-loading-skeleton';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 
 import Stack from '../layouts/Stack';
-import MKRInput from '../MKRInput';
+import { MKRInput } from '../MKRInput';
 import getMaker, { MKR } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import { CurrencyObject } from 'types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from '../TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
-import { changeInputValue } from 'lib/utils';
 import invariant from 'tiny-invariant';
-import mixpanel from 'mixpanel-browser';
+import { BoxWithClose } from 'components/BoxWithClose';
+import { useLockedMkr } from 'lib/hooks';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
+const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
-  const input = useRef<HTMLInputElement>(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
     ['/user/iou-allowance', address, !!voteProxy],
@@ -38,12 +40,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const lockedMkrKey = voteProxy?.getProxyAddress() || address;
-  const { data: lockedMkr } = useSWR(['/user/mkr-locked', lockedMkrKey], (_, address) =>
-    getMaker().then(maker =>
-      voteProxy ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
-  );
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -56,7 +53,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     const txPending = tx.status === 'pending';
     content = (
       <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
+        <Text as="p" variant="microHeading" color="onBackgroundAlt">
           {txPending ? 'Transaction pending' : 'Confirm transaction'}
         </Text>
 
@@ -66,10 +63,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
         {!txPending && (
           <Box>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+            <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
               Please use your wallet to confirm this transaction.
             </Text>
             <Text
+              as="p"
               sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
               onClick={() => setTxId(null)}
             >
@@ -83,10 +81,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={2}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+          <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
             Withdraw from voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Input the amount of MKR to withdraw from the voting contract.
           </Text>
         </Box>
@@ -94,31 +92,12 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Box>
           <MKRInput
             onChange={setMkrToWithdraw}
-            placeholder="0.00 MKR"
-            error={mkrToWithdraw.gt(lockedMkr) && 'MKR balance too low'}
-            ref={input}
+            balance={lockedMkr?.toBigNumber()}
+            value={mkrToWithdraw}
+            balanceText="MKR in contract:"
           />
         </Box>
-        <Flex sx={{ alignItems: 'baseline' }}>
-          <Text sx={{ textTransform: 'uppercase', color: 'mutedAlt', fontSize: 2 }}>
-            MKR in contract:&nbsp;
-          </Text>
-          {lockedMkr ? (
-            <Text
-              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
-              onClick={() => {
-                if (!input.current) return;
-                changeInputValue(input.current, lockedMkr.toBigNumber().toString());
-              }}
-            >
-              {lockedMkr.toBigNumber().toFormat(6)}
-            </Text>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Flex>
+
         {voteProxy && address === voteProxy.getHotAddress() && (
           <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
             You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
@@ -128,11 +107,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
           disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'withdrawMkr',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('withdrawMkr');
             const maker = await getMaker();
 
             const freeTxCreator = voteProxy
@@ -161,10 +136,10 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack gap={3} {...props}>
         <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+          <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
             Approve voting contract
           </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
             Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
           </Text>
         </Box>
@@ -172,11 +147,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
-            mixpanel.track('btn-click', {
-              id: 'approveWithdraw',
-              product: 'governance-portal-v2',
-              page: 'Executive'
-            });
+            trackButtonClick('approveWithdraw');
             const maker = await getMaker();
             const approveTxCreator = () =>
               maker
@@ -206,28 +177,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   return <BoxWithClose content={content} close={close} {...props} />;
 };
 
-export const BoxWithClose = ({ content, close, ...props }): JSX.Element => (
-  <Box sx={{ position: 'relative' }} {...props}>
-    <Close
-      aria-label="close"
-      sx={{
-        height: 4,
-        width: 4,
-        position: 'absolute',
-        top: '-17px',
-        right: '-42px',
-        display: ['none', 'block'],
-        outline: 'none'
-      }}
-      onClick={close}
-    />
-    {content}
-  </Box>
-);
-
 const Withdraw = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
+  );
 
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
@@ -257,6 +211,7 @@ const Withdraw = (props): JSX.Element => {
             sx={{ px: [3, null] }}
             address={account?.address}
             voteProxy={voteProxy}
+            voteDelegate={voteDelegate}
             close={() => setShowDialog(false)}
           />
         </DialogContent>

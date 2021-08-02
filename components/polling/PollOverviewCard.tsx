@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, jsx } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
@@ -15,15 +15,23 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
-import mixpanel from 'mixpanel-browser';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
-type Props = { poll: Poll; startMobileVoting?: () => void; reviewPage: boolean };
+type Props = {
+  poll: Poll;
+  startMobileVoting?: () => void;
+  reviewPage: boolean;
+  sx?: ThemeUIStyleObject;
+};
 export default function PollOverviewCard({
   poll,
   startMobileVoting,
   reviewPage,
   ...props
 }: Props): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -46,16 +54,18 @@ export default function PollOverviewCard({
           </Flex>
         )}
         <Box sx={{ cursor: 'pointer' }}>
-          <Link
-            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-          >
-            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
-              <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                {poll.title}
-              </Text>
-            </InternalLink>
-          </Link>
+          <Box>
+            <Link
+              href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+              as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+            >
+              <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                  {poll.title}
+                </Text>
+              </InternalLink>
+            </Link>
+          </Box>
           <Link
             href={{ pathname: '/polling/[poll-hash]', query: { network } }}
             as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
@@ -87,11 +97,7 @@ export default function PollOverviewCard({
                 variant="outline"
                 mr={2}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'showHistoricalPolls',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('showHistoricalPolls');
                   startMobileVoting && startMobileVoting();
                 }}
                 sx={{
@@ -110,11 +116,7 @@ export default function PollOverviewCard({
                 mr={2}
                 px={4}
                 onClick={() => {
-                  mixpanel.track('btn-click', {
-                    id: 'startMobileVoting',
-                    product: 'governance-portal-v2',
-                    page: 'Polling'
-                  });
+                  trackButtonClick('startMobileVoting');
                   startMobileVoting && startMobileVoting();
                 }}
               >

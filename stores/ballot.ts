@@ -2,8 +2,10 @@ import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker from 'lib/maker';
-import { transactionsApi } from './transactions';
 import { Ballot } from 'types/ballot';
+import { transactionsApi } from './transactions';
+import { accountsApi } from './accounts';
+import { poll } from 'ethers/lib/utils';
 
 type Store = {
   ballot: Ballot;
@@ -51,7 +53,11 @@ const [useBallotStore] = create<Store>((set, get) => ({
       }
     });
 
-    const voteTxCreator = () => maker.service('govPolling').vote(pollIds, pollOptions);
+    const voteDelegate = accountsApi.getState().voteDelegate;
+
+    const voteTxCreator = voteDelegate
+      ? () => voteDelegate.votePoll(pollIds, pollOptions)
+      : () => maker.service('govPolling').vote(pollIds, pollOptions);
     const txId = await transactionsApi
       .getState()
       .track(voteTxCreator, `Voting on ${Object.keys(ballot).length} polls`, {

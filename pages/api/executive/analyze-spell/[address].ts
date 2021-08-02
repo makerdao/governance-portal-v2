@@ -3,9 +3,9 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { isSupportedNetwork } from 'lib/maker';
-import { getConnectedMakerObj } from '../../_lib/utils';
+import { getConnectedMakerObj } from 'lib/api/utils';
 import { DEFAULT_NETWORK } from 'lib/constants';
-import withApiHandler from '../../_lib/withApiHandler';
+import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {

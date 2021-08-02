@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 
-import withApiHandler from '../../_lib/withApiHandler';
-import { getConnectedMakerObj } from '../../_lib/utils';
+import withApiHandler from 'lib/api/withApiHandler';
+import { getConnectedMakerObj } from 'lib/api/utils';
 import { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { backoffRetry } from 'lib/utils';

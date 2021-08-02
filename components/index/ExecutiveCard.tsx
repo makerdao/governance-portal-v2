@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'components/SkeletonThemed';
 
 import Stack from '../layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';
@@ -39,9 +39,6 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             <Text
               variant="microHeading"
               sx={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
                 fontSize: [3, 4],
                 cursor: 'pointer'
               }}
@@ -51,22 +48,24 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
           </InternalLink>
         </Link>
       </div>
-      <Text
-        sx={
-          {
-            textOverflow: 'ellipsis',
-            fontSize: [2, 3],
-            opacity: 0.8,
-            mb: [1, 3],
-            display: '-webkit-box',
-            overflow: 'hidden',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 2
-          } as any
-        }
-      >
-        {proposal.proposalBlurb}
-      </Text>
+      <Box>
+        <Text
+          sx={
+            {
+              textOverflow: 'ellipsis',
+              fontSize: [2, 3],
+              opacity: 0.8,
+              mb: [1, 3],
+              display: '-webkit-box',
+              overflow: 'hidden',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 2
+            } as any
+          }
+        >
+          {proposal.proposalBlurb}
+        </Text>
+      </Box>
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Link
           href={{
