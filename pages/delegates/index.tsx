@@ -18,6 +18,8 @@ import { DelegateCard } from 'components/delegations';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
 
@@ -27,6 +29,8 @@ type Props = {
 
 const Delegates = ({ delegates }: Props) => {
   const network = getNetwork();
+
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const styles = {
     delegateGroup: {
@@ -141,7 +145,7 @@ const Delegates = ({ delegates }: Props) => {
                   }}
                   passHref
                 >
-                  <ThemeUILInk title="My account">
+                  <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
                     <Text>View Account Page</Text>
                   </ThemeUILInk>
                 </Link>

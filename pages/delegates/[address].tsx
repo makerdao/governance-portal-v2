@@ -16,12 +16,16 @@ import { DelegateDetail } from 'components/delegations';
 import { getNetwork } from 'lib/maker';
 import { useEffect, useState } from 'react';
 import { fetchJson } from 'lib/utils';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useRouter } from 'next/router';
 
 const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
+
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -35,7 +39,7 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
             <Heading variant="microHeading" mr={3}>
               <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
                 <NavLink p={0}>
-                  <Button variant="mutedOutline">
+                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} />
                       {bpi > 0 ? 'Back to all delegates' : 'Back'}

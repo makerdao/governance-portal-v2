@@ -108,7 +108,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 }}
               >
                 <a sx={{ mt: 'auto' }} title="Profile details">
-                  <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
+                  <Button
+                    onClick={() => trackButtonClick('openDelegateProfile')}
+                    sx={{ borderColor: 'text', color: 'text' }}
+                    variant="outline"
+                  >
                     View Profile Details
                   </Button>
                 </a>
