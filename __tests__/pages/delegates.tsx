@@ -164,10 +164,10 @@ describe('Delegate Create page', () => {
     click(closeUndelegateBtn);
 
     // Voting weights are returned to 0 after undelegating
-    const newTotal = await screen.findByText(/Total MKR delegated/);
+    const newTotal = await screen.getByTestId('total-mkr-delegated');
     const newByYou = await screen.findByText(/MKR delegated by you/);
 
-    expect(newTotal.previousSibling).toHaveTextContent('0.00');
+    expect(newTotal).toHaveTextContent('0.00');
     expect(newByYou.previousSibling).toHaveTextContent('0.00');
   });
 });
