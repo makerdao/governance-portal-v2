@@ -71,15 +71,17 @@ const PollingOverview = ({ polls }: Props) => {
     }
   }, []);
 
+  const allCategories = Array.from(new Set(polls.map(poll => poll.categories).flat()));
   const filteredPolls = useMemo(() => {
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
+    const noFiltersSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+    const categoryExists = (category, poll) => poll.categories.some(c => c === category);
     return polls.filter(poll => {
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      return categoryFilter === null // if categoryFilter is null, no filters have been set yet
-        ? true
-        : !poll.categories.some(category => categoryFilter[category] === false);
+      // if no filters selected, return all
+      return noFiltersSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -150,7 +152,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
+          <CategoryFilter categories={allCategories} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
