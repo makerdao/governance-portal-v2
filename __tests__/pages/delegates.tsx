@@ -11,6 +11,8 @@ import {
 } from '../helpers';
 import { SWRConfig } from 'swr';
 import * as utils from '../../lib/utils';
+import { DelegatesAPIResponse } from 'types/delegatesAPI';
+import { DelegateStatusEnum } from 'lib/delegates/constants';
 
 const NEXT_ACCOUNT = '0x81431b69b1e0e334d4161a13c2955e0f3599381e';
 const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
@@ -19,20 +21,31 @@ const MOCK_DELEGATES = [
   {
     address: DEMO_ACCOUNT_TESTS,
     description: 'I AM DELEGATEMAN',
-    expirationDate: '2022-07-08T14:00:24.000Z',
+    expirationDate: new Date('2022-07-08T14:00:24.000Z'),
     expired: false,
     id: '0xc8829647c8e4131a01354ccac993388568d12d00',
-    lastVote: '2021-07-19T23:40:18.158Z',
+    lastVote: new Date('2021-07-19T23:40:18.158Z'),
     name: 'Lee Robinson',
     picture:
       'https://raw.githubusercontent.com/makerdao-dux/voting-delegates/main/delegates/0xc8829647c8e4131a01354ccac993388568d12d00/profile.jpg',
-    status: 'recognized',
-    voteDelegateAddress: DELEGATE_ADDRESS
+    status: DelegateStatusEnum.recognized,
+    voteDelegateAddress: DELEGATE_ADDRESS,
+    mkrDelegated: 0
   }
 ];
 
+const MOCK_API_RESPONSE: DelegatesAPIResponse = {
+  delegates: MOCK_DELEGATES,
+  stats: {
+    total: 0,
+    shadow: 0,
+    recognized: 0,
+    totalMKRDelegated: 0
+  }
+};
+
 const mockGetUsers = jest.spyOn(utils, 'fetchJson');
-mockGetUsers.mockResolvedValue(MOCK_DELEGATES);
+mockGetUsers.mockResolvedValue(MOCK_API_RESPONSE);
 
 jest.mock('@theme-ui/match-media', () => {
   return {
@@ -46,7 +59,7 @@ let maker;
 async function setup(maker) {
   const view = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
-      <DelegatesPage delegates={[]} />
+      <DelegatesPage delegates={[]} stats={MOCK_API_RESPONSE.stats}/>
     </SWRConfig>
   );
 
