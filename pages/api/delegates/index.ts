@@ -12,7 +12,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<D
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const delegates = await fetchDelegates(network);
-  
+
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(delegates);
 });

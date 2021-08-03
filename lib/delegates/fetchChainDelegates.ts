@@ -9,12 +9,13 @@ export async function fetchChainDelegates(
 
   const delegates = await maker.service('voteDelegate').getAllDelegates();
 
-  const mkrStaked = await Promise.all(delegates.map(async delegate => {
-
-    // Get MKR delegated to each contract
-    const mkr = await maker.service('chief').getNumDeposits(delegate.voteDelegate);
-    return mkr.toNumber();
-  }));
+  const mkrStaked = await Promise.all(
+    delegates.map(async delegate => {
+      // Get MKR delegated to each contract
+      const mkr = await maker.service('chief').getNumDeposits(delegate.voteDelegate);
+      return mkr.toNumber();
+    })
+  );
 
   return delegates.map((d, index) => ({
     ...d,

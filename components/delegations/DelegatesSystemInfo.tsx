@@ -10,19 +10,24 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
   const { data: delegateFactoryAddress } = useSWR<string>('/delegate-factory-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address)
   );
-  const statsItems = [{
-    title: 'Total delegates',
-    value: stats.total
-  }, {
-    title: 'Recognized delegates',
-    value: stats.recognized
-  }, {
-    title: 'Shadow delegates',
-    value: stats.shadow
-  }, {
-    title: 'Total MKR delegated',
-    value: stats.totalMKRDelegated
-  }];
+  const statsItems = [
+    {
+      title: 'Total delegates',
+      value: stats.total
+    },
+    {
+      title: 'Recognized delegates',
+      value: stats.recognized
+    },
+    {
+      title: 'Shadow delegates',
+      value: stats.shadow
+    },
+    {
+      title: 'Total MKR delegated',
+      value: stats.totalMKRDelegated
+    }
+  ];
 
   return (
     <Box>
@@ -34,7 +39,10 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
-              <ThemeUILink href={getEtherscanLink(getNetwork(), delegateFactoryAddress, 'address')} target="_blank">
+              <ThemeUILink
+                href={getEtherscanLink(getNetwork(), delegateFactoryAddress, 'address')}
+                target="_blank"
+              >
                 <Text>{formatAddress(delegateFactoryAddress)}</Text>
               </ThemeUILink>
             ) : (

@@ -1,17 +1,17 @@
 import { Delegate } from './delegate';
 
 export type DelegatesAPIStats = {
-  total: number,
-  shadow: number,
-  recognized: number,
-  totalMKRDelegated: number
-}
+  total: number;
+  shadow: number;
+  recognized: number;
+  totalMKRDelegated: number;
+};
 
 export type DelegatesAPIResponse = {
-  delegates: Delegate[],
-  stats: DelegatesAPIStats,
+  delegates: Delegate[];
+  stats: DelegatesAPIStats;
   pagination?: {
-    page: number,
-    pageSize: number,
-  }
-}
+    page: number;
+    pageSize: number;
+  };
+};

@@ -40,9 +40,7 @@ const Delegates = ({ delegates, stats }: Props) => {
       marginBottom: 2
     }
   };
-  const [voteDelegate] = useAccountsStore(state => [
-    state.voteDelegate
-  ]);
+  const [voteDelegate] = useAccountsStore(state => [state.voteDelegate]);
 
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
@@ -65,7 +63,6 @@ const Delegates = ({ delegates, stats }: Props) => {
 
       <SidebarLayout>
         <Box>
-         
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
@@ -162,10 +159,12 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      fetchJson(`/api/delegates?network=${getNetwork()}`).then((response: DelegatesAPIResponse) => {
-        _setDelegates(response.delegates);
-        _setStats(response.stats);
-      }).catch(setError);
+      fetchJson(`/api/delegates?network=${getNetwork()}`)
+        .then((response: DelegatesAPIResponse) => {
+          _setDelegates(response.delegates);
+          _setStats(response.stats);
+        })
+        .catch(setError);
     }
   }, []);
 
@@ -181,7 +180,12 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
     );
   }
 
-  return <Delegates delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])} stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}  />;
+  return (
+    <Delegates
+      delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])}
+      stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
