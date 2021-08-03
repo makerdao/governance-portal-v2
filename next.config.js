@@ -12,14 +12,16 @@ module.exports = {
   },
 
   webpack: (config, { isServer }) => {
-    // Fixes npm packages that depend on `fs` module
-    // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
     if (isServer) {
       process.env.USE_FS_CACHE = 1;
     } else {
-      config.node = { fs: 'empty' };
+      // Fixes npm packages that depend on `fs` module
+      // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false
+      };
     }
-
     config.resolve.alias['lib'] = path.join(__dirname, 'lib');
     config.resolve.alias['components'] = path.join(__dirname, 'components');
     config.resolve.alias['stores'] = path.join(__dirname, 'stores');
