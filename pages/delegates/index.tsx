@@ -22,12 +22,15 @@ import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
+import { DelegatesSystemInfo } from 'components/delegations/DelegatesSystemInfo';
+import { DelegatesAPIResponse, DelegatesAPIStats } from 'types/delegatesAPI';
 
 type Props = {
   delegates: Delegate[];
+  stats: DelegatesAPIStats;
 };
 
-const Delegates = ({ delegates }: Props) => {
+const Delegates = ({ delegates, stats }: Props) => {
   const network = getNetwork();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
@@ -37,10 +40,10 @@ const Delegates = ({ delegates }: Props) => {
       marginBottom: 2
     }
   };
-  const [currentAccount, voteDelegate] = useAccountsStore(state => [
-    state.currentAccount,
+  const [voteDelegate] = useAccountsStore(state => [
     state.voteDelegate
   ]);
+
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
@@ -62,21 +65,7 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
-          {/* {currentAccount && (
-            <Box>
-              <Link
-                href={{
-                  pathname: '/account',
-                  query: { network }
-                }}
-                passHref
-              >
-                <ThemeUILInk title="My account">
-                  <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
-                </ThemeUILInk>
-              </Link>
-            </Box>
-          )} */}
+         
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
@@ -152,6 +141,9 @@ const Delegates = ({ delegates }: Props) => {
               </Box>
             </Card>
           </Box>
+
+          {stats && <DelegatesSystemInfo stats={stats} />}
+
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
@@ -162,14 +154,18 @@ const Delegates = ({ delegates }: Props) => {
   );
 };
 
-export default function DelegatesPage({ delegates }: Props): JSX.Element {
+export default function DelegatesPage({ delegates, stats }: Props): JSX.Element {
   const [_delegates, _setDelegates] = useState<Delegate[]>();
+  const [_stats, _setStats] = useState<DelegatesAPIStats>();
   const [error, setError] = useState<string>();
 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      fetchJson(`/api/delegates?network=${getNetwork()}`).then(_setDelegates).catch(setError);
+      fetchJson(`/api/delegates?network=${getNetwork()}`).then((response: DelegatesAPIResponse) => {
+        _setDelegates(response.delegates);
+        _setStats(response.stats);
+      }).catch(setError);
     }
   }, []);
 
@@ -185,16 +181,18 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
     );
   }
 
-  return <Delegates delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])} />;
+  return <Delegates delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])} stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}  />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates = await fetchDelegates();
+  const delegatesAPIResponse = await fetchDelegates();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      delegates: shuffleArray(delegates)
+      // Shuffle in the backend, this will be changed depending on the sorting order.
+      delegates: shuffleArray(delegatesAPIResponse.delegates),
+      stats: delegatesAPIResponse.stats
     }
   };
 };
