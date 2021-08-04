@@ -7,7 +7,13 @@ import useSWR from 'swr';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from 'types/delegatesAPI';
 
-export function DelegatesSystemInfo({ stats, className }: { stats: DelegatesAPIStats, className?: string }): React.ReactElement {
+export function DelegatesSystemInfo({
+  stats,
+  className
+}: {
+  stats: DelegatesAPIStats;
+  className?: string;
+}): React.ReactElement {
   const { data: delegateFactoryAddress } = useSWR<string>('/delegate-factory-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address)
   );
@@ -29,8 +35,8 @@ export function DelegatesSystemInfo({ stats, className }: { stats: DelegatesAPIS
     },
     {
       title: 'Total MKR delegated',
-      id: 'total-mkr-system-info', 
-      value: (new BigNumber(stats.totalMKRDelegated)).toFormat(2)
+      id: 'total-mkr-system-info',
+      value: new BigNumber(stats.totalMKRDelegated).toFormat(2)
     }
   ];
 

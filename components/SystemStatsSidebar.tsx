@@ -41,7 +41,13 @@ type StatField =
   | 'debt ceiling'
   | 'system surplus';
 
-export default function SystemStatsSidebar({ fields = [], className }: { fields: StatField[], className?: string }): JSX.Element {
+export default function SystemStatsSidebar({
+  fields = [],
+  className
+}: {
+  fields: StatField[];
+  className?: string;
+}): JSX.Element {
   const { data } = useSWR<[CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
     '/system-stats-sidebar',
     getSystemStats
@@ -168,26 +174,26 @@ export default function SystemStatsSidebar({ fields = [], className }: { fields:
 
   return (
     <Box sx={{ display: ['none', 'block'] }} className={className}>
-        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 3 }}>
-          <Heading as="h3" variant="microHeading">
-            System Info
-          </Heading>
-          <ExternalLink
-            href="https://daistats.com/"
-            target="_blank"
-            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-          >
-            <Flex sx={{ alignItems: 'center' }}>
-              <Text>
-                See more
-                <Icon ml={2} name="arrowTopRight" size={2} />
-              </Text>
-            </Flex>
-          </ExternalLink>
-        </Flex>
-        <Card variant="compact">
-          <Stack gap={3}>{fields.map(field => statsMap[field](field))}</Stack>
-        </Card>
-      </Box>
+      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 3 }}>
+        <Heading as="h3" variant="microHeading">
+          System Info
+        </Heading>
+        <ExternalLink
+          href="https://daistats.com/"
+          target="_blank"
+          sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+        >
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text>
+              See more
+              <Icon ml={2} name="arrowTopRight" size={2} />
+            </Text>
+          </Flex>
+        </ExternalLink>
+      </Flex>
+      <Card variant="compact">
+        <Stack gap={3}>{fields.map(field => statsMap[field](field))}</Stack>
+      </Card>
+    </Box>
   );
 }
