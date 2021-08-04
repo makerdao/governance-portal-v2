@@ -37,10 +37,10 @@ const MOCK_DELEGATES = [
 const MOCK_API_RESPONSE: DelegatesAPIResponse = {
   delegates: MOCK_DELEGATES,
   stats: {
-    total: 0,
+    total: 1,
     shadow: 0,
-    recognized: 0,
-    totalMKRDelegated: 0
+    recognized: 1,
+    totalMKRDelegated: 10.24
   }
 };
 
@@ -70,7 +70,7 @@ async function setup(maker) {
   return view;
 }
 
-describe('Delegate Create page', () => {
+describe('Delegates list page', () => {
   const mkrToDeposit = '3.2';
 
   beforeAll(async () => {
@@ -164,10 +164,28 @@ describe('Delegate Create page', () => {
     click(closeUndelegateBtn);
 
     // Voting weights are returned to 0 after undelegating
-    const newTotal = await screen.getByTestId('total-mkr-delegated');
+    const newTotal = screen.getByTestId('total-mkr-delegated');
     const newByYou = await screen.findByText(/MKR delegated by you/);
 
     expect(newTotal).toHaveTextContent('0.00');
     expect(newByYou.previousSibling).toHaveTextContent('0.00');
+  });
+
+
+  describe('Delegates system info', async () => {
+    await screen.findByText('Delegate System Info');
+    
+    const totalDelegatesSystemInfo = screen.getByTestId('total-delegates-system-info');
+    expect(totalDelegatesSystemInfo).toHaveTextContent('1');
+
+    const totalRecognizedDelegatesSystemInfo = screen.getByTestId('total-recognized-delegates-system-info');
+    expect(totalRecognizedDelegatesSystemInfo).toHaveTextContent('1');
+
+    const totalShadowDelegatesSystemInfo = screen.getByTestId('total-shadow-delegates-system-info');
+    expect(totalShadowDelegatesSystemInfo).toHaveTextContent('0');
+    
+    const totalMkr = screen.getByTestId('total-mkr-system-info');
+    expect(totalMkr).toHaveTextContent('10.00');
+    
   });
 });

@@ -81,7 +81,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
       recognized: delegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
       totalMKRDelegated: delegates.reduce((prev, next) => prev + next.mkrDelegated, 0)
     }
-  };
+  }; 
 
   return delegatesResponse;
 }

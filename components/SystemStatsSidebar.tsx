@@ -41,7 +41,7 @@ type StatField =
   | 'debt ceiling'
   | 'system surplus';
 
-export default function SystemStatsSidebar({ fields = [], ...props }: { fields: StatField[] }): JSX.Element {
+export default function SystemStatsSidebar({ fields = [], className }: { fields: StatField[], className?: string }): JSX.Element {
   const { data } = useSWR<[CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
     '/system-stats-sidebar',
     getSystemStats
@@ -167,9 +167,8 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
   };
 
   return (
-    <>
-      <Box sx={{ display: ['none', 'block'] }} {...props}>
-        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 4 }}>
+    <Box sx={{ display: ['none', 'block'] }} className={className}>
+        <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', mb: 2, mt: 3 }}>
           <Heading as="h3" variant="microHeading">
             System Info
           </Heading>
@@ -190,6 +189,5 @@ export default function SystemStatsSidebar({ fields = [], ...props }: { fields: 
           <Stack gap={3}>{fields.map(field => statsMap[field](field))}</Stack>
         </Card>
       </Box>
-    </>
   );
 }

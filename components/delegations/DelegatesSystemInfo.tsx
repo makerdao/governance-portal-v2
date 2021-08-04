@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import StackLayout from 'components/layouts/Stack';
 import SkeletonThemed from 'components/SkeletonThemed';
 import getMaker, { getNetwork } from 'lib/maker';
@@ -6,31 +7,35 @@ import useSWR from 'swr';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from 'types/delegatesAPI';
 
-export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): React.ReactElement {
+export function DelegatesSystemInfo({ stats, className }: { stats: DelegatesAPIStats, className?: string }): React.ReactElement {
   const { data: delegateFactoryAddress } = useSWR<string>('/delegate-factory-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address)
   );
   const statsItems = [
     {
       title: 'Total delegates',
+      id: 'total-delegates-system-info',
       value: stats.total
     },
     {
       title: 'Recognized delegates',
+      id: 'total-recognized-delegates-system-info',
       value: stats.recognized
     },
     {
       title: 'Shadow delegates',
+      id: 'total-shadow-delegates-system-info',
       value: stats.shadow
     },
     {
       title: 'Total MKR delegated',
-      value: stats.totalMKRDelegated
+      id: 'total-mkr-system-info', 
+      value: (new BigNumber(stats.totalMKRDelegated)).toFormat(2)
     }
   ];
 
   return (
-    <Box>
+    <Box className={className}>
       <Heading mt={3} mb={2} as="h3" variant="microHeading">
         Delegate System Info
       </Heading>
@@ -52,9 +57,9 @@ export function DelegatesSystemInfo({ stats }: { stats: DelegatesAPIStats }): Re
             )}
           </Flex>
           {statsItems.map(item => (
-            <Flex key={item.title} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+            <Flex key={item.id} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
               <Text sx={{ fontSize: 3, color: 'textSecondary' }}>{item.title}</Text>
-              <Text variant="h2" sx={{ fontSize: 3 }}>
+              <Text variant="h2" sx={{ fontSize: 3 }} data-testid={item.id}>
                 {item.value}
               </Text>
             </Flex>

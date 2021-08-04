@@ -48,7 +48,7 @@ async function getMkrLiquidity() {
   ]);
 }
 
-export default function MkrLiquiditySidebar({ ...props }): JSX.Element {
+export default function MkrLiquiditySidebar({ className }: { className?: string }): JSX.Element {
   const { data: nonBalancer } = useSWR('/mkr-liquidity', getMkrLiquidity, { refreshInterval: 60000 });
   const { data: balancer } = useSWR('/mkr-liquidity-balancer', getBalancerMkr, { refreshInterval: 60000 });
   const [aaveV1, aaveV2, uniswap, sushi] = nonBalancer || [];
@@ -78,7 +78,7 @@ export default function MkrLiquiditySidebar({ ...props }): JSX.Element {
   };
 
   return (
-    <Box sx={{ display: ['none', 'block'] }} {...props}>
+    <Box sx={{ display: ['none', 'block'] }} className={className}>
       <Heading as="h3" variant="microHeading" sx={{ mb: 2, mt: 3 }}>
         MKR Liquidity
       </Heading>
