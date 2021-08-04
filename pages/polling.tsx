@@ -11,9 +11,11 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
 import { Poll } from 'types/poll';
+import { PollCategory } from 'types/pollCategory';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'lib/api';
 import { isActivePoll, formatDateWithTime } from 'lib/utils';
+import { getCategories } from 'lib/polling/getCategories';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -35,9 +37,10 @@ import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   polls: Poll[];
+  allCategories: PollCategory[];
 };
 
-const PollingOverview = ({ polls }: Props) => {
+const PollingOverview = ({ polls, allCategories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const [
     startDate,
@@ -65,23 +68,18 @@ const PollingOverview = ({ polls }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
 
-  useEffect(() => {
-    if (location.href.includes('pollFilter=active')) {
-      // setFilterInactivePolls(true);
-    }
-  }, []);
-
-  const allCategories = Array.from(new Set(polls.map(poll => poll.categories).flat()));
   const filteredPolls = useMemo(() => {
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
-    const noFiltersSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
-    const categoryExists = (category, poll) => poll.categories.some(c => c === category);
+    const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+
     return polls.filter(poll => {
+      // check date filters first
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      // if no filters selected, return all
-      return noFiltersSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
+
+      // if no category filters selected, return all, otherwise, check if poll contains category
+      return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -281,14 +279,23 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): JSX.Element {
+export default function PollingOverviewPage({
+  polls: prefetchedPolls,
+  allCategories: prefetchedCategories
+}: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
+  const [_allCategories, _setAllCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls).catch(setError);
+      getPolls()
+        .then(polls => {
+          _setPolls(polls);
+          _setAllCategories(getCategories(polls));
+        })
+        .catch(setError);
     }
   }, []);
 
@@ -296,24 +303,31 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): 
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && !_polls)
+  if (!isDefaultNetwork() && (!_polls || !_allCategories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
-  return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
+  return (
+    <PollingOverview
+      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
+      allCategories={isDefaultNetwork() ? prefetchedCategories : (_allCategories as PollCategory[])}
+    />
+  );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
+  const allCategories = getCategories(polls);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls
+      polls,
+      allCategories
     }
   };
 };

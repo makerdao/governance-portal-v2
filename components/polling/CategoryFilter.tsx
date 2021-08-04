@@ -1,10 +1,15 @@
-import { Flex, Checkbox, Label } from 'theme-ui';
+import { Flex, Checkbox, Label, Text } from 'theme-ui';
 import shallow from 'zustand/shallow';
-
+import { PollCategory } from 'types/pollCategory';
 import FilterButton from '../FilterButton';
 import useUiFiltersStore from 'stores/uiFilters';
 
-export default function CategoryFilter({ categories, ...props }: { categories: string[] }) {
+export default function CategoryFilter({
+  categories,
+  ...props
+}: {
+  categories: PollCategory[];
+}): JSX.Element {
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
     shallow
@@ -14,14 +19,19 @@ export default function CategoryFilter({ categories, ...props }: { categories: s
     <FilterButton name={() => 'Poll Type'} {...props}>
       <Flex sx={{ flexDirection: 'column' }}>
         {categories.map(category => (
-          <Flex key={category || 'undefined'}>
+          <Flex key={category.name}>
             <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
               <Checkbox
                 sx={{ width: 3, height: 3 }}
                 checked={categoryFilter?.category}
-                onChange={event => setCategoryFilter({ ...categoryFilter, [category]: event.target.checked })}
+                onChange={event =>
+                  setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked })
+                }
               />
-              {category}
+              <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
+                <Text>{category.name}</Text>
+                <Text sx={{ color: 'muted', ml: 3 }}>{category.count}</Text>
+              </Flex>
             </Label>
           </Flex>
         ))}
