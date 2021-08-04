@@ -37,10 +37,10 @@ import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   polls: Poll[];
-  allCategories: PollCategory[];
+  categories: PollCategory[];
 };
 
-const PollingOverview = ({ polls, allCategories }: Props) => {
+const PollingOverview = ({ polls, categories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const [
     startDate,
@@ -68,11 +68,11 @@ const PollingOverview = ({ polls, allCategories }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
 
-  const filteredPolls = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
-    const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+  const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+  const start = startDate && new Date(startDate);
+  const end = endDate && new Date(endDate);
 
+  const filteredPolls = useMemo(() => {
     return polls.filter(poll => {
       // check date filters first
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
@@ -150,7 +150,7 @@ const PollingOverview = ({ polls, allCategories }: Props) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter categories={allCategories} />
+          <CategoryFilter categories={categories} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
@@ -281,10 +281,10 @@ const PollingOverview = ({ polls, allCategories }: Props) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  allCategories: prefetchedCategories
+  categories: prefetchedCategories
 }: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
-  const [_allCategories, _setAllCategories] = useState<PollCategory[]>();
+  const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
@@ -293,7 +293,7 @@ export default function PollingOverviewPage({
       getPolls()
         .then(polls => {
           _setPolls(polls);
-          _setAllCategories(getCategories(polls));
+          _setCategories(getCategories(polls));
         })
         .catch(setError);
     }
@@ -303,7 +303,7 @@ export default function PollingOverviewPage({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_allCategories))
+  if (!isDefaultNetwork() && (!_polls || !_categories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -313,7 +313,7 @@ export default function PollingOverviewPage({
   return (
     <PollingOverview
       polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
-      allCategories={isDefaultNetwork() ? prefetchedCategories : (_allCategories as PollCategory[])}
+      categories={isDefaultNetwork() ? prefetchedCategories : (_categories as PollCategory[])}
     />
   );
 }
@@ -321,13 +321,13 @@ export default function PollingOverviewPage({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
-  const allCategories = getCategories(polls);
+  const categories = getCategories(polls);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls,
-      allCategories
+      categories
     }
   };
 };

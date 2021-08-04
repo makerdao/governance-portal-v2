@@ -3,6 +3,7 @@ import { PollCategory } from 'types/pollCategory';
 
 export const getCategories = (polls: Poll[]): PollCategory[] => {
   const categoryMap = polls.reduce((acc, cur) => {
+    if (!cur.categories) return acc;
     cur.categories.forEach(c => {
       if (acc[c]) {
         acc[c] += 1;
