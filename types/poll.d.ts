@@ -7,8 +7,8 @@ export type Poll = {
   pollId: number;
   summary: string;
   options: Record<any, any>;
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
   discussionLink: string | null;
   voteType: VoteTypes;
   categories: string[];
