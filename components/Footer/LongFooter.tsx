@@ -188,11 +188,18 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             <ThemeUILink sx={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
             </ThemeUILink>
-            <ThemeUILink sx={{ color: 'text' }} href="https://chat.makerdao.com/" title="MakerDAO official chat">
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://chat.makerdao.com/"
+              title="MakerDAO official chat"
+            >
               <Icon name="rocket_chat" />
             </ThemeUILink>
             <ThemeUILink sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
+            </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://discord.gg/GHcFMdKden" title="Discord">
+              <Icon name="discord" />
             </ThemeUILink>
           </Flex>
         </Box>
