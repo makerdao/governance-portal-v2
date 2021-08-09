@@ -287,7 +287,7 @@ export default function PollingOverviewPage({
   const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
 
-  // fetch polls at run-time if on any network other than the default
+  // fetch polls at run-time if on any network other than the  default
   useEffect(() => {
     if (!isDefaultNetwork()) {
       getPolls()
