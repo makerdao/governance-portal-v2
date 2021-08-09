@@ -185,7 +185,7 @@ describe('Delegates list page', () => {
     expect(totalShadowDelegatesSystemInfo).toHaveTextContent('0');
     
     const totalMkr = screen.getByTestId('total-mkr-system-info');
-    expect(totalMkr).toHaveTextContent('10.00');
+    expect(totalMkr).toHaveTextContent('10.24');
     
   });
 });
