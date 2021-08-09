@@ -85,11 +85,11 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
 
-  const groupedActivePolls = groupBy(activePolls, 'startDate');
-  const sortedStartDatesActive = sortBy(Object.keys(groupedActivePolls), x => -new Date(x));
+  const groupedActivePolls = groupBy(activePolls, 'endDate');
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => -new Date(x));
 
-  const groupedHistoricalPolls = groupBy(historicalPolls, 'startDate');
-  const sortedStartDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
+  const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
+  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   useEffect(() => {
     if (activePolls.length === 0) {
@@ -101,7 +101,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
     const target = entries.pop();
     if (target.isIntersecting) {
       setNumHistoricalGroupingsLoaded(
-        numHistoricalGroupingsLoaded < sortedStartDatesHistorical.length
+        numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
           ? numHistoricalGroupingsLoaded + 2
           : numHistoricalGroupingsLoaded
       );
@@ -162,16 +162,16 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     mb={3}
                     mt={4}
                     as="h4"
-                    sx={{ display: sortedStartDatesActive.length > 0 ? undefined : 'none' }}
+                    sx={{ display: sortedEndDatesActive.length > 0 ? undefined : 'none' }}
                   >
                     Active Polls
                   </Heading>
                   <Stack>
-                    {sortedStartDatesActive.map(date => (
+                    {sortedEndDatesActive.map(date => (
                       <div key={date}>
                         <Text variant="caps" color="textSecondary" mb={2}>
                           {groupedActivePolls[date].length} Poll
-                          {groupedActivePolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                          {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}
                         </Text>
                         <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
@@ -205,11 +205,11 @@ const PollingOverview = ({ polls, categories }: Props) => {
                       </Flex>
                     </Heading>
                     <Stack>
-                      {sortedStartDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
+                      {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
                           <Text variant="caps" color="textSecondary" mb={2}>
                             {groupedHistoricalPolls[date].length} Poll
-                            {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Posted{' '}
+                            {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
                             {formatDateWithTime(date)}
                           </Text>
                           <Stack sx={{ mb: 4 }}>
