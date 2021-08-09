@@ -14,6 +14,7 @@ export type DelegateContractInformation = {
   address: string;
   voteDelegateAddress: string;
   blockTimestamp: Date;
+  mkrDelegated: number;
 };
 
 export type Delegate = {
@@ -30,4 +31,5 @@ export type Delegate = {
   externalUrl?: string;
   combinedParticipation?: string;
   communication?: string;
+  mkrDelegated: number;
 };
