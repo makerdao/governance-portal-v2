@@ -1,9 +1,12 @@
 import { act, screen } from '@testing-library/react';
 import mockPolls from '../../../mocks/polls.json';
+import mockCategories from '../../../mocks/categories.json';
 import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
+import { Poll } from '../../../types/poll';
+import { PollCategory } from '../../../types/pollCategory';
 
 let maker;
 
@@ -23,7 +26,7 @@ describe('QuickVote', () => {
 
   beforeEach(async () => {
     accountsApi.setState({ currentAccount: undefined });
-    const view = render(<PollingOverviewPage polls={mockPolls as any} />);
+    render(<PollingOverviewPage categories={mockCategories as PollCategory[]} polls={mockPolls as Poll[]} />);
 
     await act(async () => {
       await connectAccount();

@@ -6,7 +6,7 @@ export type Poll = {
   content: string;
   pollId: number;
   summary: string;
-  options: { [optionId: string]: string };
+  options: Record<any, any>;
   endDate: Date;
   startDate: Date;
   discussionLink: string | null;
