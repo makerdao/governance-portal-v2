@@ -127,7 +127,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       {stateDiff ? (
         <OnChainFx stateDiff={stateDiff} />
       ) : stateDiffError ? (
-        <Flex>Error fetching on-chain effects</Flex>
+        <Flex>Unable to fetch on-chain effects at this time</Flex>
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
           loading <Spinner size={20} ml={2} />

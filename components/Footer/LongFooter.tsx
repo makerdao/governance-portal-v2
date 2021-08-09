@@ -198,6 +198,9 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             <ThemeUILink sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
             </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://discord.gg/GHcFMdKden" title="Discord">
+              <Icon name="discord" />
+            </ThemeUILink>
           </Flex>
         </Box>
       </Grid>

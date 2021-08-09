@@ -11,9 +11,11 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
 import { Poll } from 'types/poll';
+import { PollCategory } from 'types/pollCategory';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'lib/api';
 import { isActivePoll, formatDateWithTime } from 'lib/utils';
+import { getCategories } from 'lib/polling/getCategories';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -35,9 +37,10 @@ import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
 type Props = {
   polls: Poll[];
+  categories: PollCategory[];
 };
 
-const PollingOverview = ({ polls }: Props) => {
+const PollingOverview = ({ polls, categories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
   const [
     startDate,
@@ -65,21 +68,18 @@ const PollingOverview = ({ polls }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
 
-  useEffect(() => {
-    if (location.href.includes('pollFilter=active')) {
-      // setFilterInactivePolls(true);
-    }
-  }, []);
+  const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+  const start = startDate && new Date(startDate);
+  const end = endDate && new Date(endDate);
 
   const filteredPolls = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
     return polls.filter(poll => {
+      // check date filters first
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-      return categoryFilter === null // if categoryFilter is null, no filters have been set yet
-        ? true
-        : !poll.categories.some(category => categoryFilter[category] === false);
+
+      // if no category filters selected, return all, otherwise, check if poll contains category
+      return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
@@ -150,7 +150,7 @@ const PollingOverview = ({ polls }: Props) => {
           <Heading variant="microHeading" mr={3}>
             Filters
           </Heading>
-          <CategoryFilter categories={Array.from(new Set(polls.map(poll => poll.categories).flat()))} />
+          <CategoryFilter categories={categories} />
           <DateFilter sx={{ ml: 3 }} />
         </Flex>
         <SidebarLayout>
@@ -279,14 +279,23 @@ const PollingOverview = ({ polls }: Props) => {
   );
 };
 
-export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): JSX.Element {
+export default function PollingOverviewPage({
+  polls: prefetchedPolls,
+  categories: prefetchedCategories
+}: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
+  const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls).catch(setError);
+      getPolls()
+        .then(polls => {
+          _setPolls(polls);
+          _setCategories(getCategories(polls));
+        })
+        .catch(setError);
     }
   }, []);
 
@@ -294,24 +303,31 @@ export default function PollingOverviewPage({ polls: prefetchedPolls }: Props): 
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && !_polls)
+  if (!isDefaultNetwork() && (!_polls || !_categories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
-  return <PollingOverview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
+  return (
+    <PollingOverview
+      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
+      categories={isDefaultNetwork() ? prefetchedCategories : (_categories as PollCategory[])}
+    />
+  );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const polls = await getPolls();
+  const categories = getCategories(polls);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls
+      polls,
+      categories
     }
   };
 };
