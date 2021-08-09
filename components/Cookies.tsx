@@ -3,7 +3,7 @@
 import React, { useContext } from 'react';
 
 import Link from 'next/link';
-import { Box, Button, Flex, jsx, Text } from 'theme-ui';
+import { Box, Button, Flex, jsx, Text, Label, Checkbox } from 'theme-ui';
 import { CookiesContext } from 'lib/client/cookies/CookiesContext';
 
 export default function Cookies(): React.ReactElement | null {
@@ -38,7 +38,10 @@ export default function Cookies(): React.ReactElement | null {
           bottom: '0',
           width: '100%',
           backgroundColor: 'background',
-          padding: 4
+          padding: 4,
+          border: '1px solid',
+          borderColor: 'borderGrey',
+          borderRadius: 'medium'
         }}
       >
         <Text
@@ -49,8 +52,9 @@ export default function Cookies(): React.ReactElement | null {
           data. We collect information to improve the governance experience and validate UI changes. You can
           still use the page without cookies. For more information, please read our{' '}
           <Link href="/cookies-policy">
-            <a title="Cookies policy"> Cookies policy</a>
+            <a title="cookies policy"> cookies policy</a>
           </Link>
+          .
         </Text>
 
         <Flex
@@ -61,28 +65,28 @@ export default function Cookies(): React.ReactElement | null {
           }}
         >
           <Box sx={{ mr: 2 }}>
-            <label>
-              Functional Cookies
-              <input
+            <Label>
+              <Text sx={{ fontSize: 2, mr: 1 }}>Functional Cookies</Text>
+              <Checkbox
                 type="checkbox"
                 checked={cookies.functional}
                 onClick={() => {
                   setCookies({ ...cookies, functional: !cookies.functional });
                 }}
               />
-            </label>
+            </Label>
           </Box>
           <Box sx={{ ml: 2 }}>
-            <label>
-              Analytics cookies
-              <input
+            <Label>
+              <Text sx={{ fontSize: 2, mr: 1 }}>Analytics cookies</Text>
+              <Checkbox
                 type="checkbox"
                 checked={cookies.statistics}
                 onClick={() => {
                   setCookies({ ...cookies, statistics: !cookies.statistics });
                 }}
               />
-            </label>
+            </Label>
           </Box>
         </Flex>
 
