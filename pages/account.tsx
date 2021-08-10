@@ -24,6 +24,8 @@ import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { useLockedMkr } from 'lib/hooks';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -51,6 +53,7 @@ const AccountPage = (): JSX.Element => {
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.ACCOUNT);
 
   const onCreateDelegate = async () => {
     const maker = await getMaker();
@@ -114,7 +117,10 @@ const AccountPage = (): JSX.Element => {
                     <DialogOverlay
                       style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
                       isOpen={modalOpen}
-                      onDismiss={() => setModalOpen(false)}
+                      onDismiss={() => {
+                        setModalOpen(false);
+                        trackButtonClick('closeCreateDelegateModal');
+                      }}
                     >
                       <DialogContent
                         aria-label="Delegate modal"
@@ -130,7 +136,14 @@ const AccountPage = (): JSX.Element => {
                               }
                         }
                       >
-                        <TxDisplay tx={tx} setTxId={setTxId} onDismiss={() => setModalOpen(false)} />
+                        <TxDisplay
+                          tx={tx}
+                          setTxId={setTxId}
+                          onDismiss={() => {
+                            setModalOpen(false);
+                            trackButtonClick('closeCreateDelegateModal');
+                          }}
+                        />
                       </DialogContent>
                     </DialogOverlay>
                   )}
@@ -141,12 +154,21 @@ const AccountPage = (): JSX.Element => {
                     this issue soon.
                   </Alert>
                   <Label sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}>
-                    <Checkbox checked={warningRead} onClick={event => setWarningRead(!warningRead)} /> I
-                    understand
+                    <Checkbox
+                      checked={warningRead}
+                      onClick={event => {
+                        setWarningRead(!warningRead);
+                        trackButtonClick('setWarningRead');
+                      }}
+                    />{' '}
+                    I understand
                   </Label>
                   <Button
                     disabled={!warningRead}
-                    onClick={onCreateDelegate}
+                    onClick={() => {
+                      trackButtonClick('createDelegate');
+                      onCreateDelegate();
+                    }}
                     sx={{ mt: 3, mb: 1 }}
                     data-testid="create-button"
                   >
