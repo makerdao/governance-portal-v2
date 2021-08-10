@@ -40,7 +40,7 @@ export default function Cookies(): React.ReactElement | null {
           backgroundColor: 'background',
           padding: 4,
           border: '1px solid',
-          borderColor: 'borderGrey',
+          borderColor: 'secondaryMuted',
           borderRadius: 'medium'
         }}
       >
