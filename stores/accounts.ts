@@ -9,7 +9,6 @@ import { VoteDelegateContract } from 'types/voteDelegateContract';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-
 type Store = {
   currentAccount?: Account;
   proxies: Record<string, VoteProxyContract | null>;
