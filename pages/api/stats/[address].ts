@@ -6,7 +6,6 @@ import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { fetchStats } from 'modules/stats/api/fetchStats';
 
-
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   const address = req.query.address as string;
