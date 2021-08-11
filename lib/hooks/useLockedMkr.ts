@@ -10,7 +10,11 @@ type LockedMkrData = {
   error?: Error;
 };
 
-export const useLockedMkr = (address?: string, voteProxy?: VoteProxyContract | null, voteDelegate?: VoteDelegateContract | null): LockedMkrData => {
+export const useLockedMkr = (
+  address?: string,
+  voteProxy?: VoteProxyContract | null,
+  voteDelegate?: VoteDelegateContract | null
+): LockedMkrData => {
   const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
   const { data, error } = useSWR(address ? ['/user/mkr-locked', addressToCache] : null, () =>
     getMaker().then(maker =>
