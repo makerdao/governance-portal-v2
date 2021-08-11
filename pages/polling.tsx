@@ -86,7 +86,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
 
   const groupedActivePolls = groupBy(activePolls, 'endDate');
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => -new Date(x));
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
 
   const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
