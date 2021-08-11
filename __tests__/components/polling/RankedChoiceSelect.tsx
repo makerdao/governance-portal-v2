@@ -1,5 +1,5 @@
 import { act, screen } from '@testing-library/react';
-import mockPolls from '../../../mocks/polls.json';
+import mockPolls from 'modules/polls/api/mocks/polls.json';
 import mockCategories from '../../../mocks/categories.json';
 import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';

@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
+import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from 'lib/utils';

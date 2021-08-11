@@ -13,9 +13,8 @@ import partition from 'lodash/partition';
 import { Poll } from 'types/poll';
 import { PollCategory } from 'types/pollCategory';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
-import { getPolls } from 'lib/api';
 import { isActivePoll, formatDateWithTime } from 'lib/utils';
-import { getCategories } from 'lib/polling/getCategories';
+import { getCategories } from 'modules/polls/lib/getCategories';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -34,6 +33,7 @@ import Head from 'next/head';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { getPolls } from 'modules/polls/api/fetchPolls';
 
 type Props = {
   polls: Poll[];

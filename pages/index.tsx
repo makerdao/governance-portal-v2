@@ -7,14 +7,9 @@ import { Heading, Container, Grid, Text, Flex, Badge, jsx, useColorMode } from '
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
-
-// lib
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
-import { getPolls, getExecutiveProposals, getPostsAndPhotos } from 'lib/api';
 import { initTestchainPolls, isActivePoll } from 'lib/utils';
 import { useHat } from 'lib/hooks';
-
-// components
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
 import SystemStats from 'components/index/SystemStats';
@@ -24,12 +19,13 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-
-// types
 import { CMSProposal } from 'types/proposal';
 import { Poll } from 'types/poll';
-import { BlogPost } from 'types/blogPost';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
+import { BlogPost } from 'modules/blog/types/blogPost';
+import { getPolls } from 'modules/polls/api/fetchPolls';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 
 type Props = {
   proposals: CMSProposal[];
@@ -347,7 +343,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),
-    getPostsAndPhotos()
+    fetchBlogPosts()
   ]);
 
   return {

@@ -13,13 +13,12 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import CountdownTimer from 'components/CountdownTimer';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { getPolls, getPoll } from 'lib/api';
+import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
 import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VotingStatus from 'components/polling/PollVotingStatus';
 import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
 import VoteBox from 'components/polling/[poll-hash]/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';

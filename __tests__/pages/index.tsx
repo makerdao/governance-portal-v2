@@ -2,14 +2,16 @@ import React from 'react';
 import { renderWithTheme as render } from '../helpers';
 
 import Index from '../../pages/index';
-import { getPostsAndPhotos, getExecutiveProposals, getPolls } from '../../lib/api';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getPolls } from 'modules/polls/api/fetchPolls';
+import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 
 let blogPosts, proposals, polls;
 
 beforeAll(async () => {
   jest.setTimeout(10000);
   [blogPosts, proposals, polls] = await Promise.all([
-    getPostsAndPhotos(),
+    fetchBlogPosts(),
     getExecutiveProposals(),
     getPolls()
   ]);

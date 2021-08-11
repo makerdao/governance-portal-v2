@@ -8,7 +8,7 @@ import {
 import { formatAddress } from 'lib/utils';
 import PollingOverviewPage from '../../pages/polling';
 import getMaker from '../../lib/maker';
-import mockPolls from '../../mocks/polls.json';
+import mockPolls from 'modules/polls/api/mocks/polls.json';
 import mockCategories from '../../mocks/categories.json';
 import { accountsApi } from '../../stores/accounts';
 import { Poll } from '../../types/poll';
