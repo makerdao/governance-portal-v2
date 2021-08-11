@@ -1,7 +1,8 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
-import { Delegate } from 'types/delegate';
+import { VoteDelegateContract } from 'types/voteDelegateContract';
+import { VoteProxyContract } from 'types/voteProxyContract';
 
 type LockedMkrData = {
   data?: CurrencyObject;
@@ -9,7 +10,11 @@ type LockedMkrData = {
   error?: Error;
 };
 
-export const useLockedMkr = (address?: string, voteProxy?: any, voteDelegate?: Delegate): LockedMkrData => {
+export const useLockedMkr = (
+  address?: string,
+  voteProxy?: VoteProxyContract | null,
+  voteDelegate?: VoteDelegateContract | null
+): LockedMkrData => {
   const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
   const { data, error } = useSWR(address ? ['/user/mkr-locked', addressToCache] : null, () =>
     getMaker().then(maker =>
