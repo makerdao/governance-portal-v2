@@ -113,7 +113,7 @@ export default function MobileVoteSheet({
           borderTopLeftRadius: '12px',
           borderTopRightRadius: '12px',
           border: '1px solid',
-          borderColor: 'borderGrey',
+          borderColor: 'secondaryMuted',
           px: 3,
           py: '14px',
           backgroundColor: 'white',

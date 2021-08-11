@@ -204,7 +204,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             }}
           >
             <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
-              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }} data-testid="total-mkr-delegated">
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
               <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>

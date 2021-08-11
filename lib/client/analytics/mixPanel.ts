@@ -16,6 +16,8 @@ const analyticsConfig = {
   }
 }[config.NODE_ENV];
 
+export const mixpanelTokenConfigured = analyticsConfig?.mixpanel?.token !== '';
+
 export const mixpanelInit = (): void => {
   console.debug(
     `[Mixpanel] Tracking initialized for ${config.NODE_ENV} env using ${analyticsConfig.mixpanel.token}`
