@@ -4,31 +4,17 @@ import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
 import { Account } from 'types/account';
+import { OldVoteProxyContract, VoteProxyContract } from 'types/voteProxyContract';
+import { VoteDelegateContract } from 'types/voteDelegateContract';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-type VoteProxy = {
-  getProxyAddress: () => string;
-  getColdAddress: () => string;
-  getHotAddress: () => string;
-  lock: () => Promise<any>;
-  free: () => Promise<any>;
-  voteExec: (picks: string[] | string) => Promise<any>;
-  getNumDeposits: () => Promise<any>;
-  getVotedProposalAddresses: () => Promise<any>;
-};
-
-type OldVoteProxy = {
-  role: string;
-  address: string;
-};
 
 type Store = {
   currentAccount?: Account;
-  proxies: Record<string, VoteProxy | null>;
-  oldProxy: OldVoteProxy;
-  // TODO type this
-  voteDelegate: any;
+  proxies: Record<string, VoteProxyContract | null>;
+  oldProxy: OldVoteProxyContract;
+  voteDelegate?: VoteDelegateContract;
   setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: () => Promise<void>;
   disconnectAccount: () => Promise<void>;
