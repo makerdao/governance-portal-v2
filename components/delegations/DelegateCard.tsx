@@ -1,12 +1,14 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Box, Flex, Button, Divider, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated, useExecProposals, useVotedProposals } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
@@ -17,8 +19,6 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import Tooltip from 'components/Tooltip';
 
 type PropTypes = {
@@ -34,8 +34,13 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const address = account?.address;
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: execProposals } = useExecProposals();
+  const { data: votedProposals } = useVotedProposals(delegate.voteDelegateAddress);
+
+  const proposalVotedFor = execProposals?.find(proposal =>
+    votedProposals.find(vp => vp.toLowerCase() === proposal.address.toLowerCase())
+  );
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -235,6 +240,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Flex>
+      {proposalVotedFor && (
+        <>
+          <Divider my={1} />
+          <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+            <Text sx={{ textAlign: 'center', px: [3, 4] }}>{proposalVotedFor.title}</Text>
+          </Flex>
+        </>
+      )}
 
       <DelegateModal
         delegate={delegate}
