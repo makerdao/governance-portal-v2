@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { CookiesContext } from '../cookies/CookiesContext';
 import { useRouter } from 'next/router';
-import { mixpanelInit } from './mixPanel';
+import { mixpanelInit, mixpanelTokenConfigured } from './mixPanel';
 import mixpanel from 'mixpanel-browser';
 import { ANALYTICS_EVENTS, ANALYTICS_PRODUCT } from './analytics.constants';
 
@@ -32,7 +32,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
 
   // Only track users that accepted analytics
   function launchAnalytics() {
-    if (analyticCookiesEnabled) {
+    if (analyticCookiesEnabled && mixpanelTokenConfigured) {
       mixpanelInit();
 
       // First interaction
