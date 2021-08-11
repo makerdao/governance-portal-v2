@@ -1,9 +1,5 @@
-import { getPolls, parseExecutive } from '../../lib/api';
-import fs from 'fs';
-import { config } from '../../lib/config';
-import os from 'os';
-
-const cacheFile = `/${os.tmpdir()}/gov-portal-testnet-polls-${new Date().toISOString().substring(0, 10)}`;
+import { parseExecutive } from '../parseExecutive';
+import { config } from '../../../../lib/config';
 
 const Exec1 = `---
 title: mock title
@@ -32,26 +28,18 @@ address: invalid-address
 # mock markdown
 `;
 
-describe('API', () => {
+describe('Parse executive', () => {
   beforeAll(() => {
     config.USE_FS_CACHE = '1';
   });
 
   afterAll(() => {
     config.USE_FS_CACHE = '';
-    if (fs.existsSync(cacheFile)) fs.unlinkSync(cacheFile);
-  });
-
-  test('getPolls with filesystem caching', async () => {
-    jest.setTimeout(25000);
-    await getPolls();
-    expect(fs.existsSync(cacheFile)).toBeTruthy();
   });
 
   test('parseExecutive', async () => {
     const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
 
-    console.log(parsedExec);
     expect(
       !!parsedExec.about &&
         !!parsedExec.content &&
