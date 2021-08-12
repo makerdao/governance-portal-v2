@@ -26,13 +26,13 @@ export const AnalyticsContext = createContext<AnalyticsContextType>({
 export const AnalyticsProvider = ({ children }: { children: React.ReactElement }): React.ReactElement => {
   const { cookies, accepted } = useContext(CookiesContext);
 
-  const analyticCookiesEnabled = cookies.statistics && accepted;
+  const analyticCookiesEnabled = cookies.statistics && accepted && mixpanelTokenConfigured;
 
   const router = useRouter();
 
   // Only track users that accepted analytics
   function launchAnalytics() {
-    if (analyticCookiesEnabled && mixpanelTokenConfigured) {
+    if (analyticCookiesEnabled) {
       mixpanelInit();
 
       // First interaction
