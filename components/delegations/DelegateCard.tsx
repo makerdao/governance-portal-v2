@@ -1,10 +1,10 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Box, Flex, Button, Divider, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Divider, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated, useExecProposals, useVotedProposals } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated, useVotedProposals } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
@@ -20,12 +20,14 @@ import {
   DelegateContractExpiration
 } from 'components/delegations';
 import Tooltip from 'components/Tooltip';
+import { CMSProposal } from 'types/proposal';
 
 type PropTypes = {
   delegate: Delegate;
+  proposals: CMSProposal[];
 };
 
-export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactElement {
   const network = getNetwork();
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -35,12 +37,27 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
-  const { data: execProposals } = useExecProposals();
   const { data: votedProposals } = useVotedProposals(delegate.voteDelegateAddress);
 
-  const proposalVotedFor = execProposals?.find(proposal =>
-    votedProposals.find(vp => vp.toLowerCase() === proposal.address.toLowerCase())
+  const execSupported = proposals?.find(proposal =>
+    votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
   );
+
+  const getSupportText = (): string => {
+    if (!proposals || !votedProposals) {
+      return 'Fetching executive data';
+    }
+
+    if (proposals && votedProposals && !execSupported) {
+      return 'Currently no executive supported';
+    }
+
+    if (execSupported) {
+      return `Currently supporting ${execSupported.title}`;
+    }
+
+    return 'Error';
+  };
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -66,8 +83,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   );
 
   return (
-    <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
+    <Card
+      sx={{
+        p: [0, 0],
+        borderColor: isOwner ? 'onSecondary' : 'muted'
+      }}
+    >
       <Flex
+        px={[3, 4]}
+        py={[3, 4]}
         sx={{
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
@@ -240,14 +264,13 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Flex>
-      {proposalVotedFor && (
-        <>
-          <Divider my={1} />
-          <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-            <Text sx={{ textAlign: 'center', px: [3, 4] }}>{proposalVotedFor.title}</Text>
-          </Flex>
-        </>
-      )}
+
+      <Divider my={1} />
+      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1 }}>
+          {getSupportText()}
+        </Text>
+      </Flex>
 
       <DelegateModal
         delegate={delegate}
@@ -259,6 +282,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
       />
-    </Box>
+    </Card>
   );
 }
