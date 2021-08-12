@@ -43,7 +43,7 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
     votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
   );
 
-  const getSupportText = (): string => {
+  const getSupportText = (): string | null => {
     if (!proposals || !votedProposals) {
       return 'Fetching executive data';
     }
@@ -56,8 +56,10 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
       return `Currently supporting ${execSupported.title}`;
     }
 
-    return 'Error';
+    return null;
   };
+
+  const supportText = getSupportText();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -264,13 +266,16 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
           </Flex>
         </Flex>
       </Flex>
-
-      <Divider my={1} />
-      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-        <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1 }}>
-          {getSupportText()}
-        </Text>
-      </Flex>
+      {supportText && (
+        <>
+          <Divider my={1} />
+          <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+            <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1 }}>
+              {supportText}
+            </Text>
+          </Flex>
+        </>
+      )}
 
       <DelegateModal
         delegate={delegate}
