@@ -39,7 +39,9 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
   const { data: votedProposals } = useVotedProposals(delegate.voteDelegateAddress);
 
-  const execSupported = proposals?.find(proposal =>
+  const proposalsSupported: number = votedProposals?.length;
+
+  const execSupported: CMSProposal | undefined = proposals?.find(proposal =>
     votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
   );
 
@@ -53,7 +55,9 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
     }
 
     if (execSupported) {
-      return `Currently supporting ${execSupported.title}`;
+      return `Currently supporting ${execSupported.title}${
+        proposalsSupported > 1 ? ` & ${proposalsSupported} more` : ''
+      }`;
     }
 
     return null;
