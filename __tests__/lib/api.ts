@@ -51,7 +51,6 @@ describe('API', () => {
   test('parseExecutive', async () => {
     const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
 
-    console.log(parsedExec);
     expect(
       !!parsedExec.about &&
         !!parsedExec.content &&
@@ -76,16 +75,25 @@ describe('API', () => {
 });
 
 test('parseExecutive', async () => {
-  const parsedExec = parseExecutive(Exec1, {'testnet': ['x']}, 'x');
-  expect(!!parsedExec.about && !!parsedExec.content && !!parsedExec.title && !!parsedExec.proposalBlurb && !!parsedExec.key && !!parsedExec.address && !!parsedExec.date && !!parsedExec.active).toBe(true);
+  const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
+  expect(
+    !!parsedExec.about &&
+      !!parsedExec.content &&
+      !!parsedExec.title &&
+      !!parsedExec.proposalBlurb &&
+      !!parsedExec.key &&
+      !!parsedExec.address &&
+      !!parsedExec.date &&
+      !!parsedExec.active
+  ).toBe(true);
 });
 
 test('parseExecutive removes execs with invalid dates', async () => {
-  const parsedExec = parseExecutive(Exec2, {'testnet': ['x']}, 'x');
+  const parsedExec = parseExecutive(Exec2, { testnet: ['x'] }, 'x');
   expect(parsedExec).toBe(null);
 });
 
 test('parseExecutive removes execs with invalid address', async () => {
-  const parsedExec = parseExecutive(Exec3, {'testnet': ['x']}, 'x');
+  const parsedExec = parseExecutive(Exec3, { testnet: ['x'] }, 'x');
   expect(parsedExec).toBe(null);
 });
