@@ -56,7 +56,9 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
 
     if (execSupported) {
       return `Currently supporting ${execSupported.title}${
-        proposalsSupported > 1 ? ` & ${proposalsSupported} more` : ''
+        proposalsSupported > 1
+          ? ` & ${proposalsSupported} more proposal${proposalsSupported === 2 ? '' : 's'}`
+          : ''
       }`;
     }
 
