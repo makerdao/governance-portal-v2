@@ -1,9 +1,12 @@
 import { act, screen } from '@testing-library/react';
 import mockPolls from '../../../mocks/polls.json';
+import mockCategories from '../../../mocks/categories.json';
 import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
+import { Poll } from '../../../types/poll';
+import { PollCategory } from '../../../types/pollCategory';
 
 let maker;
 
@@ -21,7 +24,7 @@ describe('RankedChoiceSelect', () => {
 
   beforeEach(async () => {
     accountsApi.setState({ currentAccount: undefined });
-    const view = render(<PollingOverviewPage polls={mockPolls as any} />);
+    render(<PollingOverviewPage categories={mockCategories as PollCategory[]} polls={mockPolls as Poll[]} />);
     await act(async () => {
       await connectAccount();
     });
@@ -33,11 +36,11 @@ describe('RankedChoiceSelect', () => {
 
     expect(select).toBeInTheDocument();
     expect(options.length).toBe(7);
-    expect(await screen.findByText('0')).toBeInTheDocument();
-    expect(await screen.findByText('0.25')).toBeInTheDocument();
-    expect(await screen.findByText('0.5')).toBeInTheDocument();
-    expect(await screen.findByText('1')).toBeInTheDocument();
-    expect(await screen.findByText('2')).toBeInTheDocument();
-    expect(await screen.findByText('4')).toBeInTheDocument();
+    expect(await screen.findByText('0', { selector: 'li' })).toBeInTheDocument();
+    expect(await screen.findByText('0.25', { selector: 'li' })).toBeInTheDocument();
+    expect(await screen.findByText('0.5', { selector: 'li' })).toBeInTheDocument();
+    expect(await screen.findByText('1', { selector: 'li' })).toBeInTheDocument();
+    expect(await screen.findByText('2', { selector: 'li' })).toBeInTheDocument();
+    expect(await screen.findByText('4', { selector: 'li' })).toBeInTheDocument();
   });
 });

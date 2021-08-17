@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Grid, Box, Container, jsx } from 'theme-ui';
+import { Flex, Grid, Box, Container, Link as ThemeUILink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Link from 'next/link';
 import React from 'react';
@@ -179,21 +179,28 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <a sx={{ color: 'text' }} href="https://twitter.com/MakerDAO" title="Twitter">
+            <ThemeUILink sx={{ color: 'text' }} href="https://twitter.com/MakerDAO" title="Twitter">
               <Icon name="twitter" />
-            </a>
-            <a sx={{ color: 'text' }} href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
+            </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
               <Icon name="reddit" />
-            </a>
-            <a sx={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
+            </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
-            </a>
-            <a sx={{ color: 'text' }} href="https://chat.makerdao.com/" title="MakerDAO official chat">
+            </ThemeUILink>
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://chat.makerdao.com/"
+              title="MakerDAO official chat"
+            >
               <Icon name="rocket_chat" />
-            </a>
-            <a sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
+            </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
-            </a>
+            </ThemeUILink>
+            <ThemeUILink sx={{ color: 'text' }} href="https://discord.gg/GHcFMdKden" title="Discord">
+              <Icon name="discord" />
+            </ThemeUILink>
           </Flex>
         </Box>
       </Grid>

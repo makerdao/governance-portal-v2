@@ -12,15 +12,20 @@
     "summary": "The Inclusion Poll will run from June 8 to June 11 and will determine whether the proposal at hand will proceed to next week's Governance Poll.",
     "title": "MIP14: Inclusion Poll for Protocol DAI Transfer",
     "options": {
-      "1": 0,
-      "2": 0.25,
-      "3": 0.5,
-      "4": 1,
-      "5": 2,
-      "6": 4
+      "1": "0",
+      "2": "0.25",
+      "3": "0.5",
+      "4": "1",
+      "5": "2",
+      "6": "4"
     },
     "discussionLink": "https://forum.makerdao.com/t/2462",
-    "voteType": "Ranked Choice IRV"
+    "voteType": "Ranked Choice IRV",
+    "categories": ["test1", "test2"],
+    "ctx": {
+      "prev": null,
+      "next": null
+    }
   },
   {
     "creator": "0xf563f100df419ccde59bfbe0692fc4c5bfe01706",
@@ -39,6 +44,11 @@
       "2": "No"
     },
     "discussionLink": "https://forum.makerdao.com/t/2664",
-    "voteType": "Plurality Voting"
+    "voteType": "Plurality Voting",
+    "categories": ["test2", "test3"],
+    "ctx": {
+      "prev": null,
+      "next": null
+    }
   }
 ]

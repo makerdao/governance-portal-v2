@@ -5,6 +5,7 @@ import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegate
 import moment from 'moment';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
+import { DelegatesAPIResponse } from 'types/delegatesAPI';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -13,7 +14,6 @@ function mergeDelegateInfo(
   // check if contract is expired to assing the status
   const expirationDate = moment(onChainDelegate.blockTimestamp).add(365, 'days');
   const isExpired = expirationDate.isBefore(moment());
-
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
@@ -27,7 +27,8 @@ function mergeDelegateInfo(
     externalUrl: githubDelegate?.externalUrl,
     lastVote: null,
     communication: githubDelegate?.communication,
-    combinedParticipation: githubDelegate?.combinedParticipation
+    combinedParticipation: githubDelegate?.combinedParticipation,
+    mkrDelegated: onChainDelegate.mkrDelegated
   };
 }
 
@@ -54,7 +55,7 @@ export async function fetchDelegate(
 }
 
 // Returns a list of delegates, mixin onchain and repo information
-export async function fetchDelegates(network?: SupportedNetworks): Promise<Delegate[]> {
+export async function fetchDelegates(network?: SupportedNetworks): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : getNetwork();
 
   const { data: gitHubDelegates } = await fetchGithubDelegates(currentNetwork);
@@ -71,5 +72,16 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
 
     return mergeDelegateInfo(onChainDelegate, githubDelegate);
   });
-  return Promise.resolve(delegates);
+
+  const delegatesResponse: DelegatesAPIResponse = {
+    delegates,
+    stats: {
+      total: delegates.length,
+      shadow: delegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
+      recognized: delegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
+      totalMKRDelegated: delegates.reduce((prev, next) => prev + next.mkrDelegated, 0)
+    }
+  };
+
+  return delegatesResponse;
 }

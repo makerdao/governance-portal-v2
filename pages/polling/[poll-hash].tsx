@@ -298,7 +298,7 @@ export default function PollPage({
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if ((!isDefaultNetwork() && query['poll-hash']) || !prefetchedPoll) {
+    if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
       getPoll(query['poll-hash'] as string)
         .then(_setPoll)
         .catch(setError);

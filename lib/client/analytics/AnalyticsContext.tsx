@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { CookiesContext } from '../cookies/CookiesContext';
 import { useRouter } from 'next/router';
-import { mixpanelInit } from './mixPanel';
+import { mixpanelInit, mixpanelTokenConfigured } from './mixPanel';
 import mixpanel from 'mixpanel-browser';
 import { ANALYTICS_EVENTS, ANALYTICS_PRODUCT } from './analytics.constants';
 
@@ -26,7 +26,7 @@ export const AnalyticsContext = createContext<AnalyticsContextType>({
 export const AnalyticsProvider = ({ children }: { children: React.ReactElement }): React.ReactElement => {
   const { cookies, accepted } = useContext(CookiesContext);
 
-  const analyticCookiesEnabled = cookies.statistics && accepted;
+  const analyticCookiesEnabled = cookies.statistics && accepted && mixpanelTokenConfigured;
 
   const router = useRouter();
 

@@ -18,25 +18,33 @@ import { DelegateCard } from 'components/delegations';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
+import { DelegatesSystemInfo } from 'components/delegations/DelegatesSystemInfo';
+import { DelegatesAPIResponse, DelegatesAPIStats } from 'types/delegatesAPI';
+import { getExecutiveProposals } from 'lib/api';
+import { CMSProposal } from 'types/proposal';
 
 type Props = {
   delegates: Delegate[];
+  stats: DelegatesAPIStats;
+  proposals: CMSProposal[];
 };
 
-const Delegates = ({ delegates }: Props) => {
+const Delegates = ({ delegates, stats, proposals }: Props) => {
   const network = getNetwork();
+
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const styles = {
     delegateGroup: {
       marginBottom: 2
     }
   };
-  const [currentAccount, voteDelegate] = useAccountsStore(state => [
-    state.currentAccount,
-    state.voteDelegate
-  ]);
+  const [voteDelegate] = useAccountsStore(state => [state.voteDelegate]);
+
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
@@ -58,21 +66,6 @@ const Delegates = ({ delegates }: Props) => {
 
       <SidebarLayout>
         <Box>
-          {/* {currentAccount && (
-            <Box>
-              <Link
-                href={{
-                  pathname: '/account',
-                  query: { network }
-                }}
-                passHref
-              >
-                <ThemeUILInk title="My account">
-                  <Text>{voteDelegate ? 'View my delegate contract' : 'Become a delegate'}</Text>
-                </ThemeUILInk>
-              </Link>
-            </Box>
-          )} */}
           {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
@@ -83,7 +76,7 @@ const Delegates = ({ delegates }: Props) => {
               <Box>
                 {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -99,7 +92,7 @@ const Delegates = ({ delegates }: Props) => {
               <Box>
                 {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -115,7 +108,7 @@ const Delegates = ({ delegates }: Props) => {
               <Box>
                 {expiredDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -141,13 +134,16 @@ const Delegates = ({ delegates }: Props) => {
                   }}
                   passHref
                 >
-                  <ThemeUILInk title="My account">
+                  <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
                     <Text>View Account Page</Text>
                   </ThemeUILInk>
                 </Link>
               </Box>
             </Card>
           </Box>
+
+          {stats && <DelegatesSystemInfo stats={stats} />}
+
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
@@ -158,14 +154,22 @@ const Delegates = ({ delegates }: Props) => {
   );
 };
 
-export default function DelegatesPage({ delegates }: Props): JSX.Element {
+export default function DelegatesPage({ delegates, stats, proposals }: Props): JSX.Element {
   const [_delegates, _setDelegates] = useState<Delegate[]>();
+  const [_stats, _setStats] = useState<DelegatesAPIStats>();
+  const [_proposals, _setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      fetchJson(`/api/delegates?network=${getNetwork()}`).then(_setDelegates).catch(setError);
+      fetchJson(`/api/delegates?network=${getNetwork()}`)
+        .then((response: DelegatesAPIResponse) => {
+          _setDelegates(response.delegates);
+          _setStats(response.stats);
+        })
+        .catch(setError);
+      getExecutiveProposals().then(_setProposals).catch(setError);
     }
   }, []);
 
@@ -181,16 +185,26 @@ export default function DelegatesPage({ delegates }: Props): JSX.Element {
     );
   }
 
-  return <Delegates delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])} />;
+  return (
+    <Delegates
+      delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])}
+      stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}
+      proposals={isDefaultNetwork() ? proposals : (_proposals as CMSProposal[])}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegates = await fetchDelegates();
+  const delegatesAPIResponse = await fetchDelegates();
+  const proposals = await getExecutiveProposals();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      delegates: shuffleArray(delegates)
+      // Shuffle in the backend, this will be changed depending on the sorting order.
+      delegates: shuffleArray(delegatesAPIResponse.delegates),
+      stats: delegatesAPIResponse.stats,
+      proposals
     }
   };
 };

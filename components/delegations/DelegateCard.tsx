@@ -1,12 +1,14 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Box, Flex, Button, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Divider, Text, Link as ExternalLink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { useLockedMkr, useMkrDelegated, useVotedProposals } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { DelegateStatusEnum } from 'lib/delegates/constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from 'types/delegate';
@@ -17,15 +19,15 @@ import {
   // DelegateLastVoted,
   DelegateContractExpiration
 } from 'components/delegations';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import Tooltip from 'components/Tooltip';
+import { CMSProposal } from 'types/proposal';
 
 type PropTypes = {
   delegate: Delegate;
+  proposals: CMSProposal[];
 };
 
-export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactElement {
   const network = getNetwork();
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -34,8 +36,36 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const address = account?.address;
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: votedProposals } = useVotedProposals(delegate.voteDelegateAddress);
+
+  const proposalsSupported: number = votedProposals?.length;
+
+  const execSupported: CMSProposal | undefined = proposals?.find(proposal =>
+    votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
+  );
+
+  const getSupportText = (): string | null => {
+    if (!proposals || !votedProposals) {
+      return 'Fetching executive data';
+    }
+
+    if (proposals && votedProposals && !execSupported) {
+      return 'Currently no executive supported';
+    }
+
+    if (execSupported) {
+      return `Currently supporting ${execSupported.title}${
+        proposalsSupported > 1
+          ? ` & ${proposalsSupported - 1} more proposal${proposalsSupported === 2 ? '' : 's'}`
+          : ''
+      }`;
+    }
+
+    return null;
+  };
+
+  const supportText = getSupportText();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -61,8 +91,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   );
 
   return (
-    <Box sx={{ variant: isOwner ? 'cards.emphasized' : 'cards.primary' }}>
+    <Card
+      sx={{
+        p: [0, 0],
+        borderColor: isOwner ? 'onSecondary' : 'muted'
+      }}
+    >
       <Flex
+        px={[3, 4]}
+        py={[3, 4]}
         sx={{
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
@@ -108,7 +145,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 }}
               >
                 <a sx={{ mt: 'auto' }} title="Profile details">
-                  <Button sx={{ borderColor: 'text', color: 'text' }} variant="outline">
+                  <Button
+                    onClick={() => trackButtonClick('openDelegateProfile')}
+                    sx={{ borderColor: 'text', color: 'text' }}
+                    variant="outline"
+                  >
                     View Profile Details
                   </Button>
                 </a>
@@ -200,7 +241,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             }}
           >
             <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
-              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }} data-testid="total-mkr-delegated">
                 {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
               </Text>
               <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
@@ -231,6 +272,16 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Flex>
+      {supportText && (
+        <>
+          <Divider my={1} />
+          <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+            <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1 }}>
+              {supportText}
+            </Text>
+          </Flex>
+        </>
+      )}
 
       <DelegateModal
         delegate={delegate}
@@ -242,6 +293,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
       />
-    </Box>
+    </Card>
   );
 }
