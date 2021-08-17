@@ -24,13 +24,16 @@ import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'components/delegations/DelegatesSystemInfo';
 import { DelegatesAPIResponse, DelegatesAPIStats } from 'types/delegatesAPI';
+import { getExecutiveProposals } from 'lib/api';
+import { CMSProposal } from 'types/proposal';
 
 type Props = {
   delegates: Delegate[];
   stats: DelegatesAPIStats;
+  proposals: CMSProposal[];
 };
 
-const Delegates = ({ delegates, stats }: Props) => {
+const Delegates = ({ delegates, stats, proposals }: Props) => {
   const network = getNetwork();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
@@ -73,7 +76,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -89,7 +92,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -105,7 +108,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {expiredDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <DelegateCard delegate={delegate} proposals={proposals} />
                   </Box>
                 ))}
               </Box>
@@ -151,9 +154,10 @@ const Delegates = ({ delegates, stats }: Props) => {
   );
 };
 
-export default function DelegatesPage({ delegates, stats }: Props): JSX.Element {
+export default function DelegatesPage({ delegates, stats, proposals }: Props): JSX.Element {
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [_stats, _setStats] = useState<DelegatesAPIStats>();
+  const [_proposals, _setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
 
   // fetch delegates at run-time if on any network other than the default
@@ -165,6 +169,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
           _setStats(response.stats);
         })
         .catch(setError);
+      getExecutiveProposals().then(_setProposals).catch(setError);
     }
   }, []);
 
@@ -184,19 +189,22 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
     <Delegates
       delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])}
       stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}
+      proposals={isDefaultNetwork() ? proposals : (_proposals as CMSProposal[])}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
+  const proposals = await getExecutiveProposals();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates: shuffleArray(delegatesAPIResponse.delegates),
-      stats: delegatesAPIResponse.stats
+      stats: delegatesAPIResponse.stats,
+      proposals
     }
   };
 };
