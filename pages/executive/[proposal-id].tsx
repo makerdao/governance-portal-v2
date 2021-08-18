@@ -96,7 +96,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const { data: votedProposals } = useVotedProposals();
 
-  const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
+  const { data: comments, error: commentsError } = useSWR(
+    `/api/executive/comments/list/${proposal.address}`,
+    { refreshInterval: 60000 }
+  );
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -109,7 +112,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Comments proposal={proposal} comments={comments} />
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
+          {commentsError ? (
+            'Unable to fetch comments'
+          ) : (
+            <>
+              Loading <Spinner size={20} ml={2} />
+            </>
+          )}
         </Flex>
       )}
     </div>
