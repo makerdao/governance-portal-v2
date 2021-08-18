@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import useSWR from 'swr';
+import Link from 'next/link';
 import {
   Button,
   Card,
@@ -18,18 +18,25 @@ import {
 } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
-import Link from 'next/link';
+import invariant from 'tiny-invariant';
+import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import invariant from 'tiny-invariant';
+
+// lib
 import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { /* fetchJson, parseSpellStateDiff, */ getEtherscanLink, cutMiddle } from 'lib/utils';
+import { getEtherscanLink, cutMiddle } from 'lib/utils';
 import { getStatusText } from 'lib/executive/getStatusText';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+
+// stores
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
-// import OnChainFx from 'components/executive/OnChainFx';
+
+//components
 import Comments from 'components/executive/Comments';
 import VoteModal from 'components/executive/VoteModal';
 import Stack from 'components/layouts/Stack';
@@ -37,10 +44,11 @@ import Tabs from 'components/Tabs';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
+// import OnChainFx from 'components/executive/OnChainFx';
+
+//types
 import { Proposal } from 'types/proposal';
-import { SpellStateDiff } from 'types/spellStateDiff';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+// import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
   proposal: Proposal;
