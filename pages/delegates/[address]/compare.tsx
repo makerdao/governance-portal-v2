@@ -1,31 +1,35 @@
 /** @jsx jsx */
-import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
+import { useEffect, useState } from 'react';
+import { Heading, Box, jsx, Flex, NavLink, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import { getNetwork } from 'lib/maker';
+import { fetchJson } from 'lib/utils';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import Link from 'next/link';
-import Head from 'next/head';
-import { Delegate } from 'types/delegate';
-import { DelegateDetail } from 'components/delegations';
-import { getNetwork } from 'lib/maker';
-import { useEffect, useState } from 'react';
-import { fetchJson } from 'lib/utils';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { useRouter } from 'next/router';
+import useAccountsStore from 'stores/accounts';
+import { Delegate } from 'types/delegate';
+import { usePollVoteCompare } from 'lib/hooks';
 
 const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+  const [account] = useAccountsStore(state => [state.currentAccount]);
+  const address = account?.address;
+
+  const { data: comparedVoteData } = usePollVoteCompare(delegate.voteDelegateAddress, address);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -50,7 +54,23 @@ const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
             </Heading>
           </Flex>
 
-          <Box>compare stuff here</Box>
+          {comparedVoteData ? (
+            <Box>
+              {comparedVoteData?.map(voteData => (
+                <Box key={voteData.pollId}>
+                  <Text as="p">Poll ID: {voteData.pollId}</Text>
+                  <Text as="p">
+                    {delegate.voteDelegateAddress}: {voteData.a1}
+                  </Text>
+                  <Text as="p">
+                    {address}: {voteData.a2}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box>No data to show</Box>
+          )}
         </Stack>
         <Stack gap={3}>
           <SystemStatsSidebar
