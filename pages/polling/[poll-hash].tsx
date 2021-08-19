@@ -6,7 +6,18 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, jsx } from 'theme-ui';
+import {
+  Card,
+  Flex,
+  Divider,
+  Heading,
+  Text,
+  NavLink,
+  Box,
+  Button,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'components/SkeletonThemed';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -192,9 +203,21 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     </Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
-                      {poll.title}
-                    </Heading>
+                    <Flex sx={{ flexDirection: 'column' }}>
+                      <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
+                        {poll.title}
+                      </Heading>
+                      {poll.discussionLink && (
+                        <Box>
+                          <ExternalLink title="Forum Discussion" href={poll.discussionLink} target="_blank">
+                            <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                              Forum Discussion
+                              <Icon ml={2} name="arrowTopRight" size={2} />
+                            </Text>
+                          </ExternalLink>
+                        </Box>
+                      )}
+                    </Flex>
                     <Flex sx={{ flexDirection: 'column', minWidth: 7, justifyContent: 'space-between' }}>
                       <CountdownTimer
                         key={poll.multiHash}
@@ -213,11 +236,23 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div
-                  key={1}
-                  sx={{ variant: 'markdown.default', p: [3, 4] }}
-                  dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                />,
+                <>
+                  <div
+                    key={1}
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                  />
+                  {poll.discussionLink && (
+                    <Box sx={{ m: [3, 4] }}>
+                      <ExternalLink title="Forum Discussion" href={poll.discussionLink} target="_blank">
+                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                          Forum Discussion
+                          <Icon ml={2} name="arrowTopRight" size={2} />
+                        </Text>
+                      </ExternalLink>
+                    </Box>
+                  )}
+                </>,
                 [
                   <VoteBreakdown
                     poll={poll}
