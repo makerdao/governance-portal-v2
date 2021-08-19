@@ -174,9 +174,19 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     </Text>
                     <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   </Flex>
-                  <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                  <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
                     {poll.title}
                   </Heading>
+                  {poll.discussionLink && (
+                    <Box sx={{ mb: 2 }}>
+                      <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                          Discussion
+                          <Icon ml={2} name="arrowTopRight" size={2} />
+                        </Text>
+                      </ExternalLink>
+                    </Box>
+                  )}
                   <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
                 </Box>
               </Flex>
@@ -209,9 +219,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       </Heading>
                       {poll.discussionLink && (
                         <Box>
-                          <ExternalLink title="Forum Discussion" href={poll.discussionLink} target="_blank">
+                          <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
                             <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
-                              Forum Discussion
+                              Discussion
                               <Icon ml={2} name="arrowTopRight" size={2} />
                             </Text>
                           </ExternalLink>
@@ -236,23 +246,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <>
-                  <div
-                    key={1}
-                    sx={{ variant: 'markdown.default', p: [3, 4] }}
-                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                  />
-                  {poll.discussionLink && (
-                    <Box sx={{ m: [3, 4] }}>
-                      <ExternalLink title="Forum Discussion" href={poll.discussionLink} target="_blank">
-                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
-                          Forum Discussion
-                          <Icon ml={2} name="arrowTopRight" size={2} />
-                        </Text>
-                      </ExternalLink>
-                    </Box>
-                  )}
-                </>,
+                <div
+                  key={1}
+                  sx={{ variant: 'markdown.default', p: [3, 4] }}
+                  dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                />,
                 [
                   <VoteBreakdown
                     poll={poll}
