@@ -6,3 +6,4 @@ export * from './useVotedProposals';
 export * from './useSpellData';
 export * from './useHat';
 export * from './useAllSlates';
+export * from './useAllUserVotes';
