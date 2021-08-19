@@ -1,4 +1,5 @@
 import getMaker from 'lib/maker';
+import { ZERO_SLATE_HASH } from 'lib/executive/zeroSlateHash';
 import useSWR from 'swr';
 import useAccountsStore from 'stores/accounts';
 
@@ -35,7 +36,7 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
         maker
           .service('chief')
           .getVotedSlate(address)
-          .then(slate => maker.service('chief').getSlateAddresses(slate))
+          .then(slate => (slate !== ZERO_SLATE_HASH ? maker.service('chief').getSlateAddresses(slate) : []))
       ),
     { refreshInterval: 60000 }
   );
