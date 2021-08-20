@@ -20,12 +20,24 @@ import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useRouter } from 'next/router';
+import { getPolls } from 'lib/api';
+import { getCategories } from 'lib/polling/getCategories';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { fetchDelegates } from 'lib/delegates/fetchDelegates';
 
-const DelegateView = ({ delegate }: { delegate: Delegate }) => {
+const DelegateView = ({ delegate: del, polls }: { delegate: Delegate }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+  const delegate = del;
+
+  const dvh = del.voteHistory.map(vh => {
+    const myPoll = polls.find(poll => poll.pollId === vh.pollId);
+    return { ...vh, title: myPoll.title, optionValue: myPoll.options[vh.optionId] };
+  });
+
+  delegate.voteHistory = dvh;
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -65,7 +77,7 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   );
 };
 
-export default function DelegatesPage(): JSX.Element {
+export default function DelegatesPage({ polls }): JSX.Element {
   const [delegate, setDelegate] = useState<Delegate>();
   const [error, setError] = useState<string>();
   const router = useRouter();
@@ -89,5 +101,30 @@ export default function DelegatesPage(): JSX.Element {
     );
   }
 
-  return <DelegateView delegate={delegate} />;
+  return <DelegateView delegate={delegate} polls={polls} />;
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const polls = await getPolls();
+  const delegatesAPIResponse = await fetchDelegates();
+
+  const paths = delegatesAPIResponse.delegates.map(p => `/delegates/${p.address}`);
+  return {
+    paths,
+    fallback: true
+  };
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  // fetch polls at build-time if on the default network
+  const polls = await getPolls();
+  const categories = getCategories(polls);
+
+  return {
+    revalidate: 30, // allow revalidation every 30 seconds
+    props: {
+      polls,
+      categories
+    }
+  };
+};

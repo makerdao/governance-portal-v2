@@ -28,7 +28,8 @@ function mergeDelegateInfo(
     lastVote: null,
     communication: githubDelegate?.communication,
     combinedParticipation: githubDelegate?.combinedParticipation,
-    mkrDelegated: onChainDelegate.mkrDelegated
+    mkrDelegated: onChainDelegate.mkrDelegated,
+    voteHistory: onChainDelegate.voteHistory
   };
 }
 
