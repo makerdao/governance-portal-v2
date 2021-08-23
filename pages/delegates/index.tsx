@@ -24,7 +24,7 @@ import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'components/delegations/DelegatesSystemInfo';
 import { DelegatesAPIResponse, DelegatesAPIStats } from 'types/delegatesAPI';
-import { getExecutiveProposals } from 'lib/api';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import { CMSProposal } from 'types/proposal';
 
 type Props = {
