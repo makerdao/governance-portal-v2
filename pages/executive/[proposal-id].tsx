@@ -28,6 +28,7 @@ import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { getEtherscanLink, cutMiddle } from 'lib/utils';
+import { limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
@@ -283,12 +284,26 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
                       </Text>
                       <ExternalLink
-                        href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
+                        href={
+                          supporter.name && supporter.name !== 'Shadow Delegate'
+                            ? `/delegates/${supporter.address}`
+                            : getEtherscanLink(getNetwork(), supporter.address, 'address')
+                        }
                         target="_blank"
                       >
-                        <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
-                          {cutMiddle(supporter.address)}
-                        </Text>
+                        {supporter.name ? (
+                          <Text
+                            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                          >
+                            {limitString(supporter.name, 28, '...')}
+                          </Text>
+                        ) : (
+                          <Text
+                            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                          >
+                            {cutMiddle(supporter.address)}
+                          </Text>
+                        )}
                       </ExternalLink>
                     </Flex>
                   ))
