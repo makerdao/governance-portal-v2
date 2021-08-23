@@ -52,7 +52,9 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
       .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
       .slice(0, 100);
   
-    if (process.env.USE_FS_CACHE) fsCacheSet('proposals', JSON.stringify(sortedProposals));
+    if (config.USE_FS_CACHE) {
+      fsCacheSet('proposals', JSON.stringify(sortedProposals));
+    }
     return sortedProposals;
   }
   

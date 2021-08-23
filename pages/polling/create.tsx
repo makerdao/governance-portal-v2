@@ -14,7 +14,7 @@ import PollCreateModal from 'components/PollCreateModal';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
 import ResourceBox from 'components/ResourceBox';
-import { validateUrl } from 'modules/polls/lib/validator';
+import { validateUrl } from 'modules/polls/helpers/validator';
 import { Poll } from 'types/poll';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';

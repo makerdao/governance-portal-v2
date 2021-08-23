@@ -3,7 +3,7 @@ import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { backoffRetry, timeoutPromise } from 'lib/utils';
 import matter from 'gray-matter';
-import { parsePollMetadata } from '../lib/parser';
+import { parsePollMetadata } from '../helpers/parser';
 
 
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {

@@ -14,7 +14,7 @@ import { Poll } from 'types/poll';
 import { PollCategory } from 'types/pollCategory';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { isActivePoll, formatDateWithTime } from 'lib/utils';
-import { getCategories } from 'modules/polls/lib/getCategories';
+import { getCategories } from 'modules/polls/helpers/getCategories';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';

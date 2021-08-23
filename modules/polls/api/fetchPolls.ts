@@ -24,7 +24,9 @@ export async function getPolls(): Promise<Poll[]> {
     const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
     const polls = await parsePollsMetadata(pollList);
   
-    if (config.USE_FS_CACHE) fsCacheSet('polls', JSON.stringify(polls));
+    if (config.USE_FS_CACHE) {
+      fsCacheSet('polls', JSON.stringify(polls));
+    }
     return polls;
   }
 
