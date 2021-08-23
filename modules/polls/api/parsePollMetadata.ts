@@ -51,8 +51,10 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   
     return (
       polls
-        // newest to oldest
-        .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+        // closest to expiration shown first
+        .sort((a, b) =>
+          Date.now() - new Date(a.endDate).getTime() < Date.now() - new Date(b.endDate).getTime() ? 1 : -1
+        )
     );
   }
   

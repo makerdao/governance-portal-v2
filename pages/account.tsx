@@ -47,7 +47,9 @@ const AccountPage = (): JSX.Element => {
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
   const { data: chiefBalance } = useLockedMkr(address, voteProxy);
-  const { data: delegatedMkr } = useLockedMkr(voteDelegate ? voteDelegate.getVoteDelegateAddress() : null);
+  const { data: delegatedMkr } = useLockedMkr(
+    voteDelegate ? voteDelegate.getVoteDelegateAddress() : undefined
+  );
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

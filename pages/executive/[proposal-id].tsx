@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import useSWR from 'swr';
+import Link from 'next/link';
 import {
   Button,
   Card,
@@ -18,18 +18,23 @@ import {
 } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
-import Link from 'next/link';
+import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from 'lib/utils';
+import { getEtherscanLink, cutMiddle } from 'lib/utils';
 import { getStatusText } from 'lib/executive/getStatusText';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+
+// stores
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
-import OnChainFx from 'components/executive/OnChainFx';
+
+//components
 import Comments from 'components/executive/Comments';
 import VoteModal from 'components/executive/VoteModal';
 import Stack from 'components/layouts/Stack';
@@ -37,10 +42,11 @@ import Tabs from 'components/Tabs';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
+// import OnChainFx from 'components/executive/OnChainFx';
+
+//types
 import { Proposal } from 'types/proposal';
-import { SpellStateDiff } from 'types/spellStateDiff';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+// import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
   proposal: Proposal;
@@ -74,20 +80,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
 
-  const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  const [stateDiffError, setStateDiffError] = useState();
+  // ch401: hide until API is fixed
+  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
+  // const [stateDiffError, setStateDiffError] = useState();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
-        const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-        setStateDiff(_stateDiff);
-      } catch (error) {
-        setStateDiffError(error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
+  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
+  //       setStateDiff(_stateDiff);
+  //     } catch (error) {
+  //       setStateDiffError(error);
+  //     }
+  //   })();
+  // }, []);
 
   const { data: allSupporters, error: supportersError } = useSWR(
     `/api/executive/supporters?network=${getNetwork()}`
@@ -95,7 +102,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const { data: votedProposals } = useVotedProposals();
 
-  const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
+  const { data: comments, error: commentsError } = useSWR(
+    `/api/executive/comments/list/${proposal.address}`,
+    { refreshInterval: 60000 }
+  );
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -108,33 +118,40 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Comments proposal={proposal} comments={comments} />
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
+          {commentsError ? (
+            'Unable to fetch comments'
+          ) : (
+            <>
+              Loading <Spinner size={20} ml={2} />
+            </>
+          )}
         </Flex>
       )}
     </div>
   );
 
-  const onChainFxTab = (
-    <div key={3} sx={{ p: [3, 4] }}>
-      <Flex sx={{ mb: 3, overflow: 'auto' }}>
-        For the spell at address
-        <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
-          <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-            {proposal.address}
-          </Text>
-        </ExternalLink>
-      </Flex>
-      {stateDiff ? (
-        <OnChainFx stateDiff={stateDiff} />
-      ) : stateDiffError ? (
-        <Flex>Unable to fetch on-chain effects at this time</Flex>
-      ) : (
-        <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
-        </Flex>
-      )}
-    </div>
-  );
+  // ch401: hide until API is fixed
+  // const onChainFxTab = (
+  //   <div key={3} sx={{ p: [3, 4] }}>
+  //     <Flex sx={{ mb: 3, overflow: 'auto' }}>
+  //       For the spell at address
+  //       <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
+  //         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+  //           {proposal.address}
+  //         </Text>
+  //       </ExternalLink>
+  //     </Flex>
+  //     {stateDiff ? (
+  //       <OnChainFx stateDiff={stateDiff} />
+  //     ) : stateDiffError ? (
+  //       <Flex>Unable to fetch on-chain effects at this time</Flex>
+  //     ) : (
+  //       <Flex sx={{ alignItems: 'center' }}>
+  //         loading <Spinner size={20} ml={2} />
+  //       </Flex>
+  //     )}
+  //   </div>
+  // );
 
   const hasVotedFor =
     votedProposals &&
@@ -187,32 +204,37 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
-            {'about' in proposal ? (
-              <Tabs
-                tabListStyles={{ pl: [3, 4] }}
-                tabTitles={[
-                  'Proposal Detail',
-                  'On-Chain Effects',
-                  `Comments ${comments ? `(${comments.length})` : ''}`
-                ]}
-                tabPanels={[
-                  <div
-                    key={1}
-                    sx={{ variant: 'markdown.default', p: [3, 4] }}
-                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                  />,
-                  onChainFxTab,
-                  commentsTab
-                ]}
-                banner={<ProposalTimingBanner proposal={proposal} />}
-              ></Tabs>
-            ) : (
-              <Tabs
-                tabListStyles={{ pl: [3, 4] }}
-                tabTitles={['On-Chain Effects']}
-                tabPanels={[onChainFxTab]}
-              />
-            )}
+            {
+              'about' in proposal ? (
+                <Tabs
+                  tabListStyles={{ pl: [3, 4] }}
+                  tabTitles={[
+                    'Proposal Detail',
+                    // ch401: hide until API is fixed
+                    // 'On-Chain Effects',
+                    `Comments ${comments ? `(${comments.length})` : ''}`
+                  ]}
+                  tabPanels={[
+                    <div
+                      key={1}
+                      sx={{ variant: 'markdown.default', p: [3, 4] }}
+                      dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                    />,
+                    // onChainFxTab,
+                    commentsTab
+                  ]}
+                  banner={<ProposalTimingBanner proposal={proposal} />}
+                ></Tabs>
+              ) : null
+              // ch401: hide until API is fixed
+              // (
+              // <Tabs
+              //   tabListStyles={{ pl: [3, 4] }}
+              //   tabTitles={['On-Chain Effects']}
+              //   tabPanels={[onChainFxTab]}
+              // />
+              // )
+            }
           </Card>
         </Box>
         <Stack gap={3}>
