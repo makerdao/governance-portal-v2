@@ -43,7 +43,7 @@ export function DelegatesSystemInfo({
   return (
     <Box className={className}>
       <Heading mt={3} mb={2} as="h3" variant="microHeading">
-        Delegate System Info
+        System Info
       </Heading>
       <Card variant="compact">
         <StackLayout gap={3}>

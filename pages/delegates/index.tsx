@@ -141,12 +141,7 @@ const Delegates = ({ delegates, stats, proposals }: Props) => {
               </Box>
             </Card>
           </Box>
-
           {stats && <DelegatesSystemInfo stats={stats} />}
-
-          <SystemStatsSidebar
-            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-          />
           <ResourceBox />
         </Stack>
       </SidebarLayout>
