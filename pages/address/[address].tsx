@@ -37,20 +37,22 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 
       <SidebarLayout>
         <Stack gap={2}>
-          {addressInfo.isDelegate && <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3}>
-              <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
-                <NavLink p={0}>
-                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
-                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} />
-                      {bpi > 0 ? 'Back to all delegates' : 'Back'}
-                    </Flex>
-                  </Button>
-                </NavLink>
-              </Link>
-            </Heading>
-          </Flex>}
+          {addressInfo.isDelegate && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Heading variant="microHeading" mr={3}>
+                <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
+                  <NavLink p={0}>
+                    <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
+                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                        <Icon name="chevron_left" size={2} mr={2} />
+                        {bpi > 0 ? 'Back to all delegates' : 'Back'}
+                      </Flex>
+                    </Button>
+                  </NavLink>
+                </Link>
+              </Heading>
+            </Flex>
+          )}
 
           <Box>
             {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}

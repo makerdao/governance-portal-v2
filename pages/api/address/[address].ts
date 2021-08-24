@@ -16,8 +16,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json({
-      isDelegate: !!delegate,
-      delegateInfo: delegate,
-      address
+    isDelegate: !!delegate,
+    delegateInfo: delegate,
+    address
   });
 });

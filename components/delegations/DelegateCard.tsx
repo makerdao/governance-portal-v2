@@ -150,7 +150,7 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
                   View Profile Details
                 </Button>
               </a>
-            </Link>      
+            </Link>
           </Flex>
         </Flex>
 

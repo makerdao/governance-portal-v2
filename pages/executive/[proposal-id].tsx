@@ -4,18 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import {
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Spinner,
-  Box,
-  Text,
-  Divider,
-  Link as ThemeUILink,
-  jsx
-} from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
@@ -281,7 +270,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       <Text color="onSecondary">
                         {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
                       </Text>
-                     
+
                       <Link
                         href={{
                           pathname: `/address/${supporter.address}`,
@@ -302,7 +291,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                               {cutMiddle(supporter.address)}
                             </Text>
                           )}
-
                         </ThemeUILink>
                       </Link>
                     </Flex>
