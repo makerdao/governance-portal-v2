@@ -8,15 +8,9 @@ export async function fetchChainDelegates(
   const maker = await getMaker(network);
 
   const delegates = await maker.service('voteDelegate').getAllDelegates();
-  // console.log('delegates', delegates);
-  // const addresses = [
-  //   '0x883b94bbd31902c79ab2c2daf89d439c94232319',
-  //   '0x55e8a7f72a15cea2377872f337b4c7b26240f744',
-  //   '0x7a74fb6bd364b9b5ef69605a3d28327da8087aa0'
-  // ];
   const voteHistory = await maker
-    .service('voteDelegate')
-    .getDelegatesVotingHistoryByAddresses(delegates.map(d => d.voteDelegate));
+    .service('govPolling')
+    .getAllOptionsVotingForMany(delegates.map(d => d.voteDelegate));
 
   const mkrStaked = await Promise.all(
     delegates.map(async delegate => {

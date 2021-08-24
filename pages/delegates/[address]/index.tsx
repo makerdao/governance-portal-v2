@@ -34,7 +34,7 @@ const DelegateView = ({ delegate: del, polls }: { delegate: Delegate }) => {
 
   const dvh = del.voteHistory.map(vh => {
     const myPoll = polls.find(poll => poll.pollId === vh.pollId);
-    return { ...vh, title: myPoll.title, optionValue: myPoll.options[vh.optionId] };
+    return { ...vh, title: myPoll.title, optionValue: myPoll.options[vh.option] };
   });
 
   delegate.voteHistory = dvh;
