@@ -13,7 +13,7 @@ import {
   Box,
   Text,
   Divider,
-  Link as ExternalLink,
+  Link as ThemeUILink,
   jsx
 } from 'theme-ui';
 import { ethers } from 'ethers';
@@ -25,7 +25,7 @@ import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { getEtherscanLink, cutMiddle } from 'lib/utils';
+import { cutMiddle } from 'lib/utils';
 import { limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
@@ -136,11 +136,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   //   <div key={3} sx={{ p: [3, 4] }}>
   //     <Flex sx={{ mb: 3, overflow: 'auto' }}>
   //       For the spell at address
-  //       <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
+  //       <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
   //         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
   //           {proposal.address}
   //         </Text>
-  //       </ExternalLink>
+  //       </ThemeUILink>
   //     </Flex>
   //     {stateDiff ? (
   //       <OnChainFx stateDiff={stateDiff} />
@@ -281,28 +281,30 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       <Text color="onSecondary">
                         {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
                       </Text>
-                      <ExternalLink
-                        href={
-                          supporter.name && supporter.name !== 'Shadow Delegate'
-                            ? `/delegates/${supporter.address}`
-                            : getEtherscanLink(getNetwork(), supporter.address, 'address')
-                        }
-                        target="_blank"
+                     
+                      <Link
+                        href={{
+                          pathname: `/address/${supporter.address}`,
+                          query: { network }
+                        }}
                       >
-                        {supporter.name ? (
-                          <Text
-                            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                          >
-                            {limitString(supporter.name, 28, '...')}
-                          </Text>
-                        ) : (
-                          <Text
-                            sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                          >
-                            {cutMiddle(supporter.address)}
-                          </Text>
-                        )}
-                      </ExternalLink>
+                        <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                          {supporter.name ? (
+                            <Text
+                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                            >
+                              {limitString(supporter.name, 28, '...')}
+                            </Text>
+                          ) : (
+                            <Text
+                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                            >
+                              {cutMiddle(supporter.address)}
+                            </Text>
+                          )}
+
+                        </ThemeUILink>
+                      </Link>
                     </Flex>
                   ))
                 ) : supportersError ? (
