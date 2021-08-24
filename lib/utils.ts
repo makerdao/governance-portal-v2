@@ -12,7 +12,7 @@ import { Poll } from 'types/poll';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
-import mockPolls from '../mocks/polls.json';
+import mockPolls from 'modules/polls/api/mocks/polls.json';
 import { PollVote } from 'types/pollVote';
 import round from 'lodash/round';
 

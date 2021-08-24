@@ -10,7 +10,7 @@ import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { getExecutiveProposals } from 'lib/api';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
 import { useLockedMkr, useVotedProposals, useHat } from 'lib/hooks';
 import { fetchJson } from 'lib/utils';

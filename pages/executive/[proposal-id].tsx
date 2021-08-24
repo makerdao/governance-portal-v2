@@ -18,13 +18,11 @@ import {
 } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
-import invariant from 'tiny-invariant';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-
-// lib
-import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
+import invariant from 'tiny-invariant';
+import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 import { useSpellData, useVotedProposals } from 'lib/hooks';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { getEtherscanLink, cutMiddle } from 'lib/utils';

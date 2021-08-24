@@ -1,4 +1,4 @@
-import { parsePollMetadata } from '../../../lib/polling/parser';
+import { parsePollMetadata } from 'modules/polls/helpers/parser';
 import pollJson327 from './poll-327.js';
 import pollJson431 from './poll-431.js';
 import fs from 'fs';
