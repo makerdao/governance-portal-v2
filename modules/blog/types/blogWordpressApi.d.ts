@@ -2,7 +2,7 @@ export type BlogWordpressListItem = {
   title: {
     rendered: string,
   },
-  url: string,
+  link: string,
   _links: {
     self: [{
       href: string

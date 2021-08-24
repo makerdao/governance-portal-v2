@@ -30,7 +30,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
 
     return {
       title: item.title.rendered,
-      link: item.url,
+      link: item.link,
       date: new Date(itemResponse.data.date),
       photoHref
     } as BlogPost;
