@@ -17,6 +17,7 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
 
     const maker = await getConnectedMakerObj(network);
     const tally = await backoffRetry(3, () => maker.service('govPolling').getTallyRankedChoiceIrv(pollId));
+    const votesByAddress = await maker.service('govPolling').getMkrAmtVotedByAddress(pollId);
 
     const totalMkrParticipation = tally.totalMkrParticipation;
     const winner: string = tally.winner;
@@ -28,7 +29,8 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
       winner,
       rounds,
       totalMkrParticipation,
-      numVoters
+      numVoters,
+      votesByAddress
     };
 
     res.setHeader('Cache-Control', cacheType);

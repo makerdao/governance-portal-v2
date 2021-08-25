@@ -40,6 +40,7 @@ import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import useBallotStore from 'stores/ballot';
 import PollOptionBadge from 'components/PollOptionBadge';
+import VotesByAddress from 'components/polling/[poll-hash]/VotesByAddress';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -71,6 +72,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
   );
+
+  console.log({ tally });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
@@ -272,7 +275,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       </Button>
                     </Box>
                   ),
-
                   <Divider key={'divider'} />,
                   <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'voting stats'}>
                     <Text variant="microHeading" sx={{ mb: 3 }}>
@@ -299,6 +301,16 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         </Box>
                       )}
                     </Flex>
+                  </Flex>,
+                  <Divider key={'divider 2'} />,
+                  <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'votes by address'}>
+                    {tally ? (
+                      <VotesByAddress votes={tally.votesByAddress} />
+                    ) : (
+                      <Box sx={{ width: 4 }}>
+                        <Skeleton />
+                      </Box>
+                    )}
                   </Flex>
                 ]
               ]}
