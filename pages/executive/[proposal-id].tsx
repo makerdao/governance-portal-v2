@@ -276,6 +276,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                           pathname: `/address/${supporter.address}`,
                           query: { network }
                         }}
+                        passHref
                       >
                         <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
                           {supporter.name ? (
