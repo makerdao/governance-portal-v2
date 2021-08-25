@@ -8,10 +8,7 @@ export async function fetchChainDelegates(
   const maker = await getMaker(network);
 
   const delegates = await maker.service('voteDelegate').getAllDelegates();
-  const voteHistory = await maker
-    .service('govPolling')
-    .getAllOptionsVotingForMany(delegates.map(d => d.voteDelegate));
-
+  
   const mkrStaked = await Promise.all(
     delegates.map(async delegate => {
       // Get MKR delegated to each contract
@@ -25,6 +22,5 @@ export async function fetchChainDelegates(
     address: d.delegate,
     voteDelegateAddress: d.voteDelegate,
     mkrDelegated: mkrStaked[index],
-    voteHistory: voteHistory.filter(vh => vh.voter === d.voteDelegate)
   }));
 }

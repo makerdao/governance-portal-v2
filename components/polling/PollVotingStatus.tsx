@@ -8,7 +8,7 @@ import { useAllUserVotes } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';

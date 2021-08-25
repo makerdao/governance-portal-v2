@@ -18,28 +18,30 @@ import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import useAccountsStore from 'stores/accounts';
-import { Delegate } from 'types/delegate';
 import { usePollVoteCompare } from 'lib/hooks';
+import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 
-const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
+
+  const { trackButtonClick } = useAnalytics(addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL);
+
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
   const [account] = useAccountsStore(state => [state.currentAccount]);
   const address = account?.address;
 
-  const { data: comparedVoteData } = usePollVoteCompare(delegate.voteDelegateAddress, address);
+  const { data: comparedVoteData } = usePollVoteCompare(addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address, address);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
-        <title>Maker Governance - Delegate Vote Compare</title>
+        <title>Maker Governance - Vote Compare</title>
       </Head>
 
       <SidebarLayout>
         <Stack gap={2}>
-          <Flex sx={{ alignItems: 'center' }}>
+          {addressInfo.isDelegate && <Flex sx={{ alignItems: 'center' }}>
             <Heading variant="microHeading" mr={3}>
               <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
                 <NavLink p={0}>
@@ -52,7 +54,7 @@ const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
                 </NavLink>
               </Link>
             </Heading>
-          </Flex>
+          </Flex>}
 
           {comparedVoteData ? (
             <Box>
@@ -60,7 +62,7 @@ const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
                 <Box key={voteData.pollId}>
                   <Text as="p">Poll ID: {voteData.pollId}</Text>
                   <Text as="p">
-                    {delegate.voteDelegateAddress}: {voteData.a1}
+                    {addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address}: {voteData.a1}
                   </Text>
                   <Text as="p">
                     {address}: {voteData.a2}
@@ -83,15 +85,15 @@ const DelegateCompareView = ({ delegate }: { delegate: Delegate }) => {
   );
 };
 
-export default function DelegatesPage(): JSX.Element {
-  const [delegate, setDelegate] = useState<Delegate>();
+export default function AdressComparePage(): JSX.Element {
+  const [addressInfo, setAddressInfo] = useState<AddressApiResponse>();
   const [error, setError] = useState<string>();
   const router = useRouter();
   const { address } = router.query;
-  // fetch delegates at run-time if on any network other than the default
+
   useEffect(() => {
     if (address) {
-      fetchJson(`/api/delegates/${address}?network=${getNetwork()}`).then(setDelegate).catch(setError);
+      fetchJson(`/api/address/${address}?network=${getNetwork()}`).then(setAddressInfo).catch(setError);
     }
   }, [address]);
 
@@ -99,7 +101,7 @@ export default function DelegatesPage(): JSX.Element {
     return <ErrorPage statusCode={404} title="Error fetching delegate" />;
   }
 
-  if (!delegate) {
+  if (!addressInfo) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -107,5 +109,5 @@ export default function DelegatesPage(): JSX.Element {
     );
   }
 
-  return <DelegateCompareView delegate={delegate} />;
+  return <AddressCompareView addressInfo={addressInfo} />;
 }

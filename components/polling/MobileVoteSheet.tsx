@@ -9,23 +9,22 @@ import isNil from 'lodash/isNil';
 import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
-import useSWR from 'swr';
 
 import { Account } from 'types/account';
-import { Poll } from 'types/poll';
-import { PollVote } from 'types/pollVote';
+import { Poll } from 'modules/polls/types';
 import useBallotStore from 'stores/ballot';
 import { isRankedChoicePoll, extractCurrentPollVote } from 'lib/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
-import getMaker, { getNetwork } from 'lib/maker';
+import { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAllUserVotes } from 'lib/hooks';
 
 enum ViewState {
   START,
@@ -56,11 +55,8 @@ export default function MobileVoteSheet({
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? ['/user/voting-for', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
-    { refreshInterval: 0 }
-  );
+  const { data: allUserVotes } = useAllUserVotes(account?.address);
+
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
   const [addToBallot, removeFromBallot, ballot] = useBallotStore(
     state => [state.addToBallot, state.removeFromBallot, state.ballot],

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import AddressIcon from 'components/header/AddressIcon';
+import AddressIcon from 'modules/address/components/AddressIcon';
 import { formatAddress } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { Button, Box, Flex, Text, jsx, Spinner } from 'theme-ui';

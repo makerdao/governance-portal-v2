@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { useState, useMemo } from 'react';
-import useSWR from 'swr';
 import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
@@ -12,7 +11,7 @@ import getMaker, { getNetwork } from 'lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
 import { TXMined } from 'types/transaction';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 
 type Props = {
   close: () => void;

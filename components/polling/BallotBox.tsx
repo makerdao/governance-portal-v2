@@ -4,7 +4,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 import { Ballot } from 'types/ballot';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';

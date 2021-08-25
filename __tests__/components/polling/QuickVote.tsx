@@ -1,13 +1,11 @@
 import { act, screen } from '@testing-library/react';
-import mockPolls from '../../../mocks/polls.json';
+import mockPolls from 'modules/polls/api/mocks/polls.json';
 import mockCategories from '../../../mocks/categories.json';
 import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
-import { Poll } from '../../../types/poll';
-import { PollCategory } from '../../../types/pollCategory';
-
+import { Poll, PollCategory } from 'modules/polls/types';
 let maker;
 
 jest.mock('@theme-ui/match-media', () => {

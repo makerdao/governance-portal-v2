@@ -10,13 +10,13 @@ import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
-import { getPolls } from 'lib/api';
+import { getPolls } from 'modules/polls/api/fetchPolls';
 import { isActivePoll, findPollById } from 'lib/utils';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import PollOverviewCard from 'components/polling/PollOverviewCard';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 import ReviewBox from 'components/polling/review/ReviewBox';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';

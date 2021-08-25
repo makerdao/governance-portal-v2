@@ -2,20 +2,22 @@ import React from 'react';
 import { renderWithTheme as render } from '../helpers';
 
 import Index from '../../pages/index';
-import { getPostsAndPhotos, getExecutiveProposals, getPolls } from '../../lib/api';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getPolls } from 'modules/polls/api/fetchPolls';
+import blogPosts from '../__mocks__/blogPosts.json';
 
-let blogPosts, proposals, polls;
+let proposals, polls;
 
 beforeAll(async () => {
   jest.setTimeout(10000);
-  [blogPosts, proposals, polls] = await Promise.all([
-    getPostsAndPhotos(),
+  [proposals, polls] = await Promise.all([
     getExecutiveProposals(),
     getPolls()
   ]);
 });
 
 test('renders', async () => {
+
   const { debug } = render(
     <Index blogPosts={blogPosts} polls={polls} proposals={proposals} />
   );

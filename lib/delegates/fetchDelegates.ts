@@ -29,7 +29,6 @@ function mergeDelegateInfo(
     communication: githubDelegate?.communication,
     combinedParticipation: githubDelegate?.combinedParticipation,
     mkrDelegated: onChainDelegate.mkrDelegated,
-    voteHistory: onChainDelegate.voteHistory
   };
 }
 

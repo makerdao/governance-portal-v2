@@ -3,15 +3,14 @@ import { forwardRef, useMemo } from 'react';
 import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR from 'swr';
 import invariant from 'tiny-invariant';
 
-import getMaker, { getNetwork } from 'lib/maker';
+import { getNetwork } from 'lib/maker';
 import { isActivePoll } from 'lib/utils';
 import useAccountsStore from 'stores/accounts';
-import { Poll } from 'types/poll';
-import { PollVote } from 'types/pollVote';
+import { Poll } from 'modules/polls/types';
 import { Account } from 'types/account';
+import { useAllUserVotes } from 'lib/hooks';
 
 type Props = {
   account?: Account;
@@ -78,11 +77,8 @@ const PollingIndicatorComponent = ({
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
 
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? ['/user/voting-for', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
-    { refreshInterval: 0 }
-  );
+  const { data: allUserVotes } = useAllUserVotes(account?.address);
+
 
   const unvotedPolls = allUserVotes
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))

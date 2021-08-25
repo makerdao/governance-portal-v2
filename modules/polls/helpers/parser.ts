@@ -1,6 +1,6 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
-import { Poll, PartialPoll } from 'types/poll';
+import { Poll, PartialPoll } from 'modules/polls/types';
 import { VoteTypes } from 'types/voteTypes';
 import categoryMap from './oldPollCategories';
 

@@ -7,42 +7,19 @@ import { getEtherscanLink } from 'lib/utils';
 import { Delegate } from 'types/delegate';
 import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
+import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVoteHistory';
 
 type PropTypes = {
   delegate: Delegate;
+  stats: AddressAPIStats
 };
 
-const DelegateVoteHistory = ({ voteHistory }) => {
-  return voteHistory.map(vh => {
-    const title = vh.title;
-    const option = vh.optionValue;
-    const date = vh.blockTimestamp;
-    return (
-      <Flex
-        key={title}
-        sx={{
-          py: 2,
-          flexDirection: 'column',
-          border: 'light',
-          borderColor: 'muted',
-          borderRadius: 'roundish',
-          p: 2,
-          my: 2
-        }}
-      >
-        <Heading variant="microHeading">{title}</Heading>
-        <Text>
-          Voted: <span sx={{ fontWeight: 'bold' }}>{option}</span> on{' '}
-          <span sx={{ variant: 'text.caps' }}>{new Date(date).toDateString()}</span>
-        </Text>
-      </Flex>
-    );
-  });
-};
-
-export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
+export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactElement {
   const bpi = useBreakpointIndex();
+
   const { voteDelegateAddress } = delegate;
+
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: 3 }}>
@@ -91,7 +68,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateContractExpiration delegate={delegate} />
         <Flex sx={{ mt: 3, flexDirection: 'column' }}>
           <Heading>Polling Vote History</Heading>
-          <DelegateVoteHistory voteHistory={delegate.voteHistory} />
+          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
         </Flex>
       </Box>
     </Box>

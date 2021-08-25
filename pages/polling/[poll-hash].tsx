@@ -6,26 +6,35 @@ import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import useSWR, { mutate } from 'swr';
 import invariant from 'tiny-invariant';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, jsx } from 'theme-ui';
+import {
+  Card,
+  Flex,
+  Divider,
+  Heading,
+  Text,
+  NavLink,
+  Box,
+  Button,
+  Link as ExternalLink,
+  jsx
+} from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'components/SkeletonThemed';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import CountdownTimer from 'components/CountdownTimer';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { getPolls, getPoll } from 'lib/api';
+import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
 import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VotingStatus from 'components/polling/PollVotingStatus';
 import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
 import VoteBox from 'components/polling/[poll-hash]/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import { Poll } from 'types/poll';
-import { PollTally } from 'types/pollTally';
+import { Poll, PollTally } from 'modules/polls/types';
 import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import useBallotStore from 'stores/ballot';
@@ -163,9 +172,19 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     </Text>
                     <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   </Flex>
-                  <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
+                  <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
                     {poll.title}
                   </Heading>
+                  {poll.discussionLink && (
+                    <Box sx={{ mb: 2 }}>
+                      <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                          Discussion
+                          <Icon ml={2} name="arrowTopRight" size={2} />
+                        </Text>
+                      </ExternalLink>
+                    </Box>
+                  )}
                   <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
                 </Box>
               </Flex>
@@ -192,9 +211,21 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     </Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Heading mt="2" mb="3" sx={{ fontSize: [5, 6] }}>
-                      {poll.title}
-                    </Heading>
+                    <Flex sx={{ flexDirection: 'column' }}>
+                      <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
+                        {poll.title}
+                      </Heading>
+                      {poll.discussionLink && (
+                        <Box>
+                          <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                            <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                              Discussion
+                              <Icon ml={2} name="arrowTopRight" size={2} />
+                            </Text>
+                          </ExternalLink>
+                        </Box>
+                      )}
+                    </Flex>
                     <Flex sx={{ flexDirection: 'column', minWidth: 7, justifyContent: 'space-between' }}>
                       <CountdownTimer
                         key={poll.multiHash}
