@@ -1,6 +1,6 @@
 import { useAllUserVotes } from 'lib/hooks';
 
-type VoteCompare = { pollId: number; a1: number | undefined; a2: number | undefined}
+type VoteCompare = { pollId: number; a1: number | undefined; a2: number | undefined };
 
 type PollVoteCompareResponse = {
   data: VoteCompare[];

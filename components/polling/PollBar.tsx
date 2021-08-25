@@ -12,7 +12,7 @@ type Props = { ballot: Ballot; polls: Poll[]; activePolls: Poll[] };
 
 export default function PollBar({ ballot, polls, activePolls, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
- 
+
   const { data: allUserVotes } = useAllUserVotes(account?.address);
 
   const allUserPolls: Poll[] = allUserVotes

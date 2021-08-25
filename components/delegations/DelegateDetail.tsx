@@ -12,7 +12,7 @@ import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVo
 
 type PropTypes = {
   delegate: Delegate;
-  stats: AddressAPIStats
+  stats: AddressAPIStats;
 };
 
 export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactElement {

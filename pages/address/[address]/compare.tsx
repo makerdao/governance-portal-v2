@@ -22,8 +22,9 @@ import { usePollVoteCompare } from 'lib/hooks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 
 const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
-
-  const { trackButtonClick } = useAnalytics(addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL);
+  const { trackButtonClick } = useAnalytics(
+    addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
+  );
 
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -31,7 +32,10 @@ const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }
   const [account] = useAccountsStore(state => [state.currentAccount]);
   const address = account?.address;
 
-  const { data: comparedVoteData } = usePollVoteCompare(addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address, address);
+  const { data: comparedVoteData } = usePollVoteCompare(
+    addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address,
+    address
+  );
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -41,20 +45,22 @@ const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }
 
       <SidebarLayout>
         <Stack gap={2}>
-          {addressInfo.isDelegate && <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3}>
-              <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
-                <NavLink p={0}>
-                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
-                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} />
-                      {bpi > 0 ? 'Back to all delegates' : 'Back'}
-                    </Flex>
-                  </Button>
-                </NavLink>
-              </Link>
-            </Heading>
-          </Flex>}
+          {addressInfo.isDelegate && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Heading variant="microHeading" mr={3}>
+                <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
+                  <NavLink p={0}>
+                    <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
+                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                        <Icon name="chevron_left" size={2} mr={2} />
+                        {bpi > 0 ? 'Back to all delegates' : 'Back'}
+                      </Flex>
+                    </Button>
+                  </NavLink>
+                </Link>
+              </Heading>
+            </Flex>
+          )}
 
           {comparedVoteData ? (
             <Box>
@@ -62,7 +68,10 @@ const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }
                 <Box key={voteData.pollId}>
                   <Text as="p">Poll ID: {voteData.pollId}</Text>
                   <Text as="p">
-                    {addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address}: {voteData.a1}
+                    {addressInfo.delegateInfo
+                      ? addressInfo.delegateInfo.voteDelegateAddress
+                      : addressInfo.address}
+                    : {voteData.a1}
                   </Text>
                   <Text as="p">
                     {address}: {voteData.a2}

@@ -79,7 +79,6 @@ const PollingIndicatorComponent = ({
 
   const { data: allUserVotes } = useAllUserVotes(account?.address);
 
-
   const unvotedPolls = allUserVotes
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))
     : activePolls;

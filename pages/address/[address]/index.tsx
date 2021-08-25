@@ -25,8 +25,9 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
-
-  const { trackButtonClick } = useAnalytics(addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL);
+  const { trackButtonClick } = useAnalytics(
+    addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
+  );
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -54,8 +55,12 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} stats={addressInfo.stats} />}
-            {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} stats={addressInfo.stats}/>}
+            {addressInfo.delegateInfo && (
+              <DelegateDetail delegate={addressInfo.delegateInfo} stats={addressInfo.stats} />
+            )}
+            {!addressInfo.delegateInfo && (
+              <AddressDetail address={addressInfo.address} stats={addressInfo.stats} />
+            )}
           </Box>
         </Stack>
         <Stack gap={3}>
@@ -95,4 +100,3 @@ export default function AddressPage(): JSX.Element {
 
   return <AddressView addressInfo={addressInfo} />;
 }
-

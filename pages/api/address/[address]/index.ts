@@ -15,8 +15,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
 
   const delegate = await fetchDelegate(address, network);
   const pollVoteHistory = await fetchAddressPollVoteHistory(address, network);
-  
-  const response : AddressApiResponse = {
+
+  const response: AddressApiResponse = {
     isDelegate: !!delegate,
     delegateInfo: delegate,
     address,
