@@ -69,8 +69,6 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
-  const showLinkToDetail = delegate.status === DelegateStatusEnum.recognized && !delegate.expired;
-
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
@@ -137,31 +135,22 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
           </Flex>
 
           <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
-            {showLinkToDetail && (
-              <Link
-                href={{
-                  pathname: `/delegates/${delegate.voteDelegateAddress}`,
-                  query: { network }
-                }}
-              >
-                <a sx={{ mt: 'auto' }} title="Profile details">
-                  <Button
-                    onClick={() => trackButtonClick('openDelegateProfile')}
-                    sx={{ borderColor: 'text', color: 'text' }}
-                    variant="outline"
-                  >
-                    View Profile Details
-                  </Button>
-                </a>
-              </Link>
-            )}
-
-            {!showLinkToDetail && (
-              <Box sx={{ mt: 'auto' }}>
-                {/* <DelegateLastVoted delegate={delegate} /> */}
-                <DelegateContractExpiration delegate={delegate} />
-              </Box>
-            )}
+            <Link
+              href={{
+                pathname: `/address/${delegate.voteDelegateAddress}`,
+                query: { network }
+              }}
+            >
+              <a sx={{ mt: 'auto' }} title="Profile details">
+                <Button
+                  onClick={() => trackButtonClick('openDelegateProfile')}
+                  sx={{ borderColor: 'text', color: 'text' }}
+                  variant="outline"
+                >
+                  View Profile Details
+                </Button>
+              </a>
+            </Link>
           </Flex>
         </Flex>
 

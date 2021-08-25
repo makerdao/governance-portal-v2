@@ -20,8 +20,10 @@ import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useRouter } from 'next/router';
+import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
+import { AddressDetail } from 'modules/address/components/AddressDetail';
 
-const DelegateView = ({ delegate }: { delegate: Delegate }) => {
+const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
@@ -30,28 +32,31 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
-        <title>Maker Governance - Delegate Information</title>
+        <title>Maker Governance - {addressInfo.isDelegate ? 'Delegate' : 'Address'} Information</title>
       </Head>
 
       <SidebarLayout>
         <Stack gap={2}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3}>
-              <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
-                <NavLink p={0}>
-                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
-                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                      <Icon name="chevron_left" size={2} mr={2} />
-                      {bpi > 0 ? 'Back to all delegates' : 'Back'}
-                    </Flex>
-                  </Button>
-                </NavLink>
-              </Link>
-            </Heading>
-          </Flex>
+          {addressInfo.isDelegate && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Heading variant="microHeading" mr={3}>
+                <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
+                  <NavLink p={0}>
+                    <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
+                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                        <Icon name="chevron_left" size={2} mr={2} />
+                        {bpi > 0 ? 'Back to all delegates' : 'Back'}
+                      </Flex>
+                    </Button>
+                  </NavLink>
+                </Link>
+              </Heading>
+            </Flex>
+          )}
 
           <Box>
-            <DelegateDetail delegate={delegate} />
+            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
+            {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
           </Box>
         </Stack>
         <Stack gap={3}>
@@ -65,23 +70,23 @@ const DelegateView = ({ delegate }: { delegate: Delegate }) => {
   );
 };
 
-export default function DelegatesPage(): JSX.Element {
-  const [delegate, setDelegate] = useState<Delegate>();
+export default function AddressPage(): JSX.Element {
+  const [addressInfo, setAddressInfo] = useState<AddressApiResponse>();
   const [error, setError] = useState<string>();
   const router = useRouter();
   const { address } = router.query;
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
     if (address) {
-      fetchJson(`/api/delegates/${address}?network=${getNetwork()}`).then(setDelegate).catch(setError);
+      fetchJson(`/api/address/${address}?network=${getNetwork()}`).then(setAddressInfo).catch(setError);
     }
   }, [address]);
 
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching delegate" />;
+    return <ErrorPage statusCode={404} title="Error fetching address information" />;
   }
 
-  if (!delegate) {
+  if (!addressInfo) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -89,5 +94,5 @@ export default function DelegatesPage(): JSX.Element {
     );
   }
 
-  return <DelegateView delegate={delegate} />;
+  return <AddressView addressInfo={addressInfo} />;
 }
