@@ -7,8 +7,14 @@ type RepositoryInfo = {
 };
 
 export function getDelegatesRepositoryInformation(network: SupportedNetworks): RepositoryInfo {
-  const repoMainnet = {
-    owner: 'makerdao',
+  // const repoMainnet = {
+  //   owner: 'makerdao',
+  //   repo: 'community',
+  //   page: 'governance/delegates'
+  // };
+
+  const repoMainnetFork = {
+    owner: 'makerdao-dux',
     repo: 'community',
     page: 'governance/delegates'
   };
@@ -19,6 +25,6 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
     page: 'delegates'
   };
 
-  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoKovan;
+  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnetFork : repoKovan;
   return delegatesRepositoryInfo;
 }
