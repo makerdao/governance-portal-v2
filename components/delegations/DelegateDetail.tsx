@@ -1,20 +1,25 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Divider, Flex } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Divider, Flex, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import { Delegate } from 'types/delegate';
 import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
+import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVoteHistory';
 
 type PropTypes = {
   delegate: Delegate;
+  stats: AddressAPIStats;
 };
 
-export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
+export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactElement {
   const bpi = useBreakpointIndex();
+
   const { voteDelegateAddress } = delegate;
+
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: 3 }}>
@@ -56,11 +61,15 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       </Box>
 
       <Divider my={0} />
-      <Box sx={{ p: 3, display: 'flex' }}>
+      <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
         {/* <Box sx={{ mr: 3 }}>
           <DelegateLastVoted delegate={delegate} />
         </Box> */}
         <DelegateContractExpiration delegate={delegate} />
+        <Flex sx={{ mt: 3, flexDirection: 'column' }}>
+          <Heading>Polling Vote History</Heading>
+          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
+        </Flex>
       </Box>
     </Box>
   );

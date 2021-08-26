@@ -9,6 +9,7 @@ export const ANALYTICS_PRODUCT = 'governance-portal-v2';
 export const ANALYTICS_PAGES = {
   DELEGATES: 'Delegates',
   DELEGATE_DETAIL: 'Delegate detail',
+  ADDRESS_DETAIL: 'Address detail',
   POLLING: 'Polling',
   POLL_DETAIL: 'PollDetail',
   EXECUTIVE: 'Executive',

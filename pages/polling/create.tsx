@@ -15,7 +15,7 @@ import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
 import ResourceBox from 'components/ResourceBox';
 import { validateUrl } from 'modules/polls/helpers/validator';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
 import { formatDateWithTime } from 'lib/utils';

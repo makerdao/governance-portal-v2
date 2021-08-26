@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
-import { Poll, PartialPoll } from 'types/poll';
+import { Poll, PartialPoll } from 'modules/polls/types';
 import { parsePollMetadata } from './parser';
 import { VoteTypes } from 'types/voteTypes';
 

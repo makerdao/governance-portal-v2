@@ -6,7 +6,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
-import AddressIcon from './AddressIcon';
+import AddressIcon from 'modules/address/components/AddressIcon';
 
 type Props = {
   address: string;

@@ -2,16 +2,13 @@
 import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR from 'swr';
 import isNil from 'lodash/isNil';
-
 import { isActivePoll } from 'lib/utils';
-import getMaker from 'lib/maker';
+import { useAllUserVotes } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
-import { Poll } from 'types/poll';
-import { PollVote } from 'types/pollVote';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
+import { Poll } from 'modules/polls/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';
@@ -50,13 +47,7 @@ const VotingStatus = ({
   const account = useAccountsStore(state => state.currentAccount);
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    addressToCheck
-      ? ['/user/voting-for', voteDelegate ? voteDelegate.getVoteDelegateAddress() : addressToCheck]
-      : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
-    { refreshInterval: 0 }
-  );
+  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const onBallot = !isNil(ballot[poll.pollId]?.option);

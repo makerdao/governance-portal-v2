@@ -6,7 +6,7 @@ import VotingStatus from '../PollVotingStatus';
 import QuickVote from '../QuickVote';
 import useAccountsStore from 'stores/accounts';
 import { isActivePoll } from 'lib/utils';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 
 export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element {
   const bpi = useBreakpointIndex();

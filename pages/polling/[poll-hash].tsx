@@ -29,8 +29,7 @@ import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
 import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
 
 // types
-import { Poll } from 'types/poll';
-import { PollTally } from 'types/pollTally';
+import { Poll, PollTally } from 'modules/polls/types';
 
 // stores
 import useAccountsStore from 'stores/accounts';

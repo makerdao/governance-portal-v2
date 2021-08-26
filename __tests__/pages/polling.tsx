@@ -11,8 +11,7 @@ import getMaker from '../../lib/maker';
 import mockPolls from 'modules/polls/api/mocks/polls.json';
 import mockCategories from '../../mocks/categories.json';
 import { accountsApi } from '../../stores/accounts';
-import { Poll } from '../../types/poll';
-import { PollCategory } from '../../types/pollCategory';
+import { Poll, PollCategory } from 'modules/polls/types';
 
 let maker;
 
