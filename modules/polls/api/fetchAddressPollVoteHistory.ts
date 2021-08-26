@@ -14,14 +14,20 @@ export async function fetchAddressPollVoteHistory(address:string, network: Suppo
     .service('govPolling')
     .getAllOptionsVotingFor(address);
 
-  return voteHistory.map((pollVote: PollVote): PollVoteHistory => {
+  return voteHistory
+  .map((pollVote: PollVote): PollVoteHistory|null => {
     const poll = polls.find(poll => poll.pollId === pollVote.pollId);
+    // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
+    if (!poll) {
+      return null;
+    }
     
     return {
       ...pollVote,
-      title: poll ? poll.title:  '',
+      poll,
       optionValue: poll && pollVote.option ? poll.options[pollVote.option]: ''
     };
-  });
+  })
+  .filter(pollVote => !!pollVote) as PollVoteHistory[];
 }
 

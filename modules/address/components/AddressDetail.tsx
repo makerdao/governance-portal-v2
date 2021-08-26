@@ -5,7 +5,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import AddressIcon from './AddressIcon';
-import { AddressPollVoteHistory } from './AddressPollVoteHistory';
+import { PollVoteHistoryList } from 'modules/polls/components/PollVoteHistoryList';
 import { AddressAPIStats } from '../types/addressApiResponse';
 
 type PropTypes = {
@@ -39,7 +39,7 @@ export function AddressDetail({ address, stats }: PropTypes): React.ReactElement
 
         <Flex sx={{ mt: 3, flexDirection: 'column' }}>
           <Heading>Polling Vote History</Heading>
-          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
+          <PollVoteHistoryList votes={stats.pollVoteHistory} />
         </Flex>
       </Box>
     </Box>

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Divider, Flex, Heading } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Divider, Flex } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -10,7 +10,6 @@ import { DelegateContractExpiration } from './DelegateContractExpiration';
 import { DelegateCredentials } from './DelegateCredentials';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
-import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVoteHistory';
 import Tabs from 'components/Tabs';
 import { DelegateVoteHistory } from './DelegateVoteHistory';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
@@ -27,7 +26,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: [3,4], pb: 3 }}>
         <Flex>
           <DelegatePicture delegate={delegate} key={delegate.id} />
           <Box sx={{ width: '100%' }}>
@@ -61,21 +60,25 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
 
       <Tabs
-            tabListStyles={{ pl: [3, 4] }}
-            tabTitles={[
-              'Delegate credentials',
-              'Participation metrics',
-              'Voting History'
-            ]}
-            tabPanels={[
-              <DelegateCredentials delegate={delegate} key='delegate-credentials' />,
-              <DelegateParticipationMetrics delegate={delegate} key='delegate-participation-metrics' />,
-              <DelegateVoteHistory delegate={delegate} stats={stats} key='delegate-vote-history' />
-            ]}
-          ></Tabs>
-      <Box sx={{ p: 3 }}>
-            remove
-      </Box>
+        tabListStyles={{ pl: [3, 4] }}
+        tabTitles={[
+          'Delegate credentials',
+          'Participation metrics',
+          'Voting History'
+        ]}
+        tabPanels={[
+          <Box  key='delegate-credentials'>
+            <DelegateCredentials delegate={delegate} />
+          </Box>,
+          <Box  key='delegate-participation-metrics'>
+            <DelegateParticipationMetrics delegate={delegate} />
+          </Box>,
+          <Box  key='delegate-vote-history'>
+            <DelegateVoteHistory delegate={delegate} stats={stats} />
+          </Box>,
+
+        ]}
+      ></Tabs>
 
       <Divider my={0} />
       <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
@@ -83,10 +86,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
           <DelegateLastVoted delegate={delegate} />
         </Box> */}
         <DelegateContractExpiration delegate={delegate} />
-        <Flex sx={{ mt: 3, flexDirection: 'column' }}>
-          <Heading>Polling Vote History</Heading>
-          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
-        </Flex>
+        
       </Box>
     </Box>
   );
