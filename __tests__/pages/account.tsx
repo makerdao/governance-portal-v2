@@ -1,4 +1,5 @@
 import { act, fireEvent, configure, screen } from '@testing-library/react';
+import getMaker from '../../lib/maker';
 import CreateDelegate from '../../pages/account';
 import { connectAccount, renderWithAccountSelect as render } from '../helpers';
 import { SWRConfig } from 'swr';
@@ -9,8 +10,7 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-// TODO: The address is deterministic when using the default account, but we should programmatically retrieve this
-const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
+let maker;
 
 const { click } = fireEvent;
 
@@ -32,6 +32,7 @@ describe('Delegate Create page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
+    maker = await getMaker();
   });
 
   beforeEach(async () => {
@@ -65,6 +66,11 @@ describe('Delegate Create page', () => {
       click(closeButton);
     });
 
-    await screen.findByText(DELEGATE_ADDRESS);
+    // Fetch address of our newly create vote delegate contract
+    const { voteDelegate } = await maker
+      .service('voteDelegateFactory')
+      .getVoteDelegate(maker.currentAccount().address);
+
+    await screen.findByText(voteDelegate.getVoteDelegateAddress());
   });
 });
