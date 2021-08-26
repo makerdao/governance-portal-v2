@@ -80,14 +80,14 @@ const CompareView = ({ comparedVoteData, address1, address2 }: Props) => {
   );
 };
 
-export default function DelegatesPage(): JSX.Element {
+export default function CompareAddressPage(): JSX.Element {
   const router = useRouter();
-  console.log(router.query);
+
   const { address1, address2 } = router.query;
   // fetch delegates at run-time if on any network other than the default
-  useEffect(() => {
-    console.log({ address1, address2 });
-  }, [address1, address2]);
+  // useEffect(() => {
+  //   console.log({ address1, address2 });
+  // }, [address1, address2]);
 
   const { data: comparedVoteData, error } = usePollVoteCompare(address1 as string, address2 as string);
 

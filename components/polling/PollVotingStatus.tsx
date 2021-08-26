@@ -49,8 +49,6 @@ const VotingStatus = ({
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
-  console.log({ allUserVotes });
-
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
   const onBallot = !isNil(ballot[poll.pollId]?.option);
   const transaction = useTransactionStore(state =>
