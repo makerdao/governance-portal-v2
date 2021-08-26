@@ -19,4 +19,11 @@ export type PollTally = {
   totalMkrParticipation: CurrencyObject;
   results: Result[];
   numVoters: number;
+  votesByAddress: PollTallyVote[];
+};
+
+export type PollTallyVote = {
+  voter: string;
+  optionId: number;
+  mkrSupport: number;
 };

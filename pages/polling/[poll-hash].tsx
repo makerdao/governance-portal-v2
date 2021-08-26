@@ -4,8 +4,6 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import useSWR, { mutate } from 'swr';
-import invariant from 'tiny-invariant';
 import {
   Card,
   Flex,
@@ -18,14 +16,29 @@ import {
   Link as ExternalLink,
   jsx
 } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import Skeleton from 'components/SkeletonThemed';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import invariant from 'tiny-invariant';
+import useSWR, { mutate } from 'swr';
+import { Icon } from '@makerdao/dai-ui-icons';
 
-import CountdownTimer from 'components/CountdownTimer';
+// lib
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
 import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
+
+// api
+import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
+
+// types
+import { Poll } from 'types/poll';
+import { PollTally } from 'types/pollTally';
+
+// stores
+import useAccountsStore from 'stores/accounts';
+import useBallotStore from 'stores/ballot';
+
+// components
+import Skeleton from 'components/SkeletonThemed';
+import CountdownTimer from 'components/CountdownTimer';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -34,13 +47,9 @@ import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
 import VoteBox from 'components/polling/[poll-hash]/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import { Poll } from 'types/poll';
-import { PollTally } from 'types/pollTally';
-import useAccountsStore from 'stores/accounts';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import useBallotStore from 'stores/ballot';
 import PollOptionBadge from 'components/PollOptionBadge';
 import VotesByAddress from 'components/polling/[poll-hash]/VotesByAddress';
+import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -72,8 +81,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
     parsePollTally(await fetchJson(url), poll)
   );
-
-  console.log({ tally });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
@@ -304,11 +311,25 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   </Flex>,
                   <Divider key={'divider 2'} />,
                   <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'votes by address'}>
+                    <Text variant="microHeading" sx={{ mb: 3 }}>
+                      Voting By Address
+                    </Text>
                     {tally ? (
-                      <VotesByAddress votes={tally.votesByAddress} />
+                      <VotesByAddress
+                        votes={tally.votesByAddress}
+                        totalMkrParticipation={tally.totalMkrParticipation}
+                      />
                     ) : (
-                      <Box sx={{ width: 4 }}>
-                        <Skeleton />
+                      <Box sx={{ width: '100%' }}>
+                        <Box mb={2}>
+                          <Skeleton width="100%" />
+                        </Box>
+                        <Box mb={2}>
+                          <Skeleton width="100%" />
+                        </Box>
+                        <Box mb={2}>
+                          <Skeleton width="100%" />
+                        </Box>
                       </Box>
                     )}
                   </Flex>

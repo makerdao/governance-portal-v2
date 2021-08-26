@@ -1,13 +1,20 @@
-import { Box, Text } from 'theme-ui';
-import { cutMiddle } from 'lib/utils';
+import { Box, Text, Link as ExternalLink } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import BigNumber from 'bignumber.js';
+import { getNetwork } from 'lib/maker';
+import { getEtherscanLink, cutMiddle } from 'lib/utils';
+import { PollTallyVote } from 'types/pollTally';
+import { CurrencyObject } from 'types/currency';
 
-const VotesByAddress = ({ votes }) => {
-  console.log({ votes });
+type Props = {
+  votes: PollTallyVote[];
+  totalMkrParticipation: CurrencyObject;
+};
+
+const VotesByAddress = ({ votes, totalMkrParticipation }: Props): JSX.Element => {
+  const bpi = useBreakpointIndex();
   return (
     <Box>
-      <Text variant="microHeading" sx={{ mb: 3 }}>
-        Voting By Address
-      </Text>
       <table
         style={{
           width: '100%',
@@ -16,16 +23,16 @@ const VotesByAddress = ({ votes }) => {
       >
         <thead>
           <tr>
-            <Text as="th" style={{ textAlign: 'left' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               Voted
             </Text>
-            <Text as="th" style={{ textAlign: 'left' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               Voting Power
             </Text>
-            <Text as="th" style={{ textAlign: 'left' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               MKR Amount
             </Text>
-            <Text as="th" style={{ textAlign: 'right' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'right', pb: 2 }} variant="caps">
               Address
             </Text>
           </tr>
@@ -34,11 +41,20 @@ const VotesByAddress = ({ votes }) => {
           {votes ? (
             votes.map((v, i) => (
               <tr key={i}>
-                <Text as="td">{v.optionId}</Text>
-                <Text as="td">tbd</Text>
-                <Text as="td">{v.mkrSupport}</Text>
+                <Text as="td" sx={{ pb: 2 }}>
+                  {v.optionId}
+                </Text>
+                <Text as="td">
+                  {`${new BigNumber(v.mkrSupport)
+                    .div(totalMkrParticipation.toBigNumber())
+                    .times(100)
+                    .toFormat(1)}%`}
+                </Text>
+                <Text as="td">{`${new BigNumber(v.mkrSupport).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}</Text>
                 <Text as="td" sx={{ textAlign: 'right' }}>
-                  {cutMiddle(v.voter)}
+                  <ExternalLink href={getEtherscanLink(getNetwork(), v.voter, 'address')} target="_blank">
+                    {bpi > 3 ? v.voter : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                  </ExternalLink>
                 </Text>
               </tr>
             ))

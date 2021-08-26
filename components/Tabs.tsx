@@ -63,10 +63,9 @@ const TabbedLayout = ({
         </TabList>
         {banner ? banner : <Divider sx={{ m: 0 }} />}
         <TabPanels>
-          {tabPanels.map((tabPanel, i) => {
-            console.log(tabPanel);
-            return <TabPanel key={i}>{tabPanel}</TabPanel>;
-          })}
+          {tabPanels.map((tabPanel, i) => (
+            <TabPanel key={i}>{tabPanel}</TabPanel>
+          ))}
         </TabPanels>
       </Tabs>
     </Flex>
