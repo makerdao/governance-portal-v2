@@ -20,7 +20,7 @@ import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
 import { CMSProposal } from 'types/proposal';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';

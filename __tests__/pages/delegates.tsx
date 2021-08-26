@@ -173,7 +173,7 @@ describe('Delegates list page', () => {
 
 
   describe('Delegates system info', async () => {
-    await screen.findByText('Delegate System Info');
+    await screen.findByText('System Info');
     
     const totalDelegatesSystemInfo = screen.getByTestId('total-delegates-system-info');
     expect(totalDelegatesSystemInfo).toHaveTextContent('1');

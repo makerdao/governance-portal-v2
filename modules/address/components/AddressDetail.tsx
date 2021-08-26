@@ -1,16 +1,19 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Flex, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import AddressIcon from './AddressIcon';
+import { AddressPollVoteHistory } from './AddressPollVoteHistory';
+import { AddressAPIStats } from '../types/addressApiResponse';
 
 type PropTypes = {
   address: string;
+  stats: AddressAPIStats
 };
 
-export function AddressDetail({ address }: PropTypes): React.ReactElement {
+export function AddressDetail({ address, stats }: PropTypes): React.ReactElement {
   const bpi = useBreakpointIndex();
 
   return (
@@ -32,6 +35,11 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
               </ExternalLink>
             </Box>
           </Box>
+        </Flex>
+
+        <Flex sx={{ mt: 3, flexDirection: 'column' }}>
+          <Heading>Polling Vote History</Heading>
+          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
         </Flex>
       </Box>
     </Box>

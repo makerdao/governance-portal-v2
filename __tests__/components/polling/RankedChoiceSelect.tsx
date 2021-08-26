@@ -5,8 +5,7 @@ import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
-import { Poll } from '../../../types/poll';
-import { PollCategory } from '../../../types/pollCategory';
+import { Poll, PollCategory } from 'modules/polls/types';
 
 let maker;
 

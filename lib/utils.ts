@@ -7,13 +7,11 @@ import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { MKR } from './maker';
 import { CurrencyObject } from 'types/currency';
-import { PollTally } from 'types/pollTally';
-import { Poll } from 'types/poll';
+import { Poll, PollTally, PollVote } from 'modules/polls/types';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polls/api/mocks/polls.json';
-import { PollVote } from 'types/pollVote';
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {

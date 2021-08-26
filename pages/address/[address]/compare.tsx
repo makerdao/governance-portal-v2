@@ -1,38 +1,46 @@
 /** @jsx jsx */
-import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
+import { useEffect, useState } from 'react';
+import { Heading, Box, jsx, Flex, NavLink, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import { getNetwork } from 'lib/maker';
+import { fetchJson } from 'lib/utils';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import Link from 'next/link';
-import Head from 'next/head';
-import { Delegate } from 'types/delegate';
-import { DelegateDetail } from 'components/delegations';
-import { getNetwork } from 'lib/maker';
-import { useEffect, useState } from 'react';
-import { fetchJson } from 'lib/utils';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { useRouter } from 'next/router';
+import useAccountsStore from 'stores/accounts';
+import { usePollVoteCompare } from 'lib/hooks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import { AddressDetail } from 'modules/address/components/AddressDetail';
 
-const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
+const AddressCompareView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
+  const { trackButtonClick } = useAnalytics(
+    addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
+  );
+
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+  const [account] = useAccountsStore(state => [state.currentAccount]);
+  const address = account?.address;
+
+  const { data: comparedVoteData } = usePollVoteCompare(
+    addressInfo.delegateInfo ? addressInfo.delegateInfo.voteDelegateAddress : addressInfo.address,
+    address
+  );
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
-        <title>Maker Governance - {addressInfo.isDelegate ? 'Delegate' : 'Address'} Information</title>
+        <title>Maker Governance - Vote Compare</title>
       </Head>
 
       <SidebarLayout>
@@ -54,10 +62,26 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
             </Flex>
           )}
 
-          <Box>
-            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
-            {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
-          </Box>
+          {comparedVoteData ? (
+            <Box>
+              {comparedVoteData?.map(voteData => (
+                <Box key={voteData.pollId}>
+                  <Text as="p">Poll ID: {voteData.pollId}</Text>
+                  <Text as="p">
+                    {addressInfo.delegateInfo
+                      ? addressInfo.delegateInfo.voteDelegateAddress
+                      : addressInfo.address}
+                    : {voteData.a1}
+                  </Text>
+                  <Text as="p">
+                    {address}: {voteData.a2}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Box>No data to show</Box>
+          )}
         </Stack>
         <Stack gap={3}>
           <SystemStatsSidebar
@@ -70,12 +94,12 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   );
 };
 
-export default function AddressPage(): JSX.Element {
+export default function AdressComparePage(): JSX.Element {
   const [addressInfo, setAddressInfo] = useState<AddressApiResponse>();
   const [error, setError] = useState<string>();
   const router = useRouter();
   const { address } = router.query;
-  // fetch delegates at run-time if on any network other than the default
+
   useEffect(() => {
     if (address) {
       fetchJson(`/api/address/${address}?network=${getNetwork()}`).then(setAddressInfo).catch(setError);
@@ -83,7 +107,7 @@ export default function AddressPage(): JSX.Element {
   }, [address]);
 
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching address information" />;
+    return <ErrorPage statusCode={404} title="Error fetching delegate" />;
   }
 
   if (!addressInfo) {
@@ -94,5 +118,5 @@ export default function AddressPage(): JSX.Element {
     );
   }
 
-  return <AddressView addressInfo={addressInfo} />;
+  return <AddressCompareView addressInfo={addressInfo} />;
 }

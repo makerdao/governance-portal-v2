@@ -1,4 +1,4 @@
-import VoteTypes from './voteTypes';
+import VoteTypes from '../../../types/voteTypes';
 
 export type Poll = {
   title: string;

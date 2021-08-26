@@ -10,8 +10,7 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
-import { Poll } from 'types/poll';
-import { PollCategory } from 'types/pollCategory';
+import { Poll, PollCategory } from 'modules/polls/types';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { isActivePoll, formatDateWithTime } from 'lib/utils';
 import { getCategories } from 'modules/polls/helpers/getCategories';
