@@ -4,11 +4,16 @@ import { jsx, Box, Text, Link as ExternalLink, Divider, Flex, Heading } from 'th
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
-import { Delegate } from 'types/delegate';
-import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
+import { Delegate } from '../types';
+import { DelegatePicture } from './DelegatePicture';
+import { DelegateContractExpiration } from './DelegateContractExpiration';
+import { DelegateCredentials } from './DelegateCredentials';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVoteHistory';
+import Tabs from 'components/Tabs';
+import { DelegateVoteHistory } from './DelegateVoteHistory';
+import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 type PropTypes = {
   delegate: Delegate;
@@ -53,11 +58,23 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
           </Box>
         )}
       </Box>
+
+
+      <Tabs
+            tabListStyles={{ pl: [3, 4] }}
+            tabTitles={[
+              'Delegate credentials',
+              'Participation metrics',
+              'Voting History'
+            ]}
+            tabPanels={[
+              <DelegateCredentials delegate={delegate} key='delegate-credentials' />,
+              <DelegateParticipationMetrics delegate={delegate} key='delegate-participation-metrics' />,
+              <DelegateVoteHistory delegate={delegate} stats={stats} key='delegate-vote-history' />
+            ]}
+          ></Tabs>
       <Box sx={{ p: 3 }}>
-        <div
-          sx={{ variant: 'markdown.default' }}
-          dangerouslySetInnerHTML={{ __html: delegate.description }}
-        />
+            remove
       </Box>
 
       <Divider my={0} />

@@ -9,16 +9,16 @@ import { limitString } from 'lib/string';
 import { getEtherscanLink } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { DelegateStatusEnum } from '../delegates.constants';
 import useAccountsStore from 'stores/accounts';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../types';
 import {
   DelegatePicture,
   DelegateModal,
   UndelegateModal,
   // DelegateLastVoted,
   DelegateContractExpiration
-} from 'components/delegations';
+} from 'modules/delegates/components';
 import Tooltip from 'components/Tooltip';
 import { CMSProposal } from 'types/proposal';
 

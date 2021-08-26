@@ -5,7 +5,7 @@ import { isSupportedNetwork } from 'lib/maker';
 import { getConnectedMakerObj } from 'lib/api/utils';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { fetchDelegates } from 'lib/delegates/fetchDelegates';
+import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;

@@ -31,7 +31,7 @@ import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import { TxDisplay } from 'components/delegations';
+import { TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'components/executive/Withdraw';
 
 const AccountPage = (): JSX.Element => {

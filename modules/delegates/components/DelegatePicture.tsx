@@ -1,7 +1,7 @@
-import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { DelegateStatusEnum } from '../delegates.constants';
 import { Box, Image } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../types';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
   return (

@@ -19,7 +19,7 @@ import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useRouter } from 'next/router';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
-import { DelegateDetail } from 'components/delegations';
+import { DelegateDetail } from 'modules/delegates/components';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();

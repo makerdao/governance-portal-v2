@@ -11,8 +11,8 @@ import {
 } from '../helpers';
 import { SWRConfig } from 'swr';
 import * as utils from '../../lib/utils';
-import { DelegatesAPIResponse } from 'types/delegatesAPI';
-import { DelegateStatusEnum } from 'lib/delegates/constants';
+import { DelegatesAPIResponse } from 'modules/delegates/types';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
 const NEXT_ACCOUNT = '0x81431b69b1e0e334d4161a13c2955e0f3599381e';
 const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
