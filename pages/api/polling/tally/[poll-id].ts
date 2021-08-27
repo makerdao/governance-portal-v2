@@ -6,7 +6,7 @@ import { getConnectedMakerObj } from 'lib/api/utils';
 import { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { backoffRetry } from 'lib/utils';
-import { PollTallyVote } from 'types/pollTally';
+import { PollTallyVote } from 'modules/polls/types';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,9 +18,12 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
 
     const maker = await getConnectedMakerObj(network);
     const tally = await backoffRetry(3, () => maker.service('govPolling').getTallyRankedChoiceIrv(pollId));
+
     const votesByAddress: PollTallyVote[] = (
       await maker.service('govPolling').getMkrAmtVotedByAddress(pollId)
-    ).sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
+    )
+      // .map(vote => ({ ...vote, option: tally.options[vote.optionId] }))
+      .sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
 
     const totalMkrParticipation = tally.totalMkrParticipation;
     const winner: string = tally.winner;
