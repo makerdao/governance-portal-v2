@@ -15,9 +15,8 @@ import { DelegatesAPIResponse } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
 const NEXT_ACCOUNT = '0x81431b69b1e0e334d4161a13c2955e0f3599381e';
-const DELEGATE_ADDRESS = '0xfcdD2B5501359B70A20e3D79Fd7C41c5155d7d07';
 
-const MOCK_DELEGATES = [
+const getMockedDelegates = delegatesConfig => [
   {
     address: DEMO_ACCOUNT_TESTS,
     description: 'I AM DELEGATEMAN',
@@ -29,23 +28,20 @@ const MOCK_DELEGATES = [
     picture:
       'https://raw.githubusercontent.com/makerdao-dux/voting-delegates/main/delegates/0xc8829647c8e4131a01354ccac993388568d12d00/profile.jpg',
     status: DelegateStatusEnum.recognized,
-    voteDelegateAddress: DELEGATE_ADDRESS,
+    voteDelegateAddress: delegatesConfig.voteDelegateAddress,
     mkrDelegated: 0
   }
 ];
 
-const MOCK_API_RESPONSE: DelegatesAPIResponse = {
-  delegates: MOCK_DELEGATES,
+const getMockApiResponse = (config): DelegatesAPIResponse => ({
+  delegates: getMockedDelegates(config.delegates),
   stats: {
     total: 1,
     shadow: 0,
     recognized: 1,
     totalMKRDelegated: 10.24
   }
-};
-
-const mockGetUsers = jest.spyOn(utils, 'fetchJson');
-mockGetUsers.mockResolvedValue(MOCK_API_RESPONSE);
+});
 
 jest.mock('@theme-ui/match-media', () => {
   return {
@@ -54,12 +50,12 @@ jest.mock('@theme-ui/match-media', () => {
 });
 
 const { click } = fireEvent;
-let maker;
+let maker, voteDelegateAddress;
 
-async function setup(maker) {
+async function setup(maker, mockResponse) {
   const view = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
-      <DelegatesPage delegates={[]} stats={MOCK_API_RESPONSE.stats}/>
+      <DelegatesPage delegates={[]} stats={mockResponse.stats} />
     </SWRConfig>
   );
 
@@ -80,11 +76,16 @@ describe('Delegates list page', () => {
 
     sendMkrToAddress(maker, NEXT_ACCOUNT, '5');
 
-    await createDelegate(maker);
+    voteDelegateAddress = await createDelegate(maker);
+    const mockResponse = getMockApiResponse({ delegates: { voteDelegateAddress } });
+
     // Change to a new, non-delegate account
     await switchAccount(maker);
 
-    await setup(maker);
+    const mockGetUsers = jest.spyOn(utils, 'fetchJson');
+    mockGetUsers.mockResolvedValue(mockResponse);
+
+    await setup(maker, mockResponse);
   });
 
   test('can delegate MKR to a delegate', async () => {
@@ -116,7 +117,7 @@ describe('Delegates list page', () => {
     screen.getByText(/You are delegating/);
     const [delegateLink, creatorLink] = screen.getAllByRole('link');
 
-    expect(delegateLink).toHaveAttribute('href', `https://etherscan.io/address/${DELEGATE_ADDRESS}`);
+    expect(delegateLink).toHaveAttribute('href', `https://etherscan.io/address/${voteDelegateAddress}`);
     screen.getByText(/This delegate contract was created by/);
     expect(creatorLink).toHaveAttribute('href', `https://etherscan.io/address/${DEMO_ACCOUNT_TESTS}`);
 
