@@ -20,7 +20,7 @@ export function AddressDetail({ address, stats }: PropTypes): React.ReactElement
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: 3 }}>
         <Flex>
-          <AddressIcon address={address} />
+          <AddressIcon address={address} width='41px' />
           <Box sx={{ width: '100%' }}>
             <Box sx={{ ml: 2 }}>
 
