@@ -1,8 +1,10 @@
-import { MKR } from '@makerdao/dai-plugin-mcd';
+import { MKR } from 'lib/maker';
 import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally } from '../types';
 
+
+// Compliments the on-chain tally with a results object that is used on the front-end for data representation
 export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally {
   invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
   const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
