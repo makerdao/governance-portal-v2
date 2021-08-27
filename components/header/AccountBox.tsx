@@ -34,7 +34,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           </Text>
           <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 1 }}>
             <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} width='22px' />
+              <AddressIcon address={address} width="22px" />
             </Box>
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
           </Flex>
