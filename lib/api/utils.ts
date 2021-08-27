@@ -5,7 +5,6 @@ import invariant from 'tiny-invariant';
 import { SupportedNetworks } from 'lib/constants';
 import { config } from 'lib/config';
 
-
 export async function getTrace(
   method: 'trace_call' | 'trace_replayTransaction',
   parameters: string | { from: string; to: string; data: string },

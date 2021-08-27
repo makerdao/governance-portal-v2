@@ -96,7 +96,7 @@ async function getMaker(network?: SupportedNetworks): Promise<Maker> {
       },
       log: false,
       multicall: true
-    }); 
+    });
   }
 
   return makerSingletons[currentNetwork];
