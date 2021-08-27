@@ -29,7 +29,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
         <Text as="p" sx={styles.text}>
           Participation
         </Text>
-        <Text as="p" sx={styles.text}>
+        <Text as="p" sx={styles.text} ml={2}>
           {delegate.combinedParticipation ?? 'Untracked'}
         </Text>
       </Box>
@@ -37,7 +37,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
         <Text as="p" sx={styles.text}>
           Communicatiopn
         </Text>
-        <Text as="p" sx={styles.text}>
+        <Text as="p" sx={styles.text} ml={2}>
           {delegate.communication ?? 'Untracked'}
         </Text>
       </Box>
@@ -45,7 +45,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
         <Text as="p" sx={styles.text}>
           MKR Delegated
         </Text>
-        <Text as="p" sx={styles.text}>
+        <Text as="p" sx={styles.text} ml={2}>
           {new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}MKR
         </Text>
       </Box>

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Divider, Text, Link as ExternalLink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Divider, Text, Link as ThemeUILink, jsx } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
 import { useLockedMkr, useMkrDelegated, useVotedProposals } from 'lib/hooks';
@@ -109,30 +109,35 @@ export function DelegateCard({ delegate, proposals }: PropTypes): React.ReactEle
             flexDirection: 'column'
           }}
         >
-          <Flex sx={{ mr: [0, 2] }}>
-            <DelegatePicture delegate={delegate} />
+          <Link
+              href={{
+                pathname: `/address/${delegate.voteDelegateAddress}`,
+                query: { network }
+              }}
+              passHref
+            >
+              <ThemeUILink title="Profile details" variant="nostyle">
+                <Flex sx={{ mr: [0, 2] }}>
+                  <DelegatePicture delegate={delegate} />
 
-            <Box sx={{ ml: 2 }}>
-              <Box>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
-                </Text>
-              </Box>
-              <ExternalLink
-                title="View on etherescan"
-                href={getEtherscanLink(getNetwork(), delegate.voteDelegateAddress, 'address')}
-                target="_blank"
-              >
-                <Text>
-                  {delegate.voteDelegateAddress.substr(0, 6)}...
-                  {delegate.voteDelegateAddress.substr(
-                    delegate.voteDelegateAddress.length - 5,
-                    delegate.voteDelegateAddress.length - 1
-                  )}
-                </Text>
-              </ExternalLink>
-            </Box>
-          </Flex>
+                  <Box sx={{ ml: 2 }}>
+                    <Box>
+                      <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4] }}>
+                        {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
+                      </Text>
+                    </Box>
+                    <Text>
+                      {delegate.voteDelegateAddress.substr(0, 6)}...
+                      {delegate.voteDelegateAddress.substr(
+                        delegate.voteDelegateAddress.length - 5,
+                        delegate.voteDelegateAddress.length - 1
+                      )}
+                    </Text>
+                  </Box>
+                </Flex>
+
+              </ThemeUILink>
+            </Link>
 
           <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
             <Link
