@@ -2,11 +2,12 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
 
-import { getConnectedMakerObj, getTrace } from 'lib/api/utils';
+import {  getTrace } from 'lib/api/utils';
 import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'lib/constants';
 import { fetchJson } from 'lib/utils';
 import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
+import getMaker from 'lib/maker';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
@@ -18,7 +19,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   );
 
   const network = SupportedNetworks.MAINNET;
-  const maker = await getConnectedMakerObj(network);
+  const maker = await getMaker(network);
 
   const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
   const provider = ethers.getDefaultProvider(network, {

@@ -13,6 +13,7 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import Tabs from 'components/Tabs';
 import { DelegateVoteHistory } from './DelegateVoteHistory';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
+import { DelegateStatusEnum } from '../delegates.constants';
 
 type PropTypes = {
   delegate: Delegate;
@@ -23,6 +24,25 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
   const bpi = useBreakpointIndex();
 
   const { voteDelegateAddress } = delegate;
+
+
+  const tabTitles = [
+    delegate.status === DelegateStatusEnum.recognized ? 'Delegate credentials' : null,
+    'Participation metrics',
+    'Voting History'
+  ].filter(i => !!i) as string[];
+
+  const tabPanels = [
+    delegate.status === DelegateStatusEnum.recognized ? <Box  key='delegate-credentials'>
+      <DelegateCredentials delegate={delegate} />
+    </Box> : null,
+    <Box  key='delegate-participation-metrics'>
+      <DelegateParticipationMetrics delegate={delegate} />
+    </Box>,
+    <Box  key='delegate-vote-history'>
+      <DelegateVoteHistory delegate={delegate} stats={stats} />
+    </Box>,
+  ].filter(i => !!i);
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
@@ -61,23 +81,8 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
       <Tabs
         tabListStyles={{ pl: [3, 4] }}
-        tabTitles={[
-          'Delegate credentials',
-          'Participation metrics',
-          'Voting History'
-        ]}
-        tabPanels={[
-          <Box  key='delegate-credentials'>
-            <DelegateCredentials delegate={delegate} />
-          </Box>,
-          <Box  key='delegate-participation-metrics'>
-            <DelegateParticipationMetrics delegate={delegate} />
-          </Box>,
-          <Box  key='delegate-vote-history'>
-            <DelegateVoteHistory delegate={delegate} stats={stats} />
-          </Box>,
-
-        ]}
+        tabTitles={tabTitles}
+        tabPanels={tabPanels}
       ></Tabs>
 
       <Divider my={0} />

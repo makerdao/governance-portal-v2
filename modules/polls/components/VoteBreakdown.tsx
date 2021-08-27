@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
-import Tooltip from '../../Tooltip';
+import Tooltip from 'components/Tooltip';
 
 import Delay from 'components/Delay';
 import { PollTally, Poll } from 'modules/polls/types';
@@ -27,7 +27,7 @@ export default function VoteBreakdown({
           .map((_, i) => (
             <div key={i}>
               <Flex sx={{ justifyContent: 'space-between' }}>
-                <Text sx={{ color: 'textSecondary', width: '20%' }}>
+                <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
                   {tally ? (
                     tally.results[i].optionName
                   ) : (
@@ -36,7 +36,7 @@ export default function VoteBreakdown({
                     </Delay>
                   )}
                 </Text>
-                <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                   {tally ? (
                     `${tally.results[i].firstChoice
                       .plus(tally.results[i].transfer)
@@ -117,7 +117,7 @@ export default function VoteBreakdown({
         .map((_, i) => (
           <div key={i}>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              <Text sx={{ color: 'textSecondary', width: '20%' }}>
+              <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
                 {tally ? (
                   tally.results[i].optionName
                 ) : (
@@ -126,7 +126,7 @@ export default function VoteBreakdown({
                   </Delay>
                 )}
               </Text>
-              <Text sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+              <Text as="p"  sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                 {tally ? (
                   `${tally.results[i].firstChoice
                     .plus(tally.results[i].transfer)

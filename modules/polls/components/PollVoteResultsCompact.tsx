@@ -1,27 +1,32 @@
 /** @jsx jsx */
 import { Box, Text, jsx } from 'theme-ui';
+import { PollVoteHistory } from '../types/pollVoteHistory';
 
-export function PollVoteResultsCompact(): React.ReactElement {
+export function PollVoteResultsCompact({vote }: {vote: PollVoteHistory}): React.ReactElement {
   const styles = {
     titles: {
       display: 'flex',
       justifyContent: 'space-between'
     },
     progressBarWrapper: {
-      display: 'flex'
+      display: 'flex',
+      borderRadius: '4px',
+      overflow: 'hidden',
+      marginTop: 2,
+      marginBottom: 2
     },
     yesBar: {
-      background: 'green',
+      backgroundColor: 'primary',
       width: '80%',
       height: '4px'
     },
     noBar: {
-      background: 'red',
+      backgroundColor: 'notice',
       width: '10%',
       height: '4px'
     },
     abstainBar: {
-      background: 'grey',
+      backgroundColor: 'secondary',
       width: '10%',
       height: '4px'
     },
@@ -30,13 +35,13 @@ export function PollVoteResultsCompact(): React.ReactElement {
       justifyContent: 'space-between'
     },
     yesPercentage: {
-      color: 'green'
+      color: 'primary'
     },
     noPercentage: {
-      color: 'red'
+      color: 'notice'
     },
     abstainPercentage: {
-      color: 'grey'
+      color: 'secondaryEmphasis'
     },
     
   };

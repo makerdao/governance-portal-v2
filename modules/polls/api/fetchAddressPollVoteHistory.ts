@@ -3,6 +3,7 @@ import getMaker from 'lib/maker';
 import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
+import { fetchPollTally } from './fetchPollTally';
 
 export async function fetchAddressPollVoteHistory(address:string, network: SupportedNetworks): Promise<PollVoteHistory[]> {
   const maker = await getMaker(network);
@@ -14,20 +15,24 @@ export async function fetchAddressPollVoteHistory(address:string, network: Suppo
     .service('govPolling')
     .getAllOptionsVotingFor(address);
 
-  return voteHistory
-  .map((pollVote: PollVote): PollVoteHistory|null => {
-    const poll = polls.find(poll => poll.pollId === pollVote.pollId);
-    // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
-    if (!poll) {
-      return null;
-    }
-    
-    return {
-      ...pollVote,
-      poll,
-      optionValue: poll && pollVote.option ? poll.options[pollVote.option]: ''
-    };
-  })
-  .filter(pollVote => !!pollVote) as PollVoteHistory[];
+  const items = await Promise.all(voteHistory
+    .map(async (pollVote: PollVote): Promise<PollVoteHistory|null> => {
+      const poll = polls.find(poll => poll.pollId === pollVote.pollId);
+      // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
+      if (!poll) {
+        return null;
+      }
+
+      const tally = await fetchPollTally(pollVote.pollId, network);
+
+      return {
+        ...pollVote,
+        poll,
+        tally,
+        optionValue: poll && pollVote.option ? poll.options[pollVote.option]: ''
+      };
+    }));
+
+  return items.filter(pollVote => !!pollVote) as PollVoteHistory[];
 }
 

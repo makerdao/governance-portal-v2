@@ -35,7 +35,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
       </Box>
       <Box sx={styles.row}>
         <Text as="p" sx={styles.text}>
-          Communicatiopn
+          Communication
         </Text>
         <Text as="p" sx={styles.text} ml={2}>
           {delegate.communication ?? 'Untracked'}

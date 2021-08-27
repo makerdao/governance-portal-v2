@@ -5,9 +5,8 @@ import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
-import { MKR } from './maker';
 import { CurrencyObject } from 'types/currency';
-import { Poll, PollTally, PollVote } from 'modules/polls/types';
+import { Poll, PollVote } from 'modules/polls/types';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
@@ -56,42 +55,6 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   return fn().catch(err =>
     retries > 1 ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2)) : Promise.reject(err)
   );
-}
-
-export function parsePollTally(rawTally, poll: Poll): PollTally {
-  invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
-  const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
-
-  if (rawTally?.winner === null) rawTally.winningOption = 'none found';
-  else rawTally.winningOptionName = poll.options[rawTally.winner];
-
-  const results = Object.keys(poll.options)
-    .map(key => {
-      return {
-        optionId: key,
-        optionName: poll.options[key],
-        firstChoice: new BigNumber(rawTally.options?.[key]?.firstChoice || 0),
-        transfer: new BigNumber(rawTally.options?.[key]?.transfer || 0),
-        firstPct: rawTally.options?.[key]?.firstChoice
-          ? new BigNumber(rawTally.options[key].firstChoice)
-              .div(totalMkrParticipation.toBigNumber())
-              .times(100)
-          : new BigNumber(0),
-        transferPct: rawTally.options?.[key]?.transfer
-          ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation.toBigNumber()).times(100)
-          : new BigNumber(0),
-        eliminated: rawTally.options?.[key]?.eliminated ?? true,
-        winner: rawTally.options?.[key]?.winner ?? false
-      };
-    })
-    .sort((a, b) => {
-      const valueA = a.firstChoice.plus(a.transfer);
-      const valueB = b.firstChoice.plus(b.transfer);
-      if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
-      return valueA.gt(valueB) ? -1 : 1;
-    });
-
-  return { ...rawTally, results, totalMkrParticipation, numVoters: rawTally.numVoters };
 }
 
 export function getEtherscanLink(

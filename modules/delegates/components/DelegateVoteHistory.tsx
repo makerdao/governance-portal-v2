@@ -14,7 +14,7 @@ export function DelegateVoteHistory({ delegate, stats }: { delegate: Delegate, s
       <Divider mt={3} mb={3} />
       <PollVoteHistoryList votes={stats.pollVoteHistory} />
 
-      <Divider />
+      
     </Box>
   );
 }

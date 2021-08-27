@@ -3,10 +3,9 @@ import zipObject from 'lodash/zipObject';
 
 import withApiHandler from 'lib/api/withApiHandler';
 import { analyzeSpell } from './[address]';
-import { getConnectedMakerObj } from 'lib/api/utils';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import invariant from 'tiny-invariant';
-import { isSupportedNetwork } from 'lib/maker';
+import getMaker, { isSupportedNetwork } from 'lib/maker';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -15,7 +14,7 @@ export default withApiHandler(
     const network = (req.query.network as string) || DEFAULT_NETWORK;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-    const maker = await getConnectedMakerObj(network);
+    const maker = await getMaker(network);
 
     let sampleError,
       failures = 0;

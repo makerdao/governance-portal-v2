@@ -10,7 +10,8 @@ export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): Re
       marginTop: 3,
       paddingBottom: 3,
       marginBottom: 3,
-      borderBottom: '1px solid grey'
+      borderBottom: '1px solid',
+      borderColor: 'secondary'
     }
   };
 
