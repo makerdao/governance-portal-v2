@@ -29,7 +29,7 @@ export async function fetchAddressPollVoteHistory(address:string, network: Suppo
         ...pollVote,
         poll,
         tally,
-        optionValue: poll && pollVote.option ? poll.options[pollVote.option]: ''
+        optionValue: poll && typeof pollVote.option !== 'undefined' ? poll.options[pollVote.option]: ''
       };
     }));
 
