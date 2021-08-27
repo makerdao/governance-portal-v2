@@ -25,11 +25,15 @@ export async function fetchAddressPollVoteHistory(address:string, network: Suppo
 
       const tally = await fetchPollTally(pollVote.pollId, network);
 
+      const optionValue = poll  && poll.voteType === 'Ranked Choice IRV' 
+        ? (pollVote.rankedChoiceOption && typeof pollVote.rankedChoiceOption[0] !== 'undefined' ?  poll.options[pollVote.rankedChoiceOption[0]]: '' )
+        : (typeof pollVote.option !== 'undefined' ? poll.options[pollVote.option] :  '');
+
       return {
         ...pollVote,
         poll,
         tally,
-        optionValue: poll && typeof pollVote.option !== 'undefined' ? poll.options[pollVote.option]: ''
+        optionValue: optionValue as string
       };
     }));
 
