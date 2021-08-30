@@ -128,7 +128,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     sx={{
                       color: 'text',
                       opacity: '0.7',
-                      fontWeight: 500,
+                      fontWeight: 'semiBold',
                       fontSize: [3, 5],
                       px: [3, 'inherit']
                     }}

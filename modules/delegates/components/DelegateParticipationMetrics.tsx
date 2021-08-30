@@ -21,7 +21,7 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
     <Box p={[3, 4]}>
       <Text as="p" sx={{
         fontSize: '18px',
-        fontWeight: 500,
+        fontWeight: 'semiBold',
         mb: 3
       }}>Participation breakdown</Text>
 
