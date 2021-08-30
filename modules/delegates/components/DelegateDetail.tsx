@@ -27,8 +27,8 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
 
   const tabTitles = [
-    delegate.status === DelegateStatusEnum.recognized ? 'Delegate credentials' : null,
-    'Participation metrics',
+    delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
+    'Participation Metrics',
     'Voting History'
   ].filter(i => !!i) as string[];
 
