@@ -8,11 +8,11 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
     row: {
       display: 'flex',
       justifyContent: 'space-between',
-      marginTop: 1,
-      marginBottom: 1
+      marginTop: 3,
+      marginBottom: 3
     },
     text: {
-      color: 'secondaryAlt',
+      color: 'onBackground',
       fontWeight: 'semiBold',
       fontSize: 3
     }

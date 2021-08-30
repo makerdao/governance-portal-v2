@@ -72,7 +72,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate}  />
+                    <DelegateCard delegate={delegate} />
                   </Box>
                 ))}
               </Box>
@@ -88,7 +88,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate}  />
+                    <DelegateCard delegate={delegate} />
                   </Box>
                 ))}
               </Box>
@@ -145,7 +145,7 @@ const Delegates = ({ delegates, stats }: Props) => {
   );
 };
 
-export default function DelegatesPage({ delegates, stats, proposals }: Props): JSX.Element {
+export default function DelegatesPage({ delegates, stats }: Props): JSX.Element {
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [_stats, _setStats] = useState<DelegatesAPIStats>();
   const [error, setError] = useState<string>();
