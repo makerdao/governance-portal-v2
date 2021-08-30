@@ -7,6 +7,8 @@ export type DelegateRepoInformation = {
   externalUrl: string;
   description: string;
   combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
   communication?: string;
 };
 
@@ -30,6 +32,8 @@ export type Delegate = {
   expirationDate: Date;
   externalUrl?: string;
   combinedParticipation?: string;
+  pollParticipation?: string;
+  executiveParticipation?: string;
   communication?: string;
   mkrDelegated: number;
 };

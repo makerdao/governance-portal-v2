@@ -14,6 +14,7 @@ import Tabs from 'components/Tabs';
 import { DelegateVoteHistory } from './DelegateVoteHistory';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 import { DelegateStatusEnum } from '../delegates.constants';
+import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,49 +34,65 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
   ].filter(i => !!i) as string[];
 
   const tabPanels = [
-    delegate.status === DelegateStatusEnum.recognized ? <Box  key='delegate-credentials'>
+    delegate.status === DelegateStatusEnum.recognized ? <Box key='delegate-credentials'>
       <DelegateCredentials delegate={delegate} />
     </Box> : null,
-    <Box  key='delegate-participation-metrics'>
+    <Box key='delegate-participation-metrics'>
       <DelegateParticipationMetrics delegate={delegate} />
     </Box>,
-    <Box  key='delegate-vote-history'>
+    <Box key='delegate-vote-history'>
       <DelegateVoteHistory delegate={delegate} stats={stats} />
     </Box>,
   ].filter(i => !!i);
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Box sx={{ p: [3,4], pb: 3 }}>
-        <Flex>
-          <DelegatePicture delegate={delegate} key={delegate.id} />
-          <Box sx={{ width: '100%' }}>
-            <Box sx={{ ml: 2 }}>
-              <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                {delegate.name}
-              </Text>
-              <ExternalLink
-                title="View on etherescan"
-                href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
-                target="_blank"
-              >
-                <Text as="p" sx={{ fontSize: bpi > 0 ? 3 : 1 }}>
-                  {voteDelegateAddress}
-                </Text>
-              </ExternalLink>
-            </Box>
+      <Box sx={{ p: [3, 4], pb: 3 }}>
+        <Flex sx={{
+          justifyContent: 'space-between',
+          flexDirection: ['column', 'row'],
+        }}>
+          <Box>
+            <Flex>
+              <DelegatePicture delegate={delegate} key={delegate.id} />
+              <Box sx={{ width: '100%' }}>
+                <Box sx={{ ml: 2 }}>
+                  <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                    {delegate.name}
+                  </Text>
+                  <ExternalLink
+                    title="View on etherescan"
+                    href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ fontSize: bpi > 0 ? 3 : 1 }}>
+                      Delegate contract  <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
+                  </ExternalLink>
+                  <Box>
+
+                  </Box>
+                </Box>
+              </Box>
+            </Flex>
+            {delegate.externalUrl && (
+              <Box sx={{ mt: 2 }}>
+                <ExternalLink title="See external profile" href={delegate.externalUrl} target="_blank">
+                  <Text sx={{ fontSize: 1 }}>
+                    See external profile
+                    <Icon ml={2} name="arrowTopRight" size={2} />
+                  </Text>
+                </ExternalLink>
+              </Box>
+            )}
+          </Box>
+          <Box mt={[2, 0]}>
+            <DelegateContractExpiration delegate={delegate} />
           </Box>
         </Flex>
-        {delegate.externalUrl && (
-          <Box sx={{ mt: 2 }}>
-            <ExternalLink title="See external profile" href={delegate.externalUrl} target="_blank">
-              <Text sx={{ fontSize: 1 }}>
-                See external profile
-                <Icon ml={2} name="arrowTopRight" size={2} />
-              </Text>
-            </ExternalLink>
-          </Box>
-        )}
+        {/* <Box sx={{ mr: 3 }}>
+          <DelegateLastVoted delegate={delegate} />
+        </Box> */}
       </Box>
 
 
@@ -85,14 +102,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
         tabPanels={tabPanels}
       ></Tabs>
 
-      <Divider my={0} />
-      <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
-        {/* <Box sx={{ mr: 3 }}>
-          <DelegateLastVoted delegate={delegate} />
-        </Box> */}
-        <DelegateContractExpiration delegate={delegate} />
-        
-      </Box>
+
     </Box>
   );
 }

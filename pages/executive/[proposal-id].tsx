@@ -12,7 +12,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
-import { useSpellData, useVotedProposals } from 'lib/hooks';
+import { useSpellData } from 'lib/hooks';
+import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle } from 'lib/utils';
 import { limitString } from 'lib/string';
@@ -35,7 +36,7 @@ import ResourceBox from 'components/ResourceBox';
 // import OnChainFx from 'components/executive/OnChainFx';
 
 //types
-import { Proposal } from 'types/proposal';
+import { Proposal } from 'modules/executives/types';
 // import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {

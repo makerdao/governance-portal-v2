@@ -19,7 +19,7 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-import { CMSProposal } from 'types/proposal';
+import { CMSProposal } from 'modules/executives/types';
 import { Poll } from 'modules/polls/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';

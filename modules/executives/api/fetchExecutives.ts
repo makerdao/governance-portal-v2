@@ -1,17 +1,19 @@
 import { config } from 'lib/config';
-import { EXEC_PROPOSAL_INDEX } from 'lib/constants';
+import { EXEC_PROPOSAL_INDEX, SupportedNetworks } from 'lib/constants';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
-import { isTestnet } from 'lib/maker';
-import { CMSProposal } from 'types/proposal';
+import { getNetwork, isTestnet } from 'lib/maker';
+import { CMSProposal } from 'modules/executives/types';
 import mockProposals from './mocks/proposals.json';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
 
-export async function getExecutiveProposals(): Promise<CMSProposal[]> {
+export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
+  const currentNetwork = network ? network : getNetwork();
+
     if (config.USE_FS_CACHE) {
-      const cachedProposals = fsCacheGet('proposals');
+      const cachedProposals = fsCacheGet(`proposals-${currentNetwork}`);
       if (cachedProposals) {
         return JSON.parse(cachedProposals);
       }
@@ -37,7 +39,7 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
           try {
             const proposalDoc = await (await fetch(proposalLink)).text();
   
-            return parseExecutive(proposalDoc, proposalIndex, proposalLink);
+            return parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
           } catch (e) {
             // Catch error and return null if failed fetching one proposal
             return null;
@@ -53,13 +55,13 @@ export async function getExecutiveProposals(): Promise<CMSProposal[]> {
       .slice(0, 100);
   
     if (config.USE_FS_CACHE) {
-      fsCacheSet('proposals', JSON.stringify(sortedProposals));
+      fsCacheSet(`proposals-${currentNetwork}`, JSON.stringify(sortedProposals));
     }
     return sortedProposals;
   }
   
-  export async function getExecutiveProposal(proposalId: string): Promise<CMSProposal | null> {
-    const proposals = await getExecutiveProposals();
+  export async function getExecutiveProposal(proposalId: string, network?: SupportedNetworks): Promise<CMSProposal | null> {
+    const proposals = await getExecutiveProposals(network);
     const proposal = proposals.find(proposal => proposal.key === proposalId);
     if (!proposal) return null;
     invariant(proposal, `proposal not found for proposal id ${proposalId}`);
