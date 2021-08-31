@@ -24,13 +24,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
+import { fetchJson, isActivePoll } from 'lib/utils';
 
 // api
 import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-
-// types
 import { Poll, PollTally } from 'modules/polls/types';
+import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -43,13 +42,13 @@ import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
-import VoteBox from 'components/polling/[poll-hash]/VoteBox';
+import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
+import VoteBox from 'modules/polls/components/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import PollOptionBadge from 'components/PollOptionBadge';
-import VotesByAddress from 'components/polling/[poll-hash]/VotesByAddress';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
+import VotesByAddress from 'modules/polls/components/VotesByAddress';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -59,7 +58,7 @@ const getURL = poll =>
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parsePollTally(rawTally, poll));
+    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
     mutate(getURL(poll), tallyPromise, false);
   }
 }
@@ -80,14 +79,13 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
     getURL(poll),
-    async url => parsePollTally(await fetchJson(url), poll),
+    async url => parseRawPollTally(await fetchJson(url), poll),
     { refreshInterval: 30000 }
   );
 
-  const VotingWeightComponent = dynamic(
-    () => import('../../components/polling/[poll-hash]/VoteWeightCircles'),
-    { ssr: false }
-  );
+  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightCircles'), {
+    ssr: false
+  });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
@@ -351,7 +349,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Weight
                       </Text>
-                      <VotingWeightComponent tally={tally} />
+                      {tally && <VotingWeightComponent tally={tally} poll={poll} />}
                     </Flex>
                   ]
                 )

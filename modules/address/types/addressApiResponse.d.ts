@@ -1,5 +1,5 @@
-import { PollVoteHistory } from 'modules/polls/types/pollVoteHistory';
-import { Delegate } from 'types/delegate';
+import { PollVoteHistory } from 'modules/polls/types';
+import { Delegate } from 'modules/delegates/types';
 
 export type AddressAPIStats =  {
   pollVoteHistory: PollVoteHistory[]

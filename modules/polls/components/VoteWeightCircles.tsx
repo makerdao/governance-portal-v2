@@ -5,11 +5,12 @@ import { pack, hierarchy } from 'd3-hierarchy';
 import { cutMiddle } from 'lib/utils';
 
 export const CirclesSvg = ({ poll, tally, diameter }) => {
+  if (!poll || !tally) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
 
   const data = {
     title: 'votes',
-    children: tally?.votesByAddress
+    children: tally.votesByAddress
   };
 
   useEffect(() => {
@@ -83,11 +84,10 @@ export const CirclesSvg = ({ poll, tally, diameter }) => {
 };
 
 const VoteWeightVisual = ({ poll, tally }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(500);
 
   useEffect(() => {
-    console.log('width', ref.current ? ref.current.offsetWidth : 0);
     setWidth(ref.current ? ref.current.offsetWidth : 300);
   }, [ref.current]);
 

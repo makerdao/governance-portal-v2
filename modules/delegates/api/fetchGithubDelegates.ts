@@ -3,7 +3,7 @@ import { SupportedNetworks } from 'lib/constants';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/utils';
-import { DelegateRepoInformation } from 'types/delegate';
+import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
 
 // Parses the information on a delegate folder in github and extracts a DelegateRepoInformation parsed object

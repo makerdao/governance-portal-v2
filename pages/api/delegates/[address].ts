@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'lib/maker/index';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { fetchDelegate } from 'lib/delegates/fetchDelegates';
+import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;

@@ -4,8 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'lib/maker/index';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { fetchDelegates } from 'lib/delegates/fetchDelegates';
-import { DelegatesAPIResponse } from 'types/delegatesAPI';
+import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import { DelegatesAPIResponse } from 'modules/delegates/types';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;

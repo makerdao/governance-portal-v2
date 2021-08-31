@@ -74,12 +74,12 @@ const makerSingletons: MakerSingletons = {
   [SupportedNetworks.TESTNET]: null
 };
 
-function getMaker(network?: SupportedNetworks): Promise<Maker> {
+async function getMaker(network?: SupportedNetworks): Promise<Maker> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
 
   if (!makerSingletons[currentNetwork]) {
-    makerSingletons[currentNetwork] = Maker.create('http', {
+    makerSingletons[currentNetwork] = await Maker.create('http', {
       plugins: [
         [McdPlugin, { prefetch: false }],
         [GovernancePlugin, { network: currentNetwork, staging: !config.USE_PROD_SPOCK }],
@@ -96,13 +96,10 @@ function getMaker(network?: SupportedNetworks): Promise<Maker> {
       },
       log: false,
       multicall: true
-    }).then(maker => {
-      if (typeof window !== 'undefined') window.maker = maker;
-      return maker;
     });
   }
 
-  return makerSingletons[currentNetwork] as Promise<Maker>;
+  return makerSingletons[currentNetwork];
 }
 
 let networkSingleton: SupportedNetworks;

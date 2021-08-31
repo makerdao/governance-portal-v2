@@ -96,7 +96,9 @@ export async function createTestPolls(maker) {
 }
 
 export async function createDelegate(maker, account = DEMO_ACCOUNT_TESTS) {
-  return await maker.service('voteDelegateFactory').createDelegateContract();
+  await maker.service('voteDelegateFactory').createDelegateContract();
+  const { voteDelegate } = await maker.service('voteDelegateFactory').getVoteDelegate(account);
+  return voteDelegate.getVoteDelegateAddress();
 }
 
 // Convenience function to add a new account maker & browser provider

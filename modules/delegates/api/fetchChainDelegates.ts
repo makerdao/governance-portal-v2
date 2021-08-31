@@ -1,6 +1,6 @@
 import { SupportedNetworks } from 'lib/constants';
 import getMaker from 'lib/maker';
-import { DelegateContractInformation } from 'types/delegate';
+import { DelegateContractInformation } from '../types';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks

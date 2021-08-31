@@ -2,8 +2,7 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { isSupportedNetwork } from 'lib/maker';
-import { getConnectedMakerObj } from 'lib/api/utils';
+import getMaker, { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'types/spellData';
@@ -53,7 +52,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const maker = await getConnectedMakerObj(network);
+  const maker = await getMaker(network);
   const analysis = await analyzeSpell(spellAddress, maker);
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');

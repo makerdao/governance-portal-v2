@@ -1,14 +1,19 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Divider, Flex, Heading } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Divider, Flex } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
-import { Delegate } from 'types/delegate';
-import { DelegatePicture, DelegateContractExpiration, DelegateLastVoted } from 'components/delegations';
+import { Delegate } from '../types';
+import { DelegatePicture } from './DelegatePicture';
+import { DelegateContractExpiration } from './DelegateContractExpiration';
+import { DelegateCredentials } from './DelegateCredentials';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
-import { AddressPollVoteHistory } from 'modules/address/components/AddressPollVoteHistory';
+import Tabs from 'components/Tabs';
+import { DelegateVoteHistory } from './DelegateVoteHistory';
+import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
+import { DelegateStatusEnum } from '../delegates.constants';
 
 type PropTypes = {
   delegate: Delegate;
@@ -20,9 +25,28 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
   const { voteDelegateAddress } = delegate;
 
+
+  const tabTitles = [
+    delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
+    'Participation Metrics',
+    'Voting History'
+  ].filter(i => !!i) as string[];
+
+  const tabPanels = [
+    delegate.status === DelegateStatusEnum.recognized ? <Box  key='delegate-credentials'>
+      <DelegateCredentials delegate={delegate} />
+    </Box> : null,
+    <Box  key='delegate-participation-metrics'>
+      <DelegateParticipationMetrics delegate={delegate} />
+    </Box>,
+    <Box  key='delegate-vote-history'>
+      <DelegateVoteHistory delegate={delegate} stats={stats} />
+    </Box>,
+  ].filter(i => !!i);
+
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: [3,4], pb: 3 }}>
         <Flex>
           <DelegatePicture delegate={delegate} key={delegate.id} />
           <Box sx={{ width: '100%' }}>
@@ -53,12 +77,13 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
           </Box>
         )}
       </Box>
-      <Box sx={{ p: 3 }}>
-        <div
-          sx={{ variant: 'markdown.default' }}
-          dangerouslySetInnerHTML={{ __html: delegate.description }}
-        />
-      </Box>
+
+
+      <Tabs
+        tabListStyles={{ pl: [3, 4] }}
+        tabTitles={tabTitles}
+        tabPanels={tabPanels}
+      ></Tabs>
 
       <Divider my={0} />
       <Box sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
@@ -66,10 +91,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
           <DelegateLastVoted delegate={delegate} />
         </Box> */}
         <DelegateContractExpiration delegate={delegate} />
-        <Flex sx={{ mt: 3, flexDirection: 'column' }}>
-          <Heading>Polling Vote History</Heading>
-          <AddressPollVoteHistory votes={stats.pollVoteHistory} />
-        </Flex>
+        
       </Box>
     </Box>
   );

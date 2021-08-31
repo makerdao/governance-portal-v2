@@ -1,7 +1,7 @@
 import { Button, Flex, Text, Link as ExternalLink } from 'theme-ui';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
-import { Delegate } from 'types/delegate';
+import { Delegate } from '../../types';
 import BigNumber from 'bignumber.js';
 
 type Props = {
