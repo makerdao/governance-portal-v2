@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import {
   Card,
@@ -81,6 +82,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
     getURL(poll),
     async url => parsePollTally(await fetchJson(url), poll),
     { refreshInterval: 30000 }
+  );
+
+  const VotingWeightComponent = dynamic(
+    () => import('../../components/polling/[poll-hash]/VoteWeightCircles'),
+    { ssr: false }
   );
 
   useEffect(() => {
@@ -339,6 +345,13 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                           </Box>
                         </Box>
                       )}
+                    </Flex>,
+                    <Divider key={'divider 3'} />,
+                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'vote weight circles'}>
+                      <Text variant="microHeading" sx={{ mb: 3 }}>
+                        Voting Weight
+                      </Text>
+                      <VotingWeightComponent tally={tally} />
                     </Flex>
                   ]
                 )

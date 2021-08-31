@@ -39,6 +39,8 @@
     "@web3-react/walletconnect-connector": "^6.2.4",
     "@web3-react/walletlink-connector": "^6.2.3",
     "babel-plugin-superjson-next": "^0.3.0",
+    "d3-hierarchy": "^3.0.1",
+    "d3-selection": "^3.0.0",
     "ethereum-ens": "^0.8.0",
     "ethers": "^5.4.4",
     "gray-matter": "^4.0.2",
