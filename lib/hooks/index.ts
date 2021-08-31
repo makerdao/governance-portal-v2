@@ -8,3 +8,4 @@ export * from './useHat';
 export * from './useAllSlates';
 export * from './useAllUserVotes';
 export * from './usePollVoteCompare';
+export * from './useDelegateAddressMap';

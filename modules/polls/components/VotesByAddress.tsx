@@ -5,6 +5,7 @@ import { getNetwork } from 'lib/maker';
 import { getEtherscanLink, cutMiddle } from 'lib/utils';
 import { PollTallyVote, Poll } from 'modules/polls/types';
 import { CurrencyObject } from 'types/currency';
+import { useDelegateAddressMap } from 'lib/hooks';
 
 type Props = {
   votes: PollTallyVote[];
@@ -14,6 +15,8 @@ type Props = {
 
 const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
+  const { data: delegateAddresses } = useDelegateAddressMap();
+
   return (
     <Box>
       <table
@@ -45,7 +48,9 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                 <tr key={i}>
                   <Text as="td" sx={{ pb: 2 }}>
                     <ExternalLink href={getEtherscanLink(getNetwork(), v.voter, 'address')} target="_blank">
-                      {cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                      {delegateAddresses[v.voter]
+                        ? delegateAddresses[v.voter]
+                        : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
                     </ExternalLink>
                   </Text>
                   <Text as="td">

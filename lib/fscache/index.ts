@@ -18,6 +18,8 @@ export const fsCacheDel = (path: string): void => {
 };
 
 export const fsCacheGet = (name: string, expiryMs?: number): any => {
+  if (Object.keys(fs).length === 0) return null;
+
   const path = getFilePath(name);
   const memCached = fsCacheCache[path];
 
