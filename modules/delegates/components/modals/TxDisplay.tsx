@@ -1,4 +1,5 @@
-import { TxFinal, TransactionInProgress } from 'components/delegations';
+import { TransactionInProgress } from './TransactionInProgress';
+import { TxFinal } from './TxFinal';
 
 export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
   switch (tx?.status) {

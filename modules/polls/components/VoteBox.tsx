@@ -2,8 +2,8 @@
 import { Box, Heading, Card, Text, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import VotingStatus from '../PollVotingStatus';
-import QuickVote from '../QuickVote';
+import VotingStatus from '../../../components/polling/PollVotingStatus';
+import QuickVote from '../../../components/polling/QuickVote';
 import useAccountsStore from 'stores/accounts';
 import { isActivePoll } from 'lib/utils';
 import { Poll } from 'modules/polls/types';

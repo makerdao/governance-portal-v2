@@ -25,13 +25,13 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import CountdownTimer from 'components/CountdownTimer';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
+import { fetchJson, isActivePoll } from 'lib/utils';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
-import VoteBox from 'components/polling/[poll-hash]/VoteBox';
+import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
+import VoteBox from 'modules/polls/components/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import { Poll, PollTally } from 'modules/polls/types';
@@ -39,6 +39,7 @@ import useAccountsStore from 'stores/accounts';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import useBallotStore from 'stores/ballot';
 import PollOptionBadge from 'components/PollOptionBadge';
+import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -48,7 +49,7 @@ const getURL = poll =>
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parsePollTally(rawTally, poll));
+    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
     mutate(getURL(poll), tallyPromise, false);
   }
 }
@@ -68,7 +69,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
-    parsePollTally(await fetchJson(url), poll)
+    parseRawPollTally(await fetchJson(url), poll)
   );
 
   useEffect(() => {

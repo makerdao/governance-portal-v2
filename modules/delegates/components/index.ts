@@ -11,3 +11,4 @@ export * from './DelegateContractExpiration';
 export * from './DelegateDetail';
 export * from './DelegateLastVoted';
 export * from './DelegatePicture';
+export * from './DelegatesSystemInfo';

@@ -1,11 +1,10 @@
 import { fetchChainDelegates } from './fetchChainDelegates';
-import { Delegate, DelegateContractInformation, DelegateRepoInformation } from 'types/delegate';
-import { DelegateStatusEnum } from './constants';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import moment from 'moment';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
-import { DelegatesAPIResponse } from 'types/delegatesAPI';
+import { DelegatesAPIResponse, Delegate, DelegateContractInformation, DelegateRepoInformation } from 'modules/delegates/types';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,

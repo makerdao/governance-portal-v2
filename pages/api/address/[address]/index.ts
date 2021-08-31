@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'lib/maker/index';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { fetchDelegate } from 'lib/delegates/fetchDelegates';
+import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polls/api/fetchAddressPollVoteHistory';
 

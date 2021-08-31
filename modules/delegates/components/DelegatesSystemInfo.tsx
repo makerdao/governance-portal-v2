@@ -5,7 +5,7 @@ import getMaker, { getNetwork } from 'lib/maker';
 import { formatAddress, getEtherscanLink } from 'lib/utils';
 import useSWR from 'swr';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
-import { DelegatesAPIStats } from 'types/delegatesAPI';
+import { DelegatesAPIStats } from '../types';
 
 export function DelegatesSystemInfo({
   stats,

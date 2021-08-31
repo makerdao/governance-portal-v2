@@ -1,6 +1,6 @@
-import { Delegate } from 'types/delegate';
 /** @jsx jsx */
 
+import { Delegate } from '../types';
 import { Box, Text, jsx } from 'theme-ui';
 import React from 'react';
 import Icon from 'components/Icon';

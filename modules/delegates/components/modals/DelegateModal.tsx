@@ -1,19 +1,21 @@
 /** @jsx jsx */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
-
+import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { useTokenAllowance } from 'lib/hooks';
-import { Delegate } from 'types/delegate';
+import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
-import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { Delegate } from '../../types';
 import { BoxWithClose } from 'components/BoxWithClose';
-import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'components/delegations';
+import { InputDelegateMkr } from './InputDelegateMkr';
+import { ApprovalContent } from './Approval';
+import { TxDisplay } from './TxDisplay';
+import { ConfirmContent } from './Confirm';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
@@ -23,28 +25,30 @@ type Props = {
   delegate: Delegate;
 };
 
-export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
   const [txId, setTxId] = useState(null);
+  const [confirmStep, setConfirmStep] = useState(false);
 
-  const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
-  const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
+  const { data: mkrBalance } = useMkrBalance(address);
 
-  const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
+  const { data: mkrAllowance } = useTokenAllowance(MKR, address, voteDelegateAddress);
+
+  const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
   const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const approveIou = async () => {
+  const approveMkr = async () => {
     const maker = await getMaker();
-    const approveTxCreator = () => maker.getToken('IOU').approveUnlimited(voteDelegateAddress);
+    const approveTxCreator = () => maker.getToken(MKR).approveUnlimited(voteDelegateAddress);
     const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
@@ -58,25 +62,31 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
     setTxId(txId);
   };
 
-  const freeMkr = async () => {
+  const lockMkr = async () => {
     const maker = await getMaker();
-    const freeTxCreator = () => maker.service('voteDelegate').free(voteDelegateAddress, mkrToWithdraw);
-    const txId = await trackTransaction(freeTxCreator, 'Withdrawing MKR', {
+
+    const lockTxCreator = () => maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+    const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
+        transactionsApi.getState().setMessage(txId, 'MKR deposited');
       },
       error: () => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawal failed');
+        transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
       }
     });
     setTxId(txId);
   };
 
   const onClose = () => {
-    trackButtonClick('closeUndelegateModal');
+    trackButtonClick('closeDelegateModal');
     setTxId(null);
     onDismiss();
   };
+
+  useEffect(() => {
+    // Reset the confirmation step
+    setConfirmStep(false);
+  }, [isOpen]);
 
   return (
     <>
@@ -86,7 +96,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
         onDismiss={onClose}
       >
         <DialogContent
-          aria-label="Undelegate modal"
+          aria-label="Delegate modal"
           sx={
             bpi === 0
               ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
@@ -106,22 +116,31 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
                   <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
                 ) : (
                   <>
-                    {mkrStaked && hasLargeIouAllowance ? (
-                      <InputDelegateMkr
-                        title="Withdraw from delegate contract"
-                        description="Input the amount of MKR to withdraw from the delegate contract."
-                        onChange={setMkrToWithdraw}
-                        balance={mkrStaked.toBigNumber()}
-                        buttonLabel="Undelegate MKR"
-                        onClick={freeMkr}
-                      />
+                    {mkrAllowance && hasLargeMkrAllowance ? (
+                      confirmStep ? (
+                        <ConfirmContent
+                          mkrToDeposit={mkrToDeposit}
+                          delegate={delegate}
+                          onClick={lockMkr}
+                          onBack={() => setConfirmStep(false)}
+                        />
+                      ) : (
+                        <InputDelegateMkr
+                          title="Deposit into delegate contract"
+                          description="Input the amount of MKR to deposit into the delegate contract."
+                          onChange={setMkrToDeposit}
+                          balance={mkrBalance?.toBigNumber()}
+                          buttonLabel="Delegate MKR"
+                          onClick={() => setConfirmStep(true)}
+                        />
+                      )
                     ) : (
                       <ApprovalContent
-                        onClick={approveIou}
+                        onClick={approveMkr}
                         title={'Approve Delegate Contract'}
                         buttonLabel={'Approve Delegate Contract'}
                         description={
-                          'Approve the transfer of IOU tokens to the delegate contract to wtihdraw your MKR.'
+                          'Approve the transfer of MKR tokens to the delegate contract to deposit your MKR.'
                         }
                       />
                     )}

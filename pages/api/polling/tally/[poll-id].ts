@@ -2,26 +2,26 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 
 import withApiHandler from 'lib/api/withApiHandler';
-import { getConnectedMakerObj } from 'lib/api/utils';
 import { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { backoffRetry } from 'lib/utils';
+import { fetchPollTally } from 'modules/polls/api/fetchPollTally';
+import { RawPollTally } from 'modules/polls/types';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
-  return withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+  return withApiHandler(async (req: NextApiRequest, res: NextApiResponse<RawPollTally>) => {
     const pollId = req.query['poll-id'] as string;
     const network = (req.query.network as string) || DEFAULT_NETWORK;
 
     invariant(pollId, 'poll id required');
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-    const maker = await getConnectedMakerObj(network);
-    const tally = await backoffRetry(3, () => maker.service('govPolling').getTallyRankedChoiceIrv(pollId));
+    const tally: RawPollTally = await backoffRetry(3, () => fetchPollTally(parseInt(pollId), network));
 
     const totalMkrParticipation = tally.totalMkrParticipation;
-    const winner: string = tally.winner;
-    const rounds = parseInt(tally.rounds);
-    const numVoters = parseInt(tally.numVoters);
+    const winner: string = tally.winner || '';
+    const rounds = tally.rounds;
+    const numVoters = tally.numVoters;
 
     const parsedTally = {
       options: tally.options,
