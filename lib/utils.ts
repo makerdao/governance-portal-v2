@@ -74,8 +74,6 @@ export function getEtherscanLink(
   }
 }
 
-
-
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
   const response = await fetch(url, init);
   const json = await response.json();
