@@ -6,8 +6,10 @@ import moment from 'moment';
 import Link from 'next/link';
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
-import { PollVoteResultsCompact } from './PollVoteResultsCompact';
+import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { parseRawPollTally } from '../helpers/parseRawTally';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { POLL_VOTE_TYPE } from '../polls.constants';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();
@@ -17,6 +19,8 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
   const voteBreakdown = (
     <VoteBreakdown poll={vote.poll} tally={parseRawPollTally(vote.tally, vote.poll)} shownOptions={3} key={vote.pollId} />
   );
+
+  const voteColorStyles = ['secondary', 'primary', 'notice'];
   return (
 
     <Box sx={{
@@ -34,7 +38,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             <Text
               variant="secondary"
               color="onSecondary"
-              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold' }}
+              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
               as="p"
             >
               Voted {voteDate.format(dateFormat)}
@@ -50,32 +54,44 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               </ThemeUILink>
             </Link>
 
+            {vote.poll.discussionLink && (
+                <Box mt={2}>
+                  <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank">
+                    <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                      Discussion
+                      <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
+                  </ThemeUILink>
+                </Box>
+              )}
+
           </Box>
         </Tooltip>
       </Box>
 
       <Box sx={{
         display: 'flex',
-        justifyContent: ['flex-start', 'flex-end'],
+        justifyContent: vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? 'space-between': ['flex-start', 'flex-end'],
         flex: 1
       }}>
-        {/* <Box mr={2}>
-
-            <PollVoteResultsCompact vote={vote} />
-
-
-          </Box> */}
+        { vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && <Box mr={2} ml={2}>
+          <PollVotePluralityResultsCompact vote={vote} /> 
+        </Box> }
 
         <Box>
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', textAlign: ['left', 'right'] }}
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: ['left', 'right'] }}
             as="p"
           >
             Voted
           </Text>
-          <Text as="p" sx={{ textAlign: ['left', 'right'] }}>
+          <Text as="p" sx={{ 
+            textAlign: ['left', 'right'],
+            color: vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE ? voteColorStyles[(vote.option || 0)] : 'secondary',
+            fontWeight: 'semiBold'
+          }}>
             {vote.optionValue}
           </Text>
         </Box>

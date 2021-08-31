@@ -3,7 +3,7 @@ import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import getMaker, { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
-import { Poll } from 'modules/polls/types';
+import { Poll, PollVoteType } from 'modules/polls/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
 import { SupportedNetworks } from 'lib/constants';
@@ -17,6 +17,7 @@ export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return mockPolls.map(p => ({
       ...p,
+      voteType: p.voteType as PollVoteType,
       startDate: new Date(p.startDate),
       endDate: new Date(p.endDate)
     }));

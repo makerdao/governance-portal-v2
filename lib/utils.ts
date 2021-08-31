@@ -6,7 +6,6 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'types/currency';
-import { Poll, PollVote } from 'modules/polls/types';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
@@ -75,35 +74,7 @@ export function getEtherscanLink(
   }
 }
 
-export function isActivePoll(poll: Poll): boolean {
-  const now = Date.now();
-  if (new Date(poll.endDate).getTime() < now) return false;
-  if (new Date(poll.startDate).getTime() > now) return false;
-  return true;
-}
 
-export function isRankedChoicePoll(poll: Poll): boolean {
-  return poll.voteType === 'Ranked Choice IRV';
-}
-
-export function extractCurrentPollVote(
-  poll: Poll,
-  allUserVotes: PollVote[] | undefined
-): number[] | number | null {
-  const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
-
-  if (poll.voteType === 'Ranked Choice IRV') {
-    return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
-  } else if (poll.voteType === 'Plurality Voting') {
-    return currentVote?.option !== undefined ? currentVote.option : null;
-  }
-
-  return null;
-}
-
-export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
-  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId);
-}
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
   const response = await fetch(url, init);

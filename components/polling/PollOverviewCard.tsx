@@ -4,7 +4,7 @@ import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject 
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
-import { isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { getNetwork } from 'lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';

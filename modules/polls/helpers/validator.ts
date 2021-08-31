@@ -3,9 +3,8 @@ import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
 import { Poll, PartialPoll } from 'modules/polls/types';
 import { parsePollMetadata } from './parser';
-import { VoteTypes } from 'types/voteTypes';
+import { POLL_VOTE_TYPES_ARRAY } from '../polls.constants';
 
-const VoteTypesArray: VoteTypes[] = ['Plurality Voting', 'Ranked Choice IRV'];
 
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json
@@ -48,7 +47,9 @@ export function validateText(text: string): ValidationResult {
     const errors: string[] = [];
 
     // vote type
-    if (!VoteTypesArray.includes(data.vote_type)) errors.push(`Invalid vote type: "${data.vote_type}"`);
+    if (!POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
+      errors.push(`Invalid vote type: "${data.vote_type}"`);
+    }
 
     // vote options
     if (!data.options) {

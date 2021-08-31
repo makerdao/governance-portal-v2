@@ -5,7 +5,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import VotingStatus from '../../../components/polling/PollVotingStatus';
 import QuickVote from '../../../components/polling/QuickVote';
 import useAccountsStore from 'stores/accounts';
-import { isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { Poll } from 'modules/polls/types';
 
 export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element {
