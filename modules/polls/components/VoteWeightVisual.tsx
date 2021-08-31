@@ -1,11 +1,18 @@
-import { Ref, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box } from 'theme-ui';
 import { select } from 'd3-selection';
 import { pack, hierarchy } from 'd3-hierarchy';
 import { cutMiddle } from 'lib/utils';
+import { Poll, PollTally } from 'modules/polls/types';
 
-export const CirclesSvg = ({ poll, tally, diameter }) => {
-  if (!poll || !tally) return <Box>Loading</Box>;
+type CircleProps = {
+  poll: Poll;
+  tally: PollTally;
+  diameter: number;
+};
+
+export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element => {
+  if (!poll || !tally || !diameter) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
 
   const data = {
@@ -83,7 +90,12 @@ export const CirclesSvg = ({ poll, tally, diameter }) => {
   );
 };
 
-const VoteWeightVisual = ({ poll, tally }) => {
+type Props = {
+  poll: Poll;
+  tally: PollTally;
+};
+
+const VoteWeightVisual = ({ poll, tally }: Props): JSX.Element => {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(500);
 

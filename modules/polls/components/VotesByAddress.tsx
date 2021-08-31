@@ -25,6 +25,9 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
         <thead>
           <tr>
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
+              Address
+            </Text>
+            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               Voted
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
@@ -32,9 +35,6 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               MKR Amount
-            </Text>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2 }} variant="caps">
-              Address
             </Text>
           </tr>
         </thead>
@@ -44,6 +44,11 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
               {votes.map((v, i) => (
                 <tr key={i}>
                   <Text as="td" sx={{ pb: 2 }}>
+                    <ExternalLink href={getEtherscanLink(getNetwork(), v.voter, 'address')} target="_blank">
+                      {cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                    </ExternalLink>
+                  </Text>
+                  <Text as="td">
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]
                       : poll.options[v.optionId]}
@@ -56,16 +61,8 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                       .toFormat(1)}%`}
                   </Text>
                   <Text as="td">{`${new BigNumber(v.mkrSupport).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}</Text>
-                  <Text as="td" sx={{ textAlign: 'right' }}>
-                    <ExternalLink href={getEtherscanLink(getNetwork(), v.voter, 'address')} target="_blank">
-                      {cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
-                    </ExternalLink>
-                  </Text>
                 </tr>
               ))}
-              <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
-                *First choice in ranked choice vote shown
-              </Text>
             </>
           ) : (
             <tr key={0}>
@@ -77,6 +74,11 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
             </tr>
           )}
         </tbody>
+        {poll.voteType === 'Ranked Choice IRV' && (
+          <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
+            *First choice in ranked choice vote shown
+          </Text>
+        )}
       </table>
     </Box>
   );

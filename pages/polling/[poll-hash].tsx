@@ -83,7 +83,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
     { refreshInterval: 30000 }
   );
 
-  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightCircles'), {
+  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightVisual'), {
     ssr: false
   });
 
