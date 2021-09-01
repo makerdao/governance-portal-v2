@@ -6,16 +6,15 @@ export function DelegateCredentials({ delegate }: { delegate: Delegate }): React
   return (
     <Box>
       <Box p={[3, 4]}>
-        <div
+        <Box
           sx={{ variant: 'markdown.default' }}
           dangerouslySetInnerHTML={{ __html: delegate.description }}
         />
-
-
       </Box>
       <Divider my={0} />
-      <Box sx={{ p: [3,4], display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ p: [3, 4], display: 'flex', flexDirection: 'column' }}>
         <DelegateMKRDelegatedStats delegate={delegate} />
       </Box>
-    </Box>);
+    </Box>
+  );
 }
