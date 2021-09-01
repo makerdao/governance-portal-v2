@@ -4,7 +4,7 @@ import Tooltip from 'components/Tooltip';
 import { getNetwork } from 'lib/maker';
 import moment from 'moment';
 import Link from 'next/link';
-import { Box, Text, jsx, Link as ThemeUILink, Badge } from 'theme-ui';
+import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { parseRawPollTally } from '../helpers/parseRawTally';
@@ -71,7 +71,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
                   </Text>
                 </ThemeUILink>
               )}
-              
+
             </Box>
 
           </Box>
@@ -103,7 +103,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: ['left', 'right'] }}
             as="p"
           >
-            Voted
+            Voted {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && '(Ranked Choice)'}
           </Text>
           <Text
             as="p"
@@ -119,15 +119,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             {vote.optionValue}
           </Text>
 
-          {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
-                <Box >
-                  <Badge
-                    variant="primary"
-                  >
-                    Ranked vote
-                  </Badge>
-                </Box>
-              )}
+
 
         </Box>
       </Box>
