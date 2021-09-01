@@ -126,7 +126,7 @@ export default function VoteBreakdown({
                   </Delay>
                 )}
               </Text>
-              <Text as="p"  sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+              <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                 {tally ? (
                   `${tally.results[i].firstChoice
                     .plus(tally.results[i].transfer)

@@ -3,9 +3,10 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink, cutMiddle } from 'lib/utils';
-import { PollTallyVote, Poll } from 'modules/polls/types';
-import { CurrencyObject } from 'types/currency';
 import { useDelegateAddressMap } from 'lib/hooks';
+import { PollTallyVote, Poll } from 'modules/polls/types';
+import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
   votes: PollTallyVote[];
@@ -53,7 +54,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                         : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
                     </ExternalLink>
                   </Text>
-                  <Text as="td">
+                  <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType) }}>
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]
                       : poll.options[v.optionId]}

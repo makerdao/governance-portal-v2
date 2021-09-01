@@ -51,6 +51,7 @@ export const fsCacheGet = (name: string, expiryMs?: number): any => {
 };
 
 export const fsCacheSet = (name: string, data: any, expiryMs?: number): void => {
+  if (Object.keys(fs).length === 0) return;
   try {
     const path = getFilePath(name);
     console.log('fs cache set', path);

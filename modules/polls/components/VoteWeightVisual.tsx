@@ -3,7 +3,9 @@ import { Box } from 'theme-ui';
 import { select } from 'd3-selection';
 import { pack, hierarchy } from 'd3-hierarchy';
 import { cutMiddle } from 'lib/utils';
+import { useDelegateAddressMap } from 'lib/hooks';
 import { Poll, PollTally } from 'modules/polls/types';
+import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
 
 type CircleProps = {
   poll: Poll;
@@ -14,6 +16,8 @@ type CircleProps = {
 export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element => {
   if (!poll || !tally || !diameter) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
+
+  const { data: delegateAddresses } = useDelegateAddressMap();
 
   const data = {
     title: 'votes',
@@ -53,7 +57,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       });
 
     node.append('title').text(d => {
-      return d.data.voter;
+      return delegateAddresses[d.data.voter] ? delegateAddresses[d.data.voter] : d.data.voter;
     });
 
     node
@@ -62,8 +66,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
         return d.r;
       })
       .style('fill', d => {
-        // update bubble colors here based on vote option
-        return '#888';
+        return getVoteColor(d.data.optionId, poll.voteType);
       });
 
     node
@@ -71,13 +74,11 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       .attr('dy', '.2em')
       .style('text-anchor', 'middle')
       .text(function (d) {
-        // check for mapped delegate name here;
-        return cutMiddle(d.data.voter);
+        return delegateAddresses[d.data.voter] ? delegateAddresses[d.data.voter] : cutMiddle(d.data.voter);
       })
       .attr('font-size', function (d) {
         return d.r / 4;
       })
-      // add font color
       .attr('fill', '#FFF');
 
     select(self.frameElement).style('height', `${diameter}px`);
