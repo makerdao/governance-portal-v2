@@ -25,7 +25,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
     />
   );
 
-  const voteColorStyles = ['secondary', 'primary', 'notice'];
+  const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   return (
     <Box
       sx={{
@@ -109,7 +109,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               color:
                 vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE
                   ? voteColorStyles[vote.option || 0]
-                  : 'secondary',
+                  : 'secondaryEmphasis',
               fontWeight: 'semiBold'
             }}
           >

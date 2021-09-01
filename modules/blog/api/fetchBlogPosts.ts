@@ -5,10 +5,10 @@ import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
-
+  const cacheKey = 'blogPosts';
   // Check first from cache
   if (config.USE_FS_CACHE) {
-    const cachedBlogPosts = fsCacheGet('blogPosts');
+    const cachedBlogPosts = fsCacheGet(cacheKey);
 
     if (cachedBlogPosts) {
       return JSON.parse(cachedBlogPosts);
@@ -37,7 +37,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
   }));
 
   if (config.USE_FS_CACHE) {
-    fsCacheSet('blogPosts', JSON.stringify(results));
+    fsCacheSet(cacheKey, JSON.stringify(results));
   }
 
   return results;

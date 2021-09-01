@@ -10,10 +10,12 @@ import { SupportedNetworks } from 'lib/constants';
 
 export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   const maker = await getMaker(network);
-
+  const cacheKey = 'polls';
   if (config.USE_FS_CACHE) {
-    const cachedPolls = fsCacheGet('polls');
-    if (cachedPolls) return JSON.parse(cachedPolls);
+    const cachedPolls = fsCacheGet(cacheKey, network);
+    if (cachedPolls) {
+      return JSON.parse(cachedPolls);
+    }
   } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
     return mockPolls.map(p => ({
       ...p,
@@ -27,7 +29,7 @@ export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   const polls = await parsePollsMetadata(pollList);
 
   if (config.USE_FS_CACHE) {
-    fsCacheSet('polls', JSON.stringify(polls));
+    fsCacheSet(cacheKey, JSON.stringify(polls), network);
   }
   return polls;
 }
