@@ -21,8 +21,6 @@ type PropTypes = {
 };
 
 export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactElement {
-  const bpi = useBreakpointIndex();
-
   const { voteDelegateAddress } = delegate;
 
   const tabTitles = [
@@ -67,7 +65,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
                     href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
                     target="_blank"
                   >
-                    <Text as="p" sx={{ fontSize: bpi > 0 ? 3 : 1 }}>
+                    <Text as="p" sx={{ fontSize: [1,3] }}>
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
@@ -75,16 +73,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
                 </Box>
               </Box>
             </Flex>
-            {delegate.externalUrl && (
-              <Box sx={{ mt: 2 }}>
-                <ExternalLink title="See external profile" href={delegate.externalUrl} target="_blank">
-                  <Text sx={{ fontSize: 1 }}>
-                    See external profile
-                    <Icon ml={2} name="arrowTopRight" size={2} />
-                  </Text>
-                </ExternalLink>
-              </Box>
-            )}
+            
           </Box>
           <Box mt={[3, 0]}>
             <DelegateContractExpiration delegate={delegate} />

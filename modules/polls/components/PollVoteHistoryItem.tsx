@@ -20,7 +20,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
     <VoteBreakdown poll={vote.poll} tally={parseRawPollTally(vote.tally, vote.poll)} shownOptions={3} key={vote.pollId} />
   );
 
-  const voteColorStyles = ['secondary', 'primary', 'notice'];
+  const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   return (
 
     <Box sx={{
@@ -89,7 +89,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           </Text>
           <Text as="p" sx={{ 
             textAlign: ['left', 'right'],
-            color: vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE ? voteColorStyles[(vote.option || 0)] : 'secondary',
+            color: vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE ? voteColorStyles[(vote.option || 0)] : 'secondaryEmphasis',
             fontWeight: 'semiBold'
           }}>
             {vote.optionValue}
