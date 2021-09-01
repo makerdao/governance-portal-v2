@@ -82,7 +82,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       .attr('fill', '#FFF');
 
     select(self.frameElement).style('height', `${diameter}px`);
-  }, [tally, diameter]);
+  }, [tally, diameter, delegateAddresses]);
 
   return (
     <Box>
