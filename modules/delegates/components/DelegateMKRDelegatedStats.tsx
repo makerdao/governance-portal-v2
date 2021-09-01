@@ -45,14 +45,15 @@ export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }):
         </Text>
       </Box>
 
-      <Box sx={styles.row} ml={2} mr={2}>
+      {/* TODO add once we have data */}
+      {/* <Box sx={styles.row} ml={2} mr={2}>
         <Text as="p" sx={styles.text}>
           TBD
         </Text>
         <Text as="p" sx={styles.subtext}>
           MKR Holders represented
         </Text>
-      </Box>
+      </Box> */}
 
       <Box sx={styles.row} ml={2}>
         <Text as="p" sx={styles.text}>

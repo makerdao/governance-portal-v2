@@ -58,7 +58,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
             <Flex>
               <DelegatePicture delegate={delegate} key={delegate.id} />
               <Box sx={{ width: '100%' }}>
-                <Box sx={{ ml: 2 }}>
+                <Box sx={{ ml: 3 }}>
                   <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                     {delegate.name}
                   </Text>
@@ -86,7 +86,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
               </Box>
             )}
           </Box>
-          <Box mt={[2, 0]}>
+          <Box mt={[3, 0]}>
             <DelegateContractExpiration delegate={delegate} />
           </Box>
         </Flex>
