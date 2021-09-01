@@ -18,7 +18,7 @@ export const fsCacheDel = (path: string): void => {
   fsCacheCache[path] = null;
 };
 
-export const fsCacheGet = (name: string, network?: SupportedNetworks, expiryMs?: number ): any => {
+export const fsCacheGet = (name: string, network?: SupportedNetworks, expiryMs?: number): any => {
   const currentNetwork = network || getNetwork();
   const path = getFilePath(name, currentNetwork);
   const memCached = fsCacheCache[path];
