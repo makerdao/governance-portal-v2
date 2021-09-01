@@ -65,9 +65,9 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const delegatesCacheKey = `${network}-delegates`;
+  const delegatesCacheKey = 'delegates';
   const cacheTime = 30000;
-  const existingDelegates = fsCacheGet(delegatesCacheKey, cacheTime);
+  const existingDelegates = fsCacheGet(delegatesCacheKey, network, cacheTime);
 
   if (existingDelegates) {
     return Promise.resolve({
@@ -101,7 +101,7 @@ export async function fetchGithubDelegates(
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
 
     // Store in cache
-    fsCacheSet(delegatesCacheKey, JSON.stringify(data), cacheTime);
+    fsCacheSet(delegatesCacheKey, JSON.stringify(data), network, cacheTime);
 
     return {
       error: false,
