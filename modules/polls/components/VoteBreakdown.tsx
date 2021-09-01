@@ -5,6 +5,7 @@ import Tooltip from 'components/Tooltip';
 
 import Delay from 'components/Delay';
 import { PollTally, Poll } from 'modules/polls/types';
+import { POLL_VOTE_TYPE } from '../polls.constants';
 
 export default function VoteBreakdown({
   poll,
@@ -16,7 +17,7 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
-  if (poll.voteType === 'Ranked Choice IRV') {
+  if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
     return (
       <div key={2} sx={{ p: [3, 4] }} {...props}>
         <Text variant="microHeading" sx={{ mb: 3 }}>

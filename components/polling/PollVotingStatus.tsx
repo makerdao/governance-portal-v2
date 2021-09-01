@@ -3,7 +3,7 @@ import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
-import { isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { useAllUserVotes } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
