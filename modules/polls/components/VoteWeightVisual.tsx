@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Box } from 'theme-ui';
 import { select } from 'd3-selection';
 import { pack, hierarchy } from 'd3-hierarchy';
-import { cutMiddle } from 'lib/utils';
+import { useRouter } from 'next/router';
+import { getNetwork } from 'lib/maker';
+import { cutMiddle, limitString } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { Poll, PollTally } from 'modules/polls/types';
 import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
@@ -16,12 +18,18 @@ type CircleProps = {
 export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element => {
   if (!poll || !tally || !diameter) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
-
+  const router = useRouter();
+  const network = getNetwork();
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   const data = {
     title: 'votes',
     children: tally.votesByAddress
+  };
+
+  const handleVoterClick = event => {
+    const address = event.target.__data__.data.voter;
+    router.push({ pathname: `/address/${address}`, query: { network } });
   };
 
   useEffect(() => {
@@ -67,19 +75,25 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       })
       .style('fill', d => {
         return getVoteColor(d.data.optionId, poll.voteType);
-      });
+      })
+      .style('cursor', 'pointer')
+      .on('click', handleVoterClick);
 
     node
       .append('text')
       .attr('dy', '.2em')
       .style('text-anchor', 'middle')
       .text(function (d) {
-        return delegateAddresses[d.data.voter] ? delegateAddresses[d.data.voter] : cutMiddle(d.data.voter);
+        return delegateAddresses[d.data.voter]
+          ? limitString(delegateAddresses[d.data.voter], 18, '...')
+          : cutMiddle(d.data.voter);
       })
       .attr('font-size', function (d) {
-        return d.r / 4;
+        return d.r / 4.5;
       })
-      .attr('fill', '#FFF');
+      .attr('fill', '#FFF')
+      .style('cursor', 'pointer')
+      .on('click', handleVoterClick);
 
     select(self.frameElement).style('height', `${diameter}px`);
   }, [tally, diameter, delegateAddresses]);

@@ -210,11 +210,6 @@ export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
 
-export function cutMiddle(text = '', left = 6, right = 4): string {
-  if (text.length <= left + right) return text;
-  return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
-}
-
 export const sortBytesArray = _array =>
   [..._array].sort((a, b) => {
     return new BigNumber(a.toLowerCase()).gt(new BigNumber(b.toLowerCase())) ? 1 : -1;

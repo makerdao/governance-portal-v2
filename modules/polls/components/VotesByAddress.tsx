@@ -1,8 +1,10 @@
-import { Box, Text, Link as ExternalLink } from 'theme-ui';
+import Link from 'next/link';
+import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink, cutMiddle } from 'lib/utils';
+import { getEtherscanLink } from 'lib/utils';
+import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTallyVote, Poll } from 'modules/polls/types';
 import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
@@ -16,6 +18,7 @@ type Props = {
 
 const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
+  const network = getNetwork();
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
@@ -48,11 +51,11 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
               {votes.map((v, i) => (
                 <tr key={i}>
                   <Text as="td" sx={{ pb: 2 }}>
-                    <ExternalLink href={getEtherscanLink(getNetwork(), v.voter, 'address')} target="_blank">
+                    <Link href={{ pathname: `/address/${v.voter}`, query: { network } }}>
                       {delegateAddresses[v.voter]
                         ? delegateAddresses[v.voter]
                         : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
-                    </ExternalLink>
+                    </Link>
                   </Text>
                   <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType) }}>
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
