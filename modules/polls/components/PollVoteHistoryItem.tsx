@@ -17,22 +17,29 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
   const dateFormat = 'MMM DD YYYY HH:mm zz';
   const voteDate = moment(vote.blockTimestamp);
   const voteBreakdown = (
-    <VoteBreakdown poll={vote.poll} tally={parseRawPollTally(vote.tally, vote.poll)} shownOptions={3} key={vote.pollId} />
+    <VoteBreakdown
+      poll={vote.poll}
+      tally={parseRawPollTally(vote.tally, vote.poll)}
+      shownOptions={3}
+      key={vote.pollId}
+    />
   );
 
   const voteColorStyles = ['secondary', 'primary', 'notice'];
   return (
-
-    <Box sx={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      flexDirection: ['column', 'row']
-    }}>
-
-      <Box sx={{
-        width: ['100%', '60%'],
-        mr: [0, 2]
-      }}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: ['column', 'row']
+      }}
+    >
+      <Box
+        sx={{
+          width: ['100%', '60%'],
+          mr: [0, 2]
+        }}
+      >
         <Tooltip label={voteBreakdown}>
           <Box>
             <Text
@@ -44,39 +51,47 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               Voted {voteDate.format(dateFormat)}
             </Text>
 
-            <Link
-              href={{ pathname: `/polling/${vote.poll.slug}`, query: { network } }} passHref
-            >
+            <Link href={{ pathname: `/polling/${vote.poll.slug}`, query: { network } }} passHref>
               <ThemeUILink href={`/polling/${vote.poll.slug}`} variant="nostyle">
-                <Text as='p' sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}>
+                <Text
+                  as="p"
+                  sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}
+                >
                   {vote.poll.title}
                 </Text>
               </ThemeUILink>
             </Link>
 
             {vote.poll.discussionLink && (
-                <Box mt={2}>
-                  <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank">
-                    <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                      Discussion
-                      <Icon ml={2} name="arrowTopRight" size={2} />
-                    </Text>
-                  </ThemeUILink>
-                </Box>
-              )}
-
+              <Box mt={2}>
+                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank">
+                  <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                    Discussion
+                    <Icon ml={2} name="arrowTopRight" size={2} />
+                  </Text>
+                </ThemeUILink>
+              </Box>
+            )}
           </Box>
         </Tooltip>
       </Box>
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? 'space-between': ['flex-start', 'flex-end'],
-        flex: 1
-      }}>
-        { vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && <Box mr={2} ml={2}>
-          <PollVotePluralityResultsCompact vote={vote} /> 
-        </Box> }
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent:
+            vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
+              ? 'space-between'
+              : ['flex-start', 'flex-end'],
+          flex: 1,
+          mt: [2, 0]
+        }}
+      >
+        {vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+          <Box mr={0} ml={0}>
+            <PollVotePluralityResultsCompact vote={vote} />
+          </Box>
+        )}
 
         <Box>
           <Text
@@ -87,16 +102,21 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             Voted
           </Text>
-          <Text as="p" sx={{ 
-            textAlign: ['left', 'right'],
-            color: vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE ? voteColorStyles[(vote.option || 0)] : 'secondary',
-            fontWeight: 'semiBold'
-          }}>
+          <Text
+            as="p"
+            sx={{
+              textAlign: ['left', 'right'],
+              color:
+                vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE
+                  ? voteColorStyles[vote.option || 0]
+                  : 'secondary',
+              fontWeight: 'semiBold'
+            }}
+          >
             {vote.optionValue}
           </Text>
         </Box>
-
       </Box>
-
-    </Box>);
+    </Box>
+  );
 }

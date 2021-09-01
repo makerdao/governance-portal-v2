@@ -3,13 +3,12 @@ import BigNumber from 'bignumber.js';
 import { Box, Text, jsx } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 
-export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory}): React.ReactElement {
-  
+export function PollVotePluralityResultsCompact({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const max = new BigNumber(vote.tally.totalMkrParticipation);
 
-  const abstainValue = new BigNumber(vote.tally.options['0'] ? vote.tally.options['0'].firstChoice: 0);
-  const yesValue = new BigNumber(vote.tally.options['1'] ?vote.tally.options['1'].firstChoice: 0);
-  const noValue = new BigNumber(vote.tally.options['2'] ?vote.tally.options['2'].firstChoice: 0);
+  const abstainValue = new BigNumber(vote.tally.options['0'] ? vote.tally.options['0'].firstChoice : 0);
+  const yesValue = new BigNumber(vote.tally.options['1'] ? vote.tally.options['1'].firstChoice : 0);
+  const noValue = new BigNumber(vote.tally.options['2'] ? vote.tally.options['2'].firstChoice : 0);
 
   const yesPercent = yesValue.dividedBy(max).multipliedBy(100).toFixed(0);
   const abstainPercent = abstainValue.dividedBy(max).multipliedBy(100).toFixed(0);
@@ -61,8 +60,7 @@ export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory
       color: 'secondaryEmphasis',
       fontSize: 1,
       fontWeight: 'semiBold'
-    },
-    
+    }
   };
 
   return (
@@ -72,7 +70,7 @@ export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1}}
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', mr: 1 }}
             as="p"
           >
             Yes
@@ -82,7 +80,7 @@ export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1}}
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1 }}
             as="p"
           >
             Abstain
@@ -92,7 +90,7 @@ export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1}}
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1 }}
             as="p"
           >
             No
@@ -108,8 +106,8 @@ export function PollVotePluralityResultsCompact({ vote }: {vote: PollVoteHistory
 
       <Box sx={styles.progressBarWrapper}>
         <Box sx={styles.yesBar} />
-        <Box sx={styles.abstainBar}/>
-        <Box sx={styles.noBar}/>
+        <Box sx={styles.abstainBar} />
+        <Box sx={styles.noBar} />
       </Box>
     </Box>
   );
