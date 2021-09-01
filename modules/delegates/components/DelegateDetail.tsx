@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Divider, Flex } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -14,7 +14,6 @@ import Tabs from 'components/Tabs';
 import { DelegateVoteHistory } from './DelegateVoteHistory';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 import { DelegateStatusEnum } from '../delegates.constants';
-import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
 
 type PropTypes = {
   delegate: Delegate;
@@ -26,32 +25,35 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
 
   const { voteDelegateAddress } = delegate;
 
-
   const tabTitles = [
-    delegate.status === DelegateStatusEnum.recognized ? 'Delegate credentials' : null,
-    'Participation metrics',
+    delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
+    'Participation Metrics',
     'Voting History'
   ].filter(i => !!i) as string[];
 
   const tabPanels = [
-    delegate.status === DelegateStatusEnum.recognized ? <Box key='delegate-credentials'>
-      <DelegateCredentials delegate={delegate} />
-    </Box> : null,
-    <Box key='delegate-participation-metrics'>
+    delegate.status === DelegateStatusEnum.recognized ? (
+      <Box key="delegate-credentials">
+        <DelegateCredentials delegate={delegate} />
+      </Box>
+    ) : null,
+    <Box key="delegate-participation-metrics">
       <DelegateParticipationMetrics delegate={delegate} />
     </Box>,
-    <Box key='delegate-vote-history'>
+    <Box key="delegate-vote-history">
       <DelegateVoteHistory delegate={delegate} stats={stats} />
-    </Box>,
+    </Box>
   ].filter(i => !!i);
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: [3, 4], pb: 3 }}>
-        <Flex sx={{
-          justifyContent: 'space-between',
-          flexDirection: ['column', 'row'],
-        }}>
+        <Flex
+          sx={{
+            justifyContent: 'space-between',
+            flexDirection: ['column', 'row']
+          }}
+        >
           <Box>
             <Flex>
               <DelegatePicture delegate={delegate} key={delegate.id} />
@@ -66,12 +68,10 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
                     target="_blank"
                   >
                     <Text as="p" sx={{ fontSize: bpi > 0 ? 3 : 1 }}>
-                      Delegate contract  <Icon ml={2} name="arrowTopRight" size={2} />
+                      Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
-                  <Box>
-
-                  </Box>
+                  <Box></Box>
                 </Box>
               </Box>
             </Flex>
@@ -95,14 +95,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
         </Box> */}
       </Box>
 
-
-      <Tabs
-        tabListStyles={{ pl: [3, 4] }}
-        tabTitles={tabTitles}
-        tabPanels={tabPanels}
-      ></Tabs>
-
-
+      <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>
     </Box>
   );
 }
