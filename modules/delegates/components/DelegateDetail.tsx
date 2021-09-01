@@ -35,9 +35,11 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
         <DelegateCredentials delegate={delegate} />
       </Box>
     ) : null,
-    <Box key="delegate-participation-metrics">
-      <DelegateParticipationMetrics delegate={delegate} />
-    </Box>,
+    delegate.status === DelegateStatusEnum.recognized ? (
+      <Box key="delegate-participation-metrics">
+        <DelegateParticipationMetrics delegate={delegate} />
+      </Box>
+    ) : null,
     <Box key="delegate-vote-history">
       <DelegateVoteHistory delegate={delegate} stats={stats} />
     </Box>
