@@ -195,7 +195,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   {poll.discussionLink && (
                     <Box sx={{ mb: 2 }}>
                       <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                        <Text sx={{ fontSize: 2, fontWeight: 'semiBold' }}>
                           Discussion
                           <Icon ml={2} name="arrowTopRight" size={2} />
                         </Text>
@@ -235,7 +235,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       {poll.discussionLink && (
                         <Box>
                           <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                            <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                            <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                               Discussion
                               <Icon ml={2} name="arrowTopRight" size={2} />
                             </Text>

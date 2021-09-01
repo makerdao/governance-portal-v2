@@ -3,7 +3,6 @@ import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
 import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTallyVote, Poll } from 'modules/polls/types';

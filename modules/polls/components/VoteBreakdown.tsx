@@ -19,37 +19,37 @@ export default function VoteBreakdown({
 }): JSX.Element {
   if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
     return (
-      <div key={2} sx={{ p: [3, 4] }} {...props}>
+      <Box key={2} sx={{ p: [3, 4] }} {...props}>
         <Text variant="microHeading" sx={{ mb: 3 }}>
-          Vote Breakdown
+          Voting Breakdown
         </Text>
         {Object.keys(poll.options)
           .slice(0, shownOptions)
           .map((_, i) => (
             <div key={i}>
               <Flex sx={{ justifyContent: 'space-between' }}>
-                <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
-                  {tally ? (
-                    tally.results[i].optionName
-                  ) : (
-                    <Delay>
-                      <Skeleton />
-                    </Delay>
-                  )}
-                </Text>
-                <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                  {tally ? (
-                    `${tally.results[i].firstChoice
+                {tally ? (
+                  <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                    {tally.results[i].optionName}
+                  </Text>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
+                {tally ? (
+                  <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                    {`${tally.results[i].firstChoice
                       .plus(tally.results[i].transfer)
-                      .toFormat(2)} MKR Voting (${tally.results[i].firstPct
+                      .toFormat(2)} MKR Voting ($${tally.results[i].firstPct
                       .plus(tally.results[i].transferPct)
-                      .toFixed(2)}%)`
-                  ) : (
-                    <Delay>
-                      <Skeleton />
-                    </Delay>
-                  )}
-                </Text>
+                      .toFixed(2)}%)`}
+                  </Text>
+                ) : (
+                  <Delay>
+                    <Skeleton />
+                  </Delay>
+                )}
               </Flex>
 
               {tally ? (
@@ -104,7 +104,7 @@ export default function VoteBreakdown({
               )}
             </div>
           ))}
-      </div>
+      </Box>
     );
   }
 
@@ -118,26 +118,26 @@ export default function VoteBreakdown({
         .map((_, i) => (
           <div key={i}>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
-                {tally ? (
-                  tally.results[i].optionName
-                ) : (
-                  <Delay>
-                    <Skeleton />
-                  </Delay>
-                )}
-              </Text>
-              <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                {tally ? (
-                  `${tally.results[i].firstChoice
+              {tally ? (
+                <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                  {tally.results[i].optionName}
+                </Text>
+              ) : (
+                <Delay>
+                  <Skeleton />
+                </Delay>
+              )}
+              {tally ? (
+                <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
+                  {`${tally.results[i].firstChoice
                     .plus(tally.results[i].transfer)
-                    .toFormat(2)} MKR Voting (${tally.results[i].firstPct.toFixed(2)}%)`
-                ) : (
-                  <Delay>
-                    <Skeleton />
-                  </Delay>
-                )}
-              </Text>
+                    .toFormat(2)} MKR Voting ($${tally.results[i].firstPct.toFixed(2)}%)`}
+                </Text>
+              ) : (
+                <Delay>
+                  <Skeleton />
+                </Delay>
+              )}
             </Flex>
 
             {tally ? (
