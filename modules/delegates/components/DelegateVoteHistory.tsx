@@ -7,8 +7,8 @@ export function DelegateVoteHistory({ delegate, stats }: { delegate: Delegate, s
   return (
     <Box p={[3,4]}>
       <Text as="p" sx={{
-        fontSize: '18px',
-        fontWeight: 500
+        fontSize: 4,
+        fontWeight: 'semiBold'
       }}>Polling Proposals</Text>
 
       <Divider mt={3} mb={3} />
