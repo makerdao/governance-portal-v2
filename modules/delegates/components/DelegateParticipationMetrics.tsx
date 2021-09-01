@@ -8,11 +8,11 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
     row: {
       display: 'flex',
       justifyContent: 'space-between',
-      marginTop: 1,
-      marginBottom: 1
+      marginTop: 3,
+      marginBottom: 3
     },
     text: {
-      color: 'secondaryAlt',
+      color: 'onBackground',
       fontWeight: 'semiBold',
       fontSize: 3
     }
@@ -21,16 +21,24 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
     <Box p={[3, 4]}>
       <Text as="p" sx={{
         fontSize: '18px',
-        fontWeight: 500,
+        fontWeight: 'semiBold',
         mb: 3
       }}>Participation breakdown</Text>
 
       <Box sx={styles.row}>
         <Text as="p" sx={styles.text}>
-          Participation
+          Poll participation
         </Text>
         <Text as="p" sx={styles.text} ml={2}>
-          {delegate.combinedParticipation ?? 'Untracked'}
+          {delegate.pollParticipation || 'Untracked'}
+        </Text>
+      </Box>
+      <Box sx={styles.row}>
+        <Text as="p" sx={styles.text}>
+          Executive participation
+        </Text>
+        <Text as="p" sx={styles.text} ml={2}>
+          {delegate.executiveParticipation || 'Untracked'}
         </Text>
       </Box>
       <Box sx={styles.row}>
@@ -38,17 +46,10 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
           Communication
         </Text>
         <Text as="p" sx={styles.text} ml={2}>
-          {delegate.communication ?? 'Untracked'}
+          {delegate.communication || 'Untracked'}
         </Text>
       </Box>
-      <Box sx={styles.row}>
-        <Text as="p" sx={styles.text}>
-          MKR Delegated
-        </Text>
-        <Text as="p" sx={styles.text} ml={2}>
-          {new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}MKR
-        </Text>
-      </Box>
+      
     </Box>
   );
 }

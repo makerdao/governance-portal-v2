@@ -23,8 +23,9 @@ import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
+import { fetchJson } from 'lib/utils';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { fetchJson, isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 
 // api
 import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';

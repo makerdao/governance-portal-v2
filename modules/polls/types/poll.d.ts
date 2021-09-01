@@ -1,4 +1,4 @@
-import VoteTypes from '../../../types/voteTypes';
+import  { PollVoteType } from './pollVoteType';
 
 export type Poll = {
   title: string;
@@ -10,7 +10,7 @@ export type Poll = {
   endDate: Date;
   startDate: Date;
   discussionLink: string | null;
-  voteType: VoteTypes;
+  voteType: PollVoteType;
   categories: string[];
   slug: string;
   ctx: {

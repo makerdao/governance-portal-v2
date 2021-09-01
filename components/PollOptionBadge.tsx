@@ -1,7 +1,7 @@
 import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 
-import { isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { getNetwork } from 'lib/maker';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/utils';

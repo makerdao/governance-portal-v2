@@ -1,15 +1,15 @@
 import matter from 'gray-matter';
-import { getNetwork } from 'lib/maker';
-import { CMSProposal } from 'types/proposal';
+import { CMSProposal } from 'modules/executives/types';
 import { ethers } from 'ethers';
 import { slugify } from 'lib/utils';
+import { SupportedNetworks } from 'lib/constants';
 
 export function parseExecutive(
     proposalDoc: string,
     proposalIndex: Record<string, string[]>,
-    proposalLink: string
+    proposalLink: string,
+    network: SupportedNetworks
   ): CMSProposal | null {
-    const network = getNetwork();
   
     const {
       content,

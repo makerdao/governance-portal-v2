@@ -5,6 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
+import { CurrentlySupportingExecutive } from 'modules/executives/components/CurrentlySupportingExecutive';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
 
@@ -17,6 +18,8 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
       <img width='200px' height='200px' src={delegatePicture} />
       <Box sx={{ marginLeft: 1 }}>
         <DelegateParticipationMetrics delegate={delegate} />
+        <CurrentlySupportingExecutive address={delegate.voteDelegateAddress} />
+
       </Box>
     </Box>
   );

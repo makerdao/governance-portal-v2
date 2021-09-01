@@ -37,7 +37,7 @@ async function extractGithubInformation(
     } = matter(profileMdDoc);
 
     const {
-      data: { combined_participation, communication }
+      data: { combined_participation, communication, poll_participation, exec_participation }
     } = matter(metricsMdDoc);
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
@@ -50,6 +50,8 @@ async function extractGithubInformation(
       externalUrl: external_profile_url,
       description: html,
       combinedParticipation: combined_participation,
+      pollParticipation: poll_participation,
+      executiveParticipation: exec_participation,
       communication
     };
   } catch (e) {
@@ -63,9 +65,9 @@ export async function fetchGithubDelegates(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation[] }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
-  const delegatesCacheKey = `${network}-delegates`;
+  const delegatesCacheKey = 'delegates';
   const cacheTime = 30000;
-  const existingDelegates = fsCacheGet(delegatesCacheKey, cacheTime);
+  const existingDelegates = fsCacheGet(delegatesCacheKey, network, cacheTime);
 
   if (existingDelegates) {
     return Promise.resolve({
@@ -99,7 +101,7 @@ export async function fetchGithubDelegates(
     const data = results.filter(i => !!i) as DelegateRepoInformation[];
 
     // Store in cache
-    fsCacheSet(delegatesCacheKey, JSON.stringify(data), cacheTime);
+    fsCacheSet(delegatesCacheKey, JSON.stringify(data), network, cacheTime);
 
     return {
       error: false,

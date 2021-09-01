@@ -8,7 +8,8 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
-import { initTestchainPolls, isActivePoll } from 'lib/utils';
+import { initTestchainPolls } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { useHat } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
@@ -19,7 +20,7 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-import { CMSProposal } from 'types/proposal';
+import { CMSProposal } from 'modules/executives/types';
 import { Poll } from 'modules/polls/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
@@ -128,7 +129,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     sx={{
                       color: 'text',
                       opacity: '0.7',
-                      fontWeight: 500,
+                      fontWeight: 'semiBold',
                       fontSize: [3, 5],
                       px: [3, 'inherit']
                     }}

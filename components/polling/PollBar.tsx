@@ -4,7 +4,7 @@ import isEqual from 'lodash/isEqual';
 
 import { Poll } from 'modules/polls/types';
 import { Ballot } from 'types/ballot';
-import { isActivePoll, findPollById } from 'lib/utils';
+import { isActivePoll, findPollById } from 'modules/polls/helpers/utils';
 import useAccountsStore from 'stores/accounts';
 import { useAllUserVotes } from 'lib/hooks';
 
