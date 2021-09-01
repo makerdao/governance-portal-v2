@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
-import { CurrentlySupportingExecutive } from 'modules/executives/components/CurrentlySupportingExecutive';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
 
@@ -13,13 +12,12 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
 
 
   const delegateMetrics = (
-    <Box sx={{ display: 'flex'}}>
-      
-      <img width='200px' height='200px' src={delegatePicture} />
-      <Box sx={{ marginLeft: 1 }}>
-        <DelegateParticipationMetrics delegate={delegate} />
-        <CurrentlySupportingExecutive address={delegate.voteDelegateAddress} />
-
+    <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
+        <img  sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }} src={delegatePicture} />
+        <Box sx={{ marginLeft: 1, flex: 1 }}>
+          <DelegateParticipationMetrics delegate={delegate} />
+        </Box>
       </Box>
     </Box>
   );

@@ -4,7 +4,7 @@ import Tooltip from 'components/Tooltip';
 import { getNetwork } from 'lib/maker';
 import moment from 'moment';
 import Link from 'next/link';
-import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
+import { Box, Text, jsx, Link as ThemeUILink, Badge } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { parseRawPollTally } from '../helpers/parseRawTally';
@@ -62,16 +62,18 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               </ThemeUILink>
             </Link>
 
-            {vote.poll.discussionLink && (
-              <Box mt={2}>
-                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank">
+            <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
+              {vote.poll.discussionLink && (
+                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank" sx={{ mr: 2 }}>
                   <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                     Discussion
                     <Icon ml={2} name="arrowTopRight" size={2} />
                   </Text>
                 </ThemeUILink>
-              </Box>
-            )}
+              )}
+              
+            </Box>
+
           </Box>
         </Tooltip>
       </Box>
@@ -87,6 +89,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           mt: [2, 0]
         }}
       >
+
         {vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
           <Box mr={0} ml={0}>
             <PollVotePluralityResultsCompact vote={vote} />
@@ -115,6 +118,17 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.optionValue}
           </Text>
+
+          {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                <Box >
+                  <Badge
+                    variant="primary"
+                  >
+                    Ranked vote
+                  </Badge>
+                </Box>
+              )}
+
         </Box>
       </Box>
     </Box>
