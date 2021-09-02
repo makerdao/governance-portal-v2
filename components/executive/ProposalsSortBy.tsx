@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Flex, Text, jsx } from 'theme-ui';
+import { jsx } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { MenuItem } from '@reach/menu-button';
 
