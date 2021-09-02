@@ -62,16 +62,18 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               </ThemeUILink>
             </Link>
 
-            {vote.poll.discussionLink && (
-              <Box mt={2}>
-                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank">
+            <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
+              {vote.poll.discussionLink && (
+                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank" sx={{ mr: 2 }}>
                   <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                     Discussion
                     <Icon ml={2} name="arrowTopRight" size={2} />
                   </Text>
                 </ThemeUILink>
-              </Box>
-            )}
+              )}
+
+            </Box>
+
           </Box>
         </Tooltip>
       </Box>
@@ -87,6 +89,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           mt: [2, 0]
         }}
       >
+
         {vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
           <Box mr={0} ml={0}>
             <PollVotePluralityResultsCompact vote={vote} />
@@ -100,7 +103,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: ['left', 'right'] }}
             as="p"
           >
-            Voted
+            Option {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && '(Ranked Choice)'}
           </Text>
           <Text
             as="p"
@@ -115,6 +118,9 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.optionValue}
           </Text>
+
+
+
         </Box>
       </Box>
     </Box>
