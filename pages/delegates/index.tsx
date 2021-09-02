@@ -12,7 +12,6 @@ import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/deleg
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';

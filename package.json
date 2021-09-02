@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.13",
-    "@makerdao/dai-plugin-governance": "^0.14.1-beta5",
+    "@makerdao/dai-plugin-governance": "^0.14.1-beta9",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.6.35",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",
@@ -39,6 +39,8 @@
     "@web3-react/walletconnect-connector": "^6.2.4",
     "@web3-react/walletlink-connector": "^6.2.3",
     "babel-plugin-superjson-next": "^0.3.0",
+    "d3-hierarchy": "^3.0.1",
+    "d3-selection": "^3.0.0",
     "ethereum-ens": "^0.8.0",
     "ethers": "^5.4.4",
     "gray-matter": "^4.0.2",
