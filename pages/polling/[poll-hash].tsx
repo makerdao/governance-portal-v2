@@ -325,7 +325,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally ? (
+                      {tally && tally.votesByAddress ? (
                         <VotesByAddress
                           votes={tally.votesByAddress}
                           totalMkrParticipation={tally.totalMkrParticipation}

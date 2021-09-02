@@ -24,7 +24,6 @@ export type RawPollTally = {
   rounds: number;
   totalMkrParticipation: BigNumber;
   numVoters: number;
-  votesByAddress: PollTallyVote[];
   options: Record<number, PollTallyOption>;
 };
 
@@ -40,4 +39,5 @@ export type PollTally = RawPollTally & {
   results: Result[];
   winningOptionName: string;
   totalMkrParticipation: CurrencyObject;
+  votesByAddress?: PollTallyVote[];
 };

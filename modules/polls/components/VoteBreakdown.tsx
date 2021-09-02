@@ -10,8 +10,7 @@ import { POLL_VOTE_TYPE } from '../polls.constants';
 export default function VoteBreakdown({
   poll,
   shownOptions,
-  tally,
-  ...props
+  tally
 }: {
   poll: Poll;
   shownOptions: number;
@@ -19,7 +18,7 @@ export default function VoteBreakdown({
 }): JSX.Element {
   if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
     return (
-      <Box key={2} sx={{ p: [3, 4] }} {...props}>
+      <Box key={2} sx={{ p: [3, 4] }}>
         <Text variant="microHeading" sx={{ mb: 3 }}>
           Voting Breakdown
         </Text>
@@ -109,7 +108,7 @@ export default function VoteBreakdown({
   }
 
   return (
-    <div key={2} sx={{ p: [3, 4], fontSize: [2, 3] }} {...props}>
+    <div key={2} sx={{ p: [3, 4], fontSize: [2, 3] }}>
       <Text variant="microHeading" sx={{ mb: 3 }}>
         Vote Breakdown
       </Text>
