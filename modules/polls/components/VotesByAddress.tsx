@@ -34,7 +34,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
               Address
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
-              Voted
+              Option
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               Voting Power
