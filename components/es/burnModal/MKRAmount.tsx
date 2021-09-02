@@ -13,7 +13,6 @@ type Props = {
 };
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
-  const bpi = useBreakpointIndex();
   const updateInputValue = newVal => {
     setBurnAmount(MKR(newVal));
   };

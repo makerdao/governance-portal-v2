@@ -15,8 +15,7 @@ import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/
 import { useSpellData } from 'lib/hooks';
 import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { cutMiddle } from 'lib/utils';
-import { limitString } from 'lib/string';
+import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';

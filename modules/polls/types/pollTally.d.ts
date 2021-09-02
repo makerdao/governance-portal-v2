@@ -13,23 +13,31 @@ type Result = {
 };
 
 export type PollTallyOption = {
-  firstChoice: BigNumber,
-  transfer: BigNumber,
-  winner: boolean,
-  eliminated: boolean
-}
+  firstChoice: BigNumber;
+  transfer: BigNumber;
+  winner: boolean;
+  eliminated: boolean;
+};
 
 export type RawPollTally = {
   winner: string | null;
   rounds: number;
   totalMkrParticipation: BigNumber;
   numVoters: number;
-  options: Record<number, PollTallyOption>
+  options: Record<number, PollTallyOption>;
 };
 
+export type PollTallyVote = {
+  voter: string;
+  optionId: number;
+  mkrSupport: number;
+  rankedChoiceOption?: number[];
+  options: Record<number, PollTallyOption>;
+};
 
-export type PollTally = RawPollTally &{
+export type PollTally = RawPollTally & {
   results: Result[];
   winningOptionName: string;
   totalMkrParticipation: CurrencyObject;
+  votesByAddress?: PollTallyVote[];
 };

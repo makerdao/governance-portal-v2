@@ -1,6 +1,7 @@
 import { Card, Text, Link } from 'theme-ui';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink, cutMiddle, formatDateWithTime, formatRound } from 'lib/utils';
+import { getEtherscanLink, formatDateWithTime, formatRound } from 'lib/utils';
+import { cutMiddle } from 'lib/string';
 import { CurrencyObject } from 'types/currency';
 import { StakingHistoryRow } from 'types/esmodule';
 

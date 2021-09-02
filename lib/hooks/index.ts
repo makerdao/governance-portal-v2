@@ -6,3 +6,4 @@ export * from './useSpellData';
 export * from './useHat';
 export * from './useAllSlates';
 export * from './useAllUserVotes';
+export * from './useDelegateAddressMap';

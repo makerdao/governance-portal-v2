@@ -1337,10 +1337,10 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@^0.14.1-beta5":
-  version "0.14.1-beta5"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.1-beta5.tgz#fff41d63ec3034ad0bd9773ef7b5786d25d1707e"
-  integrity sha512-PDzm6BE8u0iHx4srJyLqYbMCb+m/kZZxE7Bq7XfLCiOFWVvJyJiZEd7sxiNt+rUvSG4BG1Kaa7iByJFi8TUZng==
+"@makerdao/dai-plugin-governance@^0.14.1-beta9":
+  version "0.14.1-beta9"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.1-beta9.tgz#0229e52f197831b1e033279ad2530dad33a2f9cd"
+  integrity sha512-deWCdLXkOij5yPZ47OmEB6T5WXMo58hlS06EJ1WumnmWibOcBx8GvvbPp4LjsVkusvGdWoilvMKJTrqgG/0dqA==
   dependencies:
     "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.10.0"
@@ -4738,6 +4738,16 @@ csstype@^3.0.5:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.8.tgz#d2266a792729fb227cd216fb572f43728e1ad340"
   integrity sha512-jXKhWqXPmlUeoQnF/EhTtTl4C9SnrxSH/jZUih3jmO6lBKr99rP3/+FmrMj4EFpOXzMtXHAZkd3x0E6h6Fgflw==
+
+d3-hierarchy@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/d3-hierarchy/-/d3-hierarchy-3.0.1.tgz#0365342d54972e38ca05e9143e0ab1c60846b3b5"
+  integrity sha512-RlLTaofEoOrMK1JoXYIGhKTkJFI/6rFrYPgxy6QlZo2BcVc4HGTqEU0rPpzuMq5T/5XcMtAzv1XiLA3zRTfygw==
+
+d3-selection@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-3.0.0.tgz#c25338207efa72cc5b9bd1458a1a41901f1e1b31"
+  integrity sha512-fmTRWbNMmsmWq6xJV8D19U/gw/bwrHfNXxrIN+HfZgnzqTHp9jOmKMhsTUjXOJnZOdZY9Q28y4yebKzqDKlxlQ==
 
 d@1, d@^1.0.1:
   version "1.0.1"
