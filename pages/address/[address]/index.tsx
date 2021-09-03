@@ -59,7 +59,11 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               <DelegateDetail delegate={addressInfo.delegateInfo} stats={addressInfo.stats} />
             )}
             {!addressInfo.delegateInfo && (
-              <AddressDetail address={addressInfo.address} stats={addressInfo.stats} />
+              <AddressDetail
+                address={addressInfo.address}
+                stats={addressInfo.stats}
+                isProxyContract={addressInfo.isProxyContract}
+              />
             )}
           </Box>
         </Stack>
