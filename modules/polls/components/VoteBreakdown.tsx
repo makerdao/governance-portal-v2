@@ -130,7 +130,7 @@ export default function VoteBreakdown({
                 <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
                   {`${tally.results[i].firstChoice
                     .plus(tally.results[i].transfer)
-                    .toFormat(2)} MKR Voting ($${tally.results[i].firstPct.toFixed(2)}%)`}
+                    .toFormat(2)} MKR Voting (${tally.results[i].firstPct.toFixed(2)}%)`}
                 </Text>
               ) : (
                 <Delay>
