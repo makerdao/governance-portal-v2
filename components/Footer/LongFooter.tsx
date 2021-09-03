@@ -25,10 +25,6 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Terms')
         },
         {
-          url: 'https://makerdao.com/privacy',
-          title: t('Privacy Policy')
-        },
-        {
           url: '/cookies-policy',
           title: 'Cookies policy'
         },
@@ -87,10 +83,6 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
     {
       header: 'Contact',
       list: [
-        {
-          url: 'https://makerdao.com/contact',
-          title: t('Press & media')
-        },
         {
           url: 'https://discord.gg/2sWcgCDWCX',
           title: 'Support'
