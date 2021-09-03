@@ -5,9 +5,16 @@ export type AddressAPIStats = {
   pollVoteHistory: PollVoteHistory[];
 };
 
+export type VoteProxyInfo = {
+  voteProxyAddress: string;
+  hot: string;
+  cold: string;
+};
+
 export type AddressApiResponse = {
   isDelegate: boolean;
   isProxyContract: boolean;
+  voteProxyInfo?: VoteProxyInfo;
   delegateInfo?: Delegate;
   address: string;
   stats: AddressAPIStats;

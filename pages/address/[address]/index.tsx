@@ -62,7 +62,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               <AddressDetail
                 address={addressInfo.address}
                 stats={addressInfo.stats}
-                isProxyContract={addressInfo.isProxyContract}
+                voteProxyInfo={addressInfo.voteProxyInfo}
               />
             )}
           </Box>

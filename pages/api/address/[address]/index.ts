@@ -15,15 +15,30 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const maker = await getMaker();
-  const voteProxy = maker.service('smartContract').getContractByAddressAndAbi(address, voteProxyFactoryAbi);
+  const voteProxyContract = maker
+    .service('smartContract')
+    .getContractByAddressAndAbi(address, voteProxyFactoryAbi);
 
   // TODO: should we check cold for history?
   let hot;
+  let cold;
+  let voteProxyAddress;
   try {
-    hot = await voteProxy.hot();
+    hot = await voteProxyContract.hot();
+    cold = await voteProxyContract.cold();
+    voteProxyAddress = address;
   } catch (err) {
     // console.log(err);
   }
+
+  const voteProxyInfo =
+    hot && cold && voteProxyAddress
+      ? {
+          voteProxyAddress,
+          hot,
+          cold
+        }
+      : undefined;
 
   const delegate = await fetchDelegate(address, network);
   const pollVoteHistory = await fetchAddressPollVoteHistory(hot ? hot : address, network);
@@ -31,6 +46,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
   const response: AddressApiResponse = {
     isDelegate: !!delegate,
     isProxyContract: !!hot,
+    voteProxyInfo,
     delegateInfo: delegate,
     address,
     stats: {
