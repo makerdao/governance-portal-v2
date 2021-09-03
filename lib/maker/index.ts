@@ -97,10 +97,9 @@ async function getMaker(network?: SupportedNetworks): Promise<Maker> {
       log: false,
       multicall: true
     });
-  
+
     makerSingletons[currentNetwork] = instance;
   }
-
 
   return makerSingletons[currentNetwork];
 }
