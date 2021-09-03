@@ -20,16 +20,6 @@ export default function ShortFooter(): React.ReactElement {
         Terms
       </NavLink>
       <NavLink
-        href="https://makerdao.com/en/privacy/"
-        target="_blank"
-        variant="footer"
-        title="Privacy Policy"
-        p={2}
-        sx={{ fontWeight: 400 }}
-      >
-        Privacy Policy
-      </NavLink>
-      <NavLink
         href="https://makerdao.statuspage.io/"
         target="_blank"
         variant="footer"
