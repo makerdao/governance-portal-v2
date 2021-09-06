@@ -1,13 +1,11 @@
 /** @jsx jsx */
 
 import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
-import { Divider, Box, Text,Flex, jsx } from 'theme-ui';
+import { Divider, Box, Text, Flex, jsx } from 'theme-ui';
 import { CMSProposal } from 'modules/executives/types';
 import { useExecutives } from '../hooks/useExecutives';
 
 export function CurrentlySupportingExecutive({ address }: { address: string }): React.ReactElement | null {
-  
-
   const { data: proposals } = useExecutives();
   const { data: votedProposals } = useVotedProposals(address);
 
@@ -38,14 +36,14 @@ export function CurrentlySupportingExecutive({ address }: { address: string }): 
   };
 
   const supportText = getSupportText();
-  return (
-    supportText ? <Box>
+  return supportText ? (
+    <Box>
       <Divider my={1} />
       <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
         <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
           {supportText}
         </Text>
       </Flex>
-    </Box>: null
-  );
+    </Box>
+  ) : null;
 }

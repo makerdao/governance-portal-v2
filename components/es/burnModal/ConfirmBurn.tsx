@@ -1,6 +1,19 @@
 /** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Flex, Box, Button, Text, Grid, Input, jsx, Close, Label, Checkbox, Link, Divider } from 'theme-ui';
+import {
+  Flex,
+  Box,
+  Button,
+  Text,
+  Grid,
+  Input,
+  jsx,
+  Close,
+  Label,
+  Checkbox,
+  Link as ExternalLink,
+  Divider
+} from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import getMaker, { MKR } from 'lib/maker';
 import Toggle from '../Toggle';
@@ -141,7 +154,11 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
             data-testid="tosCheck"
           />
           <Text>
-            I have read and accept the <Link>Terms of Service</Link>.
+            I have read and accept the{' '}
+            <ExternalLink href="/terms" target="_blank">
+              Terms of Service
+            </ExternalLink>
+            .
           </Text>
         </Label>
       </Flex>

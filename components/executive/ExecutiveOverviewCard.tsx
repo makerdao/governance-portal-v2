@@ -177,8 +177,8 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
         <Divider my={0} />
-        <Flex p={3} sx={{ justifyContent: 'center' }}>
-          <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+          <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
             {getStatusText(proposal.address, spellData)}
           </Text>
         </Flex>
