@@ -38,8 +38,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   oldProxy: { role: '', address: '' },
   voteDelegate: undefined,
 
-  addAccountsListener: async (maker) => {
-    
+  addAccountsListener: async maker => {
     maker.on('accounts/CHANGE', async ({ payload: { account } }) => {
       if (!account) {
         set({ currentAccount: account });

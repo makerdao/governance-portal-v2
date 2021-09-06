@@ -51,8 +51,8 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               Voted {voteDate.format(dateFormat)}
             </Text>
 
-            <Link href={{ pathname: `/polling/${vote.poll.slug}`, query: { network } }} passHref>
-              <ThemeUILink href={`/polling/${vote.poll.slug}`} variant="nostyle">
+            <Link href={`/polling/${vote.poll.slug}?network=${network}`} passHref>
+              <ThemeUILink variant="nostyle">
                 <Text
                   as="p"
                   sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}

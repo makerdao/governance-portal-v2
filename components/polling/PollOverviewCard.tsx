@@ -56,10 +56,10 @@ export default function PollOverviewCard({
         <Box sx={{ cursor: 'pointer' }}>
           <Box>
             <Link
-              href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-              as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+              href={`/polling/${poll.slug}?network=${network}`}
+              passHref
             >
-              <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <InternalLink  variant="nostyle">
                 <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {poll.title}
                 </Text>
@@ -67,10 +67,10 @@ export default function PollOverviewCard({
             </Link>
           </Box>
           <Link
-            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+            href={`/polling/${poll.slug}?network=${network}`}
+            passHref
           >
-            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+            <InternalLink  variant="nostyle">
               <Text
                 sx={{
                   fontSize: [2, 3],
