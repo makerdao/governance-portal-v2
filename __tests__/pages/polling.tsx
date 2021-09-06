@@ -25,7 +25,7 @@ describe('Polling', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
     await createTestPolls(maker);
   });
 

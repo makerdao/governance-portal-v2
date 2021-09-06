@@ -107,7 +107,7 @@ describe('Executive page', () => {
   });
 
   test('shows delegated balance if account is a delegate', async () => {
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
 
     // set delegate in state
     accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');

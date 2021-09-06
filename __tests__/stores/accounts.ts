@@ -8,7 +8,7 @@ let maker;
 describe('Store accounts', () => {
   beforeAll(async () => {
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
   });
   
   test('should automatically add an account changed listener to dai.js', async () => {

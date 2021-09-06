@@ -25,10 +25,10 @@ describe('ES Module', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
+    accountsApi.getState().addAccountsListener(maker);
 
     
     expect(accountsApi.getState().currentAccount).toBeUndefined();
-    accountsApi.getState().addAccountsListener();
 
     const nextAccount = TestAccountProvider.nextAccount();
     await maker.service('accounts').addAccount('test-account', {
