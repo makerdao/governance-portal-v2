@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import AddressIcon from 'components/header/AddressIcon';
+import AddressIcon from 'modules/address/components/AddressIcon';
 import { formatAddress } from 'lib/utils';
 import { useEffect, useState } from 'react';
 import { Button, Box, Flex, Text, jsx, Spinner } from 'theme-ui';
@@ -68,7 +68,7 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
         ) : (
           <Flex sx={{ alignItems: 'center', mr: 2 }}>
             <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} />
+              <AddressIcon address={address} width="22px" />
             </Box>
             <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
           </Flex>

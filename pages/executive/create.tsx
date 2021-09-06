@@ -2,7 +2,6 @@
 
 import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
 import Head from 'next/head';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
 import { useState } from 'react';
@@ -14,8 +13,6 @@ import { getEtherscanLink } from 'lib/utils';
 import { SupportedNetworks } from 'lib/constants';
 
 const ExecutiveCreate = () => {
-  const bpi = useBreakpointIndex();
-
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');

@@ -6,13 +6,10 @@ import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import Tooltip from '../Tooltip';
-import useSWR from 'swr';
 
-import getMaker from 'lib/maker';
-import { PollVote } from 'types/pollVote';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'lib/utils';
+import { Poll } from 'modules/polls/types';
+import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polls/helpers/utils';
 import Stack from '../layouts/Stack';
-import { Poll } from 'types/poll';
 import { Account } from 'types/account';
 import useBallotStore from 'stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
@@ -20,6 +17,7 @@ import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAllUserVotes } from 'lib/hooks';
 
 type Props = {
   poll: Poll;
@@ -42,11 +40,7 @@ const rankedChoiceBlurb = (
 const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { data: allUserVotes } = useSWR<PollVote[]>(
-    account?.address ? ['/user/voting-for', account.address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address)),
-    { refreshInterval: 0 }
-  );
+  const { data: allUserVotes } = useAllUserVotes(account?.address);
 
   const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
     state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],

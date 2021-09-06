@@ -7,7 +7,7 @@ import Skeleton from 'components/SkeletonThemed';
 import Stack from '../layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
-import { CMSProposal } from 'types/proposal';
+import { CMSProposal } from 'modules/executives/types';
 
 type Props = {
   proposal: CMSProposal;

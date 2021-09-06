@@ -38,7 +38,7 @@ describe('Parse executive', () => {
   });
 
   test('parseExecutive', async () => {
-    const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
+    const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x', 'testnet');
     expect(
       !!parsedExec.about &&
         !!parsedExec.content &&
@@ -52,18 +52,18 @@ describe('Parse executive', () => {
   });
 
   test('parseExecutive removes execs with invalid dates', async () => {
-    const parsedExec = parseExecutive(Exec2, { testnet: ['x'] }, 'x');
+    const parsedExec = parseExecutive(Exec2, { testnet: ['x'] }, 'x', 'testnet');
     expect(parsedExec).toBe(null);
   });
 
   test('parseExecutive removes execs with invalid address', async () => {
-    const parsedExec = parseExecutive(Exec3, { testnet: ['x'] }, 'x');
+    const parsedExec = parseExecutive(Exec3, { testnet: ['x'] }, 'x', 'testnet');
     expect(parsedExec).toBe(null);
   });
 });
 
 test('parseExecutive', async () => {
-  const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x');
+  const parsedExec = parseExecutive(Exec1, { testnet: ['x'] }, 'x', 'testnet');
   expect(
     !!parsedExec.about &&
       !!parsedExec.content &&
@@ -77,11 +77,11 @@ test('parseExecutive', async () => {
 });
 
 test('parseExecutive removes execs with invalid dates', async () => {
-  const parsedExec = parseExecutive(Exec2, { testnet: ['x'] }, 'x');
+  const parsedExec = parseExecutive(Exec2, { testnet: ['x'] }, 'x', 'testnet');
   expect(parsedExec).toBe(null);
 });
 
 test('parseExecutive removes execs with invalid address', async () => {
-  const parsedExec = parseExecutive(Exec3, { testnet: ['x'] }, 'x');
+  const parsedExec = parseExecutive(Exec3, { testnet: ['x'] }, 'x', 'testnet');
   expect(parsedExec).toBe(null);
 });

@@ -5,15 +5,11 @@ import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
-import { MKR } from './maker';
 import { CurrencyObject } from 'types/currency';
-import { PollTally } from 'types/pollTally';
-import { Poll } from 'types/poll';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polls/api/mocks/polls.json';
-import { PollVote } from 'types/pollVote';
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
@@ -60,42 +56,6 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   );
 }
 
-export function parsePollTally(rawTally, poll: Poll): PollTally {
-  invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
-  const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
-
-  if (rawTally?.winner === null) rawTally.winningOption = 'none found';
-  else rawTally.winningOptionName = poll.options[rawTally.winner];
-
-  const results = Object.keys(poll.options)
-    .map(key => {
-      return {
-        optionId: key,
-        optionName: poll.options[key],
-        firstChoice: new BigNumber(rawTally.options?.[key]?.firstChoice || 0),
-        transfer: new BigNumber(rawTally.options?.[key]?.transfer || 0),
-        firstPct: rawTally.options?.[key]?.firstChoice
-          ? new BigNumber(rawTally.options[key].firstChoice)
-              .div(totalMkrParticipation.toBigNumber())
-              .times(100)
-          : new BigNumber(0),
-        transferPct: rawTally.options?.[key]?.transfer
-          ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation.toBigNumber()).times(100)
-          : new BigNumber(0),
-        eliminated: rawTally.options?.[key]?.eliminated ?? true,
-        winner: rawTally.options?.[key]?.winner ?? false
-      };
-    })
-    .sort((a, b) => {
-      const valueA = a.firstChoice.plus(a.transfer);
-      const valueB = b.firstChoice.plus(b.transfer);
-      if (valueA.eq(valueB)) return a.optionName > b.optionName ? 1 : -1;
-      return valueA.gt(valueB) ? -1 : 1;
-    });
-
-  return { ...rawTally, results, totalMkrParticipation, numVoters: rawTally.numVoters };
-}
-
 export function getEtherscanLink(
   network: SupportedNetworks,
   data: string,
@@ -112,36 +72,6 @@ export function getEtherscanLink(
     default:
       return `${prefix}/address/${data}`;
   }
-}
-
-export function isActivePoll(poll: Poll): boolean {
-  const now = Date.now();
-  if (new Date(poll.endDate).getTime() < now) return false;
-  if (new Date(poll.startDate).getTime() > now) return false;
-  return true;
-}
-
-export function isRankedChoicePoll(poll: Poll): boolean {
-  return poll.voteType === 'Ranked Choice IRV';
-}
-
-export function extractCurrentPollVote(
-  poll: Poll,
-  allUserVotes: PollVote[] | undefined
-): number[] | number | null {
-  const currentVote = allUserVotes?.find(_poll => _poll.pollId === poll.pollId);
-
-  if (poll.voteType === 'Ranked Choice IRV') {
-    return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
-  } else if (poll.voteType === 'Plurality Voting') {
-    return currentVote?.option !== undefined ? currentVote.option : null;
-  }
-
-  return null;
-}
-
-export function findPollById(pollList: Poll[], pollId: string): Poll | undefined {
-  return pollList.find((poll: Poll) => parseInt(pollId) === poll.pollId);
 }
 
 export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
@@ -278,11 +208,6 @@ function now() {
 
 export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
-}
-
-export function cutMiddle(text = '', left = 6, right = 4): string {
-  if (text.length <= left + right) return text;
-  return `${text.substring(0, left)}...${text.substring(text.length - right - 1, text.length - 1)}`;
 }
 
 export const sortBytesArray = _array =>

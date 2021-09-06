@@ -1,4 +1,4 @@
-import { PartialPoll, Poll } from 'types/poll';
+import { PartialPoll, Poll } from 'modules/polls/types';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { backoffRetry, timeoutPromise } from 'lib/utils';

@@ -1,14 +1,15 @@
 import fs from 'fs';
 import os from 'os';
 import { getNetwork } from 'lib/maker';
+import { SupportedNetworks } from 'lib/constants';
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const fsCacheCache = {};
 
-function getFilePath(name: string): string {
+function getFilePath(name: string, network: string): string {
   const date = new Date().toISOString().substring(0, 10);
 
-  return `${os.tmpdir()}/gov-portal-${getNetwork()}-${name}-${date}`;
+  return `${os.tmpdir()}/gov-portal-${network}-${name}-${date}`;
 }
 
 export const fsCacheDel = (path: string): void => {
@@ -17,8 +18,11 @@ export const fsCacheDel = (path: string): void => {
   fsCacheCache[path] = null;
 };
 
-export const fsCacheGet = (name: string, expiryMs?: number): any => {
-  const path = getFilePath(name);
+export const fsCacheGet = (name: string, network?: SupportedNetworks, expiryMs?: number): any => {
+  if (Object.keys(fs).length === 0) return null;
+
+  const currentNetwork = network || getNetwork();
+  const path = getFilePath(name, currentNetwork);
   const memCached = fsCacheCache[path];
 
   if (memCached) {
@@ -48,9 +52,13 @@ export const fsCacheGet = (name: string, expiryMs?: number): any => {
   }
 };
 
-export const fsCacheSet = (name: string, data: any, expiryMs?: number): void => {
+export const fsCacheSet = (name: string, data: any, network?: SupportedNetworks, expiryMs?: number): void => {
+  if (Object.keys(fs).length === 0) return;
+
   try {
-    const path = getFilePath(name);
+    const currentNetwork = network || getNetwork();
+
+    const path = getFilePath(name, currentNetwork);
     console.log('fs cache set', path);
     fs.writeFileSync(path, data);
 

@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import useSWR, { mutate } from 'swr';
-import invariant from 'tiny-invariant';
 import {
   Card,
   Flex,
@@ -18,28 +17,39 @@ import {
   Link as ExternalLink,
   jsx
 } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import Skeleton from 'components/SkeletonThemed';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import invariant from 'tiny-invariant';
+import useSWR, { mutate } from 'swr';
+import { Icon } from '@makerdao/dai-ui-icons';
 
-import CountdownTimer from 'components/CountdownTimer';
+// lib
+import { fetchJson } from 'lib/utils';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
+import { isActivePoll } from 'modules/polls/helpers/utils';
+
+// api
 import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-import { parsePollTally, fetchJson, isActivePoll } from 'lib/utils';
+import { Poll, PollTally } from 'modules/polls/types';
+import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
+
+// stores
+import useAccountsStore from 'stores/accounts';
+import useBallotStore from 'stores/ballot';
+
+// components
+import Skeleton from 'components/SkeletonThemed';
+import CountdownTimer from 'components/CountdownTimer';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VoteBreakdown from 'components/polling/[poll-hash]/VoteBreakdown';
-import VoteBox from 'components/polling/[poll-hash]/VoteBox';
+import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
+import VoteBox from 'modules/polls/components/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
-import { Poll } from 'types/poll';
-import { PollTally } from 'types/pollTally';
-import useAccountsStore from 'stores/accounts';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import useBallotStore from 'stores/ballot';
 import PollOptionBadge from 'components/PollOptionBadge';
+import MobileVoteSheet from 'components/polling/MobileVoteSheet';
+import VotesByAddress from 'modules/polls/components/VotesByAddress';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -49,7 +59,7 @@ const getURL = poll =>
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parsePollTally(rawTally, poll));
+    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
     mutate(getURL(poll), tallyPromise, false);
   }
 }
@@ -68,9 +78,15 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
 
-  const { data: tally } = useSWR<PollTally>(getURL(poll), async url =>
-    parsePollTally(await fetchJson(url), poll)
+  const { data: tally, error: tallyError } = useSWR<PollTally>(
+    getURL(poll),
+    async url => parseRawPollTally(await fetchJson(url), poll),
+    { refreshInterval: 30000 }
   );
+
+  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightVisual'), {
+    ssr: false
+  });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
@@ -179,7 +195,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   {poll.discussionLink && (
                     <Box sx={{ mb: 2 }}>
                       <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                        <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                        <Text sx={{ fontSize: 2, fontWeight: 'semiBold' }}>
                           Discussion
                           <Icon ml={2} name="arrowTopRight" size={2} />
                         </Text>
@@ -219,7 +235,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       {poll.discussionLink && (
                         <Box>
                           <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                            <Text sx={{ fontSize: 1, fontWeight: 'bold' }}>
+                            <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                               Discussion
                               <Icon ml={2} name="arrowTopRight" size={2} />
                             </Text>
@@ -250,57 +266,94 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   sx={{ variant: 'markdown.default', p: [3, 4] }}
                   dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                 />,
-                [
-                  <VoteBreakdown
-                    poll={poll}
-                    shownOptions={shownOptions}
-                    tally={tally}
-                    key={'vote breakdown'}
-                  />,
-                  shownOptions < Object.keys(poll.options).length && (
-                    <Box sx={{ px: 4, pb: 3 }} key={'view more'}>
-                      <Button
-                        variant="mutedOutline"
-                        onClick={() => {
-                          setShownOptions(shownOptions + 6);
-                        }}
-                      >
-                        <Flex sx={{ alignItems: 'center' }}>
-                          View more
-                          <Icon name="chevron_down" size="2" ml={2} />
-                        </Flex>
-                      </Button>
-                    </Box>
-                  ),
+                tallyError ? (
+                  <Box sx={{ m: 4 }}>
+                    <Text as="p">Unable to fetch vote data at this time.</Text>
+                  </Box>
+                ) : (
+                  [
+                    <VoteBreakdown
+                      poll={poll}
+                      shownOptions={shownOptions}
+                      tally={tally}
+                      key={'vote breakdown'}
+                    />,
+                    shownOptions < Object.keys(poll.options).length && (
+                      <Box sx={{ px: 4, pb: 3 }} key={'view more'}>
+                        <Button
+                          variant="mutedOutline"
+                          onClick={() => {
+                            setShownOptions(shownOptions + 6);
+                          }}
+                        >
+                          <Flex sx={{ alignItems: 'center' }}>
+                            View more
+                            <Icon name="chevron_down" size="2" ml={2} />
+                          </Flex>
+                        </Button>
+                      </Box>
+                    ),
+                    <Divider key={'divider'} />,
+                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'voting stats'}>
+                      <Text variant="microHeading" sx={{ mb: 3 }}>
+                        Voting Stats
+                      </Text>
+                      <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
+                        <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
+                        {tally ? (
+                          <Text>{tally.totalMkrParticipation.toBigNumber().toFormat(2)} MKR</Text>
+                        ) : (
+                          <Box sx={{ width: 4 }}>
+                            <Skeleton />
+                          </Box>
+                        )}
+                      </Flex>
 
-                  <Divider key={'divider'} />,
-                  <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'voting stats'}>
-                    <Text variant="microHeading" sx={{ mb: 3 }}>
-                      Voting Stats
-                    </Text>
-                    <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
-                      <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
-                      {tally ? (
-                        <Text>{tally.totalMkrParticipation.toBigNumber().toFormat(2)} MKR</Text>
+                      <Flex sx={{ justifyContent: 'space-between', fontSize: [2, 3] }}>
+                        <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
+                        {tally ? (
+                          <Text>{tally.numVoters}</Text>
+                        ) : (
+                          <Box sx={{ width: 4 }}>
+                            <Skeleton />
+                          </Box>
+                        )}
+                      </Flex>
+                    </Flex>,
+                    <Divider key={'divider 2'} />,
+                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'votes by address'}>
+                      <Text variant="microHeading" sx={{ mb: 3 }}>
+                        Voting By Address
+                      </Text>
+                      {tally && tally.votesByAddress ? (
+                        <VotesByAddress
+                          votes={tally.votesByAddress}
+                          totalMkrParticipation={tally.totalMkrParticipation}
+                          poll={poll}
+                        />
                       ) : (
-                        <Box sx={{ width: 4 }}>
-                          <Skeleton />
+                        <Box sx={{ width: '100%' }}>
+                          <Box mb={2}>
+                            <Skeleton width="100%" />
+                          </Box>
+                          <Box mb={2}>
+                            <Skeleton width="100%" />
+                          </Box>
+                          <Box mb={2}>
+                            <Skeleton width="100%" />
+                          </Box>
                         </Box>
                       )}
+                    </Flex>,
+                    <Divider key={'divider 3'} />,
+                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'vote weight circles'}>
+                      <Text variant="microHeading" sx={{ mb: 3 }}>
+                        Voting Weight
+                      </Text>
+                      {tally && <VotingWeightComponent tally={tally} poll={poll} />}
                     </Flex>
-
-                    <Flex sx={{ justifyContent: 'space-between', fontSize: [2, 3] }}>
-                      <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
-                      {tally ? (
-                        <Text>{tally.numVoters}</Text>
-                      ) : (
-                        <Box sx={{ width: 4 }}>
-                          <Skeleton />
-                        </Box>
-                      )}
-                    </Flex>
-                  </Flex>
-                ]
+                  ]
+                )
               ]}
             />
           </Card>

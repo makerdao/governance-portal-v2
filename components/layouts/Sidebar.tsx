@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Grid, Box, jsx } from 'theme-ui';
+import { Grid, jsx } from 'theme-ui';
 
 /**
  * Expects two children: the first one is the main content, the second one is the sidebar

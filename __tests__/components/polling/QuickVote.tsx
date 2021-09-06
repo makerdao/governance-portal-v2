@@ -5,9 +5,7 @@ import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
-import { Poll } from '../../../types/poll';
-import { PollCategory } from '../../../types/pollCategory';
-
+import { Poll, PollCategory } from 'modules/polls/types';
 let maker;
 
 jest.mock('@theme-ui/match-media', () => {
@@ -19,7 +17,7 @@ jest.mock('@theme-ui/match-media', () => {
 describe('QuickVote', () => {
   beforeAll(async () => {
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
     await createTestPolls(maker);
     jest.setTimeout(30000);
   });

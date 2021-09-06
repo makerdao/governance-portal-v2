@@ -1,43 +1,43 @@
 import { BlogPost } from '../types/blogPost';
-import axios from 'axios';
 import { GOV_BLOG_POSTS_ENDPOINT } from '../blog.constants';
 import { BlogWordpressDetail, BlogWordpressMediaResponse, BlogWordpressResponse } from '../types/blogWordpressApi';
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
-
+  const cacheKey = 'blogPosts';
   // Check first from cache
   if (config.USE_FS_CACHE) {
-    const cachedBlogPosts = fsCacheGet('blogPosts');
+    const cachedBlogPosts = fsCacheGet(cacheKey);
 
     if (cachedBlogPosts) {
       return JSON.parse(cachedBlogPosts);
     }
   }
 
-  // List of last 3 posts
-  const response = await axios.get<BlogWordpressResponse>(GOV_BLOG_POSTS_ENDPOINT);
+  // List of last 3 posts  
+  const response: BlogWordpressResponse = await(await fetch(GOV_BLOG_POSTS_ENDPOINT)).json();
 
-  const results = await Promise.all(response.data.map(async item => {
+
+  const results = await Promise.all(response.map(async item => {
     // Get the blog post detail to fetch the image and the date
-    const itemResponse = await axios.get<BlogWordpressDetail>(item._links.self[0].href);
+    const itemResponse:BlogWordpressDetail = await (await fetch(item._links.self[0].href)).json();
 
     // Fetch the media image URL
-    const mediaResponse = await axios.get<BlogWordpressMediaResponse>(itemResponse.data._links['wp:featuredmedia'][0].href);
+    const mediaResponse:BlogWordpressMediaResponse = await (await fetch(itemResponse._links['wp:featuredmedia'][0].href)).json();
 
-    const photoHref = mediaResponse.data ?  mediaResponse.data.media_details.sizes.medium.source_url: '';
+    const photoHref = mediaResponse ?  mediaResponse.media_details.sizes.medium.source_url: '';
 
     return {
       title: item.title.rendered,
       link: item.link,
-      date: new Date(itemResponse.data.date),
+      date: new Date(itemResponse.date),
       photoHref
     } as BlogPost;
   }));
 
   if (config.USE_FS_CACHE) {
-    fsCacheSet('blogPosts', JSON.stringify(results));
+    fsCacheSet(cacheKey, JSON.stringify(results));
   }
 
   return results;

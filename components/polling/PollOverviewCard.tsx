@@ -4,12 +4,12 @@ import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject 
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
-import { isActivePoll } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { getNetwork } from 'lib/maker';
 import Stack from '../layouts/Stack';
 import CountdownTimer from '../CountdownTimer';
 import VotingStatus from './PollVotingStatus';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 import PollOptionBadge from '../PollOptionBadge';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
