@@ -2,6 +2,7 @@ import { PollVoteHistoryList } from 'modules/polls/components/PollVoteHistoryLis
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { Box, Divider, Text } from 'theme-ui';
 import { Delegate } from '../types';
+import { DelegateMKRChart } from './DelegateMKRChart';
 
 export function DelegateVoteHistory({ delegate, stats }: { delegate: Delegate, stats: AddressAPIStats}): React.ReactElement {
   return (
@@ -13,7 +14,7 @@ export function DelegateVoteHistory({ delegate, stats }: { delegate: Delegate, s
 
       <Divider mt={3} mb={3} />
       <PollVoteHistoryList votes={stats.pollVoteHistory} />
-
+      <DelegateMKRChart delegate={delegate} />
       
     </Box>
   );
