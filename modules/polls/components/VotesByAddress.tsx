@@ -30,16 +30,16 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
       >
         <thead>
           <tr>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '34%' }} variant="caps">
               Address
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '22%' }} variant="caps">
               Option
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '22%' }} variant="caps">
               Voting Power
             </Text>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2 }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '22%' }} variant="caps">
               MKR Amount
             </Text>
           </tr>
@@ -56,21 +56,21 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                         : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
                     </Link>
                   </Text>
-                  <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType) }}>
+                  <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2 }}>
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]
                       : poll.options[v.optionId]}
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && ' *'}
                   </Text>
-                  <Text as="td">
+                  <Text as="td" sx={{ pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport)
                       .div(totalMkrParticipation.toBigNumber())
                       .times(100)
                       .toFormat(1)}%`}
                   </Text>
-                  <Text as="td" sx={{ textAlign: 'right' }}>{`${new BigNumber(v.mkrSupport).toFormat(2)}${
-                    bpi > 0 ? ' MKR' : ''
-                  }`}</Text>
+                  <Text as="td" sx={{ textAlign: 'right', pb: 2 }}>{`${new BigNumber(v.mkrSupport).toFormat(
+                    2
+                  )}${bpi > 0 ? ' MKR' : ''}`}</Text>
                 </tr>
               ))}
             </>
