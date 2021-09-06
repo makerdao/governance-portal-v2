@@ -61,7 +61,7 @@ async function setup(maker, mockResponse) {
 
   await act(async () => {
     // This sets the account in state
-    await connectAccount(view, maker.currentAccount().address);
+    await connectAccount(maker.currentAccount().address);
   });
   return view;
 }
@@ -69,7 +69,7 @@ async function setup(maker, mockResponse) {
 describe('Delegates list page', () => {
   const mkrToDeposit = '3.2';
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
     maker = await getMaker();
@@ -173,9 +173,13 @@ describe('Delegates list page', () => {
   });
 
 
-  describe('Delegates system info', async () => {
-    await screen.findByText('System Info');
-    
+  test('Find info', async () => {
+    await screen.findByText('System Info', {
+      
+    }, {
+      timeout: 30000
+    });
+  
     const totalDelegatesSystemInfo = screen.getByTestId('total-delegates-system-info');
     expect(totalDelegatesSystemInfo).toHaveTextContent('1');
 
@@ -187,6 +191,5 @@ describe('Delegates list page', () => {
     
     const totalMkr = screen.getByTestId('total-mkr-system-info');
     expect(totalMkr).toHaveTextContent('10.24');
-    
-  });
+  })
 });

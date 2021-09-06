@@ -28,7 +28,7 @@ async function setup() {
     </SWRConfig>
   );
   await act(async () => {
-    await connectAccount(view, DEMO_ACCOUNT_TESTS);
+    await connectAccount(DEMO_ACCOUNT_TESTS);
   });
   return view;
 }

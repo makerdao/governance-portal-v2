@@ -22,8 +22,8 @@ describe('Store accounts', () => {
     maker.useAccount('test-account');
     await waitForExpect(() => {
       const currentAccount = accountsApi.getState().currentAccount;
-      expect(currentAccount.address).toBe(nextAccount.address);
-      expect(currentAccount.name).toBe('test-account');
+      expect(currentAccount?.address).toBe(nextAccount.address);
+      expect(currentAccount?.name).toBe('test-account');
     });
   });
     

@@ -25,20 +25,23 @@ describe('ES Module', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+
+    
     expect(accountsApi.getState().currentAccount).toBeUndefined();
+    accountsApi.getState().addAccountsListener();
 
     const nextAccount = TestAccountProvider.nextAccount();
     await maker.service('accounts').addAccount('test-account', {
       type: 'privateKey',
       key: nextAccount.key
     });
+
     maker.useAccount('test-account');
     await waitForExpect(() => {
       const currentAccount = accountsApi.getState().currentAccount;
-      expect(currentAccount.address).toBe(nextAccount.address);
-      expect(currentAccount.name).toBe('test-account');
-    });
+      expect(currentAccount?.address).toBe(nextAccount.address);
+      expect(currentAccount?.name).toBe('test-account');
+    }, 30000);
   });
 
   afterEach(() => {
@@ -82,8 +85,8 @@ describe('ES Module', () => {
 
         await waitForExpect(() => {
           const currentAccount = accountsApi.getState().currentAccount;
-          expect(currentAccount.name).toBe('test-account');
-        });
+          expect(currentAccount?.name).toBe('test-account');
+        }, 10000);
       });
 
       test('Burn MKR Modal Flow', async () => {
