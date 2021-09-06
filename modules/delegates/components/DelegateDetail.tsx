@@ -67,7 +67,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
                     href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
                     target="_blank"
                   >
-                    <Text as="p" sx={{ fontSize: [1, 3] }}>
+                    <Text as="p" sx={{ fontSize: [1, 3], mt: [1, 0] }}>
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>

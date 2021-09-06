@@ -64,16 +64,19 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
 
             <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
               {vote.poll.discussionLink && (
-                <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank" sx={{ mr: 2 }}>
+                <ThemeUILink
+                  title="Discussion"
+                  href={vote.poll.discussionLink}
+                  target="_blank"
+                  sx={{ mr: 2 }}
+                >
                   <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                     Discussion
                     <Icon ml={2} name="arrowTopRight" size={2} />
                   </Text>
                 </ThemeUILink>
               )}
-
             </Box>
-
           </Box>
         </Tooltip>
       </Box>
@@ -89,7 +92,6 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           mt: [2, 0]
         }}
       >
-
         {vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
           <Box mr={0} ml={0}>
             <PollVotePluralityResultsCompact vote={vote} />
@@ -100,7 +102,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: ['left', 'right'] }}
+            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: 'right' }}
             as="p"
           >
             Option {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && '(Ranked Choice)'}
@@ -108,7 +110,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           <Text
             as="p"
             sx={{
-              textAlign: ['left', 'right'],
+              textAlign: 'right',
               color:
                 vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE
                   ? voteColorStyles[vote.option || 0]
@@ -118,9 +120,6 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.optionValue}
           </Text>
-
-
-
         </Box>
       </Box>
     </Box>
