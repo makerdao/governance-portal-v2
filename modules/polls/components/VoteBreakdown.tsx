@@ -19,8 +19,8 @@ export default function VoteBreakdown({
   if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
     return (
       <Box key={2} sx={{ p: [3, 4] }}>
-        <Text variant="microHeading" sx={{ mb: 3 }}>
-          Voting Breakdown
+        <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
+          Vote Breakdown
         </Text>
         {Object.keys(poll.options)
           .slice(0, shownOptions)
@@ -109,7 +109,7 @@ export default function VoteBreakdown({
 
   return (
     <div key={2} sx={{ p: [3, 4], fontSize: [2, 3] }}>
-      <Text variant="microHeading" sx={{ mb: 3 }}>
+      <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
         Vote Breakdown
       </Text>
       {Object.keys(poll.options)

@@ -10,7 +10,6 @@ import { PollTallyVote, RawPollTally } from 'modules/polls/types';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse<RawPollTally>) => {
-    const maker = await getMaker();
     const pollId = req.query['poll-id'] as string;
     const network = (req.query.network as string) || DEFAULT_NETWORK;
 
@@ -19,6 +18,7 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
 
     const tally: RawPollTally = await backoffRetry(3, () => fetchPollTally(parseInt(pollId), network));
 
+    const maker = await getMaker(network);
     const votesByAddress: PollTallyVote[] = (
       await maker.service('govPolling').getMkrAmtVotedByAddress(pollId)
     ).sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
