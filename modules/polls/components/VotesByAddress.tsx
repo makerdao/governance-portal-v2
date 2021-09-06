@@ -39,7 +39,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
             <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
               Voting Power
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2 }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'right', pb: 2 }} variant="caps">
               MKR Amount
             </Text>
           </tr>
@@ -68,7 +68,9 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                       .times(100)
                       .toFormat(1)}%`}
                   </Text>
-                  <Text as="td">{`${new BigNumber(v.mkrSupport).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}</Text>
+                  <Text as="td" sx={{ textAlign: 'right' }}>{`${new BigNumber(v.mkrSupport).toFormat(2)}${
+                    bpi > 0 ? ' MKR' : ''
+                  }`}</Text>
                 </tr>
               ))}
             </>
