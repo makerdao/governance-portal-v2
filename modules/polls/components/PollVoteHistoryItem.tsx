@@ -105,7 +105,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: 'right' }}
             as="p"
           >
-            Option {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && '(Ranked Choice)'}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'Voted 1st Choice': 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
@@ -114,7 +114,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               color:
                 vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE
                   ? voteColorStyles[vote.option || 0]
-                  : 'secondaryEmphasis',
+                  : 'secondaryAlt',
               fontWeight: 'semiBold'
             }}
           >
