@@ -28,7 +28,7 @@ async function setup() {
     </SWRConfig>
   );
   await act(async () => {
-    await connectAccount(view, DEMO_ACCOUNT_TESTS);
+    await connectAccount(DEMO_ACCOUNT_TESTS);
   });
   return view;
 }
@@ -107,7 +107,7 @@ describe('Executive page', () => {
   });
 
   test('shows delegated balance if account is a delegate', async () => {
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
 
     // set delegate in state
     accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');

@@ -8,7 +8,7 @@ let maker;
 describe('Store accounts', () => {
   beforeAll(async () => {
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
   });
   
   test('should automatically add an account changed listener to dai.js', async () => {
@@ -22,8 +22,8 @@ describe('Store accounts', () => {
     maker.useAccount('test-account');
     await waitForExpect(() => {
       const currentAccount = accountsApi.getState().currentAccount;
-      expect(currentAccount.address).toBe(nextAccount.address);
-      expect(currentAccount.name).toBe('test-account');
+      expect(currentAccount?.address).toBe(nextAccount.address);
+      expect(currentAccount?.name).toBe('test-account');
     });
   });
     

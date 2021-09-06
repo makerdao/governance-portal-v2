@@ -17,7 +17,7 @@ jest.mock('@theme-ui/match-media', () => {
 describe('QuickVote', () => {
   beforeAll(async () => {
     maker = await getMaker();
-    accountsApi.getState().addAccountsListener();
+    accountsApi.getState().addAccountsListener(maker);
     await createTestPolls(maker);
     jest.setTimeout(30000);
   });

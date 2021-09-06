@@ -15,7 +15,7 @@ type Store = {
   oldProxy: OldVoteProxyContract;
   voteDelegate?: VoteDelegateContract;
   setVoteDelegate: (address: string) => Promise<void>;
-  addAccountsListener: () => Promise<void>;
+  addAccountsListener: (maker) => Promise<void>;
   disconnectAccount: () => Promise<void>;
 };
 
@@ -38,8 +38,8 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   oldProxy: { role: '', address: '' },
   voteDelegate: undefined,
 
-  addAccountsListener: async () => {
-    const maker = await getMaker();
+  addAccountsListener: async (maker) => {
+    
     maker.on('accounts/CHANGE', async ({ payload: { account } }) => {
       if (!account) {
         set({ currentAccount: account });
