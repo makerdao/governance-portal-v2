@@ -1,13 +1,21 @@
 import { PollVoteHistory } from 'modules/polls/types';
 import { Delegate } from 'modules/delegates/types';
 
-export type AddressAPIStats =  {
-  pollVoteHistory: PollVoteHistory[]
-}
+export type AddressAPIStats = {
+  pollVoteHistory: PollVoteHistory[];
+};
+
+export type VoteProxyInfo = {
+  voteProxyAddress: string;
+  hot: string;
+  cold: string;
+};
 
 export type AddressApiResponse = {
-  isDelegate: boolean,
-  delegateInfo?: Delegate,
-  address: string,
-  stats: AddressAPIStats
-}
+  isDelegate: boolean;
+  isProxyContract: boolean;
+  voteProxyInfo?: VoteProxyInfo;
+  delegateInfo?: Delegate;
+  address: string;
+  stats: AddressAPIStats;
+};
