@@ -14,7 +14,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
   const address = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const maker = await getMaker();
+  const maker = await getMaker(network);
   const voteProxyContract = maker
     .service('smartContract')
     .getContractByAddressAndAbi(address, voteProxyFactoryAbi);
