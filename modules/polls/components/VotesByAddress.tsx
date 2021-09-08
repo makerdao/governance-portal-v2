@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Box, Text } from 'theme-ui';
+import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
@@ -50,10 +50,12 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
               {votes.map((v, i) => (
                 <tr key={i}>
                   <Text as="td" sx={{ pb: 2 }}>
-                    <Link href={{ pathname: `/address/${v.voter}`, query: { network } }}>
-                      {delegateAddresses[v.voter]
-                        ? delegateAddresses[v.voter]
-                        : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                    <Link href={{ pathname: `/address/${v.voter}`, query: { network } }} passHref>
+                      <ThemeUILink title="View address detail">
+                        {delegateAddresses[v.voter]
+                          ? delegateAddresses[v.voter]
+                          : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                      </ThemeUILink>
                     </Link>
                   </Text>
                   <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2 }}>
