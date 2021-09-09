@@ -62,27 +62,9 @@ export default function VoteBreakdown({
                       <Box>
                         <Progress
                           sx={{
-                            backgroundColor: 'transparent',
-                            height: 2,
-                            color: 'primary',
-                            zIndex: 2,
-                            position: 'absolute'
-                          }}
-                          max={tally.totalMkrParticipation.toBigNumber()}
-                          value={
-                            tally.results[i].transfer.lt(0)
-                              ? tally.results[i].firstChoice.plus(tally.results[i].transfer).toNumber()
-                              : tally.results[i].firstChoice.toNumber()
-                          }
-                        />
-                      </Box>
-                      <Box>
-                        <Progress
-                          sx={{
                             backgroundColor: 'muted',
                             height: 2,
                             color: 'mutedAlt',
-                            zIndex: 1,
                             position: 'absolute'
                           }}
                           max={tally.totalMkrParticipation.toBigNumber()}
@@ -90,6 +72,22 @@ export default function VoteBreakdown({
                             tally.results[i].transfer.lt(0)
                               ? tally.results[i].firstChoice.toNumber()
                               : tally.results[i].firstChoice.plus(tally.results[i].transfer).toNumber()
+                          }
+                        />
+                      </Box>
+                      <Box>
+                        <Progress
+                          sx={{
+                            backgroundColor: 'transparent',
+                            height: 2,
+                            color: 'primary',
+                            position: 'absolute'
+                          }}
+                          max={tally.totalMkrParticipation.toBigNumber()}
+                          value={
+                            tally.results[i].transfer.lt(0)
+                              ? tally.results[i].firstChoice.plus(tally.results[i].transfer).toNumber()
+                              : tally.results[i].firstChoice.toNumber()
                           }
                         />
                       </Box>

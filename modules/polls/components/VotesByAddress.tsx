@@ -30,16 +30,16 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
       >
         <thead>
           <tr>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '34%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
               Address
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '22%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
               Option
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '22%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
               Voting Power
             </Text>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '22%' }} variant="caps">
+            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
               MKR Amount
             </Text>
           </tr>
@@ -62,7 +62,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]
                       : poll.options[v.optionId]}
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && ' *'}
+                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && '*'}
                   </Text>
                   <Text as="td" sx={{ pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport)
@@ -86,12 +86,12 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
             </tr>
           )}
         </tbody>
-        {poll.voteType === 'Ranked Choice IRV' && (
-          <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
-            *First choice in ranked choice vote shown
-          </Text>
-        )}
       </table>
+      {poll.voteType === 'Ranked Choice IRV' && (
+        <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
+          *First choice in ranked choice vote shown
+        </Text>
+      )}
     </Box>
   );
 };
