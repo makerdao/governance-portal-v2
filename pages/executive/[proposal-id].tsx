@@ -267,33 +267,45 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       }}
                       key={supporter.address}
                     >
-                      <Text color="onSecondary">
-                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
-                      </Text>
+                      <Box sx={{ width: '50%' }}>
+                        <Text color="onSecondary">
+                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                        </Text>
+                      </Box>
 
-                      <Link
-                        href={{
-                          pathname: `/address/${supporter.address}`,
-                          query: { network }
-                        }}
-                        passHref
-                      >
-                        <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                          {supporter.name ? (
-                            <Text
-                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                            >
-                              {limitString(supporter.name, 28, '...')}
-                            </Text>
-                          ) : (
-                            <Text
-                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                            >
-                              {cutMiddle(supporter.address)}
-                            </Text>
-                          )}
-                        </ThemeUILink>
-                      </Link>
+                      <Box sx={{ width: '50%', textAlign: 'right' }}>
+                        <Link
+                          href={{
+                            pathname: `/address/${supporter.address}`,
+                            query: { network }
+                          }}
+                          passHref
+                        >
+                          <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                            {supporter.name ? (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {limitString(supporter.name, 24, '...')}
+                              </Text>
+                            ) : (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {cutMiddle(supporter.address)}
+                              </Text>
+                            )}
+                          </ThemeUILink>
+                        </Link>
+                      </Box>
                     </Flex>
                   ))
                 ) : supportersError ? (
