@@ -1,119 +1,150 @@
-import { Box } from '@theme-ui/components';
+/** @jsx jsx */
+
+import { Box, Text, jsx } from 'theme-ui';
 import { Delegate } from '../types';
 import {
   CartesianGrid,
   Legend,
   Line,
+  Area,
   LineChart,
+  AreaChart,
   ReferenceLine,
   Tooltip,
   XAxis,
   YAxis,
+  ResponsiveContainer
 } from 'recharts';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const data = [{
-    date: '21 June',
+    date: 'Jan',
     mkr: 4000,
     averageMKRDelegated: 2400,
   },
   {
-    date: '22 June',
+    date: 'Feb',
     mkr: 3600,
     averageMKRDelegated: 2000,
   },
   {
-    date: '23 June',
+    date: 'March',
     mkr: 3000,
     averageMKRDelegated: 2400,
   }, {
-    date: '24 June',
+    date: 'April',
     mkr: 3100,
     averageMKRDelegated: 2000,
   }, {
-    date: '25 June',
+    date: 'May',
     mkr: 4000,
     averageMKRDelegated: 3000,
   }, {
-    date: '26 June',
+    date: 'Jun',
     mkr: 4500,
     averageMKRDelegated: 3500,
   }, {
-    date: '27 June',
+    date: 'Aug',
     mkr: 3000,
     averageMKRDelegated: 5000,
   }, {
-    date: '28 June',
+    date: 'Sept',
     mkr: 7000,
     averageMKRDelegated: 20000,
   }, {
-    date: '29 June',
+    date: 'Dec',
     mkr: 10000,
     averageMKRDelegated: 25000,
   }];
 
+  function renderTooltip(item) {
+    const monthMKR = data.find(i => i.date === item.label);
+    return <Box>
+      <Text as="p">{monthMKR?.date}</Text>
+      <Text as="p">MKR Weight: {monthMKR?.mkr}</Text>
+      <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
+    </Box>;
+  }
 
   return (
-    <Box> <LineChart
-      data={data}
-      height={400}
-      margin={{ bottom: 66, left: 20, right: 72, top: 10 }}
-      width={600}
+    <Box>
+      <Box mb={4} mt={4}>
+        <Text
+          as="p"
+          variant="h2"
+          sx={{
+            fontSize: 4,
+            fontWeight: 'semiBold'
+          }}
+        >
+          Voting Weight
+        </Text>
+        <Text as="p" variant="secondary">Total voting weight over time</Text>
+      </Box>
+      <ResponsiveContainer width={882} height={400}><AreaChart
+        data={data}
 
-    >
-      <XAxis
-        dataKey="date"
-        interval="preserveStartEnd"
-        stroke={'green'}
+        margin={{ bottom: 66, left: 20, right: 72, top: 10 }}
 
-        tickMargin={40}
-        label={{
-          angle: 0,
-          fill: 'green',
-          position: 'bottom',
-          value: 'TIME',
-          viewBox: { height: 10, width: 10, x: 155, y: 0 },
-        }}
+      >
 
-      />
-      <YAxis
-        dataKey="mkr"
-        interval="preserveStartEnd"
-        label={{
-          angle: -90,
-          fill: 'blue',
-          position: 'left',
-          value: 'MKR',
-          viewBox: { height: 10, width: 10, x: 55, y: 79 },
-        }}
-        stroke={'grey'}
-        tickLine={false}
-        tickMargin={5}
+        <defs>
 
-      />
+          <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#FFFF" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <XAxis
+          dataKey="date"
+          interval="preserveStartEnd"
+          stroke={'#ADADAD'}
+          color="#ADADAD"
+          tickMargin={15}
+          axisLine={false}
+          tickLine={false}
 
-      <CartesianGrid strokeDasharray="3 3" />
-      <Tooltip />
-      <Legend />
-      <Line
-        activeDot={false}
-        dataKey="mkr"
-        dot={false}
-        stroke={'blue'}
-        type="monotone"
-      />
 
-      <Line
-        activeDot={false}
-        dataKey="averageMKRDelegated"
-        dot={false}
-        stroke={'green'}
-        type="monotone"
-      />
+        />
+        <YAxis
+          dataKey="mkr"
+          interval="preserveStartEnd"
+          axisLine={false}
+          stroke="#ADADAD"
+          tickLine={false}
+          label={{
+            fill: '#708390',
+            position: 'bottomLeft',
+            value: 'MKR',
+            viewBox: { height: 10, width: 10, x: 20, y: 300 },
+          }}
+          tickMargin={5}
 
-      <ReferenceLine stroke="red" strokeDasharray="3 3" x={2} />
+        />
 
-    </LineChart>
+        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+        <Tooltip content={renderTooltip} />
+
+
+        <Area
+          activeDot={false}
+          dataKey="averageMKRDelegated"
+          dot={false}
+          stroke={'#D4D9E1'}
+          fill='transparent'
+          type="monotone"
+        />
+
+        <Area
+          dataKey="mkr"
+          stroke={'#1AAB9B'}
+          type="monotone"
+          dot={{ stroke: '#1AAB9B', strokeWidth: 2 }}
+          fill="url(#gradientFront)"
+        />
+
+        <ReferenceLine stroke={'#D4D9E1'} x={0} y={0} />
+      </AreaChart></ResponsiveContainer>
     </Box>
   );
 }
