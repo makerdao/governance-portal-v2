@@ -18,82 +18,59 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import FilterButton from 'components/FilterButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { MKRWeightTimeRanges } from '../delegates.constants';
+import { fetchJson } from '@ethersproject/web';
+import useSWR from 'swr';
+import { getNetwork } from 'lib/maker';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
 
-  const data = [{
-    date: 'Jan',
-    mkr: 4000,
-    averageMKRDelegated: 2400,
-  },
-  {
-    date: 'Feb',
-    mkr: 3600,
-    averageMKRDelegated: 2000,
-  },
-  {
-    date: 'March',
-    mkr: 3000,
-    averageMKRDelegated: 2400,
-  }, {
-    date: 'April',
-    mkr: 3100,
-    averageMKRDelegated: 2000,
-  }, {
-    date: 'May',
-    mkr: 4000,
-    averageMKRDelegated: 3000,
-  }, {
-    date: 'Jun',
-    mkr: 4500,
-    averageMKRDelegated: 3500,
-  }, {
-    date: 'Aug',
-    mkr: 3000,
-    averageMKRDelegated: 5000,
-  }, {
-    date: 'Sept',
-    mkr: 7000,
-    averageMKRDelegated: 20000,
-  }, {
-    date: 'Dec',
-    mkr: 10000,
-    averageMKRDelegated: 25000,
-  }];
-
-  function renderTooltip(item) {
-    const monthMKR = data.find(i => i.date === item.label);
-    return <Box>
-      <Text as="p">{monthMKR?.date}</Text>
-      <Text as="p">MKR Weight: {monthMKR?.mkr}</Text>
-      <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
-    </Box>;
-  }
-
-  // Time frames
+  // Time ranges
   const oneDay = 24 * 60 * 60 * 1000;
   const oneYear = 365 * oneDay;
   const oneMonth = 31 * oneDay;
   const oneWeek = 7 * oneDay;
 
-  const timeFrames = [{
+  const timeRanges = [{
     label: 'Last year',
     from: Date.now() - oneYear,
-    groupBy: 'month'
+    range: MKRWeightTimeRanges.month
   },
   {
     label: 'Last month',
     from: Date.now() - oneMonth,
-    groupBy: 'day',
+    range: MKRWeightTimeRanges.day,
   }, {
     label: 'Last week',
     from: Date.now() - oneWeek,
-    groupBy: 'day'
+    range: MKRWeightTimeRanges.day
   }];
 
-  const [selectedTimeFrame, setSelectedTimeframe] = useState(timeFrames[0]);
+
+  const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
+  const { data, error, isValidating, revalidate } = useSWR(`/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`, fetchJson);
+
+
+  useEffect(() => {
+    revalidate();
+  }, [selectedTimeFrame]);
+
+  function renderTooltip(item) {
+    const monthMKR = data ? data.find(i => i.date === item.label): null;
+
+    if (!data) {
+      return null;
+    }
+    
+    return <Box>
+      <Text as="p">{monthMKR?.date}</Text>
+      <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
+      <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
+    </Box>;
+  }
+
 
 
   return (
@@ -119,7 +96,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             name={() => `${selectedTimeFrame.label}`}
             listVariant="menubuttons.default.list"
           >
-            {timeFrames.map(i => {
+            {timeRanges.map(i => {
               return (
                 <MenuItem
                   onSelect={() => setSelectedTimeframe(i)}
@@ -138,7 +115,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
         width={'100%'}
         height={400}>
         <AreaChart
-          data={data}
+          data={data || []}
           margin={{ bottom: 66, left: 20, right: 72, top: 10 }}
         >
 
@@ -159,7 +136,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             tickLine={false}
           />
           <YAxis
-            dataKey="mkr"
+            dataKey="MKR"
             interval="preserveStartEnd"
             axisLine={false}
             stroke="#ADADAD"
@@ -188,7 +165,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           />
 
           <Area
-            dataKey="mkr"
+            dataKey="MKR"
             stroke={'#1AAB9B'}
             type="monotone"
             dot={{ stroke: '#1AAB9B', strokeWidth: 2 }}

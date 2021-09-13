@@ -3,3 +3,9 @@ export enum DelegateStatusEnum {
   expired = 'expired',
   shadow = 'shadow'
 }
+
+export enum MKRWeightTimeRanges {
+  day = 'day',
+  week = 'week',
+  month = 'month'
+}
