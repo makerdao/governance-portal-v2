@@ -11,7 +11,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const ONE_YEAR = 365 * 24 * 60 * 60 * 1000;
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   const range = req.query.range as MKRWeightTimeRanges;
-  const from = parseInt(req.query.from as string)  || ONE_YEAR;
+  const from = parseInt(req.query.from as string) || ONE_YEAR;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const data = await fetchDelegatesMKRWeightHistory(from, range, network);
