@@ -262,18 +262,18 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     <Flex
                       sx={{
                         justifyContent: 'space-between',
-                        fontSize: bpi === 0 ? 2 : 3,
+                        fontSize: [2, 3],
                         lineHeight: '34px'
                       }}
                       key={supporter.address}
                     >
-                      <Box sx={{ width: '50%' }}>
+                      <Box sx={{ width: '55%' }}>
                         <Text color="onSecondary">
                           {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
                         </Text>
                       </Box>
 
-                      <Box sx={{ width: '50%', textAlign: 'right' }}>
+                      <Box sx={{ width: '45%', textAlign: 'right' }}>
                         <Link
                           href={{
                             pathname: `/address/${supporter.address}`,
@@ -290,7 +290,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                                   ':hover': { color: 'blueLinkHover' }
                                 }}
                               >
-                                {limitString(supporter.name, 24, '...')}
+                                {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
                               </Text>
                             ) : (
                               <Text
