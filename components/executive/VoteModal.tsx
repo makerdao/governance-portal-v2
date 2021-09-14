@@ -28,7 +28,7 @@ import { useLockedMkr, useSpellData, useHat, useAllSlates } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { TXMined } from 'types/transaction';
-import { Proposal, CMSProposal } from 'types/proposal';
+import { Proposal, CMSProposal } from 'modules/executives/types';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 

@@ -1,13 +1,12 @@
 /** @jsx jsx */
 import Link from 'next/link';
 import { Button, Text, Flex, Link as InternalLink, jsx, Box } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import Stack from '../layouts/Stack';
 import { getNetwork } from 'lib/maker';
 import CountdownTimer from '../CountdownTimer';
 import PollOptionBadge from '../PollOptionBadge';
-import { Poll } from 'types/poll';
+import { Poll } from 'modules/polls/types';
 
 type Props = {
   poll: Poll;
@@ -15,7 +14,6 @@ type Props = {
 
 const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
   const network = getNetwork();
-  const bpi = useBreakpointIndex();
 
   return (
     <div {...props}>

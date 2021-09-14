@@ -6,7 +6,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
-import AddressIcon from './AddressIcon';
+import AddressIcon from 'modules/address/components/AddressIcon';
 
 type Props = {
   address: string;
@@ -34,7 +34,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           </Text>
           <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 1 }}>
             <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} />
+              <AddressIcon address={address} width="22px" />
             </Box>
             <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
           </Flex>

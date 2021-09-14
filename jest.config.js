@@ -16,5 +16,6 @@ module.exports = {
     '^components(.*)$': '<rootDir>/components$1',
     '^lib(.*)$': '<rootDir>/lib$1',
     '^stores(.*)$': '<rootDir>/stores$1',
+    '^modules(.*)$': '<rootDir>/modules$1',
   }
 };

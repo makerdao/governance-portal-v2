@@ -3,18 +3,14 @@
 import { useMemo, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, Badge, jsx, useColorMode } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, jsx, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
-
-// lib
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
-import { getPolls, getExecutiveProposals, getPostsAndPhotos } from 'lib/api';
-import { initTestchainPolls, isActivePoll } from 'lib/utils';
+import { initTestchainPolls } from 'lib/utils';
+import { isActivePoll } from 'modules/polls/helpers/utils';
 import { useHat } from 'lib/hooks';
-
-// components
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
 import SystemStats from 'components/index/SystemStats';
@@ -24,12 +20,13 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-
-// types
-import { CMSProposal } from 'types/proposal';
-import { Poll } from 'types/poll';
-import { BlogPost } from 'types/blogPost';
+import { CMSProposal } from 'modules/executives/types';
+import { Poll } from 'modules/polls/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
+import { BlogPost } from 'modules/blog/types/blogPost';
+import { getPolls } from 'modules/polls/api/fetchPolls';
+import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
 
 type Props = {
   proposals: CMSProposal[];
@@ -70,7 +67,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
         }}
       />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
-        <Flex sx={{ justifyContent: 'center' }}>
+        {/* <Flex sx={{ justifyContent: 'center' }}>
           <Badge
             variant="primary"
             sx={{
@@ -86,15 +83,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               px: [3, 4],
               mt: ['-10px', '-25px']
             }}
-          >
-            {/* <Text sx={{ display: ['block', 'none'] }}>
+          > */}
+        {/* <Text sx={{ display: ['block', 'none'] }}>
               Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
               <Link href="//v1.vote.makerdao.com">
                 <a>v1.vote.makerdao.com</a>
               </Link>
               .
             </Text> */}
-            <Text>
+        {/* <Text>
               MakerDAO is currently migrating to a new governance chief contract to prevent flashloans from
               being used in governance activities. Please withdraw from the old Chief, deposit your MKR in the
               new Chief contract, and vote on the new proposal on the Executive Voting page. For more
@@ -103,8 +100,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 <a sx={{ color: 'accentBlue' }}>blog</a>
               </Link>
               .
-            </Text>
-            {/* <Text sx={{ display: ['none', 'block'] }}>
+            </Text> */}
+        {/* <Text sx={{ display: ['none', 'block'] }}>
               Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
               executive voting comments, and on-chain effects. For questions visit{' '}
               <Link href="//chat.makerdao.com/channel/governance-and-risk">
@@ -116,8 +113,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </Link>
               .
             </Text> */}
-          </Badge>
-        </Flex>
+        {/* </Badge>
+        </Flex> */}
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
@@ -132,7 +129,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     sx={{
                       color: 'text',
                       opacity: '0.7',
-                      fontWeight: 500,
+                      fontWeight: 'semiBold',
                       fontSize: [3, 5],
                       px: [3, 'inherit']
                     }}
@@ -347,7 +344,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const [proposals, polls, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),
-    getPostsAndPhotos()
+    fetchBlogPosts()
   ]);
 
   return {

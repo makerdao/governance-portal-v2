@@ -3,33 +3,28 @@ import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import useSWR from 'swr';
-import {
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Spinner,
-  Box,
-  Text,
-  Divider,
-  Link as ExternalLink,
-  jsx
-} from 'theme-ui';
+import Link from 'next/link';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
-import Link from 'next/link';
+import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import { getExecutiveProposal, getExecutiveProposals } from 'lib/api';
-import { useSpellData, useVotedProposals } from 'lib/hooks';
+import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { useSpellData } from 'lib/hooks';
+import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { fetchJson, parseSpellStateDiff, getEtherscanLink, cutMiddle } from 'lib/utils';
+import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
+import { useAnalytics } from 'lib/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+
+// stores
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
-import OnChainFx from 'components/executive/OnChainFx';
+
+//components
 import Comments from 'components/executive/Comments';
 import VoteModal from 'components/executive/VoteModal';
 import Stack from 'components/layouts/Stack';
@@ -37,10 +32,11 @@ import Tabs from 'components/Tabs';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
-import { Proposal } from 'types/proposal';
-import { SpellStateDiff } from 'types/spellStateDiff';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+// import OnChainFx from 'components/executive/OnChainFx';
+
+//types
+import { Proposal } from 'modules/executives/types';
+// import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
   proposal: Proposal;
@@ -74,20 +70,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
 
-  const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  const [stateDiffError, setStateDiffError] = useState();
+  // ch401: hide until API is fixed
+  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
+  // const [stateDiffError, setStateDiffError] = useState();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
-        const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-        setStateDiff(_stateDiff);
-      } catch (error) {
-        setStateDiffError(error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
+  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
+  //       setStateDiff(_stateDiff);
+  //     } catch (error) {
+  //       setStateDiffError(error);
+  //     }
+  //   })();
+  // }, []);
 
   const { data: allSupporters, error: supportersError } = useSWR(
     `/api/executive/supporters?network=${getNetwork()}`
@@ -95,7 +92,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const { data: votedProposals } = useVotedProposals();
 
-  const { data: comments } = useSWR(`/api/executive/comments/list/${proposal.address}`);
+  const { data: comments, error: commentsError } = useSWR(
+    `/api/executive/comments/list/${proposal.address}`,
+    { refreshInterval: 60000 }
+  );
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
@@ -108,33 +108,40 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         <Comments proposal={proposal} comments={comments} />
       ) : (
         <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
+          {commentsError ? (
+            'Unable to fetch comments'
+          ) : (
+            <>
+              Loading <Spinner size={20} ml={2} />
+            </>
+          )}
         </Flex>
       )}
     </div>
   );
 
-  const onChainFxTab = (
-    <div key={3} sx={{ p: [3, 4] }}>
-      <Flex sx={{ mb: 3, overflow: 'auto' }}>
-        For the spell at address
-        <ExternalLink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
-          <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-            {proposal.address}
-          </Text>
-        </ExternalLink>
-      </Flex>
-      {stateDiff ? (
-        <OnChainFx stateDiff={stateDiff} />
-      ) : stateDiffError ? (
-        <Flex>Unable to fetch on-chain effects at this time</Flex>
-      ) : (
-        <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
-        </Flex>
-      )}
-    </div>
-  );
+  // ch401: hide until API is fixed
+  // const onChainFxTab = (
+  //   <div key={3} sx={{ p: [3, 4] }}>
+  //     <Flex sx={{ mb: 3, overflow: 'auto' }}>
+  //       For the spell at address
+  //       <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
+  //         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+  //           {proposal.address}
+  //         </Text>
+  //       </ThemeUILink>
+  //     </Flex>
+  //     {stateDiff ? (
+  //       <OnChainFx stateDiff={stateDiff} />
+  //     ) : stateDiffError ? (
+  //       <Flex>Unable to fetch on-chain effects at this time</Flex>
+  //     ) : (
+  //       <Flex sx={{ alignItems: 'center' }}>
+  //         loading <Spinner size={20} ml={2} />
+  //       </Flex>
+  //     )}
+  //   </div>
+  // );
 
   const hasVotedFor =
     votedProposals &&
@@ -187,32 +194,37 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
-            {'about' in proposal ? (
-              <Tabs
-                tabListStyles={{ pl: [3, 4] }}
-                tabTitles={[
-                  'Proposal Detail',
-                  'On-Chain Effects',
-                  `Comments ${comments ? `(${comments.length})` : ''}`
-                ]}
-                tabPanels={[
-                  <div
-                    key={1}
-                    sx={{ variant: 'markdown.default', p: [3, 4] }}
-                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                  />,
-                  onChainFxTab,
-                  commentsTab
-                ]}
-                banner={<ProposalTimingBanner proposal={proposal} />}
-              ></Tabs>
-            ) : (
-              <Tabs
-                tabListStyles={{ pl: [3, 4] }}
-                tabTitles={['On-Chain Effects']}
-                tabPanels={[onChainFxTab]}
-              />
-            )}
+            {
+              'about' in proposal ? (
+                <Tabs
+                  tabListStyles={{ pl: [3, 4] }}
+                  tabTitles={[
+                    'Proposal Detail',
+                    // ch401: hide until API is fixed
+                    // 'On-Chain Effects',
+                    `Comments ${comments ? `(${comments.length})` : ''}`
+                  ]}
+                  tabPanels={[
+                    <div
+                      key={1}
+                      sx={{ variant: 'markdown.default', p: [3, 4] }}
+                      dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                    />,
+                    // onChainFxTab,
+                    commentsTab
+                  ]}
+                  banner={<ProposalTimingBanner proposal={proposal} />}
+                ></Tabs>
+              ) : null
+              // ch401: hide until API is fixed
+              // (
+              // <Tabs
+              //   tabListStyles={{ pl: [3, 4] }}
+              //   tabTitles={['On-Chain Effects']}
+              //   tabPanels={[onChainFxTab]}
+              // />
+              // )
+            }
           </Card>
         </Box>
         <Stack gap={3}>
@@ -250,22 +262,50 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     <Flex
                       sx={{
                         justifyContent: 'space-between',
-                        fontSize: bpi === 0 ? 2 : 3,
+                        fontSize: [2, 3],
                         lineHeight: '34px'
                       }}
                       key={supporter.address}
                     >
-                      <Text color="onSecondary">
-                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
-                      </Text>
-                      <ExternalLink
-                        href={getEtherscanLink(getNetwork(), supporter.address, 'address')}
-                        target="_blank"
-                      >
-                        <Text sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}>
-                          {cutMiddle(supporter.address)}
+                      <Box sx={{ width: '55%' }}>
+                        <Text color="onSecondary">
+                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
                         </Text>
-                      </ExternalLink>
+                      </Box>
+
+                      <Box sx={{ width: '45%', textAlign: 'right' }}>
+                        <Link
+                          href={{
+                            pathname: `/address/${supporter.address}`,
+                            query: { network }
+                          }}
+                          passHref
+                        >
+                          <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                            {supporter.name ? (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
+                              </Text>
+                            ) : (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {cutMiddle(supporter.address)}
+                              </Text>
+                            )}
+                          </ThemeUILink>
+                        </Link>
+                      </Box>
                     </Flex>
                   ))
                 ) : supportersError ? (

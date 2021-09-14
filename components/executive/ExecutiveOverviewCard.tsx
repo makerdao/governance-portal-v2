@@ -8,11 +8,11 @@ import Skeleton from 'components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/utils';
-import { useVotedProposals } from 'lib/hooks';
+import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
 import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
-import { Proposal } from 'types/proposal';
+import { Proposal } from 'modules/executives/types';
 import { SpellData } from 'types/spellData';
 import Stack from 'components/layouts/Stack';
 import VoteModal from './VoteModal';
@@ -177,8 +177,8 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
           <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
         )}
         <Divider my={0} />
-        <Flex p={3} sx={{ justifyContent: 'center' }}>
-          <Text sx={{ fontSize: [2, 3], color: 'onSecondary' }}>
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+          <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
             {getStatusText(proposal.address, spellData)}
           </Text>
         </Flex>

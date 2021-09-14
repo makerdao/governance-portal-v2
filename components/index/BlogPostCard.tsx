@@ -1,5 +1,5 @@
 import { Text, Box, Image, Link as ExternalLink } from 'theme-ui';
-import { BlogPost } from 'types/blogPost';
+import { BlogPost } from 'modules/blog/types/blogPost';
 
 type Props = {
   blogPost: BlogPost;
