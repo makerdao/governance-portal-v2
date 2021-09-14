@@ -23,7 +23,7 @@ export default function CategoryFilter({
             <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
               <Checkbox
                 sx={{ width: 3, height: 3 }}
-                checked={categoryFilter?.category}
+                checked={(categoryFilter && categoryFilter[category.name]) || false}
                 onChange={event =>
                   setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked })
                 }
