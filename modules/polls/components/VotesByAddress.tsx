@@ -7,7 +7,6 @@ import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTallyVote, Poll } from 'modules/polls/types';
 import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
-import { POLL_VOTE_TYPE } from 'modules/polls/polls.constants';
 import { CurrencyObject } from 'types/currency';
 
 type Props = {
@@ -19,6 +18,7 @@ type Props = {
 const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const network = getNetwork();
+  const showRankedChoiceInfo = votes.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
@@ -88,7 +88,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
           )}
         </tbody>
       </table>
-      {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+      {showRankedChoiceInfo && (
         <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
           *First choice in ranked choice vote shown
         </Text>
