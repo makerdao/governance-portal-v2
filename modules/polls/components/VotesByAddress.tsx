@@ -7,6 +7,7 @@ import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTallyVote, Poll } from 'modules/polls/types';
 import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
+import { POLL_VOTE_TYPE } from 'modules/polls/polls.constants';
 import { CurrencyObject } from 'types/currency';
 
 type Props = {
@@ -87,7 +88,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
           )}
         </tbody>
       </table>
-      {poll.voteType === 'Ranked Choice IRV' && (
+      {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
         <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
           *First choice in ranked choice vote shown
         </Text>

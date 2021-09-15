@@ -11,7 +11,8 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const options = pollMeta.options;
   const discussionLink =
     pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link) ? pollMeta.discussion_link : null;
-  const voteType: PollVoteType = (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.PLURALITY_VOTE; // compiler error if invalid vote type
+  const voteType: PollVoteType =
+    (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
   const categories = [
     ...(pollMeta?.categories || []),

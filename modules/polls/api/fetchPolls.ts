@@ -34,7 +34,6 @@ export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   return polls;
 }
 
-  
 export async function getPoll(slug: string): Promise<Poll> {
   const polls = await getPolls();
   const pollIndex = polls.findIndex(poll => poll.slug === slug);
