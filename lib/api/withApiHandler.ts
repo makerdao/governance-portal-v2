@@ -4,6 +4,12 @@ export default function withApiHandler(handler, { allowPost = false } = {}) {
     res.setHeader('Access-Control-Allow-Methods', allowPost ? 'GET, POST' : 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Accept, Content-Type');
 
+    // Add cache 60 seconds
+    res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=60, stale-while-revalidate=120'
+    );
+
     if (req.method === 'OPTIONS') {
       return res.status(200).json({});
     }
