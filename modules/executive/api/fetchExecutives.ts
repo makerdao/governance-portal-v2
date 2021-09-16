@@ -3,7 +3,7 @@ import { EXEC_PROPOSAL_INDEX, SupportedNetworks } from 'lib/constants';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
 import { getNetwork, isTestnet } from 'lib/maker';
-import { CMSProposal } from 'modules/executives/types';
+import { CMSProposal } from 'modules/executive/types';
 import mockProposals from './mocks/proposals.json';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
@@ -60,7 +60,10 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
   return sortedProposals;
 }
 
-export async function getExecutiveProposal(proposalId: string, network?: SupportedNetworks): Promise<CMSProposal | null> {
+export async function getExecutiveProposal(
+  proposalId: string,
+  network?: SupportedNetworks
+): Promise<CMSProposal | null> {
   const proposals = await getExecutiveProposals(network);
   const proposal = proposals.find(proposal => proposal.key === proposalId);
   if (!proposal) return null;

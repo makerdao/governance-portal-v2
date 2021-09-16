@@ -5,8 +5,8 @@ import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
-import { PollTallyVote, Poll } from 'modules/polls/types';
-import { getVoteColor } from 'modules/polls/helpers/getVoteColor';
+import { PollTallyVote, Poll } from 'modules/polling/types';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { CurrencyObject } from 'types/currency';
 
 type Props = {

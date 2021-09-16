@@ -7,8 +7,8 @@ import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import Tooltip from '../Tooltip';
 
-import { Poll } from 'modules/polls/types';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polls/helpers/utils';
+import { Poll } from 'modules/polling/types';
+import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
 import Stack from '../layouts/Stack';
 import { Account } from 'types/account';
 import useBallotStore from 'stores/ballot';

@@ -1,8 +1,8 @@
 /** @jsx jsx */
 
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { Divider, Box, Text, Flex, jsx } from 'theme-ui';
-import { CMSProposal } from 'modules/executives/types';
+import { CMSProposal } from 'modules/executive/types';
 import { useExecutives } from '../hooks/useExecutives';
 
 export function CurrentlySupportingExecutive({ address }: { address: string }): React.ReactElement | null {

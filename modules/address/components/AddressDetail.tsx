@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import AddressIcon from './AddressIcon';
-import { PollVoteHistoryList } from 'modules/polls/components/PollVoteHistoryList';
+import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
 import Tooltip from 'components/Tooltip';
 import { cutMiddle } from 'lib/string';

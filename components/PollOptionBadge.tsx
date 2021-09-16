@@ -1,12 +1,12 @@
 import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { getNetwork } from 'lib/maker';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/utils';
-import { Poll } from 'modules/polls/types';
-import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
+import { Poll } from 'modules/polling/types';
+import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
