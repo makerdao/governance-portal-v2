@@ -9,7 +9,7 @@ import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { parseRawPollTally } from '../helpers/parseRawTally';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();

@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import categoryMap from './oldPollCategories';
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const { data: pollMeta, content } = matter(document);

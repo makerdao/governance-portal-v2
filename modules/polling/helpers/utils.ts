@@ -1,4 +1,4 @@
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 import { Poll, PollVote } from '../types';
 
 export function isActivePoll(poll: Poll): boolean {

@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import mockVote from 'modules/polls/api/mocks/vote.json';
-import { PollVoteHistoryItem } from 'modules/polls/components/PollVoteHistoryItem';
-import { PollVoteHistory } from 'modules/polls/types/pollVoteHistory';
-import { POLL_VOTE_TYPE } from 'modules/polls/polls.constants';
+import mockVote from 'modules/polling/api/mocks/vote.json';
+import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryItem';
+import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 test('renders plurality vote type correctly', async () => {
   const vote = {

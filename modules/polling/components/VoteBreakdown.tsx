@@ -4,7 +4,7 @@ import Skeleton from 'components/SkeletonThemed';
 import Tooltip from 'components/Tooltip';
 import Delay from 'components/Delay';
 import { PollTally, Poll } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from 'modules/polling/polls.constants';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export default function VoteBreakdown({
   poll,
