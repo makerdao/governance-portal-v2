@@ -9,7 +9,7 @@ import {
   DEMO_ACCOUNT_TESTS
 } from '../helpers';
 import { ExecutiveOverview } from '../../pages/executive';
-import proposals from 'modules/executives/api/mocks/proposals.json';
+import proposals from 'modules/executive/api/mocks/proposals.json';
 import { accountsApi } from 'stores/accounts';
 
 jest.mock('@theme-ui/match-media', () => {
@@ -40,7 +40,6 @@ describe('Executive page', () => {
 
     maker = await getMaker();
     await createDelegate(maker);
-
   });
 
   beforeEach(async () => {

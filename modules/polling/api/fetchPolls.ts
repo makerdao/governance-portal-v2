@@ -3,7 +3,7 @@ import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import getMaker, { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
-import { Poll, PollVoteType } from 'modules/polls/types';
+import { Poll, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
 import { SupportedNetworks } from 'lib/constants';

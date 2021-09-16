@@ -2,10 +2,9 @@
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 import Tooltip from 'components/Tooltip';
-
 import Delay from 'components/Delay';
-import { PollTally, Poll } from 'modules/polls/types';
-import { POLL_VOTE_TYPE } from 'modules/polls/polls.constants';
+import { PollTally, Poll } from 'modules/polling/types';
+import { POLL_VOTE_TYPE } from 'modules/polling/polls.constants';
 
 export default function VoteBreakdown({
   poll,

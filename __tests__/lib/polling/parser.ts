@@ -1,8 +1,8 @@
-import { parsePollMetadata } from 'modules/polls/helpers/parser';
+import { parsePollMetadata } from 'modules/polling/helpers/parser';
 import pollJson327 from './poll-327.js';
 import pollJson431 from './poll-431.js';
 import fs from 'fs';
-import { PartialPoll } from 'modules/polls/types';
+import { PartialPoll } from 'modules/polling/types';
 import matter from 'gray-matter';
 
 const pollMetadata327 = fs.readFileSync(__dirname + '/poll-327.md').toString();

@@ -11,9 +11,9 @@ import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'lib/hooks';
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
@@ -35,7 +35,7 @@ import ResourceBox from 'components/ResourceBox';
 // import OnChainFx from 'components/executive/OnChainFx';
 
 //types
-import { Proposal } from 'modules/executives/types';
+import { Proposal } from 'modules/executive/types';
 // import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
@@ -256,7 +256,16 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               Supporters
             </Heading>
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
-              <Box sx={{ overflowY: 'auto', height: '100%' }}>
+              <Box
+                sx={{
+                  overflowY: 'scroll',
+                  height: '100%',
+                  '::-webkit-scrollbar': {
+                    display: 'none'
+                  },
+                  scrollbarWidth: 'none'
+                }}
+              >
                 {supporters ? (
                   supporters.map(supporter => (
                     <Flex

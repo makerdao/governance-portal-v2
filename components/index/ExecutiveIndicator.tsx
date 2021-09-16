@@ -7,9 +7,9 @@ import useSWR from 'swr';
 import Skeleton from 'components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/utils';
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import useAccountsStore from 'stores/accounts';
-import { CMSProposal } from 'modules/executives/types';
+import { CMSProposal } from 'modules/executive/types';
 import { SpellData } from 'types/spellData';
 
 type Props = {

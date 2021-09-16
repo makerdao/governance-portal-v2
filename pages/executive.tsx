@@ -10,10 +10,10 @@ import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
 import { useLockedMkr, useHat } from 'lib/hooks';
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/utils';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
@@ -29,7 +29,7 @@ import ResourceBox from 'components/ResourceBox';
 import Stack from 'components/layouts/Stack';
 import ExecutiveOverviewCard from 'components/executive/ExecutiveOverviewCard';
 import PrimaryLayout from 'components/layouts/Primary';
-import { Proposal, CMSProposal } from 'modules/executives/types';
+import { Proposal, CMSProposal } from 'modules/executive/types';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ProgressBar from 'components/executive/ProgressBar';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';

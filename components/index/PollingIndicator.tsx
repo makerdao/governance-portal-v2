@@ -6,9 +6,9 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 
 import { getNetwork } from 'lib/maker';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import useAccountsStore from 'stores/accounts';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 import { Account } from 'types/account';
 import { useAllUserVotes } from 'lib/hooks';
 
