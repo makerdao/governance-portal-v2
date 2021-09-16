@@ -1,6 +1,6 @@
 import { Flex, Checkbox, Label, Text } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { PollCategory } from 'modules/polls/types';
+import { PollCategory } from 'modules/polling/types';
 import FilterButton from '../FilterButton';
 import useUiFiltersStore from 'stores/uiFilters';
 

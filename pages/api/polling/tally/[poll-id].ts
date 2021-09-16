@@ -5,8 +5,8 @@ import withApiHandler from 'lib/api/withApiHandler';
 import getMaker, { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { backoffRetry } from 'lib/utils';
-import { fetchPollTally } from 'modules/polls/api/fetchPollTally';
-import { PollTallyVote, RawPollTally } from 'modules/polls/types';
+import { fetchPollTally } from 'modules/polling/api/fetchPollTally';
+import { PollTallyVote, RawPollTally } from 'modules/polling/types';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse<RawPollTally>) => {

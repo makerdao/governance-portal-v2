@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { parsePollsMetadata } from 'modules/polls/api/parsePollMetadata';
+import { parsePollsMetadata } from 'modules/polling/api/parsePollMetadata';
 import getMaker, { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';

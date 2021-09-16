@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import Stack from '../layouts/Stack';
 import CommentSortBy from './CommentSortBy';
 import { Comment } from 'types/comment';
-import { Proposal } from 'modules/executives/types';
+import { Proposal } from 'modules/executive/types';
 import { getEtherscanLink, formatAddress, formatDateWithTime } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useUiFiltersStore from 'stores/uiFilters';

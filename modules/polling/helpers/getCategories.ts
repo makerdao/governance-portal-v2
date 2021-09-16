@@ -1,4 +1,4 @@
-import { PollCategory, Poll } from 'modules/polls/types';
+import { PollCategory, Poll } from 'modules/polling/types';
 
 export const getCategories = (polls: Poll[]): PollCategory[] => {
   const categoryMap = polls.reduce((acc, cur) => {

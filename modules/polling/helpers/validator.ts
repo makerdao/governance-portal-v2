@@ -1,10 +1,9 @@
 import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
-import { Poll, PartialPoll } from 'modules/polls/types';
+import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parser';
 import { POLL_VOTE_TYPES_ARRAY } from '../polls.constants';
-
 
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json

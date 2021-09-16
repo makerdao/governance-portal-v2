@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { initTestchainPolls } from 'lib/utils';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
@@ -20,13 +20,13 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-import { CMSProposal } from 'modules/executives/types';
-import { Poll } from 'modules/polls/types';
+import { CMSProposal } from 'modules/executive/types';
+import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
-import { getPolls } from 'modules/polls/api/fetchPolls';
-import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getPolls } from 'modules/polling/api/fetchPolls';
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 
 type Props = {
   proposals: CMSProposal[];

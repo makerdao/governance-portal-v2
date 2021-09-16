@@ -9,7 +9,7 @@ import { CurrencyObject } from 'types/currency';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
-import mockPolls from 'modules/polls/api/mocks/polls.json';
+import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {

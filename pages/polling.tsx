@@ -10,11 +10,11 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
-import { Poll, PollCategory } from 'modules/polls/types';
+import { Poll, PollCategory } from 'modules/polling/types';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/utils';
-import { isActivePoll } from 'modules/polls/helpers/utils';
-import { getCategories } from 'modules/polls/helpers/getCategories';
+import { isActivePoll } from 'modules/polling/helpers/utils';
+import { getCategories } from 'modules/polling/helpers/getCategories';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
@@ -33,7 +33,7 @@ import Head from 'next/head';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import { getPolls } from 'modules/polls/api/fetchPolls';
+import { getPolls } from 'modules/polling/api/fetchPolls';
 
 type Props = {
   polls: Poll[];
