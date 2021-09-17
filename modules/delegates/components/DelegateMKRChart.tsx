@@ -23,6 +23,7 @@ import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
+import moment from 'moment';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
@@ -36,18 +37,20 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   const timeRanges = [{
     label: 'Last year',
     from: Date.now() - oneYear,
-    range: MKRWeightTimeRanges.month
+    range: MKRWeightTimeRanges.month,
+    interval: 30
   },
   {
     label: 'Last month',
     from: Date.now() - oneMonth,
     range: MKRWeightTimeRanges.day,
+    interval: 7
   }, {
     label: 'Last week',
     from: Date.now() - oneWeek,
-    range: MKRWeightTimeRanges.day
+    range: MKRWeightTimeRanges.day,
+    interval: 1
   }];
-
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
   const { data, error, isValidating, revalidate } = useSWR(`/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`, fetchJson);
@@ -65,13 +68,17 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     }
     
     return <Box>
-      <Text as="p">{monthMKR?.date}</Text>
+      <Text as="p">{formatXAxis(monthMKR?.date)}</Text>
       <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
       <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
     </Box>;
   }
 
+  const formatXAxis = (tickItem) => {
 
+    const d = moment(tickItem)
+    return d.format('DD-MM-YYYY');
+};
 
   return (
     <Box>
@@ -128,12 +135,13 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
           <XAxis
             dataKey="date"
-            interval="preserveStartEnd"
             stroke={'#ADADAD'}
             color="#ADADAD"
             tickMargin={15}
             axisLine={false}
             tickLine={false}
+            tickFormatter={formatXAxis} 
+            interval={selectedTimeFrame.interval}
           />
           <YAxis
             dataKey="MKR"

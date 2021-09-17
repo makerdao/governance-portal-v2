@@ -12,9 +12,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   const range = req.query.range as MKRWeightTimeRanges;
   const from = parseInt(req.query.from as string) || ONE_YEAR;
+  const address = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const data = await fetchDelegatesMKRWeightHistory(from, range, network);
+  const data = await fetchDelegatesMKRWeightHistory(address, from, range, network);
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(data);
 });
