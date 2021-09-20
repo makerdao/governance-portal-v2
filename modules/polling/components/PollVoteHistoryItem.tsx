@@ -1,13 +1,10 @@
 /** @jsx jsx */
-import VoteBreakdown from './VoteBreakdown';
-import Tooltip from 'components/Tooltip';
 import { getNetwork } from 'lib/maker';
 import moment from 'moment';
 import Link from 'next/link';
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
-import { parseRawPollTally } from '../helpers/parseRawTally';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 
@@ -16,14 +13,6 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
 
   const dateFormat = 'MMM DD YYYY HH:mm zz';
   const voteDate = moment(vote.blockTimestamp);
-  const voteBreakdown = (
-    <VoteBreakdown
-      poll={vote.poll}
-      tally={parseRawPollTally(vote.tally, vote.poll)}
-      shownOptions={3}
-      key={vote.pollId}
-    />
-  );
 
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   return (
@@ -40,45 +29,36 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           mr: [0, 2]
         }}
       >
-        <Tooltip label={voteBreakdown}>
-          <Box>
+        <Text
+          variant="secondary"
+          color="onSecondary"
+          sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
+          as="p"
+        >
+          Voted {voteDate.format(dateFormat)}
+        </Text>
+
+        <Link href={`/polling/${vote.poll.slug}?network=${network}`} passHref>
+          <ThemeUILink variant="nostyle">
             <Text
-              variant="secondary"
-              color="onSecondary"
-              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
               as="p"
+              sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}
             >
-              Voted {voteDate.format(dateFormat)}
+              {vote.poll.title}
             </Text>
+          </ThemeUILink>
+        </Link>
 
-            <Link href={`/polling/${vote.poll.slug}?network=${network}`} passHref>
-              <ThemeUILink variant="nostyle">
-                <Text
-                  as="p"
-                  sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}
-                >
-                  {vote.poll.title}
-                </Text>
-              </ThemeUILink>
-            </Link>
-
-            <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              {vote.poll.discussionLink && (
-                <ThemeUILink
-                  title="Discussion"
-                  href={vote.poll.discussionLink}
-                  target="_blank"
-                  sx={{ mr: 2 }}
-                >
-                  <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                    Discussion
-                    <Icon ml={2} name="arrowTopRight" size={2} />
-                  </Text>
-                </ThemeUILink>
-              )}
-            </Box>
-          </Box>
-        </Tooltip>
+        <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
+          {vote.poll.discussionLink && (
+            <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank" sx={{ mr: 2 }}>
+              <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                Discussion
+                <Icon ml={2} name="arrowTopRight" size={2} />
+              </Text>
+            </ThemeUILink>
+          )}
+        </Box>
       </Box>
 
       <Box

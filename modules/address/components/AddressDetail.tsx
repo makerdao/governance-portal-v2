@@ -57,10 +57,10 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
             </ExternalLink>
             {voteProxyInfo && (
               <Flex>
-                <Text sx={{ color: 'textSecondary', fontSize: [1, 2] }}>Proxy Contract</Text>{' '}
+                <Text sx={{ color: 'textSecondary', ml: 2, fontSize: [1, 2] }}>Proxy Contract</Text>{' '}
                 <Tooltip label={tooltipLabel}>
                   <Box>
-                    <Icon name="question" ml={2} mt={'6px'} />
+                    <Icon name="question" ml={2} mt={['2px', '4px']} />
                   </Box>
                 </Tooltip>{' '}
               </Flex>
