@@ -5,19 +5,19 @@ import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
-import { PollTallyVote, Poll } from 'modules/polling/types';
+import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { CurrencyObject } from 'types/currency';
 
 type Props = {
-  votes: PollTallyVote[];
-  totalMkrParticipation: CurrencyObject;
+  tally: PollTally;
   poll: Poll;
 };
 
-const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Element => {
+const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const network = getNetwork();
+  const { votesByAddress: votes, totalMkrParticipation } = tally;
+  const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
@@ -87,7 +87,7 @@ const VotesByAddress = ({ votes, totalMkrParticipation, poll }: Props): JSX.Elem
           )}
         </tbody>
       </table>
-      {poll.voteType === 'Ranked Choice IRV' && (
+      {showRankedChoiceInfo && (
         <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
           *First choice in ranked choice vote shown
         </Text>

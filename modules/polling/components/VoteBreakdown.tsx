@@ -2,10 +2,9 @@
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 import Tooltip from 'components/Tooltip';
-
 import Delay from 'components/Delay';
 import { PollTally, Poll } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export default function VoteBreakdown({
   poll,
@@ -16,7 +15,7 @@ export default function VoteBreakdown({
   shownOptions: number;
   tally: PollTally | undefined;
 }): JSX.Element {
-  if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
+  if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN) {
     return (
       <Box key={2} sx={{ p: [3, 4] }}>
         <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
