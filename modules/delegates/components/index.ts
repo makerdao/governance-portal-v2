@@ -12,3 +12,6 @@ export * from './DelegateDetail';
 export * from './DelegateLastVoted';
 export * from './DelegatePicture';
 export * from './DelegatesSystemInfo';
+export * from './DelegateCredentials';
+export * from './DelegateVoteHistory';
+export * from './DelegateParticipationMetrics';

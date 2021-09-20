@@ -8,16 +8,9 @@ import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { DelegateStatusEnum } from '../delegates.constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from '../types';
-import {
-  DelegatePicture,
-  DelegateModal,
-  UndelegateModal,
-  // DelegateLastVoted,
-  DelegateContractExpiration
-} from 'modules/delegates/components';
+import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import Tooltip from 'components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 
