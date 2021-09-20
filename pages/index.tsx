@@ -315,7 +315,10 @@ export default function Index({
     }
 
     if (!isDefaultNetwork() && (!polls || !proposals)) {
-      Promise.all([fetchJson(`/api/polling/all-polls?network=${getNetwork()}`), fetchJson(`/api/executive?network=${getNetwork()}`)])
+      Promise.all([
+        fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
+        fetchJson(`/api/executive?network=${getNetwork()}`)
+      ])
         .then(([polls, proposals]) => {
           setPolls(polls);
           setProposals(proposals);
