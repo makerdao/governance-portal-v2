@@ -18,10 +18,19 @@ jobs:
             - ./node_modules
           key: dependency-cache-{{ checksum "yarn.lock" }}
   test:
+    environment:
+      SENTRY_ORG: makerdao-dux
+      SENTRY_PROJECT: makerdao-dux
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
     steps:
       - checkout
+      - run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          export SENTRY_RELEASE=$(sentry-cli releases propose-version)
+          sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+          sentry-cli releases set-commits --auto $SENTRY_RELEASE
+          sentry-cli releases finalize $SENTRY_RELEASE
       - restore_cache:
           keys:
             - dependency-cache-{{ checksum "yarn.lock" }}
