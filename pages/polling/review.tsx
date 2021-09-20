@@ -24,6 +24,7 @@ import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { fetchJson } from 'lib/utils';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -148,7 +149,7 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls).catch(setError);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls).catch(setError);
     }
   }, []);
 

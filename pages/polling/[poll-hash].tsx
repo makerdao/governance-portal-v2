@@ -90,7 +90,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
     } else {
       _setPolls(prefetchedPolls);
     }
