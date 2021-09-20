@@ -6,7 +6,7 @@ import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();
@@ -85,14 +85,14 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: 'right' }}
             as="p"
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'Voted 1st Choice' : 'VOTED OPTION'}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
             sx={{
               textAlign: 'right',
               color:
-                vote.poll.voteType !== POLL_VOTE_TYPE.RANKED_VOTE
+                vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
                   ? voteColorStyles[vote.option || 0]
                   : 'secondaryAlt',
               fontWeight: 'semiBold'

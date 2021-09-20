@@ -22,7 +22,7 @@ export type PollTallyOption = {
 export type RawPollTally = {
   winner: string | null;
   rounds: number;
-  totalMkrParticipation: BigNumber;
+  totalMkrParticipation: CurrencyObject;
   numVoters: number;
   options: Record<number, PollTallyOption>;
 };

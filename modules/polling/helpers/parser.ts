@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import categoryMap from './oldPollCategories';
-import { POLL_VOTE_TYPE } from '../polls.constants';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const { data: pollMeta, content } = matter(document);
@@ -12,7 +12,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const discussionLink =
     pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link) ? pollMeta.discussion_link : null;
   const voteType: PollVoteType =
-    (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.PLURALITY_VOTE; // compiler error if invalid vote type
+    (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
   const categories = [
     ...(pollMeta?.categories || []),
