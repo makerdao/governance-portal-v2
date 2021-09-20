@@ -1,6 +1,5 @@
 import { SupportedNetworks } from 'lib/constants';
 import getMaker from 'lib/maker';
-import { POLL_VOTE_TYPE } from '../polls.constants';
 import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
@@ -29,11 +28,9 @@ export async function fetchAddressPollVoteHistory(
         const tally = await fetchPollTally(pollVote.pollId, network);
 
         const optionValue =
-          poll && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE
-            ? pollVote.rankedChoiceOption && typeof pollVote.rankedChoiceOption[0] !== 'undefined'
-              ? poll.options[pollVote.rankedChoiceOption[0]]
-              : ''
-            : typeof pollVote.option !== 'undefined'
+          pollVote.rankedChoiceOption && typeof pollVote.rankedChoiceOption[0] !== undefined
+            ? poll.options[pollVote.rankedChoiceOption[0]]
+            : pollVote.option !== undefined
             ? poll.options[pollVote.option]
             : '';
 

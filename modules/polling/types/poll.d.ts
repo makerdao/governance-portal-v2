@@ -1,4 +1,4 @@
-import  { PollVoteType } from './pollVoteType';
+import { PollVoteType } from './pollVoteType';
 
 export type Poll = {
   title: string;

@@ -10,7 +10,10 @@ export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): Re
       paddingBottom: 3,
       marginBottom: 3,
       borderBottom: '1px solid',
-      borderColor: 'secondary'
+      borderColor: 'secondary',
+      ':last-child': {
+        border: 'none'
+      }
     }
   };
 
@@ -24,7 +27,7 @@ export function PollVoteHistoryList({ votes }: { votes: PollVoteHistory[] }): Re
         ))}
       {votes.length === 0 && (
         <Box mt={1}>
-          <Text>This address has never voted</Text>
+          <Text>No polling vote history found</Text>
         </Box>
       )}
     </Box>
