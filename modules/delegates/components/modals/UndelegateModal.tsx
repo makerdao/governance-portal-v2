@@ -114,6 +114,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
                         balance={mkrStaked.toBigNumber()}
                         buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
+                        showAlert={false}
                       />
                     ) : (
                       <ApprovalContent
