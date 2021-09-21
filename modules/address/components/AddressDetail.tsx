@@ -70,7 +70,7 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
         </Flex>
       </Box>
 
-      <Divider mt={3} mb={1} />
+      <Divider mt={1} mb={1} />
 
       <Box sx={{ p: [3, 4] }}>
         <Box>
@@ -87,7 +87,7 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
         </Box>
       </Box>
 
-      <Divider mt={3} mb={1} />
+      <Divider mt={1} mb={1} />
       <Box sx={{ p: [3, 4] }}>
         <Box>
           <PollingParticipationOverview votes={stats.pollVoteHistory} />

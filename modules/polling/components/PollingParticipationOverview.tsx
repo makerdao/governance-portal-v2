@@ -3,13 +3,15 @@
 import { Box, Text, jsx } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import { PollVoteHistory } from '../types/pollVoteHistory';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function PollingParticipationOverview({ votes }: { votes: PollVoteHistory[] }): React.ReactElement {
-  const total = votes.length;
+  const filteredVotes = votes.filter(i => i.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE);
+  const total = filteredVotes.length;
 
-  const votedYes = new BigNumber(votes.filter(vote => vote.option === 1).length);
-  const votedNo = new BigNumber(votes.filter(vote => vote.option === 2).length);
-  const votedAbstain = new BigNumber(votes.filter(vote => vote.option === 0).length);
+  const votedYes = new BigNumber(filteredVotes.filter(vote => vote.option === 1).length);
+  const votedNo = new BigNumber(filteredVotes.filter(vote => vote.option === 2).length);
+  const votedAbstain = new BigNumber(filteredVotes.filter(vote => vote.option === 0).length);
 
   const yesPercent = votedYes.dividedBy(total).multipliedBy(100).toFixed(0);
   const abstainPercent = votedAbstain.dividedBy(total).multipliedBy(100).toFixed(0);
