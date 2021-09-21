@@ -50,10 +50,10 @@ export function InputDelegateMkr({
           {buttonLabel}
         </Button>
       </Box>
-      {showAlert && lockedMkr && lockedMkr.gt(0.00) && balance && balance.gt(0) && (
-        <Alert variant="information" sx={{ fontWeight: 'normal'}}>
+      {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.gt(0) && (
+        <Alert variant="notice" sx={{ fontWeight: 'normal'}}>
           <Text>
-            {`You have ${lockedMkr.toBigNumber().toFormat(2)} additional MKR locked in the voting contract. `}
+            {`You have ${lockedMkr.toBigNumber().toFormat(6)} additional MKR locked in the voting contract. `}
             <Link href={accountVoteDelegate ? '/account' : '/executive'} sx={{ color: 'inherit', textDecoration: 'underline' }}>{'Withdraw MKR'}</Link>{' to deposit it into a delegate contract.'}
           </Text>
         </Alert>)
