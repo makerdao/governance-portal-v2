@@ -13,21 +13,23 @@ export function DelegateVoteHistory({
 }): React.ReactElement {
   return (
     <Box>
-      <Box p={[3, 4]}>
-        <Text
-          as="p"
-          sx={{
-            fontSize: 4,
-            fontWeight: 'semiBold'
-          }}
-        >
-          Polling Proposals
-        </Text>
+      <Box>
+        <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+          <Text
+            as="p"
+            sx={{
+              fontSize: 4,
+              fontWeight: 'semiBold'
+            }}
+          >
+            Polling Proposals
+          </Text>
+          <Divider mt={3} />
+        </Box>
 
-        <Divider mt={3} mb={3} />
         <PollVoteHistoryList votes={stats.pollVoteHistory} />
       </Box>
-      <Divider mt={3} mb={1} />
+     
 
       <Box p={[3, 4]}>
         <PollingParticipationOverview votes={stats.pollVoteHistory} />

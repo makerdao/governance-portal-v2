@@ -72,22 +72,21 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
 
       <Divider mt={1} mb={1} />
 
-      <Box sx={{ p: [3, 4] }}>
-        <Box>
-          <Text
-            as="p"
-            sx={{
-              fontSize: 4,
-              fontWeight: 'semiBold'
-            }}
-          >
-            Polling Proposals
-          </Text>
-          <PollVoteHistoryList votes={stats.pollVoteHistory} />
-        </Box>
+      <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+        <Text
+          as="p"
+          sx={{
+            fontSize: 4,
+            fontWeight: 'semiBold'
+          }}
+        >
+          Polling Proposals
+        </Text>
+        <Divider mt={3} />
       </Box>
 
-      <Divider mt={1} mb={1} />
+      <PollVoteHistoryList votes={stats.pollVoteHistory} />
+
       <Box sx={{ p: [3, 4] }}>
         <Box>
           <PollingParticipationOverview votes={stats.pollVoteHistory} />
