@@ -4,19 +4,7 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import {
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Grid,
-  Spinner,
-  Box,
-  Text,
-  Divider,
-  Link as ThemeUILink,
-  jsx
-} from 'theme-ui';
+import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
@@ -62,8 +50,6 @@ const editMarkdown = content => {
 };
 
 const ProposalTimingBanner = ({ proposal, spellData }): JSX.Element => {
-  
-
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
@@ -209,7 +195,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
-            <Grid gap={2} columns={[2, 2, 4, 2, 4]} sx={{ mx: [3, 4], mb: 3 }}>
+            <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
                   <ThemeUILink
@@ -217,17 +203,19 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
                     target="_blank"
                   >
-                    <Text as="p" sx={{ fontSize: [3, 5] }}>
-                      {cutMiddle(proposal.address, 6, 6)}
+                    <Text as="p" sx={{ fontSize: [2, 5] }}>
+                      {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
                     </Text>
                   </ThemeUILink>
                 }
                 label="Spell Address"
               />
-              <StatBox value="test" label="MKR Support" styles={{ textAlign: ['right', 'left'] }} />
+              <StatBox
+                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(2)}
+                label="MKR Support"
+              />
               <StatBox value={supporters && supporters.length} label="Supporters" />
-              <StatBox value="test" label="MKR supported by you" styles={{ textAlign: ['right', 'left'] }} />
-            </Grid>
+            </Flex>
             {
               'about' in proposal ? (
                 <Tabs
@@ -247,7 +235,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     // onChainFxTab,
                     commentsTab
                   ]}
-                  banner={<ProposalTimingBanner proposal={proposal} />}
+                  banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
                 ></Tabs>
               ) : null
               // ch401: hide until API is fixed
@@ -289,9 +277,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            {spellData && <Text mt={3} mb={2} as="p" variant="body2">
-              {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
-            </Text>} 
+            {spellData && (
+              <Text mt={3} mb={2} as="p" variant="body2">
+                {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
+              </Text>
+            )}
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
               <Box
                 sx={{

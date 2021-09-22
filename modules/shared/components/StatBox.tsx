@@ -2,7 +2,7 @@ import { Box, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 
 type Props = {
-  value: string | JSX.Element;
+  value?: string | JSX.Element;
   label: string;
   styles?: ThemeUIStyleObject;
 };
