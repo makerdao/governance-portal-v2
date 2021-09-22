@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import Skeleton from 'components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import useAccountsStore from 'stores/accounts';
 import { CMSProposal } from 'modules/executive/types';

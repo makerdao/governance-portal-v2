@@ -55,7 +55,7 @@ let maker, voteDelegateAddress;
 async function setup(maker, mockResponse) {
   const view = render(
     <SWRConfig value={{ dedupingInterval: 0, refreshInterval: 10 }}>
-      <DelegatesPage delegates={[]} stats={mockResponse.stats} />
+      <DelegatesPage delegates={mockResponse.delegates} stats={mockResponse.stats} />
     </SWRConfig>
   );
 
@@ -81,9 +81,6 @@ describe('Delegates list page', () => {
 
     // Change to a new, non-delegate account
     await switchAccount(maker);
-
-    const mockGetUsers = jest.spyOn(utils, 'fetchJson');
-    mockGetUsers.mockResolvedValue(mockResponse);
 
     await setup(maker, mockResponse);
   });

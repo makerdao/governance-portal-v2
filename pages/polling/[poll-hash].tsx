@@ -23,8 +23,8 @@ import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { fetchJson } from 'lib/utils';
-import { getNetwork, isDefaultNetwork } from 'lib/maker';
+import { fetchJson } from 'lib/fetchJson';
+import { getNetwork, isDefaultNetwork, isTestnet } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 
 // api
@@ -89,7 +89,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   });
 
   useEffect(() => {
-    if (!isDefaultNetwork()) {
+    if (!isDefaultNetwork() ) {
       fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
     } else {
       _setPolls(prefetchedPolls);

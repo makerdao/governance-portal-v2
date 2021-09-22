@@ -23,7 +23,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { getEtherscanLink, sortBytesArray, fetchJson } from 'lib/utils';
+import { getEtherscanLink, sortBytesArray } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { useLockedMkr, useSpellData, useHat, useAllSlates } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';

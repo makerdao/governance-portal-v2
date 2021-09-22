@@ -8,7 +8,9 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
-import { fetchJson, initTestchainPolls } from 'lib/utils';
+import { initTestchainPolls } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
+
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
@@ -313,7 +315,7 @@ export default function Index({
     if (isTestnet()) {
       initTestchainPolls(); // this is async but we don't need to await
     }
-
+    
     if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),

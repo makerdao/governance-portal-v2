@@ -11,10 +11,10 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
+import getMaker, { isDefaultNetwork, getNetwork, MKR, isTestnet } from 'lib/maker';
 import { useLockedMkr, useHat } from 'lib/hooks';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
 
@@ -445,7 +445,7 @@ export default function ExecutiveOverviewPage({
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
+    if (!isDefaultNetwork() && !isTestnet()) {
       fetchJson(`/api/executive?network=${getNetwork()}`).then(_setProposals).catch(setError);
     }
   }, []);

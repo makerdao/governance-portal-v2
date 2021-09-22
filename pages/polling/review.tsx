@@ -9,7 +9,7 @@ import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
+import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'components/layouts/Primary';
@@ -24,7 +24,7 @@ import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
