@@ -19,6 +19,7 @@ import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { getEtherscanLink } from 'lib/utils';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -33,6 +34,7 @@ import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
 // import OnChainFx from 'components/executive/OnChainFx';
+import { StatBox } from 'modules/shared/components/StatBox';
 
 //types
 import { Proposal } from 'modules/executive/types';
@@ -194,6 +196,32 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
+            <Flex
+              sx={{
+                mx: 4,
+                justifyContent: 'space-between',
+                flexDirection: ['column', 'row'],
+                mb: 3
+              }}
+            >
+              <StatBox
+                value={
+                  <ThemeUILink
+                    title="View on etherescan"
+                    href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ fontSize: [3, 5] }}>
+                      {cutMiddle(proposal.address, 6, 6)}
+                    </Text>
+                  </ThemeUILink>
+                }
+                label="Spell Address"
+              />
+              <StatBox value="test" label="MKR Support" />
+              <StatBox value={supporters && supporters.length} label="Supporters" />
+              <StatBox value="test" label="MKR supported by you" />
+            </Flex>
             {
               'about' in proposal ? (
                 <Tabs
