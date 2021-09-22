@@ -4,7 +4,19 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
+import {
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Grid,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ThemeUILink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
@@ -196,14 +208,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
-            <Flex
-              sx={{
-                mx: 4,
-                justifyContent: 'space-between',
-                flexDirection: ['column', 'row'],
-                mb: 3
-              }}
-            >
+            <Grid gap={2} columns={[2, 2, 4, 2, 4]} sx={{ mx: [3, 4], mb: 3 }}>
               <StatBox
                 value={
                   <ThemeUILink
@@ -218,10 +223,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 }
                 label="Spell Address"
               />
-              <StatBox value="test" label="MKR Support" />
+              <StatBox value="test" label="MKR Support" styles={{ textAlign: ['right', 'left'] }} />
               <StatBox value={supporters && supporters.length} label="Supporters" />
-              <StatBox value="test" label="MKR supported by you" />
-            </Flex>
+              <StatBox value="test" label="MKR supported by you" styles={{ textAlign: ['right', 'left'] }} />
+            </Grid>
             {
               'about' in proposal ? (
                 <Tabs

@@ -29,7 +29,9 @@ export const StatBox = ({ value, label, styles }: Props): JSX.Element => {
             {value}
           </Text>
         ) : (
-          <Skeleton />
+          <Box sx={{ width: 5 }}>
+            <Skeleton />
+          </Box>
         )}
       </Box>
       <Text
