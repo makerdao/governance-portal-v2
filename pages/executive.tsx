@@ -446,7 +446,7 @@ export default function ExecutiveOverviewPage({
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getExecutiveProposals().then(_setProposals).catch(setError);
+      fetchJson(`/api/executive?network=${getNetwork()}`).then(_setProposals).catch(setError);
     }
   }, []);
 
