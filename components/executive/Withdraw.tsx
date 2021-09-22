@@ -19,12 +19,13 @@ import { BoxWithClose } from 'components/BoxWithClose';
 import { useLockedMkr } from 'lib/hooks';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import BigNumber from 'bignumber.js';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   invariant(address);
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
@@ -104,7 +105,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         )}
         <Button
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
-          disabled={mkrToWithdraw.eq(0) || mkrToWithdraw.gt(lockedMkr)}
+          disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr.toBigNumber())}
           onClick={async () => {
             trackButtonClick('withdrawMkr');
             const maker = await getMaker();

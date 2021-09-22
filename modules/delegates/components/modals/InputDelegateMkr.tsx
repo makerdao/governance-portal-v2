@@ -46,7 +46,7 @@ export function InputDelegateMkr({
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       <Box sx={{ mt: 3, width: '20rem' }}>
         <MKRInput value={value} onChange={handleChange} balance={balance} />
-        <Button onClick={onClick} sx={{ width: '100%', my: 3 }} disabled={!value || value.eq(0)}>
+        <Button onClick={onClick} sx={{ width: '100%', my: 3 }} disabled={!value || !balance || value.eq(0) || value.gt(balance)}>
           {buttonLabel}
         </Button>
       </Box>
