@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import useAccountsStore from 'stores/accounts';
 import { useLockedMkr } from 'lib/hooks';
+import Withdraw from 'components/executive/Withdraw';
 
 type Props = {
   title: string;
@@ -26,10 +27,9 @@ export function InputDelegateMkr({
   showAlert
 }: Props): React.ReactElement {
   const [value, setValue] = useState(new BigNumber(0));
-  console.log({showAlert});
   const currentAccount = useAccountsStore(state =>state.currentAccount);
-  const [voteProxy, accountVoteDelegate] = useAccountsStore(state =>
-    currentAccount ? [state.proxies[currentAccount.address], state.voteDelegate] : [null, null]
+  const voteProxy = useAccountsStore(state =>
+    currentAccount ? state.proxies[currentAccount.address] : null
   );
   const { data: lockedMkr } = useLockedMkr(currentAccount?.address, voteProxy);
   function handleChange(val: BigNumber): void {
@@ -54,14 +54,17 @@ export function InputDelegateMkr({
         <Alert variant="notice" sx={{ fontWeight: 'normal'}}>
           <Text>
             {`You have ${lockedMkr.toBigNumber().toFormat(6)} additional MKR locked in the voting contract. `}
-            <Link href={accountVoteDelegate ? '/account' : '/executive'} sx={{ color: 'inherit', textDecoration: 'underline' }}>{'Withdraw MKR'}</Link>{' to deposit it into a delegate contract.'}
+            <Withdraw link={'Withdraw MKR'}/>
+            {' to deposit it into a delegate contract.'}
           </Text>
         </Alert>)
       }
       {showAlert && lockedMkr && lockedMkr.gt(0.00) && balance && balance.eq(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal'}}>
           <Text>
-            {'You must '}<Link href={accountVoteDelegate ? '/account' : '/executive'} sx={{ color: 'inherit', textDecoration: 'underline' }}>{'withdraw MKR'}</Link>{' from the voting contract before you can delegate it.'}
+            {'You must '}
+            <Withdraw link={'withdraw your MKR'}/>
+            {' from the voting contract before delegating it.'}
           </Text>
         </Alert>)
       }

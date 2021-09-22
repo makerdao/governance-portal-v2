@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState } from 'react';
-import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
+import { Button, Flex, Text, Box, jsx, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -20,7 +20,7 @@ import { useLockedMkr } from 'lib/hooks';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 
-const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => {
+const ModalContent = ({ address, voteProxy, close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   invariant(address);
@@ -40,8 +40,7 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
-
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
@@ -179,13 +178,10 @@ const ModalContent = ({ address, voteProxy, voteDelegate, close, ...props }) => 
 
 const Withdraw = (props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, voteDelegate] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-  );
+  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
 
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
-
   return (
     <>
       <DialogOverlay
@@ -211,19 +207,27 @@ const Withdraw = (props): JSX.Element => {
             sx={{ px: [3, null] }}
             address={account?.address}
             voteProxy={voteProxy}
-            voteDelegate={voteDelegate}
             close={() => setShowDialog(false)}
           />
         </DialogContent>
       </DialogOverlay>
-      <Button
-        variant="mutedOutline"
-        onClick={() => setShowDialog(true)}
-        {...props}
-        data-testid="withdraw-button"
-      >
-        Withdraw
-      </Button>
+      {props.link ? (
+        <Link
+          onClick={() => setShowDialog(true)}
+          sx={{ textDecoration: 'underline', cursor: 'pointer', color: 'inherit' }}
+        >
+          {props.link}
+        </Link>
+      ) : (
+        <Button
+          variant="mutedOutline"
+          onClick={() => setShowDialog(true)}
+          {...props}
+          data-testid="withdraw-button"
+        >
+          Withdraw
+        </Button>
+      )}
     </>
   );
 };
