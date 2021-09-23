@@ -16,7 +16,7 @@ import ResourceBox from 'components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import useAccountsStore from 'stores/accounts';

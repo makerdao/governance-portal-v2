@@ -37,7 +37,8 @@ import ResourceBox from 'components/ResourceBox';
 import { StatBox } from 'modules/shared/components/StatBox';
 
 //types
-import { Proposal } from 'modules/executive/types';
+import { CMSProposal, Proposal } from 'modules/executive/types';
+import { SpellData } from 'types/spellData';
 // import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
@@ -49,7 +50,13 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const ProposalTimingBanner = ({ proposal, spellData }): JSX.Element => {
+const ProposalTimingBanner = ({
+  proposal,
+  spellData
+}: {
+  proposal: CMSProposal;
+  spellData?: SpellData;
+}): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
