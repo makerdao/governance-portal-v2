@@ -48,7 +48,13 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const ProposalTimingBanner = ({ proposal, spellData }: { proposal: CMSProposal, spellData?: SpellData}): JSX.Element => {
+const ProposalTimingBanner = ({
+  proposal,
+  spellData
+}: {
+  proposal: CMSProposal;
+  spellData?: SpellData;
+}): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
