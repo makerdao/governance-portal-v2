@@ -9,7 +9,7 @@ import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
+import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'components/layouts/Primary';

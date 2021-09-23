@@ -35,7 +35,8 @@ import ResourceBox from 'components/ResourceBox';
 // import OnChainFx from 'components/executive/OnChainFx';
 
 //types
-import { Proposal } from 'modules/executive/types';
+import { CMSProposal, Proposal } from 'modules/executive/types';
+import { SpellData } from 'types/spellData';
 // import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
@@ -47,9 +48,7 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const ProposalTimingBanner = ({ proposal, spellData }): JSX.Element => {
-  
-
+const ProposalTimingBanner = ({ proposal, spellData }: { proposal: CMSProposal, spellData?: SpellData}): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
@@ -256,9 +255,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            {spellData && <Text mt={3} mb={2} as="p" variant="body2">
-              {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
-            </Text>} 
+            {spellData && (
+              <Text mt={3} mb={2} as="p" variant="body2">
+                {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
+              </Text>
+            )}
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
               <Box
                 sx={{

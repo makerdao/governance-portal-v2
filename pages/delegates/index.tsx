@@ -4,7 +4,7 @@ import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import ErrorPage from 'next/error';
-import { isDefaultNetwork, isTestnet } from 'lib/maker';
+import { isDefaultNetwork } from 'lib/maker';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { shuffleArray } from 'lib/common/shuffleArray';

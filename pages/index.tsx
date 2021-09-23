@@ -315,7 +315,7 @@ export default function Index({
     if (isTestnet()) {
       initTestchainPolls(); // this is async but we don't need to await
     }
-    
+
     if (!isDefaultNetwork() && (!polls || !proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
