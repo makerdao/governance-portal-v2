@@ -48,8 +48,6 @@ const editMarkdown = content => {
 };
 
 const ProposalTimingBanner = ({ proposal, spellData }): JSX.Element => {
-  
-
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
@@ -214,7 +212,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     // onChainFxTab,
                     commentsTab
                   ]}
-                  banner={<ProposalTimingBanner proposal={proposal} />}
+                  banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
                 ></Tabs>
               ) : null
               // ch401: hide until API is fixed
@@ -256,9 +254,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            {spellData && <Text mt={3} mb={2} as="p" variant="body2">
-              {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
-            </Text>} 
+            {spellData && (
+              <Text mt={3} mb={2} as="p" variant="body2">
+                {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
+              </Text>
+            )}
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
               <Box
                 sx={{
