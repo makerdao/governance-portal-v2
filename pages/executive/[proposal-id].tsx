@@ -219,7 +219,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     // onChainFxTab,
                     commentsTab
                   ]}
-                  banner={<ProposalTimingBanner proposal={proposal} />}
+                  banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
                 ></Tabs>
               ) : null
               // ch401: hide until API is fixed
