@@ -1,3 +1,3 @@
 export type NotFoundResponse = {
-    error: string
-}
+  error: string;
+};

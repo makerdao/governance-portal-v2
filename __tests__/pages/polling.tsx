@@ -13,7 +13,6 @@ import mockCategories from '../../mocks/categories.json';
 import { accountsApi } from '../../stores/accounts';
 import { Poll, PollCategory } from 'modules/polling/types';
 
-
 let maker;
 
 jest.mock('@theme-ui/match-media', () => {
