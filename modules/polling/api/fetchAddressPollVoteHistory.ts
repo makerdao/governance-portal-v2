@@ -25,7 +25,9 @@ export async function fetchAddressPollVoteHistory(
           return null;
         }
 
-        const tally = await fetchPollTally(pollVote.pollId, network);
+        // use cached tally if poll has ended
+        const useCache = new Date(poll.endDate).getTime() < new Date().getTime();
+        const tally = await fetchPollTally(pollVote.pollId, useCache, network);
 
         const optionValue =
           pollVote.rankedChoiceOption && typeof pollVote.rankedChoiceOption[0] !== undefined
