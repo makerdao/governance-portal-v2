@@ -326,7 +326,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
           voteProxy &&
-          lockedMkr && (
+          lockedMkr &&
+          !voteDelegate && (
             <>
               <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
               <MigrationBadge>
