@@ -7,6 +7,7 @@ import { POLL_VOTE_TYPE } from '../polling.constants';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 
 export function PollingParticipationOverview({ votes }: { votes: PollVoteHistory[] }): React.ReactElement {
+ 
   const filteredVotes = votes.filter(i => i.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE);
   const total = filteredVotes.length;
 
@@ -14,9 +15,9 @@ export function PollingParticipationOverview({ votes }: { votes: PollVoteHistory
   const votedNo = new BigNumber(filteredVotes.filter(vote => vote.option === 2).length);
   const votedAbstain = new BigNumber(filteredVotes.filter(vote => vote.option === 0).length);
 
-  const yesPercent = votedYes.dividedBy(total).multipliedBy(100).toFixed(0);
-  const abstainPercent = votedAbstain.dividedBy(total).multipliedBy(100).toFixed(0);
-  const noPercent = votedNo.dividedBy(total).multipliedBy(100).toFixed(0);
+  const yesPercent = votedYes.isGreaterThan(0) ? votedYes.dividedBy(total).multipliedBy(100).toFixed(0): 0;
+  const abstainPercent = votedAbstain.isGreaterThan(0) ? votedAbstain.dividedBy(total).multipliedBy(100).toFixed(0): 0;
+  const noPercent = votedNo.isGreaterThan(0) ? votedNo.dividedBy(total).multipliedBy(100).toFixed(0): 0;
 
 
   return (
