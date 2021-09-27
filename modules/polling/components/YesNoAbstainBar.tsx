@@ -7,9 +7,9 @@ export function YesNoAbstainBar({
   noPercent,
   abstainPercent
 }: {
-  yesPercent: string;
-  noPercent: string;
-  abstainPercent: string;
+  yesPercent: string|number;
+  noPercent: string|number;
+  abstainPercent: string|number;
 }): React.ReactElement {
   const styles = {
     titles: {
