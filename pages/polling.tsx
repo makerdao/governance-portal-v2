@@ -34,6 +34,7 @@ import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import { getPolls } from 'modules/polling/api/fetchPolls';
+import { fetchJson } from 'lib/fetchJson';
 
 type Props = {
   polls: Poll[];
@@ -290,7 +291,7 @@ export default function PollingOverviewPage({
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
         .then(polls => {
           _setPolls(polls);
           _setCategories(getCategories(polls));

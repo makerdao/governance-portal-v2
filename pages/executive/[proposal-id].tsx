@@ -19,6 +19,7 @@ import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'lib/executive/getStatusText';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { getEtherscanLink } from 'lib/utils';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -33,9 +34,11 @@ import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import ResourceBox from 'components/ResourceBox';
 // import OnChainFx from 'components/executive/OnChainFx';
+import { StatBox } from 'modules/shared/components/StatBox';
 
 //types
-import { Proposal } from 'modules/executive/types';
+import { CMSProposal, Proposal } from 'modules/executive/types';
+import { SpellData } from 'types/spellData';
 // import { SpellStateDiff } from 'types/spellStateDiff';
 
 type Props = {
@@ -47,9 +50,13 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const ProposalTimingBanner = ({ proposal }): JSX.Element => {
-  const { data: spellData } = useSpellData(proposal.address);
-
+const ProposalTimingBanner = ({
+  proposal,
+  spellData
+}: {
+  proposal: CMSProposal;
+  spellData?: SpellData;
+}): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
@@ -65,6 +72,7 @@ const ProposalTimingBanner = ({ proposal }): JSX.Element => {
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
+  const { data: spellData } = useSpellData(proposal.address);
 
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -194,6 +202,27 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
+            <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
+              <StatBox
+                value={
+                  <ThemeUILink
+                    title="View on etherescan"
+                    href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ fontSize: [2, 5] }}>
+                      {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
+                    </Text>
+                  </ThemeUILink>
+                }
+                label="Spell Address"
+              />
+              <StatBox
+                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(2)}
+                label="MKR Support"
+              />
+              <StatBox value={supporters && supporters.length} label="Supporters" />
+            </Flex>
             {
               'about' in proposal ? (
                 <Tabs
@@ -213,7 +242,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     // onChainFxTab,
                     commentsTab
                   ]}
-                  banner={<ProposalTimingBanner proposal={proposal} />}
+                  banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
                 ></Tabs>
               ) : null
               // ch401: hide until API is fixed

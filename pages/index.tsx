@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { initTestchainPolls } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
+
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
@@ -315,7 +317,10 @@ export default function Index({
     }
 
     if (!isDefaultNetwork() && (!polls || !proposals)) {
-      Promise.all([getPolls(), getExecutiveProposals()])
+      Promise.all([
+        fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
+        fetchJson(`/api/executive?network=${getNetwork()}`)
+      ])
         .then(([polls, proposals]) => {
           setPolls(polls);
           setProposals(proposals);
@@ -338,7 +343,7 @@ export default function Index({
   return <LandingPage proposals={proposals} polls={polls} blogPosts={blogPosts} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
 
   const [proposals, polls, blogPosts] = await Promise.all([

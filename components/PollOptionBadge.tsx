@@ -4,7 +4,7 @@ import Skeleton from 'components/SkeletonThemed';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { getNetwork } from 'lib/maker';
 import useSWR from 'swr';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { Poll } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
