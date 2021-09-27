@@ -23,6 +23,7 @@ import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { cutMiddle } from 'lib/string';
 import { useLockedMkr } from 'lib/hooks';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
@@ -101,7 +102,11 @@ const AccountPage = (): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
                     target="_blank"
                   >
-                    <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
+                    <Text as="p">
+                      {bpi > 0
+                        ? voteDelegate.getVoteDelegateAddress()
+                        : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
+                    </Text>
                   </ExternalLink>
                   {delegatedMkr && (
                     <>
