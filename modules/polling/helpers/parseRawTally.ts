@@ -3,15 +3,13 @@ import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally } from '../types';
 
-
 // Compliments the on-chain tally with a results object that is used on the front-end for data representation
 export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally {
   invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
   const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
-  
-  const winningOptionName = rawTally?.winner === null ? 'None found' :  poll.options[rawTally.winner];
 
- 
+  const winningOptionName = rawTally?.winner === null ? 'None found' : poll.options[rawTally.winner];
+
   const results = Object.keys(poll.options)
     .map(key => {
       return {
@@ -38,10 +36,10 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return valueA.gt(valueB) ? -1 : 1;
     });
 
-  return { 
-    ...rawTally, 
-    results, 
-    totalMkrParticipation, 
+  return {
+    ...rawTally,
+    results,
+    totalMkrParticipation,
     winningOptionName
-   };
+  };
 }
