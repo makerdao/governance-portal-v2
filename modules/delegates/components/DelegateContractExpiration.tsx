@@ -24,7 +24,8 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
   return (
     <Flex
       sx={{
-        alignItems: 'center'
+        alignItems: 'center',
+        flexDirection: ['row-reverse', 'row']
       }}
     >
       <Text

@@ -30,7 +30,8 @@ export function DelegateLastVoted({
   return (
     <Flex
       sx={{
-        mb: 1
+        mb: 1,
+        flexDirection: ['row-reverse', 'row']
       }}
     >
       <Text
