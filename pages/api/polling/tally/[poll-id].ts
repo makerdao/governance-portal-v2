@@ -16,7 +16,7 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }) {
     invariant(pollId, 'poll id required');
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-    const tally: RawPollTally = await backoffRetry(3, () => fetchPollTally(parseInt(pollId), network));
+    const tally: RawPollTally = await backoffRetry(3, () => fetchPollTally(parseInt(pollId), false, network));
 
     const maker = await getMaker(network);
     const votesByAddress: PollTallyVote[] = (
