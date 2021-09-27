@@ -21,6 +21,7 @@ jobs:
     environment:
       SENTRY_ORG: makerdao-dux
       SENTRY_PROJECT: makerdao-dux
+      SENTRY_LOG_LEVEL: debug
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
     steps:
