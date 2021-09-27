@@ -10,11 +10,11 @@ import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();
-
   const dateFormat = 'MMM DD YYYY HH:mm zz';
   const voteDate = moment(vote.blockTimestamp);
-
+  const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
+
   return (
     <Box
       sx={{
@@ -64,15 +64,12 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       <Box
         sx={{
           display: 'flex',
-          justifyContent:
-            vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
-              ? 'space-between'
-              : ['flex-start', 'flex-end'],
+          justifyContent: isPluralityVote ? 'space-between' : ['flex-start', 'flex-end'],
           flex: 1,
           mt: [2, 0]
         }}
       >
-        {vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+        {isPluralityVote && (
           <Box mr={0} ml={0}>
             <PollVotePluralityResultsCompact vote={vote} />
           </Box>
@@ -82,7 +79,12 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           <Text
             variant="secondary"
             color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', textAlign: 'right' }}
+            sx={{
+              textTransform: 'uppercase',
+              fontSize: 1,
+              fontWeight: 'bold',
+              textAlign: [isPluralityVote ? 'right' : 'left', 'right']
+            }}
             as="p"
           >
             {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
@@ -90,11 +92,8 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           <Text
             as="p"
             sx={{
-              textAlign: 'right',
-              color:
-                vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
-                  ? voteColorStyles[vote.option || 0]
-                  : 'secondaryAlt',
+              textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
+              color: isPluralityVote ? voteColorStyles[vote.option || 0] : 'secondaryAlt',
               fontWeight: 'semiBold'
             }}
           >
