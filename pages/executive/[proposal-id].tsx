@@ -256,7 +256,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             }
           </Card>
         </Box>
-        <Stack gap={3}>
+        <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
             <>
               <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
