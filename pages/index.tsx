@@ -246,7 +246,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 </Stack>
                 {activePolls.length > 4 && (
                   <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-                    <Text sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>View all polls</Text>
+                    <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
+                      View all polls
+                    </Text>
                   </Link>
                 )}
               </Container>
