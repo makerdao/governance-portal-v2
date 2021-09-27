@@ -284,11 +284,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            {spellData && (
-              <Text mt={3} mb={2} as="p" variant="body2">
-                {new BigNumber(spellData.mkrSupport).toFormat(2)} total MKR supporting
-              </Text>
-            )}
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
               <Box
                 sx={{
