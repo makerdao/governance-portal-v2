@@ -87,11 +87,7 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
 
       <PollVoteHistoryList votes={stats.pollVoteHistory} />
 
-      <Box sx={{ p: [3, 4] }}>
-        <Box>
-          <PollingParticipationOverview votes={stats.pollVoteHistory} />
-        </Box>
-      </Box>
+      <PollingParticipationOverview votes={stats.pollVoteHistory} />
     </Box>
   );
 }
