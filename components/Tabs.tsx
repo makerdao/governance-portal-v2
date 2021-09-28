@@ -1,12 +1,9 @@
 /** @jsx jsx */
-import { slugify } from 'lib/utils';
-
-import { jsx } from 'theme-ui';
 import { useState, useEffect } from 'react';
-import { Flex, Divider, ThemeUIStyleObject } from 'theme-ui';
+import { Flex, Divider, ThemeUIStyleObject, jsx } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import Router from 'next/router';
+import { slugify } from 'lib/utils';
 
 type Props = {
   tabTitles: string[];
@@ -25,7 +22,6 @@ const TabbedLayout = ({
 }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
-  const bpi = useBreakpointIndex();
 
   useEffect(() => {
     const [, hash] = location.href.split('#');
@@ -49,7 +45,7 @@ const TabbedLayout = ({
       }}
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
-        <TabList sx={{ display: bpi > 0 ? 'block' : 'flex', bg: 'inherit', ...tabListStyles }}>
+        <TabList sx={{ display: ['flex', 'block'], bg: 'inherit', ...tabListStyles }}>
           {tabTitles.map((tabTitle, index) => (
             <Tab
               key={tabTitle}

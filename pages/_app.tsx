@@ -8,7 +8,7 @@ import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
 import Header from 'components/Header';
 import Head from 'next/head';

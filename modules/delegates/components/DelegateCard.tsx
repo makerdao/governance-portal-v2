@@ -8,18 +8,11 @@ import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
 import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { DelegateStatusEnum } from '../delegates.constants';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from '../types';
-import {
-  DelegatePicture,
-  DelegateModal,
-  UndelegateModal,
-  // DelegateLastVoted,
-  DelegateContractExpiration
-} from 'modules/delegates/components';
+import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import Tooltip from 'components/Tooltip';
-import { CurrentlySupportingExecutive } from 'modules/executives/components/CurrentlySupportingExecutive';
+import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 
 type PropTypes = {
   delegate: Delegate;
@@ -79,34 +72,33 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           }}
         >
           <Link
-              href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`,
-                query: { network }
-              }}
-              passHref
-            >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                <Flex sx={{ mr: [0, 2] }}>
-                  <DelegatePicture delegate={delegate} />
+            href={{
+              pathname: `/address/${delegate.voteDelegateAddress}`,
+              query: { network }
+            }}
+            passHref
+          >
+            <ThemeUILink title="Profile details" variant="nostyle">
+              <Flex sx={{ mr: [0, 2] }}>
+                <DelegatePicture delegate={delegate} />
 
-                  <Box sx={{ ml: 2 }}>
-                    <Box>
-                      <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4] }}>
-                        {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
-                      </Text>
-                    </Box>
-                    <Text>
-                      {delegate.voteDelegateAddress.substr(0, 6)}...
-                      {delegate.voteDelegateAddress.substr(
-                        delegate.voteDelegateAddress.length - 5,
-                        delegate.voteDelegateAddress.length - 1
-                      )}
+                <Box sx={{ ml: 2 }}>
+                  <Box>
+                    <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4] }}>
+                      {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
                     </Text>
                   </Box>
-                </Flex>
-
-              </ThemeUILink>
-            </Link>
+                  <Text>
+                    {delegate.voteDelegateAddress.substr(0, 6)}...
+                    {delegate.voteDelegateAddress.substr(
+                      delegate.voteDelegateAddress.length - 5,
+                      delegate.voteDelegateAddress.length - 1
+                    )}
+                  </Text>
+                </Box>
+              </Flex>
+            </ThemeUILink>
+          </Link>
 
           <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
             <Link

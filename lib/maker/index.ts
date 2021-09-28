@@ -112,7 +112,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK;
+  return getNetwork() === DEFAULT_NETWORK || isTestnet();
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

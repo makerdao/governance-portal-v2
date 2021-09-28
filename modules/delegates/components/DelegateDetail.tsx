@@ -1,19 +1,21 @@
 /** @jsx jsx */
 import React from 'react';
 import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
-import { Delegate } from '../types';
-import { DelegatePicture } from './DelegatePicture';
-import { DelegateContractExpiration } from './DelegateContractExpiration';
-import { DelegateCredentials } from './DelegateCredentials';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import Tabs from 'components/Tabs';
-import { DelegateVoteHistory } from './DelegateVoteHistory';
-import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
-import { DelegateStatusEnum } from '../delegates.constants';
+import {
+  DelegatePicture,
+  DelegateContractExpiration,
+  DelegateLastVoted,
+  DelegateCredentials,
+  DelegateVoteHistory,
+  DelegateParticipationMetrics
+} from 'modules/delegates/components';
+import { Delegate } from 'modules/delegates/types';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
 type PropTypes = {
   delegate: Delegate;
@@ -41,9 +43,11 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
       </Box>
     ) : null,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory delegate={delegate} stats={stats} />
+      <DelegateVoteHistory stats={stats} />
     </Box>
   ].filter(i => !!i);
+
+  const lastVote = stats.pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0];
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
@@ -75,13 +79,11 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
               </Box>
             </Flex>
           </Box>
-          <Box mt={[3, 0]}>
+          <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
+            <DelegateLastVoted delegate={delegate} date={lastVote?.blockTimestamp} />
             <DelegateContractExpiration delegate={delegate} />
-          </Box>
+          </Flex>
         </Flex>
-        {/* <Box sx={{ mr: 3 }}>
-          <DelegateLastVoted delegate={delegate} />
-        </Box> */}
       </Box>
 
       <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>

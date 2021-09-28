@@ -69,7 +69,8 @@ export function MKRInput({
           placeholder={placeholder}
           lang="en" // Forces dot for decimals
           sx={{
-            border: 'none'
+            border: 'none',
+            color: 'text'
           }}
         />
         <Button

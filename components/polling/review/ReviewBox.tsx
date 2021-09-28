@@ -8,7 +8,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 import { TXMined } from 'types/transaction';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';

@@ -2,9 +2,9 @@
 import { Box, Text, Flex, jsx } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 import { Ballot } from 'types/ballot';
-import { isActivePoll, findPollById } from 'modules/polls/helpers/utils';
+import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import useAccountsStore from 'stores/accounts';
 import { useAllUserVotes } from 'lib/hooks';
 

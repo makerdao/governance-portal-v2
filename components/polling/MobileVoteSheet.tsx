@@ -11,9 +11,9 @@ import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 
 import { Account } from 'types/account';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 import useBallotStore from 'stores/ballot';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polls/helpers/utils';
+import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
 import Stack from '../layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';

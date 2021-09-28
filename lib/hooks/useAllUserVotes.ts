@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
-import { PollVote } from 'modules/polls/types';
+import { PollVote } from 'modules/polling/types';
 
 type AllUserVotesResponse = {
   data?: PollVote[];

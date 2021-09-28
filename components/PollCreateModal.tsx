@@ -11,7 +11,7 @@ import getMaker, { getNetwork } from 'lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
 import { TXMined } from 'types/transaction';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 
 type Props = {
   close: () => void;

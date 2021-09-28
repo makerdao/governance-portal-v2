@@ -23,14 +23,14 @@ import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 
 // api
-import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polls/types';
-import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
+import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
+import { Poll, PollTally } from 'modules/polling/types';
+import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -43,13 +43,13 @@ import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import Tabs from 'components/Tabs';
-import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
-import VoteBox from 'modules/polls/components/VoteBox';
+import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
+import VoteBox from 'modules/polling/components/VoteBox';
 import SystemStatsSidebar from 'components/SystemStatsSidebar';
 import ResourceBox from 'components/ResourceBox';
 import PollOptionBadge from 'components/PollOptionBadge';
 import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import VotesByAddress from 'modules/polls/components/VotesByAddress';
+import VotesByAddress from 'modules/polling/components/VotesByAddress';
 
 // if the poll has ended, always fetch its tally from the server's cache
 const getURL = poll =>
@@ -84,13 +84,13 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
     { refreshInterval: 30000 }
   );
 
-  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightVisual'), {
+  const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
   });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
     } else {
       _setPolls(prefetchedPolls);
     }
@@ -325,12 +325,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally && tally.votesByAddress ? (
-                        <VotesByAddress
-                          votes={tally.votesByAddress}
-                          totalMkrParticipation={tally.totalMkrParticipation}
-                          poll={poll}
-                        />
+                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                        <VotesByAddress tally={tally} poll={poll} />
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>

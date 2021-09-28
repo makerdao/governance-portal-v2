@@ -132,6 +132,7 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
                           balance={mkrBalance?.toBigNumber()}
                           buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
+                          showAlert={true}
                         />
                       )
                     ) : (

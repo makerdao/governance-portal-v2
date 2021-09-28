@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 
 import { getTrace } from 'lib/api/utils';
 import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'lib/constants';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
 import getMaker from 'lib/maker';

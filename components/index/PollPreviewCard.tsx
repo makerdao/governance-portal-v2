@@ -1,12 +1,11 @@
 /** @jsx jsx */
 import Link from 'next/link';
-import { Button, Text, Flex, Link as InternalLink, jsx, Box } from 'theme-ui';
-
+import { Button, Text, Flex, Link as InternalLink, jsx, Box, ThemeUIStyleObject } from 'theme-ui';
 import Stack from '../layouts/Stack';
 import { getNetwork } from 'lib/maker';
 import CountdownTimer from '../CountdownTimer';
 import PollOptionBadge from '../PollOptionBadge';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 
 type Props = {
   poll: Poll;
@@ -64,14 +63,14 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
                 overflow: 'hidden',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: 2
-              } as any
+              } as ThemeUIStyleObject
             }
           >
             {poll.summary}
           </Text>
         </Box>
 
-        <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+        <Flex sx={{ alignItems: ['flex-start', 'center'], flexDirection: ['column', 'row'] }}>
           <PollOptionBadge poll={poll} sx={{ mb: 2, display: ['block', 'none'] }} />
           <Link
             key={poll.slug}
@@ -85,7 +84,10 @@ const PollPreviewCard = ({ poll, ...props }: Props): JSX.Element => {
             }}
           >
             <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
-              <Button variant="primaryOutline" sx={{ borderRadius: 'small', px: 4, width: ['100%', 'auto'] }}>
+              <Button
+                variant="primaryOutline"
+                sx={{ borderRadius: 'small', px: 4, width: ['100%', 'auto'], mt: [2, 0] }}
+              >
                 View proposal
               </Button>
             </InternalLink>

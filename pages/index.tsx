@@ -9,7 +9,9 @@ import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
 import { initTestchainPolls } from 'lib/utils';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { fetchJson } from 'lib/fetchJson';
+
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'lib/hooks';
 import PrimaryLayout from 'components/layouts/Primary';
 import Stack from 'components/layouts/Stack';
@@ -20,13 +22,13 @@ import IntroCard from 'components/index/IntroCard';
 import PollingIndicator from 'components/index/PollingIndicator';
 import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
 import BlogPostCard from 'components/index/BlogPostCard';
-import { CMSProposal } from 'modules/executives/types';
-import { Poll } from 'modules/polls/types';
+import { CMSProposal } from 'modules/executive/types';
+import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
-import { getPolls } from 'modules/polls/api/fetchPolls';
-import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getPolls } from 'modules/polling/api/fetchPolls';
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 
 type Props = {
   proposals: CMSProposal[];
@@ -244,7 +246,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 </Stack>
                 {activePolls.length > 4 && (
                   <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
-                    <Text sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>View all polls</Text>
+                    <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
+                      View all polls
+                    </Text>
                   </Link>
                 )}
               </Container>
@@ -315,7 +319,10 @@ export default function Index({
     }
 
     if (!isDefaultNetwork() && (!polls || !proposals)) {
-      Promise.all([getPolls(), getExecutiveProposals()])
+      Promise.all([
+        fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
+        fetchJson(`/api/executive?network=${getNetwork()}`)
+      ])
         .then(([polls, proposals]) => {
           setPolls(polls);
           setProposals(proposals);
@@ -338,7 +345,7 @@ export default function Index({
   return <LandingPage proposals={proposals} polls={polls} blogPosts={blogPosts} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
 
   const [proposals, polls, blogPosts] = await Promise.all([

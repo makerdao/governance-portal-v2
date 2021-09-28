@@ -2,7 +2,12 @@
 import { Flex, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-const DefaultScreen = ({ setShowDialog, setStep }) => (
+type Props = {
+  setShowDialog: (value: boolean) => void;
+  setStep: (value: string) => void;
+};
+
+const DefaultScreen = ({ setShowDialog, setStep }: Props): JSX.Element => (
   <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
     <Close onClick={() => setShowDialog(false)} sx={{ alignSelf: 'flex-end' }} />
     <Icon ml={2} name="warning" size={5} sx={{ color: 'notice' }} />
@@ -15,7 +20,7 @@ const DefaultScreen = ({ setShowDialog, setStep }) => (
     </Text>
     <Grid columns={2} mt={4}>
       <Button
-        onClick={close}
+        onClick={() => setShowDialog(false)}
         variant="outline"
         sx={{ color: '#9FAFB9', borderColor: '#9FAFB9', borderRadius: 'small' }}
       >

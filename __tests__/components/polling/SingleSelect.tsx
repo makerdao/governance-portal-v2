@@ -1,12 +1,11 @@
 import { act, screen } from '@testing-library/react';
-import mockPolls from 'modules/polls/api/mocks/polls.json';
+import mockPolls from 'modules/polling/api/mocks/polls.json';
 import mockCategories from '../../../mocks/categories.json';
 import { accountsApi } from '../../../stores/accounts';
 import { connectAccount, createTestPolls, renderWithAccountSelect as render } from '../../helpers';
 import getMaker from '../../../lib/maker';
 import PollingOverviewPage from '../../../pages/polling';
-import { Poll, PollCategory } from 'modules/polls/types';
-
+import { Poll, PollCategory } from 'modules/polling/types';
 
 let maker;
 

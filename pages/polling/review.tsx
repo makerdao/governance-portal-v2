@@ -10,13 +10,13 @@ import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
-import { getPolls } from 'modules/polls/api/fetchPolls';
-import { isActivePoll, findPollById } from 'modules/polls/helpers/utils';
+import { getPolls } from 'modules/polling/api/fetchPolls';
+import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'components/layouts/Primary';
 import SidebarLayout from 'components/layouts/Sidebar';
 import Stack from 'components/layouts/Stack';
 import PollOverviewCard from 'components/polling/PollOverviewCard';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 import ReviewBox from 'components/polling/review/ReviewBox';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
@@ -24,6 +24,7 @@ import MobileVoteSheet from 'components/polling/MobileVoteSheet';
 import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
 import { useAnalytics } from 'lib/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { fetchJson } from 'lib/fetchJson';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -148,7 +149,7 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls).catch(setError);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls).catch(setError);
     }
   }, []);
 

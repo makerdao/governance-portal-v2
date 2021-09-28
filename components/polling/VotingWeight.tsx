@@ -5,7 +5,7 @@ import Tooltip from '../Tooltip';
 import useSWR from 'swr';
 import useAccountsStore from 'stores/accounts';
 import getMaker from 'lib/maker';
-import { getVotingWeightCopy } from 'modules/polls/helpers/getVotingWeightCopy';
+import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
 
 export default function VotingWeight(props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);

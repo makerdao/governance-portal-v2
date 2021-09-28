@@ -3,12 +3,12 @@ import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
-import { Poll } from 'modules/polls/types';
+import { Poll } from 'modules/polling/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';
