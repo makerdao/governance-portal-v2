@@ -80,7 +80,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
             </Flex>
           </Box>
           <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
-            <DelegateLastVoted delegate={delegate} date={lastVote.blockTimestamp} />
+            <DelegateLastVoted delegate={delegate} date={lastVote?.blockTimestamp} />
             <DelegateContractExpiration delegate={delegate} />
           </Flex>
         </Flex>

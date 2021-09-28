@@ -11,7 +11,7 @@ export function DelegateLastVoted({
   date
 }: {
   delegate: Delegate;
-  date: string;
+  date?: string;
 }): React.ReactElement {
   const styles = {
     expiredCalendar: {
@@ -25,7 +25,7 @@ export function DelegateLastVoted({
   };
 
   const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const lastVoteDate = moment(date);
+  const lastVoteDate = date ? `LAST VOTED ${moment(date).format(dateFormat)}` : 'NO VOTE HISTORY';
 
   return (
     <Flex
@@ -39,7 +39,7 @@ export function DelegateLastVoted({
         color={delegate.expired ? '#D8E0E3' : 'onSecondary'}
         sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
       >
-        LAST VOTED {lastVoteDate.format(dateFormat)}
+        {lastVoteDate}
       </Text>
       <Flex
         sx={{
