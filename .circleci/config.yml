@@ -21,6 +21,7 @@ jobs:
     environment:
       SENTRY_ORG: makerdao-dux
       SENTRY_PROJECT: makerdao-dux
+      SENTRY_LOG_LEVEL: debug
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
     steps:
@@ -29,7 +30,7 @@ jobs:
           curl -sL https://sentry.io/get-cli/ | bash
           export SENTRY_RELEASE=$(sentry-cli releases propose-version)
           sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
-          sentry-cli releases set-commits --auto $SENTRY_RELEASE
+          sentry-cli releases set-commits $SENTRY_RELEASE --auto --ignore-missing 
           sentry-cli releases finalize $SENTRY_RELEASE
       - restore_cache:
           keys:
