@@ -243,7 +243,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
             </Label>
             <Textarea
               sx={{
-                color: 'secondaryMuted',
+                color: 'text',
                 height: '96px',
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
