@@ -7,6 +7,8 @@ import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'types/spellData';
 
+// nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
+// eta returns when the spell is available for execution, not account for office hours
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
   const [done, nextCastTime, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
     maker
