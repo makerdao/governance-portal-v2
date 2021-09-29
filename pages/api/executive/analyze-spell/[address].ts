@@ -8,7 +8,7 @@ import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'types/spellData';
 
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [done, eta, nextCastTime, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+  const [done, nextCastTime, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
     maker
       .service('spell')
       .getDone(address)
