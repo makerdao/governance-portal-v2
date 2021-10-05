@@ -8,16 +8,21 @@ import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json
 const validCategories = [
-  'Auctions',
   'Collateral',
-  'Governance',
-  'Greenlight',
-  'MIPs',
   'Oracles',
-  'Other',
-  'Rates',
+  'Governance',
   'Risk Variable',
-  'Technical'
+  'Technical',
+  'Other',
+  'MIPs',
+  'Rates',
+  'Auctions',
+  'Greenlight',
+  'Transfer',
+  'Budget',
+  'Core Unit',
+  'Test',
+  'Offboard'
 ];
 
 type ValidationResult = {
