@@ -19,6 +19,8 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
     page: 'delegates'
   };
 
+  // TODO add kovan
+
   const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoKovan;
   return delegatesRepositoryInfo;
 }
