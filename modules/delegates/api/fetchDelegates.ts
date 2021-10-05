@@ -16,7 +16,7 @@ function mergeDelegateInfo(
   githubDelegate?: DelegateRepoInformation
 ): Delegate {
   // check if contract is expired to assing the status
-  const expirationDate = add(onChainDelegate.blockTimestamp, { years: 1 });
+  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
 
   return {
