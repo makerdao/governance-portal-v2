@@ -3,8 +3,8 @@
 import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
-import { format } from 'date-fns';
 import Icon from 'components/Icon';
+import { formatDateWithTime } from 'lib/datetime';
 
 export function DelegateContractExpiration({ delegate }: { delegate: Delegate }): React.ReactElement {
   const styles = {
@@ -18,7 +18,7 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
     }
   };
 
-  const expiryDate = format(new Date(delegate.expirationDate), 'MMM dd yyyy HH:mm zz');
+  const expiryDate = formatDateWithTime(delegate.expirationDate);
 
   return (
     <Flex

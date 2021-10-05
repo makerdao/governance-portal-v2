@@ -3,7 +3,7 @@
 import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
-import { format } from 'date-fns';
+import { formatDateWithTime } from 'lib/datetime';
 import Icon from 'components/Icon';
 
 export function DelegateLastVoted({
@@ -24,9 +24,7 @@ export function DelegateLastVoted({
     }
   };
 
-  const lastVoteDate = date
-    ? `LAST VOTED ${format(new Date(date), 'MMM dd yyyy HH:mm zz')}`
-    : 'NO VOTE HISTORY';
+  const lastVoteDate = date ? `LAST VOTED ${formatDateWithTime(date)}` : 'NO VOTE HISTORY';
 
   return (
     <Flex

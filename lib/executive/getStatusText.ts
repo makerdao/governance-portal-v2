@@ -1,4 +1,4 @@
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from 'types/spellData';
 import { ZERO_ADDRESS } from 'stores/accounts';
