@@ -3,8 +3,8 @@
 import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
+import { format } from 'date-fns';
 import Icon from 'components/Icon';
-import moment from 'moment';
 
 export function DelegateLastVoted({
   delegate,
@@ -24,8 +24,9 @@ export function DelegateLastVoted({
     }
   };
 
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const lastVoteDate = date ? `LAST VOTED ${moment(date).format(dateFormat)}` : 'NO VOTE HISTORY';
+  const lastVoteDate = date
+    ? `LAST VOTED ${format(new Date(date), 'MMM dd yyyy HH:mm zz')}`
+    : 'NO VOTE HISTORY';
 
   return (
     <Flex
