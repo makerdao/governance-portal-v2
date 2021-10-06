@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, cleanup, fireEvent, screen } from '@testing-library/react';
 
-import { MKRInput,  MKRInputProps } from '../MKRInput';
+import { MKRInput, MKRInputProps } from '../MKRInput';
 import BigNumber from 'bignumber.js';
 
 function renderMKRInput(props: Partial<MKRInputProps> = {}) {
   const defaultProps: MKRInputProps = {
     onChange: jest.fn(),
-    value: new BigNumber(0),
+    value: new BigNumber(0)
   };
 
   return render(<MKRInput {...defaultProps} {...props} />);
@@ -51,12 +51,12 @@ describe('MKRInput', () => {
     renderMKRInput(props);
     const setMaxButton = screen.getByTestId('mkr-input-set-max');
     const input = screen.getByTestId('mkr-input');
-    
+
     // Click on the button
     fireEvent.click(setMaxButton);
 
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(24.5));
-    
+
     expect(input).toHaveValue(24.5);
   });
 
@@ -69,7 +69,7 @@ describe('MKRInput', () => {
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
-    fireEvent.change(input, { target: { value: "3.2" } });
+    fireEvent.change(input, { target: { value: '3.2' } });
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(3.2));
     expect(input).toHaveValue(3.2);
   });
@@ -97,7 +97,7 @@ describe('MKRInput', () => {
 
     renderMKRInput(props);
     const error = screen.getByTestId('mkr-input-error');
-   
+
     expect(error).toBeVisible();
     expect(error).toHaveTextContent('MKR balance too low');
   });

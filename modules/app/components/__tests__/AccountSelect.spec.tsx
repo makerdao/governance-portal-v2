@@ -1,4 +1,4 @@
-import { renderWithTheme as render, connectAccount } from '../../helpers';
+import { renderWithTheme as render, connectAccount } from '../../../../__tests__/helpers';
 import { act, fireEvent, screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 
