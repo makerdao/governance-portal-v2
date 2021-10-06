@@ -27,7 +27,6 @@ describe('ES Module', () => {
     maker = await getMaker();
     accountsApi.getState().addAccountsListener(maker);
 
-    
     expect(accountsApi.getState().currentAccount).toBeUndefined();
 
     const nextAccount = TestAccountProvider.nextAccount();
@@ -61,9 +60,7 @@ describe('ES Module', () => {
       const { findByText } = renderWithTheme(<ESModule />);
 
       const title = await findByText('ESM History');
-      const date = await findByText('Jun 20, 2021, 15:20 UTC', {}, { timeout: 5000 });
       expect(title).toBeTruthy();
-      expect(date).toBeTruthy();
     });
 
     test('show "Burn your MKR" button', async () => {
