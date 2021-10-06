@@ -12,7 +12,7 @@ import partition from 'lodash/partition';
 
 import { Poll, PollCategory } from 'modules/polling/types';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';

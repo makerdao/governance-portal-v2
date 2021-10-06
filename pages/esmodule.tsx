@@ -9,7 +9,7 @@ import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
 import ProgressRing from 'modules/emergency-shutdown/components/ProgressRing';
 import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
 import useAccountsStore from 'stores/accounts';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
 
 const ESModule = (): React.ReactElement => {

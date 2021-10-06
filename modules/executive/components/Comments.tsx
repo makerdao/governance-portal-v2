@@ -7,7 +7,8 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import CommentSortBy from './CommentSortBy';
 import { Comment } from 'types/comment';
 import { Proposal } from '../types';
-import { getEtherscanLink, formatAddress, formatDateWithTime } from 'lib/utils';
+import { getEtherscanLink, formatAddress } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { getNetwork } from 'lib/maker';
 import useUiFiltersStore from 'stores/uiFilters';
 

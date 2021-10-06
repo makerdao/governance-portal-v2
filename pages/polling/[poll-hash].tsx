@@ -26,6 +26,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
+import { formatDateWithTime } from 'lib/datetime';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
@@ -177,15 +178,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         color: 'textSecondary'
                       }}
                     >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
+                      Posted {formatDateWithTime(poll.startDate)}
                     </Text>
                     <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   </Flex>
@@ -216,15 +209,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         color: 'textSecondary'
                       }}
                     >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
+                      Posted {formatDateWithTime(poll.startDate)}
                     </Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
