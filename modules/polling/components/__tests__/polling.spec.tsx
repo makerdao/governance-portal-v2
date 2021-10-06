@@ -4,13 +4,13 @@ import {
   createTestPolls,
   renderWithAccountSelect as render,
   DEMO_ACCOUNT_TESTS
-} from '../helpers';
+} from '../../../../__tests__/helpers';
 import { formatAddress } from 'lib/utils';
-import PollingOverviewPage from '../../pages/polling';
-import getMaker from '../../lib/maker';
+import PollingOverviewPage from '../../../../pages/polling';
+import getMaker from '../../../../lib/maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
-import mockCategories from '../../mocks/categories.json';
-import { accountsApi } from '../../stores/accounts';
+import mockCategories from '../__mocks__/categories.json';
+import { accountsApi } from '../../../../stores/accounts';
 import { Poll, PollCategory } from 'modules/polling/types';
 
 let maker;

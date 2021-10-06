@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { act, fireEvent, configure, screen } from '@testing-library/react';
 import getMaker from '../../lib/maker';
 import DelegatesPage from '../../pages/delegates';

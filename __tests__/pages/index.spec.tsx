@@ -1,4 +1,4 @@
-import React from 'react';
+// @ts-nocheck
 import { renderWithTheme as render } from '../helpers';
 
 import Index from '../../pages/index';
