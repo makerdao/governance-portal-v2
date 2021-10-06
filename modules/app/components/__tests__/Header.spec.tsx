@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
-import Header from '../../components/Header';
-import { renderWithTheme as render } from '../helpers';
+import Header from '../layout/Header';
+import { renderWithTheme as render } from '../../../../__tests__/helpers';
 
 test('rendering', async () => {
   const view = render(<Header />);

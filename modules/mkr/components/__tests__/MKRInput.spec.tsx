@@ -1,14 +1,14 @@
 import React from 'react';
-import { render, cleanup, fireEvent } from '@testing-library/react';
+import { render, cleanup, fireEvent, screen } from '@testing-library/react';
 
-import { MKRInput,  MKRInputProps } from '../../components/MKRInput';
+import { MKRInput,  MKRInputProps } from '../MKRInput';
 import BigNumber from 'bignumber.js';
 
 function renderMKRInput(props: Partial<MKRInputProps> = {}) {
   const defaultProps: MKRInputProps = {
     onChange: jest.fn(),
     value: new BigNumber(0),
-  }
+  };
 
   return render(<MKRInput {...defaultProps} {...props} />);
 }
@@ -21,9 +21,9 @@ describe('MKRInput', () => {
       balanceText: 'Hey'
     };
 
-    const { getByTestId } = renderMKRInput(props);
+    renderMKRInput(props);
 
-    const component = getByTestId('mkr-input-balance-text');
+    const component = screen.getByTestId('mkr-input-balance-text');
 
     expect(component).toHaveTextContent('Hey');
   });
@@ -33,9 +33,9 @@ describe('MKRInput', () => {
       balance: new BigNumber(24.5)
     };
 
-    const { getByTestId } = renderMKRInput(props);
+    renderMKRInput(props);
 
-    const component = getByTestId('mkr-input-balance');
+    const component = screen.getByTestId('mkr-input-balance');
 
     expect(component).toHaveTextContent('24.5000');
     expect(component).not.toHaveTextContent('0.0000');
@@ -48,9 +48,9 @@ describe('MKRInput', () => {
       onChange: jest.fn()
     };
 
-    const { getByTestId } = renderMKRInput(props);
-    const setMaxButton = getByTestId('mkr-input-set-max');
-    const input = getByTestId('mkr-input');
+    renderMKRInput(props);
+    const setMaxButton = screen.getByTestId('mkr-input-set-max');
+    const input = screen.getByTestId('mkr-input');
     
     // Click on the button
     fireEvent.click(setMaxButton);
@@ -67,8 +67,8 @@ describe('MKRInput', () => {
       onChange: jest.fn()
     };
 
-    const { getByTestId } = renderMKRInput(props);
-    const input = getByTestId('mkr-input');
+    renderMKRInput(props);
+    const input = screen.getByTestId('mkr-input');
     fireEvent.change(input, { target: { value: "3.2" } });
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(3.2));
     expect(input).toHaveValue(3.2);
@@ -81,8 +81,8 @@ describe('MKRInput', () => {
       onChange: jest.fn()
     };
 
-    const { getByTestId } = renderMKRInput(props);
-    const error = getByTestId('mkr-input-error');
+    renderMKRInput(props);
+    const error = screen.getByTestId('mkr-input-error');
 
     expect(error).toBeVisible();
     expect(error).toHaveTextContent('Please enter a valid amount');
@@ -95,8 +95,8 @@ describe('MKRInput', () => {
       onChange: jest.fn()
     };
 
-    const { getByTestId } = renderMKRInput(props);
-    const error = getByTestId('mkr-input-error');
+    renderMKRInput(props);
+    const error = screen.getByTestId('mkr-input-error');
    
     expect(error).toBeVisible();
     expect(error).toHaveTextContent('MKR balance too low');
