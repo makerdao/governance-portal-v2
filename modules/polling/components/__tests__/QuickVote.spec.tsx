@@ -11,7 +11,7 @@ import {
 import { Poll, PollCategory } from 'modules/polling/types';
 import getMaker from 'lib/maker';
 import { accountsApi } from 'stores/accounts';
-import PollingOverviewPage from 'pages/polling';
+import PollingOverviewPage from '../../../../pages/polling';
 let maker;
 
 jest.mock('@theme-ui/match-media', () => {

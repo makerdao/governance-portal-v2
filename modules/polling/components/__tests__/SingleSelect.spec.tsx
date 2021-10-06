@@ -10,7 +10,7 @@ import {
 import { Poll, PollCategory } from 'modules/polling/types';
 import { accountsApi } from 'stores/accounts';
 import getMaker from 'lib/maker';
-import PollingOverviewPage from 'pages/polling';
+import PollingOverviewPage from '../../../../pages/polling';
 
 let maker;
 
