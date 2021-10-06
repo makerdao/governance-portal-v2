@@ -7,7 +7,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
-import { formatDateWithoutTime } from 'lib/utils';
+import { formatDateWithoutTime } from 'lib/datetime';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'lib/executive/getStatusText';
 import useAccountsStore from 'stores/accounts';

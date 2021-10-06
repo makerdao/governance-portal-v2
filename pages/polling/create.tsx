@@ -18,7 +18,7 @@ import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/utils';
 
 const generateIPFSHash = async (data, options) => {

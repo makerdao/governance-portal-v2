@@ -145,39 +145,6 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
   return { hasBeenCast, executedOn, groupedDiff };
 }
 
-export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hourCycle: 'h23',
-    timeZone: 'UTC',
-    timeZoneName: 'short'
-  } as const;
-
-  try {
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-  } catch (err) {
-    return '??';
-  }
-};
-
-export const formatDateWithoutTime = (dateString: Date | undefined | number | string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  try {
-    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
-  } catch (err) {
-    return '??';
-  }
-};
-
 export async function initTestchainPolls() {
   const maker = await getMaker();
   const pollingService = maker.service('govPolling');

@@ -1,24 +1,30 @@
 import { fetchChainDelegates } from './fetchChainDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
-import moment from 'moment';
+import { add, isBefore } from 'date-fns';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
-import { DelegatesAPIResponse, Delegate, DelegateContractInformation, DelegateRepoInformation } from 'modules/delegates/types';
+import {
+  DelegatesAPIResponse,
+  Delegate,
+  DelegateContractInformation,
+  DelegateRepoInformation
+} from 'modules/delegates/types';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
   githubDelegate?: DelegateRepoInformation
 ): Delegate {
   // check if contract is expired to assing the status
-  const expirationDate = moment(onChainDelegate.blockTimestamp).add(365, 'days');
-  const isExpired = expirationDate.isBefore(moment());
+  const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
+  const isExpired = isBefore(new Date(expirationDate), new Date());
+
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
     address: onChainDelegate.address,
     status: githubDelegate ? DelegateStatusEnum.recognized : DelegateStatusEnum.shadow,
     expired: isExpired,
-    expirationDate: expirationDate.toDate(),
+    expirationDate,
     description: githubDelegate?.description || '',
     name: githubDelegate?.name || '',
     picture: githubDelegate?.picture || '',

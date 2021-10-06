@@ -1,17 +1,16 @@
 /** @jsx jsx */
 import { getNetwork } from 'lib/maker';
-import moment from 'moment';
 import Link from 'next/link';
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { formatDateWithTime } from 'lib/datetime';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const voteDate = moment(vote.blockTimestamp);
+  const voteDate = formatDateWithTime(vote.blockTimestamp);
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
 
@@ -35,7 +34,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold' }}
           as="p"
         >
-          Voted {voteDate.format(dateFormat)}
+          Voted {voteDate}
         </Text>
 
         <Link href={`/polling/${vote.poll.slug}?network=${network}`} passHref>

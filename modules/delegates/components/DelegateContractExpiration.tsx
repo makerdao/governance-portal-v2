@@ -4,7 +4,7 @@ import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
 import Icon from 'components/Icon';
-import moment from 'moment';
+import { formatDateWithTime } from 'lib/datetime';
 
 export function DelegateContractExpiration({ delegate }: { delegate: Delegate }): React.ReactElement {
   const styles = {
@@ -18,8 +18,7 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
     }
   };
 
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const expiryDate = moment(delegate.expirationDate);
+  const expiryDate = formatDateWithTime(delegate.expirationDate);
 
   return (
     <Flex
@@ -33,7 +32,7 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
         color="onSecondary"
         sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
       >
-        {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate.format(dateFormat)}`}
+        {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate}`}
       </Text>
       <Flex
         sx={{
