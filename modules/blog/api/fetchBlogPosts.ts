@@ -1,6 +1,10 @@
 import { BlogPost } from '../types/blogPost';
 import { GOV_BLOG_POSTS_ENDPOINT } from '../blog.constants';
-import { BlogWordpressDetail, BlogWordpressMediaResponse, BlogWordpressResponse } from '../types/blogWordpressApi';
+import {
+  BlogWordpressDetail,
+  BlogWordpressMediaResponse,
+  BlogWordpressResponse
+} from '../types/blogWordpressApi';
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 
@@ -15,33 +19,36 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     }
   }
 
-  // List of last 3 posts  
-  const response: BlogWordpressResponse = await(await fetch(GOV_BLOG_POSTS_ENDPOINT)).json();
+  // List of last 3 posts
+  const response: BlogWordpressResponse = await (await fetch(GOV_BLOG_POSTS_ENDPOINT)).json();
 
+  const results = await Promise.all(
+    response.map(async item => {
+      // Get the blog post detail to fetch the image and the date
+      const itemResponse: BlogWordpressDetail = await (await fetch(item._links.self[0].href)).json();
 
-  const results = await Promise.all(response.map(async item => {
-    // Get the blog post detail to fetch the image and the date
-    const itemResponse:BlogWordpressDetail = await (await fetch(item._links.self[0].href)).json();
+      // Fetch the media image URL
+      const mediaResponse: BlogWordpressMediaResponse = await (
+        await fetch(itemResponse._links['wp:featuredmedia'][0].href)
+      ).json();
 
-    // Fetch the media image URL
-    const mediaResponse:BlogWordpressMediaResponse = await (await fetch(itemResponse._links['wp:featuredmedia'][0].href)).json();
+      const photoHref = mediaResponse ? mediaResponse.media_details.sizes.medium.source_url : '';
 
-    const photoHref = mediaResponse ?  mediaResponse.media_details.sizes.medium.source_url: '';
-
-    return {
-      title: item.title.rendered,
-      link: item.link,
-      date: new Date(itemResponse.date),
-      photoHref
-    } as BlogPost;
-  }));
+      return {
+        title: item.title.rendered,
+        link: item.link,
+        date: new Date(itemResponse.date),
+        photoHref
+      } as BlogPost;
+    })
+  );
 
   if (config.USE_FS_CACHE) {
     fsCacheSet(cacheKey, JSON.stringify(results));
   }
 
   return results;
-  
+
   // to add a new post to the json file:
   //
   // 1. use the search API endpoint to quickly find a post, e.g.:
@@ -64,4 +71,3 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
   //   photoHref: photoLinks[index]
   // }));
 }
-

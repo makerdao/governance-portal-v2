@@ -5,9 +5,14 @@ import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import { Proposal, SpellData } from '../types';
 
-export function SpellEffectsTab({ proposal, spellData }: { proposal: Proposal, spellData?: SpellData }): React.ReactElement {
-
-    // ch401: hide until API is fixed
+export function SpellEffectsTab({
+  proposal,
+  spellData
+}: {
+  proposal: Proposal;
+  spellData?: SpellData;
+}): React.ReactElement {
+  // ch401: hide until API is fixed
   // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
   // const [stateDiffError, setStateDiffError] = useState();
 
@@ -35,7 +40,6 @@ export function SpellEffectsTab({ proposal, spellData }: { proposal: Proposal, s
       )}
   */
 
-
   return (
     <Box>
       <Flex sx={{ mb: 3, overflow: 'auto' }}>
@@ -46,7 +50,6 @@ export function SpellEffectsTab({ proposal, spellData }: { proposal: Proposal, s
           </Text>
         </ThemeUILink>
       </Flex>
-      
     </Box>
   );
 }

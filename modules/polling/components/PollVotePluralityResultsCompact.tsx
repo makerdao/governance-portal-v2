@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import BigNumber from 'bignumber.js';
-import { Box,  jsx } from 'theme-ui';
+import { Box, jsx } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 
@@ -14,7 +14,6 @@ export function PollVotePluralityResultsCompact({ vote }: { vote: PollVoteHistor
   const yesPercent = yesValue.dividedBy(max).multipliedBy(100).toFixed(0);
   const abstainPercent = abstainValue.dividedBy(max).multipliedBy(100).toFixed(0);
   const noPercent = noValue.dividedBy(max).multipliedBy(100).toFixed(0);
-
 
   return (
     <Box>

@@ -9,10 +9,9 @@ type ExecutivesResponse = {
 };
 
 export const useExecutives = (): ExecutivesResponse => {
-
-  const { data, error } = useSWR<CMSProposal[]>(`/api/executive?network=${getNetwork()}`,
-    { refreshInterval: 60000 }
-  );
+  const { data, error } = useSWR<CMSProposal[]>(`/api/executive?network=${getNetwork()}`, {
+    refreshInterval: 60000
+  });
 
   return {
     data,

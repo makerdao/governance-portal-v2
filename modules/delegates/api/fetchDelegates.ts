@@ -4,7 +4,12 @@ import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegate
 import moment from 'moment';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
-import { DelegatesAPIResponse, Delegate, DelegateContractInformation, DelegateRepoInformation } from 'modules/delegates/types';
+import {
+  DelegatesAPIResponse,
+  Delegate,
+  DelegateContractInformation,
+  DelegateRepoInformation
+} from 'modules/delegates/types';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,

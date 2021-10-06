@@ -7,14 +7,15 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
-
-  const delegatePicture  = delegate.picture || '/assets/empty-profile-picture.svg';
-
+  const delegatePicture = delegate.picture || '/assets/empty-profile-picture.svg';
 
   const delegateMetrics = (
-    <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block'}}>
+    <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
-        <img  sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }} src={delegatePicture} />
+        <img
+          sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }}
+          src={delegatePicture}
+        />
         <Box sx={{ marginLeft: 1, flex: 1 }}>
           <DelegateParticipationMetrics delegate={delegate} />
         </Box>
@@ -34,8 +35,7 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
             borderRadius: '100%',
             maxHeight: '41px'
           }}
-        /> 
-
+        />
       </Tooltip>
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon

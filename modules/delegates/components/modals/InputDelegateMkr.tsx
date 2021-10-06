@@ -27,7 +27,7 @@ export function InputDelegateMkr({
   showAlert
 }: Props): React.ReactElement {
   const [value, setValue] = useState(new BigNumber(0));
-  const currentAccount = useAccountsStore(state =>state.currentAccount);
+  const currentAccount = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state =>
     currentAccount ? state.proxies[currentAccount.address] : null
   );
@@ -46,28 +46,32 @@ export function InputDelegateMkr({
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
       <Box sx={{ mt: 3, width: '20rem' }}>
         <MKRInput value={value} onChange={handleChange} balance={balance} />
-        <Button onClick={onClick} sx={{ width: '100%', my: 3 }} disabled={!value || !balance || value.eq(0) || value.gt(balance)}>
+        <Button
+          onClick={onClick}
+          sx={{ width: '100%', my: 3 }}
+          disabled={!value || !balance || value.eq(0) || value.gt(balance)}
+        >
           {buttonLabel}
         </Button>
       </Box>
       {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.gt(0) && (
-        <Alert variant="notice" sx={{ fontWeight: 'normal'}}>
+        <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {`You have ${lockedMkr.toBigNumber().toFormat(6)} additional MKR locked in the voting contract. `}
-            <Withdraw link={'Withdraw MKR'}/>
+            <Withdraw link={'Withdraw MKR'} />
             {' to deposit it into a delegate contract.'}
           </Text>
-        </Alert>)
-      }
-      {showAlert && lockedMkr && lockedMkr.gt(0.00) && balance && balance.eq(0) && (
-        <Alert variant="notice" sx={{ fontWeight: 'normal'}}>
+        </Alert>
+      )}
+      {showAlert && lockedMkr && lockedMkr.gt(0.0) && balance && balance.eq(0) && (
+        <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
             {'You must '}
-            <Withdraw link={'withdraw your MKR'}/>
+            <Withdraw link={'withdraw your MKR'} />
             {' from the voting contract before delegating it.'}
           </Text>
-        </Alert>)
-      }
+        </Alert>
+      )}
     </Flex>
   );
 }
