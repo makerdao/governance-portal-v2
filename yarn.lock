@@ -1341,10 +1341,10 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@^0.14.1-beta15":
-  version "0.14.1-beta15"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.1-beta15.tgz#a4de5cde621f1ff8a56b8c7248269a1b2f1140b8"
-  integrity sha512-T2DzSoPmjFaTHUo18Rgk2CvmknAy87cFR8LE5KzwG3cX511qlGTI3pqWG4XsT/S5Tioi2FwlDva6pjEaTh4Rog==
+"@makerdao/dai-plugin-governance@^0.14.2-beta0":
+  version "0.14.2-beta0"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.14.2-beta0.tgz#686741119995329a628c0dee0674904a5c1ff1a9"
+  integrity sha512-FCjhq0Xfh4aVTUKsZIu+FQ+WFXEMGiVWI6bYbaUrj25BxJ04zS0wGa+RCH5bK5kDeMKzY8XHylX7QEkX6/ad5g==
   dependencies:
     "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.10.0"
@@ -1365,10 +1365,10 @@
     hdkey "^1.0.0"
     web3-provider-engine "14.0.4"
 
-"@makerdao/dai-plugin-mcd@^1.6.35":
-  version "1.6.35"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.35.tgz#c9a8c158f0d603c1320ae1c167e70198b6f68c7c"
-  integrity sha512-7ua+geefxF9Kxdql3nU9iSQReUSAzsNz0WR/b5PLJqc6Hds4bolWmAfw67ewo8EbIS34Zijp93iHjJRBPDkN7Q==
+"@makerdao/dai-plugin-mcd@^1.6.36-beta0":
+  version "1.6.36-beta0"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.36-beta0.tgz#1a07e9eb8b69cdc80b31e7507959cee4adc9b860"
+  integrity sha512-K6BC/UrVoCtXFYJ2tdu1VOwM4ThEQQ7RR6vrf0JcOcfRqi+XArYfBu0qJnUKzKZ1ClkpGpCuFNkPCyjUbT2+TQ==
   dependencies:
     "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.9.9"
@@ -1404,10 +1404,10 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.13":
-  version "0.32.13"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.13.tgz#0fb941b0fd579e443339be84ee5f0f94ee006b47"
-  integrity sha512-jkf+PZKwIIMrI7Eyi0IHnSk7IQjwTvTSb8BUF2RfZthtXbbjuExzb+pRwmddroGvtrXoz8BTHDDz4/vJ5iipqA==
+"@makerdao/dai@^0.32.14-beta0":
+  version "0.32.14-beta0"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.14-beta0.tgz#ace551db278d8cf1c5e81e4cd782ccbd0f2a4307"
+  integrity sha512-ef3lxODs5fslt2s8cCpjasD1ZqXfYImyQTKvxY1umEPbK4/mdXDGB7Sj3kOF6PxCerUwVREMGSeVMXdcKvdqxQ==
   dependencies:
     "@babel/runtime" "^7.3.4"
     "@makerdao/currency" "0.9.9"
