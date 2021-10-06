@@ -3,7 +3,7 @@
 import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
-import Icon from 'components/Icon';
+import Icon from 'modules/app/components/Icon';
 import moment from 'moment';
 
 export function DelegateContractExpiration({ delegate }: { delegate: Delegate }): React.ReactElement {

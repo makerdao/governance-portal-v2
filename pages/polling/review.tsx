@@ -12,18 +12,18 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import PollOverviewCard from 'components/polling/PollOverviewCard';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { Poll } from 'modules/polling/types';
-import ReviewBox from 'components/polling/review/ReviewBox';
+import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {

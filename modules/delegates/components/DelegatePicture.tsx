@@ -3,7 +3,7 @@ import { DelegateStatusEnum } from '../delegates.constants';
 import { Box, Image, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
-import Tooltip from 'components/Tooltip';
+import Tooltip from 'modules/app/components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {

@@ -1,5 +1,5 @@
 import getMaker from 'lib/maker';
-import { ZERO_SLATE_HASH } from 'lib/executive/zeroSlateHash';
+import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import useSWR from 'swr';
 import useAccountsStore from 'stores/accounts';
 

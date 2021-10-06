@@ -12,8 +12,8 @@
     "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
-    "prettier": "prettier --config .prettierrc --write pages/ components/ lib/ stores/ types/",
-    "lint": "eslint --ext .tsx,.ts pages/ components/ lib/ stores/ types/"
+    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ stores/ types/",
+    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.13",

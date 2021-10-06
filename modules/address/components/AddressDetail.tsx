@@ -8,7 +8,7 @@ import { getEtherscanLink } from 'lib/utils';
 import AddressIcon from './AddressIcon';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
-import Tooltip from 'components/Tooltip';
+import Tooltip from 'modules/app/components/Tooltip';
 import { cutMiddle } from 'lib/string';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 
