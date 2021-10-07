@@ -204,7 +204,7 @@ const PollingCreate = (): React.ReactElement => {
                 fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
               />
               <MkrLiquiditySidebar />
-              <ResourceBox />
+              <ResourceBox type={'general'} />
             </Stack>
           )}
         </SidebarLayout>

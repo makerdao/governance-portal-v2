@@ -435,7 +435,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
             <MkrLiquiditySidebar />
-            <ResourceBox />
+            <ResourceBox type={'executive'} />
+            <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
       </Stack>
