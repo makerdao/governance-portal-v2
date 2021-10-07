@@ -333,7 +333,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               </Box>
             </Card>
           </Box>
-          <ResourceBox />
+          <ResourceBox type={'executive'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

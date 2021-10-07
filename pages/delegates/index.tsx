@@ -137,7 +137,8 @@ const Delegates = ({ delegates, stats }: Props) => {
             </Card>
           </Box>
           {stats && <DelegatesSystemInfo stats={stats} />}
-          <ResourceBox />
+          <ResourceBox type={'delegates'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
