@@ -3,13 +3,13 @@ import { TestAccountProvider } from '@makerdao/test-helpers';
 import { formatAddress } from 'lib/utils';
 import { ThemeProvider } from 'theme-ui';
 import { ethers } from 'ethers';
-import WrappedAccountSelect from '../components/header/AccountSelect';
-import theme from '../lib/theme';
+import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
+import theme from 'lib/theme';
 import React from 'react';
 import { accountsApi } from 'stores/accounts';
 import { createCurrency } from '@makerdao/currency';
-import { AnalyticsProvider } from 'lib/client/analytics/AnalyticsContext';
-import { CookiesProvider } from 'lib/client/cookies/CookiesContext';
+import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
+import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 
 const MKR = createCurrency('MKR');
 

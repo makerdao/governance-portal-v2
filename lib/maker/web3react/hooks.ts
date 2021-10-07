@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 
 import getMaker from '../index';
 import { injectedConnector } from './index';
-import { AnalyticsContext } from 'lib/client/analytics/AnalyticsContext';
+import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 
 export const syncMakerAccount = (library, account, chainIdError) => {
   const { identifyUser } = useContext(AnalyticsContext);

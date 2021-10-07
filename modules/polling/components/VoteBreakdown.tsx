@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
-import Skeleton from 'components/SkeletonThemed';
-import Tooltip from 'components/Tooltip';
-import Delay from 'components/Delay';
+import Skeleton from 'modules/app/components/SkeletonThemed';
+import Tooltip from 'modules/app/components/Tooltip';
+import Delay from 'modules/app/components/Delay';
 import { PollTally, Poll } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 

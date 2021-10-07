@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { Button, Flex, Link, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import TxIndicators from 'components/TxIndicators';
+import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'types/transaction';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';

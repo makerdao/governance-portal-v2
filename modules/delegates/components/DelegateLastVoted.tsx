@@ -4,7 +4,7 @@ import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
 import { formatDateWithTime } from 'lib/datetime';
-import Icon from 'components/Icon';
+import Icon from 'modules/app/components/Icon';
 
 export function DelegateLastVoted({
   delegate,

@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import getMaker, { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { SpellData } from 'types/spellData';
+import { SpellData } from 'modules/executive/types/spellData';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours
