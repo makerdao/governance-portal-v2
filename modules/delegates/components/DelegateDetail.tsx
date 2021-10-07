@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
-import Tabs from 'components/Tabs';
+import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
   DelegateContractExpiration,

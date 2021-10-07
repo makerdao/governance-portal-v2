@@ -25,15 +25,15 @@ import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { cutMiddle } from 'lib/string';
 import { useLockedMkr } from 'lib/hooks';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
 import { TxDisplay } from 'modules/delegates/components';
-import Withdraw from 'components/executive/Withdraw';
+import Withdraw from 'modules/mkr/components/Withdraw';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();

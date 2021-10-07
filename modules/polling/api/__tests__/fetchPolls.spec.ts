@@ -5,7 +5,6 @@ import os from 'os';
 
 const cacheFile = `/${os.tmpdir()}/gov-portal-testnet-polls-${new Date().toISOString().substring(0, 10)}`;
 
-
 describe('Fetch poll', () => {
   beforeAll(() => {
     config.USE_FS_CACHE = '1';
@@ -21,5 +20,4 @@ describe('Fetch poll', () => {
     await getPolls();
     expect(fs.existsSync(cacheFile)).toBeTruthy();
   });
-
 });

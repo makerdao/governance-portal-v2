@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import StackLayout from 'components/layouts/Stack';
-import SkeletonThemed from 'components/SkeletonThemed';
+import StackLayout from 'modules/app/components/layout/layouts/Stack';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import getMaker, { getNetwork } from 'lib/maker';
 import { formatAddress, getEtherscanLink } from 'lib/utils';
 import useSWR from 'swr';

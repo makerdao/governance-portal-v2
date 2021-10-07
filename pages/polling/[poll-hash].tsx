@@ -38,18 +38,18 @@ import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 
 // components
-import Skeleton from 'components/SkeletonThemed';
-import CountdownTimer from 'components/CountdownTimer';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
+import Skeleton from 'modules/app/components/SkeletonThemed';
+import CountdownTimer from 'modules/app/components/CountdownTimer';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
 import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
 import VoteBox from 'modules/polling/components/VoteBox';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
-import PollOptionBadge from 'components/PollOptionBadge';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
+import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 
 // if the poll has ended, always fetch its tally from the server's cache
