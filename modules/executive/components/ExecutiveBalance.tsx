@@ -1,7 +1,7 @@
 import { Flex, Box, Text } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import Deposit from '../../mkr/components/Deposit';
-import Withdraw from '../../mkr/components/Withdraw';
+import Deposit from 'modules/mkr/components/Deposit';
+import Withdraw from 'modules/mkr/components/Withdraw';
 
 type Props = {
   lockedMkr: any;
