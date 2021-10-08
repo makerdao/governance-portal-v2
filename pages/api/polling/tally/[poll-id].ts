@@ -6,17 +6,23 @@ import getMaker, { isSupportedNetwork } from 'lib/maker';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from 'modules/polling/api/fetchPollTally';
-import { PollTallyVote, RawPollTally } from 'modules/polling/types';
+import { PollTallyVote, PollVoteType, RawPollTally } from 'modules/polling/types';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 function createPollTallyRoute({ cacheType }: { cacheType: string }) {
   return withApiHandler(async (req: NextApiRequest, res: NextApiResponse<RawPollTally>) => {
     const pollId = req.query['poll-id'] as string;
     const network = (req.query.network as string) || DEFAULT_NETWORK;
 
+    // if poll vote type is unknown, treat as ranked choice
+    const voteType: PollVoteType = (req.query.type as PollVoteType) || POLL_VOTE_TYPE.RANKED_VOTE;
+
     invariant(pollId, 'poll id required');
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-    const tally: RawPollTally = await backoffRetry(3, () => fetchPollTally(parseInt(pollId), false, network));
+    const tally: RawPollTally = await backoffRetry(3, () =>
+      fetchPollTally(parseInt(pollId), voteType, false, network)
+    );
 
     const maker = await getMaker(network);
     const votesByAddress: PollTallyVote[] = (

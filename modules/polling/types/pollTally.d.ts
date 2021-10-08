@@ -12,7 +12,14 @@ type Result = {
   transferPct: BigNumber;
 };
 
-export type PollTallyOption = {
+export type PollTallyPluralityOption = {
+  firstChoice: BigNumber;
+  transfer: BigNumber;
+  winner: boolean;
+  eliminated: boolean;
+};
+
+export type PollTallyRankedChoiceOption = {
   firstChoice: BigNumber;
   transfer: BigNumber;
   winner: boolean;
@@ -21,10 +28,10 @@ export type PollTallyOption = {
 
 export type RawPollTally = {
   winner: string | null;
-  rounds: number;
+  rounds?: number;
   totalMkrParticipation: CurrencyObject;
   numVoters: number;
-  options: Record<number, PollTallyOption>;
+  options: Record<number, PollTallyPluralityOption | PollTallyRankedChoiceOption>;
 };
 
 export type PollTallyVote = {
