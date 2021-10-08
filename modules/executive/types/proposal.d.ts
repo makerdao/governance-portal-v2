@@ -7,6 +7,7 @@ export type CMSProposal = {
   proposalBlurb: string;
   title: string;
   date: string;
+  hash?: string;
 };
 
 export type RawAddressProposal = {
@@ -14,4 +15,4 @@ export type RawAddressProposal = {
   key: string;
 };
 
-export type Proposal = CMSProposal | RawAddressProposal;
+export type Proposal = (CMSProposal | RawAddressProposal);

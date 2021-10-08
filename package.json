@@ -64,6 +64,7 @@
     "tiny-invariant": "^1.1.0",
     "uuid": "^8.3.0",
     "valid-url": "^1.0.9",
+    "web3": "^1.6.0",
     "zustand": "^2.2.3"
   },
   "devDependencies": {
