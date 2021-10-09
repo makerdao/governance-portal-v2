@@ -2,7 +2,12 @@ import { SupportedNetworks } from 'lib/constants';
 import getMaker from 'lib/maker';
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { PollVoteType, RawPollTally } from 'modules/polling/types';
+import {
+  PollVoteType,
+  RawPollTally,
+  RawPollTallyPlurality,
+  RawPollTallyRankedChoice
+} from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export async function fetchPollTally(
@@ -23,9 +28,9 @@ export async function fetchPollTally(
 
   let tally;
   if (voteType === POLL_VOTE_TYPE.PLURALITY_VOTE) {
-    tally = await maker.service('govPolling').getTallyPlurality(pollId);
+    tally = (await maker.service('govPolling').getTallyPlurality(pollId)) as RawPollTallyPlurality;
   } else {
-    tally = await maker.service('govPolling').getTallyRankedChoiceIrv(pollId);
+    tally = (await maker.service('govPolling').getTallyRankedChoiceIrv(pollId)) as RawPollTallyRankedChoice;
   }
 
   if (config.USE_FS_CACHE && useCache) {
