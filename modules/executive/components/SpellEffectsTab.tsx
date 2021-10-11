@@ -3,7 +3,7 @@
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { CMSProposal, SpellData } from '../types';
 import { useState } from 'react';
-import { Icon as DaiUIIcon} from '@makerdao/dai-ui-icons';
+import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 import Icon from 'modules/app/components/Icon';
 
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
@@ -91,7 +91,7 @@ export function SpellEffectsTab({
 
             <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
               <Text color={'textMuted'}>
-                What&apos;s this? <Icon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
+                What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>
             </Box>
           </Box>
@@ -111,7 +111,7 @@ export function SpellEffectsTab({
                 >
                   <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                     Learn more about auditing Executive Spells
-                    <Icon ml={2} name="arrowTopRight" size="2" />
+                    <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                   </Text>
                 </ThemeUILink>
               </Box>
@@ -133,7 +133,7 @@ export function SpellEffectsTab({
             <ThemeUILink href={proposal.proposalLink} target="_blank">
               <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                 View in GitHub
-                <Icon ml={2} name="arrowTopRight" size="2" />
+                <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
               </Text>
             </ThemeUILink>
           </Box>
