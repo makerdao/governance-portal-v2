@@ -11,7 +11,16 @@ import { SpellData } from 'modules/executive/types/spellData';
 // eta returns when the spell is available for execution, not account for office hours
 // executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [done, nextCastTime, eta, datePassed, dateExecuted, mkrSupport, executiveHash, officeHours] = await Promise.all([
+  const [
+    done,
+    nextCastTime,
+    eta,
+    datePassed,
+    dateExecuted,
+    mkrSupport,
+    executiveHash,
+    officeHours
+  ] = await Promise.all([
     maker
       .service('spell')
       .getDone(address)

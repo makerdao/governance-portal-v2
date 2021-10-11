@@ -141,17 +141,20 @@ export function SpellEffectsTab({
         </Box>
         <Box sx={{ width: ['100%', '50%'] }}>
           <Box mb={3} mt={[3, 0]} sx={{ display: 'flex' }}>
-            <Box mr={2} sx={{ 
-              color: 'primary', 
-              background: '#F6F8F9', 
-              borderRadius: '100%', 
-              width: '34px', 
-              minWidth: '34px',
-              height: '34px', 
-              display: 'flex', 
-              alignItems: 'center' ,
-              justifyContent: 'center'
-              }}>
+            <Box
+              mr={2}
+              sx={{
+                color: 'primary',
+                background: '#F6F8F9',
+                borderRadius: '100%',
+                width: '34px',
+                minWidth: '34px',
+                height: '34px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <Icon name={'clock'} size={3} />
             </Box>
             <Box>
@@ -163,38 +166,46 @@ export function SpellEffectsTab({
               >
                 Expiration
               </Text>
-              <Text as="p" color="textMuted">{formatDateWithoutTime(spellData?.eta)}</Text>
+              <Text as="p" color="textMuted">
+                {formatDateWithoutTime(spellData?.eta)}
+              </Text>
             </Box>
           </Box>
-          {spellData?.officeHours && <Box mb={3} sx={{ display: 'flex' }}>
-            <Box mr={2} sx={{ 
-              color: 'primary', 
-              background: '#F6F8F9', 
-              borderRadius: '100%', 
-              width: '34px', 
-              minWidth: '34px',
-              height: '34px', 
-              display: 'flex', 
-              alignItems: 'center' ,
-              justifyContent: 'center'
-              }}>
-              <Icon name={'clock'} size={3} />
-            </Box>
-            <Box>
-              <Text
-                as="p"
+          {spellData?.officeHours && (
+            <Box mb={3} sx={{ display: 'flex' }}>
+              <Box
+                mr={2}
                 sx={{
-                  fontWeight: 'semiBold'
+                  color: 'primary',
+                  background: '#F6F8F9',
+                  borderRadius: '100%',
+                  width: '34px',
+                  minWidth: '34px',
+                  height: '34px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                Office Hours only
-              </Text>
-              <Text as="p" color="textMuted">Spell will be executed from monday to friday between 14:00 and 21:00 UTC</Text>
+                <Icon name={'clock'} size={3} />
+              </Box>
+              <Box>
+                <Text
+                  as="p"
+                  sx={{
+                    fontWeight: 'semiBold'
+                  }}
+                >
+                  Office Hours only
+                </Text>
+                <Text as="p" color="textMuted">
+                  Spell will be executed from monday to friday between 14:00 and 21:00 UTC
+                </Text>
+              </Box>
             </Box>
-          </Box>}
+          )}
         </Box>
       </Box>
-      
     </Box>
   );
 }
