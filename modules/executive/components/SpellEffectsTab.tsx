@@ -3,7 +3,9 @@
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { CMSProposal, SpellData } from '../types';
 import { useState } from 'react';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Icon as DaiUIIcon} from '@makerdao/dai-ui-icons';
+import Icon from 'modules/app/components/Icon';
+
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 
@@ -152,7 +154,7 @@ export function SpellEffectsTab({
                 justifyContent: 'center'
               }}
             >
-              <Icon name={'clock'} size={3} />
+              <Icon name={'sandclock'} size={3} />
             </Box>
             <Box>
               <Text
@@ -184,7 +186,7 @@ export function SpellEffectsTab({
                   justifyContent: 'center'
                 }}
               >
-                <Icon name={'clock'} size={3} />
+                <DaiUIIcon name={'clock'} size={3} />
               </Box>
               <Box>
                 <Text
