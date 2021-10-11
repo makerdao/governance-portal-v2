@@ -13,7 +13,12 @@
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ stores/ types/",
-    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
+    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/",
+    "test:jest": "jest --config=jest.config.js --runInBand ",
+    "ganache": "node ganache/ganache.js",
+    "test:ganache": "concurrently --raw --success first --handle-input --kill-others yarn:ganache yarn:test:jest --default-input-target",
+    "clean-chaindata": "rm -rf ganache/var/chaindata/*",
+    "copy-chaindata": "mkdir -p ganache/var/chaindata & tar xzf ganache/snapshots/default.tgz -C ganache/var/chaindata"
   },
   "dependencies": {
     "@makerdao/dai": "^0.32.13",
@@ -78,6 +83,7 @@
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "bignumber.js": "^9.0.1",
+    "concurrently": "^6.3.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-config-next": "^11.0.1",
@@ -86,6 +92,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-testing-library": "^4.10.1",
+    "ganache-cli": "^6.12.2",
     "husky": "^6.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
