@@ -39,7 +39,8 @@ jobs:
           name: Run tests
           command: |
             source /home/circleci/setup-env.sh
-            yarn test:ci
+            yarn copy-chaindata
+            yarn test:ganache --ci --coverage
             USE_FS_CACHE=1 yarn build
             yarn add --dev codecov
             ./node_modules/.bin/codecov

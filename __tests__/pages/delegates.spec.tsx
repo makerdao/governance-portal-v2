@@ -170,14 +170,15 @@ describe('Delegates list page', () => {
     expect(newByYou.previousSibling).toHaveTextContent('0.00');
   });
 
-
   test('Find info', async () => {
-    await screen.findByText('System Info', {
-      
-    }, {
-      timeout: 30000
-    });
-  
+    await screen.findByText(
+      'System Info',
+      {},
+      {
+        timeout: 30000
+      }
+    );
+
     const totalDelegatesSystemInfo = screen.getByTestId('total-delegates-system-info');
     expect(totalDelegatesSystemInfo).toHaveTextContent('1');
 
@@ -186,8 +187,8 @@ describe('Delegates list page', () => {
 
     const totalShadowDelegatesSystemInfo = screen.getByTestId('total-shadow-delegates-system-info');
     expect(totalShadowDelegatesSystemInfo).toHaveTextContent('0');
-    
+
     const totalMkr = screen.getByTestId('total-mkr-system-info');
     expect(totalMkr).toHaveTextContent('10.24');
-  })
+  });
 });
