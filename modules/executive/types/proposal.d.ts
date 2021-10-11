@@ -15,4 +15,4 @@ export type RawAddressProposal = {
   key: string;
 };
 
-export type Proposal = (CMSProposal | RawAddressProposal);
+export type Proposal = CMSProposal | RawAddressProposal;

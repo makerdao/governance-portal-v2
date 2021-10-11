@@ -7,6 +7,7 @@ import { CMSProposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { formatDateWithoutTime } from 'lib/datetime';
 
 export function SpellEffectsTab({
   proposal,
@@ -42,7 +43,7 @@ export function SpellEffectsTab({
         </Flex>
       )}
   */
-      console.log(proposal, spellData)
+  console.log(proposal, spellData);
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -81,10 +82,18 @@ export function SpellEffectsTab({
               justifyContent: 'space-between'
             }}
           >
-            {spellData?.executiveHash ? <Text  sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>{spellData?.executiveHash}</Text> : <SkeletonThemed width='300px' height='15px' />}
+            {spellData?.executiveHash ? (
+              <Text sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>
+                {spellData?.executiveHash}
+              </Text>
+            ) : (
+              <SkeletonThemed width="300px" height="15px" />
+            )}
 
             <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
-              <Text color={'textMuted'}>What&apos;s this? <Icon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} /></Text>
+              <Text color={'textMuted'}>
+                What&apos;s this? <Icon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
+              </Text>
             </Box>
           </Box>
 
@@ -98,7 +107,7 @@ export function SpellEffectsTab({
               </Text>
               <Box sx={{ mt: 3 }}>
                 <ThemeUILink
-                  href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                  href={'https://makerdao.world/en/learn/governance/audit-exec-spells'}
                   target="_blank"
                 >
                   <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
@@ -111,7 +120,6 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
-
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
         <Box sx={{ width: ['100%', '50%'] }}>
           <Text
@@ -122,11 +130,8 @@ export function SpellEffectsTab({
           >
             Executive Hash
           </Text>
-          <Box >
-            <ThemeUILink
-              href={proposal.proposalLink}
-              target="_blank"
-            >
+          <Box>
+            <ThemeUILink href={proposal.proposalLink} target="_blank">
               <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                 View in GitHub
                 <Icon ml={2} name="arrowTopRight" size="2" />
@@ -135,24 +140,61 @@ export function SpellEffectsTab({
           </Box>
         </Box>
         <Box sx={{ width: ['100%', '50%'] }}>
-          <Text
-            as="p"
-            sx={{
-              fontWeight: 'semiBold'
-            }}
-          >
-            Expiration
-          </Text>
+          <Box mb={3} mt={[3, 0]} sx={{ display: 'flex' }}>
+            <Box mr={2} sx={{ 
+              color: 'primary', 
+              background: '#F6F8F9', 
+              borderRadius: '100%', 
+              width: '34px', 
+              minWidth: '34px',
+              height: '34px', 
+              display: 'flex', 
+              alignItems: 'center' ,
+              justifyContent: 'center'
+              }}>
+              <Icon name={'clock'} size={3} />
+            </Box>
+            <Box>
+              <Text
+                as="p"
+                sx={{
+                  fontWeight: 'semiBold'
+                }}
+              >
+                Expiration
+              </Text>
+              <Text as="p" color="textMuted">{formatDateWithoutTime(spellData?.eta)}</Text>
+            </Box>
+          </Box>
+          {spellData?.officeHours && <Box mb={3} sx={{ display: 'flex' }}>
+            <Box mr={2} sx={{ 
+              color: 'primary', 
+              background: '#F6F8F9', 
+              borderRadius: '100%', 
+              width: '34px', 
+              minWidth: '34px',
+              height: '34px', 
+              display: 'flex', 
+              alignItems: 'center' ,
+              justifyContent: 'center'
+              }}>
+              <Icon name={'clock'} size={3} />
+            </Box>
+            <Box>
+              <Text
+                as="p"
+                sx={{
+                  fontWeight: 'semiBold'
+                }}
+              >
+                Office Hours only
+              </Text>
+              <Text as="p" color="textMuted">Spell will be executed from monday to friday between 14:00 and 21:00 UTC</Text>
+            </Box>
+          </Box>}
         </Box>
       </Box>
-
-
-      Spell at address
-      <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
-        <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-          {proposal.address}
-        </Text>
-      </ThemeUILink>
+      
     </Box>
   );
 }
