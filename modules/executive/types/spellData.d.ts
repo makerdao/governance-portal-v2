@@ -6,4 +6,5 @@ export type SpellData = {
   datePassed?: Date;
   dateExecuted?: Date;
   mkrSupport: number;
+  executiveHash?: string;
 };

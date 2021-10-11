@@ -9,8 +9,9 @@ import { SpellData } from 'modules/executive/types/spellData';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours
+// executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, maker: any): Promise<SpellData> => {
-  const [done, nextCastTime, eta, datePassed, dateExecuted, mkrSupport] = await Promise.all([
+  const [done, nextCastTime, eta, datePassed, dateExecuted, mkrSupport, executiveHash] = await Promise.all([
     maker
       .service('spell')
       .getDone(address)
@@ -33,7 +34,11 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
       .getExecutionDate(address)
       /* tslint:disable:no-empty */
       .catch(_ => null), // this fails if the spell has not been executed
-    maker.service('chief').getApprovalCount(address)
+    maker.service('chief').getApprovalCount(address),
+    maker
+      .service('spell')
+      .getExecutiveHash(address)
+      .catch(_ => null),
   ]);
 
   return {
@@ -43,7 +48,8 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     nextCastTime,
     datePassed,
     dateExecuted,
-    mkrSupport: mkrSupport.toBigNumber().toString()
+    mkrSupport: mkrSupport.toBigNumber().toString(),
+    executiveHash
   };
 };
 

@@ -3,12 +3,11 @@ import { EXEC_PROPOSAL_INDEX, SupportedNetworks } from 'lib/constants';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
 import { getNetwork, isTestnet } from 'lib/maker';
-import { CMSProposal, Proposal } from 'modules/executive/types';
+import { CMSProposal } from 'modules/executive/types';
 import mockProposals from './mocks/proposals.json';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
-import { fetchExecutiveHash } from './fetchExecutiveHash';
 
 export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
   const currentNetwork = network ? network : getNetwork();
@@ -40,17 +39,8 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
         try {
           const proposalDoc = await (await fetch(proposalLink)).text();
 
-          const executive = parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
-
-          if (executive) {
-            const hash = await fetchExecutiveHash(executive.address);
-            return {
-              ...executive, 
-              hash
-            };
-          }
+          return parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
           
-          return null;
         } catch (e) {
           console.log(e);
           // Catch error and return null if failed fetching one proposal

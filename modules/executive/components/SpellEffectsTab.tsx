@@ -6,6 +6,7 @@ import { getEtherscanLink } from 'lib/utils';
 import { CMSProposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export function SpellEffectsTab({
   proposal,
@@ -41,7 +42,7 @@ export function SpellEffectsTab({
         </Flex>
       )}
   */
-
+      console.log(proposal, spellData)
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -80,16 +81,16 @@ export function SpellEffectsTab({
               justifyContent: 'space-between'
             }}
           >
-            <Text sx={{ mr: 2 }}>{proposal.hash}</Text>
+            {spellData?.executiveHash ? <Text  sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>{spellData?.executiveHash}</Text> : <SkeletonThemed width='300px' height='15px' />}
 
-            <Box onClick={() => setExpanded(!expanded)}>
-              <Text>What&apos;s this? <Icon name={expanded ? 'chevron_up': 'chevron_down'} size={2} /></Text>
+            <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
+              <Text color={'textMuted'}>What&apos;s this? <Icon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} /></Text>
             </Box>
           </Box>
 
           {expanded && (
             <Box sx={{ mt: 3 }}>
-              <Text as="p" sx={{ fontWeight: 'semiBold'}}>
+              <Text as="p" color="textMuted">
                 This hash allows for manually verifying that the Spell belongs to the correct Executive
                 Proposal. It can be reproduced by hashing the raw markdown text of this Executive Proposal.
                 The hash, the URL to the raw markdown text, and the correct hashing algorithm are all
@@ -110,6 +111,42 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
+
+      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ width: ['100%', '50%'] }}>
+          <Text
+            as="p"
+            sx={{
+              fontWeight: 'semiBold'
+            }}
+          >
+            Executive Hash
+          </Text>
+          <Box >
+            <ThemeUILink
+              href={proposal.proposalLink}
+              target="_blank"
+            >
+              <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                View in GitHub
+                <Icon ml={2} name="arrowTopRight" size="2" />
+              </Text>
+            </ThemeUILink>
+          </Box>
+        </Box>
+        <Box sx={{ width: ['100%', '50%'] }}>
+          <Text
+            as="p"
+            sx={{
+              fontWeight: 'semiBold'
+            }}
+          >
+            Expiration
+          </Text>
+        </Box>
+      </Box>
+
+
       Spell at address
       <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
