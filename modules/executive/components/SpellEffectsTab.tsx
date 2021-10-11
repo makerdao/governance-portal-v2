@@ -1,8 +1,6 @@
 /** @jsx jsx */
 
-import { Box, Text, jsx, Link as ThemeUILink, Flex } from 'theme-ui';
-import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { CMSProposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -43,7 +41,6 @@ export function SpellEffectsTab({
         </Flex>
       )}
   */
-  console.log(proposal, spellData);
   const [expanded, setExpanded] = useState(false);
 
   return (
