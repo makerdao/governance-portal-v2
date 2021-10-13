@@ -35,7 +35,7 @@ const icons = {
     ),
     viewBox: '0 0 15 15'
   },
-  sandclock: {
+  hourglass: {
     path: (
       <g>
         <path

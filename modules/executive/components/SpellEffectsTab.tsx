@@ -120,24 +120,26 @@ export function SpellEffectsTab({
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {'proposalLink' in proposal && <Box sx={{ width: ['100%', '50%'] }}>
-          <Text
-            as="p"
-            sx={{
-              fontWeight: 'semiBold'
-            }}
-          >
-            Executive Hash
-          </Text>
-          <Box>
-            <ThemeUILink href={proposal.proposalLink} target="_blank">
-              <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-                View in GitHub
-                <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
-              </Text>
-            </ThemeUILink>
+        {'proposalLink' in proposal && (
+          <Box sx={{ width: ['100%', '50%'] }}>
+            <Text
+              as="p"
+              sx={{
+                fontWeight: 'semiBold'
+              }}
+            >
+              Executive Hash
+            </Text>
+            <Box>
+              <ThemeUILink href={proposal.proposalLink} target="_blank">
+                <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
+                  View in GitHub
+                  <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
+                </Text>
+              </ThemeUILink>
+            </Box>
           </Box>
-        </Box>}
+        )}
         <Box sx={{ width: ['100%', '50%'] }}>
           <Box mb={3} mt={[3, 0]} sx={{ display: 'flex' }}>
             <Box
@@ -154,7 +156,7 @@ export function SpellEffectsTab({
                 justifyContent: 'center'
               }}
             >
-              <Icon name={'sandclock'} size={3} />
+              <Icon name={'hourglass'} size={3} />
             </Box>
             <Box>
               <Text
