@@ -1365,10 +1365,10 @@
     hdkey "^1.0.0"
     web3-provider-engine "14.0.4"
 
-"@makerdao/dai-plugin-mcd@^1.6.36-beta0":
-  version "1.6.36-beta0"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.36-beta0.tgz#1a07e9eb8b69cdc80b31e7507959cee4adc9b860"
-  integrity sha512-K6BC/UrVoCtXFYJ2tdu1VOwM4ThEQQ7RR6vrf0JcOcfRqi+XArYfBu0qJnUKzKZ1ClkpGpCuFNkPCyjUbT2+TQ==
+"@makerdao/dai-plugin-mcd@^1.6.36":
+  version "1.6.36"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.6.36.tgz#a0334684783b7fad758cc025c9afeb0bdfe6c816"
+  integrity sha512-ys/R/kQ454WsikIn7xetX9GpgxOeiOdwOkWgfhZ5h3egSG8htP3wfnV1/ZznY81rC9+Rw4+99vtuFx+gqJnhBg==
   dependencies:
     "@makerdao/currency" "0.9.9"
     "@makerdao/services-core" "^0.9.9"
@@ -1404,10 +1404,10 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.14-beta0":
-  version "0.32.14-beta0"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.14-beta0.tgz#ace551db278d8cf1c5e81e4cd782ccbd0f2a4307"
-  integrity sha512-ef3lxODs5fslt2s8cCpjasD1ZqXfYImyQTKvxY1umEPbK4/mdXDGB7Sj3kOF6PxCerUwVREMGSeVMXdcKvdqxQ==
+"@makerdao/dai@^0.32.15":
+  version "0.32.15"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.15.tgz#59ccc8f829d514db23ca7354cbeed1c4e961feb6"
+  integrity sha512-PwdWkYpXi3E4KnFcXfg9ht6j+3kw0bR+Ts7vdbuKorV3AWgjni/M89rSD6q1HztTIEZ89pph5PbxAXtxLBJ/mQ==
   dependencies:
     "@babel/runtime" "^7.3.4"
     "@makerdao/currency" "0.9.9"
