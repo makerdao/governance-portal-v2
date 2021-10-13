@@ -1404,7 +1404,7 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.14-beta1":
+"@makerdao/dai@^0.32.14-beta0":
   version "0.32.14-beta1"
   resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.14-beta1.tgz#75b0549910c3f1b18499a1c272ef11cf148a7cc0"
   integrity sha512-OUltqVoG7Tewcg3pMEbNO65KRoxH95FS0KS38GNNzKUtx/y2PlbzGWNDIMofO3xXd5o5IagBMyIh8yc2rKi1cw==
