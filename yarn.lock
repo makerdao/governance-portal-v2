@@ -1404,10 +1404,10 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@^0.32.14":
-  version "0.32.14"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.14.tgz#dd092eee18daff3ecaee4e1bc82c9e4c4c376a30"
-  integrity sha512-kPIQ58kd5rdE88cdDoqn5b6eSO3a2JN63fnCSVqbS4871ziAOG+C3eovIz40zc4S71DZCxpHajrEdRh6cQs6yQ==
+"@makerdao/dai@^0.32.14-beta1":
+  version "0.32.14-beta1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.32.14-beta1.tgz#75b0549910c3f1b18499a1c272ef11cf148a7cc0"
+  integrity sha512-OUltqVoG7Tewcg3pMEbNO65KRoxH95FS0KS38GNNzKUtx/y2PlbzGWNDIMofO3xXd5o5IagBMyIh8yc2rKi1cw==
   dependencies:
     "@babel/runtime" "^7.3.4"
     "@makerdao/currency" "0.9.9"
@@ -13340,7 +13340,7 @@ web3-net@1.5.2:
     web3-core-method "1.5.2"
     web3-utils "1.5.2"
 
-web3-provider-engine@14.0.4, "web3-provider-engine@github:makerdao/provider-engine#kovan-fix-dist":
+web3-provider-engine@14.0.4, web3-provider-engine@makerdao/provider-engine#kovan-fix-dist:
   version "14.0.4"
   resolved "https://codeload.github.com/makerdao/provider-engine/tar.gz/7c4b187809f156409473246de15dc595e1fe3356"
   dependencies:
