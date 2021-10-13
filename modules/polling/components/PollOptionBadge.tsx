@@ -1,20 +1,15 @@
+import useSWR from 'swr';
 import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-
-import { isActivePoll } from 'modules/polling/helpers/utils';
-import { getNetwork } from 'lib/maker';
-import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
+import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
 import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
-  const network = getNetwork();
   const { data: tally } = useSWR(
-    hasPollEnded
-      ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${network}`
-      : `/api/polling/tally/${poll.pollId}?network=${network}`,
+    getPollApiUrl(poll),
     async url => parseRawPollTally(await fetchJson(url), poll),
     {
       // don't refresh is poll ended, otherwise refresh every 60 seconds

@@ -25,7 +25,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll } from 'modules/polling/helpers/utils';
+import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
 
 // api
@@ -52,16 +52,10 @@ import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 
-// if the poll has ended, always fetch its tally from the server's cache
-const getURL = poll =>
-  new Date(poll.endDate).getTime() < new Date().getTime()
-    ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
-    : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`;
-
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
-    mutate(getURL(poll), tallyPromise, false);
+    const tallyPromise = fetchJson(getPollApiUrl(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
+    mutate(getPollApiUrl(poll), tallyPromise, false);
   }
 }
 
@@ -80,7 +74,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
-    getURL(poll),
+    getPollApiUrl(poll),
     async url => parseRawPollTally(await fetchJson(url), poll),
     { refreshInterval: 30000 }
   );
