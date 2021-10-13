@@ -4,10 +4,26 @@ import { Box, Flex, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
-import Icon from 'modules/app/components/Icon';
 
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
+
+const CircleIcon = ({ name }) => (
+  <Flex
+    mr={2}
+    sx={theme => ({
+      background: theme.colors?.background,
+      borderRadius: '100%',
+      width: '34px',
+      minWidth: '34px',
+      height: '34px',
+      alignItems: 'center',
+      justifyContent: 'center'
+    })}
+  >
+    <DaiUIIcon name={name} size={3} color="primary" />
+  </Flex>
+);
 
 export function SpellEffectsTab({
   proposal,
@@ -54,7 +70,7 @@ export function SpellEffectsTab({
           mb: 4
         }}
       >
-        Spell details
+        Spell Details
       </Text>
       <Box mb={4}>
         <Text
@@ -67,13 +83,13 @@ export function SpellEffectsTab({
         </Text>
 
         <Box
-          sx={{
-            background: '#F6F8F9',
+          sx={theme => ({
+            background: theme.colors?.background,
             p: 3,
             transition: 'all 300ms linear',
             overflow: 'hidden',
             borderRadius: '3px'
-          }}
+          })}
         >
           <Flex
             sx={{
@@ -98,10 +114,10 @@ export function SpellEffectsTab({
           {expanded && (
             <Box sx={{ mt: 3 }}>
               <Text as="p" color="textMuted">
-                This hash allows for manually verifying that the Spell belongs to the correct Executive
+                This hash allows for manually verifying that the spell belongs to the correct Executive
                 Proposal. It can be reproduced by hashing the raw markdown text of this Executive Proposal.
                 The hash, the URL to the raw markdown text, and the correct hashing algorithm are all
-                registered on the blockchain in the Spell smart contract.
+                registered on the blockchain in the spell smart contract.
               </Text>
               <Box sx={{ mt: 3 }}>
                 <ThemeUILink
@@ -141,21 +157,7 @@ export function SpellEffectsTab({
         )}
         <Box sx={{ width: ['100%', '50%'] }}>
           <Flex mb={3} mt={[3, 0]}>
-            <Flex
-              mr={2}
-              sx={{
-                color: 'primary',
-                background: '#F6F8F9',
-                borderRadius: '100%',
-                width: '34px',
-                minWidth: '34px',
-                height: '34px',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Icon name={'hourglass'} size={3} />
-            </Flex>
+            <CircleIcon name="hourglass" />
             <Box>
               <Text
                 as="p"
@@ -172,21 +174,7 @@ export function SpellEffectsTab({
           </Flex>
           {spellData?.officeHours && (
             <Flex mb={3}>
-              <Flex
-                mr={2}
-                sx={{
-                  color: 'primary',
-                  background: '#F6F8F9',
-                  borderRadius: '100%',
-                  width: '34px',
-                  minWidth: '34px',
-                  height: '34px',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <DaiUIIcon name={'clock'} size={3} />
-              </Flex>
+              <CircleIcon name="clock" />
               <Box>
                 <Text
                   as="p"
