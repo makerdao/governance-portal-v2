@@ -1,7 +1,7 @@
 /** @jsx jsx */
 
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
-import { CMSProposal, SpellData } from '../types';
+import { Proposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 import Icon from 'modules/app/components/Icon';
@@ -13,7 +13,7 @@ export function SpellEffectsTab({
   proposal,
   spellData
 }: {
-  proposal: CMSProposal;
+  proposal: Proposal;
   spellData?: SpellData;
 }): React.ReactElement {
   // ch401: hide until API is fixed
@@ -120,7 +120,7 @@ export function SpellEffectsTab({
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        <Box sx={{ width: ['100%', '50%'] }}>
+        {'proposalLink' in proposal && <Box sx={{ width: ['100%', '50%'] }}>
           <Text
             as="p"
             sx={{
@@ -137,7 +137,7 @@ export function SpellEffectsTab({
               </Text>
             </ThemeUILink>
           </Box>
-        </Box>
+        </Box>}
         <Box sx={{ width: ['100%', '50%'] }}>
           <Box mb={3} mt={[3, 0]} sx={{ display: 'flex' }}>
             <Box
