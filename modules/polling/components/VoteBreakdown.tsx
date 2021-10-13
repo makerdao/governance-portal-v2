@@ -5,6 +5,7 @@ import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
 export default function VoteBreakdown({
   poll,
@@ -141,7 +142,12 @@ export default function VoteBreakdown({
               <Tooltip label={`First choice ${tallyResult.mkrSupport.toFormat(2)}`}>
                 <Box my={2}>
                   <Progress
-                    sx={{ backgroundColor: 'muted', mb: '3', height: 2 }}
+                    sx={{
+                      backgroundColor: 'muted',
+                      mb: '3',
+                      height: 2,
+                      color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
+                    }}
                     max={tally.totalMkrParticipation.toBigNumber()}
                     value={tallyResult.mkrSupport.toNumber()}
                   />
