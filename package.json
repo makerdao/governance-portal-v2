@@ -16,6 +16,7 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
   },
   "dependencies": {
+    "@makerdao/dai": "^0.32.15",
     "@makerdao/dai-plugin-governance": "^0.14.5",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.6.36",
