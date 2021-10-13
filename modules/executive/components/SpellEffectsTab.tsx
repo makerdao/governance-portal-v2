@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
+import { Box, Flex, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
@@ -75,9 +75,8 @@ export function SpellEffectsTab({
             borderRadius: '3px'
           }}
         >
-          <Box
+          <Flex
             sx={{
-              display: 'flex',
               justifyContent: 'space-between'
             }}
           >
@@ -94,7 +93,7 @@ export function SpellEffectsTab({
                 What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
               </Text>
             </Box>
-          </Box>
+          </Flex>
 
           {expanded && (
             <Box sx={{ mt: 3 }}>
@@ -128,7 +127,7 @@ export function SpellEffectsTab({
                 fontWeight: 'semiBold'
               }}
             >
-              Executive Hash
+              Proposal Markdown
             </Text>
             <Box>
               <ThemeUILink href={proposal.proposalLink} target="_blank">
@@ -141,8 +140,8 @@ export function SpellEffectsTab({
           </Box>
         )}
         <Box sx={{ width: ['100%', '50%'] }}>
-          <Box mb={3} mt={[3, 0]} sx={{ display: 'flex' }}>
-            <Box
+          <Flex mb={3} mt={[3, 0]} >
+            <Flex
               mr={2}
               sx={{
                 color: 'primary',
@@ -151,13 +150,12 @@ export function SpellEffectsTab({
                 width: '34px',
                 minWidth: '34px',
                 height: '34px',
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}
             >
               <Icon name={'hourglass'} size={3} />
-            </Box>
+            </Flex>
             <Box>
               <Text
                 as="p"
@@ -171,10 +169,10 @@ export function SpellEffectsTab({
                 {formatDateWithoutTime(spellData?.eta)}
               </Text>
             </Box>
-          </Box>
+          </Flex>
           {spellData?.officeHours && (
-            <Box mb={3} sx={{ display: 'flex' }}>
-              <Box
+            <Flex mb={3} >
+              <Flex
                 mr={2}
                 sx={{
                   color: 'primary',
@@ -183,13 +181,12 @@ export function SpellEffectsTab({
                   width: '34px',
                   minWidth: '34px',
                   height: '34px',
-                  display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}
               >
                 <DaiUIIcon name={'clock'} size={3} />
-              </Box>
+              </Flex>
               <Box>
                 <Text
                   as="p"
@@ -197,13 +194,13 @@ export function SpellEffectsTab({
                     fontWeight: 'semiBold'
                   }}
                 >
-                  Office Hours only
+                  Office Hours Only
                 </Text>
                 <Text as="p" color="textMuted">
-                  Spell will be executed from monday to friday between 14:00 and 21:00 UTC
+                  Spell will only be executed Monday through Friday between 14:00 and 21:00 UTC
                 </Text>
               </Box>
-            </Box>
+            </Flex>
           )}
         </Box>
       </Box>
