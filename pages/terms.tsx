@@ -1,13 +1,19 @@
 import React from 'react';
-import { Box, Text, Card } from 'theme-ui';
+import { Flex, Text, Card, Heading } from 'theme-ui';
 import { markdownToHtml } from 'lib/utils';
 import { GetStaticProps } from 'next';
 
 const terms = `
 #### 1. Acceptance of Terms
 Please read these Terms of Use (the “Terms” or “Terms of Use”) carefully before using the Service. By using or otherwise accessing the Service, or clicking to accept or agree to these Terms where that option is made available, you (1) agree that you have read and understand these Terms (2) accept and agree to these Terms and (3) any additional terms, rules and conditions of participation issued from time-to-time. If you do not agree to the Terms, then you may not access or use the Content or Service.
-MKR is a cryptographic governance token used in the Dai System and Software, which is an autonomous system of smart contracts on the Ethereum Blockchain (the “Open Source Software”), that permits, among other things, the generation of Dai. Dai is a cryptocurrency intended to maintain low-volatility against other assets. MKR token holders may use their MKR to collectively govern certain rules of use of the Open Source Software, including participation in voting over some key aspects of the Open Source Software or the MakerDAO project (the “Voting”). Any MKR token holder may participate in any Voting by independently interacting with the relevant smart contracts within the Open Source Software (the “Voting Contracts”). Some members and developers of the MakerDAO community and its Open Source Software (collectively the “MakerDAO Volunteers”) have provided you with a user interface, including the one available at https://vote.makerdao.com and via other tools (the “Site”) — which includes text, images, audio, code and other materials (collectively, the “Content”) and all of the features, and services provided. The Site, the Voting Contracts, and any other features, tools, materials, the Open Source Software, or other services offered from time to time are referred to here as the “Service”.  This agreement (the “Agreement”) between you and the MakerDAO Volunteers (“we”, “us”, “our”) sets out your rights to access and use of and any of the Services provided by us.
+
+
+MKR is a cryptographic governance token used in the Dai System and Software, which is an autonomous system of smart contracts on the Ethereum Blockchain (the “Open Source Software”), that permits, among other things, the generation of Dai. Dai is a cryptocurrency intended to maintain low-volatility against other assets. MKR token holders may use their MKR to collectively govern certain rules of use of the Open Source Software, including participation in voting over some key aspects of the Open Source Software or the MakerDAO project (the “Voting”). Any MKR token holder may participate in any Voting by independently interacting with the relevant smart contracts within the Open Source Software (the “Voting Contracts”). Some members and developers of the MakerDAO community and its Open Source Software (collectively the “MakerDAO Volunteers”) have provided you with a user interface, including the one available at https://vote.makerdao.com and via other tools (the “Site”) — which includes text, images, audio, code and other materials (collectively, the “Content”) and all of the features, and services provided. The Site, the Voting Contracts, and any other features, tools, materials, the Open Source Software, or other services offered from time to time are referred to here as the “Service”.  
+
+
+This agreement (the “Agreement”) between you and the MakerDAO Volunteers (“we”, “us”, “our”) sets out your rights to access and use of and any of the Services provided by us.
 Note however, that while the Voting Contracts and the Site are intended to serve as a convenient way to participate in Voting, both are experimental prototypes and the use of either of them involves a high degree of risk. There are numerous ways the Voting Contracts, the Open Source Software and Service could fail in an unexpected way, resulting in the total and absolute loss of all of your funds, including MKR and other cryptocurrency, tokens or digital assets.
+
 
 #### 2. Modification of Terms of Use
 These Terms may be discretionarily modified or replaced at any time, unless stated otherwise herein. The most current version of these Terms will be posted on the Site with the “Last Revised” date at the top of the Terms changed. Any changes or modifications will be effective immediately upon posting the revisions to the Site. You shall be responsible for reviewing and becoming familiar with any such modifications. You waive any right you may have to receive specific notice of such changes or modifications. Use of the Service by you after any modification to the Terms constitutes your acceptance of the Terms as modified. If you do not agree to the Terms in effect when you access or use the Service, you must stop using the Service.
@@ -52,7 +58,7 @@ The following provisions of the Terms survive any termination of these Terms: IN
 #### 10. No Third-Party Beneficiaries
 You agree that, except as otherwise expressly provided in these Terms, there shall be no third party beneficiaries to the Terms.
 #### 11. Notice and Procedure For Making Claims of Copyright Infringement
-If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide a written Notice (legal@makerdao.com) containing the following information:
+If you believe that your copyright or the copyright of a person on whose behalf you are authorized to act has been infringed, please provide a written Notice (hello@dux.makerdao.network) containing the following information:
 an electronic or physical signature of the person authorized to act on behalf of the owner of the copyright or other intellectual property interest;
 a description of the copyrighted work or other intellectual property that you claim has been infringed;
 a description of where the material that you claim is infringing is located on the Service;
@@ -79,27 +85,30 @@ You agree that regardless of any statute or law to the contrary, any claim or ca
 #### 13.4 Section Titles
 The section titles in the Terms are for convenience only and have no legal or contractual effect.
 #### 13.5 Communications
-Users with questions, complaints or claims with respect to the Service may contact us using the relevant contact information set forth above and at legal@makerdao.com.
+Users with questions, complaints or claims with respect to the Service may contact us using the relevant contact information set forth above and at hello@dux.makerdao.network.
 #### 14. Privacy Policy
 All information collected on the Site is subject to the Privacy Policy. By using the Service, you consent to all actions taken with respect to your information in compliance with the Privacy Policy.
 #### 15. Prohibited Use
-You may not use the Service to engage in the following categories of activity ("Prohibited Uses"). The specific types of use listed below are representative, but not exhaustive. If you are uncertain as to whether or not your use of the Services involves a Prohibited Use, or have questions about how these requirements apply to you, please contact us at legal@makerdao.com By opening using the Service provided here, you confirm that you will not use this Service to do any of the following:
+You may not use the Service to engage in the following categories of activity ("Prohibited Uses"). The specific types of use listed below are representative, but not exhaustive. If you are uncertain as to whether or not your use of the Services involves a Prohibited Use, or have questions about how these requirements apply to you, please contact us at hello@dux.makerdao.network By opening using the Service provided here, you confirm that you will not use this Service to do any of the following:
 Unlawful Activity: Activity which would violate, or assist in violation of, any law, statute, ordinance, or regulation, sanctions programs administered in any relevant country, including but not limited to the U.S. Department of Treasury's Office of Foreign Assets Control ("OFAC"), or which would involve proceeds of any unlawful activity; publish, distribute or disseminate any unlawful material or information
 Abuse Other Users: Interfere with another individual's or entity's access to or use of any Services; defame, abuse, extort, harass, stalk, threaten or otherwise violate or infringe the legal rights (such as, but not limited to, rights of privacy, publicity and intellectual property) of others; incite, threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others; harvest or otherwise collect information from the Site about others, including without limitation email addresses, without proper consent
 Fraud: Activity which operates to defraud MakerDAO, Dai System and Software users, or any other person; provide any false, inaccurate, or misleading information.
 Intellectual Property Infringement: Engage in transactions involving items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the law, including but not limited to sales, distribution, or access to counterfeit music, movies, software, or other licensed materials without the appropriate authorization from the rights holder; use of MakerDAO intellectual property, name, or logo, including use of MakerDAO trade or service marks, without express consent from MakerDAO or in a manner that otherwise harms MakerDAO; any action that implies an untrue endorsement by or affiliation with MakerDAO.
 `;
 
-export default function Terms(props: { content: string }) {
+export default function Terms(props: { content: string }): JSX.Element {
   return (
-    <Box>
-      <Text sx={{ textAlign: 'center' }}>
-        <h2>Terms of Use</h2>
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'center' }}>
+      <Heading as="h2" sx={{ textAlign: 'center' }}>
+        Terms of Use
+      </Heading>
+      <Text sx={{ textAlign: 'center', fontStyle: 'italic', mt: 1, mb: 3 }}>
+        Last Revised: October 14th, 2021
       </Text>
       <Card sx={{ overflowY: 'auto' }}>
         <div dangerouslySetInnerHTML={{ __html: props.content || '' }} />
       </Card>
-    </Box>
+    </Flex>
   );
 }
 
