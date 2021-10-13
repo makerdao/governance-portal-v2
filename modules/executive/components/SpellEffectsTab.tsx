@@ -140,7 +140,7 @@ export function SpellEffectsTab({
           </Box>
         )}
         <Box sx={{ width: ['100%', '50%'] }}>
-          <Flex mb={3} mt={[3, 0]} >
+          <Flex mb={3} mt={[3, 0]}>
             <Flex
               mr={2}
               sx={{
@@ -171,7 +171,7 @@ export function SpellEffectsTab({
             </Box>
           </Flex>
           {spellData?.officeHours && (
-            <Flex mb={3} >
+            <Flex mb={3}>
               <Flex
                 mr={2}
                 sx={{
