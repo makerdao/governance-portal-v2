@@ -50,10 +50,6 @@ const resources: Record<ResourceType, Resource> = {
       {
         linkTitle: 'How to set up your wallet for voting?',
         url: 'https://makerdao.world/en/learn/governance/voting-setup/'
-      },
-      {
-        linkTitle: 'Find historical polls',
-        url: 'https://mkrgov.science/polls/'
       }
     ]
   },
@@ -80,10 +76,6 @@ const resources: Record<ResourceType, Resource> = {
       {
         linkTitle: 'How to set up your wallet for voting?',
         url: 'https://makerdao.world/en/learn/governance/voting-setup/'
-      },
-      {
-        linkTitle: 'Find historical Executive Proposals',
-        url: 'https://mkrgov.science/executive/'
       }
     ]
   },
