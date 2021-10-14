@@ -64,7 +64,10 @@ const resources: Record<ResourceType, Resource> = {
         linkTitle: 'How to participate in MakerDAO governance?',
         url: 'https://makerdao.world/en/learn/governance/how-voting-works/'
       },
-      { linkTitle: 'What are Executive Votes?', url: 'What are Executive Votes?' },
+      {
+        linkTitle: 'What are Executive Votes?',
+        url: 'https://makerdao.world/en/learn/governance/how-voting-works#executive-votes'
+      },
       {
         linkTitle: 'How to manually verify Executive Spells',
         url: 'https://makerdao.world/en/learn/governance/audit-exec-spells'
