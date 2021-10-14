@@ -71,6 +71,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
+          {addressInfo.isDelegate && <ResourceBox type={'delegates'} />}
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
