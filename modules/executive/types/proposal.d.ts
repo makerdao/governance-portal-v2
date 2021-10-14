@@ -7,6 +7,7 @@ export type CMSProposal = {
   proposalBlurb: string;
   title: string;
   date: string;
+  proposalLink: string;
 };
 
 export type RawAddressProposal = {

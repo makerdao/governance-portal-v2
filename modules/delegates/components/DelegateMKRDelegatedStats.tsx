@@ -2,30 +2,15 @@
 import BigNumber from 'bignumber.js';
 import { useMkrDelegated } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
-import { Box, Flex, Text, jsx } from 'theme-ui';
+import { Flex, jsx } from 'theme-ui';
 import { Delegate } from 'modules/delegates/types';
-import { StatBox } from 'modules/shared/components/StatBox';
+import { StatBox } from 'modules/app/components/StatBox';
 
 export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }): React.ReactElement {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
-
-  const styles = {
-    row: {
-      m: 1
-    },
-    text: {
-      color: 'secondaryAlt',
-      fontWeight: 'semiBold',
-      fontSize: 5
-    },
-    subtext: {
-      color: 'secondaryEmphasis',
-      fontSize: 3
-    }
-  };
 
   return (
     <Flex

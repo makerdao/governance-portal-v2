@@ -19,30 +19,29 @@ import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
 
 // components
-import Deposit from 'components/executive/Deposit';
-import WithdrawOldChief from 'components/executive/WithdrawOldChief';
-import ProposalsSortBy from 'components/executive/ProposalsSortBy';
-import DateFilter from 'components/executive/DateFilter';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
-import ResourceBox from 'components/ResourceBox';
-import Stack from 'components/layouts/Stack';
-import ExecutiveOverviewCard from 'components/executive/ExecutiveOverviewCard';
-import PrimaryLayout from 'components/layouts/Primary';
-import { Proposal, CMSProposal } from 'modules/executive/types';
-import SidebarLayout from 'components/layouts/Sidebar';
-import ProgressBar from 'components/executive/ProgressBar';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { ExecutiveBalance } from 'components/ExecutiveBalance';
+import Deposit from 'modules/mkr/components/Deposit';
+import WithdrawOldChief from 'modules/executive/components/WithdrawOldChief';
+import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
+import DateFilter from 'modules/executive/components/DateFilter';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import ProgressBar from 'modules/executive/components/ProgressBar';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
+import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 
 // stores
 import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
 
 // types
-import { SpellData } from 'types/spellData';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -435,7 +434,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
             <MkrLiquiditySidebar />
-            <ResourceBox />
+            <ResourceBox type={'executive'} />
+            <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
       </Stack>

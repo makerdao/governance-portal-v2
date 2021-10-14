@@ -45,6 +45,7 @@ export function parseExecutive(
     key: slugify(title),
     address: address,
     date: String(date),
-    active: proposalIndex[network].includes(proposalLink)
+    active: proposalIndex[network].includes(proposalLink),
+    proposalLink
   };
 }

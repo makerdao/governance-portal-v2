@@ -13,18 +13,18 @@ import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'lib/hooks';
-import PrimaryLayout from 'components/layouts/Primary';
-import Stack from 'components/layouts/Stack';
-import SystemStats from 'components/index/SystemStats';
-import PollPreviewCard from 'components/index/PollPreviewCard';
-import ExecutiveCard from 'components/index/ExecutiveCard';
-import IntroCard from 'components/index/IntroCard';
-import PollingIndicator from 'components/index/PollingIndicator';
-import ExecutiveIndicator from 'components/index/ExecutiveIndicator';
-import BlogPostCard from 'components/index/BlogPostCard';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import SystemStats from 'modules/home/components/SystemStats';
+import PollPreviewCard from 'modules/home/components/PollPreviewCard';
+import ExecutiveCard from 'modules/home/components/ExecutiveCard';
+import IntroCard from 'modules/home/components/IntroCard';
+import PollingIndicator from 'modules/home/components/PollingIndicator';
+import ExecutiveIndicator from 'modules/home/components/ExecutiveIndicator';
+import BlogPostCard from 'modules/home/components/BlogPostCard';
 import { CMSProposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -309,8 +309,8 @@ export default function Index({
   blogPosts
 }: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
-  const [polls, setPolls] = useState<Poll[]>(prefetchedPolls);
-  const [proposals, setProposals] = useState<CMSProposal[]>(prefetchedProposals);
+  const [_polls, setPolls] = useState<Poll[]>();
+  const [_proposals, setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
 
   useEffect(() => {
@@ -318,7 +318,7 @@ export default function Index({
       initTestchainPolls(); // this is async but we don't need to await
     }
 
-    if (!isDefaultNetwork() && (!polls || !proposals)) {
+    if (!isDefaultNetwork() && (!_polls || !_proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
         fetchJson(`/api/executive?network=${getNetwork()}`)
@@ -335,14 +335,20 @@ export default function Index({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!polls || !proposals))
+  if (!isDefaultNetwork() && (!_polls || !_proposals))
     return (
       <PrimaryLayout>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
-  return <LandingPage proposals={proposals} polls={polls} blogPosts={blogPosts} />;
+  return (
+    <LandingPage
+      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
+      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
+      blogPosts={blogPosts}
+    />
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {

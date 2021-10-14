@@ -12,13 +12,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { useSpellData } from 'lib/hooks';
+import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
-import { getStatusText } from 'lib/executive/getStatusText';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { getStatusText } from 'modules/executive/helpers/getStatusText';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getEtherscanLink } from 'lib/utils';
 
 // stores
@@ -26,20 +26,18 @@ import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
 
 //components
-import Comments from 'components/executive/Comments';
-import VoteModal from 'components/executive/VoteModal';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import ResourceBox from 'components/ResourceBox';
-// import OnChainFx from 'components/executive/OnChainFx';
-import { StatBox } from 'modules/shared/components/StatBox';
+import Comments from 'modules/executive/components/Comments';
+import VoteModal from 'modules/executive/components/VoteModal';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import { StatBox } from 'modules/app/components/StatBox';
+import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
-import { CMSProposal, Proposal } from 'modules/executive/types';
-import { SpellData } from 'types/spellData';
-// import { SpellStateDiff } from 'types/spellStateDiff';
+import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 
 type Props = {
   proposal: Proposal;
@@ -78,22 +76,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
 
-  // ch401: hide until API is fixed
-  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  // const [stateDiffError, setStateDiffError] = useState();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
-  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-  //       setStateDiff(_stateDiff);
-  //     } catch (error) {
-  //       setStateDiffError(error);
-  //     }
-  //   })();
-  // }, []);
-
   const { data: allSupporters, error: supportersError } = useSWR(
     `/api/executive/supporters?network=${getNetwork()}`
   );
@@ -127,29 +109,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
     </div>
   );
-
-  // ch401: hide until API is fixed
-  // const onChainFxTab = (
-  //   <div key={3} sx={{ p: [3, 4] }}>
-  //     <Flex sx={{ mb: 3, overflow: 'auto' }}>
-  //       For the spell at address
-  //       <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
-  //         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-  //           {proposal.address}
-  //         </Text>
-  //       </ThemeUILink>
-  //     </Flex>
-  //     {stateDiff ? (
-  //       <OnChainFx stateDiff={stateDiff} />
-  //     ) : stateDiffError ? (
-  //       <Flex>Unable to fetch on-chain effects at this time</Flex>
-  //     ) : (
-  //       <Flex sx={{ alignItems: 'center' }}>
-  //         loading <Spinner size={20} ml={2} />
-  //       </Flex>
-  //     )}
-  //   </div>
-  // );
 
   const hasVotedFor =
     votedProposals &&
@@ -223,37 +182,39 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               />
               <StatBox value={supporters && supporters.length} label="Supporters" />
             </Flex>
-            {
-              'about' in proposal ? (
-                <Tabs
-                  tabListStyles={{ pl: [3, 4] }}
-                  tabTitles={[
-                    'Proposal Detail',
-                    // ch401: hide until API is fixed
-                    // 'On-Chain Effects',
-                    `Comments ${comments ? `(${comments.length})` : ''}`
-                  ]}
-                  tabPanels={[
-                    <div
-                      key={1}
-                      sx={{ variant: 'markdown.default', p: [3, 4] }}
-                      dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                    />,
-                    // onChainFxTab,
-                    commentsTab
-                  ]}
-                  banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
-                ></Tabs>
-              ) : null
-              // ch401: hide until API is fixed
-              // (
-              // <Tabs
-              //   tabListStyles={{ pl: [3, 4] }}
-              //   tabTitles={['On-Chain Effects']}
-              //   tabPanels={[onChainFxTab]}
-              // />
-              // )
-            }
+            {'about' in proposal ? (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={[
+                  'Proposal Detail',
+
+                  'Spell Details',
+                  `Comments ${comments ? `(${comments.length})` : ''}`
+                ]}
+                tabPanels={[
+                  <div
+                    key={1}
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                  />,
+                  <div key={2} sx={{ p: [3, 4] }}>
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                  </div>,
+                  commentsTab
+                ]}
+                banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
+              ></Tabs>
+            ) : (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['Spell Details']}
+                tabPanels={[
+                  <div key={1} sx={{ p: [3, 4] }}>
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                  </div>
+                ]}
+              />
+            )}
           </Card>
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
@@ -372,7 +333,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               </Box>
             </Card>
           </Box>
-          <ResourceBox />
+          <ResourceBox type={'executive'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
