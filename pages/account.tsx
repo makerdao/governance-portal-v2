@@ -204,6 +204,7 @@ const AccountPage = (): JSX.Element => {
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
+          <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
