@@ -15,6 +15,7 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     done,
     nextCastTime,
     eta,
+    expiration,
     datePassed,
     dateExecuted,
     mkrSupport,
@@ -32,6 +33,10 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     maker
       .service('spell')
       .getEta(address)
+      .catch(_ => null),
+    maker
+      .service('spell')
+      .getExpiration(address)
       .catch(_ => null),
     maker
       .service('spell')
@@ -58,6 +63,7 @@ export const analyzeSpell = async (address: string, maker: any): Promise<SpellDa
     hasBeenCast: done,
     hasBeenScheduled: !!eta,
     eta,
+    expiration,
     nextCastTime,
     datePassed,
     dateExecuted,

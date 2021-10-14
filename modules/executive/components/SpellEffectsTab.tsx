@@ -168,7 +168,7 @@ export function SpellEffectsTab({
                 Expiration
               </Text>
               <Text as="p" color="textMuted">
-                {formatDateWithoutTime(spellData?.eta)}
+                {formatDateWithoutTime(spellData?.expiration)}
               </Text>
             </Box>
           </Flex>
