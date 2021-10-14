@@ -41,6 +41,7 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
 
           return parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
         } catch (e) {
+          console.log(e);
           // Catch error and return null if failed fetching one proposal
           return null;
         }
