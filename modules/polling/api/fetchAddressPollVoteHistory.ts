@@ -30,10 +30,10 @@ export async function fetchAddressPollVoteHistory(
         const tally = await fetchPollTally(pollVote.pollId, poll.voteType, useCache, network);
 
         const optionValue =
-          pollVote.rankedChoiceOption && typeof pollVote.rankedChoiceOption[0] !== undefined
+          pollVote.rankedChoiceOption && pollVote.rankedChoiceOption?.length > 0
             ? poll.options[pollVote.rankedChoiceOption[0]]
-            : pollVote.option !== undefined
-            ? poll.options[pollVote.option]
+            : (pollVote.option as number) !== undefined
+            ? poll.options[pollVote.option as number]
             : '';
 
         return {
