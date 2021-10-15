@@ -16,8 +16,8 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
   },
   "dependencies": {
-    "@makerdao/dai": "^0.41.0-alpha.1",
-    "@makerdao/dai-plugin-governance": "^0.15.0-alpha.1",
+    "@makerdao/dai": "^0.41.0-alpha.2",
+    "@makerdao/dai-plugin-governance": "^0.15.0-alpha.2",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.7.0-alpha.1",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",
