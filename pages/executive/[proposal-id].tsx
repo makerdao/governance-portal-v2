@@ -125,7 +125,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             position: 'fixed',
             bottom: 0,
             left: 0,
-            backgroundColor: 'white',
+            backgroundColor: 'surface',
             width: '100vw',
             borderTopLeftRadius: 'roundish',
             borderTopRightRadius: 'roundish',

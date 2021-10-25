@@ -112,7 +112,7 @@ export default function MobileVoteSheet({
           borderColor: 'secondaryMuted',
           px: 3,
           py: '14px',
-          backgroundColor: 'white',
+          backgroundColor: 'surface',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'row'
