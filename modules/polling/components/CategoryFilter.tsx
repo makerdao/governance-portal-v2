@@ -15,10 +15,13 @@ export default function CategoryFilter({
     shallow
   );
 
-  const itemsSelected = Object.values(categoryFilter|| {}).filter(i => !!i)
+  const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
 
   return (
-    <FilterButton name={() => `Poll Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : '' }`} {...props}>
+    <FilterButton
+      name={() => `Poll Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
+      {...props}
+    >
       <Flex sx={{ flexDirection: 'column' }}>
         {categories.map(category => (
           <Flex key={category.name}>

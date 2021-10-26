@@ -4,73 +4,71 @@ import useUiFiltersStore from 'stores/uiFilters';
 import shallow from 'zustand/shallow';
 
 export function PollCategoryTag({ category }: { category: string }): React.ReactElement {
-
-
   const categories = {
-    'Collateral' : {
+    Collateral: {
       color: 'pink',
       background: 'red'
     },
-    'Oracles' : {
+    Oracles: {
       color: 'pink',
       background: 'red'
     },
-    'Governance' : {
+    Governance: {
       color: 'pink',
       background: 'red'
     },
-    'Risk Variable' : {
+    'Risk Variable': {
       color: 'pink',
       background: 'red'
     },
-    'Technical' : {
+    Technical: {
       color: 'pink',
       background: 'red'
     },
-    'Other' : {
+    Other: {
       color: 'pink',
       background: 'red'
     },
-    'MIPs' : {
+    MIPs: {
       color: 'pink',
       background: 'red'
     },
-    'Rates' : {
+    Rates: {
       color: 'pink',
       background: 'red'
     },
-    'Auctions' : {
+    Auctions: {
       color: 'pink',
       background: 'red'
     },
-    'Greenlight' : {
+    Greenlight: {
       color: 'pink',
       background: 'red'
     },
-    'Transfer' : {
+    Transfer: {
       color: 'pink',
       background: 'red'
     },
-    'Budget' : {
+    Budget: {
       color: 'pink',
       background: 'red'
     },
-    'Core Unit' : {
+    'Core Unit': {
       color: 'pink',
       background: 'red'
     },
-    'Test' : {
+    Test: {
       color: 'pink',
       background: 'red'
     },
-    'Offboard' : {
+    Offboard: {
       color: 'pink',
       background: 'red'
-    },
+    }
   };
 
-  const color = categories[category] ? categories[category].color: 'white';
-  const background = categories[category] ? categories[category].background: 'black';
+  const color = categories[category] ? categories[category].color : 'white';
+  const background = categories[category] ? categories[category].background : 'black';
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
@@ -81,15 +79,20 @@ export function PollCategoryTag({ category }: { category: string }): React.React
     setCategoryFilter({ ...categoryFilter, [category]: true });
   }
   return (
-   
-    <Box sx={{
-      background,
-      borderRadius: '12px',
-      padding: '4px 8px',
-      display: 'flex',
-      alignItems: 'center',
-      cursor: 'pointer',
-      color,
-    }} onClick={onClickCategory} title={`See all ${category} polls`}><Text sx={{ fontSize: '11px'}}>{category}</Text></Box>
+    <Box
+      sx={{
+        background,
+        borderRadius: '12px',
+        padding: '4px 8px',
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer',
+        color
+      }}
+      onClick={onClickCategory}
+      title={`See all ${category} polls`}
+    >
+      <Text sx={{ fontSize: '11px' }}>{category}</Text>
+    </Box>
   );
 }

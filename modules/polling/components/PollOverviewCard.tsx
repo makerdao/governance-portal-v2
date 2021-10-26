@@ -142,9 +142,11 @@ export default function PollOverviewCard({
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
         </Flex>
         <Flex>
-          {poll.categories.map(c => <Box key={c} sx={{ marginRight: 2}}>
-            <PollCategoryTag category={c} />
-          </Box>)}
+          {poll.categories.map(c => (
+            <Box key={c} sx={{ marginRight: 2 }}>
+              <PollCategoryTag category={c} />
+            </Box>
+          ))}
         </Flex>
       </Stack>
       {showQuickVote && (
