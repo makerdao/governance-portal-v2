@@ -21,7 +21,7 @@ export function PollCategoryTag({ category }: { category: string }): React.React
       color: '#FF4085',
       background: '#FFF0F4'
     },
-    'Risk': {
+    Risk: {
       color: '#EF5277',
       background: '#FEEEF2'
     },

@@ -21,38 +21,34 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObje
     }
   );
 
-  return (
-    tally ? (
-      hasPollEnded ? (
-        <Badge
-
-          {...props}
-          variant="primary"
-          sx={{
-           
-            borderColor: 'inherit',
-            color: 'primaryAlt'
-          }}
-        >
-          Winning Option: {tally.winningOptionName}
-        </Badge>
-      ) : (
-        <Badge
-          {...props}
-          variant="primary"
-          sx={{
-            borderColor: 'text',
-            textTransform: 'uppercase'
-          }}
-        >
-          Leading Option: {tally.winningOptionName}
-        </Badge>
-      )
+  return tally ? (
+    hasPollEnded ? (
+      <Badge
+        {...props}
+        variant="primary"
+        sx={{
+          borderColor: 'inherit',
+          color: 'primaryAlt'
+        }}
+      >
+        Winning Option: {tally.winningOptionName}
+      </Badge>
     ) : (
-      <Box sx={{ width: '140px', justifyContent: 'right' }} {...props}>
-        <Skeleton />
-      </Box>
+      <Badge
+        {...props}
+        variant="primary"
+        sx={{
+          borderColor: 'text',
+          textTransform: 'uppercase'
+        }}
+      >
+        Leading Option: {tally.winningOptionName}
+      </Badge>
     )
+  ) : (
+    <Box sx={{ width: '140px', justifyContent: 'right' }} {...props}>
+      <Skeleton />
+    </Box>
   );
 };
 

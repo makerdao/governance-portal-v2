@@ -162,7 +162,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             </Flex>
           </Flex>
           <Card sx={{ p: [0, 0] }}>
-
             <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: [3, 4] }}>
               <Box>
                 <Flex sx={{ justifyContent: 'space-between' }}>
@@ -183,45 +182,56 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     sx={{ ml: 'auto' }}
                   />
                 </Flex>
-                <Flex sx={{ justifyContent: 'space-between', alignItems: 'flex-end', mb: 2, flexDirection: ['column', 'row'] }}>
+                <Flex
+                  sx={{
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    mb: 2,
+                    flexDirection: ['column', 'row']
+                  }}
+                >
                   <Box>
                     <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
                       {poll.title}
                     </Heading>
 
-                    
-                    <Flex sx={{ mt: 3, mb: 3}}>
-          {poll.categories.map(c => (
-            <Box key={c} sx={{ marginRight: 2 }}>
-              <PollCategoryTag category={c} />
-            </Box>
-          ))}
-        </Flex>
-
-                    <Flex sx={{ justifyContent: 'space-between',  mb: 2, flexDirection: ['column', 'row'] }}>
-                    {poll.discussionLink && (
-                      <Box>
-                        <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                          <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                            Discussion
-                            <Icon ml={2} name="arrowTopRight" size={2} />
-                          </Text>
-                        </ExternalLink>
-                      </Box>
-                    )}
-
-                    {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto', mt: [3, 0], mb: [3, 0], width: ['100%', 'auto'],  textAlign: 'center' }} /> : null}
-
+                    <Flex sx={{ mt: 3, mb: 3 }}>
+                      {poll.categories.map(c => (
+                        <Box key={c} sx={{ marginRight: 2 }}>
+                          <PollCategoryTag category={c} />
+                        </Box>
+                      ))}
                     </Flex>
 
-                    
-                  </Box>
+                    <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
+                      {poll.discussionLink && (
+                        <Box>
+                          <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                            <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                              Discussion
+                              <Icon ml={2} name="arrowTopRight" size={2} />
+                            </Text>
+                          </ExternalLink>
+                        </Box>
+                      )}
 
-                  
+                      {hasPollEnded ? (
+                        <PollOptionBadge
+                          poll={poll}
+                          sx={{
+                            ml: 'auto',
+                            mt: [3, 0],
+                            mb: [3, 0],
+                            width: ['100%', 'auto'],
+                            textAlign: 'center'
+                          }}
+                        />
+                      ) : null}
+                    </Flex>
+                  </Box>
                 </Flex>
               </Box>
             </Flex>
-
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
