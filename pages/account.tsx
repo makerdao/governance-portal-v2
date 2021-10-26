@@ -112,15 +112,16 @@ const AccountPage = (): JSX.Element => {
 
                   <ExternalLink
                     title="How can I verify my delegate contract?"
-                    href={'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'}
+                    href={
+                      'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
+                    }
                     target="_blank"
                   >
-                    <Text as="p" sx={{ display: 'flex', mt: 2, alignItems: 'center'}}>
-                       How can I verify my delegate contract?  <Icon name="arrowTopRight" size={2} ml={2}/>
+                    <Text as="p" sx={{ display: 'flex', mt: 2, alignItems: 'center' }}>
+                      How can I verify my delegate contract? <Icon name="arrowTopRight" size={2} ml={2} />
                     </Text>
                   </ExternalLink>
-                  
-                  
+
                   {delegatedMkr && (
                     <>
                       <Text as="p" sx={{ mt: 3 }}>
