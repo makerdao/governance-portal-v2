@@ -6,69 +6,73 @@ import shallow from 'zustand/shallow';
 export function PollCategoryTag({ category }: { category: string }): React.ReactElement {
   const categories = {
     Collateral: {
-      color: 'pink',
-      background: 'red'
+      color: '#D44C96',
+      background: '#FFF4FA'
     },
     Oracles: {
-      color: 'pink',
-      background: 'red'
+      color: '#8F2EC1',
+      background: '#FBF2FF'
     },
     Governance: {
-      color: 'pink',
-      background: 'red'
+      color: '#02CB9B',
+      background: '#EBFFFA'
     },
     'Risk Variable': {
-      color: 'pink',
-      background: 'red'
+      color: '#FF4085',
+      background: '#FFF0F4'
+    },
+    'Risk': {
+      color: '#EF5277',
+      background: '#FEEEF2'
     },
     Technical: {
-      color: 'pink',
-      background: 'red'
+      color: '#5D48FF',
+      background: '#F7F5FF'
     },
     Other: {
-      color: 'pink',
-      background: 'red'
+      color: '#7D8FAA',
+      background: '#F2F5FA'
     },
     MIPs: {
-      color: 'pink',
-      background: 'red'
+      color: '#00B5D3',
+      background: '#EEFAFC'
     },
     Rates: {
-      color: 'pink',
-      background: 'red'
+      color: '#34AAFF',
+      background: '#F1F9FF'
     },
     Auctions: {
-      color: 'pink',
-      background: 'red'
+      color: '#FF8237',
+      background: '#FFF5EF'
     },
     Greenlight: {
-      color: 'pink',
-      background: 'red'
+      color: '#1AAB9B',
+      background: '#EEFFFD'
     },
     Transfer: {
-      color: 'pink',
-      background: 'red'
+      color: '#635696',
+      background: '#F7F4FF'
     },
     Budget: {
-      color: 'pink',
-      background: 'red'
+      color: '#E7C200',
+      background: '#FFFBEF'
     },
     'Core Unit': {
-      color: 'pink',
-      background: 'red'
+      color: '#FF36C7',
+      background: '#FFF3F8'
     },
     Test: {
-      color: 'pink',
-      background: 'red'
+      color: '#FF8237',
+      background: '#FFFBEF'
     },
     Offboard: {
-      color: 'pink',
-      background: 'red'
+      color: '#FF8237',
+      background: '#FFFBEF'
     }
   };
 
-  const color = categories[category] ? categories[category].color : 'white';
-  const background = categories[category] ? categories[category].background : 'black';
+  const color = categories[category] ? categories[category].color : '#AD927D';
+  const background = categories[category] ? categories[category].background : '#FFF9F4';
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],

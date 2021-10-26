@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { Flex, Box, Badge, ThemeUIStyleObject } from 'theme-ui';
+import { Box, Badge, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
@@ -22,37 +22,37 @@ const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObje
   );
 
   return (
-    <Flex sx={{ alignItems: 'center', color: 'primaryAlt' }}>
-      {tally ? (
-        hasPollEnded ? (
-          <Badge
-            {...props}
-            variant="primary"
-            sx={{
-              borderColor: 'inherit',
-              color: 'inherit'
-            }}
-          >
-            Winning Option: {tally.winningOptionName}
-          </Badge>
-        ) : (
-          <Badge
-            {...props}
-            variant="primary"
-            sx={{
-              borderColor: 'text',
-              textTransform: 'uppercase'
-            }}
-          >
-            Leading Option: {tally.winningOptionName}
-          </Badge>
-        )
+    tally ? (
+      hasPollEnded ? (
+        <Badge
+
+          {...props}
+          variant="primary"
+          sx={{
+           
+            borderColor: 'inherit',
+            color: 'primaryAlt'
+          }}
+        >
+          Winning Option: {tally.winningOptionName}
+        </Badge>
       ) : (
-        <Box sx={{ width: '140px', justifyContent: 'right' }} {...props}>
-          <Skeleton />
-        </Box>
-      )}
-    </Flex>
+        <Badge
+          {...props}
+          variant="primary"
+          sx={{
+            borderColor: 'text',
+            textTransform: 'uppercase'
+          }}
+        >
+          Leading Option: {tally.winningOptionName}
+        </Badge>
+      )
+    ) : (
+      <Box sx={{ width: '140px', justifyContent: 'right' }} {...props}>
+        <Skeleton />
+      </Box>
+    )
   );
 };
 
