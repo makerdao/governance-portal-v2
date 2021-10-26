@@ -80,7 +80,7 @@ export function PollCategoryTag({ category }: { category: string }): React.React
   );
 
   function onClickCategory() {
-    setCategoryFilter({ ...categoryFilter, [category]: true });
+    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
   }
   return (
     <Box
