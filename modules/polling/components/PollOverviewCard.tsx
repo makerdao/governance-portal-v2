@@ -17,6 +17,7 @@ import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { PollCategoryTag } from './PollCategoryTag';
 
 type Props = {
   poll: Poll;
@@ -139,6 +140,11 @@ export default function PollOverviewCard({
           </Link>
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} />}
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
+        </Flex>
+        <Flex>
+          {poll.categories.map(c => <Box key={c} sx={{ marginRight: 2}}>
+            <PollCategoryTag category={c} />
+          </Box>)}
         </Flex>
       </Stack>
       {showQuickVote && (
