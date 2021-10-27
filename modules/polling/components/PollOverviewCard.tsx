@@ -86,14 +86,13 @@ export default function PollOverviewCard({
             </Box>
           ))}
         </Flex>
-        
+
         {bpi > 0 && (
           <div>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
           </div>
         )}
 
-       
         <Flex sx={{ alignItems: 'center' }}>
           {canVote &&
             bpi === 0 &&
@@ -151,7 +150,6 @@ export default function PollOverviewCard({
           {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} />}
           <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
         </Flex>
-        
       </Stack>
       {showQuickVote && (
         <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7, ml: 5 }} />
