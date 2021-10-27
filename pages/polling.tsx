@@ -62,7 +62,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
     shallow
   );
 
-  const hasFiltersEnabled = startDate || endDate || Object.values(categoryFilter || {}).reduce((prev, next) => prev || next, false);
+  const hasFiltersEnabled =
+    startDate || endDate || Object.values(categoryFilter || {}).reduce((prev, next) => prev || next, false);
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -132,7 +133,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
 
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <Head>
@@ -158,9 +158,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
             <CategoryFilter categories={categories} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
-          <Button variant={'outline'}
-            sx={{ ml: 3, mt: [2, 0] }}
-            onClick={resetPollFilters}>Clear filters</Button>
+          <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
+            Clear filters
+          </Button>
         </Flex>
         <SidebarLayout>
           <Box>
