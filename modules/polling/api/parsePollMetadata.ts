@@ -5,6 +5,20 @@ import { backoffRetry, timeoutPromise } from 'lib/utils';
 import matter from 'gray-matter';
 import { parsePollMetadata } from '../helpers/parser';
 
+export function sortPolls(pollList: Poll[]): Poll[] {
+  return pollList.sort((a, b) => {
+    // closest to expiration shown first, if some have same expiration date, sort by startdate
+    const dateEndDiff = a.endDate.getTime() - b.endDate.getTime();
+
+    // Sort by more recent first if they end at the same time
+    const sortedByStartDate = a.startDate.getTime() < b.startDate.getTime() ? 1 : -1;
+
+    return dateEndDiff < 0 ? - 1 : 
+      (dateEndDiff > 0 ? 1 : sortedByStartDate);
+  });
+}
+
+
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
@@ -48,11 +62,5 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
     IDs: ${failedPollIds}`
   );
 
-  return (
-    polls
-      // closest to expiration shown first
-      .sort((a, b) =>
-        Date.now() - new Date(a.endDate).getTime() < Date.now() - new Date(b.endDate).getTime() ? -1 : 1
-      )
-  );
+  return sortPolls(polls);
 }
