@@ -53,7 +53,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   }];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const { data, error, isValidating, revalidate } = useSWR(`/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`, fetchJson);
+  const { data, error, isValidating, revalidate } = useSWR(`/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`, fetchJson);
 
 
   useEffect(() => {

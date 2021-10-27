@@ -171,10 +171,8 @@ export async function fetchDelegatesMKRWeightHistory(
   network: SupportedNetworks
 ): Promise<MKRWeightHisory[]> {
   const maker = await getMaker(network);
-  const unixtimeStart = from;
-  const unixtimeEnd =Date.now();
-  //const addressData: MKRLockedDelegate[] = await maker.service('voteDelegate').getMrkLockedDelegate(address, unixtimeStart, unixtimeEnd);
-  const addressData = mockAddressData
+  const addressData: MKRLockedDelegate[] = await maker.service('voteDelegate').getMkrLockedDelegate(address);
+  // const addressData = mockAddressData
 
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days 
