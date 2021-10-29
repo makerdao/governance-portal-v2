@@ -3,7 +3,7 @@ import { Box, Text, jsx } from 'theme-ui';
 import useUiFiltersStore from 'stores/uiFilters';
 import shallow from 'zustand/shallow';
 
-export function PollCategoryTag({ category }: { category: string }): React.ReactElement {
+export function PollCategoryTag({ category, clickable }: { category: string, clickable?: boolean }): React.ReactElement {
   const categories = {
     Collateral: {
       color: '#D44C96',
@@ -80,7 +80,9 @@ export function PollCategoryTag({ category }: { category: string }): React.React
   );
 
   function onClickCategory() {
-    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+    if (clickable) {
+      setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+    }
   }
   return (
     <Box
@@ -90,13 +92,13 @@ export function PollCategoryTag({ category }: { category: string }): React.React
         padding: '4px 8px',
         display: 'flex',
         alignItems: 'center',
-        cursor: 'pointer',
+        cursor: clickable ? 'pointer' : 'inherit',
         color
       }}
       onClick={onClickCategory}
       title={`See all ${category} polls`}
     >
-      <Text sx={{ fontSize: '11px' }}>{category}</Text>
+      <Text sx={{ fontSize: 2 }}>{category}</Text>
     </Box>
   );
 }

@@ -82,7 +82,7 @@ export default function PollOverviewCard({
         <Flex>
           {poll.categories.map(c => (
             <Box key={c} sx={{ marginRight: 2 }}>
-              <PollCategoryTag category={c} />
+              <PollCategoryTag clickable={true} category={c} />
             </Box>
           ))}
         </Flex>

@@ -164,7 +164,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
           <Card sx={{ p: [0, 0] }}>
             <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: [3, 4] }}>
               <Box>
-                <Flex sx={{ justifyContent: 'space-between' }}>
+                <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
                   <Text
                     variant="caps"
                     sx={{
@@ -179,7 +179,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                     key={poll.multiHash}
                     endText="Poll ended"
                     endDate={poll.endDate}
-                    sx={{ ml: 'auto' }}
+                    sx={{ ml: [0, 'auto'] }}
                   />
                 </Flex>
                 <Flex
