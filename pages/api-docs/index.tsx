@@ -5,20 +5,20 @@ import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
-    console.log(spec)
+  console.log(spec);
   return <SwaggerUI spec={spec} />;
 };
 
 export const getStaticProps: GetStaticProps = async ctx => {
   const spec: Record<string, any> = createSwaggerSpec({
     title: 'Governance Portal Swagger',
-    version: '0.1.0',
+    version: '0.1.0'
   });
-  
+
   return {
     props: {
-      spec,
-    },
+      spec
+    }
   };
 };
 

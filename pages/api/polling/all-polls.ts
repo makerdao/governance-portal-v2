@@ -5,7 +5,6 @@ import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 
-
 /**
  * @swagger
  * /api/polling/all-polls:
@@ -13,7 +12,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
  *     tags:
  *     - "polls"
  *     description: Returns all polls
- *     produces: 
+ *     produces:
  *     - "application/json"
  *     parameters:
  *     - name: "categories"
@@ -40,7 +39,11 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const filters = {
     startDate: req.query.startDate ? new Date(req.query.startDate as string) : null,
     endDate: req.query.endDate ? new Date(req.query.endDate as string) : null,
-    categories: req.query.categories ? ( typeof req.query.categories === 'string' ? [req.query.categories] : req.query.categories): null
+    categories: req.query.categories
+      ? typeof req.query.categories === 'string'
+        ? [req.query.categories]
+        : req.query.categories
+      : null
   };
 
   const polls = await getPolls(filters, network);

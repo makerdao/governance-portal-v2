@@ -38,12 +38,12 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
 
 // Public method that returns the polls, and accepts filters
 type PollFilters = {
-  startDate? : Date | null,
-  endDate?: Date | null,
-  categories?: string[] | null
-}
+  startDate?: Date | null;
+  endDate?: Date | null;
+  categories?: string[] | null;
+};
 
-const defaultFilters : PollFilters = {
+const defaultFilters: PollFilters = {
   startDate: null,
   endDate: null,
   categories: null
@@ -57,7 +57,9 @@ export async function getPolls(filters = defaultFilters, network?: SupportedNetw
     if (filters.endDate && new Date(poll.startDate).getTime() > filters.endDate.getTime()) return false;
 
     // if no category filters selected, return all, otherwise, check if poll contains category
-    return !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c));
+    return (
+      !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c))
+    );
   });
 
   return filteredPolls;
