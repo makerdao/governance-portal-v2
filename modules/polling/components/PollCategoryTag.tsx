@@ -3,7 +3,13 @@ import { Box, Text, jsx } from 'theme-ui';
 import useUiFiltersStore from 'stores/uiFilters';
 import shallow from 'zustand/shallow';
 
-export function PollCategoryTag({ category, clickable }: { category: string, clickable?: boolean }): React.ReactElement {
+export function PollCategoryTag({
+  category,
+  clickable
+}: {
+  category: string;
+  clickable?: boolean;
+}): React.ReactElement {
   const categories = {
     Collateral: {
       color: '#D44C96',
