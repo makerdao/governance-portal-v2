@@ -12,7 +12,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
 import ColorModeToggle from './header/ColorModeToggle';
 
-const Header = (props): JSX.Element => {
+const Header = (): JSX.Element => {
   const network = getNetwork();
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -32,7 +32,6 @@ const Header = (props): JSX.Element => {
         justifyContent: 'space-between',
         width: '100%'
       }}
-      {...props}
     >
       <Link href={{ pathname: '/', query: { network } }}>
         <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
@@ -102,7 +101,7 @@ const Header = (props): JSX.Element => {
         </Flex>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <AccountSelect />
+        {typeof window !== 'undefined' && <AccountSelect />}
 
         <IconButton
           aria-label="Show menu"
@@ -122,7 +121,9 @@ const Header = (props): JSX.Element => {
 
 const MobileMenu = ({ hide, network, router }) => {
   useEffect(() => {
-    router.events.on('routeChangeComplete', hide);
+    if (typeof window !== 'undefined') {
+      router.events.on('routeChangeComplete', hide);
+    }
   }, []);
 
   return (
