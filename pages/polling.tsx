@@ -62,6 +62,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
     shallow
   );
 
+  const hasFiltersEnabled =
+    startDate || endDate || Object.values(categoryFilter || {}).reduce((prev, next) => prev || next, false);
+
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
@@ -147,12 +150,17 @@ const PollingOverview = ({ polls, categories }: Props) => {
       )}
       <Stack gap={3}>
         {bpi <= 1 && account && <BallotStatus />}
-        <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3}>
-            Filters
-          </Heading>
-          <CategoryFilter categories={categories} />
-          <DateFilter sx={{ ml: 3 }} />
+        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
+              Filters
+            </Heading>
+            <CategoryFilter categories={categories} />
+            <DateFilter sx={{ ml: 3 }} />
+          </Flex>
+          <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
+            Clear filters
+          </Button>
         </Flex>
         <SidebarLayout>
           <Box>

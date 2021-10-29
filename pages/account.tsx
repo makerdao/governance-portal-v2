@@ -34,6 +34,7 @@ import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -108,6 +109,19 @@ const AccountPage = (): JSX.Element => {
                         : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
                     </Text>
                   </ExternalLink>
+
+                  <ExternalLink
+                    title="How can I verify my delegate contract?"
+                    href={
+                      'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
+                    }
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ display: 'flex', mt: 2, alignItems: 'center' }}>
+                      How can I verify my delegate contract? <Icon name="arrowTopRight" size={2} ml={2} />
+                    </Text>
+                  </ExternalLink>
+
                   {delegatedMkr && (
                     <>
                       <Text as="p" sx={{ mt: 3 }}>
