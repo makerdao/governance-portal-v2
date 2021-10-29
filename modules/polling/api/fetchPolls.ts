@@ -8,9 +8,11 @@ import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
 import { SupportedNetworks } from 'lib/constants';
 
-export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
+// Returns all the polls and caches them in the file system.
+export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
   const maker = await getMaker(network);
   const cacheKey = 'polls';
+
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
     if (cachedPolls) {
@@ -34,8 +36,36 @@ export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   return polls;
 }
 
-export async function getPoll(slug: string): Promise<Poll> {
-  const polls = await getPolls();
+// Public method that returns the polls, and accepts filters
+type PollFilters = {
+  startDate? : Date | null,
+  endDate?: Date | null,
+  categories?: string[] | null
+}
+
+const defaultFilters : PollFilters = {
+  startDate: null,
+  endDate: null,
+  categories: null
+};
+
+export async function getPolls(filters = defaultFilters, network?: SupportedNetworks): Promise<Poll[]> {
+  const allPolls = await _getAllPolls(network);
+  const filteredPolls = allPolls.filter(poll => {
+    // check date filters first
+    if (filters.startDate && new Date(poll.startDate).getTime() < filters.startDate.getTime()) return false;
+    if (filters.endDate && new Date(poll.startDate).getTime() > filters.endDate.getTime()) return false;
+
+    // if no category filters selected, return all, otherwise, check if poll contains category
+    return !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c));
+  });
+
+  return filteredPolls;
+}
+
+export async function getPoll(slug: string, filters: PollFilters): Promise<Poll> {
+  const polls = await getPolls(filters);
+
   const pollIndex = polls.findIndex(poll => poll.slug === slug);
   invariant(pollIndex > -1, `poll not found for poll slug ${slug}`);
   const [prev, next] = [polls?.[pollIndex - 1] || null, polls?.[pollIndex + 1] || null];

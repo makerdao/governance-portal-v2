@@ -51,6 +51,8 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
+import useUiFiltersStore from 'stores/uiFilters';
+import shallow from 'zustand/shallow';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
@@ -72,6 +74,24 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const ballotLength = Object.keys(ballot).length;
   const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
     getPollApiUrl(poll),
@@ -360,7 +380,7 @@ export default function PollPage({
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
-      getPoll(query['poll-hash'] as string)
+      getPoll(query['poll-hash'] as string, {})
         .then(_setPoll)
         .catch(setError);
     }
@@ -387,10 +407,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
-  const polls = await getPolls();
+  const polls = await getPolls({});
   const pollExists = !!polls.find(poll => poll.slug === pollSlug);
   if (!pollExists) return { revalidate: 30, props: { poll: null } };
-  const poll = await getPoll(pollSlug);
+  const poll = await getPoll(pollSlug, {});
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
@@ -402,7 +422,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const polls = await getPolls();
+  const polls = await getPolls({});
   const paths = polls.map(p => `/polling/${p.slug}`);
 
   return {

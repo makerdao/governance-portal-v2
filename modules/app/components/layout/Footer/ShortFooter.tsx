@@ -30,6 +30,15 @@ export default function ShortFooter(): React.ReactElement {
         Status
       </NavLink>
       <NavLink
+        href="/api-docs"
+        variant="footer"
+        title="Status"
+        p={2}
+        sx={{ fontWeight: 400 }}
+      >
+        Api Docs
+      </NavLink>
+      <NavLink
         href="https://discord.gg/2sWcgCDWCX"
         target="_blank"
         variant="footer"

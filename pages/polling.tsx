@@ -322,7 +322,7 @@ export default function PollingOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
-  const polls = await getPolls();
+  const polls = await getPolls({});
   const categories = getCategories(polls);
 
   return {
