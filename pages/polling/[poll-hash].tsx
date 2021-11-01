@@ -48,10 +48,10 @@ import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
 import VoteBox from 'modules/polling/components/VoteBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
-import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
@@ -63,6 +63,30 @@ function prefetchTally(poll) {
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+};
+
+const WinningOptionText = ({
+  tally,
+  voteType
+}: {
+  tally: PollTally;
+  voteType: string;
+}): JSX.Element | null => {
+  if (!tally.winner) return null;
+  return (
+    <>
+      <Divider my={1} />
+      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+          Winning Option:{' '}
+          <Text sx={{ color: getVoteColor(parseInt(tally.winner), voteType) }}>
+            {tally.winningOptionName}
+          </Text>
+        </Text>
+      </Flex>
+      <Divider sx={{ mt: 1 }} />
+    </>
+  );
 };
 
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
@@ -214,19 +238,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                           </ExternalLink>
                         </Box>
                       )}
-
-                      {hasPollEnded ? (
-                        <PollOptionBadge
-                          poll={poll}
-                          sx={{
-                            ml: 'auto',
-                            mt: [3, 0],
-                            mb: [3, 0],
-                            width: ['100%', 'auto'],
-                            textAlign: 'center'
-                          }}
-                        />
-                      ) : null}
                     </Flex>
                   </Box>
                 </Flex>
@@ -327,6 +338,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   ]
                 )
               ]}
+              banner={
+                hasPollEnded && tally ? (
+                  <WinningOptionText tally={tally} voteType={poll.voteType} />
+                ) : undefined
+              }
             />
           </Card>
         </div>
