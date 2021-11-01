@@ -7,3 +7,4 @@ const swaggerHandler = withSwagger({
   apiFolder: 'pages/api'
 });
 export default swaggerHandler();
+  
