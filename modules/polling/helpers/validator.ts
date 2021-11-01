@@ -7,7 +7,7 @@ import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
 
 // find the most up-to-date list here:
 // https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json
-const hardcodedCategories = [
+export const hardcodedCategories = [
   'Collateral',
   'Oracles',
   'Governance',
