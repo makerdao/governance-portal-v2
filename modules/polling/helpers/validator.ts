@@ -32,24 +32,23 @@ type ValidationResult = {
   wholeDoc?: string;
 };
 
-export async function fetchCategories(): Promise<string[] | null> {
+export async function fetchCategories(): Promise<string[]> {
   try {
     const url =
       'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/categories.json';
     const resp = await fetch(url);
     return resp.json();
   } catch (err) {
-    return null;
+    // fallback to hardcoded categories if live category fetch fails
+    return hardcodedCategories;
   }
 }
 
 export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
   const text = await resp.text();
-
-  const liveCategories = await fetchCategories();
-  // fallback to hardcoded categories if live category fetch fails
-  const result = validateText(text, liveCategories ?? hardcodedCategories);
+  const categories = await fetchCategories();
+  const result = validateText(text, categories);
   if (result.valid && poll) {
     result.wholeDoc = text;
     result.parsedData = parsePollMetadata(poll, text);
