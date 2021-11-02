@@ -1,10 +1,20 @@
+import BigNumber from 'bignumber.js';
 import { formatDateWithTime } from 'lib/datetime';
 import { isBefore } from 'date-fns';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
 import { ZERO_ADDRESS } from 'stores/accounts';
+import { CurrencyObject } from 'types/currency';
 
-export const getStatusText = (proposalAddress: string, spellData?: SpellData): string => {
+export const getStatusText = ({
+  proposalAddress,
+  spellData,
+  mkrOnHat
+}: {
+  proposalAddress: string;
+  spellData?: SpellData;
+  mkrOnHat?: CurrencyObject;
+}): string => {
   if (!spellData) return 'Fetching status...';
 
   if (proposalAddress === ZERO_ADDRESS) {
@@ -28,12 +38,22 @@ export const getStatusText = (proposalAddress: string, spellData?: SpellData): s
     }
   }
 
-  // hasn't been scheduled or executed, check if expired
+  // hasn't been passed or executed, check if expired
   const isExpired = spellData.expiration ? isBefore(new Date(spellData.expiration), new Date()) : false;
   if (isExpired) {
     return `This proposal expired at ${formatDateWithTime(
       spellData.expiration
-    )} and can no longer be exectuted.`;
+    )} and can no longer be executed.`;
+  }
+
+  // not expired, passed, or executed, check support level
+  if (!!spellData.mkrSupport && !!mkrOnHat) {
+    return `${mkrOnHat
+      .toBigNumber()
+      .minus(new BigNumber(spellData.mkrSupport))
+      .toFormat(2)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
+      spellData.expiration
+    )}.`;
   }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet
