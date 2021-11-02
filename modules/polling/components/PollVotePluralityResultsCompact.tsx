@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import BigNumber from 'bignumber.js';
 import { Box, jsx } from 'theme-ui';
 import { PollTallyPluralityOption } from '../types';

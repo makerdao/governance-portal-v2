@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';

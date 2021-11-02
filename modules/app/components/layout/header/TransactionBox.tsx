@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import { Flex, Text, Spinner, Button, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';

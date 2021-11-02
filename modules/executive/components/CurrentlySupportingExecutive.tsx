@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { Divider, Box, Text, Flex, jsx } from 'theme-ui';

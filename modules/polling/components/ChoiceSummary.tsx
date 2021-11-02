@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { Text, Flex, Box, Button, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNumberWithOrdinal } from 'lib/utils';

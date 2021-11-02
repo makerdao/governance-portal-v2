@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Box, Image, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';

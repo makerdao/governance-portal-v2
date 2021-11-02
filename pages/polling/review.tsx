@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';

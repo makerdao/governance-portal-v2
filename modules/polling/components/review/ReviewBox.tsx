@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider, jsx } from 'theme-ui';

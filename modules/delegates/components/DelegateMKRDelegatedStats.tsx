@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import BigNumber from 'bignumber.js';
 import { useMkrDelegated } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';

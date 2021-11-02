@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { Box, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
 
 import { fadeIn } from 'lib/keyframes';

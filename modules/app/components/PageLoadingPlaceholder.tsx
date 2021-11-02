@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Box, jsx } from 'theme-ui';
 

@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { Card, Flex, Text, Box, Heading, jsx } from 'theme-ui';
 import useSWR from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';

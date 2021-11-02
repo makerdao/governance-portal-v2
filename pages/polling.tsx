@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';

@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { useState } from 'react';
 import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';

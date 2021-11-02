@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';

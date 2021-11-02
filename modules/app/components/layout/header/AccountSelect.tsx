@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';

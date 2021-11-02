@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import BigNumber from 'bignumber.js';
 import { Box, Text, jsx } from 'theme-ui';
 import { Delegate } from '../types';

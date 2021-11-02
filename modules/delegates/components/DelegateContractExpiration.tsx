@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import { Delegate } from '../types';
 import { Text, Flex, jsx } from 'theme-ui';

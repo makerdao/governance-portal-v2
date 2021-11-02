@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import Link from 'next/link';
 import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';

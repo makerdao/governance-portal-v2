@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { Fragment } from 'react';
 import { Grid, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
 import BigNumber from 'bignumber.js';

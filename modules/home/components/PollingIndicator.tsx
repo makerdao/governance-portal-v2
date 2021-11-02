@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { forwardRef, useMemo } from 'react';
 import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';

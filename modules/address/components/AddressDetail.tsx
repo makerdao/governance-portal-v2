@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import React from 'react';
 import { jsx, Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';

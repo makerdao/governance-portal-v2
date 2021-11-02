@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';

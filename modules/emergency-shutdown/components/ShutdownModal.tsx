@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { Flex, Button, Text, Grid, jsx, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';

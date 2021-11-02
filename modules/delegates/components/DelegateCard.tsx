@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 
 import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink, jsx } from 'theme-ui';

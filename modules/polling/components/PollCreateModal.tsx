@@ -1,4 +1,4 @@
-/** @jsx jsx */
+ 
 import { useState, useMemo } from 'react';
 import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
