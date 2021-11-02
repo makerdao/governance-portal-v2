@@ -21,8 +21,7 @@ export const getStatusText = (proposalAddress: string, spellData?: SpellData): s
       ${
         SPELL_SCHEDULED_DATE_OVERRIDES[proposalAddress] ||
         formatDateWithTime(spellData.nextCastTime || spellData.eta)
-      }
-      .`;
+      }.`;
     }
   }
   return 'This proposal has not yet passed and is not available for execution.';
