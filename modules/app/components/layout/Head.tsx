@@ -2,15 +2,21 @@ import Head from 'next/head';
 
 import { config } from '../../../../lib/config';
 
-export function HeadComponent({ title, description, image, url }: {
-  title?: string,
-  description?: string,
-  image?: string,
-  url?: string
+export function HeadComponent({
+  title,
+  description,
+  image,
+  url
+}: {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
 }): React.ReactElement {
   const dev = config.NODE_ENV === 'development';
 
-  const defaultDescription = 'MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community.';
+  const defaultDescription =
+    'MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community.';
   const defaultTitle = 'Voting Portal';
 
   const renderedTitle = title || defaultTitle;
@@ -18,10 +24,7 @@ export function HeadComponent({ title, description, image, url }: {
   return (
     <Head>
       <title>Maker Governance - {renderedTitle}</title>
-      <meta
-        name="description"
-        content={renderedDescription}
-      />
+      <meta name="description" content={renderedDescription} />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta property="og:title" content={renderedTitle} />
       <meta property="og:description" content={renderedDescription} />
@@ -41,12 +44,12 @@ export function HeadComponent({ title, description, image, url }: {
           "font-src 'self';" +
           "connect-src 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
-          `script-src 'self' ${dev ? "'unsafe-eval'" : ''
+          `script-src 'self' ${
+            dev ? "'unsafe-eval'" : ''
           } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
           "img-src 'self' https: data:"
         }
       />
-
     </Head>
   );
 }

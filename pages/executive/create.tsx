@@ -94,9 +94,7 @@ const ExecutiveCreate = () => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-   
-      <HeadComponent 
-        title='Validate Executive Proposal' />
+      <HeadComponent title="Validate Executive Proposal" />
 
       <Stack gap={3}>
         <Heading mb={2} as="h4">

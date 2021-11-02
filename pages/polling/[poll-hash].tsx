@@ -136,10 +136,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         />
       )}
       <SidebarLayout>
-        <HeadComponent 
-          title={poll.title}
-          description={`${poll.title}. End Date: ${poll.endDate}.`}  />
-        
+        <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />
+
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>

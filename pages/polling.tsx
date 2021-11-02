@@ -29,7 +29,6 @@ import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import Head from 'next/head';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -136,9 +135,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <HeadComponent 
+      <HeadComponent
         title="Polls"
-        description={`Last poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`} 
+        description={`Last poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
       />
 
       {mobileVotingPoll && (

@@ -31,11 +31,15 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      
-      <HeadComponent 
-        title={`${addressInfo.isDelegate ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'} Information`} 
-        description={`See all the voting activity of ${addressInfo.delegateInfo?.name || addressInfo.address } in Maker Governance. `}
-        image={addressInfo.delegateInfo?.picture} />
+      <HeadComponent
+        title={`${
+          addressInfo.isDelegate ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'
+        } Information`}
+        description={`See all the voting activity of ${
+          addressInfo.delegateInfo?.name || addressInfo.address
+        } in Maker Governance. `}
+        image={addressInfo.delegateInfo?.picture}
+      />
 
       <SidebarLayout>
         <Stack gap={2}>

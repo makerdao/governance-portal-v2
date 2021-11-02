@@ -55,11 +55,11 @@ const Delegates = ({ delegates, stats }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-
-      <HeadComponent 
-        title='Delegates'
-        description='Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases the effectiveness and efficiency of the governance process.'
-        image={'https://vote.makerdao.com/seo/delegates.png'} />
+      <HeadComponent
+        title="Delegates"
+        description="Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases the effectiveness and efficiency of the governance process."
+        image={'https://vote.makerdao.com/seo/delegates.png'}
+      />
 
       <SidebarLayout>
         <Box>

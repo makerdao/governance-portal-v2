@@ -23,7 +23,6 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
-
   // Initialize global hooks
   useAccountChange();
 

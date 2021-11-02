@@ -38,6 +38,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   proposal: Proposal;
@@ -118,6 +119,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+        <HeadComponent 
+          title={`Proposal ${proposal['title'] ? proposal['title'] : proposal.address}`}
+          description={`See the results of the MakerDAO executive proposal ${proposal['title'] ? proposal['title'] : proposal.address}.`}  />
+        
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box

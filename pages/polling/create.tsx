@@ -98,9 +98,7 @@ const PollingCreate = (): React.ReactElement => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      
-      <HeadComponent 
-        title='Create Poll'/>
+      <HeadComponent title="Create Poll" />
 
       <Stack gap={3}>
         <Heading mb={2} as="h4">

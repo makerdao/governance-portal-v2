@@ -11,6 +11,7 @@ import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
 import useAccountsStore from 'stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -95,6 +96,8 @@ const ESModule = (): React.ReactElement => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'container' }}>
+      <HeadComponent title="Emergency Shutdown Module" />
+
       <DialogOverlay
         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         isOpen={showDialog}
