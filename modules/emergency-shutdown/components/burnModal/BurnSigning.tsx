@@ -1,4 +1,3 @@
- 
 import { Flex, Button, Text, jsx, Close, Spinner } from 'theme-ui';
 
 const BurnSigning = ({ close }) => (

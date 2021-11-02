@@ -1,4 +1,3 @@
- 
 import { useState, useEffect } from 'react';
 import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
 import { GetStaticProps } from 'next';

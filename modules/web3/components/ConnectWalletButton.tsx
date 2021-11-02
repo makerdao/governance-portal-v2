@@ -1,4 +1,3 @@
- 
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { formatAddress } from 'lib/utils';
 import { useEffect, useState } from 'react';

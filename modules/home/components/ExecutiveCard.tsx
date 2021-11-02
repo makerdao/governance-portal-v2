@@ -1,4 +1,3 @@
- 
 import Link from 'next/link';
 import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';

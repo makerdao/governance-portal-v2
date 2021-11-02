@@ -1,5 +1,3 @@
- 
-
 import { Box, Text, jsx } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import { PollVoteHistory } from '../types/pollVoteHistory';

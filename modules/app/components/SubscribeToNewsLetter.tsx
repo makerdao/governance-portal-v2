@@ -1,4 +1,3 @@
- 
 import { subscribeToNewsletter } from 'lib/services/emailSubscription';
 import { isValidEmail } from 'lib/validators/email';
 import { useState } from 'react';

@@ -1,4 +1,3 @@
- 
 import { jsx, Box } from 'theme-ui';
 import { Jazzicon } from '@ukstv/jazzicon-react';
 

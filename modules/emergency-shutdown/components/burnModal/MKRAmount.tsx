@@ -1,4 +1,3 @@
- 
 import { Alert, Flex, Box, Button, Text, Grid, jsx, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 

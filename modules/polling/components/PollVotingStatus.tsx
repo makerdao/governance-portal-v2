@@ -1,4 +1,3 @@
- 
 import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';

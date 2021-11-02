@@ -1,5 +1,3 @@
- 
-
 import { Box, Flex, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
 import { useState } from 'react';

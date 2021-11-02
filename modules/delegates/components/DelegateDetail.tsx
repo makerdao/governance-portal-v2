@@ -1,4 +1,3 @@
- 
 import React from 'react';
 import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';

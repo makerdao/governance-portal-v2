@@ -1,5 +1,3 @@
- 
-
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { jsx, Box, Flex, Text, Button, Close } from 'theme-ui';
