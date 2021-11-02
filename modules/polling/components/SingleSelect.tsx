@@ -2,7 +2,6 @@
 import { jsx } from 'theme-ui';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
-import map from 'lodash/map';
 
 import { Poll } from 'modules/polling/types';
 
@@ -26,8 +25,8 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
           <ListboxOption value="default" sx={{ display: 'none' }}>
             Your choice
           </ListboxOption>
-          {map(poll.options, (label, id) => (
-            <ListboxOption data-testid={'single select option'} key={id} value={id}>
+          {Object.values(poll.options).map((label, id) => (
+            <ListboxOption data-testid={'single select option'} key={id} value={id.toString()}>
               {label}
             </ListboxOption>
           ))}

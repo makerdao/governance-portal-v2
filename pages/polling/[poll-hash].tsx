@@ -48,9 +48,10 @@ import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
 import VoteBox from 'modules/polling/components/VoteBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
-import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
+import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
@@ -62,6 +63,30 @@ function prefetchTally(poll) {
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+};
+
+const WinningOptionText = ({
+  tally,
+  voteType
+}: {
+  tally: PollTally;
+  voteType: string;
+}): JSX.Element | null => {
+  if (!tally.winner) return null;
+  return (
+    <>
+      <Divider my={1} />
+      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+          Winning Option:{' '}
+          <Text sx={{ color: getVoteColor(parseInt(tally.winner), voteType) }}>
+            {tally.winningOptionName}
+          </Text>
+        </Text>
+      </Flex>
+      <Divider sx={{ mt: 1 }} />
+    </>
+  );
 };
 
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
@@ -161,56 +186,48 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             </Flex>
           </Flex>
           <Card sx={{ p: [0, 0] }}>
-            {bpi < 1 ? (
-              <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
-                <Box>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text
-                      variant="text.caps"
-                      sx={{
-                        fontSize: 1,
-                        color: 'textSecondary'
-                      }}
-                    >
-                      Posted {formatDateWithTime(poll.startDate)}
-                    </Text>
-                    <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
-                  </Flex>
-                  <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                    {poll.title}
-                  </Heading>
-                  {poll.discussionLink && (
-                    <Box sx={{ mb: 2 }}>
-                      <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                        <Text sx={{ fontSize: 2, fontWeight: 'semiBold' }}>
-                          Discussion
-                          <Icon ml={2} name="arrowTopRight" size={2} />
-                        </Text>
-                      </ExternalLink>
-                    </Box>
-                  )}
-                  <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
-                </Box>
-              </Flex>
-            ) : (
-              <Flex sx={{ flexDirection: 'column', px: [3, 4], py: 3 }}>
-                <Box>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text
-                      variant="caps"
-                      sx={{
-                        fontSize: [1],
-                        color: 'textSecondary'
-                      }}
-                    >
-                      Posted {formatDateWithTime(poll.startDate)}
-                    </Text>
-                  </Flex>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Flex sx={{ flexDirection: 'column' }}>
-                      <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                        {poll.title}
-                      </Heading>
+            <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: [3, 4] }}>
+              <Box>
+                <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
+                  <Text
+                    variant="caps"
+                    sx={{
+                      fontSize: [1],
+                      color: 'textSecondary'
+                    }}
+                  >
+                    Posted {formatDateWithTime(poll.startDate)}
+                  </Text>
+
+                  <CountdownTimer
+                    key={poll.multiHash}
+                    endText="Poll ended"
+                    endDate={poll.endDate}
+                    sx={{ ml: [0, 'auto'] }}
+                  />
+                </Flex>
+                <Flex
+                  sx={{
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    mb: 2,
+                    flexDirection: ['column', 'row']
+                  }}
+                >
+                  <Box>
+                    <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
+                      {poll.title}
+                    </Heading>
+
+                    <Flex sx={{ mt: 3, mb: 3 }}>
+                      {poll.categories.map(c => (
+                        <Box key={c} sx={{ marginRight: 2 }}>
+                          <PollCategoryTag category={c} />
+                        </Box>
+                      ))}
+                    </Flex>
+
+                    <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
                       {poll.discussionLink && (
                         <Box>
                           <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
@@ -222,19 +239,10 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         </Box>
                       )}
                     </Flex>
-                    <Flex sx={{ flexDirection: 'column', minWidth: 7, justifyContent: 'space-between' }}>
-                      <CountdownTimer
-                        key={poll.multiHash}
-                        endText="Poll ended"
-                        endDate={poll.endDate}
-                        sx={{ ml: 'auto' }}
-                      />
-                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : null}
-                    </Flex>
-                  </Flex>
-                </Box>
-              </Flex>
-            )}
+                  </Box>
+                </Flex>
+              </Box>
+            </Flex>
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
@@ -330,6 +338,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   ]
                 )
               ]}
+              banner={
+                hasPollEnded && tally ? (
+                  <WinningOptionText tally={tally} voteType={poll.voteType} />
+                ) : undefined
+              }
             />
           </Card>
         </div>

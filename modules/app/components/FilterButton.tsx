@@ -13,7 +13,7 @@ export default function FilterButton({
 }: Props): JSX.Element {
   return (
     <Menu>
-      <MenuButton sx={{ variant: 'buttons.outline' }} {...props}>
+      <MenuButton sx={{ variant: 'buttons.outline', lineHeight: 'inherit' }} {...props}>
         {name()}
         <Icon name="chevron_down" size={2} ml={2} />
       </MenuButton>
