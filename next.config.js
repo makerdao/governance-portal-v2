@@ -19,7 +19,7 @@ const moduleExports = {
   },
 
   // Opt-in SWC minification (next 12.0.2)
-  swcMinify: true,
+  // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
 
   webpack: (config, { isServer }) => {
     if (isServer) {
