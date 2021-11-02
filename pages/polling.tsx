@@ -35,6 +35,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { fetchJson } from 'lib/fetchJson';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   polls: Poll[];
@@ -135,9 +136,11 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Polling</title>
-      </Head>
+      <HeadComponent 
+        title="Polls"
+        description={`Last poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`} 
+      />
+
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}

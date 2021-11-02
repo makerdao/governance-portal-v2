@@ -29,6 +29,7 @@ import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   proposals: CMSProposal[];
@@ -51,9 +52,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
   return (
     <div>
-      <Head>
-        <title>Maker Governance Voting Portal</title>
-      </Head>
       <div
         sx={{
           top: 0,
