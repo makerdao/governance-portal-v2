@@ -33,8 +33,7 @@ export const getStatusText = ({
       ${
         SPELL_SCHEDULED_DATE_OVERRIDES[proposalAddress] ||
         formatDateWithTime(spellData.nextCastTime || spellData.eta)
-      }
-      .`;
+      }.`;
     }
   }
 
