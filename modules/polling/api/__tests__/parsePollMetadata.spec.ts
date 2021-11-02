@@ -37,7 +37,7 @@ describe('Parse poll metadata', () => {
       categories: ['a'],
       content: '',
       discussionLink: '',
-      endDate: new Date(2021, 10, 31),
+      endDate: new Date(2021, 11, 31),
       multiHash: '',
       options: {},
       pollId: 3,
@@ -65,21 +65,21 @@ describe('Parse poll metadata', () => {
     }
   ];
 
-  test('The first poll is the one ending sooner', () => {
+  test('The first poll is the one created sooner', () => {
     const results = sortPolls(polls);
 
-    expect(results[0].pollId).toEqual(2);
+    expect(results[0].pollId).toEqual(4);
   });
 
   test('The second poll is the one with the same date as 1 but different start date', () => {
     const results = sortPolls(polls);
 
-    expect(results[1].pollId).toEqual(1);
+    expect(results[1].pollId).toEqual(3);
   });
 
-  test('The 4 poll is the one ending later', () => {
+  test('The 4 poll is the one that ended first', () => {
     const results = sortPolls(polls);
 
-    expect(results[3].pollId).toEqual(4);
+    expect(results[3].pollId).toEqual(1);
   });
 });
