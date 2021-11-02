@@ -13,6 +13,7 @@ import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
@@ -38,6 +39,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
   proposal: Proposal;
@@ -50,17 +52,21 @@ const editMarkdown = content => {
 
 const ProposalTimingBanner = ({
   proposal,
-  spellData
+  spellData,
+  mkrOnHat
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
+  mkrOnHat?: CurrencyObject;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <Text sx={{ textAlign: 'center', px: [3, 4] }}>{getStatusText(proposal.address, spellData)}</Text>
+          <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+          </Text>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -81,6 +87,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   );
 
   const { data: votedProposals } = useVotedProposals();
+  const { data: mkrOnHat } = useMkrOnHat();
 
   const { data: comments, error: commentsError } = useSWR(
     `/api/executive/comments/list/${proposal.address}`,
@@ -209,7 +216,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   </div>,
                   commentsTab
                 ]}
-                banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
+                banner={
+                  <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                }
               ></Tabs>
             ) : (
               <Tabs

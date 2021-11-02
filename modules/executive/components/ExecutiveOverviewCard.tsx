@@ -16,17 +16,18 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 
 type Props = {
   proposal: Proposal;
-  spellData?: SpellData;
   isHat: boolean;
+  spellData?: SpellData;
 };
 
-export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...props }: Props): JSX.Element {
+export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-
   const account = useAccountsStore(state => state.currentAccount);
+  const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
   const { data: votedProposals } = useVotedProposals();
   const network = getNetwork();
@@ -177,7 +178,7 @@ export default function ExecutiveOverviewCard({ proposal, spellData, isHat, ...p
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
           <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
-            {getStatusText(proposal.address, spellData)}
+            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
           </Text>
         </Flex>
       </Card>
