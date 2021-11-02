@@ -1,7 +1,6 @@
 /** @jsx jsx */
 
 import { useMemo, useEffect, useState } from 'react';
-import Head from 'next/head';
 import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, Flex, jsx, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
