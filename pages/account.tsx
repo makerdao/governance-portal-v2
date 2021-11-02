@@ -14,7 +14,6 @@ import {
   jsx
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
