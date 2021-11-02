@@ -1,4 +1,5 @@
 import { formatDateWithTime } from 'lib/datetime';
+import { isBefore } from 'date-fns';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
 import { ZERO_ADDRESS } from 'stores/accounts';
@@ -11,6 +12,7 @@ export const getStatusText = (proposalAddress: string, spellData?: SpellData): s
     chief has been activated!`;
   }
 
+  // check if scheduled or has been executed
   if (spellData.hasBeenScheduled || spellData.dateExecuted) {
     if (typeof spellData.dateExecuted === 'string') {
       return `Passed on ${formatDateWithTime(spellData.datePassed)}. Executed on ${formatDateWithTime(
@@ -25,5 +27,15 @@ export const getStatusText = (proposalAddress: string, spellData?: SpellData): s
       .`;
     }
   }
+
+  // hasn't been scheduled or executed, check if expired
+  const isExpired = spellData.expiration ? isBefore(new Date(spellData.expiration), new Date()) : false;
+  if (isExpired) {
+    return `This proposal expired at ${formatDateWithTime(
+      spellData.expiration
+    )} and can no longer be exectuted.`;
+  }
+
+  // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet
   return 'This proposal has not yet passed and is not available for execution.';
 };
