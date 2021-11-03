@@ -12,7 +12,7 @@ import { initTestchainPolls } from 'lib/utils';
 import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { useHat } from 'lib/hooks';
+import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SystemStats from 'modules/home/components/SystemStats';
