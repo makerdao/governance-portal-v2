@@ -13,7 +13,7 @@ export function sortPolls(pollList: Poll[]): Poll[] {
     // Sort by more recent first if they end at the same time
     const sortedByStartDate = a.startDate.getTime() < b.startDate.getTime() ? 1 : -1;
 
-    return dateEndDiff < 0 ? -1 : dateEndDiff > 0 ? 1 : sortedByStartDate;
+    return dateEndDiff < 0 ? 1 : dateEndDiff > 0 ? -1 : sortedByStartDate;
   });
 }
 

@@ -1,11 +1,9 @@
-/** @jsx jsx */
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -43,6 +41,7 @@ import useUiFiltersStore from 'stores/uiFilters';
 import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -190,9 +189,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Executive Proposals</title>
-      </Head>
+      <HeadComponent title="Executive Proposals" />
+
       <Box sx={{ mt: ['-10px', '-25px'] }}>
         {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
           <>

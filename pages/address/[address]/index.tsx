@@ -1,10 +1,8 @@
-/** @jsx jsx */
 import { useEffect, useState } from 'react';
 import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import Head from 'next/head';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
@@ -20,6 +18,7 @@ import { useRouter } from 'next/router';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail } from 'modules/delegates/components';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();
@@ -31,9 +30,15 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - {addressInfo.isDelegate ? 'Delegate' : 'Address'} Information</title>
-      </Head>
+      <HeadComponent
+        title={`${
+          addressInfo.isDelegate ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'
+        } Information`}
+        description={`See all the voting activity of ${
+          addressInfo.delegateInfo?.name || addressInfo.address
+        } in Maker Governance. `}
+        image={addressInfo.delegateInfo?.picture}
+      />
 
       <SidebarLayout>
         <Stack gap={2}>

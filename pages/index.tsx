@@ -1,7 +1,4 @@
-/** @jsx jsx */
-
 import { useMemo, useEffect, useState } from 'react';
-import Head from 'next/head';
 import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, Flex, jsx, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
@@ -51,9 +48,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
   return (
     <div>
-      <Head>
-        <title>Maker Governance Voting Portal</title>
-      </Head>
       <div
         sx={{
           top: 0,

@@ -1,4 +1,3 @@
-/** @jsx jsx */
 // this component passes through to @reach/tooltip on desktop,
 // and on mobile, renders a button that opens a sheet
 

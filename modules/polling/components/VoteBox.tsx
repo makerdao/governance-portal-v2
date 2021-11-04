@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Box, Heading, Card, Text, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 

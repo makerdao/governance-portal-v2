@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';

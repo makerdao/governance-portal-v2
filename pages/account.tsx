@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import {
   Alert,
@@ -14,7 +13,6 @@ import {
   jsx
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
@@ -35,6 +33,7 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import { TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -77,9 +76,7 @@ const AccountPage = (): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Account</title>
-      </Head>
+      <HeadComponent title="Account" />
 
       <SidebarLayout>
         <Box>

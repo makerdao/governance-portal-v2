@@ -1,5 +1,3 @@
-/** @jsx jsx */
-
 import { Box, Text, jsx } from 'theme-ui';
 
 export function YesNoAbstainBar({

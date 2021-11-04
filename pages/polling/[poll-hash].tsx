@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
@@ -52,6 +51,7 @@ import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
@@ -135,6 +135,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         />
       )}
       <SidebarLayout>
+        <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />
+
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
@@ -404,6 +406,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pollExists = !!polls.find(poll => poll.slug === pollSlug);
   if (!pollExists) return { revalidate: 30, props: { poll: null } };
   const poll = await getPoll(pollSlug);
+  // TODO: Include tally in server data, this will lower the amount of request and will allow for better SEO
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds

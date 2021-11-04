@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { Heading, Box, Flex, jsx, Button, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -29,12 +28,12 @@ import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import Head from 'next/head';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { fetchJson } from 'lib/fetchJson';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   polls: Poll[];
@@ -61,9 +60,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
     ],
     shallow
   );
-
-  const hasFiltersEnabled =
-    startDate || endDate || Object.values(categoryFilter || {}).reduce((prev, next) => prev || next, false);
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -135,9 +131,11 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Polling</title>
-      </Head>
+      <HeadComponent
+        title="Polling"
+        description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
+      />
+
       {mobileVotingPoll && (
         <MobileVoteSheet
           account={account}

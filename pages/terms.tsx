@@ -2,6 +2,7 @@ import React from 'react';
 import { Flex, Text, Card, Heading } from 'theme-ui';
 import { markdownToHtml } from 'lib/utils';
 import { GetStaticProps } from 'next';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const terms = `
 #### 1. Acceptance of Terms
@@ -99,6 +100,8 @@ Intellectual Property Infringement: Engage in transactions involving items that 
 export default function Terms(props: { content: string }): JSX.Element {
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'center' }}>
+      <HeadComponent title="Terms" />
+
       <Heading as="h2" sx={{ textAlign: 'center' }}>
         Terms of Use
       </Heading>

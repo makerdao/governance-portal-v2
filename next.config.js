@@ -18,6 +18,9 @@ const moduleExports = {
     USE_PROD_SPOCK: process.env.USE_PROD_SPOCK // use production spock instance if true, otherwise use staging
   },
 
+  // Opt-in SWC minification (next 12.0.2)
+  // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
+
   webpack: (config, { isServer }) => {
     if (isServer) {
       process.env.USE_FS_CACHE = 1;
