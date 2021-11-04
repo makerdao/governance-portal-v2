@@ -23,7 +23,7 @@ import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
@@ -33,6 +33,8 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   const oneYear = 365 * oneDay;
   const oneMonth = 31 * oneDay;
   const oneWeek = 7 * oneDay;
+
+  const dateFormat = 'MM-dd-yyyy';
 
   const timeRanges = [
     {
@@ -76,17 +78,14 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
     return (
       <Box>
-        <Text as="p">{formatXAxis(monthMKR?.date)}</Text>
+        {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
         <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
         <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
       </Box>
     );
   }
 
-  const formatXAxis = tickItem => {
-    const d = moment(tickItem);
-    return d.format('DD-MM-YYYY');
-  };
+  const formatXAxis = tickItem => format(new Date(tickItem), dateFormat);
 
   return (
     <Box>
