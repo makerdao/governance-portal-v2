@@ -12,73 +12,73 @@ export function PollCategoryTag({
 }): React.ReactElement {
   const categories = {
     Collateral: {
-      color: '#D44C96',
-      background: '#FFF4FA'
+      color: 'tagColorOne',
+      backgroundColor: 'tagColorOneBg'
     },
     Oracles: {
-      color: '#8F2EC1',
-      background: '#FBF2FF'
+      color: 'tagColorTwo',
+      backgroundColor: 'tagColorTwoBg'
     },
     Governance: {
-      color: '#02CB9B',
-      background: '#EBFFFA'
+      color: 'tagColorThree',
+      backgroundColor: 'tagColorThreeBg'
     },
     'Risk Variable': {
-      color: '#FF4085',
-      background: '#FFF0F4'
+      color: 'tagColorFour',
+      backgroundColor: 'tagColorFourBg'
     },
     Risk: {
-      color: '#EF5277',
-      background: '#FEEEF2'
+      color: 'tagColorFive',
+      backgroundColor: 'tagColorFiveBg'
     },
     Technical: {
-      color: '#5D48FF',
-      background: '#F7F5FF'
+      color: 'tagColorSix',
+      backgroundColor: 'tagColorSixBg'
     },
     Other: {
-      color: '#7D8FAA',
-      background: '#F2F5FA'
+      color: 'tagColorSeven',
+      backgroundColor: 'tagColorSevenBg'
     },
     MIPs: {
-      color: '#00B5D3',
-      background: '#EEFAFC'
+      color: 'tagColorEight',
+      backgroundColor: 'tagColorEightBg'
     },
     Rates: {
-      color: '#34AAFF',
-      background: '#F1F9FF'
+      color: 'tagColorNine',
+      backgroundColor: 'tagColorNineBg'
     },
     Auctions: {
-      color: '#FF8237',
-      background: '#FFF5EF'
+      color: 'tagColorTen',
+      backgroundColor: 'tagColorTenBg'
     },
     Greenlight: {
-      color: '#1AAB9B',
-      background: '#EEFFFD'
+      color: 'tagColorEleven',
+      backgroundColor: 'tagColorElevenBg'
     },
     Transfer: {
-      color: '#635696',
-      background: '#F7F4FF'
+      color: 'tagColorTwelve',
+      backgroundColor: 'tagColorTwelveBg'
     },
     Budget: {
-      color: '#E7C200',
-      background: '#FFFBEF'
+      color: 'tagColorThirteen',
+      backgroundColor: 'tagColorThirteenBg'
     },
     'Core Unit': {
-      color: '#FF36C7',
-      background: '#FFF3F8'
+      color: 'tagColorFourteen',
+      backgroundColor: 'tagColorFourteenBg'
     },
     Test: {
-      color: '#FF8237',
-      background: '#FFFBEF'
+      color: 'tagColorFifteen',
+      backgroundColor: 'tagColorFifteenBg'
     },
     Offboard: {
-      color: '#FF8237',
-      background: '#FFFBEF'
+      color: 'tagColorSixteen',
+      backgroundColor: 'tagColorSixteenBg'
     }
   };
 
   const color = categories[category] ? categories[category].color : '#AD927D';
-  const background = categories[category] ? categories[category].background : '#FFF9F4';
+  const backgroundColor = categories[category] ? categories[category].backgroundColor : '#FFF9F4';
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
@@ -93,7 +93,7 @@ export function PollCategoryTag({
   return (
     <Box
       sx={{
-        background,
+        backgroundColor,
         borderRadius: '12px',
         padding: '4px 8px',
         display: 'flex',
