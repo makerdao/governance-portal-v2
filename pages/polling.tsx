@@ -61,8 +61,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
     shallow
   );
 
-  const hasFiltersEnabled =
-    startDate || endDate || Object.values(categoryFilter || {}).reduce((prev, next) => prev || next, false);
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -135,8 +133,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
-        title="Polls"
-        description={`Last poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
+        title="Polling"
+        description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
       />
 
       {mobileVotingPoll && (

@@ -26,7 +26,6 @@ import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   proposals: CMSProposal[];
