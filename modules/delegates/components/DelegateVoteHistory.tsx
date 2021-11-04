@@ -23,8 +23,8 @@ export function DelegateVoteHistory({ delegate, stats }: { stats: AddressAPIStat
         </Box>
 
         <Divider mt={3} mb={3} />
-      <PollVoteHistoryList votes={stats.pollVoteHistory} />
-      <DelegateMKRChart delegate={delegate} />
+        <PollVoteHistoryList votes={stats.pollVoteHistory} />
+        <DelegateMKRChart delegate={delegate} />
       </Box>
 
       <PollingParticipationOverview votes={stats.pollVoteHistory} />

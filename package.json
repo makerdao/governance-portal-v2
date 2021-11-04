@@ -16,8 +16,8 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
   },
   "dependencies": {
-    "@makerdao/dai-plugin-governance": "^0.14.7",
     "@makerdao/dai": "^0.32.15",
+    "@makerdao/dai-plugin-governance": "^0.14.7",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.6.36",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",
@@ -50,6 +50,7 @@
     "lodash": "^4.7.0",
     "lottie-web": "^5.7.1",
     "mixpanel-browser": "^2.39.0",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.2",
     "next": "^11.1.2",
     "react": "^17.0.2",
