@@ -9,16 +9,16 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/delegates/types';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import ResourceBox from 'components/ResourceBox';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { getNetwork } from 'lib/maker';
-import { fetchJson } from 'lib/utils';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { fetchJson } from 'lib/fetchJson';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
@@ -137,7 +137,8 @@ const Delegates = ({ delegates, stats }: Props) => {
             </Card>
           </Box>
           {stats && <DelegatesSystemInfo stats={stats} />}
-          <ResourceBox />
+          <ResourceBox type={'delegates'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

@@ -20,9 +20,9 @@ export const getLibrary = (provider, connector) => ({ provider, connector });
 
 const POLLING_INTERVAL = 12000;
 
-export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'WalletLink' | 'Trezor' | 'Ledger';
+export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'Coinbase Wallet' | 'Trezor' | 'Ledger';
 
-export const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 42, 999] });
+export const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 5, 42, 999] });
 
 export const connectors: Array<[ConnectorName, AbstractConnector]> = [
   ['MetaMask', injectedConnector],
@@ -36,7 +36,7 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
     })
   ],
   [
-    'WalletLink',
+    'Coinbase Wallet',
     new WalletLinkConnector({
       url: networkToRpc(SupportedNetworks.MAINNET, 'infura'),
       appName: 'vote.makerdao.com'

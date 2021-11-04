@@ -23,16 +23,17 @@ import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { cutMiddle } from 'lib/string';
 import { useLockedMkr } from 'lib/hooks';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
 import { TxDisplay } from 'modules/delegates/components';
-import Withdraw from 'components/executive/Withdraw';
+import Withdraw from 'modules/mkr/components/Withdraw';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -101,7 +102,11 @@ const AccountPage = (): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
                     target="_blank"
                   >
-                    <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
+                    <Text as="p">
+                      {bpi > 0
+                        ? voteDelegate.getVoteDelegateAddress()
+                        : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
+                    </Text>
                   </ExternalLink>
                   {delegatedMkr && (
                     <>
@@ -199,7 +204,8 @@ const AccountPage = (): JSX.Element => {
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
-          <ResourceBox />
+          <ResourceBox type={'delegates'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

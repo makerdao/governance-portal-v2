@@ -17,7 +17,7 @@ export function DelegateCredentials({ delegate }: { delegate: Delegate }): React
         {delegate.externalUrl && (
           <Box sx={{ mt: 2 }}>
             <ExternalLink title="See external profile" href={delegate.externalUrl} target="_blank">
-              <Text sx={{ fontSize: [1,3] }}>
+              <Text sx={{ fontSize: [1, 3] }}>
                 See external profile
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>

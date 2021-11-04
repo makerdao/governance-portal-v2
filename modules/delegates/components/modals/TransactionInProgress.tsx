@@ -1,5 +1,5 @@
 import { Flex, Text, Box } from '@theme-ui/components';
-import TxIndicators from 'components/TxIndicators';
+import TxIndicators from 'modules/app/components/TxIndicators';
 
 type Props = {
   txPending: boolean;

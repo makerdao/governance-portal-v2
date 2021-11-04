@@ -13,12 +13,12 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
     page: 'governance/delegates'
   };
 
-  const repoKovan = {
+  const repoTest = {
     owner: 'makerdao-dux',
     repo: 'voting-delegates',
     page: 'delegates'
   };
 
-  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoKovan;
+  const delegatesRepositoryInfo = network === SupportedNetworks.MAINNET ? repoMainnet : repoTest;
   return delegatesRepositoryInfo;
 }

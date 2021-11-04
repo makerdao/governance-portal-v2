@@ -8,18 +8,18 @@ import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
-import Header from 'components/Header';
+import Header from 'modules/app/components/layout/Header';
 import Head from 'next/head';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
 
 import { config } from '../lib/config';
-import { useAccountChange } from 'lib/web3/hooks/useAccountChange';
-import Cookies from 'components/Cookies';
-import { AnalyticsProvider } from 'lib/client/analytics/AnalyticsContext';
-import { CookiesProvider } from 'lib/client/cookies/CookiesContext';
+import { useAccountChange } from 'modules/web3/hooks/useAccountChange';
+import Cookies from 'modules/app/components/Cookies';
+import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
+import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 
 export const reportWebVitals = vitalslog;
 

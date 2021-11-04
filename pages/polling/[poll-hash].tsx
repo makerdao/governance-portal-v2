@@ -23,44 +23,39 @@ import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
+import { formatDateWithTime } from 'lib/datetime';
 
 // api
-import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polls/types';
-import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
+import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
+import { Poll, PollTally } from 'modules/polling/types';
+import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 // stores
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 
 // components
-import Skeleton from 'components/SkeletonThemed';
-import CountdownTimer from 'components/CountdownTimer';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
-import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
-import VoteBox from 'modules/polls/components/VoteBox';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
-import PollOptionBadge from 'components/PollOptionBadge';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import VotesByAddress from 'modules/polls/components/VotesByAddress';
-
-// if the poll has ended, always fetch its tally from the server's cache
-const getURL = poll =>
-  new Date(poll.endDate).getTime() < new Date().getTime()
-    ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
-    : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`;
+import Skeleton from 'modules/app/components/SkeletonThemed';
+import CountdownTimer from 'modules/app/components/CountdownTimer';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
+import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
+import VoteBox from 'modules/polling/components/VoteBox';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import PollOptionBadge from 'modules/polling/components/PollOptionBadge';
+import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
+import VotesByAddress from 'modules/polling/components/VotesByAddress';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
-    mutate(getURL(poll), tallyPromise, false);
+    const tallyPromise = fetchJson(getPollApiUrl(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
+    mutate(getPollApiUrl(poll), tallyPromise, false);
   }
 }
 
@@ -79,18 +74,18 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
-    getURL(poll),
+    getPollApiUrl(poll),
     async url => parseRawPollTally(await fetchJson(url), poll),
     { refreshInterval: 30000 }
   );
 
-  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightVisual'), {
+  const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
   });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
     } else {
       _setPolls(prefetchedPolls);
     }
@@ -177,15 +172,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         color: 'textSecondary'
                       }}
                     >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
+                      Posted {formatDateWithTime(poll.startDate)}
                     </Text>
                     <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
                   </Flex>
@@ -216,15 +203,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         color: 'textSecondary'
                       }}
                     >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
+                      Posted {formatDateWithTime(poll.startDate)}
                     </Text>
                   </Flex>
                   <Flex sx={{ justifyContent: 'space-between' }}>
@@ -325,12 +304,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally && tally.votesByAddress ? (
-                        <VotesByAddress
-                          votes={tally.votesByAddress}
-                          totalMkrParticipation={tally.totalMkrParticipation}
-                          poll={poll}
-                        />
+                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                        <VotesByAddress tally={tally} poll={poll} />
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>
@@ -363,7 +338,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
-          <ResourceBox />
+          <ResourceBox type={'polling'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

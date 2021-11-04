@@ -10,30 +10,31 @@ import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
-import { Poll, PollCategory } from 'modules/polls/types';
+import { Poll, PollCategory } from 'modules/polling/types';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
-import { formatDateWithTime } from 'lib/utils';
-import { isActivePoll } from 'modules/polls/helpers/utils';
-import { getCategories } from 'modules/polls/helpers/getCategories';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import PollOverviewCard from 'components/polling/PollOverviewCard';
-import DateFilter from 'components/polling/DateFilter';
-import CategoryFilter from 'components/polling/CategoryFilter';
-import BallotBox from 'components/polling/BallotBox';
-import ResourceBox from 'components/ResourceBox';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
+import { formatDateWithTime } from 'lib/datetime';
+import { isActivePoll } from 'modules/polling/helpers/utils';
+import { getCategories } from 'modules/polling/helpers/getCategories';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
+import DateFilter from 'modules/polling/components/DateFilter';
+import CategoryFilter from 'modules/polling/components/CategoryFilter';
+import BallotBox from 'modules/polling/components/BallotBox';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import useBallotStore from 'stores/ballot';
 import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import BallotStatus from 'components/polling/BallotStatus';
+import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
+import BallotStatus from 'modules/polling/components/BallotStatus';
 import Head from 'next/head';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import { getPolls } from 'modules/polls/api/fetchPolls';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { getPolls } from 'modules/polling/api/fetchPolls';
+import { fetchJson } from 'lib/fetchJson';
 
 type Props = {
   polls: Poll[];
@@ -271,7 +272,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
             <SystemStatsSidebar
               fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
             />
-            <ResourceBox />
+            <ResourceBox type={'polling'} />
+            <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
       </Stack>
@@ -290,7 +292,7 @@ export default function PollingOverviewPage({
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls()
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
         .then(polls => {
           _setPolls(polls);
           _setCategories(getCategories(polls));

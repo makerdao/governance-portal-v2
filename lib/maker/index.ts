@@ -17,6 +17,8 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
     case 1:
       return SupportedNetworks.MAINNET;
+    case 5:
+      return SupportedNetworks.GOERLI;
     case 42:
       return SupportedNetworks.KOVAN;
     case 999:
@@ -44,6 +46,8 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('kovan')) {
       return SupportedNetworks.KOVAN;
+    } else if (window.location.search.includes('goerli')) {
+      return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
       return SupportedNetworks.TESTNET;
     }
@@ -65,12 +69,14 @@ function determineNetwork(): SupportedNetworks {
 type MakerSingletons = {
   [SupportedNetworks.MAINNET]: null | Promise<Maker>;
   [SupportedNetworks.KOVAN]: null | Promise<Maker>;
+  [SupportedNetworks.GOERLI]: null | Promise<Maker>;
   [SupportedNetworks.TESTNET]: null | Promise<Maker>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
   [SupportedNetworks.KOVAN]: null,
+  [SupportedNetworks.GOERLI]: null,
   [SupportedNetworks.TESTNET]: null
 };
 
@@ -112,7 +118,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK;
+  return getNetwork() === DEFAULT_NETWORK || isTestnet();
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

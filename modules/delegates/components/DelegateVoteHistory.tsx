@@ -1,21 +1,33 @@
-import { PollVoteHistoryList } from 'modules/polls/components/PollVoteHistoryList';
+import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { Box, Divider, Text } from 'theme-ui';
 import { Delegate } from '../types';
 import { DelegateMKRChart } from './DelegateMKRChart';
+import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 
-export function DelegateVoteHistory({ delegate, stats }: { delegate: Delegate, stats: AddressAPIStats}): React.ReactElement {
+export function DelegateVoteHistory({ delegate, stats }: { stats: AddressAPIStats }): React.ReactElement {
   return (
-    <Box p={[3,4]}>
-      <Text as="p" sx={{
-        fontSize: 4,
-        fontWeight: 'semiBold'
-      }}>Polling Proposals</Text>
+    <Box>
+      <Box>
+        <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+          <Text
+            as="p"
+            sx={{
+              fontSize: 4,
+              fontWeight: 'semiBold'
+            }}
+          >
+            Polling Proposals
+          </Text>
+          <Divider mt={3} />
+        </Box>
 
-      <Divider mt={3} mb={3} />
+        <Divider mt={3} mb={3} />
       <PollVoteHistoryList votes={stats.pollVoteHistory} />
       <DelegateMKRChart delegate={delegate} />
-      
+      </Box>
+
+      <PollingParticipationOverview votes={stats.pollVoteHistory} />
     </Box>
   );
 }

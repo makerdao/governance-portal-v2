@@ -2,7 +2,7 @@ import create from 'zustand';
 import getMaker from 'lib/maker';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { getNetwork } from 'lib/maker';
-import { oldVoteProxyFactoryAddress } from 'lib/constants';
+import { oldVoteProxyFactoryAddress, SupportedNetworks } from 'lib/constants';
 import { Account } from 'types/account';
 import { OldVoteProxyContract, VoteProxyContract } from 'types/voteProxyContract';
 import { VoteDelegateContract } from 'types/voteDelegateContract';
@@ -20,15 +20,22 @@ type Store = {
 };
 
 const getOldProxyStatus = async (address, maker) => {
-  const oldFactory = maker
-    .service('smartContract')
-    .getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
-  const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-    oldFactory.coldMap(address),
-    oldFactory.hotMap(address)
-  ]);
-  if (proxyAddressCold !== ZERO_ADDRESS) return { role: 'cold', address: proxyAddressCold };
-  if (proxyAddressHot !== ZERO_ADDRESS) return { role: 'hot', address: proxyAddressHot };
+  if (getNetwork() === SupportedNetworks.GOERLI) {
+    return { role: '', address: '' };
+  }
+  try {
+    const oldFactory = maker
+      .service('smartContract')
+      .getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
+    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
+      oldFactory.coldMap(address),
+      oldFactory.hotMap(address)
+    ]);
+    if (proxyAddressCold !== ZERO_ADDRESS) return { role: 'cold', address: proxyAddressCold };
+    if (proxyAddressHot !== ZERO_ADDRESS) return { role: 'hot', address: proxyAddressHot };
+  } catch (err) {
+    console.log(err);
+  }
   return { role: '', address: '' };
 };
 

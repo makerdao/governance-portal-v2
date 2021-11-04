@@ -2,29 +2,15 @@
 import BigNumber from 'bignumber.js';
 import { useMkrDelegated } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
-import { Box, Flex, Text, jsx } from 'theme-ui';
-import { Delegate } from '../types';
+import { Flex, jsx } from 'theme-ui';
+import { Delegate } from 'modules/delegates/types';
+import { StatBox } from 'modules/app/components/StatBox';
 
 export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }): React.ReactElement {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
-
-  const styles = {
-    row: {
-      m: 1
-    },
-    text: {
-      color: 'secondaryAlt',
-      fontWeight: 'semiBold',
-      fontSize: 5
-    },
-    subtext: {
-      color: 'secondaryEmphasis',
-      fontSize: 3
-    }
-  };
 
   return (
     <Flex
@@ -36,33 +22,16 @@ export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }):
         marginBottom: 1
       }}
     >
-      <Box sx={styles.row} mr={2}>
-        <Text as="p" sx={styles.text}>
-          {new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}
-        </Text>
-        <Text as="p" sx={styles.subtext}>
-          Total MKR Delegated
-        </Text>
-      </Box>
-
+      <StatBox
+        value={new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}
+        label={'Total MKR Delegated'}
+      />
       {/* TODO add once we have data */}
-      {/* <Box sx={styles.row} ml={2} mr={2}>
-        <Text as="p" sx={styles.text}>
-          TBD
-        </Text>
-        <Text as="p" sx={styles.subtext}>
-          MKR Holders represented
-        </Text>
-      </Box> */}
-
-      <Box sx={styles.row} ml={2}>
-        <Text as="p" sx={styles.text}>
-          {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
-        </Text>
-        <Text as="p" sx={styles.subtext}>
-          MKR Delegated by you
-        </Text>
-      </Box>
+      {/* <StatBox value={'TBD'} label={'MKR Holders represented'} /> */}
+      <StatBox
+        value={mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+        label={'MKR Delegated by you'}
+      />
     </Flex>
   );
 }

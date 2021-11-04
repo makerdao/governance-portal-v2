@@ -1,5 +1,5 @@
 export type PaginationOptions = {
-  page: number,
-  pageSize: number,
-  limit: number
-}
+  page: number;
+  pageSize: number;
+  limit: number;
+};
