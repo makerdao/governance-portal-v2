@@ -16,8 +16,8 @@ export function HeadComponent({
   const dev = config.NODE_ENV === 'development';
 
   const defaultDescription =
-    'MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community.';
-  const defaultTitle = 'Voting Portal';
+    'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote.';
+  const defaultTitle = 'Governance Portal';
 
   const renderedTitle = title || defaultTitle;
   const renderedDescription = description || defaultDescription;

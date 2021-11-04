@@ -61,7 +61,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
     shallow
   );
 
-
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
