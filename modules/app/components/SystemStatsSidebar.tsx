@@ -6,6 +6,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 
 import Stack from './layout/layouts/Stack';
 import getMaker, { DAI, getNetwork } from 'lib/maker';
+import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { bigNumberKFormat, formatAddress, getEtherscanLink } from 'lib/utils';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'types/currency';
@@ -34,6 +35,7 @@ if (typeof window !== 'undefined') {
 
 type StatField =
   | 'chief contract'
+  | 'mkr in chief'
   | 'polling contract'
   | 'mkr needed to pass'
   | 'savings rate'
@@ -52,9 +54,13 @@ export default function SystemStatsSidebar({
     '/system-stats-sidebar',
     getSystemStats
   );
+
   const { data: chiefAddress } = useSWR<string>('/chief-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('MCD_ADM').address)
   );
+
+  const { data: chiefBalance } = useMkrBalance(chiefAddress);
+
   const { data: pollingAddress } = useSWR<string>('/polling-address', () =>
     getMaker().then(maker => maker.service('smartContract').getContract('POLLING').address)
   );
@@ -70,6 +76,21 @@ export default function SystemStatsSidebar({
             <ExternalLink href={getEtherscanLink(getNetwork(), chiefAddress, 'address')} target="_blank">
               <Text>{formatAddress(chiefAddress)}</Text>
             </ExternalLink>
+          ) : (
+            <Box sx={{ width: 6 }}>
+              <Skeleton />
+            </Box>
+          )}
+        </Text>
+      </Flex>
+    ),
+
+    'mkr in chief': key => (
+      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
+        <Text variant="h2" sx={{ fontSize: 3 }}>
+          {chiefBalance ? (
+            `${chiefBalance.toBigNumber().toFormat(2)} MKR`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />

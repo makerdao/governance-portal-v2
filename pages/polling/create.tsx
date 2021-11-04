@@ -201,7 +201,14 @@ const PollingCreate = (): React.ReactElement => {
           {bpi >= 3 && (
             <Stack gap={3}>
               <SystemStatsSidebar
-                fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+                fields={[
+                  'chief contract',
+                  'mkr in chief',
+                  'mkr needed to pass',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling'
+                ]}
               />
               <MkrLiquiditySidebar />
               <ResourceBox type={'general'} />
