@@ -4,7 +4,19 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ThemeUILink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
@@ -14,6 +26,7 @@ import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
@@ -88,6 +101,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const { data: votedProposals } = useVotedProposals();
   const { data: mkrOnHat } = useMkrOnHat();
+  const { data: hat } = useHat();
+  const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
   const { data: comments, error: commentsError } = useSWR(
     `/api/executive/comments/list/${proposal.address}`,
@@ -168,6 +183,20 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
+            {isHat && proposal.address !== ZERO_ADDRESS ? (
+              <Badge
+                variant="primary"
+                sx={{
+                  my: 2,
+                  ml: [3, 4],
+                  borderColor: 'primaryAlt',
+                  color: 'primaryAlt',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Governing proposal
+              </Badge>
+            ) : null}
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
