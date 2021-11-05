@@ -26,17 +26,43 @@ export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   const dev = config.NODE_ENV === 'development';
+
   // Initialize global hooks
   useAccountChange();
 
+  const defaultDescription =
+    'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote.';
+  const defaultTitle = 'Governance Portal';
+
   return (
     <ThemeProvider theme={theme}>
-      <HeadComponent />
       <Head>
+        <title>Maker Governance - {defaultTitle}</title>
+        <meta name="description" content={defaultDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta property="og:title" content={defaultTitle} />
+        <meta property="og:description" content={defaultDescription} />
+
+        <meta name="twitter:title" content={defaultTitle} />
+        <meta name="twitter:description" content={defaultDescription} />
+        <meta name="twitter:card" content="summary_large_image"></meta>
         <meta
-          content={`script-src 'self' ${
-            dev ? "'unsafe-eval'" : ''
-          } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';`}
+          httpEquiv="Content-Security-Policy"
+          content={
+            "default-src 'none';" +
+            'frame-src https://connect.trezor.io;' +
+            "font-src 'self';" +
+            "connect-src 'self' https: wss:;" +
+            "style-src 'self' 'unsafe-inline';" +
+            `script-src 'self' ${
+              dev ? "'unsafe-eval'" : ''
+            } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
+            "img-src 'self' https: data:"
+          }
+        />
+        <meta
+          name="description"
+          content="MakerDAO stakeholders use the Voting Portal to vote on the blockchain. Voting occurs frequently, requiring an active, well-informed governance community."
         />
       </Head>
       <CookiesProvider disabled={false}>
