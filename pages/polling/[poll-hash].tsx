@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useEffect, useState } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import Link from 'next/link';
@@ -23,50 +22,71 @@ import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { fetchJson } from 'lib/utils';
+import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll } from 'modules/polls/helpers/utils';
+import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
+import { formatDateWithTime } from 'lib/datetime';
 
 // api
-import { getPolls, getPoll } from 'modules/polls/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polls/types';
-import { parseRawPollTally } from 'modules/polls/helpers/parseRawTally';
+import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
+import { Poll, PollTally } from 'modules/polling/types';
+import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 // stores
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 
 // components
-import Skeleton from 'components/SkeletonThemed';
-import CountdownTimer from 'components/CountdownTimer';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
-import VoteBreakdown from 'modules/polls/components/VoteBreakdown';
-import VoteBox from 'modules/polls/components/VoteBox';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
-import PollOptionBadge from 'components/PollOptionBadge';
-import MobileVoteSheet from 'components/polling/MobileVoteSheet';
-import VotesByAddress from 'modules/polls/components/VotesByAddress';
-
-// if the poll has ended, always fetch its tally from the server's cache
-const getURL = poll =>
-  new Date(poll.endDate).getTime() < new Date().getTime()
-    ? `/api/polling/tally/cache-no-revalidate/${poll.pollId}?network=${getNetwork()}`
-    : `/api/polling/tally/${poll.pollId}?network=${getNetwork()}`;
+import Skeleton from 'modules/app/components/SkeletonThemed';
+import CountdownTimer from 'modules/app/components/CountdownTimer';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
+import VoteBreakdown from 'modules/polling/components/VoteBreakdown';
+import VoteBox from 'modules/polling/components/VoteBox';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
+import VotesByAddress from 'modules/polling/components/VotesByAddress';
+import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getURL(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
-    mutate(getURL(poll), tallyPromise, false);
+    const tallyPromise = fetchJson(getPollApiUrl(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
+    mutate(getPollApiUrl(poll), tallyPromise, false);
   }
 }
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
+};
+
+const WinningOptionText = ({
+  tally,
+  voteType
+}: {
+  tally: PollTally;
+  voteType: string;
+}): JSX.Element | null => {
+  if (!tally.winner) return null;
+  return (
+    <>
+      <Divider my={1} />
+      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+          Winning Option:{' '}
+          <Text sx={{ color: getVoteColor(parseInt(tally.winner), voteType) }}>
+            {tally.winningOptionName}
+          </Text>
+        </Text>
+      </Flex>
+      <Divider sx={{ mt: 1 }} />
+    </>
+  );
 };
 
 const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
@@ -79,18 +99,18 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
-    getURL(poll),
+    getPollApiUrl(poll),
     async url => parseRawPollTally(await fetchJson(url), poll),
     { refreshInterval: 30000 }
   );
 
-  const VotingWeightComponent = dynamic(() => import('../../modules/polls/components/VoteWeightVisual'), {
+  const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
   });
 
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getPolls().then(_setPolls);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
     } else {
       _setPolls(prefetchedPolls);
     }
@@ -115,6 +135,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         />
       )}
       <SidebarLayout>
+        <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />
+
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Link href={{ pathname: '/polling', query: { network } }}>
@@ -166,72 +188,48 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
             </Flex>
           </Flex>
           <Card sx={{ p: [0, 0] }}>
-            {bpi < 1 ? (
-              <Flex sx={{ flexDirection: 'column', p: [3, 4] }}>
-                <Box>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text
-                      variant="text.caps"
-                      sx={{
-                        fontSize: 1,
-                        color: 'textSecondary'
-                      }}
-                    >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
-                    </Text>
-                    <CountdownTimer key={poll.multiHash} endText="Poll ended" endDate={poll.endDate} />
-                  </Flex>
-                  <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                    {poll.title}
-                  </Heading>
-                  {poll.discussionLink && (
-                    <Box sx={{ mb: 2 }}>
-                      <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                        <Text sx={{ fontSize: 2, fontWeight: 'semiBold' }}>
-                          Discussion
-                          <Icon ml={2} name="arrowTopRight" size={2} />
-                        </Text>
-                      </ExternalLink>
-                    </Box>
-                  )}
-                  <PollOptionBadge poll={poll} sx={{ my: 2, width: '100%', textAlign: 'center' }} />
-                </Box>
-              </Flex>
-            ) : (
-              <Flex sx={{ flexDirection: 'column', px: [3, 4], py: 3 }}>
-                <Box>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text
-                      variant="caps"
-                      sx={{
-                        fontSize: [1],
-                        color: 'textSecondary'
-                      }}
-                    >
-                      Posted{' '}
-                      {new Date(poll.startDate).toLocaleString('default', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        timeZone: 'UTC',
-                        timeZoneName: 'short'
-                      })}
-                    </Text>
-                  </Flex>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Flex sx={{ flexDirection: 'column' }}>
-                      <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                        {poll.title}
-                      </Heading>
+            <Flex sx={{ flexDirection: 'column', px: [3, 4], pt: [3, 4] }}>
+              <Box>
+                <Flex sx={{ justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
+                  <Text
+                    variant="caps"
+                    sx={{
+                      fontSize: [1],
+                      color: 'textSecondary'
+                    }}
+                  >
+                    Posted {formatDateWithTime(poll.startDate)}
+                  </Text>
+
+                  <CountdownTimer
+                    key={poll.multiHash}
+                    endText="Poll ended"
+                    endDate={poll.endDate}
+                    sx={{ ml: [0, 'auto'] }}
+                  />
+                </Flex>
+                <Flex
+                  sx={{
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                    mb: 2,
+                    flexDirection: ['column', 'row']
+                  }}
+                >
+                  <Box>
+                    <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
+                      {poll.title}
+                    </Heading>
+
+                    <Flex sx={{ mt: 3, mb: 3 }}>
+                      {poll.categories.map(c => (
+                        <Box key={c} sx={{ marginRight: 2 }}>
+                          <PollCategoryTag category={c} />
+                        </Box>
+                      ))}
+                    </Flex>
+
+                    <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
                       {poll.discussionLink && (
                         <Box>
                           <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
@@ -243,19 +241,10 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                         </Box>
                       )}
                     </Flex>
-                    <Flex sx={{ flexDirection: 'column', minWidth: 7, justifyContent: 'space-between' }}>
-                      <CountdownTimer
-                        key={poll.multiHash}
-                        endText="Poll ended"
-                        endDate={poll.endDate}
-                        sx={{ ml: 'auto' }}
-                      />
-                      {hasPollEnded ? <PollOptionBadge poll={poll} sx={{ ml: 'auto' }} /> : null}
-                    </Flex>
-                  </Flex>
-                </Box>
-              </Flex>
-            )}
+                  </Box>
+                </Flex>
+              </Box>
+            </Flex>
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
@@ -325,12 +314,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tally && tally.votesByAddress ? (
-                        <VotesByAddress
-                          votes={tally.votesByAddress}
-                          totalMkrParticipation={tally.totalMkrParticipation}
-                          poll={poll}
-                        />
+                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                        <VotesByAddress tally={tally} poll={poll} />
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>
@@ -355,6 +340,11 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                   ]
                 )
               ]}
+              banner={
+                hasPollEnded && tally ? (
+                  <WinningOptionText tally={tally} voteType={poll.voteType} />
+                ) : undefined
+              }
             />
           </Card>
         </div>
@@ -363,7 +353,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
-          <ResourceBox />
+          <ResourceBox type={'polling'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
@@ -415,6 +406,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pollExists = !!polls.find(poll => poll.slug === pollSlug);
   if (!pollExists) return { revalidate: 30, props: { poll: null } };
   const poll = await getPoll(pollSlug);
+  // TODO: Include tally in server data, this will lower the amount of request and will allow for better SEO
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds

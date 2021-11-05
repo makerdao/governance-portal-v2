@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -11,13 +10,13 @@ import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { Delegate } from '../../types';
-import { BoxWithClose } from 'components/BoxWithClose';
+import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
 import { ApprovalContent } from './Approval';
 import { TxDisplay } from './TxDisplay';
 import { ConfirmContent } from './Confirm';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 type Props = {
   isOpen: boolean;
@@ -132,6 +131,7 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
                           balance={mkrBalance?.toBigNumber()}
                           buttonLabel="Delegate MKR"
                           onClick={() => setConfirmStep(true)}
+                          showAlert={true}
                         />
                       )
                     ) : (

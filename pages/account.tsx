@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import {
   Alert,
@@ -14,7 +13,6 @@ import {
   jsx
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
@@ -23,16 +21,19 @@ import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
+import { cutMiddle } from 'lib/string';
 import { useLockedMkr } from 'lib/hooks';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import ResourceBox from 'components/ResourceBox';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
 import { TxDisplay } from 'modules/delegates/components';
-import Withdraw from 'components/executive/Withdraw';
+import Withdraw from 'modules/mkr/components/Withdraw';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -75,9 +76,7 @@ const AccountPage = (): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Account</title>
-      </Head>
+      <HeadComponent title="Account" />
 
       <SidebarLayout>
         <Box>
@@ -101,8 +100,25 @@ const AccountPage = (): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
                     target="_blank"
                   >
-                    <Text as="p">{voteDelegate.getVoteDelegateAddress()}</Text>
+                    <Text as="p">
+                      {bpi > 0
+                        ? voteDelegate.getVoteDelegateAddress()
+                        : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
+                    </Text>
                   </ExternalLink>
+
+                  <ExternalLink
+                    title="How can I verify my delegate contract?"
+                    href={
+                      'https://dux.makerdao.network/Verifying-a-delegate-contract-on-Etherscan-df677c604ac94911ae071fedc6a98ed2'
+                    }
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ display: 'flex', mt: 2, alignItems: 'center' }}>
+                      How can I verify my delegate contract? <Icon name="arrowTopRight" size={2} ml={2} />
+                    </Text>
+                  </ExternalLink>
+
                   {delegatedMkr && (
                     <>
                       <Text as="p" sx={{ mt: 3 }}>
@@ -199,7 +215,8 @@ const AccountPage = (): JSX.Element => {
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />
-          <ResourceBox />
+          <ResourceBox type={'delegates'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

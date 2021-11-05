@@ -1,50 +1,51 @@
-/** @jsx jsx */
-
 import { Delegate } from '../types';
-import { Box, Text, jsx } from 'theme-ui';
+import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
-import Icon from 'components/Icon';
-import moment from 'moment';
+import { formatDateWithTime } from 'lib/datetime';
+import Icon from 'modules/app/components/Icon';
 
-export function DelegateLastVoted({ delegate }: { delegate: Delegate }): React.ReactElement {
+export function DelegateLastVoted({
+  delegate,
+  date
+}: {
+  delegate: Delegate;
+  date?: string;
+}): React.ReactElement {
   const styles = {
-    itemWrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      mb: 1
-    },
-    dateIcon: {
-      display: 'flex',
-      alignContent: 'center',
-      marginRight: 1
-    },
-
     expiredCalendar: {
-      fill: 'primary',
-      stroke: 'primary'
-    },
-
-    activeCalendar: {
       fill: '#D8E0E3',
       stroke: '#D8E0E3'
+    },
+    activeCalendar: {
+      fill: 'primary',
+      stroke: 'primary'
     }
   };
 
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const lastVoteDate = moment(delegate.lastVote);
+  const lastVoteDate = date ? `LAST VOTED ${formatDateWithTime(date)}` : 'NO VOTE HISTORY';
 
   return (
-    <Box sx={styles.itemWrapper}>
-      <Box sx={styles.dateIcon}>
-        <Icon name="calendar" sx={delegate.expired ? styles.expiredCalendar : styles.activeCalendar} />
-      </Box>
+    <Flex
+      sx={{
+        mb: 1,
+        flexDirection: ['row-reverse', 'row']
+      }}
+    >
       <Text
         variant="secondary"
         color={delegate.expired ? '#D8E0E3' : 'onSecondary'}
-        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', ml: 1 }}
+        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
       >
-        LAST VOTED {lastVoteDate.format(dateFormat)}
+        {lastVoteDate}
       </Text>
-    </Box>
+      <Flex
+        sx={{
+          alignContent: 'center',
+          mr: 1
+        }}
+      >
+        <Icon name="calendar" sx={delegate.expired ? styles.expiredCalendar : styles.activeCalendar} />
+      </Flex>
+    </Flex>
   );
 }

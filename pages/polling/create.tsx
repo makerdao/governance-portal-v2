@@ -1,25 +1,24 @@
-/** @jsx jsx */
 import React, { useState } from 'react';
 import { Heading, Text, Box, jsx, Button, Flex, Input, Label, Link as ExternalLink } from 'theme-ui';
-import Head from 'next/head';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
-import PollCreateModal from 'components/PollCreateModal';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
-import ResourceBox from 'components/ResourceBox';
-import { validateUrl } from 'modules/polls/helpers/validator';
-import { Poll } from 'modules/polls/types';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
+import PollCreateModal from 'modules/polling/components/PollCreateModal';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import { validateUrl } from 'modules/polling/helpers/validator';
+import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
-import { formatDateWithTime } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/utils';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -97,9 +96,8 @@ const PollingCreate = (): React.ReactElement => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      <Head>
-        <title>Maker Governance - Create Poll</title>
-      </Head>
+      <HeadComponent title="Create Poll" />
+
       <Stack gap={3}>
         <Heading mb={2} as="h4">
           Create Poll
@@ -204,7 +202,7 @@ const PollingCreate = (): React.ReactElement => {
                 fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
               />
               <MkrLiquiditySidebar />
-              <ResourceBox />
+              <ResourceBox type={'general'} />
             </Stack>
           )}
         </SidebarLayout>

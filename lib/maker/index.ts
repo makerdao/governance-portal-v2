@@ -8,15 +8,18 @@ import { Web3ReactPlugin } from './web3react';
 import { SupportedNetworks, DEFAULT_NETWORK } from '../constants';
 import { networkToRpc } from './network';
 import { config } from '../config';
+import { MakerClass } from '@makerdao/dai/dist/Maker';
 
-export const ETH = Maker.ETH;
-export const USD = Maker.USD;
+export const ETH = Maker.currencies.ETH;
+export const USD = Maker.currencies.USD;
 export { MKR };
 
 function chainIdToNetworkName(chainId: number): SupportedNetworks {
   switch (chainId) {
     case 1:
       return SupportedNetworks.MAINNET;
+    case 5:
+      return SupportedNetworks.GOERLI;
     case 42:
       return SupportedNetworks.KOVAN;
     case 999:
@@ -44,6 +47,8 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('kovan')) {
       return SupportedNetworks.KOVAN;
+    } else if (window.location.search.includes('goerli')) {
+      return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
       return SupportedNetworks.TESTNET;
     }
@@ -63,18 +68,20 @@ function determineNetwork(): SupportedNetworks {
 }
 
 type MakerSingletons = {
-  [SupportedNetworks.MAINNET]: null | Promise<Maker>;
-  [SupportedNetworks.KOVAN]: null | Promise<Maker>;
-  [SupportedNetworks.TESTNET]: null | Promise<Maker>;
+  [SupportedNetworks.MAINNET]: null | Promise<MakerClass>;
+  [SupportedNetworks.KOVAN]: null | Promise<MakerClass>;
+  [SupportedNetworks.GOERLI]: null | Promise<MakerClass>;
+  [SupportedNetworks.TESTNET]: null | Promise<MakerClass>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
   [SupportedNetworks.KOVAN]: null,
+  [SupportedNetworks.GOERLI]: null,
   [SupportedNetworks.TESTNET]: null
 };
 
-async function getMaker(network?: SupportedNetworks): Promise<Maker> {
+async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
 
@@ -101,7 +108,7 @@ async function getMaker(network?: SupportedNetworks): Promise<Maker> {
     makerSingletons[currentNetwork] = instance;
   }
 
-  return makerSingletons[currentNetwork];
+  return makerSingletons[currentNetwork] as Promise<MakerClass>;
 }
 
 let networkSingleton: SupportedNetworks;
@@ -112,7 +119,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK;
+  return getNetwork() === DEFAULT_NETWORK || isTestnet();
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

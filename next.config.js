@@ -2,7 +2,14 @@ const path = require('path');
 
 require('dotenv').config({ path: './.env' });
 
-module.exports = {
+// This file sets a custom webpack configuration to use your Next.js app
+// with Sentry.
+// https://nextjs.org/docs/api-reference/next.config.js/introduction
+// https://docs.sentry.io/platforms/javascript/guides/nextjs/
+const { withSentryConfig } = require('@sentry/nextjs');
+
+// Main Next.js config
+const moduleExports = {
   // everything in here gets exposed to the frontend.
   // prefer NEXT_PUBLIC_* instead, which makes this behavior more explicit
   env: {
@@ -10,6 +17,9 @@ module.exports = {
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
     USE_PROD_SPOCK: process.env.USE_PROD_SPOCK // use production spock instance if true, otherwise use staging
   },
+
+  // Opt-in SWC minification (next 12.0.2)
+  // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
 
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -32,8 +42,24 @@ module.exports = {
     return [
       {
         source: '/delegates/:address',
-        destination: '/address/:address',
-      },
+        destination: '/address/:address'
+      }
     ];
-  },
+  }
 };
+
+const SentryWebpackPluginOptions = {
+  // Additional config options for the Sentry Webpack plugin. Keep in mind that
+  // the following options are set automatically, and overriding them is not
+  // recommended:
+  //   release, url, org, project, authToken, configFile, stripPrefix,
+  //   urlPrefix, include, ignore
+
+  silent: true // Suppresses all logs
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options.
+};
+
+// Make sure adding Sentry options is the last code to run before exporting, to
+// ensure that your source maps include changes from all other Webpack plugins
+module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions);

@@ -9,7 +9,7 @@ import { CurrencyObject } from 'types/currency';
 import { SpellStateDiff } from 'types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
-import mockPolls from 'modules/polls/api/mocks/polls.json';
+import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
@@ -72,14 +72,6 @@ export function getEtherscanLink(
     default:
       return `${prefix}/address/${data}`;
   }
-}
-
-export async function fetchJson(url: RequestInfo, init?: RequestInit): Promise<any> {
-  const response = await fetch(url, init);
-  const json = await response.json();
-
-  if (!response.ok) throw new Error(`${response.statusText}: ${json.error?.message || JSON.stringify(json)}`);
-  return json;
 }
 
 /* eslint-disable no-useless-escape */
@@ -152,39 +144,6 @@ export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
 
   return { hasBeenCast, executedOn, groupedDiff };
 }
-
-export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hourCycle: 'h23',
-    timeZone: 'UTC',
-    timeZoneName: 'short'
-  } as const;
-
-  try {
-    return new Intl.DateTimeFormat('en-US', options).format(date);
-  } catch (err) {
-    return '??';
-  }
-};
-
-export const formatDateWithoutTime = (dateString: Date | undefined | number | string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  try {
-    return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date);
-  } catch (err) {
-    return '??';
-  }
-};
 
 export async function initTestchainPolls() {
   const maker = await getMaker();

@@ -1,9 +1,6 @@
-/** @jsx jsx */
-
 import { Heading, Box, jsx, Button, Flex, Input, Label, Card, Text, Link } from 'theme-ui';
-import Head from 'next/head';
-import PrimaryLayout from 'components/layouts/Primary';
-import Stack from 'components/layouts/Stack';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
 import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
@@ -11,6 +8,7 @@ import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/utils';
 import { getEtherscanLink } from 'lib/utils';
 import { SupportedNetworks } from 'lib/constants';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const ExecutiveCreate = () => {
   const [url, setUrl] = useState('');
@@ -94,9 +92,8 @@ const ExecutiveCreate = () => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      <Head>
-        <title>Maker Governance - Validate Executive Proposal</title>
-      </Head>
+      <HeadComponent title="Validate Executive Proposal" />
+
       <Stack gap={3}>
         <Heading mb={2} as="h4">
           Executive Validator

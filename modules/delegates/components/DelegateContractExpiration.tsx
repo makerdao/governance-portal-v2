@@ -1,22 +1,11 @@
-/** @jsx jsx */
-
 import { Delegate } from '../types';
-import { Box, Text, jsx } from 'theme-ui';
+import { Text, Flex, jsx } from 'theme-ui';
 import React from 'react';
-import Icon from 'components/Icon';
-import moment from 'moment';
+import Icon from 'modules/app/components/Icon';
+import { formatDateWithTime } from 'lib/datetime';
 
 export function DelegateContractExpiration({ delegate }: { delegate: Delegate }): React.ReactElement {
   const styles = {
-    itemWrapper: {
-      display: 'flex',
-      alignItems: 'center'
-    },
-    dateIcon: {
-      display: 'flex',
-      alignContent: 'center',
-      marginRight: 1
-    },
     expiredIcon: {
       fill: 'error',
       stroke: 'error'
@@ -27,21 +16,30 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
     }
   };
 
-  const dateFormat = 'MMM DD YYYY HH:mm zz';
-  const expiryDate = moment(delegate.expirationDate);
+  const expiryDate = formatDateWithTime(delegate.expirationDate);
 
   return (
-    <Box sx={styles.itemWrapper}>
-      <Box sx={styles.dateIcon}>
-        <Icon name="calendarcross" sx={delegate.expired ? styles.expiredIcon : styles.activeIcon} />
-      </Box>
+    <Flex
+      sx={{
+        alignItems: 'center',
+        flexDirection: ['row-reverse', 'row']
+      }}
+    >
       <Text
         variant="secondary"
         color="onSecondary"
-        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', ml: 1 }}
+        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
       >
-        {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate.format(dateFormat)}`}
+        {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate}`}
       </Text>
-    </Box>
+      <Flex
+        sx={{
+          alignContent: 'center',
+          marginRight: 1
+        }}
+      >
+        <Icon name="calendarcross" sx={delegate.expired ? styles.expiredIcon : styles.activeIcon} />
+      </Flex>
+    </Flex>
   );
 }

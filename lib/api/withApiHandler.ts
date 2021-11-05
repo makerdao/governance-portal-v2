@@ -1,5 +1,8 @@
-export default function withApiHandler(handler, { allowPost = false } = {}) {
-  return async (req, res) => {
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { withSentry } from '@sentry/nextjs';
+
+export default function withApiHandler(handler: NextApiHandler, { allowPost = false } = {}): NextApiHandler {
+  return withSentry(async (req: NextApiRequest, res: NextApiResponse) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', allowPost ? 'GET, POST' : 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Accept, Content-Type');
@@ -29,5 +32,5 @@ export default function withApiHandler(handler, { allowPost = false } = {}) {
         }
       });
     }
-  };
+  });
 }

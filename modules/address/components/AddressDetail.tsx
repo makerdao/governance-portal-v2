@@ -1,15 +1,15 @@
-/** @jsx jsx */
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
+import { jsx, Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
 import AddressIcon from './AddressIcon';
-import { PollVoteHistoryList } from 'modules/polls/components/PollVoteHistoryList';
+import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
-import Tooltip from 'components/Tooltip';
+import Tooltip from 'modules/app/components/Tooltip';
 import { cutMiddle } from 'lib/string';
+import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 
 type PropTypes = {
   address: string;
@@ -35,7 +35,7 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
   ) : null;
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: [3, 4] }}>
         <Flex>
           <AddressIcon address={address} width="41px" />
           <Flex
@@ -57,30 +57,36 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
             </ExternalLink>
             {voteProxyInfo && (
               <Flex>
-                <Text sx={{ color: 'textSecondary', fontSize: [1, 2] }}>Proxy Contract</Text>{' '}
+                <Text sx={{ color: 'textSecondary', ml: 2, fontSize: [1, 2] }}>Proxy Contract</Text>{' '}
                 <Tooltip label={tooltipLabel}>
                   <Box>
-                    <Icon name="question" ml={2} mt={'6px'} />
+                    <Icon name="question" ml={2} mt={['2px', '4px']} />
                   </Box>
                 </Tooltip>{' '}
               </Flex>
             )}
           </Flex>
         </Flex>
-
-        <Flex sx={{ mt: 3, flexDirection: 'column' }}>
-          <Text
-            as="p"
-            sx={{
-              fontSize: 4,
-              fontWeight: 'semiBold'
-            }}
-          >
-            Polling Proposals
-          </Text>
-          <PollVoteHistoryList votes={stats.pollVoteHistory} />
-        </Flex>
       </Box>
+
+      <Divider mt={1} mb={1} />
+
+      <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+        <Text
+          as="p"
+          sx={{
+            fontSize: 4,
+            fontWeight: 'semiBold'
+          }}
+        >
+          Polling Proposals
+        </Text>
+        <Divider mt={3} />
+      </Box>
+
+      <PollVoteHistoryList votes={stats.pollVoteHistory} />
+
+      <PollingParticipationOverview votes={stats.pollVoteHistory} />
     </Box>
   );
 }

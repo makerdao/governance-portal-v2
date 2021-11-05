@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import { Box, jsx } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -12,10 +11,10 @@ import { Delegate } from '../../types';
 import useAccountsStore from 'stores/accounts';
 import { useMkrDelegated } from 'lib/hooks';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
-import { BoxWithClose } from 'components/BoxWithClose';
+import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 type Props = {
   isOpen: boolean;
@@ -114,6 +113,7 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
                         balance={mkrStaked.toBigNumber()}
                         buttonLabel="Undelegate MKR"
                         onClick={freeMkr}
+                        showAlert={false}
                       />
                     ) : (
                       <ApprovalContent

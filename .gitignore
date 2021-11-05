@@ -32,3 +32,6 @@ yalc.lock
 .vscode
 
 package-lock.json
+
+# Sentry
+.sentryclirc

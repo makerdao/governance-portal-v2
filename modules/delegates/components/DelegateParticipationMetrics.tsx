@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import BigNumber from 'bignumber.js';
 import { Box, Text, jsx } from 'theme-ui';
 import { Delegate } from '../types';
@@ -19,11 +18,16 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
   };
   return (
     <Box p={[3, 4]}>
-      <Text as="p" sx={{
-        fontSize: '18px',
-        fontWeight: 'semiBold',
-        mb: 3
-      }}>Participation breakdown</Text>
+      <Text
+        as="p"
+        sx={{
+          fontSize: '18px',
+          fontWeight: 'semiBold',
+          mb: 3
+        }}
+      >
+        Participation breakdown
+      </Text>
 
       <Box sx={styles.row}>
         <Text as="p" sx={styles.text}>
@@ -49,7 +53,6 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
           {delegate.communication || 'Untracked'}
         </Text>
       </Box>
-      
     </Box>
   );
 }

@@ -1,4 +1,3 @@
-/** @jsx jsx */
 
 import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
@@ -17,12 +16,12 @@ import {
   YAxis,
   ResponsiveContainer
 } from 'recharts';
-import FilterButton from 'components/FilterButton';
 import { useEffect, useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
+import FilterButton from 'modules/app/components/FilterButton';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();

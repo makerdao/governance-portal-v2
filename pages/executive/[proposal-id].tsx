@@ -1,42 +1,58 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ThemeUILink,
+  jsx
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import { getExecutiveProposal, getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
-import { useSpellData } from 'lib/hooks';
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
+import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { useSpellData } from 'modules/executive/hooks/useSpellData';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useHat } from 'modules/executive/hooks/useHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
-import { getStatusText } from 'lib/executive/getStatusText';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { getStatusText } from 'modules/executive/helpers/getStatusText';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { getEtherscanLink } from 'lib/utils';
 
 // stores
 import useAccountsStore from 'stores/accounts';
 import { ZERO_ADDRESS } from 'stores/accounts';
 
 //components
-import Comments from 'components/executive/Comments';
-import VoteModal from 'components/executive/VoteModal';
-import Stack from 'components/layouts/Stack';
-import Tabs from 'components/Tabs';
-import PrimaryLayout from 'components/layouts/Primary';
-import SidebarLayout from 'components/layouts/Sidebar';
-import ResourceBox from 'components/ResourceBox';
-// import OnChainFx from 'components/executive/OnChainFx';
+import Comments from 'modules/executive/components/Comments';
+import VoteModal from 'modules/executive/components/VoteModal';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import Tabs from 'modules/app/components/Tabs';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import { StatBox } from 'modules/app/components/StatBox';
+import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
-import { Proposal } from 'modules/executives/types';
-// import { SpellStateDiff } from 'types/spellStateDiff';
+import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { HeadComponent } from 'modules/app/components/layout/Head';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
   proposal: Proposal;
@@ -47,15 +63,23 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const ProposalTimingBanner = ({ proposal }): JSX.Element => {
-  const { data: spellData } = useSpellData(proposal.address);
-
+const ProposalTimingBanner = ({
+  proposal,
+  spellData,
+  mkrOnHat
+}: {
+  proposal: CMSProposal;
+  spellData?: SpellData;
+  mkrOnHat?: CurrencyObject;
+}): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <Text sx={{ textAlign: 'center', px: [3, 4] }}>{getStatusText(proposal.address, spellData)}</Text>
+          <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+          </Text>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -65,32 +89,20 @@ const ProposalTimingBanner = ({ proposal }): JSX.Element => {
 
 const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
+  const { data: spellData } = useSpellData(proposal.address);
 
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
-
-  // ch401: hide until API is fixed
-  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  // const [stateDiffError, setStateDiffError] = useState();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
-  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-  //       setStateDiff(_stateDiff);
-  //     } catch (error) {
-  //       setStateDiffError(error);
-  //     }
-  //   })();
-  // }, []);
 
   const { data: allSupporters, error: supportersError } = useSWR(
     `/api/executive/supporters?network=${getNetwork()}`
   );
 
   const { data: votedProposals } = useVotedProposals();
+  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: hat } = useHat();
+  const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
   const { data: comments, error: commentsError } = useSWR(
     `/api/executive/comments/list/${proposal.address}`,
@@ -120,29 +132,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
     </div>
   );
 
-  // ch401: hide until API is fixed
-  // const onChainFxTab = (
-  //   <div key={3} sx={{ p: [3, 4] }}>
-  //     <Flex sx={{ mb: 3, overflow: 'auto' }}>
-  //       For the spell at address
-  //       <ThemeUILink href={getEtherscanLink(getNetwork(), proposal.address, 'address')} target="_blank">
-  //         <Text sx={{ ml: 2, color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
-  //           {proposal.address}
-  //         </Text>
-  //       </ThemeUILink>
-  //     </Flex>
-  //     {stateDiff ? (
-  //       <OnChainFx stateDiff={stateDiff} />
-  //     ) : stateDiffError ? (
-  //       <Flex>Unable to fetch on-chain effects at this time</Flex>
-  //     ) : (
-  //       <Flex sx={{ alignItems: 'center' }}>
-  //         loading <Spinner size={20} ml={2} />
-  //       </Flex>
-  //     )}
-  //   </div>
-  // );
-
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
@@ -151,6 +140,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+      <HeadComponent
+        title={`Proposal ${proposal['title'] ? proposal['title'] : proposal.address}`}
+        description={`See the results of the MakerDAO executive proposal ${
+          proposal['title'] ? proposal['title'] : proposal.address
+        }.`}
+      />
+
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
@@ -158,7 +154,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             position: 'fixed',
             bottom: 0,
             left: 0,
-            backgroundColor: 'white',
+            backgroundColor: 'surface',
             width: '100vw',
             borderTopLeftRadius: 'roundish',
             borderTopRightRadius: 'roundish',
@@ -194,40 +190,79 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
-            {
-              'about' in proposal ? (
-                <Tabs
-                  tabListStyles={{ pl: [3, 4] }}
-                  tabTitles={[
-                    'Proposal Detail',
-                    // ch401: hide until API is fixed
-                    // 'On-Chain Effects',
-                    `Comments ${comments ? `(${comments.length})` : ''}`
-                  ]}
-                  tabPanels={[
-                    <div
-                      key={1}
-                      sx={{ variant: 'markdown.default', p: [3, 4] }}
-                      dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
-                    />,
-                    // onChainFxTab,
-                    commentsTab
-                  ]}
-                  banner={<ProposalTimingBanner proposal={proposal} />}
-                ></Tabs>
-              ) : null
-              // ch401: hide until API is fixed
-              // (
-              // <Tabs
-              //   tabListStyles={{ pl: [3, 4] }}
-              //   tabTitles={['On-Chain Effects']}
-              //   tabPanels={[onChainFxTab]}
-              // />
-              // )
-            }
+            {isHat && proposal.address !== ZERO_ADDRESS ? (
+              <Badge
+                variant="primary"
+                sx={{
+                  my: 2,
+                  ml: [3, 4],
+                  borderColor: 'primaryAlt',
+                  color: 'primaryAlt',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Governing proposal
+              </Badge>
+            ) : null}
+            <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
+              <StatBox
+                value={
+                  <ThemeUILink
+                    title="View on etherescan"
+                    href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                    target="_blank"
+                  >
+                    <Text as="p" sx={{ fontSize: [2, 5] }}>
+                      {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
+                    </Text>
+                  </ThemeUILink>
+                }
+                label="Spell Address"
+              />
+              <StatBox
+                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(2)}
+                label="MKR Support"
+              />
+              <StatBox value={supporters && supporters.length} label="Supporters" />
+            </Flex>
+            {'about' in proposal ? (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={[
+                  'Proposal Detail',
+
+                  'Spell Details',
+                  `Comments ${comments ? `(${comments.length})` : ''}`
+                ]}
+                tabPanels={[
+                  <div
+                    key={1}
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
+                  />,
+                  <div key={2} sx={{ p: [3, 4] }}>
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                  </div>,
+                  commentsTab
+                ]}
+                banner={
+                  <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                }
+              ></Tabs>
+            ) : (
+              <Tabs
+                tabListStyles={{ pl: [3, 4] }}
+                tabTitles={['Spell Details']}
+                tabPanels={[
+                  <div key={1} sx={{ p: [3, 4] }}>
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                  </div>
+                ]}
+              />
+            )}
           </Card>
         </Box>
-        <Stack gap={3}>
+        <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
             <>
               <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
@@ -256,44 +291,65 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               Supporters
             </Heading>
             <Card variant="compact" p={3} sx={{ height: '237px' }}>
-              <Box sx={{ overflowY: 'auto', height: '100%' }}>
+              <Box
+                sx={{
+                  overflowY: 'scroll',
+                  height: '100%',
+                  '::-webkit-scrollbar': {
+                    display: 'none'
+                  },
+                  scrollbarWidth: 'none'
+                }}
+              >
                 {supporters ? (
                   supporters.map(supporter => (
                     <Flex
                       sx={{
                         justifyContent: 'space-between',
-                        fontSize: bpi === 0 ? 2 : 3,
+                        fontSize: [2, 3],
                         lineHeight: '34px'
                       }}
                       key={supporter.address}
                     >
-                      <Text color="onSecondary">
-                        {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
-                      </Text>
+                      <Box sx={{ width: '55%' }}>
+                        <Text color="onSecondary">
+                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                        </Text>
+                      </Box>
 
-                      <Link
-                        href={{
-                          pathname: `/address/${supporter.address}`,
-                          query: { network }
-                        }}
-                        passHref
-                      >
-                        <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                          {supporter.name ? (
-                            <Text
-                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                            >
-                              {limitString(supporter.name, 28, '...')}
-                            </Text>
-                          ) : (
-                            <Text
-                              sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                            >
-                              {cutMiddle(supporter.address)}
-                            </Text>
-                          )}
-                        </ThemeUILink>
-                      </Link>
+                      <Box sx={{ width: '45%', textAlign: 'right' }}>
+                        <Link
+                          href={{
+                            pathname: `/address/${supporter.address}`,
+                            query: { network }
+                          }}
+                          passHref
+                        >
+                          <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                            {supporter.name ? (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
+                              </Text>
+                            ) : (
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 3,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                {cutMiddle(supporter.address)}
+                              </Text>
+                            )}
+                          </ThemeUILink>
+                        </Link>
+                      </Box>
                     </Flex>
                   ))
                 ) : supportersError ? (
@@ -322,7 +378,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               </Box>
             </Card>
           </Box>
-          <ResourceBox />
+          <ResourceBox type={'executive'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>

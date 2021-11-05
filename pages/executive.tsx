@@ -1,48 +1,47 @@
-/** @jsx jsx */
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
-import { getExecutiveProposals } from 'modules/executives/api/fetchExecutives';
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr, useHat } from 'lib/hooks';
-import { useVotedProposals } from 'modules/executives/hooks/useVotedProposals';
-import { fetchJson } from 'lib/utils';
+import { useLockedMkr } from 'lib/hooks';
+import { useHat } from 'modules/executive/hooks/useHat';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
 
 // components
-import Deposit from 'components/executive/Deposit';
-import WithdrawOldChief from 'components/executive/WithdrawOldChief';
-import ProposalsSortBy from 'components/executive/ProposalsSortBy';
-import DateFilter from 'components/executive/DateFilter';
-import SystemStatsSidebar from 'components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'components/MkrLiquiditySidebar';
-import ResourceBox from 'components/ResourceBox';
-import Stack from 'components/layouts/Stack';
-import ExecutiveOverviewCard from 'components/executive/ExecutiveOverviewCard';
-import PrimaryLayout from 'components/layouts/Primary';
-import { Proposal, CMSProposal } from 'modules/executives/types';
-import SidebarLayout from 'components/layouts/Sidebar';
-import ProgressBar from 'components/executive/ProgressBar';
-import PageLoadingPlaceholder from 'components/PageLoadingPlaceholder';
-import { ExecutiveBalance } from 'components/ExecutiveBalance';
+import Deposit from 'modules/mkr/components/Deposit';
+import WithdrawOldChief from 'modules/executive/components/WithdrawOldChief';
+import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
+import DateFilter from 'modules/executive/components/DateFilter';
+import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
+import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
+import ResourceBox from 'modules/app/components/ResourceBox';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
+import ProgressBar from 'modules/executive/components/ProgressBar';
+import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
+import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 
 // stores
 import useAccountsStore from 'stores/accounts';
 import useUiFiltersStore from 'stores/uiFilters';
 
 // types
-import { SpellData } from 'types/spellData';
-import { useAnalytics } from 'lib/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'lib/client/analytics/analytics.constants';
+import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -190,9 +189,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Executive Proposals</title>
-      </Head>
+      <HeadComponent title="Executive Proposals" />
+
       <Box sx={{ mt: ['-10px', '-25px'] }}>
         {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
           <>
@@ -244,82 +242,90 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
             </MigrationBadge>
           </>
         )}
-        {lockedMkrOldChief && lockedMkrOldChief.eq(0) && !voteProxy && lockedMkr && lockedMkr.eq(0) && (
-          <>
-            <ProgressBar step={1} />
-            <Flex sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-              <Heading variant="microHeading">
-                Choose one of the options below to deposit MKR into the new chief:
-              </Heading>
-              <Link
-                href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
-                target="_blank"
-                sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                onClick={() => {
-                  trackButtonClick('chiefMigrationMoreInfoLink');
-                }}
-              >
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Text>
-                    More info
-                    <Icon ml={2} name="arrowTopRight" size={2} />
-                  </Text>
-                </Flex>
-              </Link>
-            </Flex>
-            <MigrationBadge py={[0]}>
+        {lockedMkrOldChief &&
+          lockedMkrOldChief.eq(0) &&
+          !voteProxy &&
+          lockedMkr &&
+          lockedMkr.eq(0) &&
+          !voteDelegate && (
+            <>
+              <ProgressBar step={1} />
               <Flex
-                sx={{
-                  flexDirection: 'column',
-                  py: 2
-                }}
+                sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}
               >
-                <Flex sx={{ alignItems: 'center' }}>
-                  <CircleNumber> 1 </CircleNumber>
-                  <Text>
-                    <b>Hot wallet only: </b>
-                    <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
-                    using a vote proxy.
-                  </Text>
-                </Flex>
-                <Divider />
-                <Flex sx={{ alignItems: 'center' }}>
-                  <CircleNumber> 2 </CircleNumber>
-                  <Text>
-                    <b>Hot and cold wallet: </b>
-                    <Link
-                      href="https://v1.vote.makerdao.com/proxysetup"
-                      sx={{ textDecoration: 'underline' }}
-                      onClick={() => {
-                        trackButtonClick('chiefMigrationLinkToProxySetup');
-                      }}
-                    >
-                      Click here
-                    </Link>{' '}
-                    to create a vote proxy for additional wallet security. More info{' '}
-                    <Link
-                      href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                      target="_blank"
-                      sx={{ textDecoration: 'underline' }}
-                      onClick={() => {
-                        trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
-                      }}
-                    >
-                      here
-                    </Link>
-                    .
-                  </Text>
-                </Flex>
+                <Heading variant="microHeading">
+                  Choose one of the options below to deposit MKR into the new chief:
+                </Heading>
+                <Link
+                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
+                  target="_blank"
+                  sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                  onClick={() => {
+                    trackButtonClick('chiefMigrationMoreInfoLink');
+                  }}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text>
+                      More info
+                      <Icon ml={2} name="arrowTopRight" size={2} />
+                    </Text>
+                  </Flex>
+                </Link>
               </Flex>
-            </MigrationBadge>
-          </>
-        )}
+              <MigrationBadge py={[0]}>
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    py: 2
+                  }}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <CircleNumber> 1 </CircleNumber>
+                    <Text>
+                      <b>Hot wallet only: </b>
+                      <Deposit link={'Click here'} /> to deposit your MKR directly into the new Chief without
+                      using a vote proxy.
+                    </Text>
+                  </Flex>
+                  <Divider />
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <CircleNumber> 2 </CircleNumber>
+                    <Text>
+                      <b>Hot and cold wallet: </b>
+                      <Link
+                        href="https://v1.vote.makerdao.com/proxysetup"
+                        sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          trackButtonClick('chiefMigrationLinkToProxySetup');
+                        }}
+                      >
+                        Click here
+                      </Link>{' '}
+                      to create a vote proxy for additional wallet security. More info{' '}
+                      <Link
+                        href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                        target="_blank"
+                        sx={{ textDecoration: 'underline' }}
+                        onClick={() => {
+                          trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
+                        }}
+                      >
+                        here
+                      </Link>
+                      .
+                    </Text>
+                  </Flex>
+                </Flex>
+              </MigrationBadge>
+            </>
+          )}
         {votedProposals &&
           !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
           voteProxy &&
-          lockedMkr && (
+          lockedMkr &&
+          !voteDelegate && (
             <>
               <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
               <MigrationBadge>
@@ -427,7 +433,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
             />
             <MkrLiquiditySidebar />
-            <ResourceBox />
+            <ResourceBox type={'executive'} />
+            <ResourceBox type={'general'} />
           </Stack>
         </SidebarLayout>
       </Stack>
@@ -446,7 +453,7 @@ export default function ExecutiveOverviewPage({
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      getExecutiveProposals().then(_setProposals).catch(setError);
+      fetchJson(`/api/executive?network=${getNetwork()}`).then(_setProposals).catch(setError);
     }
   }, []);
 

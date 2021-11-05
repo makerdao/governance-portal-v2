@@ -1,16 +1,16 @@
-/** @jsx jsx */
 import { Flex, Box, Button, Text, Card, Link, jsx } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import PrimaryLayout from 'components/layouts/Primary';
-import BurnModal from 'components/es/BurnModal';
-import ShutdownModal from 'components/es/ShutdownModal';
-import ProgressRing from 'components/es/ProgressRing';
-import ESMHistory from 'components/es/ESMHistory';
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import BurnModal from 'modules/emergency-shutdown/components/BurnModal';
+import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
+import ProgressRing from 'modules/emergency-shutdown/components/ProgressRing';
+import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
 import useAccountsStore from 'stores/accounts';
-import { formatDateWithTime } from 'lib/utils';
-import { useESModuleStats } from 'lib/esmodule/hooks/useESModuleStats';
+import { formatDateWithTime } from 'lib/datetime';
+import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -95,6 +95,8 @@ const ESModule = (): React.ReactElement => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'container' }}>
+      <HeadComponent title="Emergency Shutdown Module" />
+
       <DialogOverlay
         style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
         isOpen={showDialog}
