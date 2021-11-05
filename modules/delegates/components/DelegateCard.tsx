@@ -94,7 +94,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                         sx={{
                           display: 'inline-flex',
                           backgroundColor: 'tagColorSevenBg',
-                          borderRadius: '12px',
+                          borderRadius: 'roundish',
                           padding: '3px 6px',
                           alignItems: 'center',
                           color: 'tagColorSeven',
