@@ -1,5 +1,5 @@
 export type MKRWeightHisory = {
-  date: string;
+  date: Date;
   MKR: number;
   averageMKRDelegated: number;
 };

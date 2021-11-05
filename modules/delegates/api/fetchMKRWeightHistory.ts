@@ -61,7 +61,7 @@ export async function fetchDelegatesMKRWeightHistory(
   const maker = await getMaker(network);
   const addressData: MKRLockedDelegate[] = await maker.service('voteDelegate').getMkrLockedDelegate(address);
   // const addressData = mockAddressData
-
+  
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
   const start = parseInt(
@@ -71,12 +71,12 @@ export async function fetchDelegatesMKRWeightHistory(
   );
 
   const end = parseInt(
-    format(new Date(addressData[addressData.length - 1].blockTimestamp), 'D', {
+    format(new Date(), 'D', {
       useAdditionalDayOfYearTokens: true
     })
   );
 
-  const output = [];
+  const output: MKRWeightHisory[] = [];
 
   for (let i = start; i <= end; i++) {
     const existingItem = addressData.find(item => {
@@ -91,7 +91,9 @@ export async function fetchDelegatesMKRWeightHistory(
     });
     if (existingItem) {
       output.push({
-        date: existingItem.blockTimestamp,
+        date: parse(i.toString(), 'D', new Date(existingItem.blockTimestamp), {
+          useAdditionalDayOfYearTokens: true
+        }),
         MKR: new BigNumber(existingItem.lockTotal).toNumber(),
         averageMKRDelegated: 1000
       });
@@ -105,8 +107,11 @@ export async function fetchDelegatesMKRWeightHistory(
       });
     }
   }
-
-  return output;
+  
+  // Filter by date
+  return output.filter(i => {
+    return i.date.getTime() > new Date(from).getTime();
+  });
   // const grouppedData = range === MKRWeightTimeRanges.week ? groupByWeek(addressData)
   // TODO : Complete with maker data
   // return Promise.resolve(range === MKRWeightTimeRanges.month ? dataYear : dataWeek);

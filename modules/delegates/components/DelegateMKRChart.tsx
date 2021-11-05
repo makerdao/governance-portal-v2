@@ -53,10 +53,10 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const { data, error, isValidating, revalidate } = useSWR(
-    `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
+  const { data, isValidating } = useSWR(
+    typeof window !== 'undefined' ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
       selectedTimeFrame.from
-    }&range=${selectedTimeFrame.range}`,
+    }&range=${selectedTimeFrame.range}`: null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -64,9 +64,6 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     }
   );
 
-  useEffect(() => {
-    revalidate();
-  }, [selectedTimeFrame]);
 
   function renderTooltip(item) {
     const monthMKR = data ? data.find(i => i.date === item.label) : null;
@@ -129,6 +126,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
         </Box>
       </Flex>
       <ResponsiveContainer width={'100%'} height={400}>
+        
         <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 72, top: 10 }}>
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
@@ -206,7 +204,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           </Text>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box
             style={{
               width: '23px',
@@ -218,7 +216,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           <Text variant="secondary" color="onSurface">
             Average voting weight of all delegates
           </Text>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );
