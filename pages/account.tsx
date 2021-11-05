@@ -22,7 +22,7 @@ import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { cutMiddle } from 'lib/string';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';

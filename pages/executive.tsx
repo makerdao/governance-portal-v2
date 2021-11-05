@@ -10,7 +10,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
@@ -430,7 +430,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           </Box>
           <Stack gap={3}>
             <SystemStatsSidebar
-              fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+              fields={[
+                'chief contract',
+                'mkr in chief',
+                'mkr needed to pass',
+                'savings rate',
+                'total dai',
+                'debt ceiling'
+              ]}
             />
             <MkrLiquiditySidebar />
             <ResourceBox type={'executive'} />

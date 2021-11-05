@@ -15,7 +15,7 @@ import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import BigNumber from 'bignumber.js';

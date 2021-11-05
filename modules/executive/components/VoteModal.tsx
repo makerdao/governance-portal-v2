@@ -24,7 +24,7 @@ import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { getEtherscanLink, sortBytesArray } from 'lib/utils';
 import { fetchJson } from 'lib/fetchJson';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import useAccountsStore from 'stores/accounts';

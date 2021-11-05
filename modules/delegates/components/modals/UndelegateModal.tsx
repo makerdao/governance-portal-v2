@@ -9,7 +9,7 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from '../../types';
 import useAccountsStore from 'stores/accounts';
-import { useMkrDelegated } from 'lib/hooks';
+import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
