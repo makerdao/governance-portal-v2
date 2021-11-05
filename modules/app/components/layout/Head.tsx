@@ -32,17 +32,7 @@ export function HeadComponent({
       {image && <meta name="twitter:image" content={image} />}
       <meta name="twitter:card" content="summary_large_image"></meta>
 
-      <meta
-        httpEquiv="Content-Security-Policy"
-        content={
-          "default-src 'none';" +
-          'frame-src https://connect.trezor.io;' +
-          "font-src 'self';" +
-          "connect-src 'self' https: wss:;" +
-          "style-src 'self' 'unsafe-inline';" +
-          "img-src 'self' https: data:"
-        }
-      />
+     
     </Head>
   );
 }
