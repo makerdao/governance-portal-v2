@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Button, Flex, Link, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';

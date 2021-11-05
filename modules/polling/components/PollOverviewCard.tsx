@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import Link from 'next/link';
 import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -17,6 +16,7 @@ import useBallotStore from 'stores/ballot';
 import QuickVote from './QuickVote';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { PollCategoryTag } from './PollCategoryTag';
 
 type Props = {
   poll: Poll;
@@ -78,11 +78,20 @@ export default function PollOverviewCard({
           </Link>
         </Box>
 
+        <Flex>
+          {poll.categories.map(c => (
+            <Box key={c} sx={{ marginRight: 2 }}>
+              <PollCategoryTag clickable={true} category={c} />
+            </Box>
+          ))}
+        </Flex>
+
         {bpi > 0 && (
           <div>
             <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
           </div>
         )}
+
         <Flex sx={{ alignItems: 'center' }}>
           {canVote &&
             bpi === 0 &&

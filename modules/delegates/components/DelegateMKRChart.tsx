@@ -1,4 +1,4 @@
-/** @jsx jsx */
+
 
 import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';

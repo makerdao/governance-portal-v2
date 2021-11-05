@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import Link from 'next/link';
 import { Button, Text, Flex, Link as InternalLink, jsx, Box, ThemeUIStyleObject } from 'theme-ui';
 import Stack from 'modules/app/components/layout/layouts/Stack';

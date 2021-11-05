@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text, Card } from 'theme-ui';
 import { markdownToHtml } from 'lib/utils';
 import { GetStaticProps } from 'next';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const cookiespolicy = `
 ### Use of Cookies and Similar Technologies
@@ -23,8 +24,9 @@ Our service providers analyses this information and provides us with aggregate r
 export default function CookiesPolicy(props: { content: string }): React.ReactElement {
   return (
     <Box>
+      <HeadComponent title="Cookies Policy" />
       <Text sx={{ textAlign: 'center' }}>
-        <h2>Cookies policy</h2>
+        <h2>Cookies Policy</h2>
       </Text>
       <Card sx={{ overflowY: 'auto' }}>
         <div dangerouslySetInnerHTML={{ __html: props.content || '' }} />

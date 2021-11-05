@@ -4,8 +4,8 @@
         "next/babel",
         {
           "preset-react": {
-            // "importSource": "theme-ui", // or "@theme-ui/core"
-            "runtime": "classic", // Change to automatic when v0.10.0 of theme-ui
+            "importSource": "@theme-ui/core", // or "@theme-ui/core"
+            "runtime": "automatic", // Change to automatic when v0.10.0 of theme-ui
             "throwIfNamespace": false
           }
         }

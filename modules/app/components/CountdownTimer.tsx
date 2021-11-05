@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import { Text, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';

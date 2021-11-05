@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';

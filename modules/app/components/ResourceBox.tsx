@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Box, Heading, Card, Link as ExternalLink, Flex, Text, jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 

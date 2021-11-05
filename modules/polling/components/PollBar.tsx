@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Box, Text, Flex, jsx } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 

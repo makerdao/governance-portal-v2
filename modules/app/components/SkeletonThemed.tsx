@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import Skeleton, { SkeletonTheme, SkeletonProps, SkeletonThemeProps } from 'react-loading-skeleton';
 import { jsx, useThemeUI } from 'theme-ui';
 
