@@ -20,6 +20,9 @@ const moduleExports = {
 
   // Opt-in SWC minification (next 12.0.2)
   // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
+  
+  // Fix Sentry error https://github.com/getsentry/sentry-javascript/issues/4103
+  outputFileTracing: false,
 
   webpack: (config, { isServer }) => {
     if (isServer) {
