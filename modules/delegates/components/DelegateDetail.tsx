@@ -42,7 +42,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
       </Box>
     ) : null,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory stats={stats}  delegate={delegate} />
+      <DelegateVoteHistory stats={stats} delegate={delegate} />
     </Box>
   ].filter(i => !!i);
 

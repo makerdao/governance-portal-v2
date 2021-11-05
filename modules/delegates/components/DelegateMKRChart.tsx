@@ -1,4 +1,3 @@
-
 import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
@@ -32,51 +31,61 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   const oneMonth = 31 * oneDay;
   const oneWeek = 7 * oneDay;
 
-  const timeRanges = [{
-    label: 'Last year',
-    from: Date.now() - oneYear,
-    range: MKRWeightTimeRanges.month
-  },
-  {
-    label: 'Last month',
-    from: Date.now() - oneMonth,
-    range: MKRWeightTimeRanges.day,
-  }, {
-    label: 'Last week',
-    from: Date.now() - oneWeek,
-    range: MKRWeightTimeRanges.day
-  }];
-
+  const timeRanges = [
+    {
+      label: 'Last year',
+      from: Date.now() - oneYear,
+      range: MKRWeightTimeRanges.month
+    },
+    {
+      label: 'Last month',
+      from: Date.now() - oneMonth,
+      range: MKRWeightTimeRanges.day
+    },
+    {
+      label: 'Last week',
+      from: Date.now() - oneWeek,
+      range: MKRWeightTimeRanges.day
+    }
+  ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const { data, error, isValidating, revalidate } = useSWR(`/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`, fetchJson);
-
+  const { data, error, isValidating, revalidate } = useSWR(
+    `/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${
+      selectedTimeFrame.from
+    }&range=${selectedTimeFrame.range}`,
+    fetchJson
+  );
 
   useEffect(() => {
     revalidate();
   }, [selectedTimeFrame]);
 
   function renderTooltip(item) {
-    const monthMKR = data ? data.find(i => i.date === item.label): null;
+    const monthMKR = data ? data.find(i => i.date === item.label) : null;
 
     if (!data) {
       return null;
     }
-    
-    return <Box>
-      <Text as="p">{monthMKR?.date}</Text>
-      <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
-      <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
-    </Box>;
+
+    return (
+      <Box>
+        <Text as="p">{monthMKR?.date}</Text>
+        <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
+        <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
+      </Box>
+    );
   }
-
-
 
   return (
     <Box>
-      <Flex mb={4} mt={4} sx={{
-        justifyContent: 'space-between'
-      }}>
+      <Flex
+        mb={4}
+        mt={4}
+        sx={{
+          justifyContent: 'space-between'
+        }}
+      >
         <Box>
           <Text
             as="p"
@@ -88,13 +97,12 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           >
             Voting Weight
           </Text>
-          <Text as="p"  variant="secondary" color="onSurface">Total voting weight over time</Text>
+          <Text as="p" variant="secondary" color="onSurface">
+            Total voting weight over time
+          </Text>
         </Box>
         <Box>
-          <FilterButton
-            name={() => `${selectedTimeFrame.label}`}
-            listVariant="menubuttons.default.list"
-          >
+          <FilterButton name={() => `${selectedTimeFrame.label}`} listVariant="menubuttons.default.list">
             {timeRanges.map(i => {
               return (
                 <MenuItem
@@ -105,19 +113,14 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
                   }}
                 >
                   {i.label}
-                </MenuItem>);
+                </MenuItem>
+              );
             })}
           </FilterButton>
         </Box>
       </Flex>
-      <ResponsiveContainer
-        width={'100%'}
-        height={400}>
-        <AreaChart
-          data={data || []}
-          margin={{ bottom: 66, left: 20, right: 72, top: 10 }}
-        >
-
+      <ResponsiveContainer width={'100%'} height={400}>
+        <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 72, top: 10 }}>
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
@@ -144,22 +147,20 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
               fill: '#708390',
               position: 'bottomLeft',
               value: 'MKR',
-              viewBox: { height: 10, width: 10, x: 20, y: 300 },
+              viewBox: { height: 10, width: 10, x: 20, y: 300 }
             }}
             tickMargin={5}
-
           />
 
           <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
           <Tooltip content={renderTooltip} />
-
 
           <Area
             activeDot={false}
             dataKey="averageMKRDelegated"
             dot={false}
             stroke={'#D4D9E1'}
-            fill='transparent'
+            fill="transparent"
             type="monotone"
           />
 
@@ -174,30 +175,36 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           <ReferenceLine stroke={'#D4D9E1'} x={0} y={0} />
         </AreaChart>
       </ResponsiveContainer>
-      <Box sx={{
-        display: 'flex',
-        margin: '0 auto',
-        justifyContent: 'space-around',
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '30px', paddingRight: '30px'}}>
-          <Box style={{
-            width: '23px',
-            height: '2px',
-            background: theme.colors?.primary as string,
-            marginRight: '8px'
-          }}/>
-          <Text  variant="secondary" color="onSurface">
+      <Box
+        sx={{
+          display: 'flex',
+          margin: '0 auto',
+          justifyContent: 'space-around'
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '30px', paddingRight: '30px' }}>
+          <Box
+            style={{
+              width: '23px',
+              height: '2px',
+              background: theme.colors?.primary as string,
+              marginRight: '8px'
+            }}
+          />
+          <Text variant="secondary" color="onSurface">
             Voting weight of this delegate
           </Text>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <Box style={{
-            width: '23px',
-            height: '2px',
-            background: theme.colors?.secondary as string,
-            marginRight: '8px'
-          }}/>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            style={{
+              width: '23px',
+              height: '2px',
+              background: theme.colors?.secondary as string,
+              marginRight: '8px'
+            }}
+          />
           <Text variant="secondary" color="onSurface">
             Average voting weight of all delegates
           </Text>

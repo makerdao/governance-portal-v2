@@ -5,7 +5,13 @@ import { Delegate } from '../types';
 import { DelegateMKRChart } from './DelegateMKRChart';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 
-export function DelegateVoteHistory({ stats, delegate }: { stats: AddressAPIStats, delegate: Delegate}): React.ReactElement {
+export function DelegateVoteHistory({
+  stats,
+  delegate
+}: {
+  stats: AddressAPIStats;
+  delegate: Delegate;
+}): React.ReactElement {
   return (
     <Box>
       <Box>
@@ -28,9 +34,6 @@ export function DelegateVoteHistory({ stats, delegate }: { stats: AddressAPIStat
           <DelegateMKRChart delegate={delegate} />
         </Box>
       </Box>
-
-      
-
 
       <PollingParticipationOverview votes={stats.pollVoteHistory} />
     </Box>
