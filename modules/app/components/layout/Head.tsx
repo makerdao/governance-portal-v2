@@ -1,7 +1,5 @@
 import Head from 'next/head';
 
-import { config } from 'lib/config';
-
 export function HeadComponent({
   title,
   description,
@@ -13,8 +11,6 @@ export function HeadComponent({
   image?: string;
   url?: string;
 }): React.ReactElement {
-  const dev = config.NODE_ENV === 'development';
-
   const defaultDescription =
     'The MakerDAO Governance Portal allows for anyone to view governance proposals, and also allows for MKR holders to vote.';
   const defaultTitle = 'Governance Portal';
@@ -44,9 +40,6 @@ export function HeadComponent({
           "font-src 'self';" +
           "connect-src 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
-          `script-src 'self' ${
-            dev ? "'unsafe-eval'" : ''
-          } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
           "img-src 'self' https: data:"
         }
       />

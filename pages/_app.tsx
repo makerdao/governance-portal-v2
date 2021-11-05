@@ -1,4 +1,5 @@
 import { AppProps } from 'next/app';
+import Head from 'next/head';
 import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex } from 'theme-ui';
 import { Global } from '@emotion/core';
@@ -8,6 +9,7 @@ import '@reach/listbox/styles.css';
 import '@reach/menu-button/styles.css';
 import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
+import { config } from 'lib/config';
 import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
 import Header from 'modules/app/components/layout/Header';
@@ -23,12 +25,20 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
+  const dev = config.NODE_ENV === 'development';
   // Initialize global hooks
   useAccountChange();
 
   return (
     <ThemeProvider theme={theme}>
       <HeadComponent />
+      <Head>
+        <meta
+          content={`script-src 'self' ${
+            dev ? "'unsafe-eval'" : ''
+          } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';`}
+        />
+      </Head>
       <CookiesProvider disabled={false}>
         <AnalyticsProvider>
           <SWRConfig
