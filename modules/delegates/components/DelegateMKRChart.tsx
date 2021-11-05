@@ -1,6 +1,7 @@
 import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
+import BigNumber from 'bignumber.js';
 
 import {
   CartesianGrid,
@@ -76,8 +77,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     return (
       <Box>
         {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
-        <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
-        <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
+        <Text as="p">MKR Weight: {new BigNumber(monthMKR?.MKR).toFormat(2)}</Text>
       </Box>
     );
   }
