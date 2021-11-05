@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Box, Image, jsx } from 'theme-ui';
+import { Jazzicon } from '@ukstv/jazzicon-react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -26,16 +27,20 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
   return (
     <Box sx={{ width: '41px', height: '41px', position: 'relative', minWidth: '41px' }}>
       <Tooltip label={delegateMetrics}>
-        <Image
-          src={delegatePicture}
-          key={delegate.id}
-          sx={{
-            objectFit: 'cover',
-            width: '100%',
-            borderRadius: '100%',
-            maxHeight: '41px'
-          }}
-        />
+        {delegate.picture ? (
+          <Image
+            src={delegatePicture}
+            key={delegate.id}
+            sx={{
+              objectFit: 'cover',
+              width: '100%',
+              borderRadius: '100%',
+              maxHeight: '41px'
+            }}
+          />
+        ) : (
+          <Jazzicon address={delegate.address} sx={{ height: '41px', width: '41px' }} />
+        )}
       </Tooltip>
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon
