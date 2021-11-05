@@ -1,13 +1,10 @@
-import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
+import { Box, Text, Flex, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
 
 import {
   CartesianGrid,
-  Legend,
-  Line,
   Area,
-  LineChart,
   AreaChart,
   ReferenceLine,
   Tooltip,
@@ -15,12 +12,13 @@ import {
   YAxis,
   ResponsiveContainer
 } from 'recharts';
+import FilterButton from 'modules/app/components/FilterButton';
 import { useEffect, useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
-import FilterButton from 'modules/app/components/FilterButton';
+import { format } from 'date-fns';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
@@ -31,27 +29,32 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   const oneMonth = 31 * oneDay;
   const oneWeek = 7 * oneDay;
 
+  const dateFormat = 'MM-dd-yyyy';
+
   const timeRanges = [
     {
       label: 'Last year',
       from: Date.now() - oneYear,
-      range: MKRWeightTimeRanges.month
+      range: MKRWeightTimeRanges.month,
+      interval: 30
     },
     {
       label: 'Last month',
       from: Date.now() - oneMonth,
-      range: MKRWeightTimeRanges.day
+      range: MKRWeightTimeRanges.day,
+      interval: 7
     },
     {
       label: 'Last week',
       from: Date.now() - oneWeek,
-      range: MKRWeightTimeRanges.day
+      range: MKRWeightTimeRanges.day,
+      interval: 1
     }
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
   const { data, error, isValidating, revalidate } = useSWR(
-    `/api/delegates/mkr-weight-history/${delegate.address}?network=${getNetwork()}&from=${
+    `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
       selectedTimeFrame.from
     }&range=${selectedTimeFrame.range}`,
     fetchJson
@@ -70,12 +73,14 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
     return (
       <Box>
-        <Text as="p">{monthMKR?.date}</Text>
+        {monthMKR && <Text as="p">{formatXAxis(monthMKR.date)}</Text>}
         <Text as="p">MKR Weight: {monthMKR?.MKR}</Text>
         <Text as="p">Average MKR delegated: {monthMKR?.averageMKRDelegated}</Text>
       </Box>
     );
   }
+
+  const formatXAxis = tickItem => format(new Date(tickItem), dateFormat);
 
   return (
     <Box>
@@ -124,18 +129,19 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
-              <stop offset="95%" stopColor="#FFFF" stopOpacity={0} />
+              <stop offset="95%" stopColor="#1AAB9B" stopOpacity={0} />
             </linearGradient>
           </defs>
 
           <XAxis
             dataKey="date"
-            interval="preserveStartEnd"
             stroke={'#ADADAD'}
             color="#ADADAD"
             tickMargin={15}
             axisLine={false}
             tickLine={false}
+            tickFormatter={formatXAxis}
+            interval={selectedTimeFrame.interval}
           />
           <YAxis
             dataKey="MKR"
@@ -152,23 +158,23 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             tickMargin={5}
           />
 
-          <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+          <CartesianGrid stroke="#D5D9E0" strokeDasharray="5 5" />
           <Tooltip content={renderTooltip} />
 
-          <Area
+          {/* <Area
             activeDot={false}
             dataKey="averageMKRDelegated"
             dot={false}
             stroke={'#D4D9E1'}
             fill="transparent"
             type="monotone"
-          />
+          /> */}
 
           <Area
             dataKey="MKR"
             stroke={'#1AAB9B'}
             type="monotone"
-            dot={{ stroke: '#1AAB9B', strokeWidth: 2 }}
+            // dot={{ stroke: '#1AAB9B', strokeWidth: 2 }}
             fill="url(#gradientFront)"
           />
 
