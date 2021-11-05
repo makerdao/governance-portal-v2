@@ -4,10 +4,7 @@ import { MenuItem } from '@reach/menu-button';
 
 import {
   CartesianGrid,
-  Legend,
-  Line,
   Area,
-  LineChart,
   AreaChart,
   ReferenceLine,
   Tooltip,
@@ -60,7 +57,11 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
       selectedTimeFrame.from
     }&range=${selectedTimeFrame.range}`,
-    fetchJson
+    fetchJson,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000
+    }
   );
 
   useEffect(() => {
