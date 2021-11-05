@@ -61,7 +61,7 @@ export async function fetchDelegatesMKRWeightHistory(
   const maker = await getMaker(network);
   const addressData: MKRLockedDelegate[] = await maker.service('voteDelegate').getMkrLockedDelegate(address);
   // const addressData = mockAddressData
-  
+
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
   const start = parseInt(
@@ -107,7 +107,7 @@ export async function fetchDelegatesMKRWeightHistory(
       });
     }
   }
-  
+
   // Filter by date
   return output.filter(i => {
     return i.date.getTime() > new Date(from).getTime();

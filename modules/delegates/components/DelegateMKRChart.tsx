@@ -54,16 +54,17 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
   const { data, isValidating } = useSWR(
-    typeof window !== 'undefined' ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
-      selectedTimeFrame.from
-    }&range=${selectedTimeFrame.range}`: null,
+    typeof window !== 'undefined'
+      ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
+          selectedTimeFrame.from
+        }&range=${selectedTimeFrame.range}`
+      : null,
     fetchJson,
     {
       revalidateOnFocus: false,
       dedupingInterval: 60000
     }
   );
-
 
   function renderTooltip(item) {
     const monthMKR = data ? data.find(i => i.date === item.label) : null;
@@ -126,7 +127,6 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
         </Box>
       </Flex>
       <ResponsiveContainer width={'100%'} height={400}>
-        
         <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 72, top: 10 }}>
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
