@@ -10,7 +10,6 @@ import {
   Link as ExternalLink,
   Label,
   Checkbox,
-  jsx,
   Textarea
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -72,6 +71,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
 
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
+  const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
   const afterVote = currentSlate.includes(proposal.address)
     ? mkrSupporting
@@ -236,11 +236,10 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               my: 2,
               mb: 4,
               width: '100%',
-              borderColor: 'secondaryMuted',
-              height: '96px'
+              borderColor: 'secondaryMuted'
             }}
           >
-            <Label variant="microHeading" sx={{ fontSize: 3 }}>
+            <Label variant="microHeading" sx={{ fontSize: 3, mb: 1 }}>
               Why are you voting for this proposal?
             </Label>
             <Textarea
@@ -253,18 +252,19 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
                 resize: 'none'
               }}
               onChange={event => setComment(event.target.value)}
-              placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
             />
+
             <Text
               as="p"
               variant="text"
-              sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted' }}
+              sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted', mt: 1 }}
             >
-              {250 - comment.length} characters remaining
+              Optional. You&apos;ll be prompted to sign a message with your wallet. {250 - comment.length}{' '}
+              characters remaining.
             </Text>
           </Box>
         </Box>
-        <Box sx={{ width: '100%', mt: 3 }}>
+        <Box sx={{ width: '100%' }}>
           <Button
             variant="primaryLarge"
             sx={{ width: '100%' }}
@@ -272,7 +272,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               trackButtonClick('vote');
               vote(hatChecked, comment);
             }}
-            disabled={comment.length > 250}
+            disabled={comment.length > 250 || !hasVotingWeight}
           >
             {currentSlate.includes(proposal.address) && currentSlate.length > 1
               ? 'Concentrate all my MKR on this proposal'
