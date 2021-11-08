@@ -3,7 +3,6 @@ import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
 
 export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate }): React.ReactElement {
-
   const pollParticipationTooltipLabel = (
     <>
       The percentage of polling votes the delegate has participated in. <br />
@@ -26,7 +25,6 @@ export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate 
       Updated weekly by the GovAlpha Core Unit. <br />
     </>
   );
-
 
   const styles = {
     row: {
