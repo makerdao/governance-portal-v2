@@ -20,9 +20,7 @@ const TabbedLayout = ({
   banner
 }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
-  const activeTab = tabTitles[activeTabIndex];
   
-   
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const [, hash] = location.href.split('#');
@@ -36,9 +34,9 @@ const TabbedLayout = ({
 
   useEffect(() => {
     if (hashRoute) {
-      Router.replace(`${location.pathname + location.search}#${slugify(activeTab)}`);
+      Router.replace(`${location.pathname + location.search}#${slugify(tabTitles[activeTabIndex])}`);
     }
-  }, [activeTab]);
+  }, [activeTabIndex]);
 
   return (
     <Flex
@@ -52,7 +50,7 @@ const TabbedLayout = ({
             <Tab
               key={tabTitle}
               sx={{
-                ...getTabStyles({ isActive: activeTab === tabTitle, isFirst: index === 0 })
+                ...getTabStyles({ isActive: tabTitles[activeTabIndex] === tabTitle, isFirst: index === 0 })
               }}
             >
               {tabTitle}
@@ -62,7 +60,7 @@ const TabbedLayout = ({
         {banner ? banner : <Divider sx={{ m: 0 }} />}
         <TabPanels>
           {tabPanels.map((tabPanel, i) => (
-            <TabPanel key={i}>{tabPanel}</TabPanel>
+            <TabPanel key={tabTitles[i]}>{tabPanel}</TabPanel>
           ))}
         </TabPanels>
       </Tabs>
