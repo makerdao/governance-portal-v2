@@ -1,7 +1,8 @@
 import { Card, Text, Link } from 'theme-ui';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink, formatRound } from 'lib/utils';
-import { formatDateWithTime } from 'lib/datetime';
+import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
 import { CurrencyObject } from 'types/currency';
 import { StakingHistoryRow } from 'types/esmodule';
@@ -11,6 +12,8 @@ type Props = {
 };
 
 const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
+  const bpi = useBreakpointIndex();
+
   return (
     <Card mt={3} p={3} pb={4}>
       <table
@@ -69,8 +72,8 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       overflow: hidden;
                     `}
                   >
-                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3 }}>
-                      {formatDateWithTime(action.time)}
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
+                      {bpi > 0 ? formatDateWithTime(action.time) : formatDateWithoutTime(action.time)}
                     </Text>
                   </td>
                   <td
@@ -78,7 +81,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       white-space: nowrap;
                     `}
                   >
-                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3 }}>
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
                       {action.amount.gte(0.01)
                         ? formatRound(action.amount.toNumber())
                         : formatRound(action.amount.toNumber(), 6)}{' '}
@@ -92,7 +95,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       variant="caption"
                       color="accentBlue"
                     >
-                      {cutMiddle(action.senderAddress, 8, 6)}
+                      {cutMiddle(action.senderAddress, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
                     </Link>
                   </td>
                 </tr>
