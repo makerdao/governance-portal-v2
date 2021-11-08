@@ -14,7 +14,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import FilterButton from 'modules/app/components/FilterButton';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
@@ -82,7 +82,13 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     );
   }
 
-  const formatXAxis = tickItem => format(new Date(tickItem), dateFormat);
+  const formatXAxis = (tickItem) => {
+    if (tickItem === 'auto') {
+      // Sometimes the tickItem is "auto", ignore this case
+      return 'auto';
+    }
+    return format(new Date(tickItem), dateFormat);
+  };
 
   return (
     <Box>
@@ -127,7 +133,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
         </Box>
       </Flex>
       <ResponsiveContainer width={'100%'} height={400}>
-        <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 72, top: 10 }}>
+        <AreaChart data={data || []} margin={{ bottom: 66, left: 20, right: 20, top: 10 }}>
           <defs>
             <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
@@ -143,7 +149,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             axisLine={false}
             tickLine={false}
             tickFormatter={formatXAxis}
-            interval={selectedTimeFrame.interval}
+            
           />
           <YAxis
             dataKey="MKR"
