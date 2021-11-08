@@ -72,6 +72,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
 
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
+  const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
   const afterVote = currentSlate.includes(proposal.address)
     ? mkrSupporting
@@ -272,7 +273,7 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
               trackButtonClick('vote');
               vote(hatChecked, comment);
             }}
-            disabled={comment.length > 250}
+            disabled={comment.length > 250 || !hasVotingWeight}
           >
             {currentSlate.includes(proposal.address) && currentSlate.length > 1
               ? 'Concentrate all my MKR on this proposal'
