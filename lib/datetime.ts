@@ -1,12 +1,13 @@
-import { format } from 'date-fns';
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
   if (!dateString) return '';
 
   const date = new Date(dateString);
+  const utcTime = utcToZonedTime(date, 'UTC');
 
   try {
-    return format(date, 'MMM dd yyyy HH:mm zz');
+    return format(utcTime, 'MMM dd yyyy HH:mm zz', { timeZone: 'UTC' });
   } catch (err) {
     return '--';
   }
