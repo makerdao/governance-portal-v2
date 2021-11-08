@@ -115,7 +115,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const close = () => setVoting(false);
 
   const commentsTab = (
-    <div key={3} sx={{ p: [3, 4] }}>
+    <div key={'comments'} sx={{ p: [3, 4] }}>
       {comments ? (
         <Comments proposal={proposal} comments={comments} />
       ) : (
@@ -236,11 +236,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 ]}
                 tabPanels={[
                   <div
-                    key={1}
+                    key={'about'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
-                  <div key={2} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>,
                   commentsTab
@@ -254,7 +254,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Spell Details']}
                 tabPanels={[
-                  <div key={1} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>
                 ]}
