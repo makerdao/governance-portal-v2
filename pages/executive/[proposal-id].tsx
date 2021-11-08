@@ -115,7 +115,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const close = () => setVoting(false);
 
   const commentsTab = (
-    <div key={2} sx={{ p: [3, 4] }}>
+    <div key={3} sx={{ p: [3, 4] }}>
       {comments ? (
         <Comments proposal={proposal} comments={comments} />
       ) : (
