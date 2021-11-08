@@ -82,7 +82,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
     );
   }
 
-  const formatXAxis = (tickItem) => {
+  const formatXAxis = tickItem => {
     if (tickItem === 'auto') {
       // Sometimes the tickItem is "auto", ignore this case
       return 'auto';
@@ -149,7 +149,6 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             axisLine={false}
             tickLine={false}
             tickFormatter={formatXAxis}
-            
           />
           <YAxis
             dataKey="MKR"
