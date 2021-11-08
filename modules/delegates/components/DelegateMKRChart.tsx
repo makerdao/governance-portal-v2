@@ -111,7 +111,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             Voting Weight
           </Text>
           <Text as="p" variant="secondary" color="onSurface">
-            Total voting weight over time
+            MKR delegated over time
           </Text>
         </Box>
         <Box>
@@ -205,7 +205,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
             }}
           />
           <Text variant="secondary" color="onSurface">
-            Voting weight of this delegate
+            MKR delegated to this delegate
           </Text>
         </Box>
 
