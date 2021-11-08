@@ -21,13 +21,16 @@ const TabbedLayout = ({
 }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
   const activeTab = tabTitles[activeTabIndex];
-
+  
+   
   useEffect(() => {
-    const [, hash] = location.href.split('#');
-    if (hashRoute && hash) {
-      tabTitles.forEach((title, i) => {
-        if (slugify(title) === hash) setActiveTabIndex(i);
-      });
+    if (typeof window !== 'undefined') {
+      const [, hash] = location.href.split('#');
+      if (hashRoute && hash) {
+        tabTitles.forEach((title, i) => {
+          if (slugify(title) === hash) setActiveTabIndex(i);
+        });
+      }
     }
   }, []);
 
