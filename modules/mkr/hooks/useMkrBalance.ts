@@ -8,8 +8,8 @@ type MkrBalanceResponse = {
   error?: Error;
 };
 
-export const useMkrBalance = (address): MkrBalanceResponse => {
-  const { data, error } = useSWR(['/user/mkr-balance', address], (_, address) =>
+export const useMkrBalance = (address?: string): MkrBalanceResponse => {
+  const { data, error } = useSWR(address ? ['/user/mkr-balance', address] : null, (_, address) =>
     getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
   );
 

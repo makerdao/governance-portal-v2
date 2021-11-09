@@ -75,7 +75,7 @@ describe('Executive page', () => {
 
     await screen.findByText('Withdraw from voting contract');
     const inputWithdraw = screen.getByTestId('mkr-input');
-    fireEvent.change(inputWithdraw, { target: { value: '10' } });
+    fireEvent.change(inputWithdraw, { target: { value: '6' } });
 
     const finalDepositButtonWithdraw = await screen.findByText('Withdraw MKR');
 
@@ -88,7 +88,7 @@ describe('Executive page', () => {
 
     const lockedMKR = await screen.findByTestId('locked-mkr');
 
-    expect(lockedMKR).toHaveTextContent(/^0.000000 MKR$/); //find exact match
+    expect(lockedMKR).toHaveTextContent(/^4.000000 MKR$/); //find exact match
   });
 
   test('can vote', async () => {

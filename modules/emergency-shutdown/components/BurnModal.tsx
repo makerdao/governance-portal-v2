@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState } from 'react';
 import { jsx } from 'theme-ui';
 
@@ -14,7 +13,7 @@ import BurnPending from './burnModal/BurnPending';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'types/currency';
-import { useMkrBalance } from 'lib/hooks';
+import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 
 const ModalContent = ({
   setShowDialog,

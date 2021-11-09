@@ -1,9 +1,8 @@
-/** @jsx jsx */
 import Link from 'next/link';
 import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-
+import { ZERO_ADDRESS } from 'stores/accounts';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
@@ -84,7 +83,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             View proposal
           </Button>
         </Link>
-        {isHat && proposal.address !== '0x0000000000000000000000000000000000000000' ? (
+        {isHat && proposal.address !== ZERO_ADDRESS ? (
           <Badge
             variant="primary"
             sx={{

@@ -1,10 +1,10 @@
 import { Button, Box, Flex, Text } from '@theme-ui/components';
-import { Alert, Link } from 'theme-ui';
+import { Alert } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import BigNumber from 'bignumber.js';
 import { useState } from 'react';
 import useAccountsStore from 'stores/accounts';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
 
 type Props = {

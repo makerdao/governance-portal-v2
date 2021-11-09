@@ -1,10 +1,9 @@
-/** @jsx jsx */
-
 import { Box, Flex, Text, jsx, Link as ThemeUILink } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 
+import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 
@@ -61,7 +60,7 @@ export function SpellEffectsTab({
   */
   const [expanded, setExpanded] = useState(false);
 
-  return (
+  return spellData ? (
     <Box>
       <Text
         as="p"
@@ -96,14 +95,11 @@ export function SpellEffectsTab({
               justifyContent: 'space-between'
             }}
           >
-            {spellData?.executiveHash ? (
+            {spellData?.executiveHash && (
               <Text sx={{ mr: 2, fontWeight: 'semiBold', wordBreak: 'break-all' }}>
                 {spellData?.executiveHash}
               </Text>
-            ) : (
-              <SkeletonThemed width="300px" height="15px" />
             )}
-
             <Box sx={{ cursor: 'pointer', ml: 2, minWidth: '99px' }} onClick={() => setExpanded(!expanded)}>
               <Text color={'textMuted'}>
                 What&apos;s this? <DaiUIIcon name={expanded ? 'chevron_up' : 'chevron_down'} size={2} />
@@ -156,22 +152,24 @@ export function SpellEffectsTab({
           </Box>
         )}
         <Box sx={{ width: ['100%', '50%'] }}>
-          <Flex mb={3} mt={[3, 0]}>
-            <CircleIcon name="hourglass" />
-            <Box>
-              <Text
-                as="p"
-                sx={{
-                  fontWeight: 'semiBold'
-                }}
-              >
-                Expiration
-              </Text>
-              <Text as="p" color="textMuted">
-                {formatDateWithoutTime(spellData?.expiration)}
-              </Text>
-            </Box>
-          </Flex>
+          {spellData?.expiration && (
+            <Flex mb={3} mt={[3, 0]}>
+              <CircleIcon name="hourglass" />
+              <Box>
+                <Text
+                  as="p"
+                  sx={{
+                    fontWeight: 'semiBold'
+                  }}
+                >
+                  Expiration
+                </Text>
+                <Text as="p" color="textMuted">
+                  {formatDateWithoutTime(spellData?.expiration)}
+                </Text>
+              </Box>
+            </Flex>
+          )}
           {spellData?.officeHours && (
             <Flex mb={3}>
               <CircleIcon name="clock" />
@@ -193,5 +191,11 @@ export function SpellEffectsTab({
         </Box>
       </Box>
     </Box>
+  ) : (
+    <Stack gap={3}>
+      <SkeletonThemed />
+      <SkeletonThemed />
+      <SkeletonThemed />
+    </Stack>
   );
 }

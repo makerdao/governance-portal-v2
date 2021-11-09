@@ -11,7 +11,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yarn install
+            yarn
       - save_cache:
           paths:
             - node_modules
@@ -20,6 +20,7 @@ jobs:
   test:
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
+    resource_class: large
     steps:
       - checkout
       - restore_cache:

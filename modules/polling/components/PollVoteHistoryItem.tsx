@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { getNetwork } from 'lib/maker';
 import Link from 'next/link';
 import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';

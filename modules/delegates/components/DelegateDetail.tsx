@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import React from 'react';
 import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -43,7 +42,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
       </Box>
     ) : null,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory stats={stats} />
+      <DelegateVoteHistory delegate={delegate} stats={stats} />
     </Box>
   ].filter(i => !!i);
 

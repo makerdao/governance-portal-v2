@@ -1,7 +1,5 @@
-/** @jsx jsx */
 import React, { useState } from 'react';
 import { Heading, Text, Box, jsx, Button, Flex, Input, Label, Link as ExternalLink } from 'theme-ui';
-import Head from 'next/head';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -20,6 +18,7 @@ import Hash from 'ipfs-only-hash';
 import useAccountsStore from 'stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/utils';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -97,9 +96,8 @@ const PollingCreate = (): React.ReactElement => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      <Head>
-        <title>Maker Governance - Create Poll</title>
-      </Head>
+      <HeadComponent title="Create Poll" />
+
       <Stack gap={3}>
         <Heading mb={2} as="h4">
           Create Poll
@@ -201,7 +199,14 @@ const PollingCreate = (): React.ReactElement => {
           {bpi >= 3 && (
             <Stack gap={3}>
               <SystemStatsSidebar
-                fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+                fields={[
+                  'chief contract',
+                  'mkr in chief',
+                  'mkr needed to pass',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling'
+                ]}
               />
               <MkrLiquiditySidebar />
               <ResourceBox type={'general'} />

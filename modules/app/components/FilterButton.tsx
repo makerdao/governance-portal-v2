@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
@@ -13,7 +12,7 @@ export default function FilterButton({
 }: Props): JSX.Element {
   return (
     <Menu>
-      <MenuButton sx={{ variant: 'buttons.outline' }} {...props}>
+      <MenuButton sx={{ variant: 'buttons.outline', lineHeight: 'inherit' }} {...props}>
         {name()}
         <Icon name="chevron_down" size={2} ml={2} />
       </MenuButton>

@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useRef, useEffect } from 'react';
 import { Grid, Flex, Input, Text, Button, jsx } from 'theme-ui';
 import shallow from 'zustand/shallow';

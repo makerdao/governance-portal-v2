@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Flex, Button, Text, jsx, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 

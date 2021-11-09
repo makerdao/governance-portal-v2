@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { Grid, jsx } from 'theme-ui';
 
 /**

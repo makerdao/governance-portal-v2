@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex, jsx } from 'theme-ui';
@@ -112,7 +111,7 @@ export default function MobileVoteSheet({
           borderColor: 'secondaryMuted',
           px: 3,
           py: '14px',
-          backgroundColor: 'white',
+          backgroundColor: 'surface',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'row'
