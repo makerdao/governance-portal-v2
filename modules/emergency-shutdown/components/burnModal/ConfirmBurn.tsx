@@ -6,7 +6,6 @@ import {
   Text,
   Grid,
   Input,
-  jsx,
   Close,
   Label,
   Checkbox,

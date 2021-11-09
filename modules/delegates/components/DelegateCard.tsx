@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text, Link as ThemeUILink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';

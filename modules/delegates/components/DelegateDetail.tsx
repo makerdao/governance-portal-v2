@@ -1,5 +1,5 @@
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
+import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';

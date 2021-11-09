@@ -1,4 +1,4 @@
-import { Button, Flex, Link, Text, jsx } from 'theme-ui';
+import { Button, Flex, Link, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'types/transaction';

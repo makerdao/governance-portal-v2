@@ -1,5 +1,5 @@
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
+import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';

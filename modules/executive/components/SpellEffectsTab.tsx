@@ -1,4 +1,4 @@
-import { Box, Flex, Text, jsx, Link as ThemeUILink } from 'theme-ui';
+import { Box, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';

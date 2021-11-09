@@ -1,6 +1,6 @@
 import { getNetwork } from 'lib/maker';
 import Link from 'next/link';
-import { Box, Text, jsx, Link as ThemeUILink } from 'theme-ui';
+import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { Icon } from '@makerdao/dai-ui-icons';

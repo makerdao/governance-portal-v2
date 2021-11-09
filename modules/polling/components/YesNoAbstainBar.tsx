@@ -1,4 +1,4 @@
-import { Box, Text, jsx } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 
 export function YesNoAbstainBar({
   yesPercent,

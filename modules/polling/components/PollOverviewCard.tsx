@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, jsx, ThemeUIStyleObject } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 

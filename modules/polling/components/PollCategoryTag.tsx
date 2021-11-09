@@ -1,4 +1,4 @@
-import { Box, Text, jsx } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import useUiFiltersStore from 'stores/uiFilters';
 import shallow from 'zustand/shallow';
 

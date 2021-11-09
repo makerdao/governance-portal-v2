@@ -1,5 +1,5 @@
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { Divider, Box, Text, Flex, jsx } from 'theme-ui';
+import { Divider, Box, Text, Flex } from 'theme-ui';
 import { CMSProposal } from 'modules/executive/types';
 import { useExecutives } from '../hooks/useExecutives';
 

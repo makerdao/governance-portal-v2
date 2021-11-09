@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text, Flex, Button, Box, jsx, ThemeUIStyleObject } from 'theme-ui';
+import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';

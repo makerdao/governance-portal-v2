@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button, Text, Flex, Link as InternalLink, jsx, Box, ThemeUIStyleObject } from 'theme-ui';
+import { Button, Text, Flex, Link as InternalLink, Box, ThemeUIStyleObject } from 'theme-ui';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { getNetwork } from 'lib/maker';
 import CountdownTimer from 'modules/app/components/CountdownTimer';

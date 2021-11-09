@@ -1,5 +1,5 @@
 import { forwardRef, useMemo } from 'react';
-import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
+import { Box, NavLink, Badge, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';

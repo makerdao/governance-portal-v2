@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Flex, jsx } from 'theme-ui';
+import { Flex } from 'theme-ui';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';

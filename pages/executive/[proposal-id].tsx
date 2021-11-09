@@ -13,8 +13,7 @@ import {
   Box,
   Text,
   Divider,
-  Link as ThemeUILink,
-  jsx
+  Link as ThemeUILink
 } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
