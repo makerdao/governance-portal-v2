@@ -1,4 +1,4 @@
-import { Box, Text, Flex, jsx } from 'theme-ui';
+import { Box, Text, Flex } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 
 import { Poll } from 'modules/polling/types';

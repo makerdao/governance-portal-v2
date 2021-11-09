@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-import { Box, Text, jsx } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { Delegate } from '../types';
 
 export function DelegateParticipationMetrics({ delegate }: { delegate: Delegate }): React.ReactElement {

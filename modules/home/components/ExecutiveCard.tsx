@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import useSWR from 'swr';
-import { Button, Text, Flex, Badge, Box, Link as InternalLink, jsx } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, Link as InternalLink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { ZERO_ADDRESS } from 'stores/accounts';
 import Stack from 'modules/app/components/layout/layouts/Stack';

@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Grid, Flex, Input, Text, Button, jsx } from 'theme-ui';
+import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from 'modules/app/components/FilterButton';

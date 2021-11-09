@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { jsx } from 'theme-ui';
-
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';

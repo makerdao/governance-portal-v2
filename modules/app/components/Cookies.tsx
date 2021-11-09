@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import Link from 'next/link';
-import { Box, Button, Flex, jsx, Text, Label, Checkbox } from 'theme-ui';
+import { Box, Button, Flex, Text, Label, Checkbox } from 'theme-ui';
 import { CookiesContext } from 'modules/app/client/cookies/CookiesContext';
 
 export default function Cookies(): React.ReactElement | null {

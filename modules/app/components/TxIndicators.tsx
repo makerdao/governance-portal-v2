@@ -1,4 +1,4 @@
-import { jsx, ThemeUIStyleObject } from 'theme-ui';
+import { ThemeUIStyleObject } from 'theme-ui';
 import { useEffect } from 'react';
 import lottie from 'lottie-web';
 

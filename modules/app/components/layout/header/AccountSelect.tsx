@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { jsx, Box, Flex, Text, Button, Close } from 'theme-ui';
+import { Box, Flex, Text, Button, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 

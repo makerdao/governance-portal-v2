@@ -1,4 +1,3 @@
-import { jsx } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
 

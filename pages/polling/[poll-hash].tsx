@@ -4,18 +4,7 @@ import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import {
-  Card,
-  Flex,
-  Divider,
-  Heading,
-  Text,
-  NavLink,
-  Box,
-  Button,
-  Link as ExternalLink,
-  jsx
-} from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 import useSWR, { mutate } from 'swr';

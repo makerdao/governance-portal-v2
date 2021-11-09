@@ -1,4 +1,4 @@
-import { Box, Flex, jsx, ThemeUIStyleObject } from 'theme-ui';
+import { Box, Flex, ThemeUIStyleObject } from 'theme-ui';
 
 import { fadeIn } from 'lib/keyframes';
 import Footer from '../Footer';

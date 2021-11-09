@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Grid, Text, Box, Link as ExternalLink, jsx } from 'theme-ui';
+import { Grid, Text, Box, Link as ExternalLink } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
