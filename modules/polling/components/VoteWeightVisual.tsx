@@ -87,7 +87,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       .text(function (d) {
         return delegateAddresses[d.data.voter]
           ? limitString(delegateAddresses[d.data.voter], 18, '...')
-          : cutMiddle(d.data.voter); 
+          : cutMiddle(d.data.voter);
       })
       .attr('font-size', function (d) {
         return d.r / 4.5;

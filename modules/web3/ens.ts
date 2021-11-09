@@ -12,7 +12,7 @@ export async function getENS(address: string): Promise<string> {
   return await resolver.name();
 }
 
-export async function resolveENS(ensName: string) : Promise<string> {
+export async function resolveENS(ensName: string): Promise<string> {
   const maker = await getMaker();
 
   const provider = maker.service('web3')._web3.currentProvider;

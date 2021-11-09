@@ -49,13 +49,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           {votes ? (
             <>
               {votes.map((v, i) => (
-                <tr key={i} style={{ fontSize: bpi < 1 ? '12px': '16px'}}>
+                <tr key={i} style={{ fontSize: bpi < 1 ? '12px' : '16px' }}>
                   <Text as="td" sx={{ pb: 2 }}>
                     <Link href={{ pathname: `/address/${v.voter}`, query: { network } }} passHref>
                       <ThemeUILink title="View address detail">
-                        {delegateAddresses[v.voter]
-                          ? delegateAddresses[v.voter]
-                          : <Address address={v.voter}/> }
+                        {delegateAddresses[v.voter] ? (
+                          delegateAddresses[v.voter]
+                        ) : (
+                          <Address address={v.voter} />
+                        )}
                       </ThemeUILink>
                     </Link>
                   </Text>
