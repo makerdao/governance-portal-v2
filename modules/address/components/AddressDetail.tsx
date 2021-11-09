@@ -10,6 +10,7 @@ import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
 import Tooltip from 'modules/app/components/Tooltip';
 import { cutMiddle } from 'lib/string';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
+import { Address } from './Address';
 
 type PropTypes = {
   address: string;
@@ -52,7 +53,7 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
               target="_blank"
             >
               <Text as="p" sx={{ fontSize: [1, 3], ml: 2 }}>
-                {bpi > 0 ? address : cutMiddle(address, 6, 6)}
+                <Address address={address} />
               </Text>
             </ExternalLink>
             {voteProxyInfo && (

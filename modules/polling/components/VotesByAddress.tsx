@@ -7,6 +7,7 @@ import { cutMiddle } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   tally: PollTally;
@@ -48,13 +49,13 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           {votes ? (
             <>
               {votes.map((v, i) => (
-                <tr key={i}>
+                <tr key={i} style={{ fontSize: bpi < 1 ? '12px': '16px'}}>
                   <Text as="td" sx={{ pb: 2 }}>
                     <Link href={{ pathname: `/address/${v.voter}`, query: { network } }} passHref>
                       <ThemeUILink title="View address detail">
                         {delegateAddresses[v.voter]
                           ? delegateAddresses[v.voter]
-                          : cutMiddle(v.voter, bpi < 1 ? 4 : 8, bpi < 1 ? 4 : 6)}
+                          : <Address address={v.voter}/> }
                       </ThemeUILink>
                     </Link>
                   </Text>
