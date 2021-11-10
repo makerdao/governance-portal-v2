@@ -1,5 +1,5 @@
-import { TransactionInProgress } from './TransactionInProgress';
-import { TxFinal } from './TxFinal';
+import { TransactionInProgress } from 'modules/app/components/TransactionInProgress';
+import { TxFinal } from 'modules/app/components/TxFinal';
 
 export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
   switch (tx?.status) {

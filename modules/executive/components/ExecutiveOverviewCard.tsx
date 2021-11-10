@@ -29,7 +29,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
   const account = useAccountsStore(state => state.currentAccount);
   const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
-  const { data: votedProposals } = useVotedProposals();
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const network = getNetwork();
   const bpi = useBreakpointIndex();
   const canVote = !!account;
@@ -173,7 +173,12 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
           )}
         </Flex>
         {voting && (
-          <VoteModal proposal={proposal} currentSlate={votedProposals} close={() => setVoting(false)} />
+          <VoteModal
+            proposal={proposal}
+            currentSlate={votedProposals}
+            close={() => setVoting(false)}
+            onMined={mutateVotedProposals}
+          />
         )}
         <Divider my={0} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
