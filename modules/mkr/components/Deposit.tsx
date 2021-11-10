@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import { useState } from 'react';
-import { Button, Flex, Text, Box, Link, jsx } from 'theme-ui';
+import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -17,7 +16,7 @@ import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import invariant from 'tiny-invariant';
-import { useMkrBalance } from 'lib/hooks';
+import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import BigNumber from 'bignumber.js';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';

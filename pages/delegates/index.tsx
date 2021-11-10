@@ -1,8 +1,6 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
+import { Heading, Box, Card, Text, Link as ThemeUILInk } from 'theme-ui';
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import ErrorPage from 'next/error';
 import { isDefaultNetwork } from 'lib/maker';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
@@ -22,6 +20,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import useAccountsStore from 'stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
   delegates: Delegate[];
@@ -55,9 +54,11 @@ const Delegates = ({ delegates, stats }: Props) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Delegates</title>
-      </Head>
+      <HeadComponent
+        title="Delegates"
+        description="Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases the effectiveness and efficiency of the governance process."
+        image={'https://vote.makerdao.com/seo/delegates.png'}
+      />
 
       <SidebarLayout>
         <Box>

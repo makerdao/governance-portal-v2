@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 
 export default function PageLoadingPlaceholder(): React.ReactElement {
   return (

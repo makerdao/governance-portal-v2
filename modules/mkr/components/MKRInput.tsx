@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import { useState } from 'react';
-import { Input, Text, Button, Box, Flex, jsx } from 'theme-ui';
+import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import BigNumber from 'bignumber.js';
 

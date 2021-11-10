@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import Skeleton, { SkeletonTheme, SkeletonProps, SkeletonThemeProps } from 'react-loading-skeleton';
-import { jsx, useThemeUI } from 'theme-ui';
+import { useThemeUI } from 'theme-ui';
 
 const SkeletonThemed = (props: SkeletonProps): React.ReactElement => {
   const { theme } = useThemeUI();

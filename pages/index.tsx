@@ -1,9 +1,6 @@
-/** @jsx jsx */
-
 import { useMemo, useEffect, useState } from 'react';
-import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, jsx, useColorMode } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -12,7 +9,7 @@ import { initTestchainPolls } from 'lib/utils';
 import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { useHat } from 'lib/hooks';
+import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SystemStats from 'modules/home/components/SystemStats';
@@ -51,9 +48,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 
   return (
     <div>
-      <Head>
-        <title>Maker Governance Voting Portal</title>
-      </Head>
       <div
         sx={{
           top: 0,

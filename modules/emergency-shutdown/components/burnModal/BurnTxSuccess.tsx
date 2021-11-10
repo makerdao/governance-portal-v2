@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Flex, Button, Text, jsx, Close, Link } from 'theme-ui';
+import { Flex, Button, Text, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from 'lib/maker';

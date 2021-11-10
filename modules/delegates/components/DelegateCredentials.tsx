@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Box, Divider, jsx, Link as ExternalLink, Text } from 'theme-ui';
+import { Box, Divider, Link as ExternalLink, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { Delegate } from '../types';

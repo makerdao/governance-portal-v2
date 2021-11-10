@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Flex, Button, Text, Grid, jsx, Close, Link, Spinner } from 'theme-ui';
+import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { getNetwork } from 'lib/maker';

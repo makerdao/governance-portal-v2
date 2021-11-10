@@ -1,10 +1,20 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import { Button, Card, Flex, Heading, Spinner, Box, Text, Divider, Link as ThemeUILink, jsx } from 'theme-ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Spinner,
+  Box,
+  Text,
+  Divider,
+  Link as ThemeUILink
+} from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
 import useSWR from 'swr';
@@ -14,6 +24,8 @@ import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { useHat } from 'modules/executive/hooks/useHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
@@ -38,6 +50,8 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { HeadComponent } from 'modules/app/components/layout/Head';
+import { CurrencyObject } from 'types/currency';
 
 type Props = {
   proposal: Proposal;
@@ -50,17 +64,21 @@ const editMarkdown = content => {
 
 const ProposalTimingBanner = ({
   proposal,
-  spellData
+  spellData,
+  mkrOnHat
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
+  mkrOnHat?: CurrencyObject;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
       <>
         <Divider my={1} />
         <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <Text sx={{ textAlign: 'center', px: [3, 4] }}>{getStatusText(proposal.address, spellData)}</Text>
+          <Text sx={{ textAlign: 'center', px: [3, 4] }}>
+            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+          </Text>
         </Flex>
         <Divider sx={{ mt: 1 }} />
       </>
@@ -81,6 +99,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   );
 
   const { data: votedProposals } = useVotedProposals();
+  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: hat } = useHat();
+  const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
   const { data: comments, error: commentsError } = useSWR(
     `/api/executive/comments/list/${proposal.address}`,
@@ -93,7 +114,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const close = () => setVoting(false);
 
   const commentsTab = (
-    <div key={2} sx={{ p: [3, 4] }}>
+    <div key={'comments'} sx={{ p: [3, 4] }}>
       {comments ? (
         <Comments proposal={proposal} comments={comments} />
       ) : (
@@ -118,6 +139,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+      <HeadComponent
+        title={`Proposal ${proposal['title'] ? proposal['title'] : proposal.address}`}
+        description={`See the results of the MakerDAO executive proposal ${
+          proposal['title'] ? proposal['title'] : proposal.address
+        }.`}
+      />
+
       {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
       {account && bpi === 0 && (
         <Box
@@ -161,6 +189,20 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {'title' in proposal ? proposal.title : proposal.address}
             </Heading>
+            {isHat && proposal.address !== ZERO_ADDRESS ? (
+              <Badge
+                variant="primary"
+                sx={{
+                  my: 2,
+                  ml: [3, 4],
+                  borderColor: 'primaryAlt',
+                  color: 'primaryAlt',
+                  textTransform: 'uppercase'
+                }}
+              >
+                Governing proposal
+              </Badge>
+            ) : null}
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
@@ -193,23 +235,25 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 ]}
                 tabPanels={[
                   <div
-                    key={1}
+                    key={'about'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
-                  <div key={2} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>,
                   commentsTab
                 ]}
-                banner={<ProposalTimingBanner proposal={proposal} spellData={spellData} />}
+                banner={
+                  <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                }
               ></Tabs>
             ) : (
               <Tabs
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Spell Details']}
                 tabPanels={[
-                  <div key={1} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>
                 ]}

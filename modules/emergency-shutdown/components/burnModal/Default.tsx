@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Flex, Button, Text, Grid, jsx, Close } from 'theme-ui';
+import { Flex, Button, Text, Grid, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 type Props = {

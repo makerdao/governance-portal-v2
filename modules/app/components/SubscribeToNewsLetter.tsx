@@ -1,8 +1,7 @@
-/** @jsx jsx */
 import { subscribeToNewsletter } from 'lib/services/emailSubscription';
 import { isValidEmail } from 'lib/validators/email';
 import { useState } from 'react';
-import { Box, Flex, Input, Button, Text, jsx } from 'theme-ui';
+import { Box, Flex, Input, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 export function SubscribeToNewsletter(): React.ReactElement {

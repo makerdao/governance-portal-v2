@@ -1,7 +1,5 @@
-/** @jsx jsx */
-
 import { Delegate } from '../types';
-import { Text, Flex, jsx } from 'theme-ui';
+import { Text, Flex } from 'theme-ui';
 import React from 'react';
 import Icon from 'modules/app/components/Icon';
 import { formatDateWithTime } from 'lib/datetime';

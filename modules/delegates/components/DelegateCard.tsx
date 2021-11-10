@@ -1,16 +1,19 @@
-/** @jsx jsx */
-
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text, Link as ThemeUILink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
-import { useLockedMkr, useMkrDelegated } from 'lib/hooks';
+import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from '../types';
 import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import {
+  participationTooltipLabel,
+  communicationTooltipLabel
+} from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 
@@ -33,22 +36,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
-
-  const participationTooltipLabel = (
-    <>
-      The percentage of votes the delegate has participated in. <br />
-      Combines stats for polls and executives. <br />
-      Updated weekly by the GovAlpha Core Unit. <br />
-    </>
-  );
-  const communicationTooltipLabel = (
-    <>
-      The percentage of votes for which the delegate has publicly <br />
-      communicated their reasoning in addition to voting. <br />
-      Combines stats for polls and executives. <br />
-      Updated weekly by the GovAlpha Core Unit. <br />
-    </>
-  );
 
   return (
     <Card
@@ -83,11 +70,28 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 <DelegatePicture delegate={delegate} />
 
                 <Box sx={{ ml: 2 }}>
-                  <Box>
+                  <Flex sx={{ alignItems: 'center' }}>
                     <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4] }}>
-                      {delegate.name ? limitString(delegate.name, 43, '...') : 'Unknown'}
+                      {delegate.name
+                        ? limitString(delegate.name, isOwner ? 23 : 43, '...')
+                        : limitString('Unknown', isOwner ? 12 : 43, '...')}
                     </Text>
-                  </Box>
+                    {isOwner && (
+                      <Flex
+                        sx={{
+                          display: 'inline-flex',
+                          backgroundColor: 'tagColorSevenBg',
+                          borderRadius: 'roundish',
+                          padding: '3px 6px',
+                          alignItems: 'center',
+                          color: 'tagColorSeven',
+                          ml: 2
+                        }}
+                      >
+                        <Text sx={{ fontSize: 1 }}>Owner</Text>
+                      </Flex>
+                    )}
+                  </Flex>
                   <Text>
                     {delegate.voteDelegateAddress.substr(0, 6)}...
                     {delegate.voteDelegateAddress.substr(
@@ -113,7 +117,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ borderColor: 'text', color: 'text' }}
                   variant="outline"
                 >
-                  View Profile Details
+                  {`View ${isOwner ? 'Your' : 'Profile'} Details`}
                 </Button>
               </a>
             </Link>

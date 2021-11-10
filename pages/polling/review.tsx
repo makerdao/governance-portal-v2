@@ -1,8 +1,7 @@
-/** @jsx jsx */
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, jsx, Button, Flex } from 'theme-ui';
+import { Heading, Box, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import invariant from 'tiny-invariant';

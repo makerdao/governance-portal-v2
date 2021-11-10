@@ -1,7 +1,6 @@
-/** @jsx jsx */
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';

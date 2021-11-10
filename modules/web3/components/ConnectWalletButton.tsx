@@ -1,8 +1,7 @@
-/** @jsx jsx */
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { formatAddress } from 'lib/utils';
 import { useEffect, useState } from 'react';
-import { Button, Box, Flex, Text, jsx, Spinner } from 'theme-ui';
+import { Button, Box, Flex, Text, Spinner } from 'theme-ui';
 import { getENS } from 'modules/web3/ens';
 
 type Props = {

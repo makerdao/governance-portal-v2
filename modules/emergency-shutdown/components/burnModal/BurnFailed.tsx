@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Flex, Button, Text, jsx, Close } from 'theme-ui';
+import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 const BurnFailed = ({ close }) => (

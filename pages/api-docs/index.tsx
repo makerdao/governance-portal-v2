@@ -1,12 +1,11 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import SwaggerUI from 'swagger-ui-react';
+import 'swagger-ui-react/swagger-ui.css';
 
 import { createSwaggerSpec } from 'next-swagger-doc';
-// TODO: swagger-ui-react makes the governance portal to crash
-// explore alternatives
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
-
-  return (<div id="swagger">{JSON.stringify(spec, null, 2)}</div>)
+  return  <SwaggerUI spec={spec} />;
 };
 
 export const getStaticProps: GetStaticProps = async ctx => {

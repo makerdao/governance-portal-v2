@@ -1,7 +1,5 @@
-/** @jsx jsx */
-
 import React from 'react';
-import { NavLink, jsx } from 'theme-ui';
+import { NavLink } from 'theme-ui';
 
 export default function ShortFooter(): React.ReactElement {
   return (

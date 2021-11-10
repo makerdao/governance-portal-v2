@@ -1,7 +1,6 @@
-/** @jsx jsx */
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { useState } from 'react';
-import { Box, Text, jsx, Divider } from 'theme-ui';
+import { Box, Text, Divider } from 'theme-ui';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollVoteHistoryItem } from './PollVoteHistoryItem';
 

@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
+import { Box, Text, Progress, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';

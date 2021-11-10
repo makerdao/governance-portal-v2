@@ -1,10 +1,9 @@
-/** @jsx jsx */
 import BigNumber from 'bignumber.js';
-import { useMkrDelegated } from 'lib/hooks';
-import useAccountsStore from 'stores/accounts';
-import { Flex, jsx } from 'theme-ui';
+import { Flex } from 'theme-ui';
+import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
+import useAccountsStore from 'stores/accounts';
 
 export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }): React.ReactElement {
   const account = useAccountsStore(state => state.currentAccount);

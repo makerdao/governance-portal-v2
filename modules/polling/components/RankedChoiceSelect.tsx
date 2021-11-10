@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import { useMemo, useState } from 'react';
-import { Box, Flex, Text, Close, jsx } from 'theme-ui';
+import { Box, Flex, Text, Close } from 'theme-ui';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
 import map from 'lodash/map';

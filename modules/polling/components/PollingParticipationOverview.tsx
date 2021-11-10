@@ -1,6 +1,4 @@
-/** @jsx jsx */
-
-import { Box, Text, jsx } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { POLL_VOTE_TYPE } from '../polling.constants';

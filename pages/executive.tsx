@@ -1,18 +1,17 @@
-/** @jsx jsx */
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Head from 'next/head';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
-import { useLockedMkr, useHat } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
@@ -42,6 +41,7 @@ import useUiFiltersStore from 'stores/uiFilters';
 import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -189,9 +189,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Head>
-        <title>Maker Governance - Executive Proposals</title>
-      </Head>
+      <HeadComponent title="Executive Proposals" />
+
       <Box sx={{ mt: ['-10px', '-25px'] }}>
         {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
           <>
@@ -431,7 +430,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           </Box>
           <Stack gap={3}>
             <SystemStatsSidebar
-              fields={['chief contract', 'mkr needed to pass', 'savings rate', 'total dai', 'debt ceiling']}
+              fields={[
+                'chief contract',
+                'mkr in chief',
+                'mkr needed to pass',
+                'savings rate',
+                'total dai',
+                'debt ceiling'
+              ]}
             />
             <MkrLiquiditySidebar />
             <ResourceBox type={'executive'} />

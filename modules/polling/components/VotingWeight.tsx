@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Box, Flex, Text, jsx } from 'theme-ui';
+import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
 import useSWR from 'swr';

@@ -1,13 +1,13 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { useMkrBalance, useTokenAllowance } from 'lib/hooks';
+import { useTokenAllowance } from 'lib/hooks';
+import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import { Delegate } from '../../types';

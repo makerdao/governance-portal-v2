@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import BigNumber from 'bignumber.js';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { PollTallyPluralityOption } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { YesNoAbstainBar } from './YesNoAbstainBar';

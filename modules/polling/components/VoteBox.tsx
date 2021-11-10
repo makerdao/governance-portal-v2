@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Box, Heading, Card, Text, jsx } from 'theme-ui';
+import { Box, Heading, Card, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import VotingStatus from './PollVotingStatus';

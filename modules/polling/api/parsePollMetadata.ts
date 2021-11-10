@@ -5,15 +5,28 @@ import { backoffRetry, timeoutPromise } from 'lib/utils';
 import matter from 'gray-matter';
 import { parsePollMetadata } from '../helpers/parser';
 
+export function sortPolls(pollList: Poll[]): Poll[] {
+  return pollList.sort((a, b) => {
+    // closest to expiration shown first, if some have same expiration date, sort by startdate
+    const dateEndDiff = a.endDate.getTime() - b.endDate.getTime();
+
+    // Sort by more recent first if they end at the same time
+    const sortedByStartDate = a.startDate.getTime() < b.startDate.getTime() ? 1 : -1;
+
+    return dateEndDiff < 0 ? 1 : dateEndDiff > 0 ? -1 : sortedByStartDate;
+  });
+}
+
 export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
-
-  for (const pollGroup of chunk(
-    uniqBy(pollList, p => p.multiHash),
-    20
-  )) {
+  //uniqBy keeps the first occurence of a duplicate, so we sort polls so that the most recent poll is kept in case of a duplicate
+  const dedupedPolls = uniqBy(
+    pollList.sort((a, b) => b.pollId - a.pollId),
+    p => p.multiHash
+  );
+  for (const pollGroup of chunk(dedupedPolls, 20)) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
       pollGroup.map(async (p: PartialPoll) => {
@@ -48,11 +61,5 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
     IDs: ${failedPollIds}`
   );
 
-  return (
-    polls
-      // closest to expiration shown first
-      .sort((a, b) =>
-        Date.now() - new Date(a.endDate).getTime() < Date.now() - new Date(b.endDate).getTime() ? -1 : 1
-      )
-  );
+  return sortPolls(polls);
 }

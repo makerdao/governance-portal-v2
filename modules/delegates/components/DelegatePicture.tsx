@@ -1,42 +1,57 @@
-/** @jsx jsx */
 import { DelegateStatusEnum } from '../delegates.constants';
-import { Box, Image, jsx } from 'theme-ui';
+import { Box, Flex, Image } from 'theme-ui';
+import { Jazzicon } from '@ukstv/jazzicon-react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
-  const delegatePicture = delegate.picture || '/assets/empty-profile-picture.svg';
-
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: ['column', 'row'] }}>
-        <img
-          sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }}
-          src={delegatePicture}
-        />
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: ['column', 'row']
+        }}
+      >
+        {delegate.picture ? (
+          <img
+            sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }}
+            src={delegate.picture}
+          />
+        ) : (
+          <Jazzicon
+            address={delegate.address}
+            sx={{ height: ['150px', '200px'], width: ['150px', '200px'] }}
+          />
+        )}
         <Box sx={{ marginLeft: 1, flex: 1 }}>
           <DelegateParticipationMetrics delegate={delegate} />
         </Box>
-      </Box>
+      </Flex>
     </Box>
   );
 
   return (
     <Box sx={{ width: '41px', height: '41px', position: 'relative', minWidth: '41px' }}>
-      <Tooltip label={delegateMetrics}>
-        <Image
-          src={delegatePicture}
-          key={delegate.id}
-          sx={{
-            objectFit: 'cover',
-            width: '100%',
-            borderRadius: '100%',
-            maxHeight: '41px'
-          }}
-        />
-      </Tooltip>
+      {delegate.picture ? (
+        <Tooltip label={delegateMetrics}>
+          <Image
+            src={delegate.picture}
+            key={delegate.id}
+            sx={{
+              objectFit: 'cover',
+              width: '100%',
+              borderRadius: '100%',
+              maxHeight: '41px'
+            }}
+          />
+        </Tooltip>
+      ) : (
+        <Jazzicon address={delegate.address} sx={{ height: '41px', width: '41px' }} />
+      )}
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon
           name={'verified'}

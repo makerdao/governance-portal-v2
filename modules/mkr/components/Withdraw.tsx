@@ -1,6 +1,5 @@
-/** @jsx jsx */
 import { useState } from 'react';
-import { Button, Flex, Text, Box, jsx, Alert, Link } from 'theme-ui';
+import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
@@ -16,7 +15,7 @@ import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, { transactionsSelectors, transactionsApi } from 'stores/transactions';
 import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import { useLockedMkr } from 'lib/hooks';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import BigNumber from 'bignumber.js';

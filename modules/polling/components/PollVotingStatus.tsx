@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { Flex, Box, Badge, jsx, Text, ThemeUIStyleObject } from 'theme-ui';
+import { Flex, Box, Badge, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';

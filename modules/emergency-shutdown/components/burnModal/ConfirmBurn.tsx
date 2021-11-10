@@ -1,4 +1,3 @@
-/** @jsx jsx */
 import { useState, useEffect } from 'react';
 import {
   Flex,
@@ -7,7 +6,6 @@ import {
   Text,
   Grid,
   Input,
-  jsx,
   Close,
   Label,
   Checkbox,
