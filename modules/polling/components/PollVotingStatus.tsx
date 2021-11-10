@@ -3,7 +3,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { useAllUserVotes } from 'lib/hooks';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
