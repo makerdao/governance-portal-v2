@@ -86,7 +86,6 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const ballotLength = Object.keys(ballot).length;
   const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
-  
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
     getPollApiUrl(poll),

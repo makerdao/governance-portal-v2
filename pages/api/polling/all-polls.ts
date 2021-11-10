@@ -70,7 +70,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
  *         ctx:
  *           prev: null
  *           next: null
- * 
+ *
  * /api/polling/all-polls:
  *   get:
  *     tags:
