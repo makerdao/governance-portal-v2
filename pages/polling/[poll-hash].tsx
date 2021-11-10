@@ -41,6 +41,7 @@ import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { getPollTally } from 'modules/polling/helpers/getPollTaly';
 
 function prefetchTally(poll) {
   if (typeof window !== 'undefined' && poll) {
@@ -78,13 +79,12 @@ const WinningOptionText = ({
   );
 };
 
-const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
+const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
-  const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
 
   const { data: tally, error: tallyError } = useSWR<PollTally>(
@@ -97,15 +97,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
     ssr: false
   });
 
-  useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
-    } else {
-      _setPolls(prefetchedPolls);
-    }
-  }, []);
 
-  const activePolls = _polls ? _polls.filter(isActivePoll) : [];
   const hasPollEnded = !isActivePoll(poll);
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
@@ -117,10 +109,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
         <MobileVoteSheet
           account={account}
           ballotCount={ballotLength}
-          activePolls={activePolls}
           setPoll={setMobileVotingPoll}
           poll={mobileVotingPoll}
-          withStart
+          withStart 
         />
       )}
       <SidebarLayout>
@@ -351,11 +342,9 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
 };
 
 export default function PollPage({
-  poll: prefetchedPoll,
-  polls
+  poll: prefetchedPoll
 }: {
   poll?: Poll;
-  polls: Poll[];
 }): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
@@ -364,6 +353,7 @@ export default function PollPage({
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
+      //TODO: call api/poll 
       getPoll(query['poll-hash'] as string, {})
         .then(_setPoll)
         .catch(setError);
@@ -384,31 +374,34 @@ export default function PollPage({
     );
 
   const poll = isDefaultNetwork() ? prefetchedPoll : _poll;
-  return <PollView poll={poll as Poll} polls={polls} />;
+  return <PollView poll={poll as Poll} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
-  const polls = await getPolls({});
-  const pollExists = !!polls.find(poll => poll.slug === pollSlug);
-  if (!pollExists) return { revalidate: 30, props: { poll: null } };
-  const poll = await getPoll(pollSlug, {});
-  // TODO: Include tally in server data, this will lower the amount of request and will allow for better SEO
+  
+  const poll = await getPoll(pollSlug);
+
+  if (!poll) {
+    return { revalidate: 30, props: { poll: null } };
+  }
+
+  const tally = await getPollTally(poll);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
-      poll
+      poll,
+      tally
     }
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const polls = await getPolls({});
-  const paths = polls.map(p => `/polling/${p.slug}`);
+  const pollsResponse = await getPolls();
+  const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
 
   return {
     paths,

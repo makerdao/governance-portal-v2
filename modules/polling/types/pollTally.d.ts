@@ -49,6 +49,10 @@ export type RawPollTallyRankedChoice = {
   totalMkrParticipation: CurrencyObject;
   numVoters: number;
   options: Record<number, PollTallyRankedChoiceOption>;
+  results: RankedChoiceResult[];
+  winningOptionName: string;
+  totalMkrParticipation: CurrencyObject;
+  votesByAddress?: PollTallyVote[];
 };
 
 export type RawPollTallyPlurality = {
@@ -57,22 +61,13 @@ export type RawPollTallyPlurality = {
   totalMkrParticipation: CurrencyObject;
   numVoters: number;
   options: Record<number, PollTallyPluralityOption>;
-};
-
-export type RawPollTally = RawPollTallyRankedChoice | RawPollTallyPlurality;
-
-export type PollTallyRankedChoice = RawPollTallyRankedChoice & {
-  results: RankedChoiceResult[];
-  winningOptionName: string;
-  totalMkrParticipation: CurrencyObject;
-  votesByAddress?: PollTallyVote[];
-};
-
-export type PollTallyPlurality = RawPollTallyPlurality & {
   results: PluralityResult[];
   winningOptionName: string;
   totalMkrParticipation: CurrencyObject;
   votesByAddress?: PollTallyVote[];
 };
+
+export type RawPollTally = RawPollTallyRankedChoice | RawPollTallyPlurality;
+
 
 export type PollTally = PollTallyRankedChoice | PollTallyPlurality;

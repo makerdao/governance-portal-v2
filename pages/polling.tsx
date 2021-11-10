@@ -31,9 +31,10 @@ import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getPolls } from 'modules/polling/api/fetchPolls';
+import { getPollCategories, getPolls } from 'modules/polling/api/fetchPolls';
 import { fetchJson } from 'lib/fetchJson';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
 
 type Props = {
   polls: Poll[];
@@ -140,7 +141,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
         <MobileVoteSheet
           account={account}
           ballotCount={ballotLength}
-          activePolls={activePolls}
           poll={mobileVotingPoll}
           setPoll={setMobileVotingPoll}
           close={() => setMobileVotingPoll(null)}
@@ -299,9 +299,9 @@ export default function PollingOverviewPage({
   useEffect(() => {
     if (!isDefaultNetwork()) {
       fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
-        .then(polls => {
-          _setPolls(polls);
-          _setCategories(getCategories(polls));
+        .then((pollsResponse: PollsResponse) => {
+          _setPolls(pollsResponse.polls);
+          _setCategories(pollsResponse.categories);
         })
         .catch(setError);
     }
@@ -328,14 +328,13 @@ export default function PollingOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
-  const polls = await getPolls({});
-  const categories = getCategories(polls);
+  const pollsResponse = await getPolls();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
-      categories
+      polls: pollsResponse.polls,
+      categories: pollsResponse.categories
     }
   };
 };

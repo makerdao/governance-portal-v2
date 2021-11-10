@@ -38,7 +38,6 @@ type Props = {
   close?: () => void;
   setPoll?: (poll: Poll) => void;
   ballotCount?: number;
-  activePolls?: Poll[];
   editingOnly?: boolean;
   withStart?: boolean;
 };
@@ -48,7 +47,6 @@ export default function MobileVoteSheet({
   setPoll,
   close,
   ballotCount = 0,
-  activePolls = [],
   editingOnly,
   withStart
 }: Props): JSX.Element {
@@ -66,8 +64,9 @@ export default function MobileVoteSheet({
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
   const network = getNetwork();
-  const total = activePolls.length;
   const onBallot = !isNil(ballot[poll.pollId]?.option);
+
+  // TODO: fetch active polls from api
 
   const submit = () => {
     invariant(isChoiceValid);
