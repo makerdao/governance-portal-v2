@@ -7,11 +7,12 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { networkToRpc } from '../network';
 import { SupportedNetworks } from '../../constants';
+import { ethers } from 'ethers';
 
 export const Web3ReactPlugin = maker => {
   maker.service('accounts', true).addAccountType('web3-react', ({ library, address }) => {
     const { provider, connector } = library;
-    const subprovider = new ProviderSubprovider(provider);
+    const subprovider = new ethers.providers.Web3Provider(provider);
     return { subprovider, address, connector };
   });
 };

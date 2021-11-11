@@ -47,6 +47,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
 
   addAccountsListener: async maker => {
     maker.on('accounts/CHANGE', async ({ payload: { account } }) => {
+      console.log('^^^account', account);
       if (!account) {
         set({ currentAccount: account });
         return;
