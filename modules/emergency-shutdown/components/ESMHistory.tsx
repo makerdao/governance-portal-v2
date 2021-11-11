@@ -1,4 +1,4 @@
-import { Card, Text, Link } from 'theme-ui';
+import { Card, Text, Link, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink, formatRound } from 'lib/utils';
@@ -39,9 +39,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
           {!stakingHistory ? (
             <tr key={0}>
               <td colSpan={3}>
-                <Text color="text" variant="allcaps">
-                  Loading
-                </Text>
+                <Spinner size={30} mt={2} />
               </td>
             </tr>
           ) : stakingHistory.length > 0 ? (
@@ -82,7 +80,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                     `}
                   >
                     <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
-                      {action.amount.gte(0.01)
+                      {action.amount.gte(0.1)
                         ? formatRound(action.amount.toNumber())
                         : formatRound(action.amount.toNumber(), 6)}{' '}
                       MKR
