@@ -11,7 +11,7 @@ import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { TransactionInProgress } from 'modules/app/components/TransactionInProgress';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
 
 const ModalContent = ({
   setShowDialog,
@@ -82,7 +82,7 @@ const ModalContent = ({
     case 'signing':
       return <BurnSigning close={close} />;
     case 'pending':
-      return <TransactionInProgress tx={tx} txPending={true} setTxId={setTxId} />;
+      return <TxInProgress tx={tx} txPending={true} setTxId={setTxId} />;
     case 'mined':
       return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':

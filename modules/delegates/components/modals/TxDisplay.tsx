@@ -1,4 +1,4 @@
-import { TransactionInProgress } from 'modules/app/components/TransactionInProgress';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 
 export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
@@ -26,6 +26,6 @@ export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
         />
       );
     default:
-      return <TransactionInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
+      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
   }
 };

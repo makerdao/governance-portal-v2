@@ -32,7 +32,7 @@ import { Proposal, CMSProposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useSpellData } from '../hooks/useSpellData';
-import { TransactionInProgress } from 'modules/app/components/TransactionInProgress';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 
 type Props = {
@@ -309,7 +309,7 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
       case 'signing':
         return <Signing close={close} />;
       case 'pending':
-        return <TransactionInProgress tx={tx} txPending={true} setTxId={setTxId} />;
+        return <TxInProgress tx={tx} txPending={true} setTxId={setTxId} />;
       case 'mined':
         return (
           <TxFinal
