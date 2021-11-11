@@ -32,8 +32,6 @@ import { Proposal, CMSProposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useSpellData } from '../hooks/useSpellData';
-
-// temp
 import { TransactionInProgress } from 'modules/app/components/TransactionInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 

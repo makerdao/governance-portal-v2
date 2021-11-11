@@ -9,7 +9,6 @@ type SpellDataResponse = {
 };
 
 export const useSpellData = (proposalAddress: string): SpellDataResponse => {
-  console.log({ proposalAddress });
   const { data, error } = useSWR<SpellData>(
     `/api/executive/analyze-spell/${proposalAddress}?network=${getNetwork()}`
   );

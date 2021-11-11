@@ -12,7 +12,6 @@ export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
   const { data, error } = useSWR<PollVote[]>(
     address ? `/user/voting-for/${address}` : null,
     () => {
-      console.log(address);
       return getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address));
     },
     { refreshInterval: 0 }
