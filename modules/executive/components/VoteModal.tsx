@@ -309,7 +309,7 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
       case 'signing':
         return <Signing close={close} />;
       case 'pending':
-        return <TransactionInProgress txPending={true} setTxId={setTxId} />;
+        return <TransactionInProgress tx={tx} txPending={true} setTxId={setTxId} />;
       case 'mined':
         return (
           <TxFinal

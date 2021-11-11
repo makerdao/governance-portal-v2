@@ -158,7 +158,7 @@ const Pending = ({ tx, close }) => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Poll will be created once the blockchain confirms the transaction
+        Poll will be created once the transaction has been confirmed.
       </Text>
       <ExternalLink
         target="_blank"

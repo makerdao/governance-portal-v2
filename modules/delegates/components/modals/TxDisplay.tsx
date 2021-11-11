@@ -7,7 +7,7 @@ export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
       return (
         <TxFinal
           title="Transaction Sent"
-          description="Delegate contract will update once the blockchain has confirmed the transaction."
+          description="Delegate contract will update once the transaction has been confirmed."
           buttonLabel="Close"
           onClick={onDismiss}
           tx={tx}
@@ -26,6 +26,6 @@ export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
         />
       );
     default:
-      return <TransactionInProgress txPending={tx?.status === 'pending'} setTxId={setTxId} />;
+      return <TransactionInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
   }
 };

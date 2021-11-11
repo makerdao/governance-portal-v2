@@ -82,7 +82,7 @@ const ModalContent = ({
     case 'signing':
       return <BurnSigning close={close} />;
     case 'pending':
-      return <TransactionInProgress txPending={true} setTxId={setTxId} />;
+      return <TransactionInProgress tx={tx} txPending={true} setTxId={setTxId} />;
     case 'mined':
       return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':
