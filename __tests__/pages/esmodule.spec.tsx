@@ -42,11 +42,6 @@ describe('ES Module', () => {
     }, 30000);
   });
 
-  // afterEach(() => {
-  //   cache.clear();
-  //   cleanup();
-  // });
-
   describe('emergency shutdown render', () => {
     // tests render on mobile view automatically
     test('show progress bar', () => {
