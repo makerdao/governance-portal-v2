@@ -125,7 +125,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
-    { refreshInterval: 0 }
+    { refreshInterval: 0, revalidateOnMount: true }
   );
 
   const votingForSomething = votedProposals && votedProposals.length > 0;

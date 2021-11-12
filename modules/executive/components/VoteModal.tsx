@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -53,8 +53,19 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
   );
   const addressLockedMKR =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy, voteDelegate);
-  const { data: spellData } = useSpellData(proposal.address);
+  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
+    addressLockedMKR,
+    voteProxy,
+    voteDelegate
+  );
+  const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
+
+  // revalidate on mount
+  useEffect(() => {
+    mutateLockedMkr();
+    mutateSpellData();
+  }, []);
+
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
