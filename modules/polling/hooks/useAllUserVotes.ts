@@ -6,10 +6,11 @@ type AllUserVotesResponse = {
   data?: PollVote[];
   loading: boolean;
   error?: Error;
+  mutate: any;
 };
 
 export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
-  const { data, error } = useSWR<PollVote[]>(
+  const { data, error, mutate } = useSWR<PollVote[]>(
     address ? `/user/voting-for/${address}` : null,
     () => {
       return getMaker().then(maker => maker.service('govPolling').getAllOptionsVotingFor(address));
@@ -19,6 +20,7 @@ export const useAllUserVotes = (address?: string): AllUserVotesResponse => {
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };
