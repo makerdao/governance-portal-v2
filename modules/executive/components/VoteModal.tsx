@@ -6,7 +6,6 @@ import {
   Close,
   Text,
   Box,
-  Spinner,
   Link as ExternalLink,
   Label,
   Checkbox,
@@ -318,9 +317,9 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
       case 'confirm':
         return <Default />;
       case 'signing':
-        return <Signing close={close} />;
+        return <TxInProgress tx={tx} txPending={false} setTxId={close} />;
       case 'pending':
-        return <TxInProgress tx={tx} txPending={true} setTxId={setTxId} />;
+        return <TxInProgress tx={tx} txPending={true} setTxId={close} />;
       case 'mined':
         return (
           <TxFinal
@@ -352,26 +351,6 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
     </DialogOverlay>
   );
 };
-
-const Signing = ({ close }) => (
-  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-    <Close
-      aria-label="close"
-      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-      onClick={close}
-    />
-
-    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
-      Sign Transaction
-    </Text>
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
-      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
-        Please use your wallet to sign this transaction.
-      </Text>
-    </Flex>
-  </Flex>
-);
 
 const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
