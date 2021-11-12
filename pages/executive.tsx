@@ -99,6 +99,13 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+
+  // revalidate votedProposals if connected address changes
+  useEffect(() => {
+    mutateVotedProposals();
+  }, [address]);
+
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
@@ -120,8 +127,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
     { refreshInterval: 0 }
   );
-
-  const { data: votedProposals } = useVotedProposals();
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
