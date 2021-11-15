@@ -47,7 +47,10 @@ const defaultFilters: PollFilters = {
   active: null
 };
 
-export async function getPolls(filters = defaultFilters, network?: SupportedNetworks): Promise<PollsResponse> {
+export async function getPolls(
+  filters = defaultFilters,
+  network?: SupportedNetworks
+): Promise<PollsResponse> {
   const allPolls = await _getAllPolls(network);
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
@@ -76,7 +79,10 @@ export async function getPoll(slug: string, network?: SupportedNetworks): Promis
 
   const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
   invariant(pollIndex > -1, `poll not found for poll slug ${slug}`);
-  const [prev, next] = [pollsResponse.polls?.[pollIndex - 1] || null, pollsResponse.polls?.[pollIndex + 1] || null];
+  const [prev, next] = [
+    pollsResponse.polls?.[pollIndex - 1] || null,
+    pollsResponse.polls?.[pollIndex + 1] || null
+  ];
 
   return {
     ...pollsResponse.polls[pollIndex],
@@ -93,7 +99,10 @@ export async function getPollById(pollId: number, network?: SupportedNetworks): 
 
   const pollIndex = pollsResponse.polls.findIndex(poll => poll.pollId === pollId);
   invariant(pollIndex > -1, `poll not found for poll id ${pollId}`);
-  const [prev, next] = [pollsResponse.polls?.[pollIndex - 1] || null, pollsResponse.polls?.[pollIndex + 1] || null];
+  const [prev, next] = [
+    pollsResponse.polls?.[pollIndex - 1] || null,
+    pollsResponse.polls?.[pollIndex + 1] || null
+  ];
 
   return {
     ...pollsResponse.polls[pollIndex],
@@ -111,4 +120,3 @@ export async function getPollCategories(): Promise<PollCategory[]> {
 
   return categories;
 }
-

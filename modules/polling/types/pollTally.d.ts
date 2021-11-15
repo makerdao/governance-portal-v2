@@ -67,5 +67,4 @@ export type RawPollTallyPlurality = {
 
 export type RawPollTally = RawPollTallyRankedChoice | RawPollTallyPlurality;
 
-
 export type PollTally = PollTallyRankedChoice | PollTallyPlurality;

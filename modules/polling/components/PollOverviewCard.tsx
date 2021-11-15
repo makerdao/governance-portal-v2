@@ -49,15 +49,8 @@ export default function PollOverviewCard({
   });
 
   return (
-    <Box
-      aria-label="Poll overview"
-      sx={{ variant: 'cards.primary' }}
-      {...props}>
-      <Flex
-
-        sx={{ flexDirection: 'row', justifyContent: 'space-between' }}
-
-      >
+    <Box aria-label="Poll overview" sx={{ variant: 'cards.primary' }} {...props}>
+      <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Stack gap={3}>
           {bpi === 0 && (
             <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -103,85 +96,82 @@ export default function PollOverviewCard({
               <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
             </div>
           )}
-
-
         </Stack>
         <Box sx={{ ml: 5 }}>
           {showQuickVote && (
             <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7 }} />
           )}
-
         </Box>
-
-
       </Flex>
 
       <Box>
-        
-          <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            {canVote &&
-              bpi === 0 &&
-              (onBallot ? (
-                <Button
-                  variant="outline"
-                  mr={2}
-                  onClick={() => {
-                    trackButtonClick('showHistoricalPolls');
-                    startMobileVoting && startMobileVoting();
-                  }}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexWrap: 'nowrap',
-                    alignItems: 'center'
-                  }}
-                >
-                  <Icon name="edit" size={3} mr={2} />
-                  Edit Choices
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  mr={2}
-                  px={4}
-                  onClick={() => {
-                    trackButtonClick('startMobileVoting');
-                    startMobileVoting && startMobileVoting();
-                  }}
-                >
-                  Vote
-                </Button>
-              ))}
-            <Link
-              key={poll.slug}
-              href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-              as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-            >
-              <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
-                <Button
-                  variant="outline"
-                  sx={{
-                    display: reviewPage ? 'none' : undefined,
-                    borderColor: 'onSecondary',
-                    color: 'secondaryAlt',
-                    borderRadius: 'small',
-                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                  }}
-                >
-                  View Details
-                </Button>
-              </InternalLink>
-            </Link>
-            {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} tally={tallyData} />}
-            <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          {canVote &&
+            bpi === 0 &&
+            (onBallot ? (
+              <Button
+                variant="outline"
+                mr={2}
+                onClick={() => {
+                  trackButtonClick('showHistoricalPolls');
+                  startMobileVoting && startMobileVoting();
+                }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexWrap: 'nowrap',
+                  alignItems: 'center'
+                }}
+              >
+                <Icon name="edit" size={3} mr={2} />
+                Edit Choices
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                mr={2}
+                px={4}
+                onClick={() => {
+                  trackButtonClick('startMobileVoting');
+                  startMobileVoting && startMobileVoting();
+                }}
+              >
+                Vote
+              </Button>
+            ))}
+          <Link
+            key={poll.slug}
+            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+          >
+            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+              <Button
+                variant="outline"
+                sx={{
+                  display: reviewPage ? 'none' : undefined,
+                  borderColor: 'onSecondary',
+                  color: 'secondaryAlt',
+                  borderRadius: 'small',
+                  ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                }}
+              >
+                View Details
+              </Button>
+            </InternalLink>
+          </Link>
+          {isActivePoll(poll) ? (
+            ''
+          ) : (
+            <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} tally={tallyData} />
+          )}
+          <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
 
-            {tallyData && poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
-              <Box ml={2}>
-                <PollVotePluralityResultsCompact tally={tallyData} />
-              </Box>
-            )}
-          </Flex>
-      
+          {tallyData && poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+            <Box ml={2}>
+              <PollVotePluralityResultsCompact tally={tallyData} />
+            </Box>
+          )}
+        </Flex>
       </Box>
     </Box>
   );

@@ -5,14 +5,14 @@ export type PollFilters = {
   startDate?: Date | null;
   endDate?: Date | null;
   categories?: string[] | null;
-  active?: boolean | null
+  active?: boolean | null;
 };
 export type PollsResponse = {
-  polls: Poll[],
-  categories: PollCategory[],
+  polls: Poll[];
+  categories: PollCategory[];
   stats: {
-    active: number,
-    finished: number,
-    total: number
-  }
-}
+    active: number;
+    finished: number;
+    total: number;
+  };
+};

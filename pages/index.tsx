@@ -235,7 +235,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ maxWidth: 'column' }}>
                 <Stack>
                   {recentPolls.map(poll => (
-                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false}/>
+                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} />
                   ))}
                 </Stack>
                 {activePolls.length > 4 && (

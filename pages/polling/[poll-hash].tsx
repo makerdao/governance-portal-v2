@@ -42,7 +42,6 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 
-
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
@@ -92,7 +91,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
     revalidateOnFocus: false
   });
 
-    
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
@@ -361,7 +359,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
     );
 
   const poll = (isDefaultNetwork() ? prefetchedPoll : _poll) as Poll;
-  return <PollView poll={ poll}  />;
+  return <PollView poll={poll} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -374,7 +372,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (!poll) {
     return { revalidate: 30, props: { poll: null, tally: null } };
   }
-  
+
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {

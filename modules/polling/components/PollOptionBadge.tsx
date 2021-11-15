@@ -3,9 +3,17 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll, PollTally } from 'modules/polling/types';
 
-const PollOptionBadge = ({ poll, tally, ...props }: { poll: Poll; tally?: PollTally, sx?: ThemeUIStyleObject }): JSX.Element => {
+const PollOptionBadge = ({
+  poll,
+  tally,
+  ...props
+}: {
+  poll: Poll;
+  tally?: PollTally;
+  sx?: ThemeUIStyleObject;
+}): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
-  
+
   return tally ? (
     hasPollEnded ? (
       <Badge

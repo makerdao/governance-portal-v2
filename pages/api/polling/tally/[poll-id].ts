@@ -4,7 +4,6 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
 import { getPollTally } from 'modules/polling/helpers/getPollTaly';
 import { getPollById } from 'modules/polling/api/fetchPolls';
 
-
 // Returns a PollTally given a pollID
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;

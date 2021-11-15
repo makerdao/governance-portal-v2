@@ -128,7 +128,9 @@ export default function VoteBreakdown({
               )}
               {tally && tallyResult ? (
                 <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                  {`${new BigNumber(tallyResult.mkrSupport).toFormat(2)} MKR Voting (${new BigNumber(tallyResult.firstPct).toFixed(2)}%)`}
+                  {`${new BigNumber(tallyResult.mkrSupport).toFormat(2)} MKR Voting (${new BigNumber(
+                    tallyResult.firstPct
+                  ).toFixed(2)}%)`}
                 </Text>
               ) : (
                 <Delay>
