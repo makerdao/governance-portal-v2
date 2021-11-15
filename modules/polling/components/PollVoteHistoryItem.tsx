@@ -69,7 +69,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       >
         {isPluralityVote && (
           <Box mr={0} ml={0}>
-            <PollVotePluralityResultsCompact vote={vote} />
+            <PollVotePluralityResultsCompact tally={vote.tally} />
           </Box>
         )}
 

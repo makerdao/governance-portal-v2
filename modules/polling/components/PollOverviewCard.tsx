@@ -17,6 +17,10 @@ import QuickVote from './QuickVote';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { PollCategoryTag } from './PollCategoryTag';
+import useSWR from 'swr';
+import { fetchJson } from 'lib/fetchJson';
+import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
+import { POLL_VOTE_TYPE } from '../polling.constants';
 
 type Props = {
   poll: Poll;
@@ -40,119 +44,145 @@ export default function PollOverviewCard({
   const ballot = useBallotStore(state => state.ballot);
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
+  const { data: tallyData } = useSWR(`/api/polling/tally/${poll.pollId}`, fetchJson, {
+    revalidateOnFocus: false
+  });
+
   return (
-    <Flex
+    <Box
       aria-label="Poll overview"
-      sx={{ flexDirection: 'row', justifyContent: 'space-between', variant: 'cards.primary' }}
-      {...props}
-    >
-      <Stack gap={3}>
-        {bpi === 0 && (
-          <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-            <VotingStatus poll={poll} />
-          </Flex>
-        )}
-        <Box sx={{ cursor: 'pointer' }}>
-          <Box>
+      sx={{ variant: 'cards.primary' }}
+      {...props}>
+      <Flex
+
+        sx={{ flexDirection: 'row', justifyContent: 'space-between' }}
+
+      >
+        <Stack gap={3}>
+          {bpi === 0 && (
+            <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+              <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+              <VotingStatus poll={poll} />
+            </Flex>
+          )}
+          <Box sx={{ cursor: 'pointer' }}>
+            <Box>
+              <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
+                <InternalLink variant="nostyle">
+                  <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                    {poll.title}
+                  </Text>
+                </InternalLink>
+              </Link>
+            </Box>
             <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
               <InternalLink variant="nostyle">
-                <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {poll.title}
+                <Text
+                  sx={{
+                    fontSize: [2, 3],
+                    color: 'textSecondary',
+                    mt: 1
+                  }}
+                >
+                  {poll.summary}
                 </Text>
               </InternalLink>
             </Link>
           </Box>
-          <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
-            <InternalLink variant="nostyle">
-              <Text
-                sx={{
-                  fontSize: [2, 3],
-                  color: 'textSecondary',
-                  mt: 1
-                }}
-              >
-                {poll.summary}
-              </Text>
-            </InternalLink>
-          </Link>
+
+          <Flex>
+            {poll.categories.map(c => (
+              <Box key={c} sx={{ marginRight: 2 }}>
+                <PollCategoryTag clickable={true} category={c} />
+              </Box>
+            ))}
+          </Flex>
+
+          {bpi > 0 && (
+            <div>
+              <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+            </div>
+          )}
+
+
+        </Stack>
+        <Box sx={{ ml: 5 }}>
+          {showQuickVote && (
+            <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7 }} />
+          )}
+
         </Box>
 
-        <Flex>
-          {poll.categories.map(c => (
-            <Box key={c} sx={{ marginRight: 2 }}>
-              <PollCategoryTag clickable={true} category={c} />
-            </Box>
-          ))}
-        </Flex>
 
-        {bpi > 0 && (
-          <div>
-            <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-          </div>
-        )}
+      </Flex>
 
-        <Flex sx={{ alignItems: 'center' }}>
-          {canVote &&
-            bpi === 0 &&
-            (onBallot ? (
-              <Button
-                variant="outline"
-                mr={2}
-                onClick={() => {
-                  trackButtonClick('showHistoricalPolls');
-                  startMobileVoting && startMobileVoting();
-                }}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'nowrap',
-                  alignItems: 'center'
-                }}
-              >
-                <Icon name="edit" size={3} mr={2} />
-                Edit Choices
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                mr={2}
-                px={4}
-                onClick={() => {
-                  trackButtonClick('startMobileVoting');
-                  startMobileVoting && startMobileVoting();
-                }}
-              >
-                Vote
-              </Button>
-            ))}
-          <Link
-            key={poll.slug}
-            href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-            as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
-          >
-            <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
-              <Button
-                variant="outline"
-                sx={{
-                  display: reviewPage ? 'none' : undefined,
-                  borderColor: 'onSecondary',
-                  color: 'secondaryAlt',
-                  borderRadius: 'small',
-                  ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                }}
-              >
-                View Details
-              </Button>
-            </InternalLink>
-          </Link>
-          {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} />}
-          <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
-        </Flex>
-      </Stack>
-      {showQuickVote && (
-        <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7, ml: 5 }} />
-      )}
-    </Flex>
+      <Box>
+        
+          <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            {canVote &&
+              bpi === 0 &&
+              (onBallot ? (
+                <Button
+                  variant="outline"
+                  mr={2}
+                  onClick={() => {
+                    trackButtonClick('showHistoricalPolls');
+                    startMobileVoting && startMobileVoting();
+                  }}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'nowrap',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Icon name="edit" size={3} mr={2} />
+                  Edit Choices
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  mr={2}
+                  px={4}
+                  onClick={() => {
+                    trackButtonClick('startMobileVoting');
+                    startMobileVoting && startMobileVoting();
+                  }}
+                >
+                  Vote
+                </Button>
+              ))}
+            <Link
+              key={poll.slug}
+              href={{ pathname: '/polling/[poll-hash]', query: { network } }}
+              as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+            >
+              <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+                <Button
+                  variant="outline"
+                  sx={{
+                    display: reviewPage ? 'none' : undefined,
+                    borderColor: 'onSecondary',
+                    color: 'secondaryAlt',
+                    borderRadius: 'small',
+                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                  }}
+                >
+                  View Details
+                </Button>
+              </InternalLink>
+            </Link>
+            {isActivePoll(poll) ? '' : <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} tally={tallyData} />}
+            <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
+
+            {tallyData && poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+              <Box ml={2}>
+                <PollVotePluralityResultsCompact tally={tallyData} />
+              </Box>
+            )}
+          </Flex>
+      
+      </Box>
+    </Box>
   );
 }

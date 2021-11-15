@@ -31,7 +31,7 @@ import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getPollCategories, getPolls } from 'modules/polling/api/fetchPolls';
+import { getPolls } from 'modules/polling/api/fetchPolls';
 import { fetchJson } from 'lib/fetchJson';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';

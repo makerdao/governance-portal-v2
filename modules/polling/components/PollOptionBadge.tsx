@@ -1,26 +1,11 @@
-import useSWR from 'swr';
 import { Box, Badge, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { fetchJson } from 'lib/fetchJson';
-import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
-import { Poll } from 'modules/polling/types';
-import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
+import { isActivePoll } from 'modules/polling/helpers/utils';
+import { Poll, PollTally } from 'modules/polling/types';
 
-const PollOptionBadge = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element => {
+const PollOptionBadge = ({ poll, tally, ...props }: { poll: Poll; tally?: PollTally, sx?: ThemeUIStyleObject }): JSX.Element => {
   const hasPollEnded = !isActivePoll(poll);
-  const { data: tally } = useSWR(
-    getPollApiUrl(poll),
-    async url => parseRawPollTally(await fetchJson(url), poll),
-    {
-      // don't refresh is poll ended, otherwise refresh every 60 seconds
-      refreshInterval: hasPollEnded ? 0 : 60000,
-      onErrorRetry: ({ retryCount }) => {
-        // only retry up to 3 times
-        if (retryCount >= 3) return;
-      }
-    }
-  );
-
+  
   return tally ? (
     hasPollEnded ? (
       <Badge

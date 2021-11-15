@@ -66,7 +66,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   </Text>
                   <Text as="td" sx={{ pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport)
-                      .div(totalMkrParticipation.toBigNumber())
+                      .div(totalMkrParticipation)
                       .times(100)
                       .toFormat(1)}%`}
                   </Text>

@@ -2,7 +2,6 @@ import withApiHandler from 'lib/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import { isSupportedNetwork } from 'lib/maker';
 import { getPoll } from 'modules/polling/api/fetchPolls';
-import { getPollTally } from 'modules/polling/helpers/getPollTaly';
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 
@@ -87,24 +86,17 @@ import invariant from 'tiny-invariant';
  *             schema:
  *               $ref: '#/definitions/Poll'
  */
- export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-    const network = (req.query.network as string) || DEFAULT_NETWORK;
-    invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-    const slug = req.query.slug as string;
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const slug = req.query.slug as string;
 
-    const poll = await getPoll(slug, network);
+  const poll = await getPoll(slug, network);
 
-    if (!poll) {
-        return res.status(404).json('Not found');
-    }
+  if (!poll) {
+    return res.status(404).json('Not found');
+  }
 
-    const tally = await getPollTally(poll); 
-   
-
-    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-    res.status(200).json({
-        poll,
-        tally
-    });
-  });
-  
+  res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
+  res.status(200).json(poll);
+});

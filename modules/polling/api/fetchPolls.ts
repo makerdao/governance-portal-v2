@@ -88,6 +88,23 @@ export async function getPoll(slug: string, network?: SupportedNetworks): Promis
   };
 }
 
+export async function getPollById(pollId: number, network?: SupportedNetworks): Promise<Poll> {
+  const pollsResponse = await getPolls({}, network);
+
+  const pollIndex = pollsResponse.polls.findIndex(poll => poll.pollId === pollId);
+  invariant(pollIndex > -1, `poll not found for poll id ${pollId}`);
+  const [prev, next] = [pollsResponse.polls?.[pollIndex - 1] || null, pollsResponse.polls?.[pollIndex + 1] || null];
+
+  return {
+    ...pollsResponse.polls[pollIndex],
+    content: await markdownToHtml(pollsResponse.polls[pollIndex].content),
+    ctx: {
+      prev,
+      next
+    }
+  };
+}
+
 export async function getPollCategories(): Promise<PollCategory[]> {
   const pollsResponse = await getPolls();
   const categories = getCategories(pollsResponse.polls);
