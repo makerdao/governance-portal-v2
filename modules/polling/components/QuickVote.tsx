@@ -70,32 +70,34 @@ const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): 
   const gap = 2;
   return (
     <Stack gap={gap} {...props}>
-      <Flex sx={{
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
       <Flex
         sx={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          display: showHeader ? undefined : 'none'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <Text variant="caps" color="textSecondary">
-          Your Vote 
-        </Text>
-        
-        {isRankedChoicePoll(poll) && (
-          <Tooltip label={rankedChoiceBlurb}>
-            <Box sx={{ position: 'relative' }}>
-              {/* Box is used because tooltip needs a child that can be passed a ref */}
-              <Icon name="stackedVotes" size={3} ml={2} />
-            </Box>
-          </Tooltip>
-        )}
-      </Flex>
-      {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            display: showHeader ? undefined : 'none'
+          }}
+        >
+          <Text variant="caps" color="textSecondary">
+            Your Vote
+          </Text>
+
+          {isRankedChoicePoll(poll) && (
+            <Tooltip label={rankedChoiceBlurb}>
+              <Box sx={{ position: 'relative' }}>
+                {/* Box is used because tooltip needs a child that can be passed a ref */}
+                <Icon name="stackedVotes" size={3} ml={2} />
+              </Box>
+            </Tooltip>
+          )}
+        </Flex>
+        {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
       </Flex>
 
       {(!!addedChoice || currentVote !== null) && !editing ? (

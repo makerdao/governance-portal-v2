@@ -148,7 +148,9 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
     if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(response => _setPolls(response.polls)).catch(setError);
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
+        .then(response => _setPolls(response.polls))
+        .catch(setError);
     }
   }, []);
 
