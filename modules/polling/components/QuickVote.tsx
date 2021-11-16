@@ -17,10 +17,12 @@ import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAllUserVotes } from 'lib/hooks';
+import VotingStatus from './PollVotingStatus';
 
 type Props = {
   poll: Poll;
   showHeader: boolean;
+  showStatus?: boolean;
   account?: Account;
   sx?: ThemeUIStyleObject;
 };
@@ -36,7 +38,7 @@ const rankedChoiceBlurb = (
   </>
 );
 
-const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
+const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const { data: allUserVotes } = useAllUserVotes(account?.address);
@@ -68,6 +70,10 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
   const gap = 2;
   return (
     <Stack gap={gap} {...props}>
+      <Flex sx={{
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
       <Flex
         sx={{
           flexDirection: 'row',
@@ -77,8 +83,9 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
         }}
       >
         <Text variant="caps" color="textSecondary">
-          Your Vote
+          Your Vote 
         </Text>
+        
         {isRankedChoicePoll(poll) && (
           <Tooltip label={rankedChoiceBlurb}>
             <Box sx={{ position: 'relative' }}>
@@ -87,6 +94,8 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
             </Box>
           </Tooltip>
         )}
+      </Flex>
+      {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
       </Flex>
 
       {(!!addedChoice || currentVote !== null) && !editing ? (

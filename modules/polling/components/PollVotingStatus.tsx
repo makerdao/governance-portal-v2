@@ -25,7 +25,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
     : 'You did not vote';
 
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'center' }} {...otherProps}>
+    <Flex sx={{ alignItems: 'center', justifyContent: 'flex-start' }} {...otherProps}>
       {icon && <Icon mr="2" name={icon} sx={{ color }} />}
       <Text variant="caps" color={color}>
         {text}
@@ -76,16 +76,7 @@ const VotingStatus = ({
   );
   return (
     <Box {...props}>
-      <Badge
-        px="14px"
-        variant="primary"
-        sx={{
-          borderColor: hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey',
-          display: desktopStyle ? 'block' : ['none', 'block']
-        }}
-      >
-        {contents}
-      </Badge>
+      {contents}
       <Box sx={{ display: desktopStyle ? 'none' : ['block', 'none'] }}>{contents}</Box>
     </Box>
   );

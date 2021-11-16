@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 
@@ -8,7 +8,7 @@ import { getNetwork } from 'lib/maker';
 import Stack from '../../app/components/layout/layouts/Stack';
 import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
-import { Poll } from 'modules/polling/types';
+import { Poll, PollTally } from 'modules/polling/types';
 import PollOptionBadge from './PollOptionBadge';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'stores/accounts';
@@ -21,6 +21,8 @@ import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { POLL_VOTE_TYPE } from '../polling.constants';
+import Skeleton from 'react-loading-skeleton';
+import BigNumber from 'bignumber.js';
 
 type Props = {
   poll: Poll;
@@ -44,12 +46,13 @@ export default function PollOverviewCard({
   const ballot = useBallotStore(state => state.ballot);
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
-  const { data: tallyData } = useSWR(`/api/polling/tally/${poll.pollId}`, fetchJson, {
+  const { data: tallyData } = useSWR<PollTally>(`/api/polling/tally/${poll.pollId}`, fetchJson, {
     revalidateOnFocus: false
   });
 
   return (
-    <Box aria-label="Poll overview" sx={{ variant: 'cards.primary' }} {...props}>
+    <Box aria-label="Poll overview" sx={{ variant: 'cards.primary', p: 0 }} {...props}>
+      <Box sx={{ p: [2, 4]}}>
       <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Stack gap={3}>
           {bpi === 0 && (
@@ -97,9 +100,11 @@ export default function PollOverviewCard({
             </div>
           )}
         </Stack>
-        <Box sx={{ ml: 5 }}>
+        <Box sx={{ ml: 2, minWidth: '265px' }}>
+          
+
           {showQuickVote && (
-            <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7 }} />
+            <QuickVote poll={poll} showHeader={true} account={account} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
           )}
         </Box>
       </Flex>
@@ -164,15 +169,21 @@ export default function PollOverviewCard({
           ) : (
             <PollOptionBadge poll={poll} sx={{ ml: 3, color: 'text' }} tally={tallyData} />
           )}
-          <VotingStatus sx={{ display: reviewPage ? 'none' : ['none', 'block'], ml: 3 }} poll={poll} />
 
           {tallyData && poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
-            <Box ml={2}>
+            <Box sx={{ width: '265px'}}>
               <PollVotePluralityResultsCompact tally={tallyData} />
             </Box>
           )}
         </Flex>
       </Box>
+      </Box>
+      <Divider my={0} />
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+          {tallyData && tallyData.winningOptionName ? (<Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
+            Currently winning option: {tallyData?.winningOptionName} with {new BigNumber(tallyData.options[tallyData.winner].mkrSupport).toFormat(2)} MKR
+          </Text>): <Skeleton />}
+        </Flex>
     </Box>
   );
 }
