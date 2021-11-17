@@ -29,7 +29,7 @@ type Props = {
   startMobileVoting?: () => void;
   reviewPage: boolean;
   sx?: ThemeUIStyleObject;
-  showVoting?: boolean
+  showVoting?: boolean;
 };
 export default function PollOverviewCard({
   poll,
@@ -102,23 +102,37 @@ export default function PollOverviewCard({
               </div>
             )}
           </Stack>
-          {showQuickVote && <Box sx={{ ml: 2, minWidth: '265px' }}>
-
-            <QuickVote
-              poll={poll}
-              showHeader={true}
-              account={account}
-              sx={{ maxWidth: 7 }}
-              showStatus={!reviewPage}
-            />
-
-          </Box>}
+          {showQuickVote && (
+            <Box sx={{ ml: 2, minWidth: '265px' }}>
+              <QuickVote
+                poll={poll}
+                showHeader={true}
+                account={account}
+                sx={{ maxWidth: 7 }}
+                showStatus={!reviewPage}
+              />
+            </Box>
+          )}
         </Flex>
 
         <Box>
-          <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: ['column-reverse', 'row'] }}>
-            <Flex sx={{ alignItems: 'center', justifyContent: 'flex-start', width: bpi > 0 ? 'auto' : '100%', p: bpi > 0 ? 0 : 2 }}>
-              {canVote && showVoting &&
+          <Flex
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexDirection: ['column-reverse', 'row']
+            }}
+          >
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                width: bpi > 0 ? 'auto' : '100%',
+                p: bpi > 0 ? 0 : 2
+              }}
+            >
+              {canVote &&
+                showVoting &&
                 bpi === 0 &&
                 (onBallot ? (
                   <Button

@@ -74,11 +74,7 @@ const VotingStatus = ({
       isPending={isPending}
     />
   );
-  return (
-    <Box {...props}>
-      {contents}
-    </Box>
-  );
+  return <Box {...props}>{contents}</Box>;
 };
 
 export default VotingStatus;
