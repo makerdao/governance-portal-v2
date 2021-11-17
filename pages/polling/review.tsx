@@ -96,6 +96,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         key={poll.multiHash}
                         poll={poll}
                         reviewPage={true}
+                        showVoting={true}
                         startMobileVoting={() => setMobileVotingPoll(poll)}
                         sx={cardStyles(index, ballotLength)}
                       />

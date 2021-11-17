@@ -77,7 +77,6 @@ const VotingStatus = ({
   return (
     <Box {...props}>
       {contents}
-      <Box sx={{ display: desktopStyle ? 'none' : ['block', 'none'] }}>{contents}</Box>
     </Box>
   );
 };

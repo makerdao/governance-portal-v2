@@ -235,7 +235,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ maxWidth: 'column' }}>
                 <Stack>
                   {recentPolls.map(poll => (
-                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} />
+                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
                   ))}
                 </Stack>
                 {activePolls.length > 4 && (
@@ -317,8 +317,8 @@ export default function Index({
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
         fetchJson(`/api/executive?network=${getNetwork()}`)
       ])
-        .then(([polls, proposals]) => {
-          setPolls(polls);
+        .then(([pollsData, proposals]) => {
+          setPolls(pollsData.polls);
           setProposals(proposals);
         })
         .catch(setError);
