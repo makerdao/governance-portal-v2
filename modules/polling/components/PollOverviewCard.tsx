@@ -48,7 +48,6 @@ export default function PollOverviewCard({
   const ballot = useBallotStore(state => state.ballot);
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
-
   const { tally } = usePollTally(poll.pollId);
 
   return (
@@ -191,11 +190,10 @@ export default function PollOverviewCard({
 
             {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
               <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
-                {tally &&  <PollVotePluralityResultsCompact tally={tally} showTitles={false} />}
+                {tally && <PollVotePluralityResultsCompact tally={tally} showTitles={false} />}
                 {!tally && <SkeletonThemed width={'265px'} height={'30px'} />}
               </Box>
             )}
-            
           </Flex>
         </Box>
       </Box>

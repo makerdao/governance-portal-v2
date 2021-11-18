@@ -71,7 +71,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       >
         {isPluralityVote && (
           <Box mr={0} ml={0}>
-            {tally &&  <PollVotePluralityResultsCompact tally={tally} />}
+            {tally && <PollVotePluralityResultsCompact tally={tally} />}
             {!tally && <SkeletonThemed width={'130px'} height={'30px'} />}
           </Box>
         )}

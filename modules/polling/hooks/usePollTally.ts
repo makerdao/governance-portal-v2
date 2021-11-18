@@ -2,9 +2,8 @@ import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import { PollTally } from '../types';
 
-
 type UsePollTallyResponse = {
-  tally: PollTally | undefined,
+  tally: PollTally | undefined;
 };
 
 export function usePollTally(pollId: number): UsePollTallyResponse {
