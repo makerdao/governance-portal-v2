@@ -8,10 +8,6 @@ import invariant from 'tiny-invariant';
 /**
  * @swagger
  * definitions:
- *   ArrayOfPolls:
- *     type: array
- *     items:
- *       $ref: '#/definitions/Poll'
  *   Poll:
  *     type: object
  *     properties:
@@ -80,7 +76,7 @@ import invariant from 'tiny-invariant';
  *     - "application/json"
  *     responses:
  *       '200':
- *         description: "Detail of a Polls"
+ *         description: "Detail of a Pols"
  *         content:
  *           application/json:
  *             schema:

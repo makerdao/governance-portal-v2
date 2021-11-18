@@ -12,6 +12,19 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
  *     type: array
  *     items:
  *       $ref: '#/definitions/Poll'
+ *   PollStats:
+ *     type: object
+ *     properties:
+ *       active:
+ *         type: integer
+ *       finished:
+ *         type: integer
+ *       total:
+ *         type: integer
+ *     example:
+ *       - active: 10
+ *         finished: 10
+ *         total: 10
  *   Poll:
  *     type: object
  *     properties:
@@ -98,7 +111,11 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/ArrayOfPolls'
+ *               properties:
+ *                 polls:
+ *                   $ref: '#/definitions/ArrayOfPolls'
+ *                 stats:
+ *                   $ref: '#/definitions/PollStats'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
