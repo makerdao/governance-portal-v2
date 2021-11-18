@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text, Link as ThemeUILink, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
@@ -10,6 +10,10 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from '../types';
 import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import {
+  participationTooltipLabel,
+  communicationTooltipLabel
+} from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
 
@@ -32,22 +36,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
-
-  const participationTooltipLabel = (
-    <>
-      The percentage of votes the delegate has participated in. <br />
-      Combines stats for polls and executives. <br />
-      Updated weekly by the GovAlpha Core Unit. <br />
-    </>
-  );
-  const communicationTooltipLabel = (
-    <>
-      The percentage of votes for which the delegate has publicly <br />
-      communicated their reasoning in addition to voting. <br />
-      Combines stats for polls and executives. <br />
-      Updated weekly by the GovAlpha Core Unit. <br />
-    </>
-  );
 
   return (
     <Card

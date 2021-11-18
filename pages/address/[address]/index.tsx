@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Heading, Box, jsx, Flex, NavLink, Button } from 'theme-ui';
+import { Heading, Box, Flex, NavLink, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';

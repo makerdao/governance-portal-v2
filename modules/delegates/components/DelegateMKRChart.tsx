@@ -1,4 +1,4 @@
-import { Box, Text, Flex, jsx, useThemeUI } from 'theme-ui';
+import { Box, Text, Flex, useThemeUI } from 'theme-ui';
 import { Delegate } from '../types';
 import { MenuItem } from '@reach/menu-button';
 import BigNumber from 'bignumber.js';

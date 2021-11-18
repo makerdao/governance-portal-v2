@@ -1,5 +1,5 @@
 import { DelegateStatusEnum } from '../delegates.constants';
-import { Box, Flex, Image, jsx } from 'theme-ui';
+import { Box, Flex, Image } from 'theme-ui';
 import { Jazzicon } from '@ukstv/jazzicon-react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';

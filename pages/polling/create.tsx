@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Text, Box, jsx, Button, Flex, Input, Label, Link as ExternalLink } from 'theme-ui';
+import { Heading, Text, Box, Button, Flex, Input, Label, Link as ExternalLink } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';

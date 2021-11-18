@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Text, Button, Box, Flex, jsx } from 'theme-ui';
+import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';

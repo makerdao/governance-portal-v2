@@ -1,4 +1,4 @@
-import { Box, Heading, Card, Link as ExternalLink, Flex, Text, jsx } from 'theme-ui';
+import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 type ResourceType = 'general' | 'polling' | 'executive' | 'delegates';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Flex, Text, Box, jsx, Alert } from 'theme-ui';
+import { Button, Flex, Text, Box, Alert } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';

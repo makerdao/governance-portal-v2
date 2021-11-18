@@ -1,4 +1,4 @@
-import { Grid, jsx } from 'theme-ui';
+import { Grid } from 'theme-ui';
 
 /**
  * Expects two children: the first one is the main content, the second one is the sidebar

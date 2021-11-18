@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { jsx, Flex, Text, NavLink } from 'theme-ui';
+import { Flex, Text, NavLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';

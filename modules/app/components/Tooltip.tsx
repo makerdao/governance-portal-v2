@@ -5,7 +5,7 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Tooltip from '@reach/tooltip';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { jsx, Box } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { useState } from 'react';
 
 export default function TooltipComponent({ children, label, ...props }): JSX.Element {
