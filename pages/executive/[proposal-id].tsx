@@ -52,6 +52,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'types/currency';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   proposal: Proposal;
@@ -300,7 +301,45 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   scrollbarWidth: 'none'
                 }}
               >
-                {supporters ? (
+                {!allSupporters && !supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+
+                {supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    List of supporters currently unavailable
+                  </Flex>
+                )}
+                {allSupporters && (!supporters || supporters.length === 0) && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text>Currently there are no supporters</Text>
+                  </Flex>
+                )}
+
+                {supporters &&
+                  supporters.length > 0 &&
                   supporters.map(supporter => (
                     <Flex
                       sx={{
@@ -343,37 +382,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                                   ':hover': { color: 'blueLinkHover' }
                                 }}
                               >
-                                {cutMiddle(supporter.address)}
+                                <Address address={supporter.address} />
                               </Text>
                             )}
                           </ThemeUILink>
                         </Link>
                       </Box>
                     </Flex>
-                  ))
-                ) : supportersError ? (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                ) : (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
+                  ))}
               </Box>
             </Card>
           </Box>

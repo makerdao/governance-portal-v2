@@ -5,10 +5,13 @@ import { isSupportedNetwork } from 'lib/maker/index';
 import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
+import { resolveENS } from 'modules/web3/ens';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
-  const address = req.query.address as string;
+  const tempAddress = req.query.address as string;
+  const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
+
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const delegate = await fetchDelegate(address, network);

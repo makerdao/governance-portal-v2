@@ -1,12 +1,15 @@
 // @ts-nocheck
 import { renderWithTheme } from '../helpers';
-import { fireEvent, waitFor, configure, screen } from '@testing-library/react';
+import { cleanup, fireEvent, waitFor, configure, screen } from '@testing-library/react';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../stores/accounts';
 import BigNumber from 'bignumber.js';
+import { ethers } from 'ethers';
+
+export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
 configure({
   getElementError: (message, container) => {
@@ -47,21 +50,21 @@ describe('ES Module', () => {
     test('show progress bar', () => {
       renderWithTheme(<ESModule />);
       const progressBar = screen.getByTestId('progress-ring');
-      expect(progressBar).toBeTruthy();
+      expect(progressBar).toBeInTheDocument();
     });
 
     test('show esm history', async () => {
       renderWithTheme(<ESModule />);
 
       const title = await screen.findByText('ESM History');
-      expect(title).toBeTruthy();
+      expect(title).toBeInTheDocument();
     });
 
     test('show "Burn your MKR" button', async () => {
       renderWithTheme(<ESModule />);
 
       const buttonBurn = await screen.findByText('Burn Your MKR', {}, { timeout: 15000 });
-      expect(buttonBurn).toBeDefined();
+      expect(buttonBurn).toBeInTheDocument();
       // Initiate Emergency Shutdow
     });
 
@@ -104,7 +107,7 @@ describe('ES Module', () => {
         const amount = 35;
         fireEvent.change(screen.getByTestId('mkr-input'), { target: { value: amount } });
         const tooLow = await screen.findByText('MKR balance too low', {}, { timeout: 3000 });
-        expect(tooLow).toBeTruthy();
+        expect(tooLow).toBeInTheDocument();
 
         // Wait until user balance is loaded
         await screen.findByTestId('mkr-input-balance');
@@ -160,7 +163,7 @@ describe('ES Module', () => {
 
         // Third Step Render
         const signTransaction = await screen.findByText('Sign Transaction');
-        expect(signTransaction).toBeTruthy();
+        expect(signTransaction).toBeInTheDocument();
 
         // Fourth Step Success Render
         await screen.findByText('MKR successfully burned in ESM', {}, { timeout: 10000 });
@@ -175,14 +178,14 @@ describe('ES Module', () => {
       const token = maker.service('smartContract').getContract('MCD_GOV');
       await token['mint(uint256)'](WAD.times(50000).toFixed());
       const esm = maker.service('smartContract').getContract('MCD_ESM');
-      await token.approve(esm.address, -1); //approve unlimited
+      await token.approve(esm.address, ethers.BigNumber.from(UINT256_MAX)); //approve unlimited
       await esm.join(WAD.times(50000).toFixed());
     });
 
     test('show Initiate Shutdown button on threshold reached', async () => {
       await renderWithTheme(<ESModule />);
       const el = await screen.findByText('Initiate Emergency Shutdown', {}, { timeout: 30000 });
-      expect(el).toBeTruthy();
+      expect(el).toBeInTheDocument();
     });
 
     // TODO: this test passing is a false positive bc 'waitFor' is async, but not awaited.
