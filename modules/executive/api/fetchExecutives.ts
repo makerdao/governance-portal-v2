@@ -34,17 +34,19 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
     .filter(x => !!x);
 
   const proposals = await Promise.all(
-    proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
-      try {
-        const proposalDoc = await (await fetch(proposalLink)).text();
+    proposalUrls.map(
+      async (proposalLink): Promise<CMSProposal | null> => {
+        try {
+          const proposalDoc = await (await fetch(proposalLink)).text();
 
-        return parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
-      } catch (e) {
-        console.log(e);
-        // Catch error and return null if failed fetching one proposal
-        return null;
+          return parseExecutive(proposalDoc, proposalIndex, proposalLink, currentNetwork);
+        } catch (e) {
+          console.log(e);
+          // Catch error and return null if failed fetching one proposal
+          return null;
+        }
       }
-    })
+    )
   );
 
   const filteredProposals: CMSProposal[] = proposals.filter(x => !!x) as CMSProposal[];

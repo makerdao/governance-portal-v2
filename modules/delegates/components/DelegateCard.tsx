@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
@@ -31,6 +31,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+
+  useEffect(() => {
+    mutateTotalStaked();
+    mutateMkrStaked();
+  }, []);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
