@@ -1259,14 +1259,14 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@0.15.0-alpha.9":
-  version "0.15.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.15.0-alpha.9.tgz#01b070405cc5a98743faf114d2c4320af83bc63e"
-  integrity sha512-XO6CqxaFlBiHTMPmuyF/qtlyGkA+Usg72GRDwNzEJHBAx8ZiLkWeUKv+DJLJyXVcKXlKi95gt+2Kon6ztRe5AQ==
+"@makerdao/dai-plugin-governance@^0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.16.1.tgz#032634349c86575afb99fcac0705fc6d613a2de5"
+  integrity sha512-QH0l68ovYXixKaWUOBinpfz3s+UWvcMNCLRhZy4leFWoQY5Trzyf+dCycAroL50ijGMjWKoUul2RlstdJV/QsQ==
   dependencies:
     "@makerdao/currency" "0.9.9"
-    "@makerdao/dai" "^0.41.0-alpha.9"
-    "@makerdao/services-core" "^0.11.0-alpha.9"
+    "@makerdao/dai" "^0.42.1"
+    "@makerdao/services-core" "^0.11.2"
     assert "^2.0.0"
     debug "^4.1.1"
     ramda "^0.25.0"
@@ -1284,14 +1284,14 @@
     hdkey "^1.0.0"
     web3-provider-engine "14.0.4"
 
-"@makerdao/dai-plugin-mcd@1.7.0-alpha.9":
-  version "1.7.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.7.0-alpha.9.tgz#fb0adf55505c767ef98e4fc0f027e03acd5dbdd0"
-  integrity sha512-yo+tC5lCq3MekVwvpSXeB9ekWd/pUb0vE479qKU73loqZz9foWTil+kY09o+4A69ECorHGdZE8PNBUTZH8kWOQ==
+"@makerdao/dai-plugin-mcd@^1.8.1":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-mcd/-/dai-plugin-mcd-1.8.1.tgz#73fa08b6513db27aaee1163f74291bffa0551e99"
+  integrity sha512-cBVrs09U0W12Zf3oitrFQ/gJwoml2Mt7YL/FrJGQsVOIJiPjYWmGtzfbsyIIAya5f+PWIOpjGutu8XigQhT2tA==
   dependencies:
     "@makerdao/currency" "0.9.9"
-    "@makerdao/dai" "^0.41.0-alpha.9"
-    "@makerdao/services-core" "^0.11.0-alpha.9"
+    "@makerdao/dai" "^0.42.1"
+    "@makerdao/services-core" "^0.11.2"
     bignumber.js "^8.1.1"
     rxjs "^6.5.4"
 
@@ -1324,15 +1324,15 @@
   dependencies:
     "@theme-ui/color" "^0.3.1"
 
-"@makerdao/dai@0.41.0-alpha.9", "@makerdao/dai@^0.41.0-alpha.9":
-  version "0.41.0-alpha.9"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.41.0-alpha.9.tgz#d119394dbcdf7e3ec8de47e7d936d48933c6fa63"
-  integrity sha512-l+7uQwFe7F4ECTxjWqw5jL8x0EUg5wjZV6R9SVy931FF1ay5l2dA/ObLWFPExDqxYmhXYndh2AtqQWU+CNy/pg==
+"@makerdao/dai@^0.42.1":
+  version "0.42.1"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai/-/dai-0.42.1.tgz#928bf5c33c670656e4b1abf886257ec4840c8cd1"
+  integrity sha512-5NlIHdpcm5CmAgmrBtX6h5FaQ4tQqBj+kuMOleVdbv8FgZi0dr+4TbQiasGBPPsqh5wWNrzeFjpnFZLvaWtOiA==
   dependencies:
     "@babel/runtime" "^7.3.4"
     "@makerdao/currency" "0.9.9"
     "@makerdao/multicall" "^0.11.0"
-    "@makerdao/services-core" "^0.11.0-alpha.9"
+    "@makerdao/services-core" "^0.11.2"
     "@makerdao/test-helpers" "^0.2.1"
     assert "^1.4.1"
     bignumber.js "^7.2.1"
@@ -1372,10 +1372,10 @@
     lodash "^4.17.11"
     ws "^7.2.0"
 
-"@makerdao/services-core@^0.11.0-alpha.9":
-  version "0.11.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@makerdao/services-core/-/services-core-0.11.0-beta.1.tgz#81286ac930e164e4f970704aea1d401eee783797"
-  integrity sha512-1EfSTc8p73SqajhYa4FTo1ZWCS7LtjDJo54P6ooyYlCj8gUZLD8/kB/W1aratndhw0Jid+n0HsTg5GXPv7k8gQ==
+"@makerdao/services-core@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@makerdao/services-core/-/services-core-0.11.2.tgz#541bbd040042b046af8c702af40c18d546270816"
+  integrity sha512-U3gGIA+wFsveoGQN2trwCudJ77r8qagtSvc/vLovA0kcR3RQXR1XZIlDRBHhB4d8Or2JQd1Pb3obGhNtaJmf1w==
   dependencies:
     lodash "^4.17.15"
     toposort "^2.0.2"
@@ -13321,7 +13321,7 @@ web3-net@1.6.0:
     web3-core-method "1.6.0"
     web3-utils "1.6.0"
 
-web3-provider-engine@14.0.4, web3-provider-engine@makerdao/provider-engine#kovan-fix-dist:
+web3-provider-engine@14.0.4, "web3-provider-engine@github:makerdao/provider-engine#kovan-fix-dist":
   version "14.0.4"
   resolved "https://codeload.github.com/makerdao/provider-engine/tar.gz/7c4b187809f156409473246de15dc595e1fe3356"
   dependencies:
