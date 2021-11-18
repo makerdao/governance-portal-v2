@@ -49,8 +49,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           {votes ? (
             <>
               {votes.map((v, i) => (
-                <tr key={i} style={{ fontSize: bpi < 1 ? '12px' : '16px' }}>
-                  <Text as="td" sx={{ pb: 2 }}>
+                <tr key={i}>
+                  <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <Link href={{ pathname: `/address/${v.voter}`, query: { network } }} passHref>
                       <ThemeUILink title="View address detail">
                         {delegateAddresses[v.voter] ? (
@@ -61,7 +61,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       </ThemeUILink>
                     </Link>
                   </Text>
-                  <Text as="td" sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2 }}>
+                  <Text
+                    as="td"
+                    sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                  >
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
                       ? poll.options[v.rankedChoiceOption[0]]
                       : poll.options[v.optionId]}
@@ -73,9 +76,10 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                       .times(100)
                       .toFormat(1)}%`}
                   </Text>
-                  <Text as="td" sx={{ textAlign: 'right', pb: 2 }}>{`${new BigNumber(v.mkrSupport).toFormat(
-                    2
-                  )}${bpi > 0 ? ' MKR' : ''}`}</Text>
+                  <Text
+                    as="td"
+                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
+                  >{`${new BigNumber(v.mkrSupport).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}</Text>
                 </tr>
               ))}
             </>
