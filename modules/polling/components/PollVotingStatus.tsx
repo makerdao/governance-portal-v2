@@ -10,7 +10,7 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { Poll } from 'modules/polling/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
-  const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';
+  const color = hasVoted || onBallot ? 'greenLinkHover' : 'textSecondary';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
     ? 'You voted'
@@ -36,11 +36,9 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
 
 const VotingStatus = ({
   poll,
-  desktopStyle,
   ...props
 }: {
   poll: Poll;
-  desktopStyle?: boolean;
   sx?: ThemeUIStyleObject;
 }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);

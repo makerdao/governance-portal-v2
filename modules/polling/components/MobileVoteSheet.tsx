@@ -12,7 +12,7 @@ import lottie from 'lottie-web';
 import { Account } from 'types/account';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'stores/ballot';
-import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from '../../app/components/layout/layouts/Stack';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
@@ -24,6 +24,8 @@ import { slideUp } from 'lib/keyframes';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAllUserVotes } from 'lib/hooks';
+import useSWR from 'swr';
+import { fetchJson } from 'lib/fetchJson';
 
 enum ViewState {
   START,
@@ -66,7 +68,17 @@ export default function MobileVoteSheet({
   const network = getNetwork();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
-  // TODO: fetch active polls from api
+  const [activePolls, setActivePolls] = useState<Poll[]>([]);
+  const {data: pollsData } = useSWR('/api/polling/all-polls', fetchJson, {
+    refreshInterval: 0,
+    revalidateOnFocus: false
+  });
+
+  useEffect(() => {
+    if (pollsData) {
+      setActivePolls(pollsData.polls.filter(isActivePoll));
+    }
+  }, [pollsData]);
 
   const submit = () => {
     invariant(isChoiceValid);
@@ -116,7 +128,7 @@ export default function MobileVoteSheet({
           flexDirection: 'row'
         }}
       >
-        <VotingStatus poll={poll} desktopStyle />
+        <VotingStatus poll={poll} />
         {onBallot ? (
           <Button
             variant="outline"
@@ -157,7 +169,7 @@ export default function MobileVoteSheet({
           {viewState == ViewState.NEXT ? (
             <Stack gap={2}>
               <Text variant="caps">
-                {ballotCount} of {total} available polls added to ballot
+                {ballotCount} of {activePolls.length} available polls added to ballot
               </Text>
               <Flex
                 sx={{
@@ -167,7 +179,7 @@ export default function MobileVoteSheet({
                   my: 2
                 }}
               >
-                {range(total).map(i => (
+                {range(activePolls.length).map(i => (
                   <Box
                     key={i}
                     sx={{
@@ -175,14 +187,14 @@ export default function MobileVoteSheet({
                       borderLeft: i === 0 ? undefined : '2px solid white',
                       borderTopLeftRadius: i === 0 ? 'small' : undefined,
                       borderBottomLeftRadius: i === 0 ? 'small' : undefined,
-                      borderTopRightRadius: i === total - 1 ? 'small' : undefined,
-                      borderBottomRightRadius: i === total - 1 ? 'small' : undefined,
+                      borderTopRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
+                      borderBottomRightRadius: i === activePolls.length - 1 ? 'small' : undefined,
                       backgroundColor: i < ballotCount ? 'primary' : 'muted'
                     }}
                   />
                 ))}
               </Flex>
-              {ballotCount < total && (
+              {pollsData && ballotCount < activePolls.length && (
                 <Button
                   variant="outline"
                   sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}

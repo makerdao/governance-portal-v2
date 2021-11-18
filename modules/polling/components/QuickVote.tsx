@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import CustomIcon from 'modules/app/components/Icon';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
@@ -84,9 +85,12 @@ const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): 
             display: showHeader ? undefined : 'none'
           }}
         >
-          <Text variant="caps" color="textSecondary">
-            Your Vote
+          <Flex sx={{ alignItems: 'center'}}>
+          <Text variant="caps" color="textSecondary" mr={2}>
+            Your Vote 
           </Text>
+          <CustomIcon name="vote" />
+          </Flex>
 
           {isRankedChoicePoll(poll) && (
             <Tooltip label={rankedChoiceBlurb}>

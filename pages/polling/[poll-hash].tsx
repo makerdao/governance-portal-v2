@@ -41,6 +41,7 @@ import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
+import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -88,7 +89,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
   const { data: tallyData } = useSWR<PollTally>(`/api/polling/tally/${poll.pollId}`, fetchJson, {
-    revalidateOnFocus: false
+    revalidateOnFocus: false,
+    refreshInterval: 0
   });
 
   return (
@@ -218,11 +220,15 @@ const PollView = ({ poll }: { poll: Poll }) => {
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div
-                  key={1}
-                  sx={{ variant: 'markdown.default', p: [3, 4] }}
-                  dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                />,
+
+                <div key={1}>
+                  <PollWinningOptionBox tally={tallyData} poll={poll} />
+                  <Divider my={0} />
+                  <div
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                  />
+                </div>,
                 !tallyData ? (
                   <Box sx={{ m: 4 }}>
                     <Skeleton />
@@ -314,6 +320,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 ) : undefined
               }
             />
+
           </Card>
         </div>
         <Stack gap={3}>

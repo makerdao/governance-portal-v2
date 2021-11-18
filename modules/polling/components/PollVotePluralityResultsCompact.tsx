@@ -3,7 +3,7 @@ import { Box } from 'theme-ui';
 import { PollTally, PollTallyPluralityOption } from '../types';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 
-export function PollVotePluralityResultsCompact({ tally }: { tally: PollTally }): React.ReactElement {
+export function PollVotePluralityResultsCompact({ tally, showTitles = true }: { tally: PollTally, showTitles?: boolean }): React.ReactElement {
   const max = new BigNumber(tally.totalMkrParticipation);
 
   const voteTallyOptions = tally.options as PollTallyPluralityOption;
@@ -18,7 +18,7 @@ export function PollVotePluralityResultsCompact({ tally }: { tally: PollTally })
 
   return (
     <Box>
-      <YesNoAbstainBar yesPercent={yesPercent} noPercent={noPercent} abstainPercent={abstainPercent} />
+      <YesNoAbstainBar yesPercent={yesPercent} noPercent={noPercent} abstainPercent={abstainPercent} showTitles={showTitles} />
     </Box>
   );
 }
