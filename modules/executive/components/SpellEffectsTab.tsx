@@ -1,11 +1,13 @@
-import { Box, Flex, Text, Link as ThemeUILink } from 'theme-ui';
+import { Box, Flex, Text, Link as ThemeUILink, Heading } from 'theme-ui';
 import { Proposal, SpellData } from '../types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
+import { ethers } from 'ethers';
+import { isValid, format } from 'date-fns';
 
 const CircleIcon = ({ name }) => (
   <Flex
@@ -24,9 +26,75 @@ const CircleIcon = ({ name }) => (
   </Flex>
 );
 
+const parseDiffs = diffs => {
+  //todo
+  return diffs;
+};
+
+const formatLocation = location => {
+  if (location.indexOf(']') !== -1) {
+    const mapKey = location.slice(location.indexOf('[') + 1, location.indexOf(']'));
+    if (ethers.utils.isAddress(mapKey)) console.log('mapkey is address', mapKey);
+    else if (isNaN(parseInt(mapKey))) console.log('mapkey is a contract', mapKey);
+    else console.log('mapkey is an ID', mapKey);
+  }
+  return location;
+};
+
+const formatValue = value => {
+  if (value.indexOf('16') === 0 && isValid(new Date(parseInt(value) * 1000))) {
+    console.log('date', new Date(parseInt(value) * 1000));
+    return { interpreted: format(new Date(parseInt(value) * 1000), 'MM/dd/yyyy') };
+  }
+  return value;
+};
+
+const SpellDiff = ({ diffs }) => {
+  return diffs.map(({ decoded_contract, decoded_location, decoded_from_val, decoded_to_val }, i, a) => {
+    return (
+      <Flex
+        key={JSON.stringify(a[i]) + i}
+        sx={{ flexDirection: 'column', p: 3, m: 3, bg: 'background', borderRadius: 'small' }}
+      >
+        <Heading variant="smallHeading">{`${decoded_contract}`}</Heading>
+        <Heading variant="microHeading">{formatLocation(decoded_location)}</Heading>
+        <Flex sx={{ justifyContent: 'space-between', mt: 3 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column'
+            }}
+          >
+            <Text variant="caps">Old Value</Text>
+            <Text>{decoded_from_val}</Text>
+          </Flex>
+          <Flex
+            sx={{
+              flexDirection: 'column'
+            }}
+          >
+            <Text variant="caps" sx={{ alignSelf: 'flex-end' }}>
+              New Value
+            </Text>
+            <Text>{decoded_to_val}</Text>
+            {formatValue(decoded_to_val).interpreted && (
+              <>
+                <Text variant="caps" sx={{ mt: 3, alignSelf: 'flex-end' }}>
+                  Interpreted New Value
+                </Text>
+                <Text>{formatValue(decoded_to_val).interpreted}</Text>
+              </>
+            )}
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  });
+};
+
 export function SpellEffectsTab({
   proposal,
-  spellData
+  spellData,
+  spellDiffs
 }: {
   proposal: Proposal;
   spellData?: SpellData;
@@ -62,6 +130,7 @@ export function SpellEffectsTab({
 
   return spellData ? (
     <Box>
+      {spellDiffs && <SpellDiff diffs={spellDiffs} />}
       <Text
         as="p"
         variant="microHeading"

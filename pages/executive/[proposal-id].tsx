@@ -26,7 +26,7 @@ import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { getNetwork, isDefaultNetwork } from 'lib/maker';
+import getMaker, { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -52,6 +52,9 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'types/currency';
+import { fetchJson } from 'lib/fetchJson';
+import { analyzeSpell } from 'pages/api/executive/analyze-spell/[address]';
+import { SupportedNetworks } from 'lib/constants';
 
 type Props = {
   proposal: Proposal;
@@ -86,7 +89,7 @@ const ProposalTimingBanner = ({
   return <></>;
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
@@ -240,7 +243,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
                   <div key={'spell'} sx={{ p: [3, 4] }}>
-                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
                   </div>,
                   commentsTab
                 ]}
@@ -386,7 +389,12 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
+export default function ProposalPage({
+  proposal: prefetchedProposal,
+  spellDiffs: prefetchedSpellDiffs
+}: {
+  proposal?: Proposal;
+}): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -423,8 +431,37 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  return <ProposalView proposal={proposal as Proposal} />;
+  return <ProposalView proposal={proposal as Proposal} spellDiffs={prefetchedSpellDiffs} />;
 }
+
+const getSpellData = async proposalAddress => {
+  if (!proposalAddress) return [];
+  const castSig = '0x96d373e5';
+  const network = SupportedNetworks.MAINNET;
+  const maker = await getMaker(network);
+  // We need this to check if the spell has been cast
+  const data = await analyzeSpell(proposalAddress, maker);
+  console.log('spelldata2', data);
+
+  // Need to find the tx of the cast spell
+  const provider = new ethers.providers.EtherscanProvider();
+  const history = await provider.getHistory(proposalAddress);
+  const castTx = history.filter(h => h.data === castSig);
+
+  if (castTx.length > 1) {
+    // TODO: Need to loop & fetch the txns from the provider to find the successful one
+    console.warn('multiple matching txs', castTx);
+  }
+  const [{ hash }] = castTx;
+
+  // TODO: currently the endpoint is hardcoded to only allow the following hash:
+  const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
+  const url = `http://3.123.40.243/api/v1/transactions/${hcHash}/diffs/decoded`;
+
+  const diff = await fetchJson(url);
+
+  return diff;
+};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
@@ -435,9 +472,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
+  const spellDiffs = await getSpellData(proposal?.address);
+
   return {
     props: {
-      proposal
+      proposal,
+      spellDiffs
     }
   };
 };
