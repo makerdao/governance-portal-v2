@@ -8,12 +8,14 @@ import withApiHandler from 'lib/api/withApiHandler';
 import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
+import { resolveENS } from 'modules/web3/ens';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressApiResponse>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
-  const address = req.query.address as string;
+  const tempAddress = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
+  const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
   const maker = await getMaker(network);
   const voteProxyContract = maker
     .service('smartContract')

@@ -52,6 +52,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'types/currency';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   proposal: Proposal;
@@ -381,7 +382,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                                   ':hover': { color: 'blueLinkHover' }
                                 }}
                               >
-                                {cutMiddle(supporter.address)}
+                                <Address address={supporter.address} />
                               </Text>
                             )}
                           </ThemeUILink>
