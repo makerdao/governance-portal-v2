@@ -11,7 +11,6 @@ import {
   sendMkrToAddress
 } from '../helpers';
 import { SWRConfig } from 'swr';
-import * as utils from '../../lib/utils';
 import { DelegatesAPIResponse } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
