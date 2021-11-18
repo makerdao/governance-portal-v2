@@ -28,8 +28,8 @@ export async function fetchAddressPollVoteHistory(
           pollVote.rankedChoiceOption && pollVote.rankedChoiceOption?.length > 0
             ? poll.options[pollVote.rankedChoiceOption[0]]
             : (pollVote.option as number) !== undefined
-              ? poll.options[pollVote.option as number]
-              : '';
+            ? poll.options[pollVote.option as number]
+            : '';
 
         return {
           ...pollVote,
@@ -37,7 +37,8 @@ export async function fetchAddressPollVoteHistory(
           optionValue: optionValue as string
         };
       }
-    ));
+    )
+  );
 
   return items.filter(pollVote => !!pollVote) as PollVoteHistory[];
 }
