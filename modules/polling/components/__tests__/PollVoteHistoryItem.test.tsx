@@ -32,8 +32,6 @@ describe('Poll vote history item', () => {
   });
 
   test('renders plurality vote type correctly', async () => {
-
-
     const vote = {
       ...mockVote,
       poll: {
@@ -93,5 +91,4 @@ describe('Poll vote history item', () => {
     const abstain = screen.queryByText(/Abstain/);
     expect(abstain).not.toBeInTheDocument();
   });
-
 });
