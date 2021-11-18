@@ -300,7 +300,45 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   scrollbarWidth: 'none'
                 }}
               >
-                {supporters ? (
+                {!allSupporters && !supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+
+                {supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    List of supporters currently unavailable
+                  </Flex>
+                )}
+                {allSupporters && (!supporters || supporters.length === 0) && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text>Currently there are no supporters</Text>
+                  </Flex>
+                )}
+
+                {supporters &&
+                  supporters.length > 0 &&
                   supporters.map(supporter => (
                     <Flex
                       sx={{
@@ -350,30 +388,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         </Link>
                       </Box>
                     </Flex>
-                  ))
-                ) : supportersError ? (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                ) : (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
+                  ))}
               </Box>
             </Card>
           </Box>
