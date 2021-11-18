@@ -49,8 +49,6 @@ function createPollTallyRoute({ cacheType }: { cacheType: string }): NextApiHand
   });
 }
 
-export { createPollTallyRoute };
-
 export default createPollTallyRoute({
   cacheType: 's-maxage=5, stale-while-revalidate'
 });
