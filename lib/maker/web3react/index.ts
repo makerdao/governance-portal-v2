@@ -2,7 +2,7 @@
 
 import ProviderSubprovider from 'web3-provider-engine/dist/es5/subproviders/provider';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { WalletConnectConnector, WalletConnectConnectorArguments } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { networkToRpc } from '../network';
@@ -33,7 +33,7 @@ export const connectors: Array<[ConnectorName, AbstractConnector]> = [
       bridge: 'https://bridge.walletconnect.org',
       qrcode: true,
       pollingInterval: POLLING_INTERVAL
-    })
+    } as WalletConnectConnectorArguments)
   ],
   [
     'Coinbase Wallet',
