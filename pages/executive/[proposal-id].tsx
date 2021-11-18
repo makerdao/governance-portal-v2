@@ -334,7 +334,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       alignItems: 'center'
                     }}
                   >
-                    <Text>Currently there &apos;t any supporters</Text>
+                    <Text>Currently there are no supporters</Text>
                   </Flex>
                 )}
 
