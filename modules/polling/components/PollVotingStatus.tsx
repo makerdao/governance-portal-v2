@@ -34,13 +34,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
   );
 };
 
-const VotingStatus = ({
-  poll,
-  ...props
-}: {
-  poll: Poll;
-  sx?: ThemeUIStyleObject;
-}): JSX.Element | null => {
+const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;

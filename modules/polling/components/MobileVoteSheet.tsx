@@ -69,7 +69,7 @@ export default function MobileVoteSheet({
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   const [activePolls, setActivePolls] = useState<Poll[]>([]);
-  const {data: pollsData } = useSWR('/api/polling/all-polls', fetchJson, {
+  const { data: pollsData } = useSWR('/api/polling/all-polls', fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false
   });

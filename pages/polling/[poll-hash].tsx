@@ -7,13 +7,12 @@ import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
 
 // api
@@ -42,6 +41,7 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
+import { usePollTally } from 'modules/polling/hooks/usePollTally';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -88,10 +88,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
-  const { data: tallyData } = useSWR<PollTally>(`/api/polling/tally/${poll.pollId}`, fetchJson, {
-    revalidateOnFocus: false,
-    refreshInterval: 0
-  });
+  const { tally } = usePollTally(poll.pollId);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
@@ -220,16 +217,15 @@ const PollView = ({ poll }: { poll: Poll }) => {
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-
                 <div key={1}>
-                  <PollWinningOptionBox tally={tallyData} poll={poll} />
+                  <PollWinningOptionBox tally={tally} poll={poll} />
                   <Divider my={0} />
                   <div
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                   />
                 </div>,
-                !tallyData ? (
+                !tally ? (
                   <Box sx={{ m: 4 }}>
                     <Skeleton />
                   </Box>
@@ -238,7 +234,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     <VoteBreakdown
                       poll={poll}
                       shownOptions={shownOptions}
-                      tally={tallyData}
+                      tally={tally}
                       key={'vote breakdown'}
                     />,
                     shownOptions < Object.keys(poll.options).length && (
@@ -263,8 +259,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Text>
                       <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
-                        {tallyData ? (
-                          <Text>{new BigNumber(tallyData.totalMkrParticipation).toFormat(2)} MKR</Text>
+                        {tally ? (
+                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(2)} MKR</Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />
@@ -274,8 +270,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
                       <Flex sx={{ justifyContent: 'space-between', fontSize: [2, 3] }}>
                         <Text sx={{ color: 'textSecondary' }}>Unique Voters</Text>
-                        {tallyData ? (
-                          <Text>{tallyData.numVoters}</Text>
+                        {tally ? (
+                          <Text>{tally.numVoters}</Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />
@@ -288,8 +284,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>
-                      {tallyData && tallyData.votesByAddress && tallyData.totalMkrParticipation ? (
-                        <VotesByAddress tally={tallyData} poll={poll} />
+                      {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
+                        <VotesByAddress tally={tally} poll={poll} />
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>
@@ -309,18 +305,17 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Weight
                       </Text>
-                      {tallyData && <VotingWeightComponent tally={tallyData} poll={poll} />}
+                      {tally && <VotingWeightComponent tally={tally} poll={poll} />}
                     </Flex>
                   ]
                 )
               ]}
               banner={
-                hasPollEnded && tallyData ? (
-                  <WinningOptionText tally={tallyData} voteType={poll.voteType} />
+                hasPollEnded && tally ? (
+                  <WinningOptionText tally={tally} voteType={poll.voteType} />
                 ) : undefined
               }
             />
-
           </Card>
         </div>
         <Stack gap={3}>

@@ -27,14 +27,14 @@ export default function PollWinningOptionBox({
       ? colorNo
       : colorOther;
 
-  const textWin = isActivePoll(poll) ? 'Currently winning option': 'Winner option';
+  const textWin = isActivePoll(poll) ? 'Currently winning option' : 'Winner option';
 
   return (
     <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: colorOther }}>
       {tally && tally.winningOptionName ? (
         <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
-          {textWin}: <span sx={{ color: colorOptionWin }}>{tally?.winningOptionName}</span>{' '}
-          with {new BigNumber(tally.options[tally.winner].mkrSupport).toFormat(2)} MKR supporting.
+          {textWin}: <span sx={{ color: colorOptionWin }}>{tally?.winningOptionName}</span> with{' '}
+          {new BigNumber(tally.options[tally.winner].mkrSupport).toFormat(2)} MKR supporting.
         </Text>
       ) : (
         <SkeletonThemed />

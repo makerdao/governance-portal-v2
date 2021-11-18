@@ -85,11 +85,11 @@ const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): 
             display: showHeader ? undefined : 'none'
           }}
         >
-          <Flex sx={{ alignItems: 'center'}}>
-          <Text variant="caps" color="textSecondary" mr={2}>
-            Your Vote 
-          </Text>
-          <CustomIcon name="vote" />
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text variant="caps" color="textSecondary" mr={2}>
+              Your Vote
+            </Text>
+            <CustomIcon name="vote" />
           </Flex>
 
           {isRankedChoicePoll(poll) && (
