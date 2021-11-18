@@ -56,6 +56,9 @@ const WrappedAccountSelect = (): JSX.Element => (
   </Web3ReactProvider>
 );
 
+const ADDRESSES_PER_PAGE = 5;
+const MAX_PAGES = 5;
+
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
@@ -95,6 +98,8 @@ const AccountSelect = (): React.ReactElement => {
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
   const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
 
+  const [hwPageNum, setHwPageNum] = useState(0);
+
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
@@ -132,7 +137,7 @@ const AccountSelect = (): React.ReactElement => {
           try {
             await maker.addAccount({
               type: 'ledger',
-              accountsLength: 10,
+              accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
               choose: (addresses, callback) => {
                 setLoading(false);
                 setAddresses(addresses);
@@ -167,7 +172,7 @@ const AccountSelect = (): React.ReactElement => {
         try {
           await maker.addAccount({
             type: 'trezor',
-            accountsLength: 10,
+            accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
             accountsOffset: 0,
             path: "44'/60'/0'/0/0",
             choose: (addresses, callback) => {
@@ -268,11 +273,35 @@ const AccountSelect = (): React.ReactElement => {
           {showHwAddressSelector ? (
             <>
               <BackButton onClick={() => setShowHwAddressSelector(false)} />
-              {addresses.map(address => (
-                <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
-                  <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
-                </Flex>
-              ))}
+              <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: 3 }}>
+                <Button
+                  variant="mutedOutline"
+                  disabled={hwPageNum === 0}
+                  onClick={() => setHwPageNum(hwPageNum - 1)}
+                >
+                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    <Icon name="chevron_left" size={2} mr={2} />
+                    Previous Page
+                  </Flex>
+                </Button>
+                <Button
+                  variant="mutedOutline"
+                  disabled={hwPageNum === MAX_PAGES - 1}
+                  onClick={() => setHwPageNum(hwPageNum + 1)}
+                >
+                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    Next Page
+                    <Icon name="chevron_right" size={2} ml={2} />
+                  </Flex>
+                </Button>
+              </Flex>
+              {addresses
+                .slice(hwPageNum * ADDRESSES_PER_PAGE, (hwPageNum + 1) * ADDRESSES_PER_PAGE)
+                .map(address => (
+                  <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
+                    <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
+                  </Flex>
+                ))}
             </>
           ) : changeWallet ? (
             <>
