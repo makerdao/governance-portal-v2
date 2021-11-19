@@ -7,6 +7,7 @@ type VotedProposalsResponse = {
   data: any;
   loading: boolean;
   error: Error;
+  mutate: any;
 };
 
 export const useVotedProposals = (passedAddress?: string): VotedProposalsResponse => {
@@ -29,7 +30,7 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
       : account?.address;
   }
 
-  const { data, error } = useSWR<string[]>(
+  const { data, error, mutate } = useSWR<string[]>(
     addressToUse ? ['/executive/voted-proposals', addressToUse] : null,
     (_, address) =>
       getMaker().then(maker =>
@@ -38,12 +39,13 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
           .getVotedSlate(address)
           .then(slate => (slate !== ZERO_SLATE_HASH ? maker.service('chief').getSlateAddresses(slate) : []))
       ),
-    { refreshInterval: 60000 }
+    { revalidateOnMount: true, refreshInterval: 60000, revalidateOnFocus: false }
   );
 
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

@@ -9,15 +9,16 @@ import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
 import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { Account } from 'types/account';
+import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAllUserVotes } from 'lib/hooks';
 import VotingStatus from './PollVotingStatus';
 
 type Props = {
@@ -42,7 +43,9 @@ const rankedChoiceBlurb = (
 const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { data: allUserVotes } = useAllUserVotes(account?.address);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
     state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],

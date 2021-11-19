@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
@@ -29,8 +29,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
   const address = account?.address;
 
-  const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -238,11 +238,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         delegate={delegate}
         isOpen={showDelegateModal}
         onDismiss={() => setShowDelegateModal(false)}
+        mutateTotalStaked={mutateTotalStaked}
+        mutateMkrStaked={mutateMkrStaked}
       />
       <UndelegateModal
         delegate={delegate}
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
+        mutateTotalStaked={mutateTotalStaked}
+        mutateMkrStaked={mutateMkrStaked}
       />
     </Card>
   );

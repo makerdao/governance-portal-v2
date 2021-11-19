@@ -1,4 +1,4 @@
-### Link to Clubhouse story
+### Link to Shortcut ticket:
 
 ### What does this PR do?
 

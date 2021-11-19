@@ -9,7 +9,8 @@ type UsePollTallyResponse = {
 export function usePollTally(pollId: number): UsePollTallyResponse {
   const { data: tallyData } = useSWR<PollTally>(`/api/polling/tally/${pollId}`, fetchJson, {
     revalidateOnFocus: false,
-    refreshInterval: 0
+    refreshInterval: 0,
+    revalidateOnMount: true
   });
 
   return {

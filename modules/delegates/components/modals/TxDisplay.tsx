@@ -1,5 +1,5 @@
-import { TransactionInProgress } from './TransactionInProgress';
-import { TxFinal } from './TxFinal';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
+import { TxFinal } from 'modules/app/components/TxFinal';
 
 export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
   switch (tx?.status) {
@@ -7,7 +7,7 @@ export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
       return (
         <TxFinal
           title="Transaction Sent"
-          description="Delegate contract will update once the blockchain has confirmed the transaction."
+          description="Delegate contract will update once the transaction has been confirmed."
           buttonLabel="Close"
           onClick={onDismiss}
           tx={tx}
@@ -26,6 +26,6 @@ export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
         />
       );
     default:
-      return <TransactionInProgress txPending={tx?.status === 'pending'} setTxId={setTxId} />;
+      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
   }
 };

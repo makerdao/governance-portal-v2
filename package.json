@@ -62,7 +62,7 @@
     "remark-html": "^13.0.2",
     "superjson": "^1.7.4",
     "swagger-ui-react": "^4.1.0",
-    "swr": "^0.2.0",
+    "swr": "^1.0.1",
     "theme-ui": "^0.12.0",
     "tiny-invariant": "^1.1.0",
     "uuid": "^8.3.0",

@@ -56,7 +56,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     content = (
       <Stack sx={{ textAlign: 'center' }}>
         <Text as="p" variant="microHeading" color="onBackgroundAlt">
-          {txPending ? 'Transaction pending' : 'Confirm transaction'}
+          {txPending ? 'Transaction Pending' : 'Confirm Transaction'}
         </Text>
 
         <Flex sx={{ justifyContent: 'center' }}>

@@ -13,7 +13,10 @@ import { Account } from 'types/account';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'stores/ballot';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
-import Stack from '../../app/components/layout/layouts/Stack';
+import Stack from 'modules/app/components/layout/layouts/Stack';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
+import useAccountsStore from 'stores/accounts';
+
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
@@ -23,9 +26,9 @@ import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAllUserVotes } from 'lib/hooks';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
+
 
 enum ViewState {
   START,
@@ -54,7 +57,9 @@ export default function MobileVoteSheet({
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { data: allUserVotes } = useAllUserVotes(account?.address);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
   const [addToBallot, removeFromBallot, ballot] = useBallotStore(
@@ -71,7 +76,8 @@ export default function MobileVoteSheet({
   const [activePolls, setActivePolls] = useState<Poll[]>([]);
   const { data: pollsData } = useSWR('/api/polling/all-polls', fetchJson, {
     refreshInterval: 0,
-    revalidateOnFocus: false
+    revalidateOnFocus: false,
+    revalidateOnMount: true
   });
 
   useEffect(() => {

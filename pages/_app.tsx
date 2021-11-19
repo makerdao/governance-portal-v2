@@ -33,7 +33,9 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
         <AnalyticsProvider>
           <SWRConfig
             value={{
-              refreshInterval: 5000,
+              // default to 60 second refresh intervals
+              refreshInterval: 60000,
+              revalidateOnMount: false,
               fetcher: url => fetchJson(url)
             }}
           >

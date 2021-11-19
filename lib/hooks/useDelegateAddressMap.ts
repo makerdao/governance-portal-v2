@@ -8,7 +8,9 @@ type DelegateAddressMapResponse = {
 };
 
 export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
-  const { data: delegatesApiResponse, error } = useSWR(`/api/delegates?network=${getNetwork()}`);
+  const { data: delegatesApiResponse, error } = useSWR(`/api/delegates?network=${getNetwork()}`, null, {
+    refreshInterval: 0
+  });
 
   const data =
     delegatesApiResponse &&

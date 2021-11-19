@@ -8,7 +8,9 @@ type MkrBalanceResponse = {
 };
 
 export const useESModuleStats = (address?: string): MkrBalanceResponse => {
-  const { data, error } = useSWR(['/es-module', address], () => fetchESModuleStats(address));
+  const { data, error } = useSWR(['/es-module', address], () => fetchESModuleStats(address), {
+    revalidateOnMount: true
+  });
 
   return {
     data: data,

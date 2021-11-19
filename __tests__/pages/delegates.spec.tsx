@@ -97,9 +97,9 @@ describe('Delegates list page', () => {
     click(approveMKRButton);
 
     // Transaction is initialized
-    await screen.findByText('Confirm transaction');
+    await screen.findByText('Confirm Transaction');
     // Transaction state moved to pending
-    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Pending');
     // Deposit input appears
     await screen.findByText('Deposit into delegate contract');
 
@@ -122,7 +122,7 @@ describe('Delegates list page', () => {
     click(confirmButton);
 
     // Wait for transactions again...
-    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Pending');
     await screen.findByText('Transaction Sent');
 
     // UI updates to display totals correctly
@@ -139,8 +139,8 @@ describe('Delegates list page', () => {
     click(approveIOUButton);
 
     // More transaction screens...
-    await screen.findByText('Confirm transaction');
-    await screen.findByText('Transaction pending');
+    await screen.findByText('Confirm Transaction');
+    await screen.findByText('Transaction Pending');
     await screen.findByText('Withdraw from delegate contract');
 
     // Set max button adds input value correctly
@@ -154,7 +154,7 @@ describe('Delegates list page', () => {
     click(undelegateMKRButton);
 
     // Wait for transactions again...
-    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Pending');
     await screen.findByText('Transaction Sent');
 
     // Close the modal
@@ -169,14 +169,15 @@ describe('Delegates list page', () => {
     expect(newByYou.previousSibling).toHaveTextContent('0.00');
   });
 
-
   test('Find info', async () => {
-    await screen.findByText('System Info', {
-      
-    }, {
-      timeout: 30000
-    });
-  
+    await screen.findByText(
+      'System Info',
+      {},
+      {
+        timeout: 30000
+      }
+    );
+
     const totalDelegatesSystemInfo = screen.getByTestId('total-delegates-system-info');
     expect(totalDelegatesSystemInfo).toHaveTextContent('1');
 
@@ -185,8 +186,8 @@ describe('Delegates list page', () => {
 
     const totalShadowDelegatesSystemInfo = screen.getByTestId('total-shadow-delegates-system-info');
     expect(totalShadowDelegatesSystemInfo).toHaveTextContent('0');
-    
+
     const totalMkr = screen.getByTestId('total-mkr-system-info');
     expect(totalMkr).toHaveTextContent('10.24');
-  })
+  });
 });
