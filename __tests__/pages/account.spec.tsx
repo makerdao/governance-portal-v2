@@ -52,10 +52,10 @@ describe('Delegate Create page', () => {
     });
 
     // Transaction is initialized
-    await screen.findByText('Confirm transaction');
+    await screen.findByText('Confirm Transaction');
 
     // Transaction state moved to pending
-    await screen.findByText('Transaction pending');
+    await screen.findByText('Transaction Pending');
 
     // Transaction state moved to mined
     await screen.findByText('Transaction Sent');

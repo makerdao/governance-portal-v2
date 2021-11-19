@@ -112,7 +112,7 @@ const ModalContent = ({
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-          Shutdown will update once the blockchain has confirmed the transaction.
+          Shutdown will update once the transaction has been confirmed..
         </Text>
         <Link
           target="_blank"

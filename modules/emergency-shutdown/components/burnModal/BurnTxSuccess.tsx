@@ -17,7 +17,7 @@ const BurnTxSuccess = ({ tx, close }) => (
       MKR successfully burned in ESM
     </Text>
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', textAlign: 'center', mt: 2 }}>
         You can safely close this modal
       </Text>
       <Icon name="burnSuccess" size={7} sx={{ my: 4 }} />

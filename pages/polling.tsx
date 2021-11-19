@@ -12,6 +12,7 @@ import partition from 'lodash/partition';
 import { Poll, PollCategory } from 'modules/polling/types';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
+import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -32,7 +33,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getPolls } from 'modules/polling/api/fetchPolls';
-import { fetchJson } from 'lib/fetchJson';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
 type Props = {
@@ -120,6 +121,14 @@ const PollingOverview = ({ polls, categories }: Props) => {
   }, [filteredPolls]);
 
   const account = useAccountsStore(state => state.currentAccount);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
+
+  // revalidate user votes if connected address changes
+  useEffect(() => {
+    mutateAllUserVotes();
+  }, [addressToCheck]);
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
 

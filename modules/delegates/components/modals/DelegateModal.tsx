@@ -23,9 +23,17 @@ type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate;
+  mutateTotalStaked: () => void;
+  mutateMkrStaked: () => void;
 };
 
-export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const DelegateModal = ({
+  isOpen,
+  onDismiss,
+  delegate,
+  mutateTotalStaked,
+  mutateMkrStaked
+}: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
@@ -68,6 +76,8 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
     const lockTxCreator = () => maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
     const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
+        mutateTotalStaked();
+        mutateMkrStaked();
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
       },
       error: () => {
