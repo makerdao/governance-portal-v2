@@ -5,9 +5,10 @@ import { VoteDelegateContract } from 'types/voteDelegateContract';
 import { VoteProxyContract } from 'types/voteProxyContract';
 
 type LockedMkrData = {
-  data?: CurrencyObject;
-  loading?: boolean;
-  error?: Error;
+  data: CurrencyObject;
+  loading: boolean;
+  error: Error;
+  mutate: any;
 };
 
 export const useLockedMkr = (
@@ -16,15 +17,24 @@ export const useLockedMkr = (
   voteDelegate?: VoteDelegateContract | null
 ): LockedMkrData => {
   const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
-  const { data, error } = useSWR(address ? ['/user/mkr-locked', addressToCache] : null, () =>
-    getMaker().then(maker =>
-      voteProxy && !voteDelegate ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
+  const { data, error, mutate } = useSWR(
+    address ? ['/user/mkr-locked', addressToCache] : null,
+    () =>
+      getMaker().then(maker =>
+        voteProxy && !voteDelegate
+          ? voteProxy.getNumDeposits()
+          : maker.service('chief').getNumDeposits(address)
+      ),
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: true
+    }
   );
 
   return {
-    data: data,
+    data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

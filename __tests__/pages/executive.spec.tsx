@@ -97,12 +97,10 @@ describe('Executive page', () => {
     const submitButton = screen.getByText('Submit Vote');
     click(submitButton);
 
-    await screen.findByText('Sign Transaction');
-    await screen.findByText('Transaction Sent!');
-    //TODO: get the UI to reflect the vote and test for that
-
-    const dialog = screen.getByRole('dialog');
-    await waitForElementToBeRemoved(dialog);
+    // wait for transaction to progress
+    await screen.findByText('Confirm Transaction');
+    await screen.findByText('Transaction Sent');
+    await screen.findByText('Close');
   });
 
   test('shows delegated balance if account is a delegate', async () => {

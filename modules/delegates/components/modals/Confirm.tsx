@@ -16,7 +16,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
       <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
-        Confirm transaction
+        Confirm Transaction
       </Text>
       <Text sx={{ mt: 4 }}>
         You are delegating{' '}

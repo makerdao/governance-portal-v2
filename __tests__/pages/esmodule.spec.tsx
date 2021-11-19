@@ -3,7 +3,6 @@ import { renderWithTheme } from '../helpers';
 import { cleanup, fireEvent, waitFor, configure, screen } from '@testing-library/react';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
-import { cache } from 'swr';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../stores/accounts';
@@ -44,11 +43,6 @@ describe('ES Module', () => {
       expect(currentAccount?.address).toBe(nextAccount.address);
       expect(currentAccount?.name).toBe('test-account');
     }, 30000);
-  });
-
-  afterEach(() => {
-    cache.clear();
-    cleanup();
   });
 
   describe('emergency shutdown render', () => {

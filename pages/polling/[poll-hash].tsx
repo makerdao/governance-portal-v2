@@ -87,10 +87,8 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
 
-  const { data: tally, error: tallyError } = useSWR<PollTally>(
-    getPollApiUrl(poll),
-    async url => parseRawPollTally(await fetchJson(url), poll),
-    { refreshInterval: 30000 }
+  const { data: tally, error: tallyError } = useSWR<PollTally>(getPollApiUrl(poll), async url =>
+    parseRawPollTally(await fetchJson(url), poll)
   );
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {

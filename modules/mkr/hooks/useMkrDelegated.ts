@@ -3,9 +3,10 @@ import useSWR from 'swr';
 import { CurrencyObject } from 'types/currency';
 
 type TokenAllowanceResponse = {
-  data?: CurrencyObject;
-  loading?: boolean;
-  error?: Error;
+  data: CurrencyObject;
+  loading: boolean;
+  error: Error;
+  mutate: any;
 };
 
 // Fetches the amount delegated from one user to one contract address
@@ -13,7 +14,7 @@ export const useMkrDelegated = (
   userAddress?: string,
   voteDelegateAddress?: string
 ): TokenAllowanceResponse => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     userAddress && voteDelegateAddress ? ['/user/mkr-delegated', voteDelegateAddress, userAddress] : null,
     async (_, delegateAddress, address) => {
       const maker = await getMaker();
@@ -23,12 +24,17 @@ export const useMkrDelegated = (
         .getStakedBalanceForAddress(delegateAddress, address);
 
       return balance;
+    },
+    {
+      revalidateOnMount: true,
+      revalidateOnFocus: false
     }
   );
 
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

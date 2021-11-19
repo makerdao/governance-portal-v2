@@ -9,8 +9,10 @@ type MkrBalanceResponse = {
 };
 
 export const useMkrBalance = (address?: string): MkrBalanceResponse => {
-  const { data, error } = useSWR(address ? ['/user/mkr-balance', address] : null, (_, address) =>
-    getMaker().then(maker => maker.getToken(MKR).balanceOf(address))
+  const { data, error } = useSWR(
+    address ? ['/user/mkr-balance', address] : null,
+    (_, address) => getMaker().then(maker => maker.getToken(MKR).balanceOf(address)),
+    { revalidateOnMount: true }
   );
 
   return {

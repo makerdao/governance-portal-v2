@@ -48,6 +48,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
       </Flex>
       <Text
         variant="microHeading"
+        as="p"
         mt={4}
         sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
