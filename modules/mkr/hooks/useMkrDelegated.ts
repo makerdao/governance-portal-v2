@@ -24,7 +24,8 @@ export const useMkrDelegated = (
         .getStakedBalanceForAddress(delegateAddress, address);
 
       return balance;
-    }, {
+    },
+    {
       revalidateOnMount: true,
       revalidateOnFocus: false
     }

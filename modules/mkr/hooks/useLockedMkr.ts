@@ -17,10 +17,15 @@ export const useLockedMkr = (
   voteDelegate?: VoteDelegateContract | null
 ): LockedMkrData => {
   const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
-  const { data, error, mutate } = useSWR(address ? ['/user/mkr-locked', addressToCache] : null, () =>
-    getMaker().then(maker =>
-      voteProxy && !voteDelegate ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    ), {
+  const { data, error, mutate } = useSWR(
+    address ? ['/user/mkr-locked', addressToCache] : null,
+    () =>
+      getMaker().then(maker =>
+        voteProxy && !voteDelegate
+          ? voteProxy.getNumDeposits()
+          : maker.service('chief').getNumDeposits(address)
+      ),
+    {
       revalidateOnFocus: false,
       revalidateOnMount: true
     }

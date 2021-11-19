@@ -14,8 +14,11 @@ export function DelegatesSystemInfo({
   stats: DelegatesAPIStats;
   className?: string;
 }): React.ReactElement {
-  const { data: delegateFactoryAddress } = useSWR<string>('/delegate-factory-address', () =>
-    getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address), {
+  const { data: delegateFactoryAddress } = useSWR<string>(
+    '/delegate-factory-address',
+    () =>
+      getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address),
+    {
       revalidateOnMount: true,
       revalidateOnFocus: false,
       refreshInterval: 0
