@@ -32,11 +32,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
-  useEffect(() => {
-    mutateTotalStaked();
-    mutateMkrStaked();
-  }, []);
-
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
   const isOwner =

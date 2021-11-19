@@ -39,7 +39,7 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
           .getVotedSlate(address)
           .then(slate => (slate !== ZERO_SLATE_HASH ? maker.service('chief').getSlateAddresses(slate) : []))
       ),
-    { refreshInterval: 60000 }
+    {  revalidateOnMount: true, refreshInterval: 60000, revalidateOnFocus: false }
   );
 
   return {

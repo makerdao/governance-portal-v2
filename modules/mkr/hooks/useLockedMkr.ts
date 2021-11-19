@@ -20,7 +20,10 @@ export const useLockedMkr = (
   const { data, error, mutate } = useSWR(address ? ['/user/mkr-locked', addressToCache] : null, () =>
     getMaker().then(maker =>
       voteProxy && !voteDelegate ? voteProxy.getNumDeposits() : maker.service('chief').getNumDeposits(address)
-    )
+    ), {
+      revalidateOnFocus: false,
+      revalidateOnMount: true
+    }
   );
 
   return {
