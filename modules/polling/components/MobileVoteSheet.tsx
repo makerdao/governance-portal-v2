@@ -29,7 +29,6 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 
-
 enum ViewState {
   START,
   INPUT,
