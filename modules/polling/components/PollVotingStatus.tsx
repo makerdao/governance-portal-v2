@@ -10,7 +10,7 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { Poll } from 'modules/polling/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
-  const color = hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey';
+  const color = hasVoted || onBallot ? 'greenLinkHover' : 'textSecondary';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
     ? 'You voted'
@@ -25,7 +25,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
     : 'You did not vote';
 
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'center' }} {...otherProps}>
+    <Flex sx={{ alignItems: 'center', justifyContent: 'flex-start' }} {...otherProps}>
       {icon && <Icon mr="2" name={icon} sx={{ color }} />}
       <Text variant="caps" color={color}>
         {text}
@@ -34,15 +34,7 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherP
   );
 };
 
-const VotingStatus = ({
-  poll,
-  desktopStyle,
-  ...props
-}: {
-  poll: Poll;
-  desktopStyle?: boolean;
-  sx?: ThemeUIStyleObject;
-}): JSX.Element | null => {
+const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
@@ -74,21 +66,7 @@ const VotingStatus = ({
       isPending={isPending}
     />
   );
-  return (
-    <Box {...props}>
-      <Badge
-        px="14px"
-        variant="primary"
-        sx={{
-          borderColor: hasVoted || onBallot ? 'greenLinkHover' : 'badgeGrey',
-          display: desktopStyle ? 'block' : ['none', 'block']
-        }}
-      >
-        {contents}
-      </Badge>
-      <Box sx={{ display: desktopStyle ? 'none' : ['block', 'none'] }}>{contents}</Box>
-    </Box>
-  );
+  return <Box {...props}>{contents}</Box>;
 };
 
 export default VotingStatus;

@@ -14,5 +14,5 @@ beforeAll(async () => {
 });
 
 test('renders', async () => {
-  const { debug } = render(<Index blogPosts={blogPosts} polls={polls} proposals={proposals} />);
+  const { debug } = render(<Index blogPosts={blogPosts} polls={polls.polls} proposals={proposals} />);
 });

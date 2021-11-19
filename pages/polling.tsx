@@ -35,6 +35,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
 
 type Props = {
   polls: Poll[];
@@ -143,7 +144,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
         <MobileVoteSheet
           account={account}
           ballotCount={ballotLength}
-          activePolls={activePolls}
           poll={mobileVotingPoll}
           setPoll={setMobileVotingPoll}
           close={() => setMobileVotingPoll(null)}
@@ -189,6 +189,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                             <PollOverviewCard
                               key={poll.multiHash}
                               poll={poll}
+                              showVoting={true}
                               startMobileVoting={() => setMobileVotingPoll(poll)}
                               reviewPage={false}
                             />
@@ -224,7 +225,12 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           </Text>
                           <Stack sx={{ mb: 4 }}>
                             {groupedHistoricalPolls[date].map(poll => (
-                              <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={false} />
+                              <PollOverviewCard
+                                key={poll.multiHash}
+                                poll={poll}
+                                reviewPage={false}
+                                showVoting={true}
+                              />
                             ))}
                           </Stack>
                         </div>
@@ -302,9 +308,9 @@ export default function PollingOverviewPage({
   useEffect(() => {
     if (!isDefaultNetwork()) {
       fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
-        .then(polls => {
-          _setPolls(polls);
-          _setCategories(getCategories(polls));
+        .then((pollsResponse: PollsResponse) => {
+          _setPolls(pollsResponse.polls);
+          _setCategories(pollsResponse.categories);
         })
         .catch(setError);
     }
@@ -331,14 +337,13 @@ export default function PollingOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
-  const polls = await getPolls();
-  const categories = getCategories(polls);
+  const pollsResponse = await getPolls();
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
-      categories
+      polls: pollsResponse.polls,
+      categories: pollsResponse.categories
     }
   };
 };

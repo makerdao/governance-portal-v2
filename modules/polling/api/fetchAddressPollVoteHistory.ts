@@ -3,7 +3,6 @@ import getMaker from 'lib/maker';
 import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
-import { fetchPollTally } from './fetchPollTally';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -12,21 +11,17 @@ export async function fetchAddressPollVoteHistory(
   const maker = await getMaker(network);
 
   // TODO: This is an innefective way to cross fetch titles and options. We should improve Spock DB to return the titles in the poll votes
-  const polls = await getPolls(network);
+  const pollsData = await getPolls({}, network);
 
   const voteHistory = await maker.service('govPolling').getAllOptionsVotingFor(address);
 
   const items = await Promise.all(
     voteHistory.map(async (pollVote: PollVote): Promise<PollVoteHistory | null> => {
-      const poll = polls.find(poll => poll.pollId === pollVote.pollId);
+      const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
       // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
       if (!poll) {
         return null;
       }
-
-      // use cached tally if poll has ended
-      const useCache = new Date(poll.endDate).getTime() < new Date().getTime();
-      const tally = await fetchPollTally(pollVote.pollId, poll.voteType, useCache, network);
 
       const optionValue =
         pollVote.rankedChoiceOption && pollVote.rankedChoiceOption?.length > 0
@@ -38,7 +33,6 @@ export async function fetchAddressPollVoteHistory(
       return {
         ...pollVote,
         poll,
-        tally,
         optionValue: optionValue as string
       };
     })

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
+import CustomIcon from 'modules/app/components/Icon';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
@@ -18,10 +19,12 @@ import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import VotingStatus from './PollVotingStatus';
 
 type Props = {
   poll: Poll;
   showHeader: boolean;
+  showStatus?: boolean;
   account?: Account;
   sx?: ThemeUIStyleObject;
 };
@@ -37,7 +40,7 @@ const rankedChoiceBlurb = (
   </>
 );
 
-const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
+const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
@@ -73,23 +76,35 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
     <Stack gap={gap} {...props}>
       <Flex
         sx={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          display: showHeader ? undefined : 'none'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <Text variant="caps" color="textSecondary">
-          Your Vote
-        </Text>
-        {isRankedChoicePoll(poll) && (
-          <Tooltip label={rankedChoiceBlurb}>
-            <Box sx={{ position: 'relative' }}>
-              {/* Box is used because tooltip needs a child that can be passed a ref */}
-              <Icon name="stackedVotes" size={3} ml={2} />
-            </Box>
-          </Tooltip>
-        )}
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            display: showHeader ? undefined : 'none'
+          }}
+        >
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text variant="caps" color="textSecondary" mr={2}>
+              Your Vote
+            </Text>
+            <CustomIcon name="vote" />
+          </Flex>
+
+          {isRankedChoicePoll(poll) && (
+            <Tooltip label={rankedChoiceBlurb}>
+              <Box sx={{ position: 'relative' }}>
+                {/* Box is used because tooltip needs a child that can be passed a ref */}
+                <Icon name="stackedVotes" size={3} ml={2} />
+              </Box>
+            </Tooltip>
+          )}
+        </Flex>
+        {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
       </Flex>
 
       {(!!addedChoice || currentVote !== null) && !editing ? (

@@ -71,10 +71,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && '*'}
                   </Text>
                   <Text as="td" sx={{ pb: 2 }}>
-                    {`${new BigNumber(v.mkrSupport)
-                      .div(totalMkrParticipation.toBigNumber())
-                      .times(100)
-                      .toFormat(1)}%`}
+                    {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
                   <Text
                     as="td"

@@ -1,30 +1,13 @@
-import invariant from 'tiny-invariant';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'lib/maker';
-import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
-import { getPolls } from 'modules/polling/api/fetchPolls';
+import { DEFAULT_NETWORK } from 'lib/constants';
+import { isSupportedNetwork } from 'lib/maker';
+import { getPoll } from 'modules/polling/api/fetchPolls';
+import { NextApiRequest, NextApiResponse } from 'next';
+import invariant from 'tiny-invariant';
 
 /**
  * @swagger
  * definitions:
- *   ArrayOfPolls:
- *     type: array
- *     items:
- *       $ref: '#/definitions/Poll'
- *   PollStats:
- *     type: object
- *     properties:
- *       active:
- *         type: integer
- *       finished:
- *         type: integer
- *       total:
- *         type: integer
- *     example:
- *       - active: 10
- *         finished: 10
- *         total: 10
  *   Poll:
  *     type: object
  *     properties:
@@ -84,55 +67,32 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
  *           prev: null
  *           next: null
  *
- * /api/polling/all-polls:
+ * /api/polling/[slug]:
  *   get:
  *     tags:
  *     - "polls"
- *     description: Returns all polls
+ *     description: Returns a poll detail
  *     produces:
  *     - "application/json"
- *     parameters:
- *     - name: "categories"
- *       in: "query"
- *       description: "Categories to filter polls by. Example 'Collateral', 'Greenlight'"
- *       required: false
- *       type: "array"
- *       items:
- *         type: "string"
- *         enum:
- *         - "Collateral"
- *         - "Greenlight"
- *         - "Governance"
- *         default: ""
- *       collectionFormat: "multi"
  *     responses:
  *       '200':
- *         description: "List of polls"
+ *         description: "Detail of a Pols"
  *         content:
  *           application/json:
  *             schema:
- *               properties:
- *                 polls:
- *                   $ref: '#/definitions/ArrayOfPolls'
- *                 stats:
- *                   $ref: '#/definitions/PollStats'
+ *               $ref: '#/definitions/Poll'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const slug = req.query.slug as string;
 
-  const filters = {
-    startDate: req.query.startDate ? new Date(req.query.startDate as string) : null,
-    endDate: req.query.endDate ? new Date(req.query.endDate as string) : null,
-    categories: req.query.categories
-      ? typeof req.query.categories === 'string'
-        ? [req.query.categories]
-        : req.query.categories
-      : null
-  };
+  const poll = await getPoll(slug, network);
 
-  const pollsResponse = await getPolls(filters, network);
+  if (!poll) {
+    return res.status(404).json('Not found');
+  }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
-  res.status(200).json(pollsResponse);
+  res.status(200).json(poll);
 });
