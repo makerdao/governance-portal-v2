@@ -53,7 +53,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
     address,
     stats: {
       pollVoteHistory,
-      lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0] 
+      lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
     }
   };
 

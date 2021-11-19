@@ -46,7 +46,6 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
     </Box>
   ].filter(i => !!i);
 
-
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: [3, 4], pb: 3 }}>

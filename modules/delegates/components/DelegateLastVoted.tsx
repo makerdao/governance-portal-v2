@@ -31,7 +31,7 @@ export function DelegateLastVoted({
       sx={{
         mb: 1,
         flexDirection: left ? 'row-reverse' : ['row-reverse', 'row'],
-        justifyContent: left ? 'flex-end': 'flex-start',
+        justifyContent: left ? 'flex-end' : 'flex-start',
         alignItems: 'center'
       }}
     >
