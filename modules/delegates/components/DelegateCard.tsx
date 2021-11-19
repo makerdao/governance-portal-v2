@@ -9,13 +9,16 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import useAccountsStore from 'stores/accounts';
 import { Delegate } from '../types';
-import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import { DelegatePicture, DelegateModal, UndelegateModal, DelegateLastVoted } from 'modules/delegates/components';
 import {
   participationTooltipLabel,
   communicationTooltipLabel
 } from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
+import useSWR from 'swr';
+import { fetchJson } from 'lib/fetchJson';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 type PropTypes = {
   delegate: Delegate;
@@ -34,6 +37,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
+  const { data: lastVoteData } = useSWR(`/api/address/${delegate.voteDelegateAddress}/last-vote?network=${getNetwork()}`, fetchJson, {
+    revalidateOnFocus: false,
+    refreshInterval: 0
+  });
+
   const isOwner =
     delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
@@ -44,13 +52,18 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         borderColor: isOwner ? 'onSecondary' : 'muted'
       }}
     >
+      <Box px={[3, 4]} pb={[3, 4]} pt={3} >
+      <Box mb={2}>
+                {lastVoteData && <DelegateLastVoted delegate={delegate} date={lastVoteData.lastVote?.blockTimestamp} left />}
+                {!lastVoteData && <SkeletonThemed width={'200px'} height={'15px'} />}
+              </Box>
       <Flex
-        px={[3, 4]}
-        py={[3, 4]}
+        
         sx={{
           flexDirection: ['column', 'column', 'row', 'column', 'row']
         }}
       >
+        
         <Flex
           sx={{
             maxWidth: ['100%', '100%', '300px', '100%', '300px'],
@@ -58,6 +71,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             flexDirection: 'column'
           }}
         >
+          
           <Link
             href={{
               pathname: `/address/${delegate.voteDelegateAddress}`,
@@ -66,6 +80,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             passHref
           >
             <ThemeUILink title="Profile details" variant="nostyle">
+              
               <Flex sx={{ mr: [0, 2] }}>
                 <DelegatePicture delegate={delegate} />
 
@@ -231,7 +246,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Flex>
-
+        </Box>
       <CurrentlySupportingExecutive address={delegate.voteDelegateAddress} />
 
       <DelegateModal

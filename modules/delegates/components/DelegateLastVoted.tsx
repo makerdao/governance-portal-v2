@@ -6,10 +6,12 @@ import Icon from 'modules/app/components/Icon';
 
 export function DelegateLastVoted({
   delegate,
-  date
+  date,
+  left = false
 }: {
   delegate: Delegate;
   date?: string;
+  left?: boolean;
 }): React.ReactElement {
   const styles = {
     expiredCalendar: {
@@ -28,7 +30,9 @@ export function DelegateLastVoted({
     <Flex
       sx={{
         mb: 1,
-        flexDirection: ['row-reverse', 'row']
+        flexDirection: left ? 'row-reverse' : ['row-reverse', 'row'],
+        justifyContent: left ? 'flex-end': 'flex-start',
+        alignItems: 'center'
       }}
     >
       <Text
