@@ -3,6 +3,7 @@ import { Delegate } from 'modules/delegates/types';
 
 export type AddressAPIStats = {
   pollVoteHistory: PollVoteHistory[];
+  lastVote: PollVoteHistory;
 };
 
 export type VoteProxyInfo = {
