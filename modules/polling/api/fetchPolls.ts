@@ -74,11 +74,15 @@ export async function getPolls(
   };
 }
 
-export async function getPoll(slug: string, network?: SupportedNetworks): Promise<Poll> {
+export async function getPoll(slug: string, network?: SupportedNetworks): Promise<Poll | null> {
   const pollsResponse = await getPolls({}, network);
 
   const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
-  invariant(pollIndex > -1, `poll not found for poll slug ${slug}`);
+
+  if (pollIndex === -1) {
+    return null;
+  }
+
   const [prev, next] = [
     pollsResponse.polls?.[pollIndex - 1] || null,
     pollsResponse.polls?.[pollIndex + 1] || null
