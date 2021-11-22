@@ -23,7 +23,12 @@ export default function PollWinningOptionBox({
           <span sx={{ color: getVoteColor(parseInt(tally.winner), poll.voteType) }}>
             {tally?.winningOptionName}
           </span>{' '}
-          with {new BigNumber(tally.options[tally.winner].mkrSupport).toFormat(2)} MKR supporting.
+          {tally.pollVoteType === 'Plurality Voting' &&
+            'with ' + new BigNumber(tally.options[tally.winner].mkrSupport).toFormat(2) + ' MKR supporting.'}
+          {tally.pollVoteType === 'Ranked Choice IRV' &&
+            'with ' +
+              new BigNumber(tally.options[tally.winner].firstChoice).toFormat(2) +
+              ' MKR supporting as first choice.'}
         </Text>
       ) : (
         <SkeletonThemed />
