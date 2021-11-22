@@ -33,6 +33,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useSpellData } from '../hooks/useSpellData';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
+import { useMkrOnHat } from '../hooks/useMkrOnHat';
 
 type Props = {
   close: () => void;
@@ -70,6 +71,8 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
     shallow
   );
   const { data: allSlates } = useAllSlates();
+  const { mutate: mutateMkrOnHat } = useMkrOnHat();
+
   const { data: hat } = useHat();
   const isHat = hat && hat === proposal.address;
   const showHatCheckbox =
@@ -136,6 +139,7 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
         onMined && onMined();
+        mutateMkrOnHat();
         setStep('mined');
       },
       error: () => setStep('failed')
