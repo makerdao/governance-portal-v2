@@ -48,7 +48,10 @@ export function DelegateLastVoted({
           mr: 1
         }}
       >
-        <Icon name="calendar" sx={delegate.expired ? styles.expiredCalendar : styles.activeCalendar} />
+        <Icon
+          name="calendar"
+          sx={delegate.expired || !date ? styles.expiredCalendar : styles.activeCalendar}
+        />
       </Flex>
     </Flex>
   );

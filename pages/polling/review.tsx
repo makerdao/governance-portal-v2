@@ -86,7 +86,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                   {Object.keys(ballot).map((pollId, index) => {
                     const poll = findPollById(polls, pollId);
-                    invariant(poll !== undefined, 'Unknown poll found on voter ballot');
 
                     if (!poll) {
                       return null;

@@ -56,10 +56,10 @@ export default function PollOverviewCard({
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Stack gap={3}>
             {bpi === 0 && (
-              <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+              <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
                 <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                 <VotingStatus poll={poll} />
-              </Flex>
+              </Box>
             )}
             <Box sx={{ cursor: 'pointer' }}>
               <Box>

@@ -9,7 +9,7 @@ import useBallotStore from 'stores/ballot';
 import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
 import { Poll } from 'modules/polling/types';
 
-const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, ...otherProps }) => {
+const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'textSecondary';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
@@ -62,6 +62,7 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject 
       hasVoted={hasVoted}
       onBallot={onBallot}
       poll={poll}
+      option={ballot[poll.pollId]?.option}
       isMined={isMined}
       isPending={isPending}
     />

@@ -27,7 +27,16 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
           target="_blank"
         >
-          <Text sx={{ fontWeight: 'bold', color: 'text', display: 'inline', ':hover': { color: 'inherit' } }}>
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              color: 'text',
+              display: 'inline',
+              ':hover': { color: 'inherit' },
+              fontSize: [1, 2],
+              textDecoration: 'underline'
+            }}
+          >
             {voteDelegateAddress}
           </Text>
         </ExternalLink>
@@ -39,7 +48,16 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           href={getEtherscanLink(getNetwork(), address, 'address')}
           target="_blank"
         >
-          <Text sx={{ fontWeight: 'bold', color: 'text', display: 'inline', ':hover': { color: 'inherit' } }}>
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              color: 'text',
+              display: 'inline',
+              ':hover': { color: 'inherit' },
+              fontSize: [1, 2],
+              textDecoration: 'underline'
+            }}
+          >
             {address}
           </Text>
         </ExternalLink>
