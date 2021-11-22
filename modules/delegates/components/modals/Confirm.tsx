@@ -30,11 +30,10 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           <Text
             sx={{
               fontWeight: 'bold',
-              color: 'text',
+              color: 'accentsBlue',
               display: 'inline',
               ':hover': { color: 'inherit' },
-              fontSize: [1, 2],
-              textDecoration: 'underline'
+              fontSize: [1, 2]
             }}
           >
             {voteDelegateAddress}
@@ -51,11 +50,10 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           <Text
             sx={{
               fontWeight: 'bold',
-              color: 'text',
+              color: 'accentsBlue',
               display: 'inline',
               ':hover': { color: 'inherit' },
-              fontSize: [1, 2],
-              textDecoration: 'underline'
+              fontSize: [1, 2]
             }}
           >
             {address}

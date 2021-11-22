@@ -43,9 +43,13 @@ export const DelegateModal = ({
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
 
-  const { data: mkrBalance } = useMkrBalance(address);
+  const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(address);
 
-  const { data: mkrAllowance } = useTokenAllowance(MKR, address, voteDelegateAddress);
+  const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
+    MKR,
+    address,
+    voteDelegateAddress
+  );
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
@@ -60,6 +64,7 @@ export const DelegateModal = ({
     const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
+        mutateTokenAllowance();
         setTxId(null);
       },
       error: () => {
@@ -78,6 +83,7 @@ export const DelegateModal = ({
       mined: txId => {
         mutateTotalStaked();
         mutateMkrStaked();
+        mutateMkrBalance();
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
       },
       error: () => {
