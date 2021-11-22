@@ -5,20 +5,22 @@ import { PollTally } from '../types';
 
 type UsePollTallyResponse = {
   tally: PollTally | undefined;
+  mutate: () => void;
 };
 
-export function usePollTally(pollId: number): UsePollTallyResponse {
-  const { data: tallyData } = useSWR<PollTally>(
+export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyResponse {
+  const { data: tallyData, mutate } = useSWR<PollTally>(
     `/api/polling/tally/${pollId}?network=${getNetwork()}`,
     fetchJson,
     {
       revalidateOnFocus: false,
-      refreshInterval: 0,
+      refreshInterval,
       revalidateOnMount: true
     }
   );
 
   return {
-    tally: tallyData
+    tally: tallyData,
+    mutate
   };
 }

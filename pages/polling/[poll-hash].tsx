@@ -59,11 +59,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
     ssr: false
   });
 
-  const hasPollEnded = !isActivePoll(poll);
-
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
-  const { tally } = usePollTally(poll.pollId);
+  const { tally } = usePollTally(poll.pollId, 10000);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
