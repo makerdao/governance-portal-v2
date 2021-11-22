@@ -37,7 +37,6 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
-import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
@@ -46,30 +45,6 @@ import { usePollTally } from 'modules/polling/hooks/usePollTally';
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
-};
-
-const WinningOptionText = ({
-  tally,
-  voteType
-}: {
-  tally: PollTally;
-  voteType: string;
-}): JSX.Element | null => {
-  if (!tally.winner) return null;
-  return (
-    <>
-      <Divider my={1} />
-      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-        <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-          Winning Option:{' '}
-          <Text sx={{ color: getVoteColor(parseInt(tally.winner), voteType) }}>
-            {tally.winningOptionName}
-          </Text>
-        </Text>
-      </Flex>
-      <Divider sx={{ mt: 1 }} />
-    </>
-  );
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
@@ -218,8 +193,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
                 <div key={1}>
-                  <PollWinningOptionBox tally={tally} poll={poll} />
-                  <Divider my={0} />
                   <div
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
@@ -311,9 +284,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 )
               ]}
               banner={
-                hasPollEnded && tally ? (
-                  <WinningOptionText tally={tally} voteType={poll.voteType} />
-                ) : undefined
+                <Box>
+                  <Divider my={0} />
+                  <PollWinningOptionBox tally={tally} poll={poll} />
+                  <Divider my={0} />
+                </Box>
               }
             />
           </Card>
@@ -372,7 +347,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const poll = await getPoll(pollSlug);
 
   if (!poll) {
-    return { revalidate: 30, props: { poll: null, tally: null } };
+    return { revalidate: 30, props: { poll: null } };
   }
 
   return {

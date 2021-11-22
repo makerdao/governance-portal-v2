@@ -35,7 +35,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
             value={{
               // default to 60 second refresh intervals
               refreshInterval: 60000,
-              revalidateOnMount: false,
+              revalidateOnMount: true,
               fetcher: url => fetchJson(url)
             }}
           >
