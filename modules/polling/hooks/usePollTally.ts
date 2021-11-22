@@ -8,11 +8,15 @@ type UsePollTallyResponse = {
 };
 
 export function usePollTally(pollId: number): UsePollTallyResponse {
-  const { data: tallyData } = useSWR<PollTally>(`/api/polling/tally/${pollId}?network=${getNetwork()}`, fetchJson, {
-    revalidateOnFocus: false,
-    refreshInterval: 0,
-    revalidateOnMount: true
-  });
+  const { data: tallyData } = useSWR<PollTally>(
+    `/api/polling/tally/${pollId}?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 0,
+      revalidateOnMount: true
+    }
+  );
 
   return {
     tally: tallyData

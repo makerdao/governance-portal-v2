@@ -78,8 +78,8 @@ export async function getPoll(slug: string, network?: SupportedNetworks): Promis
   const pollsResponse = await getPolls({}, network);
 
   const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
-  
-  if (pollIndex === -1 ) {
+
+  if (pollIndex === -1) {
     return null;
   }
 
