@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { isActivePoll } from '../helpers/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export default function PollWinningOptionBox({
   tally,
@@ -23,9 +24,9 @@ export default function PollWinningOptionBox({
           <span sx={{ color: getVoteColor(parseInt(tally.winner), poll.voteType) }}>
             {tally?.winningOptionName}
           </span>{' '}
-          {tally.pollVoteType === 'Plurality Voting' &&
+          {tally.pollVoteType === POLL_VOTE_TYPE.PLURALITY_VOTE &&
             'with ' + new BigNumber(tally.options[tally.winner].mkrSupport).toFormat(2) + ' MKR supporting.'}
-          {tally.pollVoteType === 'Ranked Choice IRV' &&
+          {tally.pollVoteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN) &&
             'with ' +
               new BigNumber(tally.options[tally.winner].firstChoice).toFormat(2) +
               ' MKR supporting as first choice.'}
