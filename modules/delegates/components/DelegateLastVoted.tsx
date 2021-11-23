@@ -1,7 +1,7 @@
 import { Delegate } from '../types';
 import { Text, Flex } from 'theme-ui';
 import React from 'react';
-import { formatDateWithTime } from 'lib/datetime';
+import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
 
 export function DelegateLastVoted({
@@ -18,13 +18,29 @@ export function DelegateLastVoted({
       fill: '#D8E0E3',
       stroke: '#D8E0E3'
     },
+    yellowCalendar: {
+      fill: 'yellow',
+      stroke: 'yellow'
+    },
+    orangeCalendar: {
+      fill: 'orange',
+      stroke: 'orange'
+    },
+    redCalendar: {
+      fill: 'red',
+      stroke: 'red'
+    },
     activeCalendar: {
       fill: 'primary',
       stroke: 'primary'
     }
   };
 
-  const lastVoteDate = date ? `LAST VOTED ${formatDateWithTime(date)}` : 'NO VOTE HISTORY';
+  const isLongerThan14Days = date && (Date.now() - new Date(date).getTime() > 14 * 24 * 60 * 60 * 1000);
+  const isLongerThan21Days = date && (Date.now() - new Date(date).getTime() > 21 * 24 * 60 * 60 * 1000);
+  const isLongerThan28Days = date && (Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000);
+
+  const lastVoteDate = date ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date): formatDateWithTime(date)}` : 'NO VOTE HISTORY';
 
   return (
     <Flex
@@ -50,7 +66,7 @@ export function DelegateLastVoted({
       >
         <Icon
           name="calendar"
-          sx={delegate.expired || !date ? styles.expiredCalendar : styles.activeCalendar}
+          sx={delegate.expired || !date ? styles.expiredCalendar : (isLongerThan28Days ? styles.redCalendar : isLongerThan21Days ? styles.orangeCalendar ? isLongerThan14Days : styles.yellowCalendar : styles.activeCalendar)}
         />
       </Flex>
     </Flex>
