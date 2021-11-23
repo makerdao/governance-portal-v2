@@ -145,32 +145,32 @@ const AccountSelect = (): React.ReactElement => {
       <Tooltip label={disabledHardwareBlurb}>
         <Flex
           sx={disabledWalletButtonStyle as any}
-          onClick={async () => {
-            setLoading(true);
-            const maker = await getMaker();
+          // onClick={async () => {
+          //   setLoading(true);
+          //   const maker = await getMaker();
 
-            try {
-              await maker.addAccount({
-                type: 'ledger',
-                accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
-                choose: (addresses, callback) => {
-                  setLoading(false);
-                  setAddresses(addresses);
-                  setShowHwAddressSelector(true);
-                  setHwSelectCallback(() => callback);
-                }
-              });
-            } catch (err) {
-              if (err.message !== 'already added') throw err;
-            }
-            if (chainId) {
-              setUserData({ wallet: 'Ledger' });
-            }
-            setAccountName('Ledger');
-            setChangeWallet(false);
-            setShowHwAddressSelector(false);
-            close();
-          }}
+          //   try {
+          //     await maker.addAccount({
+          //       type: 'ledger',
+          //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
+          //       choose: (addresses, callback) => {
+          //         setLoading(false);
+          //         setAddresses(addresses);
+          //         setShowHwAddressSelector(true);
+          //         setHwSelectCallback(() => callback);
+          //       }
+          //     });
+          //   } catch (err) {
+          //     if (err.message !== 'already added') throw err;
+          //   }
+          //   if (chainId) {
+          //     setUserData({ wallet: 'Ledger' });
+          //   }
+          //   setAccountName('Ledger');
+          //   setChangeWallet(false);
+          //   setShowHwAddressSelector(false);
+          //   close();
+          // }}
         >
           <Icon name="Ledger" />
           <Text sx={{ ml: 3 }}>{loading ? 'Loading...' : 'Ledger'}</Text>
@@ -183,33 +183,33 @@ const AccountSelect = (): React.ReactElement => {
     <Tooltip label={disabledHardwareBlurb}>
       <Flex
         sx={disabledWalletButtonStyle as any}
-        onClick={async () => {
-          const maker = await getMaker();
+        // onClick={async () => {
+        //   const maker = await getMaker();
 
-          try {
-            await maker.addAccount({
-              type: 'trezor',
-              accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
-              accountsOffset: 0,
-              path: "44'/60'/0'/0/0",
-              choose: (addresses, callback) => {
-                setAddresses(addresses);
-                setShowHwAddressSelector(true);
-                setHwSelectCallback(() => callback);
-              }
-            });
-          } catch (err) {
-            if (err.message.match(/Popup closed/)) return;
-            if (err.message !== 'already added') throw err;
-          }
+        //   try {
+        //     await maker.addAccount({
+        //       type: 'trezor',
+        //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
+        //       accountsOffset: 0,
+        //       path: "44'/60'/0'/0/0",
+        //       choose: (addresses, callback) => {
+        //         setAddresses(addresses);
+        //         setShowHwAddressSelector(true);
+        //         setHwSelectCallback(() => callback);
+        //       }
+        //     });
+        //   } catch (err) {
+        //     if (err.message.match(/Popup closed/)) return;
+        //     if (err.message !== 'already added') throw err;
+        //   }
 
-          if (chainId) {
-            setUserData({ wallet: 'Trezor' });
-          }
-          setAccountName('Trezor');
-          setChangeWallet(false);
-          close();
-        }}
+        //   if (chainId) {
+        //     setUserData({ wallet: 'Trezor' });
+        //   }
+        //   setAccountName('Trezor');
+        //   setChangeWallet(false);
+        //   close();
+        // }}
       >
         <Icon name="Trezor" />
         <Text sx={{ ml: 3 }}>Trezor</Text>
