@@ -6,10 +6,11 @@ type MkrOnHatResponse = {
   data?: CurrencyObject;
   loading: boolean;
   error: Error;
+  mutate: () => void;
 };
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
-  const { data, error } = useSWR<CurrencyObject>(
+  const { data, error, mutate } = useSWR<CurrencyObject>(
     '/executive/mkr-on-hat',
     async () => {
       const maker = await getMaker();
@@ -23,6 +24,7 @@ export const useMkrOnHat = (): MkrOnHatResponse => {
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

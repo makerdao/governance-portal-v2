@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heading, Box, Card, Text, Link as ThemeUILInk, jsx } from 'theme-ui';
+import { Heading, Box, Card, Text, Link as ThemeUILInk } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { isDefaultNetwork } from 'lib/maker';

@@ -85,15 +85,13 @@ export async function fetchGithubDelegates(
     );
 
     // Get the information of all the delegates, filter errored ones
-    const promises = folders.map(
-      async (folder): Promise<DelegateRepoInformation | undefined> => {
-        return await extractGithubInformation(
-          delegatesRepositoryInfo.owner,
-          delegatesRepositoryInfo.repo,
-          folder
-        );
-      }
-    );
+    const promises = folders.map(async (folder): Promise<DelegateRepoInformation | undefined> => {
+      return await extractGithubInformation(
+        delegatesRepositoryInfo.owner,
+        delegatesRepositoryInfo.repo,
+        folder
+      );
+    });
 
     const results = await Promise.all(promises);
 

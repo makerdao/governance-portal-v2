@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, jsx, useColorMode } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, useColorMode } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -13,7 +13,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SystemStats from 'modules/home/components/SystemStats';
-import PollPreviewCard from 'modules/home/components/PollPreviewCard';
 import ExecutiveCard from 'modules/home/components/ExecutiveCard';
 import IntroCard from 'modules/home/components/IntroCard';
 import PollingIndicator from 'modules/home/components/PollingIndicator';
@@ -26,6 +25,7 @@ import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
 import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 
 type Props = {
   proposals: CMSProposal[];
@@ -235,7 +235,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ maxWidth: 'column' }}>
                 <Stack>
                   {recentPolls.map(poll => (
-                    <PollPreviewCard key={poll.pollId} poll={poll} />
+                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
                   ))}
                 </Stack>
                 {activePolls.length > 4 && (
@@ -317,8 +317,8 @@ export default function Index({
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
         fetchJson(`/api/executive?network=${getNetwork()}`)
       ])
-        .then(([polls, proposals]) => {
-          setPolls(polls);
+        .then(([pollsData, proposals]) => {
+          setPolls(pollsData.polls);
           setProposals(proposals);
         })
         .catch(setError);
@@ -348,7 +348,7 @@ export default function Index({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
 
-  const [proposals, polls, blogPosts] = await Promise.all([
+  const [proposals, pollsData, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),
     fetchBlogPosts()
@@ -358,7 +358,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals,
-      polls,
+      polls: pollsData.polls,
       blogPosts
     }
   };

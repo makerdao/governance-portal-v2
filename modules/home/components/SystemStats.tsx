@@ -1,4 +1,4 @@
-import { Flex, Link as ExternalLink, Text, Box, Grid, jsx } from 'theme-ui';
+import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, jsx } from 'theme-ui';
+import { NavLink } from 'theme-ui';
 
 export default function ShortFooter(): React.ReactElement {
   return (
@@ -26,6 +26,9 @@ export default function ShortFooter(): React.ReactElement {
         sx={{ fontWeight: 400 }}
       >
         Status
+      </NavLink>
+      <NavLink href="/api-docs" variant="footer" title="Status" p={2} sx={{ fontWeight: 400 }}>
+        Api Docs
       </NavLink>
       <NavLink
         href="https://discord.gg/2sWcgCDWCX"

@@ -205,7 +205,7 @@ const ESModule = (): React.ReactElement => {
             <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center' }}>
               {mkrInEsm && mkrInEsm.gt(0) ? (
                 <Box>
-                  You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString()}</strong> in the ESM
+                  You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString(6)}</strong> in the ESM
                 </Box>
               ) : (
                 'You have no MKR in the ESM'

@@ -1,5 +1,5 @@
 import React from 'react';
-import { jsx, Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
+import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -46,8 +46,6 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
     </Box>
   ].filter(i => !!i);
 
-  const lastVote = stats.pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0];
-
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
       <Box sx={{ p: [3, 4], pb: 3 }}>
@@ -79,7 +77,7 @@ export function DelegateDetail({ delegate, stats }: PropTypes): React.ReactEleme
             </Flex>
           </Box>
           <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
-            <DelegateLastVoted delegate={delegate} date={lastVote?.blockTimestamp} />
+            <DelegateLastVoted delegate={delegate} date={stats.lastVote?.blockTimestamp} />
             <DelegateContractExpiration delegate={delegate} />
           </Flex>
         </Flex>

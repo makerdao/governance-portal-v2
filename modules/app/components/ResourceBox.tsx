@@ -1,4 +1,4 @@
-import { Box, Heading, Card, Link as ExternalLink, Flex, Text, jsx } from 'theme-ui';
+import { Box, Heading, Card, Link as ExternalLink, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 type ResourceType = 'general' | 'polling' | 'executive' | 'delegates';
@@ -43,8 +43,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url:
-          'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
       },
       {
         linkTitle: 'How to set up your wallet for voting?',
@@ -69,8 +68,7 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url:
-          'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
       },
       {
         linkTitle: 'How to set up your wallet for voting?',

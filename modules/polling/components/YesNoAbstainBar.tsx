@@ -1,13 +1,16 @@
-import { Box, Text, jsx } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
+import Tooltip from 'modules/app/components/Tooltip';
 
 export function YesNoAbstainBar({
   yesPercent,
   noPercent,
-  abstainPercent
+  abstainPercent,
+  showTitles = true
 }: {
   yesPercent: string | number;
   noPercent: string | number;
   abstainPercent: string | number;
+  showTitles?: boolean;
 }): React.ReactElement {
   const styles = {
     titles: {
@@ -59,42 +62,57 @@ export function YesNoAbstainBar({
   };
   return (
     <Box>
-      <Box sx={styles.titles}>
-        <Box>
-          <Text
-            variant="secondary"
-            color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', mr: 1 }}
-            as="p"
-          >
-            Yes
-          </Text>
+      {showTitles && (
+        <Box sx={styles.titles}>
+          <Box>
+            <Text
+              variant="secondary"
+              color="onSecondary"
+              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', mr: 1 }}
+              as="p"
+            >
+              Yes
+            </Text>
+          </Box>
+          <Box>
+            <Text
+              variant="secondary"
+              color="onSecondary"
+              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1 }}
+              as="p"
+            >
+              Abstain
+            </Text>
+          </Box>
+          <Box>
+            <Text
+              variant="secondary"
+              color="onSecondary"
+              sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1 }}
+              as="p"
+            >
+              No
+            </Text>
+          </Box>
         </Box>
-        <Box>
-          <Text
-            variant="secondary"
-            color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1, mr: 1 }}
-            as="p"
-          >
-            Abstain
-          </Text>
-        </Box>
-        <Box>
-          <Text
-            variant="secondary"
-            color="onSecondary"
-            sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'bold', ml: 1 }}
-            as="p"
-          >
-            No
-          </Text>
-        </Box>
-      </Box>
+      )}
       <Box sx={styles.percentagesWrapper}>
-        <Box sx={styles.yesPercentage}>{yesPercent}%</Box>
-        <Box sx={styles.abstainPercentage}>{abstainPercent}%</Box>
-        <Box sx={styles.noPercentage}>{noPercent}%</Box>
+        <Box sx={styles.yesPercentage}>
+          {' '}
+          <Tooltip label={'Percentage of Yes'}>
+            <span>{yesPercent}%</span>
+          </Tooltip>
+        </Box>
+        <Box sx={styles.abstainPercentage}>
+          <Tooltip label={'Percentage of Abstain'}>
+            <span>{abstainPercent}%</span>
+          </Tooltip>
+        </Box>
+        <Box sx={styles.noPercentage}>
+          <Tooltip label={'Percentage of No'}>
+            <span>{noPercent}%</span>
+          </Tooltip>
+        </Box>
       </Box>
       <Box sx={styles.progressBarWrapper}>
         <Box sx={styles.yesBar} />

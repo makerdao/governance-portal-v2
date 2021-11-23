@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
-import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider, jsx } from 'theme-ui';
+import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -98,7 +98,32 @@ export default function ReviewBox({
     </ReviewBoxCard>
   );
 
-  const Sent = props => (
+  const Pending = props => (
+    <ReviewBoxCard {...props} sx={{ p: [3, 4] }}>
+      <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+        <TxIndicators.Pending sx={{ width: 6 }} />
+      </Flex>
+      <Text
+        px={4}
+        sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500', mt: 3 }}
+      >
+        Transaction Pending
+      </Text>
+
+      <ExternalLink
+        target="_blank"
+        href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
+        sx={{ p: 0, mt: 3 }}
+      >
+        <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+          View on Etherscan
+          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+        </Text>
+      </ExternalLink>
+    </ReviewBoxCard>
+  );
+
+  const Mined = props => (
     <ReviewBoxCard {...props} sx={{ p: [3, 4] }}>
       <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
         <TxIndicators.Success sx={{ width: 6 }} />
@@ -107,7 +132,7 @@ export default function ReviewBox({
         Transaction Sent!
       </Text>
       <Text sx={{ p: 3, pb: 1, textAlign: 'center', fontSize: 14, color: 'secondaryEmphasis' }}>
-        Votes will update once the blockchain has confirmed the transaction.
+        Votes will update once the transaction is confirmed.
       </Text>
       <ExternalLink
         target="_blank"
@@ -175,15 +200,17 @@ export default function ReviewBox({
   );
 
   const isInitialized = transaction?.status === 'initialized';
-  const isPendingOrMined = transaction?.status === 'pending' || transaction?.status === 'mined';
+  const isPending = transaction?.status === 'pending';
+  const isMined = transaction?.status === 'mined';
   const hasFailed = transaction?.status === 'error';
 
   const view = useMemo(() => {
     if (isInitialized) return <Initializing />;
-    if (isPendingOrMined) return <Sent />;
+    if (isPending) return <Pending />;
+    if (isMined) return <Mined />;
     if (hasFailed) return <Error />;
     return <Default />;
-  }, [isInitialized, isPendingOrMined, hasFailed, bpi]);
+  }, [isInitialized, isPending, isMined, hasFailed, bpi]);
 
   return <Box {...props}>{view}</Box>;
 }

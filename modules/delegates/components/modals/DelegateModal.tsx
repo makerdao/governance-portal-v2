@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
@@ -23,9 +23,17 @@ type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate;
+  mutateTotalStaked: () => void;
+  mutateMkrStaked: () => void;
 };
 
-export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const DelegateModal = ({
+  isOpen,
+  onDismiss,
+  delegate,
+  mutateTotalStaked,
+  mutateMkrStaked
+}: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
@@ -35,9 +43,13 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
 
-  const { data: mkrBalance } = useMkrBalance(address);
+  const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(address);
 
-  const { data: mkrAllowance } = useTokenAllowance(MKR, address, voteDelegateAddress);
+  const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
+    MKR,
+    address,
+    voteDelegateAddress
+  );
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
@@ -52,6 +64,7 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
     const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
+        mutateTokenAllowance();
         setTxId(null);
       },
       error: () => {
@@ -68,6 +81,9 @@ export const DelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Eleme
     const lockTxCreator = () => maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
     const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
+        mutateTotalStaked();
+        mutateMkrStaked();
+        mutateMkrBalance();
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
       },
       error: () => {

@@ -1,11 +1,11 @@
-import { Box, Text, Progress, Flex, jsx } from 'theme-ui';
+import { Box, Text, Progress, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-
+import BigNumber from 'bignumber.js';
 export default function VoteBreakdown({
   poll,
   shownOptions,
@@ -25,6 +25,8 @@ export default function VoteBreakdown({
           .slice(0, shownOptions)
           .map((_, i) => {
             const tallyResult = tally?.results[i] as RankedChoiceResult;
+            const firstChoice = new BigNumber(tallyResult.firstChoice || 0);
+            const transfer = new BigNumber(tallyResult.transfer || 0);
             return (
               <div key={i}>
                 <Flex sx={{ justifyContent: 'space-between' }}>
@@ -39,9 +41,9 @@ export default function VoteBreakdown({
                   )}
                   {tallyResult ? (
                     <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                      {`${tallyResult.firstChoice
-                        .plus(tallyResult.transfer)
-                        .toFormat(2)} MKR Voting (${tallyResult.firstPct
+                      {`${firstChoice.plus(transfer).toFormat(2)} MKR Voting (${new BigNumber(
+                        tallyResult.firstPct
+                      )
                         .plus(tallyResult.transferPct)
                         .toFixed(2)}%)`}
                     </Text>
@@ -55,9 +57,7 @@ export default function VoteBreakdown({
                 {tally && tallyResult ? (
                   <Box sx={{ position: 'relative', mb: 4 }}>
                     <Tooltip
-                      label={`First choice ${tallyResult.firstChoice.toFormat(
-                        2
-                      )}; Transfer ${tallyResult.transfer.toFormat(2)}`}
+                      label={`First choice ${firstChoice.toFormat(2)}; Transfer ${transfer.toFormat(2)}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -68,11 +68,9 @@ export default function VoteBreakdown({
                               color: 'mutedAlt',
                               position: 'absolute'
                             }}
-                            max={tally.totalMkrParticipation.toBigNumber()}
+                            max={tally.totalMkrParticipation}
                             value={
-                              tallyResult.transfer.lt(0)
-                                ? tallyResult.firstChoice.toNumber()
-                                : tallyResult.firstChoice.plus(tallyResult.transfer).toNumber()
+                              transfer.lt(0) ? firstChoice.toNumber() : firstChoice.plus(transfer).toNumber()
                             }
                           />
                         </Box>
@@ -84,11 +82,9 @@ export default function VoteBreakdown({
                               color: 'primary',
                               position: 'absolute'
                             }}
-                            max={tally.totalMkrParticipation.toBigNumber()}
+                            max={tally.totalMkrParticipation}
                             value={
-                              tallyResult.transfer.lt(0)
-                                ? tallyResult.firstChoice.plus(tallyResult.transfer).toNumber()
-                                : tallyResult.firstChoice.toNumber()
+                              transfer.lt(0) ? firstChoice.plus(transfer).toNumber() : firstChoice.toNumber()
                             }
                           />
                         </Box>
@@ -128,7 +124,9 @@ export default function VoteBreakdown({
               )}
               {tally && tallyResult ? (
                 <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                  {`${tallyResult.mkrSupport.toFormat(2)} MKR Voting (${tallyResult.firstPct.toFixed(2)}%)`}
+                  {`${new BigNumber(tallyResult.mkrSupport).toFormat(2)} MKR Voting (${new BigNumber(
+                    tallyResult.firstPct
+                  ).toFixed(2)}%)`}
                 </Text>
               ) : (
                 <Delay>
@@ -138,7 +136,7 @@ export default function VoteBreakdown({
             </Flex>
 
             {tally && tallyResult ? (
-              <Tooltip label={`First choice ${tallyResult.mkrSupport.toFormat(2)}`}>
+              <Tooltip label={`First choice ${new BigNumber(tallyResult.mkrSupport).toFormat(2)}`}>
                 <Box my={2}>
                   <Progress
                     sx={{
@@ -147,8 +145,8 @@ export default function VoteBreakdown({
                       height: 2,
                       color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
                     }}
-                    max={tally.totalMkrParticipation.toBigNumber()}
-                    value={tallyResult.mkrSupport.toNumber()}
+                    max={tally.totalMkrParticipation}
+                    value={new BigNumber(tallyResult.mkrSupport).toNumber()}
                   />
                 </Box>
               </Tooltip>

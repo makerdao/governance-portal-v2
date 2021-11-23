@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink, jsx } from 'theme-ui';
+import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -158,7 +158,7 @@ const Pending = ({ tx, close }) => (
     <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
       <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
       <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Poll will be created once the blockchain confirms the transaction
+        Poll will be created once the transaction has been confirmed.
       </Text>
       <ExternalLink
         target="_blank"

@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { jsx } from 'theme-ui';
-
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
@@ -9,11 +7,11 @@ import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnSigning from './burnModal/BurnSigning';
-import BurnPending from './burnModal/BurnPending';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
 
 const ModalContent = ({
   setShowDialog,
@@ -84,7 +82,7 @@ const ModalContent = ({
     case 'signing':
       return <BurnSigning close={close} />;
     case 'pending':
-      return <BurnPending tx={tx} close={close} />;
+      return <TxInProgress tx={tx} txPending={true} setTxId={setTxId} />;
     case 'mined':
       return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':

@@ -1,4 +1,4 @@
-import { Card, Flex, Text, Box, Heading, jsx } from 'theme-ui';
+import { Card, Flex, Text, Box, Heading } from 'theme-ui';
 import useSWR from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';

@@ -9,8 +9,7 @@ import {
   Heading,
   Label,
   Text,
-  Link as ExternalLink,
-  jsx
+  Link as ExternalLink
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';

@@ -1,7 +1,7 @@
 {
   "pollId": 634,
   "option": 1,
-  "blockTimestamp": "2021-09-13T20:04:21+00:00",
+  "blockTimestamp": 13217846,
   "rankedChoiceOption": [1],
   "poll": {
     "creator": "0xf3ed2bdeba77940e6759b806cd55ce20cae369be",
@@ -27,26 +27,6 @@
       "prev": null,
       "next": null
     }
-  },
-  "tally": {
-    "rounds": 1,
-    "winner": "1",
-    "totalMkrParticipation": "70288.579356787892861292",
-    "options": {
-      "0": {
-        "firstChoice": "2.001309",
-        "transfer": "0",
-        "winner": false,
-        "eliminated": false
-      },
-      "1": {
-        "firstChoice": "70286.578047787892861292",
-        "transfer": "0",
-        "winner": true,
-        "eliminated": false
-      }
-    },
-    "numVoters": 13
   },
   "optionValue": "Yes"
 }

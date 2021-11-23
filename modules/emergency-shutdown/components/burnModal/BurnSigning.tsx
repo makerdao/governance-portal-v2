@@ -1,4 +1,4 @@
-import { Flex, Button, Text, jsx, Close, Spinner } from 'theme-ui';
+import { Flex, Button, Text, Close, Spinner } from 'theme-ui';
 
 const BurnSigning = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

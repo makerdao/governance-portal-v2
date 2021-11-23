@@ -21,11 +21,12 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
-
-  for (const pollGroup of chunk(
-    uniqBy(pollList, p => p.multiHash),
-    20
-  )) {
+  //uniqBy keeps the first occurence of a duplicate, so we sort polls so that the most recent poll is kept in case of a duplicate
+  const dedupedPolls = uniqBy(
+    pollList.sort((a, b) => b.pollId - a.pollId),
+    p => p.multiHash
+  );
+  for (const pollGroup of chunk(dedupedPolls, 20)) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
       pollGroup.map(async (p: PartialPoll) => {

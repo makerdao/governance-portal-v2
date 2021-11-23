@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link, jsx } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
@@ -99,6 +99,13 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
 
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+
+  // revalidate votedProposals if connected address changes
+  useEffect(() => {
+    mutateVotedProposals();
+  }, [address]);
+
   const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
@@ -118,10 +125,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
-    { refreshInterval: 0 }
+    { refreshInterval: 0, revalidateOnMount: true }
   );
-
-  const { data: votedProposals } = useVotedProposals();
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
@@ -141,13 +146,15 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const filteredProposals = useMemo(() => {
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
-    return (proposals.filter(proposal => {
-      // filter out non-cms proposals for now
-      if (!('about' in proposal) || !('date' in proposal)) return false;
-      if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
-      if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
-      return true;
-    }) as CMSProposal[]).sort((a, b) => {
+    return (
+      proposals.filter(proposal => {
+        // filter out non-cms proposals for now
+        if (!('about' in proposal) || !('date' in proposal)) return false;
+        if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
+        if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
+        return true;
+      }) as CMSProposal[]
+    ).sort((a, b) => {
       if (sortBy === 'MKR Amount') {
         const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
         const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;

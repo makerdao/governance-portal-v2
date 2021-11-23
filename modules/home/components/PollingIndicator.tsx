@@ -1,15 +1,15 @@
 import { forwardRef, useMemo } from 'react';
-import { Box, NavLink, Badge, jsx, Container, ThemeUIStyleObject } from 'theme-ui';
+import { Box, NavLink, Badge, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 
 import { getNetwork } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import useAccountsStore from 'stores/accounts';
 import { Poll } from 'modules/polling/types';
 import { Account } from 'types/account';
-import { useAllUserVotes } from 'lib/hooks';
 
 type Props = {
   account?: Account;
@@ -75,8 +75,9 @@ const PollingIndicatorComponent = ({
 }): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
-
-  const { data: allUserVotes } = useAllUserVotes(account?.address);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const unvotedPolls = allUserVotes
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))

@@ -17,7 +17,7 @@ describe('Fetch poll', () => {
 
   test('getPolls with filesystem caching', async () => {
     jest.setTimeout(25000);
-    await getPolls();
+    await getPolls({});
     expect(fs.existsSync(cacheFile)).toBeTruthy();
   });
 });

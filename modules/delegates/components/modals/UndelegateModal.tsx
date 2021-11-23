@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, jsx } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
@@ -20,9 +20,17 @@ type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate;
+  mutateTotalStaked: () => void;
+  mutateMkrStaked: () => void;
 };
 
-export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Element => {
+export const UndelegateModal = ({
+  isOpen,
+  onDismiss,
+  delegate,
+  mutateTotalStaked,
+  mutateMkrStaked
+}: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const account = useAccountsStore(state => state.currentAccount);
@@ -62,6 +70,8 @@ export const UndelegateModal = ({ isOpen, onDismiss, delegate }: Props): JSX.Ele
     const freeTxCreator = () => maker.service('voteDelegate').free(voteDelegateAddress, mkrToWithdraw);
     const txId = await trackTransaction(freeTxCreator, 'Withdrawing MKR', {
       mined: txId => {
+        mutateTotalStaked();
+        mutateMkrStaked();
         transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
       },
       error: () => {

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Grid,
   Button,
@@ -6,7 +6,6 @@ import {
   Close,
   Text,
   Box,
-  Spinner,
   Link as ExternalLink,
   Label,
   Checkbox,
@@ -19,57 +18,65 @@ import Bignumber from 'bignumber.js';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import getMaker, { getNetwork, personalSign } from 'lib/maker';
+import getMaker, { personalSign } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { getEtherscanLink, sortBytesArray } from 'lib/utils';
+import { sortBytesArray } from 'lib/utils';
 import { fetchJson } from 'lib/fetchJson';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import useAccountsStore from 'stores/accounts';
 import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
-import { TXMined } from 'types/transaction';
 import { Proposal, CMSProposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useSpellData } from '../hooks/useSpellData';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
+import { TxFinal } from 'modules/app/components/TxFinal';
+import { useMkrOnHat } from '../hooks/useMkrOnHat';
 
 type Props = {
   close: () => void;
   proposal: Proposal;
   currentSlate?: string[];
+  onMined?: any;
 };
 
-type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
+type ModalStep = 'confirm' | 'signing' | 'pending' | 'mined' | 'failed';
 
-const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element => {
+const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy, voteDelegate] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
-
   const addressLockedMKR =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(addressLockedMKR, voteProxy, voteDelegate);
+  const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
+    addressLockedMKR,
+    voteProxy,
+    voteDelegate
+  );
+  const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
 
-  const { data: spellData } = useSpellData(proposal.address);
+  // revalidate on mount
+  useEffect(() => {
+    mutateLockedMkr();
+    mutateSpellData();
+  }, []);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
-
   const { data: allSlates } = useAllSlates();
+  const { mutate: mutateMkrOnHat } = useMkrOnHat();
 
   const { data: hat } = useHat();
-
   const isHat = hat && hat === proposal.address;
-
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
-
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
   const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new Bignumber(spellData.mkrSupport).toFormat(3) : 0;
@@ -131,7 +138,9 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       },
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
-        close(); // TBD maybe show a separate "done" dialog
+        onMined && onMined();
+        mutateMkrOnHat();
+        setStep('mined');
       },
       error: () => setStep('failed')
     });
@@ -312,9 +321,20 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
       case 'confirm':
         return <Default />;
       case 'signing':
-        return <Signing close={close} />;
+        return <TxInProgress tx={tx} txPending={false} setTxId={close} />;
       case 'pending':
-        return <Pending tx={tx} close={close} />;
+        return <TxInProgress tx={tx} txPending={true} setTxId={close} />;
+      case 'mined':
+        return (
+          <TxFinal
+            title="Transaction Sent"
+            description="Your vote will be reflected once the transaction has been confirmed."
+            buttonLabel="Close"
+            onClick={close}
+            tx={tx}
+            success={true}
+          />
+        );
       case 'failed':
         return <Error close={close} />;
     }
@@ -335,66 +355,6 @@ const VoteModal = ({ close, proposal, currentSlate = [] }: Props): JSX.Element =
     </DialogOverlay>
   );
 };
-
-const Signing = ({ close }) => (
-  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-    <Close
-      aria-label="close"
-      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-      onClick={close}
-    />
-
-    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
-      Sign Transaction
-    </Text>
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Spinner size="60px" sx={{ color: 'primary', alignSelf: 'center', my: 4 }} />
-      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: 3 }}>
-        Please use your wallet to sign this transaction.
-      </Text>
-      {/* <Button variant="textual" sx={{ mt: 3, color: 'muted', fontSize: 2 }}>
-        Cancel vote submission
-      </Button> */}
-    </Flex>
-  </Flex>
-);
-
-const Pending = ({ tx, close }) => (
-  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-    <Close
-      aria-label="close"
-      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-      onClick={close}
-    />
-
-    <Text as="p" variant="heading" sx={{ fontSize: 6 }}>
-      Transaction Sent!
-    </Text>
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-      <Text as="p" sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Vote will update once the blockchain has confirmed the transaction.
-      </Text>
-      <ExternalLink
-        target="_blank"
-        href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
-        sx={{ p: 0 }}
-      >
-        <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-          View on Etherscan
-          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-        </Text>
-      </ExternalLink>
-      <Button
-        onClick={close}
-        sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
-        variant="outline"
-      >
-        Close
-      </Button>
-    </Flex>
-  </Flex>
-);
 
 const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

@@ -13,8 +13,7 @@ import {
   Box,
   Text,
   Divider,
-  Link as ThemeUILink,
-  jsx
+  Link as ThemeUILink
 } from 'theme-ui';
 import { ethers } from 'ethers';
 import BigNumber from 'bignumber.js';
@@ -53,6 +52,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'types/currency';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   proposal: Proposal;
@@ -115,7 +115,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const close = () => setVoting(false);
 
   const commentsTab = (
-    <div key={3} sx={{ p: [3, 4] }}>
+    <div key={'comments'} sx={{ p: [3, 4] }}>
       {comments ? (
         <Comments proposal={proposal} comments={comments} />
       ) : (
@@ -236,11 +236,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 ]}
                 tabPanels={[
                   <div
-                    key={1}
+                    key={'about'}
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
-                  <div key={2} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>,
                   commentsTab
@@ -254,7 +254,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={['Spell Details']}
                 tabPanels={[
-                  <div key={1} sx={{ p: [3, 4] }}>
+                  <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>
                 ]}
@@ -301,7 +301,45 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   scrollbarWidth: 'none'
                 }}
               >
-                {supporters ? (
+                {!allSupporters && !supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+
+                {supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    List of supporters currently unavailable
+                  </Flex>
+                )}
+                {allSupporters && (!supporters || supporters.length === 0) && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text>Currently there are no supporters</Text>
+                  </Flex>
+                )}
+
+                {supporters &&
+                  supporters.length > 0 &&
                   supporters.map(supporter => (
                     <Flex
                       sx={{
@@ -344,37 +382,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                                   ':hover': { color: 'blueLinkHover' }
                                 }}
                               >
-                                {cutMiddle(supporter.address)}
+                                <Address address={supporter.address} />
                               </Text>
                             )}
                           </ThemeUILink>
                         </Link>
                       </Box>
                     </Flex>
-                  ))
-                ) : supportersError ? (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                ) : (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
+                  ))}
               </Box>
             </Card>
           </Box>

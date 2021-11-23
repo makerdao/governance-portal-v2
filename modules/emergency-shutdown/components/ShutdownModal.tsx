@@ -1,4 +1,4 @@
-import { Flex, Button, Text, Grid, jsx, Close, Link, Spinner } from 'theme-ui';
+import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { getNetwork } from 'lib/maker';
@@ -112,7 +112,7 @@ const ModalContent = ({
       <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
         <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-          Shutdown will update once the blockchain has confirmed the transaction.
+          Shutdown will update once the transaction has been confirmed..
         </Text>
         <Link
           target="_blank"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { jsx, Box, Flex, Text, Button, Close } from 'theme-ui';
+import { Box, Flex, Text, Button, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
@@ -22,6 +22,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
+import Tooltip from 'modules/app/components/Tooltip';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -41,6 +42,12 @@ const walletButtonStyle = {
   }
 };
 
+const disabledWalletButtonStyle = {
+  ...walletButtonStyle,
+  cursor: 'not-allowed',
+  '&:hover': null
+};
+
 const closeButtonStyle = {
   height: 4,
   width: 4,
@@ -50,11 +57,21 @@ const closeButtonStyle = {
   left: '8px'
 };
 
+const disabledHardwareBlurb = (
+  <>
+    Hardware wallets currently only work through <br />
+    their metamask integrations
+  </>
+);
+
 const WrappedAccountSelect = (): JSX.Element => (
   <Web3ReactProvider getLibrary={getLibrary}>
     <AccountSelect />
   </Web3ReactProvider>
 );
+
+const ADDRESSES_PER_PAGE = 5;
+const MAX_PAGES = 5;
 
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
@@ -95,6 +112,8 @@ const AccountSelect = (): React.ReactElement => {
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
   const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
 
+  const [hwPageNum, setHwPageNum] = useState(0);
+
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
@@ -123,75 +142,79 @@ const AccountSelect = (): React.ReactElement => {
     const { setUserData } = useContext(AnalyticsContext);
     const [loading, setLoading] = useState(false);
     return (
-      <Flex
-        sx={walletButtonStyle as any}
-        onClick={async () => {
-          setLoading(true);
-          const maker = await getMaker();
+      <Tooltip label={disabledHardwareBlurb}>
+        <Flex
+          sx={disabledWalletButtonStyle as any}
+          // onClick={async () => {
+          //   setLoading(true);
+          //   const maker = await getMaker();
 
-          try {
-            await maker.addAccount({
-              type: 'ledger',
-              accountsLength: 10,
-              choose: (addresses, callback) => {
-                setLoading(false);
-                setAddresses(addresses);
-                setShowHwAddressSelector(true);
-                setHwSelectCallback(() => callback);
-              }
-            });
-          } catch (err) {
-            if (err.message !== 'already added') throw err;
-          }
-          if (chainId) {
-            setUserData({ wallet: 'Ledger' });
-          }
-          setAccountName('Ledger');
-          setChangeWallet(false);
-          setShowHwAddressSelector(false);
-          close();
-        }}
-      >
-        <Icon name="Ledger" />
-        <Text sx={{ ml: 3 }}>{loading ? 'Loading...' : 'Ledger'}</Text>
-      </Flex>
+          //   try {
+          //     await maker.addAccount({
+          //       type: 'ledger',
+          //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
+          //       choose: (addresses, callback) => {
+          //         setLoading(false);
+          //         setAddresses(addresses);
+          //         setShowHwAddressSelector(true);
+          //         setHwSelectCallback(() => callback);
+          //       }
+          //     });
+          //   } catch (err) {
+          //     if (err.message !== 'already added') throw err;
+          //   }
+          //   if (chainId) {
+          //     setUserData({ wallet: 'Ledger' });
+          //   }
+          //   setAccountName('Ledger');
+          //   setChangeWallet(false);
+          //   setShowHwAddressSelector(false);
+          //   close();
+          // }}
+        >
+          <Icon name="Ledger" />
+          <Text sx={{ ml: 3 }}>{loading ? 'Loading...' : 'Ledger'}</Text>
+        </Flex>
+      </Tooltip>
     );
   };
 
   const TrezorButton = () => (
-    <Flex
-      sx={walletButtonStyle as any}
-      onClick={async () => {
-        const maker = await getMaker();
+    <Tooltip label={disabledHardwareBlurb}>
+      <Flex
+        sx={disabledWalletButtonStyle as any}
+        // onClick={async () => {
+        //   const maker = await getMaker();
 
-        try {
-          await maker.addAccount({
-            type: 'trezor',
-            accountsLength: 10,
-            accountsOffset: 0,
-            path: "44'/60'/0'/0/0",
-            choose: (addresses, callback) => {
-              setAddresses(addresses);
-              setShowHwAddressSelector(true);
-              setHwSelectCallback(() => callback);
-            }
-          });
-        } catch (err) {
-          if (err.message.match(/Popup closed/)) return;
-          if (err.message !== 'already added') throw err;
-        }
+        //   try {
+        //     await maker.addAccount({
+        //       type: 'trezor',
+        //       accountsLength: ADDRESSES_PER_PAGE * MAX_PAGES,
+        //       accountsOffset: 0,
+        //       path: "44'/60'/0'/0/0",
+        //       choose: (addresses, callback) => {
+        //         setAddresses(addresses);
+        //         setShowHwAddressSelector(true);
+        //         setHwSelectCallback(() => callback);
+        //       }
+        //     });
+        //   } catch (err) {
+        //     if (err.message.match(/Popup closed/)) return;
+        //     if (err.message !== 'already added') throw err;
+        //   }
 
-        if (chainId) {
-          setUserData({ wallet: 'Trezor' });
-        }
-        setAccountName('Trezor');
-        setChangeWallet(false);
-        close();
-      }}
-    >
-      <Icon name="Trezor" />
-      <Text sx={{ ml: 3 }}>Trezor</Text>
-    </Flex>
+        //   if (chainId) {
+        //     setUserData({ wallet: 'Trezor' });
+        //   }
+        //   setAccountName('Trezor');
+        //   setChangeWallet(false);
+        //   close();
+        // }}
+      >
+        <Icon name="Trezor" />
+        <Text sx={{ ml: 3 }}>Trezor</Text>
+      </Flex>
+    </Tooltip>
   );
 
   // Handles UI state for loading
@@ -268,11 +291,35 @@ const AccountSelect = (): React.ReactElement => {
           {showHwAddressSelector ? (
             <>
               <BackButton onClick={() => setShowHwAddressSelector(false)} />
-              {addresses.map(address => (
-                <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
-                  <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
-                </Flex>
-              ))}
+              <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: 3 }}>
+                <Button
+                  variant="mutedOutline"
+                  disabled={hwPageNum === 0}
+                  onClick={() => setHwPageNum(hwPageNum - 1)}
+                >
+                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    <Icon name="chevron_left" size={2} mr={2} />
+                    Previous Page
+                  </Flex>
+                </Button>
+                <Button
+                  variant="mutedOutline"
+                  disabled={hwPageNum === MAX_PAGES - 1}
+                  onClick={() => setHwPageNum(hwPageNum + 1)}
+                >
+                  <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                    Next Page
+                    <Icon name="chevron_right" size={2} ml={2} />
+                  </Flex>
+                </Button>
+              </Flex>
+              {addresses
+                .slice(hwPageNum * ADDRESSES_PER_PAGE, (hwPageNum + 1) * ADDRESSES_PER_PAGE)
+                .map(address => (
+                  <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
+                    <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
+                  </Flex>
+                ))}
             </>
           ) : changeWallet ? (
             <>

@@ -16,7 +16,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
       <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
-        Confirm transaction
+        Confirm Transaction
       </Text>
       <Text sx={{ mt: 4 }}>
         You are delegating{' '}
@@ -27,7 +27,15 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
           target="_blank"
         >
-          <Text sx={{ fontWeight: 'bold', color: 'text', display: 'inline', ':hover': { color: 'inherit' } }}>
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              color: 'accentsBlue',
+              display: 'inline',
+              ':hover': { color: 'inherit' },
+              fontSize: [1, 2]
+            }}
+          >
             {voteDelegateAddress}
           </Text>
         </ExternalLink>
@@ -39,7 +47,15 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
           href={getEtherscanLink(getNetwork(), address, 'address')}
           target="_blank"
         >
-          <Text sx={{ fontWeight: 'bold', color: 'text', display: 'inline', ':hover': { color: 'inherit' } }}>
+          <Text
+            sx={{
+              fontWeight: 'bold',
+              color: 'accentsBlue',
+              display: 'inline',
+              ':hover': { color: 'inherit' },
+              fontSize: [1, 2]
+            }}
+          >
             {address}
           </Text>
         </ExternalLink>
