@@ -14,7 +14,7 @@ export default function PollWinningOptionBox({
   poll: Poll;
   tally?: PollTally;
 }): React.ReactElement {
-  const textWin = isActivePoll(poll) ? 'Currently winning option' : 'Winning option';
+  const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
 
   return (
     <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
