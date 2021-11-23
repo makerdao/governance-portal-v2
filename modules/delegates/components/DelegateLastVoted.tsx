@@ -36,11 +36,13 @@ export function DelegateLastVoted({
     }
   };
 
-  const isLongerThan14Days = date && (Date.now() - new Date(date).getTime() > 14 * 24 * 60 * 60 * 1000);
-  const isLongerThan21Days = date && (Date.now() - new Date(date).getTime() > 21 * 24 * 60 * 60 * 1000);
-  const isLongerThan28Days = date && (Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000);
+  const isLongerThan14Days = date && Date.now() - new Date(date).getTime() > 14 * 24 * 60 * 60 * 1000;
+  const isLongerThan21Days = date && Date.now() - new Date(date).getTime() > 21 * 24 * 60 * 60 * 1000;
+  const isLongerThan28Days = date && Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000;
 
-  const lastVoteDate = date ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date): formatDateWithTime(date)}` : 'NO VOTE HISTORY';
+  const lastVoteDate = date
+    ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date) : formatDateWithTime(date)}`
+    : 'NO VOTE HISTORY';
 
   return (
     <Flex
@@ -66,7 +68,17 @@ export function DelegateLastVoted({
       >
         <Icon
           name="calendar"
-          sx={delegate.expired || !date ? styles.expiredCalendar : (isLongerThan28Days ? styles.redCalendar : isLongerThan21Days ? styles.orangeCalendar ? isLongerThan14Days : styles.yellowCalendar : styles.activeCalendar)}
+          sx={
+            delegate.expired || !date
+              ? styles.expiredCalendar
+              : isLongerThan28Days
+              ? styles.redCalendar
+              : isLongerThan21Days
+              ? styles.orangeCalendar
+                ? isLongerThan14Days
+                : styles.yellowCalendar
+              : styles.activeCalendar
+          }
         />
       </Flex>
     </Flex>

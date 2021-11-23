@@ -26,7 +26,6 @@ export const formatDateWithoutTime = (dateString: Date | undefined | number | st
   }
 };
 
-
 export const formatTimeAgo = (dateString: Date | undefined | number | string): string => {
   if (!dateString) return '';
   const date = new Date(dateString);
