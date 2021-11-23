@@ -10,7 +10,7 @@ import useTransactionStore, { transactionsSelectors } from 'stores/transactions'
 import { Poll } from 'modules/polling/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {
-  const color = hasVoted || onBallot ? 'greenLinkHover' : 'textSecondary';
+  const color = hasVoted || onBallot ? 'greenLinkHover' : 'textMuted';
   const icon = hasVoted ? 'verified' : onBallot ? 'ballot' : null;
   const text = hasVoted
     ? 'You voted'
