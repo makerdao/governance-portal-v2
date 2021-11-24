@@ -12,16 +12,42 @@ import { resolveENS } from 'modules/web3/ens';
 /**
  * @swagger
  * definitions:
+ *   ArrayOfVoteHistory:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/VoteHistory'
+ *   VoteHistory:
+ *     type: object
+ *     properties:
+ *       pollId:
+ *         type: integer
+ *       blockTimestamp:
+ *         type: string
+ *       option:
+ *         type: number
+ *       optionValue:
+ *         type: string
+ *       rankedChoiceOption:
+ *         type: array
+ *         items:
+ *           type: integer
+ *       poll:
+ *         $ref: '#/definitions/Poll'
+ *     example:
+ *       - pollId: 1
+ *         blockTimestamp: "2021-11-20T19:25:47+00:00"
+ *         option: 1
+ *         optionValue: "Yes"
+ *         rankedChoiceOption: [1]
+ *         poll:
+ *           pollId: 1
  *   AddressStats:
  *     type: object
  *     properties:
  *       pollVoteHistory:
- *         type: integer
+ *         $ref: '#/definitions/ArrayOfVoteHistory'
  *       lastVote:
- *         type: string
- *     example:
- *       - pollVoteHistory: 1
- *         lastVote: '0x123123'
+ *         $ref: '#/definitions/VoteHistory'
  *
  * /api/[address]/stats:
  *   get:
@@ -42,8 +68,7 @@ import { resolveENS } from 'modules/web3/ens';
  *         content:
  *           application/json:
  *             schema:
- *               properties:
- *                 $ref: '#/definitions/AddressStats'
+ *               $ref: '#/definitions/AddressStats'
  *
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressAPIStats>) => {

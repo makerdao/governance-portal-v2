@@ -87,7 +87,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
         </Flex>
 
         <Box sx={{ pt: [2, 0] }}>
-          <LastVoted expired={false} date={statsData?.lastVote.blockTimestamp || ''} />
+          <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
         </Box>
       </Flex>
 
