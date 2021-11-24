@@ -1,8 +1,7 @@
-import { Box, Divider, Link as ExternalLink, Text } from 'theme-ui';
+import { Box, Link as ExternalLink, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { Delegate } from '../types';
-import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
 
 export function DelegateCredentials({ delegate }: { delegate: Delegate }): React.ReactElement {
   return (
@@ -23,10 +22,6 @@ export function DelegateCredentials({ delegate }: { delegate: Delegate }): React
             </ExternalLink>
           </Box>
         )}
-      </Box>
-      <Divider my={0} />
-      <Box sx={{ p: [3, 4], display: 'flex', flexDirection: 'column' }}>
-        <DelegateMKRDelegatedStats delegate={delegate} />
       </Box>
     </Box>
   );
