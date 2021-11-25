@@ -50,7 +50,7 @@ export default function DateFilter(props): JSX.Element {
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>After</Text>
+        <Text>Executive posted after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={startInput}
@@ -59,7 +59,7 @@ export default function DateFilter(props): JSX.Element {
           />
         </Flex>
 
-        <Text>Before</Text>
+        <Text>Executive posted before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={endInput}
