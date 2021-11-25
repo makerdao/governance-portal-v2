@@ -6,6 +6,8 @@ type Store = {
     endDate: null | Date;
     categoryFilter: null | { [category: string]: boolean };
     showHistorical: boolean;
+    showPollActive: boolean;
+    showPollEnded: boolean;
   };
   executiveFilters: {
     startDate: null | Date;
@@ -15,6 +17,8 @@ type Store = {
   setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
   setShowHistorical: (showHistorical: boolean) => void;
+  setShowPollActive: (showActive: boolean) => void;
+  setShowPollEnded: (ended: boolean) => void;
   resetPollFilters: () => void;
   executiveSortBy: 'Date Posted' | 'MKR Amount';
   setExecutiveSortBy: (method: 'Date Posted' | 'MKR Amount') => void;
@@ -27,7 +31,9 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     startDate: null,
     endDate: null,
     categoryFilter: null,
-    showHistorical: false
+    showHistorical: false,
+    showPollActive: true,
+    showPollEnded: true
   },
 
   executiveFilters: {
@@ -49,6 +55,14 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ pollFilters: { ...get().pollFilters, categoryFilter } });
   },
 
+  setShowPollActive: (active: boolean) => {
+    set({ pollFilters: { ...get().pollFilters, showPollActive: active } });
+  },
+
+  setShowPollEnded: (ended: boolean) => {
+    set({ pollFilters: { ...get().pollFilters, showPollEnded: ended } });
+  },
+
   setShowHistorical: showHistorical => {
     set({ pollFilters: { ...get().pollFilters, showHistorical } });
   },
@@ -59,7 +73,9 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         startDate: null,
         endDate: null,
         categoryFilter: null,
-        showHistorical: false
+        showHistorical: false,
+        showPollActive: true,
+        showPollEnded: true
       }
     });
   },

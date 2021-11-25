@@ -14,7 +14,6 @@ import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { getCategories } from 'modules/polling/helpers/getCategories';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -44,13 +43,15 @@ type Props = {
 
 const PollingOverview = ({ polls, categories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
+  const [startDate, endDate, categoryFilter, showHistorical, showPollActive, showPollEnded, setShowHistorical, resetPollFilters] =
     useUiFiltersStore(
       state => [
         state.pollFilters.startDate,
         state.pollFilters.endDate,
         state.pollFilters.categoryFilter,
         state.pollFilters.showHistorical,
+        state.pollFilters.showPollActive,
+        state.pollFilters.showPollEnded,
         state.setShowHistorical,
         state.resetPollFilters
       ],
@@ -68,18 +69,34 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const start = startDate && new Date(startDate);
   const end = endDate && new Date(endDate);
 
-  const filteredPolls = useMemo(() => {
+  const filteredByCategories = useMemo(() => {
     return polls.filter(poll => {
       // check date filters first
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-
+     
       // if no category filters selected, return all, otherwise, check if poll contains category
       return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
+      
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
-  const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
+  const filteredPolls = useMemo(() => {
+    return filteredByCategories.filter(poll => {
+
+      if (!showPollEnded && !isActivePoll(poll)) {
+        return false;
+      }
+      if (!showPollActive && isActivePoll(poll)) {
+        return false;
+      }
+      return true;
+      
+    });
+  }, [filteredByCategories, showPollActive, showPollEnded]);
+
+  const [activePolls, setActivePolls] = useState([]);
+  const [historicalPolls, setHistoricalPolls] = useState([]);
 
   const groupedActivePolls = groupBy(activePolls, 'endDate');
   const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
@@ -88,10 +105,16 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   useEffect(() => {
-    if (activePolls.length === 0) {
+    const [active, historical] = partition(filteredPolls, isActivePoll);
+
+    if (active.length === 0) {
       setShowHistorical(true);
     }
-  }, []);
+
+    setActivePolls(active);
+    setHistoricalPolls(historical);
+
+  }, [filteredPolls]);
 
   const loadMore = entries => {
     const target = entries.pop();
@@ -156,7 +179,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
               Filters
             </Heading>
-            <CategoryFilter categories={categories} />
+            <CategoryFilter categories={categories} polls={filteredByCategories} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
           <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
