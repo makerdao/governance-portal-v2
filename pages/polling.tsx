@@ -43,20 +43,28 @@ type Props = {
 
 const PollingOverview = ({ polls, categories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const [startDate, endDate, categoryFilter, showHistorical, showPollActive, showPollEnded, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.showHistorical,
-        state.pollFilters.showPollActive,
-        state.pollFilters.showPollEnded,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    showPollActive,
+    showPollEnded,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.pollFilters.showPollActive,
+      state.pollFilters.showPollEnded,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -74,16 +82,14 @@ const PollingOverview = ({ polls, categories }: Props) => {
       // check date filters first
       if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
       if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-     
+
       // if no category filters selected, return all, otherwise, check if poll contains category
       return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
-      
     });
   }, [polls, startDate, endDate, categoryFilter]);
 
   const filteredPolls = useMemo(() => {
     return filteredByCategories.filter(poll => {
-
       if (!showPollEnded && !isActivePoll(poll)) {
         return false;
       }
@@ -91,7 +97,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
         return false;
       }
       return true;
-      
     });
   }, [filteredByCategories, showPollActive, showPollEnded]);
 
@@ -113,7 +118,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
     setActivePolls(active);
     setHistoricalPolls(historical);
-
   }, [filteredPolls]);
 
   const loadMore = entries => {
