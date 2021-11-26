@@ -9,6 +9,8 @@ export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }):
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
 
+  // TODO: Fetch addresses suporting through API fetching
+
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
   return (
@@ -26,7 +28,7 @@ export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }):
         label={'Total MKR Delegated'}
       />
       {/* TODO add once we have data */}
-      {/* <StatBox value={'TBD'} label={'MKR Holders represented'} /> */}
+      {/* <StatBox value={'TBD'} label={'Delegators (wallets)'} />*/}
       <StatBox
         value={mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
         label={'MKR Delegated by you'}

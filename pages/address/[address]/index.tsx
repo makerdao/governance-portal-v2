@@ -60,15 +60,9 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && (
-              <DelegateDetail delegate={addressInfo.delegateInfo} stats={addressInfo.stats} />
-            )}
+            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
             {!addressInfo.delegateInfo && (
-              <AddressDetail
-                address={addressInfo.address}
-                stats={addressInfo.stats}
-                voteProxyInfo={addressInfo.voteProxyInfo}
-              />
+              <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
             )}
           </Box>
         </Stack>
