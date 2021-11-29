@@ -282,11 +282,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 )
               ]}
               banner={
-                <Box>
-                  <Divider my={0} />
-                  <PollWinningOptionBox tally={tally} poll={poll} />
-                  <Divider my={0} />
-                </Box>
+                tally &&
+                tally.totalMkrParticipation > 0 && (
+                  <Box>
+                    <Divider my={0} />
+                    <PollWinningOptionBox tally={tally} poll={poll} />
+                    <Divider my={0} />
+                  </Box>
+                )
               }
             />
           </Card>

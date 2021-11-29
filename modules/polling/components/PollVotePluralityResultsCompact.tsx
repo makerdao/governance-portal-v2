@@ -18,9 +18,9 @@ export function PollVotePluralityResultsCompact({
   const yesValue = new BigNumber(voteTallyOptions['1'] ? voteTallyOptions['1'].mkrSupport : 0);
   const noValue = new BigNumber(voteTallyOptions['2'] ? voteTallyOptions['2'].mkrSupport : 0);
 
-  const yesPercent = yesValue.dividedBy(max).multipliedBy(100).toFixed(0);
-  const abstainPercent = abstainValue.dividedBy(max).multipliedBy(100).toFixed(0);
-  const noPercent = noValue.dividedBy(max).multipliedBy(100).toFixed(0);
+  const yesPercent = max.isGreaterThan(0) ? yesValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
+  const abstainPercent = max.isGreaterThan(0) ? abstainValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
+  const noPercent = max.isGreaterThan(0) ? noValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
 
   return (
     <Box>

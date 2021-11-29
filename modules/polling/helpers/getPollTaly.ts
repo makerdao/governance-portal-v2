@@ -23,7 +23,6 @@ export async function getPollTally(poll: Poll, network?: SupportedNetworks): Pro
   const tally: RawPollTally = await backoffRetry(3, () =>
     fetchPollTally(poll.pollId, voteType, false, currentNetwork)
   );
-
   const maker = await getMaker(currentNetwork);
   const votesByAddress: PollTallyVote[] = (
     await maker.service('govPolling').getMkrAmtVotedByAddress(poll.pollId)
@@ -35,7 +34,23 @@ export async function getPollTally(poll: Poll, network?: SupportedNetworks): Pro
 
   const parsedTally = {
     pollVoteType: voteType,
-    options: tally.options,
+    options:
+      Object.keys(tally.options).length > 0
+        ? tally.options
+        : {
+            '0': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            },
+            '1': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            },
+            '2': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            }
+          },
     winner,
     totalMkrParticipation,
     numVoters,
