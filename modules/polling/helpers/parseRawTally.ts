@@ -18,10 +18,10 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
         optionName: poll.options[key],
         firstChoice: new BigNumber(rawTally.options?.[key]?.firstChoice || 0),
         transfer: new BigNumber(rawTally.options?.[key]?.transfer || 0),
-        firstPct: rawTally.options?.[key]?.firstChoice
+        firstPct: totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.firstChoice
           ? new BigNumber(rawTally.options[key].firstChoice).div(totalMkrParticipation).times(100)
           : new BigNumber(0),
-        transferPct: rawTally.options?.[key]?.transfer
+        transferPct: totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.transfer
           ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation).times(100)
           : new BigNumber(0),
         eliminated: rawTally.options?.[key]?.eliminated ?? true,
@@ -41,7 +41,7 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
         optionId: key,
         optionName: poll.options[key],
         mkrSupport: new BigNumber(rawTally.options?.[key]?.mkrSupport || 0),
-        firstPct: rawTally.options?.[key]?.mkrSupport
+        firstPct: totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.mkrSupport
           ? new BigNumber(rawTally.options[key].mkrSupport).div(totalMkrParticipation).times(100)
           : new BigNumber(0),
         winner: rawTally.options?.[key]?.winner ?? false
