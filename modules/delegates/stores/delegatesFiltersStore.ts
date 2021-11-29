@@ -1,10 +1,10 @@
 import create from 'zustand';
 
 export enum delegatesSortEnum {
-    random = 'random',
-    lastVoted = 'lastVoted',
-    mkrDelegated = 'mkrDelegated',
-    creationDate = 'creationDate'
+  random = 'random',
+  lastVoted = 'lastVoted',
+  mkrDelegated = 'mkrDelegated',
+  creationDate = 'creationDate'
 }
 
 type StoreDelegates = {
@@ -17,11 +17,9 @@ type StoreDelegates = {
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowUnrecognizedFilter: (showUnrecognized: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
-  setSort: (sort:delegatesSortEnum) => void;
+  setSort: (sort: delegatesSortEnum) => void;
   resetFilters: () => void;
 };
-
-
 
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
@@ -33,7 +31,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
 
   setSort: sort => {
     set({
-        sort
+      sort
     });
   },
   setCreationDateFilter: creationDate => {

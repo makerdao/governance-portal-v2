@@ -94,10 +94,8 @@ const Delegates = ({ delegates, stats }: Props) => {
           Clear filters
         </Button>
         <Flex sx={{ ml: 3 }}>
-         
           <DelegatesSort />
         </Flex>
-        
       </Flex>
 
       <SidebarLayout>
