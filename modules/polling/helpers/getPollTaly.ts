@@ -34,26 +34,28 @@ export async function getPollTally(poll: Poll, network?: SupportedNetworks): Pro
 
   const parsedTally = {
     pollVoteType: voteType,
-    options: Object.keys(tally.options).length > 0 ? tally.options : {
-      "0": {
-        mkrSupport:new BigNumber(0),
-        winner: false 
-      },
-      "1": {
-        mkrSupport:new BigNumber(0),
-        winner: false 
-      },
-      "2": {
-        mkrSupport:new BigNumber(0),
-        winner: false 
-      }
-    },
+    options:
+      Object.keys(tally.options).length > 0
+        ? tally.options
+        : {
+            '0': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            },
+            '1': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            },
+            '2': {
+              mkrSupport: new BigNumber(0),
+              winner: false
+            }
+          },
     winner,
     totalMkrParticipation,
     numVoters,
     votesByAddress
   } as RawPollTally;
-
 
   if ('rounds' in tally) (parsedTally as RawPollTallyRankedChoice).rounds = tally.rounds;
 
