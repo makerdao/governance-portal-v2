@@ -21,9 +21,9 @@ export type Poll = {
 };
 
 export type PartialPoll = {
-  creator: string;
+  creator?: string;
   pollId: number;
-  blockCreated: number;
+  blockCreated?: number;
   multiHash: string;
   startDate: Date;
   endDate: Date;
