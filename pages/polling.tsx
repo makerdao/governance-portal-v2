@@ -36,6 +36,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { useRouter } from 'next/router';
 
 type Props = {
   polls: Poll[];
@@ -304,17 +305,20 @@ export default function PollingOverviewPage({
   const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
 
+  const router = useRouter();
+  const branch = router.query.branch;
+
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
+    if (!isDefaultNetwork() || branch) {
+      fetchJson(`/api/polling/all-polls?network=${getNetwork()}${branch ? `&branch=${branch}` : ''}`)
         .then((pollsResponse: PollsResponse) => {
           _setPolls(pollsResponse.polls);
           _setCategories(pollsResponse.categories);
         })
         .catch(setError);
     }
-  }, []);
+  }, [branch]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;

@@ -311,17 +311,20 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
+  const branch = query.branch;
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
-      fetchJson(`/api/polling/${query['poll-hash']}?network=${getNetwork()}`)
+    if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll || branch)) {
+      fetchJson(
+        `/api/polling/${query['poll-hash']}?network=${getNetwork()}${branch ? `&branch=${branch}` : ''}`
+      )
         .then(response => {
           _setPoll(response);
         })
         .catch(setError);
     }
-  }, [query['poll-hash']]);
+  }, [query['poll-hash'], branch]);
 
   if (error || (isDefaultNetwork() && !isFallback && !prefetchedPoll?.multiHash)) {
     return (

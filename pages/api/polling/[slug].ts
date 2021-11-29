@@ -87,7 +87,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const slug = req.query.slug as string;
 
-  const poll = await getPoll(slug, network);
+  const branch = req.query.branch as string;
+  const poll = await getPoll(slug, network, branch);
 
   if (!poll) {
     return res.status(404).json('Not found');

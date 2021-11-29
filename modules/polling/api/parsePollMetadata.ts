@@ -17,7 +17,7 @@ export function sortPolls(pollList: Poll[]): Poll[] {
   });
 }
 
-export async function parsePollsMetadata(pollList): Promise<Poll[]> {
+export async function parsePollsMetadata(pollList: PartialPoll[], branch = 'master'): Promise<Poll[]> {
   let numFailedFetches = 0;
   const failedPollIds: number[] = [];
   const polls: Poll[] = [];
@@ -29,15 +29,22 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
   for (const pollGroup of chunk(dedupedPolls, 20)) {
     // fetch polls in batches, don't fetch a new batch until the current one has resolved
     const pollGroupWithData = await Promise.all(
-      pollGroup.map(async (p: PartialPoll) => {
+      pollGroup.map(async (p): Promise<Poll | null> => {
         let document = '';
+
+        // We allow to fetch polls from another branch by replacing the branchnanem on the github document url.
+        const pollDocumentUrl = p.url.replace('/master/', `/${branch}/`);
         try {
           document = await timeoutPromise(
             5000, // reject if it takes longer than this to fetch
-            backoffRetry(3, () => fetch(p.url))
+            backoffRetry(3, () => fetch(pollDocumentUrl))
           ).then(resp => resp?.text());
-          if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0))
+
+          // If it does not have matter metadata log error
+          if (!(document.length > 0 && Object.keys(matter(document).data?.options)?.length > 0)) {
+            console.error('Invalid poll metadata from GitHub', p.pollId, pollDocumentUrl);
             throw new Error();
+          }
         } catch (err) {
           numFailedFetches += 1;
           failedPollIds.push(p.pollId);
@@ -47,7 +54,7 @@ export async function parsePollsMetadata(pollList): Promise<Poll[]> {
         return parsePollMetadata(p, document);
       })
     ).then(polls =>
-      (polls as any[])
+      (polls as Poll[])
         .filter(p => !!p && !!p.summary && !!p.options)
         .filter(poll => new Date(poll.startDate).getTime() <= Date.now())
     );

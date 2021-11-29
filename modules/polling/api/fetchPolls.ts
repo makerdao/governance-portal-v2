@@ -3,7 +3,7 @@ import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import getMaker, { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
-import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
+import { PartialPoll, Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
 import { SupportedNetworks } from 'lib/constants';
@@ -12,11 +12,14 @@ import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';
 
 // Returns all the polls and caches them in the file system.
-export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
+export async function _getAllPolls(network?: SupportedNetworks, branch?: string): Promise<Poll[]> {
   const maker = await getMaker(network);
   const cacheKey = 'polls';
 
-  if (config.USE_FS_CACHE) {
+  // Do not store in the temp file system the alternative branch polls
+  const usesFileCache = config.USE_FS_CACHE && !branch;
+
+  if (usesFileCache) {
     const cachedPolls = fsCacheGet(cacheKey, network);
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
@@ -30,10 +33,10 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }));
   }
 
-  const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
-  const polls = await parsePollsMetadata(pollList);
+  const pollList: PartialPoll[] = await maker.service('govPolling').getAllWhitelistedPolls();
+  const polls = await parsePollsMetadata(pollList, branch);
 
-  if (config.USE_FS_CACHE) {
+  if (usesFileCache) {
     fsCacheSet(cacheKey, JSON.stringify(polls), network);
   }
   return polls;
@@ -49,9 +52,10 @@ const defaultFilters: PollFilters = {
 
 export async function getPolls(
   filters = defaultFilters,
-  network?: SupportedNetworks
+  network?: SupportedNetworks,
+  branch?: string
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network);
+  const allPolls = await _getAllPolls(network, branch);
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
     if (filters.startDate && new Date(poll.startDate).getTime() < filters.startDate.getTime()) return false;
@@ -74,8 +78,12 @@ export async function getPolls(
   };
 }
 
-export async function getPoll(slug: string, network?: SupportedNetworks): Promise<Poll | null> {
-  const pollsResponse = await getPolls({}, network);
+export async function getPoll(
+  slug: string,
+  network?: SupportedNetworks,
+  branch?: string
+): Promise<Poll | null> {
+  const pollsResponse = await getPolls({}, network, branch);
 
   const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
 

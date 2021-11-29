@@ -131,7 +131,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       : null
   };
 
-  const pollsResponse = await getPolls(filters, network);
+  const branch = req.query.branch as string;
+
+  const pollsResponse = await getPolls(filters, network, branch);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(pollsResponse);

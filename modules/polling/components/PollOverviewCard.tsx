@@ -23,6 +23,7 @@ import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useRouter } from 'next/router';
 
 type Props = {
   poll: Poll;
@@ -39,6 +40,8 @@ export default function PollOverviewCard({
   ...props
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+  const router = useRouter();
+  const branch = router.query.branch;
 
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
@@ -66,7 +69,10 @@ export default function PollOverviewCard({
                 <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
                   Posted on {formatDateWithTime(poll.startDate)}{' '}
                 </Text>
-                <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
+                <Link
+                  href={`/polling/${poll.slug}?network=${network}${branch ? `&branch=${branch}` : ''}`}
+                  passHref
+                >
                   <InternalLink variant="nostyle">
                     <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                       {poll.title}
@@ -74,7 +80,10 @@ export default function PollOverviewCard({
                   </InternalLink>
                 </Link>
               </Box>
-              <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
+              <Link
+                href={`/polling/${poll.slug}?network=${network}${branch ? `&branch=${branch}` : ''}`}
+                passHref
+              >
                 <InternalLink variant="nostyle">
                   <Text
                     sx={{
