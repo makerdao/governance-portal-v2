@@ -456,7 +456,7 @@ const getSpellData = async proposalAddress => {
 
   // TODO: currently the endpoint is hardcoded to only allow the following hash:
   const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
-  const url = `http://3.123.40.243/api/v1/transactions/${hcHash}/diffs/decoded`;
+  const url = `http://18.157.179.179/api/v1/transactions/${hcHash}/diffs/decoded`;
 
   const diff = await fetchJson(url);
 
