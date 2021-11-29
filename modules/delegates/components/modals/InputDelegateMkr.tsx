@@ -3,7 +3,7 @@ import { Alert } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import BigNumber from 'bignumber.js';
 import { useState } from 'react';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
 

@@ -86,7 +86,7 @@ describe('Delegates list page', () => {
   });
 
   test('can delegate MKR to a delegate', async () => {
-    await screen.findByText('Recognized Delegates');
+    await screen.findAllByText('Recognized Delegates');
 
     // Open delegate modal
     const delegateButton = screen.getByText('Delegate');

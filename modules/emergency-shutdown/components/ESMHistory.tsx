@@ -4,8 +4,8 @@ import { getNetwork } from 'lib/maker';
 import { getEtherscanLink, formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
-import { CurrencyObject } from 'types/currency';
-import { StakingHistoryRow } from 'types/esmodule';
+import { CurrencyObject } from 'modules/app/types/currency';
+import { StakingHistoryRow } from 'modules/emergency-shutdown/types/esmodule';
 
 type Props = {
   stakingHistory: StakingHistoryRow[] | undefined;

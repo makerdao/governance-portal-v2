@@ -1,11 +1,11 @@
 // @ts-nocheck
 import { renderWithTheme } from '../helpers';
-import { cleanup, fireEvent, waitFor, configure, screen } from '@testing-library/react';
+import { fireEvent, waitFor, configure, screen } from '@testing-library/react';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
-import { accountsApi } from '../../stores/accounts';
+import { accountsApi } from '../../modules/app/stores/accounts';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 

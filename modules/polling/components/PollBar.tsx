@@ -2,10 +2,10 @@ import { Box, Text, Flex } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 
 import { Poll } from 'modules/polling/types';
-import { Ballot } from 'types/ballot';
+import { Ballot } from 'modules/polling/types/ballot';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 
 type Props = { ballot: Ballot; polls: Poll[]; activePolls: Poll[] };
 

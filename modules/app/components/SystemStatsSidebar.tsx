@@ -8,7 +8,7 @@ import getMaker, { DAI, getNetwork } from 'lib/maker';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { bigNumberKFormat, formatAddress, getEtherscanLink } from 'lib/utils';
 import BigNumber from 'bignumber.js';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 
 async function getSystemStats(): Promise<
   [CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]

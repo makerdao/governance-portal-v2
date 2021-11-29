@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Heading, Box, Card, Text, Link as ThemeUILInk } from 'theme-ui';
+import { useState, useEffect, useMemo } from 'react';
+import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { isDefaultNetwork } from 'lib/maker';
@@ -17,10 +17,13 @@ import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
+import shallow from 'zustand/shallow';
+import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 
 type Props = {
   delegates: Delegate[];
@@ -31,12 +34,31 @@ const Delegates = ({ delegates, stats }: Props) => {
   const network = getNetwork();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+  const [showRecognized, showUnrecognized, resetFilters] = useDelegatesFiltersStore(
+    state => [state.filters.showRecognized, state.filters.showUnrecognized, state.resetFilters],
+    shallow
+  );
+
+  const filteredDelegates = useMemo(() => {
+    return delegates.filter(delegate => {
+      if (!showUnrecognized && delegate.status === DelegateStatusEnum.shadow) {
+        return false;
+      }
+
+      if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
+        return false;
+      }
+      // Apply all filters from the store
+      return true;
+    });
+  }, [delegates, showRecognized, showUnrecognized]);
 
   const styles = {
     delegateGroup: {
       marginBottom: 2
     }
   };
+
   const [voteDelegate] = useAccountsStore(state => [state.voteDelegate]);
 
   const isOwner = d =>
@@ -44,11 +66,11 @@ const Delegates = ({ delegates, stats }: Props) => {
 
   const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
 
-  const recognizedDelegates = delegates
+  const recognizedDelegates = filteredDelegates
     .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
     .sort(d => (isOwner(d) ? -1 : 0));
 
-  const shadowDelegates = delegates
+  const shadowDelegates = filteredDelegates
     .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
     .sort(d => (isOwner(d) ? -1 : 0));
 
@@ -60,9 +82,21 @@ const Delegates = ({ delegates, stats }: Props) => {
         image={'https://vote.makerdao.com/seo/delegates.png'}
       />
 
+      <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
+        <Flex sx={{ alignItems: 'center' }}>
+          <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
+            Filters
+          </Heading>
+          <DelegatesFilter delegates={delegates} />
+        </Flex>
+        <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetFilters}>
+          Clear filters
+        </Button>
+      </Flex>
+
       <SidebarLayout>
         <Box>
-          {delegates && delegates.length === 0 && <Text>No delegates found</Text>}
+          {filteredDelegates && filteredDelegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={3} as="h4">

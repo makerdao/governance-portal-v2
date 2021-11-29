@@ -1,6 +1,6 @@
 import { Flex, Text } from 'theme-ui';
 import useSWR from 'swr';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
 
