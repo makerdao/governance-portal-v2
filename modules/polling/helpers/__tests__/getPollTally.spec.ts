@@ -2,9 +2,10 @@ import { getPollTally } from '../getPollTaly';
 import { fetchPollTally } from '../../api/fetchPollTally';
 import { fetchVotesByAddresForPoll } from '../../api/fetchVotesByAddress';
 import { Poll } from '../../types';
+import BigNumber from 'bignumber.js';
 
 jest.mock('../../api/fetchPollTally');
-jest.mock('../../api/fetchVotesByAddresForPoll');
+jest.mock('../../api/fetchVotesByAddress');
 
 const mockPoll: Poll = {
   categories: ['a'],
@@ -26,7 +27,7 @@ describe('getPollTally', () => {
   it('Returns a correct tally even when the options are empty', async () => {
     (fetchPollTally as jest.Mock).mockReturnValue(
       Promise.resolve({
-        pollVoteType: 'Plurality Voting',
+        totalMkrParticipation: new BigNumber(0),
         winner: '0',
         numVoters: 0,
         options: {}
@@ -36,8 +37,11 @@ describe('getPollTally', () => {
 
     const poll = mockPoll;
     const tally = await getPollTally(poll);
-
     expect(tally.options['0']).not.toBeUndefined();
-    expect(tally.options['0'].mkrSupport).toEqual(0);
+    expect(tally.options['0'].mkrSupport.toString()).toEqual('0');
+    expect(tally.options['1']).not.toBeUndefined();
+    expect(tally.options['1'].mkrSupport.toString()).toEqual('0');
+    expect(tally.options['2']).not.toBeUndefined();
+    expect(tally.options['2'].mkrSupport.toString()).toEqual('0');
   });
 });

@@ -3,15 +3,9 @@ import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';
-import {  fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
+import { fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-import {
-  Poll,
-  PollTally,
-  PollVoteType,
-  RawPollTally,
-  RawPollTallyRankedChoice
-} from '../types';
+import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from '../types';
 import { parseRawPollTally } from './parseRawTally';
 
 export async function getPollTally(poll: Poll, network?: SupportedNetworks): Promise<PollTally> {
