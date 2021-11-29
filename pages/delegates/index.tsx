@@ -24,6 +24,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import shallow from 'zustand/shallow';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
+import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 
 type Props = {
   delegates: Delegate[];
@@ -92,6 +93,11 @@ const Delegates = ({ delegates, stats }: Props) => {
         <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetFilters}>
           Clear filters
         </Button>
+        <Flex sx={{ ml: 3 }}>
+         
+          <DelegatesSort />
+        </Flex>
+        
       </Flex>
 
       <SidebarLayout>

@@ -1,50 +1,39 @@
 import create from 'zustand';
 
+export enum delegatesSortEnum {
+    random = 'random',
+    lastVoted = 'lastVoted',
+    mkrDelegated = 'mkrDelegated',
+    creationDate = 'creationDate'
+}
+
 type StoreDelegates = {
   filters: {
-    lastVoted: null | Date;
     creationDate: null | Date;
     showUnrecognized: boolean;
     showRecognized: boolean;
   };
-  sort: {
-    random: boolean;
-    lastVoted: boolean;
-    mkrDelegated: boolean;
-    creationDate: boolean;
-  };
-  setLastVotedFilter: (lastVoted: Date | null) => void;
+  sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowUnrecognizedFilter: (showUnrecognized: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
-  //   setRandomSort: (random: boolean) => void;
-  //   setLastVotedSort: (lastVoted: boolean) => void;
-  //   setMKRDelegatedSort: (mkrDelegated: boolean) => void;
-  //   setCreationDateSort: (cretionDate: boolean) => void;
-
+  setSort: (sort:delegatesSortEnum) => void;
   resetFilters: () => void;
 };
 
+
+
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
-    lastVoted: null,
     creationDate: null,
     showUnrecognized: true,
     showRecognized: true
   },
-  sort: {
-    random: true,
-    lastVoted: false,
-    mkrDelegated: false,
-    creationDate: false
-  },
+  sort: delegatesSortEnum.random,
 
-  setLastVotedFilter: lastVoted => {
+  setSort: sort => {
     set({
-      filters: {
-        ...get().filters,
-        lastVoted
-      }
+        sort
     });
   },
   setCreationDateFilter: creationDate => {
@@ -76,7 +65,6 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   resetFilters: () => {
     set({
       filters: {
-        lastVoted: null,
         creationDate: null,
         showUnrecognized: true,
         showRecognized: true
@@ -86,12 +74,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
 
   resetSort: () => {
     set({
-      sort: {
-        random: true,
-        lastVoted: false,
-        mkrDelegated: false,
-        creationDate: false
-      }
+      sort: delegatesSortEnum.random
     });
   }
 }));
