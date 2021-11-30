@@ -6,18 +6,18 @@ import useDelegatesFiltersStore from '../stores/delegatesFiltersStore';
 import { DelegateStatusEnum } from '../delegates.constants';
 
 export default function DelegatesFilter({ delegates, ...props }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showUnrecognized, setShowRecognizedFilter, setShowUnrecognizedFilter] =
+  const [showRecognized, showShadow, setShowRecognizedFilter, setShowShadowFilter] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showRecognized,
-        state.filters.showUnrecognized,
+        state.filters.showShadow,
         state.setShowRecognizedFilter,
-        state.setShowUnrecognizedFilter
+        state.setShowShadowFilter
       ],
       shallow
     );
 
-  const itemsSelected = [showRecognized, showUnrecognized].filter(i => !!i).length;
+  const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
 
   return (
     <FilterButton name={() => `Delegate Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`} {...props}>
@@ -40,11 +40,11 @@ export default function DelegatesFilter({ delegates, ...props }: { delegates: De
         <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
           <Checkbox
             sx={{ width: 3, height: 3 }}
-            checked={showUnrecognized}
-            onChange={event => setShowUnrecognizedFilter(event.target.checked)}
+            checked={showShadow}
+            onChange={event => setShowShadowFilter(event.target.checked)}
           />
           <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-            <Text>Unrecognized Delegates</Text>
+            <Text>Shadow Delegates</Text>
             <Text sx={{ color: 'muted', ml: 3 }}>
               {delegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
             </Text>

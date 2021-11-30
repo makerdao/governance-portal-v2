@@ -35,14 +35,14 @@ const Delegates = ({ delegates, stats }: Props) => {
   const network = getNetwork();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const [showRecognized, showUnrecognized, sort, resetFilters] = useDelegatesFiltersStore(
-    state => [state.filters.showRecognized, state.filters.showUnrecognized, state.sort, state.resetFilters],
+  const [showRecognized, showShadow, sort, resetFilters] = useDelegatesFiltersStore(
+    state => [state.filters.showRecognized, state.filters.showShadow, state.sort, state.resetFilters],
     shallow
   );
 
   const filteredDelegates = useMemo(() => {
     return delegates.filter(delegate => {
-      if (!showUnrecognized && delegate.status === DelegateStatusEnum.shadow) {
+      if (!showShadow && delegate.status === DelegateStatusEnum.shadow) {
         return false;
       }
 
@@ -52,7 +52,7 @@ const Delegates = ({ delegates, stats }: Props) => {
       // Apply all filters from the store
       return true;
     });
-  }, [delegates, showRecognized, showUnrecognized]);
+  }, [delegates, showRecognized, showShadow]);
 
   const sortedDelegates = useMemo(() => {
     return filteredDelegates.sort((prev, next) => {

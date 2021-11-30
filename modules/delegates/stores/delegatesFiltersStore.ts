@@ -9,12 +9,12 @@ export enum delegatesSortEnum {
 type StoreDelegates = {
   filters: {
     creationDate: null | Date;
-    showUnrecognized: boolean;
+    showShadow: boolean;
     showRecognized: boolean;
   };
   sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
-  setShowUnrecognizedFilter: (showUnrecognized: boolean) => void;
+  setShowShadowFilter: (showShadow: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
   resetFilters: () => void;
@@ -23,7 +23,7 @@ type StoreDelegates = {
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showUnrecognized: true,
+    showShadow: true,
     showRecognized: true
   },
   sort: delegatesSortEnum.random,
@@ -41,11 +41,11 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
       }
     });
   },
-  setShowUnrecognizedFilter: showUnrecognized => {
+  setShowShadowFilter: showShadow => {
     set({
       filters: {
         ...get().filters,
-        showUnrecognized
+        showShadow
       }
     });
   },
@@ -63,7 +63,7 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     set({
       filters: {
         creationDate: null,
-        showUnrecognized: true,
+        showShadow: true,
         showRecognized: true
       }
     });
