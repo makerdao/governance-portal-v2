@@ -9,7 +9,7 @@ export default function DelegatesSort(): JSX.Element {
   return (
     <ListboxInput onChange={setSort} defaultValue={sort}>
       <ListboxButton
-        sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [0, 2] }}
+        sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [2] }}
         arrow={<Icon name="chevron_down" size={2} />}
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>

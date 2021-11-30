@@ -2,7 +2,6 @@ import create from 'zustand';
 
 export enum delegatesSortEnum {
   random = 'random',
-  lastVoted = 'lastVoted',
   mkrDelegated = 'mkrDelegated',
   creationDate = 'creationDate'
 }

@@ -21,7 +21,7 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
+import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
 import shallow from 'zustand/shallow';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
@@ -35,8 +35,8 @@ const Delegates = ({ delegates, stats }: Props) => {
   const network = getNetwork();
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const [showRecognized, showUnrecognized, resetFilters] = useDelegatesFiltersStore(
-    state => [state.filters.showRecognized, state.filters.showUnrecognized, state.resetFilters],
+  const [showRecognized, showUnrecognized, sort, resetFilters] = useDelegatesFiltersStore(
+    state => [state.filters.showRecognized, state.filters.showUnrecognized, state.sort, state.resetFilters],
     shallow
   );
 
@@ -54,6 +54,20 @@ const Delegates = ({ delegates, stats }: Props) => {
     });
   }, [delegates, showRecognized, showUnrecognized]);
 
+  const sortedDelegates = useMemo(() => {
+    return filteredDelegates.sort((prev, next) => {
+      if (sort === delegatesSortEnum.creationDate) {
+        return prev.expirationDate > next.expirationDate ? -1 : 1;
+      } else if (sort === delegatesSortEnum.mkrDelegated) {
+        return prev.mkrDelegated > next.mkrDelegated ? -1 : 1;
+      } else if (sort === delegatesSortEnum.random) {
+        return delegates.indexOf(prev) > delegates.indexOf(next) ? 1 : -1;
+      }
+
+      return 1;
+    });
+  }, [filteredDelegates, sort]);
+
   const styles = {
     delegateGroup: {
       marginBottom: 2
@@ -65,13 +79,13 @@ const Delegates = ({ delegates, stats }: Props) => {
   const isOwner = d =>
     d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
-  const expiredDelegates = delegates.filter(delegate => delegate.expired === true);
+  const expiredDelegates = sortedDelegates.filter(delegate => delegate.expired === true);
 
-  const recognizedDelegates = filteredDelegates
+  const recognizedDelegates = sortedDelegates
     .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
     .sort(d => (isOwner(d) ? -1 : 0));
 
-  const shadowDelegates = filteredDelegates
+  const shadowDelegates = sortedDelegates
     .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
     .sort(d => (isOwner(d) ? -1 : 0));
 
@@ -90,17 +104,19 @@ const Delegates = ({ delegates, stats }: Props) => {
           </Heading>
           <DelegatesFilter delegates={delegates} />
         </Flex>
-        <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetFilters}>
-          Clear filters
-        </Button>
-        <Flex sx={{ ml: 3 }}>
+
+        <Flex sx={{ ml: 3, mt: [2, 0] }}>
+          <Button variant={'outline'} sx={{ mr: 3 }} onClick={resetFilters}>
+            Clear filters
+          </Button>
+
           <DelegatesSort />
         </Flex>
       </Flex>
 
       <SidebarLayout>
         <Box>
-          {filteredDelegates && filteredDelegates.length === 0 && <Text>No delegates found</Text>}
+          {sortedDelegates && sortedDelegates.length === 0 && <Text>No delegates found</Text>}
           {recognizedDelegates.length > 0 && (
             <Box sx={styles.delegateGroup}>
               <Heading mb={3} mt={3} as="h4">
@@ -194,7 +210,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
     if (!isDefaultNetwork()) {
       fetchJson(`/api/delegates?network=${getNetwork()}`)
         .then((response: DelegatesAPIResponse) => {
-          _setDelegates(response.delegates);
+          _setDelegates(shuffleArray(response.delegates));
           _setStats(response.stats);
         })
         .catch(setError);

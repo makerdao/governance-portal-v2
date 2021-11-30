@@ -51,7 +51,6 @@ export default function DelegatesFilter({ delegates, ...props }: { delegates: De
           </Flex>
         </Label>
       </Flex>
-      <Divider />
     </FilterButton>
   );
 }
