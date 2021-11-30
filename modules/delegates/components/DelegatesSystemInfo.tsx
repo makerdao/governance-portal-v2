@@ -6,6 +6,8 @@ import { formatAddress, getEtherscanLink } from 'lib/utils';
 import useSWR from 'swr';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
+import { useEffect } from 'react';
+import { useTotalMKR } from 'modules/mkr/hooks/useTotalMkr';
 
 export function DelegatesSystemInfo({
   stats,
@@ -24,6 +26,9 @@ export function DelegatesSystemInfo({
       refreshInterval: 0
     }
   );
+
+  const { data: totalMKR } = useTotalMKR();
+
   const statsItems = [
     {
       title: 'Total delegates',
@@ -44,6 +49,18 @@ export function DelegatesSystemInfo({
       title: 'Total MKR delegated',
       id: 'total-mkr-system-info',
       value: new BigNumber(stats.totalMKRDelegated).toFormat(2)
+    },
+    {
+      title: 'Percent of MKR delegated',
+      id: 'percent-mkr-system-info',
+      value: totalMKR ? (
+        `${new BigNumber(stats.totalMKRDelegated)
+          .dividedBy(totalMKR.toBigNumber())
+          .multipliedBy(100)
+          .toFormat(2)}%`
+      ) : (
+        <SkeletonThemed width={'100px'} height={'15px'} />
+      )
     }
   ];
 
