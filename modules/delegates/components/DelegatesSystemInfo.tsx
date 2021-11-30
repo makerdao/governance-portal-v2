@@ -53,12 +53,14 @@ export function DelegatesSystemInfo({
     {
       title: 'Percent of MKR delegated',
       id: 'percent-mkr-system-info',
-      value: totalMKR
-        ? `${new BigNumber(stats.totalMKRDelegated)
-            .dividedBy(totalMKR.toBigNumber())
-            .multipliedBy(100)
-            .toFormat(2)}%`
-        : '0'
+      value: totalMKR ? (
+        `${new BigNumber(stats.totalMKRDelegated)
+          .dividedBy(totalMKR.toBigNumber())
+          .multipliedBy(100)
+          .toFormat(2)}%`
+      ) : (
+        <SkeletonThemed width={'100px'} height={'15px'} />
+      )
     }
   ];
 
