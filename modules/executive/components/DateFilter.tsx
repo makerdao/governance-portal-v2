@@ -43,14 +43,14 @@ export default function DateFilter(props): JSX.Element {
     <FilterButton
       name={() => {
         if (!startDateDisplay && !endDateDisplay) return 'Date Posted';
-        if (!startDateDisplay) return `Date Posted: before ${endDateDisplay}`;
-        if (!endDateDisplay) return `Date Posted: after ${startDateDisplay}`;
-        return `Date Posted: ${startDateDisplay} - ${endDateDisplay}`;
+        if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
+        if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
+        return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
       }}
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>Executive posted after:</Text>
+        <Text>Posted after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={startInput}
@@ -59,7 +59,7 @@ export default function DateFilter(props): JSX.Element {
           />
         </Flex>
 
-        <Text>Executive posted before:</Text>
+        <Text>Posted before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={endInput}

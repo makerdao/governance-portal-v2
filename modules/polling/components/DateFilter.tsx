@@ -45,7 +45,7 @@ export default function DateFilter(props): JSX.Element {
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>Poll expired after:</Text>
+        <Text>Ended after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={startInput}
@@ -54,7 +54,7 @@ export default function DateFilter(props): JSX.Element {
           />
         </Flex>
 
-        <Text>Poll expired before:</Text>
+        <Text>Ended before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input ref={endInput} type="date" onChange={e => setEndDate('poll', new Date(e.target.value))} />
         </Flex>
