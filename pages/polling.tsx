@@ -71,8 +71,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const filteredPolls = useMemo(() => {
     return polls.filter(poll => {
       // check date filters first
-      if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-      if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
+      if (start && new Date(poll.endDate).getTime() < start.getTime()) return false;
+      if (end && new Date(poll.endDate).getTime() > end.getTime()) return false;
 
       // if no category filters selected, return all, otherwise, check if poll contains category
       return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);

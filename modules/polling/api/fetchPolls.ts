@@ -54,8 +54,8 @@ export async function getPolls(
   const allPolls = await _getAllPolls(network);
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
-    if (filters.startDate && new Date(poll.startDate).getTime() < filters.startDate.getTime()) return false;
-    if (filters.endDate && new Date(poll.startDate).getTime() > filters.endDate.getTime()) return false;
+    if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
+    if (filters.endDate && new Date(poll.endDate).getTime() > filters.endDate.getTime()) return false;
 
     // if no category filters selected, return all, otherwise, check if poll contains category
     return (
