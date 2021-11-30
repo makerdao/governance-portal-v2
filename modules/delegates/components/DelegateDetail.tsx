@@ -20,12 +20,13 @@ import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
-export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
+export function DelegateDetail({ delegate, delegatedFrom }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   const { data: statsData } = useSWR<AddressAPIStats>(
     `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
@@ -36,6 +37,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       revalidateOnMount: true
     }
   );
+  const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
@@ -61,7 +63,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>,
     <Box key="delegate-vote-history">
-      <DelegateVoteHistory delegate={delegate} />
+      <DelegateVoteHistory delegate={delegate} delegatedFrom={delegatedFrom} totalStaked={totalStaked} />
     </Box>
   ].filter(i => !!i);
 
