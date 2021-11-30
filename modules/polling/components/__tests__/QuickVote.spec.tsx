@@ -42,7 +42,10 @@ describe('QuickVote', () => {
     expect((await screen.findAllByText('View Details')).length).toBe(2);
     expect((await screen.findAllByText('Add vote to ballot')).length).toBe(2);
     expect((await screen.findAllByTestId('countdown timer')).length).toBe(2);
-    screen.getByText('Active Polls');
+
+    // Find a heading and checkbox with the text.
+    const activePollsText = screen.getAllByText('Active Polls');
+    expect(activePollsText.length).toBe(2);
     screen.getByText(/MIP14:/i);
   });
 });
