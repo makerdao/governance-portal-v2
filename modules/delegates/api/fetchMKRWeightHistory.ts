@@ -4,14 +4,7 @@ import { MKRWeightHisory } from '../types/mkrWeight';
 import getMaker from 'lib/maker';
 import { format, parse } from 'date-fns';
 import BigNumber from 'bignumber.js';
-
-type MKRLockedDelegate = {
-  fromAddress: string;
-  lockAmount: string;
-  blockNumber: number;
-  blockTimestamp: string;
-  lockTotal: string;
-};
+import { MKRLockedDelegateAPIResponse } from '../types';
 
 export async function fetchDelegatesMKRWeightHistory(
   address: string,
@@ -20,7 +13,9 @@ export async function fetchDelegatesMKRWeightHistory(
   network: SupportedNetworks
 ): Promise<MKRWeightHisory[]> {
   const maker = await getMaker(network);
-  const addressData: MKRLockedDelegate[] = await maker.service('voteDelegate').getMkrLockedDelegate(address);
+  const addressData: MKRLockedDelegateAPIResponse[] = await maker
+    .service('voteDelegate')
+    .getMkrLockedDelegate(address);
 
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days

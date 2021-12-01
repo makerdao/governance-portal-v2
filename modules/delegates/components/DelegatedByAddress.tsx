@@ -15,8 +15,6 @@ type Props = {
 };
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: Props): JSX.Element => {
-  console.log('delegators from comp', delegators);
-  console.log('dtotalDelegated', totalDelegated);
   const bpi = useBreakpointIndex();
   const network = getNetwork();
 

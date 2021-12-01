@@ -6,15 +6,11 @@ import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
+import { DelegationHistory } from 'modules/delegates/types';
 
-export function DelegateVoteHistory({
-  delegate,
-  delegatedFrom,
-  totalStaked
-}: {
-  delegate: Delegate;
-}): React.ReactElement {
+export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { data: statsData } = useSWR<AddressAPIStats>(
     `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
     fetchJson,
@@ -23,11 +19,20 @@ export function DelegateVoteHistory({
     }
   );
 
+  const { data: delegators } = useSWR<DelegationHistory>(
+    `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnMount: true
+    }
+  );
+  const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+
   return (
     <Box>
       <Box sx={{ pb: 2 }}>
         <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
-          <DelegatedByAddress delegators={delegatedFrom} totalDelegated={totalStaked} />
+          <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
           <Divider mt={1} mb={1} />
           <Text
             as="p"

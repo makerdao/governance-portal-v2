@@ -37,3 +37,8 @@ export type Delegate = {
   communication?: string;
   mkrDelegated: number;
 };
+
+export type DelegationHistory = {
+  address: string;
+  lockAmount: string;
+};

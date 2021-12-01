@@ -4,6 +4,8 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
+import useSWR from 'swr';
+
 import getMaker, { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -27,39 +29,10 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
-  const [delegatedFrom, setDelegatedFrom] = useState(null);
-
   const { trackButtonClick } = useAnalytics(
     addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
   );
 
-  //Using monetsupply to test
-  useEffect(() => {
-    getMaker(network).then(maker => {
-      maker
-        .service('voteDelegate')
-        .getMkrLockedDelegate(addressInfo.address)
-        .then(data => {
-          const red = data.reduce((acc, { fromAddress, lockAmount }) => {
-            // const guy = '0xb088a3bc93f71b4de97b9de773e9647645983688';
-            const currSum = acc[fromAddress]?.lockAmount
-              ? utils.parseEther(acc[fromAddress]?.lockAmount)
-              : utils.parseEther('0');
-
-            acc[fromAddress] = { lockAmount: utils.formatEther(currSum.add(utils.parseEther(lockAmount))) };
-            return acc;
-          }, {});
-
-          //TODO do this in the reducer
-          const delegators = [];
-          for (const x in red) {
-            delegators.push({ address: x, ...red[x] });
-          }
-
-          setDelegatedFrom(delegators.sort((a, b) => (a.lockAmount > b.lockAmount ? -1 : 1)));
-        });
-    });
-  }, []);
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -92,9 +65,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && (
-              <DelegateDetail delegate={addressInfo.delegateInfo} delegatedFrom={delegatedFrom} />
-            )}
+            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
             {!addressInfo.delegateInfo && (
               <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
             )}
