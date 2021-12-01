@@ -33,5 +33,7 @@ export async function fetchDelegationHistory(
     []
   );
 
-  return delegators.sort((a, b) => (a.lockAmount > b.lockAmount ? -1 : 1));
+  return delegators.sort((a, b) =>
+    utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1
+  );
 }
