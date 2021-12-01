@@ -8,6 +8,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { ethers } from 'ethers';
 import { isValid, format } from 'date-fns';
+import { SpellDiff as SpellDiffType } from '../../../pages/executive/[proposal-id]';
 
 const CircleIcon = ({ name }) => (
   <Flex
@@ -31,6 +32,15 @@ const parseDiffs = diffs => {
   return diffs;
 };
 
+const validateDiff = diff => {
+  const contract = diff.decoded_contract ?? (diff.contract || 'N/A');
+  const location = diff.decoded_location ?? (diff.location || 'N/A');
+  const fromVal = diff.decoded_from_val ?? (diff.from_val || 'N/A');
+  const toVal = diff.decoded_to_val ?? (diff.to_val || 'N/A');
+
+  return { contract, location, fromVal, toVal };
+};
+
 const formatLocation = location => {
   if (location.indexOf(']') !== -1) {
     const mapKey = location.slice(location.indexOf('[') + 1, location.indexOf(']'));
@@ -50,14 +60,15 @@ const formatValue = value => {
 };
 
 const SpellDiff = ({ diffs }) => {
-  return diffs.map(({ decoded_contract, decoded_location, decoded_from_val, decoded_to_val }, i, a) => {
+  return diffs.map((diff, i) => {
+    const { contract, location, fromVal, toVal } = validateDiff(diff);
     return (
       <Flex
-        key={JSON.stringify(a[i]) + i}
+        key={JSON.stringify(diff[i]) + i}
         sx={{ flexDirection: 'column', p: 3, m: 3, bg: 'background', borderRadius: 'small' }}
       >
-        <Heading variant="smallHeading">{`${decoded_contract}`}</Heading>
-        <Heading variant="microHeading">{formatLocation(decoded_location)}</Heading>
+        <Heading variant="smallHeading">{`${contract}`}</Heading>
+        <Heading variant="microHeading">{formatLocation(location)}</Heading>
         <Flex sx={{ justifyContent: 'space-between', mt: 3 }}>
           <Flex
             sx={{
@@ -65,7 +76,7 @@ const SpellDiff = ({ diffs }) => {
             }}
           >
             <Text variant="caps">Old Value</Text>
-            <Text>{decoded_from_val}</Text>
+            <Text>{fromVal}</Text>
           </Flex>
           <Flex
             sx={{
@@ -75,13 +86,13 @@ const SpellDiff = ({ diffs }) => {
             <Text variant="caps" sx={{ alignSelf: 'flex-end' }}>
               New Value
             </Text>
-            <Text>{decoded_to_val}</Text>
-            {formatValue(decoded_to_val).interpreted && (
+            <Text>{toVal}</Text>
+            {formatValue(toVal).interpreted && (
               <>
                 <Text variant="caps" sx={{ mt: 3, alignSelf: 'flex-end' }}>
                   Interpreted New Value
                 </Text>
-                <Text>{formatValue(decoded_to_val).interpreted}</Text>
+                <Text>{formatValue(toVal).interpreted}</Text>
               </>
             )}
           </Flex>
@@ -98,6 +109,7 @@ export function SpellEffectsTab({
 }: {
   proposal: Proposal;
   spellData?: SpellData;
+  spellDiffs?: SpellDiffType[];
 }): React.ReactElement {
   // ch401: hide until API is fixed
   // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
