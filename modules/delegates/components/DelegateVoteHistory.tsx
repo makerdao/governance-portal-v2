@@ -1,6 +1,6 @@
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
-import { Box, Divider, Text } from 'theme-ui';
+import { Box, Divider, Flex, Heading, Text } from 'theme-ui';
 import { Delegate } from '../types';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
@@ -19,7 +19,7 @@ export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React
     }
   );
 
-  const { data: delegators } = useSWR<DelegationHistory>(
+  const { data: delegators } = useSWR<DelegationHistory[]>(
     `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${getNetwork()}`,
     fetchJson,
     {
@@ -32,8 +32,15 @@ export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React
     <Box>
       <Box sx={{ pb: 2 }}>
         <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
-          <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
-          <Divider mt={1} mb={1} />
+          {delegators && (
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Heading variant="microHeading" sx={{ mb: 3 }}>
+                MKR Delegated Per Address
+              </Heading>
+              <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
+              <Divider mt={3} mb={3} />
+            </Flex>
+          )}
           <Text
             as="p"
             sx={{

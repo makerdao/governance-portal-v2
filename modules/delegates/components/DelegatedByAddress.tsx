@@ -3,15 +3,13 @@ import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
-import { cutMiddle } from 'lib/string';
-import { useDelegateAddressMap } from 'lib/hooks';
-import { PollTally, Poll } from 'modules/polling/types';
-import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
+import { CurrencyObject } from 'types/currency';
 import { Address } from 'modules/address/components/Address';
+import { DelegationHistory } from '../types';
 
 type Props = {
-  delegators: any; //TODO FIXME
-  totalDelegated: any; //TODO FIXME
+  delegators: DelegationHistory[];
+  totalDelegated: CurrencyObject;
 };
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: Props): JSX.Element => {
@@ -35,7 +33,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: Props): JSX.Element 
               MKR Delegated
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-              Voting Power
+              Total Percent
             </Text>
             {/* <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
               Verify
@@ -50,11 +48,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: Props): JSX.Element 
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
                       <ThemeUILink title="View address detail">
-                        {/* {delegateAddresses[v.voter] ? (
-                          delegateAddresses[v.voter]
-                        ) : ( */}
                         <Address address={address} />
-                        {/* )} */}
                       </ThemeUILink>
                     </Link>
                   </Text>
@@ -87,11 +81,6 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: Props): JSX.Element 
           )}
         </tbody>
       </table>
-      {/* {showRankedChoiceInfo && (
-        <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
-          *First choice in ranked choice vote shown
-        </Text>
-      )} */}
     </Box>
   );
 };

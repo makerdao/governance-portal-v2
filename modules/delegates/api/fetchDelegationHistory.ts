@@ -1,6 +1,4 @@
-import BigNumber from 'bignumber.js';
 import { utils } from 'ethers';
-import { format, parse } from 'date-fns';
 import { SupportedNetworks } from 'lib/constants';
 import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types';
 import getMaker from 'lib/maker';
@@ -14,20 +12,26 @@ export async function fetchDelegationHistory(
     .service('voteDelegate')
     .getMkrLockedDelegate(address);
 
-  const delegatorsR = addressData.reduce((acc, { fromAddress, lockAmount }) => {
-    const currSum = acc[fromAddress]?.lockAmount
-      ? utils.parseEther(acc[fromAddress]?.lockAmount)
-      : utils.parseEther('0');
+  const delegators = addressData.reduce<DelegationHistory[]>(
+    (acc, { fromAddress, lockAmount, blockTimestamp }) => {
+      const existing = acc.find(({ address }) => address === fromAddress);
+      if (existing) {
+        existing.lockAmount = utils.formatEther(
+          utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
+        );
+        existing.events.push({ lockAmount, blockTimestamp });
+      } else {
+        acc.push({
+          address: fromAddress,
+          lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
+          events: [{ lockAmount, blockTimestamp }]
+        });
+      }
 
-    acc[fromAddress] = { lockAmount: utils.formatEther(currSum.add(utils.parseEther(lockAmount))) };
-    return acc;
-  }, {});
-
-  //TODO do this in the reducer
-  const delegators: DelegationHistory[] = [];
-  for (const x in delegatorsR) {
-    delegators.push({ address: x, ...delegatorsR[x] });
-  }
+      return acc;
+    },
+    []
+  );
 
   return delegators.sort((a, b) => (a.lockAmount > b.lockAmount ? -1 : 1));
 }
