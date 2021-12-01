@@ -108,6 +108,21 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
 
   return (
     <Box>
+      <Box mb={3}>
+        <Text
+          as="p"
+          variant="h2"
+          sx={{
+            fontSize: 4,
+            fontWeight: 'semiBold'
+          }}
+        >
+          Delegators
+        </Text>
+        <Text as="p" variant="secondary" color="onSurface">
+          MKR delegated by address
+        </Text>
+      </Box>
       <table
         style={{
           width: '100%',
