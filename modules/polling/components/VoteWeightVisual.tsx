@@ -8,6 +8,7 @@ import { cutMiddle, limitString } from 'lib/string';
 import { useDelegateAddressMap } from 'lib/hooks';
 import { Poll, PollTally } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
+import { Address } from 'modules/address/components/Address';
 
 type CircleProps = {
   poll: Poll;

@@ -10,7 +10,11 @@ export default function VotingWeight(props): JSX.Element {
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: votingWeight } = useSWR(
     addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
+    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address)),
+    {
+      revalidateOnFocus: true,
+      refreshInterval: 30000
+    }
   );
 
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);

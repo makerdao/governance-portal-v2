@@ -55,6 +55,7 @@ import { CurrencyObject } from 'types/currency';
 import { fetchJson } from 'lib/fetchJson';
 import { analyzeSpell } from 'pages/api/executive/analyze-spell/[address]';
 import { SupportedNetworks } from 'lib/constants';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   proposal: Proposal;
@@ -303,7 +304,45 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   scrollbarWidth: 'none'
                 }}
               >
-                {supporters ? (
+                {!allSupporters && !supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Spinner size={32} />
+                  </Flex>
+                )}
+
+                {supportersError && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      fontSize: 4,
+                      color: 'onSecondary'
+                    }}
+                  >
+                    List of supporters currently unavailable
+                  </Flex>
+                )}
+                {allSupporters && (!supporters || supporters.length === 0) && (
+                  <Flex
+                    sx={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text>Currently there are no supporters</Text>
+                  </Flex>
+                )}
+
+                {supporters &&
+                  supporters.length > 0 &&
                   supporters.map(supporter => (
                     <Flex
                       sx={{
@@ -346,37 +385,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                                   ':hover': { color: 'blueLinkHover' }
                                 }}
                               >
-                                {cutMiddle(supporter.address)}
+                                <Address address={supporter.address} />
                               </Text>
                             )}
                           </ThemeUILink>
                         </Link>
                       </Box>
                     </Flex>
-                  ))
-                ) : supportersError ? (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                ) : (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
+                  ))}
               </Box>
             </Card>
           </Box>

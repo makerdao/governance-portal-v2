@@ -34,13 +34,19 @@ export function parseExecutive(
     return null;
   }
 
-  //remove `Template - [Executive Vote] ` from title
-  const editedTitle = title.replace('Template - [Executive Vote] ', '');
+  //remove `Template - [ ... ] ` from title
+  const editTitle = title => {
+    const vStr = 'Template - [Executive Vote] ';
+    const pStr = 'Template - [Executive Proposal] ';
+    if (title.indexOf(vStr) === 0) return title.replace(vStr, '');
+    if (title.indexOf(pStr) === 0) return title.replace(pStr, '');
+    return title;
+  };
 
   return {
     about: content,
     content: content,
-    title: editedTitle,
+    title: editTitle(title),
     proposalBlurb: summary,
     key: slugify(title),
     address: address,

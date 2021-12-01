@@ -3,14 +3,19 @@ import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import getMaker, { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
-import { Poll, PollVoteType } from 'modules/polling/types';
+import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
 import { SupportedNetworks } from 'lib/constants';
+import { getCategories } from '../helpers/getCategories';
+import { isActivePoll } from '../helpers/utils';
+import { PollFilters, PollsResponse } from '../types/pollsResponse';
 
-export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
+// Returns all the polls and caches them in the file system.
+export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
   const maker = await getMaker(network);
   const cacheKey = 'polls';
+
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
     if (cachedPolls) {
@@ -34,18 +39,88 @@ export async function getPolls(network?: SupportedNetworks): Promise<Poll[]> {
   return polls;
 }
 
-export async function getPoll(slug: string): Promise<Poll> {
-  const polls = await getPolls();
-  const pollIndex = polls.findIndex(poll => poll.slug === slug);
-  invariant(pollIndex > -1, `poll not found for poll slug ${slug}`);
-  const [prev, next] = [polls?.[pollIndex - 1] || null, polls?.[pollIndex + 1] || null];
+// Public method that returns the polls, and accepts filters
+const defaultFilters: PollFilters = {
+  startDate: null,
+  endDate: null,
+  categories: null,
+  active: null
+};
+
+export async function getPolls(
+  filters = defaultFilters,
+  network?: SupportedNetworks
+): Promise<PollsResponse> {
+  const allPolls = await _getAllPolls(network);
+  const filteredPolls = allPolls.filter(poll => {
+    // check date filters first
+    if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
+    if (filters.endDate && new Date(poll.endDate).getTime() > filters.endDate.getTime()) return false;
+
+    // if no category filters selected, return all, otherwise, check if poll contains category
+    return (
+      !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c))
+    );
+  });
 
   return {
-    ...polls[pollIndex],
-    content: await markdownToHtml(polls[pollIndex].content),
+    polls: filteredPolls,
+    categories: getCategories(allPolls),
+    stats: {
+      active: allPolls.filter(isActivePoll).length,
+      finished: allPolls.filter(p => !isActivePoll(p)).length,
+      total: allPolls.length
+    }
+  };
+}
+
+export async function getPoll(slug: string, network?: SupportedNetworks): Promise<Poll | null> {
+  const pollsResponse = await getPolls({}, network);
+
+  const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
+
+  if (pollIndex === -1) {
+    return null;
+  }
+
+  const [prev, next] = [
+    pollsResponse.polls?.[pollIndex - 1] || null,
+    pollsResponse.polls?.[pollIndex + 1] || null
+  ];
+
+  return {
+    ...pollsResponse.polls[pollIndex],
+    content: await markdownToHtml(pollsResponse.polls[pollIndex].content),
     ctx: {
       prev,
       next
     }
   };
+}
+
+export async function getPollById(pollId: number, network?: SupportedNetworks): Promise<Poll> {
+  const pollsResponse = await getPolls({}, network);
+
+  const pollIndex = pollsResponse.polls.findIndex(poll => poll.pollId === pollId);
+  invariant(pollIndex > -1, `poll not found for poll id ${pollId}`);
+  const [prev, next] = [
+    pollsResponse.polls?.[pollIndex - 1] || null,
+    pollsResponse.polls?.[pollIndex + 1] || null
+  ];
+
+  return {
+    ...pollsResponse.polls[pollIndex],
+    content: await markdownToHtml(pollsResponse.polls[pollIndex].content),
+    ctx: {
+      prev,
+      next
+    }
+  };
+}
+
+export async function getPollCategories(): Promise<PollCategory[]> {
+  const pollsResponse = await getPolls();
+  const categories = getCategories(pollsResponse.polls);
+
+  return categories;
 }

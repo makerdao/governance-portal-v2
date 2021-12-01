@@ -43,12 +43,20 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
       >
         <Button
           variant="smallOutline"
-          sx={{ color: 'accentBlue', borderColor: 'accentBlue', borderRadius: 'small' }}
+          sx={{
+            color: 'accentBlue',
+            borderColor: 'accentBlue',
+            borderRadius: 'small',
+            '&:hover': {
+              color: 'blueLinkHover',
+              borderColor: 'blueLinkHover'
+            }
+          }}
         >
           View
           <Icon
             name="arrowTopRight"
-            color="accentBlue"
+            color="inherit"
             sx={{ ml: 1, width: 2, height: 2, alignSelf: 'center', justifyContent: 'center' }}
           />
         </Button>

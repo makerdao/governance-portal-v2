@@ -6,13 +6,15 @@ import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompa
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatDateWithTime } from 'lib/datetime';
 import { POLL_VOTE_TYPE } from '../polling.constants';
+import { usePollTally } from '../hooks/usePollTally';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const network = getNetwork();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
-
+  const { tally } = usePollTally(vote.pollId);
   return (
     <Box
       sx={{
@@ -69,7 +71,8 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
       >
         {isPluralityVote && (
           <Box mr={0} ml={0}>
-            <PollVotePluralityResultsCompact vote={vote} />
+            {tally && <PollVotePluralityResultsCompact tally={tally} />}
+            {!tally && <SkeletonThemed width={'130px'} height={'30px'} />}
           </Box>
         )}
 

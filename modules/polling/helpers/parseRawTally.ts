@@ -7,7 +7,7 @@ import { POLL_VOTE_TYPE } from '../polling.constants';
 // Compliments the on-chain tally with a results object that is used on the front-end for data representation
 export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally {
   invariant(rawTally?.totalMkrParticipation, 'invalid or undefined raw tally');
-  const totalMkrParticipation = MKR(rawTally.totalMkrParticipation);
+  const totalMkrParticipation = new BigNumber(rawTally.totalMkrParticipation);
 
   const winningOptionName = rawTally?.winner === null ? 'None found' : poll.options[rawTally.winner];
 
@@ -18,14 +18,14 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
         optionName: poll.options[key],
         firstChoice: new BigNumber(rawTally.options?.[key]?.firstChoice || 0),
         transfer: new BigNumber(rawTally.options?.[key]?.transfer || 0),
-        firstPct: rawTally.options?.[key]?.firstChoice
-          ? new BigNumber(rawTally.options[key].firstChoice)
-              .div(totalMkrParticipation.toBigNumber())
-              .times(100)
-          : new BigNumber(0),
-        transferPct: rawTally.options?.[key]?.transfer
-          ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation.toBigNumber()).times(100)
-          : new BigNumber(0),
+        firstPct:
+          totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.firstChoice
+            ? new BigNumber(rawTally.options[key].firstChoice).div(totalMkrParticipation).times(100)
+            : new BigNumber(0),
+        transferPct:
+          totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.transfer
+            ? new BigNumber(rawTally.options[key].transfer).div(totalMkrParticipation).times(100)
+            : new BigNumber(0),
         eliminated: rawTally.options?.[key]?.eliminated ?? true,
         winner: rawTally.options?.[key]?.winner ?? false
       } as RankedChoiceResult;
@@ -43,11 +43,10 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
         optionId: key,
         optionName: poll.options[key],
         mkrSupport: new BigNumber(rawTally.options?.[key]?.mkrSupport || 0),
-        firstPct: rawTally.options?.[key]?.mkrSupport
-          ? new BigNumber(rawTally.options[key].mkrSupport)
-              .div(totalMkrParticipation.toBigNumber())
-              .times(100)
-          : new BigNumber(0),
+        firstPct:
+          totalMkrParticipation.isGreaterThan(0) && rawTally.options?.[key]?.mkrSupport
+            ? new BigNumber(rawTally.options[key].mkrSupport).div(totalMkrParticipation).times(100)
+            : new BigNumber(0),
         winner: rawTally.options?.[key]?.winner ?? false
       } as PluralityResult;
     })

@@ -8,19 +8,22 @@ import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
 import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
+import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { Account } from 'types/account';
+import useAccountsStore from 'stores/accounts';
 import useBallotStore from 'stores/ballot';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAllUserVotes } from 'lib/hooks';
+import VotingStatus from './PollVotingStatus';
 
 type Props = {
   poll: Poll;
   showHeader: boolean;
+  showStatus?: boolean;
   account?: Account;
   sx?: ThemeUIStyleObject;
 };
@@ -36,10 +39,12 @@ const rankedChoiceBlurb = (
   </>
 );
 
-const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element => {
+const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const { data: allUserVotes } = useAllUserVotes(account?.address);
+  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
+  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
     state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],
@@ -70,23 +75,34 @@ const QuickVote = ({ poll, showHeader, account, ...props }: Props): JSX.Element 
     <Stack gap={gap} {...props}>
       <Flex
         sx={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          display: showHeader ? undefined : 'none'
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}
       >
-        <Text variant="caps" color="textSecondary">
-          Your Vote
-        </Text>
-        {isRankedChoicePoll(poll) && (
-          <Tooltip label={rankedChoiceBlurb}>
-            <Box sx={{ position: 'relative' }}>
-              {/* Box is used because tooltip needs a child that can be passed a ref */}
-              <Icon name="stackedVotes" size={3} ml={2} />
-            </Box>
-          </Tooltip>
-        )}
+        <Flex
+          sx={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            display: showHeader ? undefined : 'none'
+          }}
+        >
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text variant="caps" color="textSecondary">
+              Your Vote
+            </Text>
+          </Flex>
+
+          {isRankedChoicePoll(poll) && (
+            <Tooltip label={rankedChoiceBlurb}>
+              <Box sx={{ position: 'relative' }}>
+                {/* Box is used because tooltip needs a child that can be passed a ref */}
+                <Icon name="stackedVotes" size={3} ml={2} />
+              </Box>
+            </Tooltip>
+          )}
+        </Flex>
+        {showStatus && <VotingStatus sx={{ display: ['none', 'block'] }} poll={poll} />}
       </Flex>
 
       {(!!addedChoice || currentVote !== null) && !editing ? (

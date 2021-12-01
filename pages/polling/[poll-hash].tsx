@@ -7,19 +7,17 @@ import { useRouter } from 'next/router';
 import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
-import useSWR, { mutate } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { fetchJson } from 'lib/fetchJson';
 import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { isActivePoll, getPollApiUrl } from 'modules/polling/helpers/utils';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
 import { Poll, PollTally } from 'modules/polling/types';
-import { parseRawPollTally } from 'modules/polling/helpers/parseRawTally';
 
 // stores
 import useAccountsStore from 'stores/accounts';
@@ -39,85 +37,38 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import VotesByAddress from 'modules/polling/components/VotesByAddress';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
-import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-
-function prefetchTally(poll) {
-  if (typeof window !== 'undefined' && poll) {
-    const tallyPromise = fetchJson(getPollApiUrl(poll)).then(rawTally => parseRawPollTally(rawTally, poll));
-    mutate(getPollApiUrl(poll), tallyPromise, false);
-  }
-}
+import BigNumber from 'bignumber.js';
+import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
+import { usePollTally } from 'modules/polling/hooks/usePollTally';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const WinningOptionText = ({
-  tally,
-  voteType
-}: {
-  tally: PollTally;
-  voteType: string;
-}): JSX.Element | null => {
-  if (!tally.winner) return null;
-  return (
-    <>
-      <Divider my={1} />
-      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-        <Text sx={{ textAlign: 'center', px: [3, 4] }}>
-          Winning Option:{' '}
-          <Text sx={{ color: getVoteColor(parseInt(tally.winner), voteType) }}>
-            {tally.winningOptionName}
-          </Text>
-        </Text>
-      </Flex>
-      <Divider sx={{ mt: 1 }} />
-    </>
-  );
-};
-
-const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] }) => {
+const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const ballot = useBallotStore(state => state.ballot);
   const ballotLength = Object.keys(ballot).length;
-  const [_polls, _setPolls] = useState<Poll[]>();
   const [shownOptions, setShownOptions] = useState(6);
-
-  const { data: tally, error: tallyError } = useSWR<PollTally>(
-    getPollApiUrl(poll),
-    async url => parseRawPollTally(await fetchJson(url), poll),
-    { refreshInterval: 30000 }
-  );
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
   });
 
-  useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`).then(_setPolls);
-    } else {
-      _setPolls(prefetchedPolls);
-    }
-  }, []);
-
-  const activePolls = _polls ? _polls.filter(isActivePoll) : [];
-  const hasPollEnded = !isActivePoll(poll);
-
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
-  // prepopulate the local tally cache for polls before and/or after this one
-  [poll.ctx.prev, poll.ctx.next].forEach(prefetchTally);
+
+  const { tally } = usePollTally(poll.pollId, 10000);
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet
           account={account}
           ballotCount={ballotLength}
-          activePolls={activePolls}
           setPoll={setMobileVotingPoll}
           poll={mobileVotingPoll}
           withStart
@@ -239,14 +190,15 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={['Poll Detail', 'Vote Breakdown']}
               tabPanels={[
-                <div
-                  key={1}
-                  sx={{ variant: 'markdown.default', p: [3, 4] }}
-                  dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                />,
-                tallyError ? (
+                <div key={1}>
+                  <div
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                  />
+                </div>,
+                !tally ? (
                   <Box sx={{ m: 4 }}>
-                    <Text as="p">Unable to fetch vote data at this time.</Text>
+                    <Skeleton />
                   </Box>
                 ) : (
                   [
@@ -279,7 +231,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                       <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                         {tally ? (
-                          <Text>{tally.totalMkrParticipation.toBigNumber().toFormat(2)} MKR</Text>
+                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(2)} MKR</Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />
@@ -330,9 +282,14 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
                 )
               ]}
               banner={
-                hasPollEnded && tally ? (
-                  <WinningOptionText tally={tally} voteType={poll.voteType} />
-                ) : undefined
+                tally &&
+                tally.totalMkrParticipation > 0 && (
+                  <Box>
+                    <Divider my={0} />
+                    <PollWinningOptionBox tally={tally} poll={poll} />
+                    <Divider my={0} />
+                  </Box>
+                )
               }
             />
           </Card>
@@ -350,13 +307,7 @@ const PollView = ({ poll, polls: prefetchedPolls }: { poll: Poll; polls: Poll[] 
   );
 };
 
-export default function PollPage({
-  poll: prefetchedPoll,
-  polls
-}: {
-  poll?: Poll;
-  polls: Poll[];
-}): JSX.Element {
+export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
@@ -364,8 +315,10 @@ export default function PollPage({
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
-      getPoll(query['poll-hash'] as string)
-        .then(_setPoll)
+      fetchJson(`/api/polling/${query['poll-hash']}?network=${getNetwork()}`)
+        .then(response => {
+          _setPoll(response);
+        })
         .catch(setError);
     }
   }, [query['poll-hash']]);
@@ -383,32 +336,32 @@ export default function PollPage({
       </PrimaryLayout>
     );
 
-  const poll = isDefaultNetwork() ? prefetchedPoll : _poll;
-  return <PollView poll={poll as Poll} polls={polls} />;
+  const poll = (isDefaultNetwork() ? prefetchedPoll : _poll) as Poll;
+  return <PollView poll={poll} />;
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
   invariant(pollSlug, 'getStaticProps poll hash not found in params');
-  const polls = await getPolls();
-  const pollExists = !!polls.find(poll => poll.slug === pollSlug);
-  if (!pollExists) return { revalidate: 30, props: { poll: null } };
+
   const poll = await getPoll(pollSlug);
-  // TODO: Include tally in server data, this will lower the amount of request and will allow for better SEO
+
+  if (!poll) {
+    return { revalidate: 30, props: { poll: null } };
+  }
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      polls,
       poll
     }
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const polls = await getPolls();
-  const paths = polls.map(p => `/polling/${p.slug}`);
+  const pollsResponse = await getPolls();
+  const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
 
   return {
     paths,
