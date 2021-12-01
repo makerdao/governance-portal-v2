@@ -6,15 +6,8 @@ import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 
-export function DelegateVoteHistory({
-  delegate,
-  delegatedFrom,
-  totalStaked
-}: {
-  delegate: Delegate;
-}): React.ReactElement {
+export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { data: statsData } = useSWR<AddressAPIStats>(
     `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
     fetchJson,
@@ -27,8 +20,6 @@ export function DelegateVoteHistory({
     <Box>
       <Box sx={{ pb: 2 }}>
         <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
-          <DelegatedByAddress delegators={delegatedFrom} totalDelegated={totalStaked} />
-          <Divider mt={1} mb={1} />
           <Text
             as="p"
             sx={{

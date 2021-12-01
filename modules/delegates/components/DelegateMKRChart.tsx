@@ -16,7 +16,7 @@ import {
 import FilterButton from 'modules/app/components/FilterButton';
 import { useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
-import { fetchJson } from 'lib/fetchJson';
+import { fetchJson } from '@ethersproject/web';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
 import { format } from 'date-fns';
