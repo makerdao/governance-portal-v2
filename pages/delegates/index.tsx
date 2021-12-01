@@ -25,6 +25,7 @@ import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/s
 import shallow from 'zustand/shallow';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 type Props = {
   delegates: Delegate[];
@@ -41,17 +42,7 @@ const Delegates = ({ delegates, stats }: Props) => {
   );
 
   const filteredDelegates = useMemo(() => {
-    return delegates.filter(delegate => {
-      if (!showShadow && delegate.status === DelegateStatusEnum.shadow) {
-        return false;
-      }
-
-      if (!showRecognized && delegate.status === DelegateStatusEnum.recognized) {
-        return false;
-      }
-      // Apply all filters from the store
-      return true;
-    });
+    return filterDelegates(delegates, showShadow, showRecognized);
   }, [delegates, showRecognized, showShadow]);
 
   const sortedDelegates = useMemo(() => {

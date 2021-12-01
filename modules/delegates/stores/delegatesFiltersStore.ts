@@ -23,8 +23,8 @@ type StoreDelegates = {
 const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
-    showShadow: true,
-    showRecognized: true
+    showShadow: false,
+    showRecognized: false
   },
   sort: delegatesSortEnum.random,
 
@@ -63,8 +63,8 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     set({
       filters: {
         creationDate: null,
-        showShadow: true,
-        showRecognized: true
+        showShadow: false,
+        showRecognized: false
       }
     });
   },
