@@ -35,6 +35,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { filterPolls } from 'modules/polling/helpers/filterPolls';
 
 type Props = {
   polls: Poll[];
@@ -73,32 +74,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
 
-  const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
-  const start = startDate && new Date(startDate);
-  const end = endDate && new Date(endDate);
-
-  const filteredByCategories = useMemo(() => {
-    return polls.filter(poll => {
-      // check date filters first
-      if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-      if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
-
-      // if no category filters selected, return all, otherwise, check if poll contains category
-      return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
-    });
-  }, [polls, startDate, endDate, categoryFilter]);
-
   const filteredPolls = useMemo(() => {
-    return filteredByCategories.filter(poll => {
-      if (!showPollEnded && !isActivePoll(poll)) {
-        return false;
-      }
-      if (!showPollActive && isActivePoll(poll)) {
-        return false;
-      }
-      return true;
-    });
-  }, [filteredByCategories, showPollActive, showPollEnded]);
+    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
+  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
@@ -183,7 +161,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
               Filters
             </Heading>
-            <CategoryFilter categories={categories} polls={filteredByCategories} />
+            <CategoryFilter categories={categories} polls={polls} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
           <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>

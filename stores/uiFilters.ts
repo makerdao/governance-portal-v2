@@ -32,8 +32,8 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     endDate: null,
     categoryFilter: null,
     showHistorical: false,
-    showPollActive: true,
-    showPollEnded: true
+    showPollActive: false,
+    showPollEnded: false
   },
 
   executiveFilters: {
@@ -74,8 +74,8 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         endDate: null,
         categoryFilter: null,
         showHistorical: false,
-        showPollActive: true,
-        showPollEnded: true
+        showPollActive: false,
+        showPollEnded: false
       }
     });
   },
