@@ -4,7 +4,9 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getNetwork } from 'lib/maker';
+import useSWR from 'swr';
+
+import getMaker, { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -20,6 +22,8 @@ import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
+import { SupportedNetworks } from 'lib/constants';
+import { utils } from 'ethers';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();

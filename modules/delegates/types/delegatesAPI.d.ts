@@ -15,3 +15,11 @@ export type DelegatesAPIResponse = {
     pageSize: number;
   };
 };
+
+export type MKRLockedDelegateAPIResponse = {
+  fromAddress: string;
+  lockAmount: string;
+  blockNumber: number;
+  blockTimestamp: string;
+  lockTotal: string;
+};

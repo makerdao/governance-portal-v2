@@ -20,6 +20,9 @@ import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
+import { DelegationHistory } from 'modules/delegates/types';
 
 type PropTypes = {
   delegate: Delegate;
@@ -36,6 +39,14 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       revalidateOnMount: true
     }
   );
+  const { data: delegators } = useSWR<DelegationHistory[]>(
+    `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnMount: true
+    }
+  );
+  const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
@@ -54,6 +65,14 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
+      {delegators && delegators?.length > 0 && (
+        <>
+          <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
+            <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
+          </Box>
+          <Divider />
+        </>
+      )}
       <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
         <DelegateMKRChart delegate={delegate} />
       </Box>
