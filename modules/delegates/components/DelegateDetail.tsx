@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Link as ExternalLink, Flex, Divider, Heading } from 'theme-ui';
+import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -66,11 +66,13 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
       {delegators && delegators?.length > 0 && (
-        <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
-          <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
-        </Box>
+        <>
+          <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
+            <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
+          </Box>
+          <Divider />
+        </>
       )}
-      {delegate.status === DelegateStatusEnum.recognized && <Divider />}
       <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
         <DelegateMKRChart delegate={delegate} />
       </Box>

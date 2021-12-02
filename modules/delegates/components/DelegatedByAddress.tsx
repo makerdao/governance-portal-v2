@@ -8,7 +8,8 @@ import { format } from 'date-fns';
 import { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'types/currency';
 import { Address } from 'modules/address/components/Address';
-import { DelegationHistory } from '../types';
+import Skeleton from 'modules/app/components/SkeletonThemed';
+import { DelegationHistory } from 'modules/delegates/types';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -37,10 +38,10 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Link>
         </Text>
         {expanded && (
-          <Flex sx={{ pl: 3, pb: 2, flexDirection: 'column' }}>
+          <Flex sx={{ pl: 3, flexDirection: 'column' }}>
             {events.map(({ blockTimestamp }) => {
               return (
-                <Text key={blockTimestamp} variant="smallCaps">
+                <Text key={blockTimestamp} variant="smallCaps" sx={{ py: 1 }}>
                   {format(new Date(blockTimestamp), dateFormat)}
                 </Text>
               );
@@ -48,15 +49,15 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Flex>
-      <Box as="td" sx={{ flexDirection: 'column' }}>
-        <Text sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
+      <Box as="td" sx={{ verticalAlign: 'top' }}>
+        <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
           {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
-          <Flex sx={{ pb: 2, flexDirection: 'column' }}>
+          <Flex sx={{ flexDirection: 'column' }}>
             {events.map(({ blockTimestamp, lockAmount }) => {
               return (
-                <Flex key={blockTimestamp} sx={{ alignItems: 'center' }}>
+                <Flex key={blockTimestamp} sx={{ alignItems: 'center', py: 1 }}>
                   {lockAmount.indexOf('-') === 0 ? (
                     <Icon name="decrease" size={2} color="bear" />
                   ) : (
@@ -75,11 +76,13 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Box>
       <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
         {totalDelegated ? (
-          <Text sx={{ pb: 2 }}>
+          <Text>
             {`${new BigNumber(lockAmount).div(totalDelegated.toBigNumber()).times(100).toFormat(1)}%`}
           </Text>
         ) : (
-          <Text>--</Text>
+          <Box sx={{ width: '100%' }}>
+            <Skeleton />
+          </Box>
         )}
       </Flex>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
@@ -120,7 +123,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
           Delegators
         </Text>
         <Text as="p" variant="secondary" color="onSurface">
-          MKR delegated by address
+          Addresses that have delegated MKR
         </Text>
       </Box>
       <table
