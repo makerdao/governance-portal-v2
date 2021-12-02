@@ -51,9 +51,10 @@ export default function CategoryFilter({
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
   }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
+  const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (
     <FilterButton
-      name={() => `Poll Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
+      name={() => `Poll Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
       {...props}
     >
