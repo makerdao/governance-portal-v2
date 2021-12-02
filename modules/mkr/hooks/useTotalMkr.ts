@@ -2,7 +2,7 @@
 
 import getMaker, { getNetwork } from 'lib/maker';
 import useSWR from 'swr';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 
 export const useTotalMKR = (): {
   data: CurrencyObject;
