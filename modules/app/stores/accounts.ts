@@ -3,9 +3,9 @@ import getMaker from 'lib/maker';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { getNetwork } from 'lib/maker';
 import { oldVoteProxyFactoryAddress, SupportedNetworks } from 'lib/constants';
-import { Account } from 'types/account';
-import { OldVoteProxyContract, VoteProxyContract } from 'types/voteProxyContract';
-import { VoteDelegateContract } from 'types/voteDelegateContract';
+import { Account } from 'modules/app/types/account';
+import { OldVoteProxyContract, VoteProxyContract } from 'modules/app/types/voteProxyContract';
+import { VoteDelegateContract } from 'modules/delegates/types/voteDelegateContract';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 

@@ -7,9 +7,9 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
 import getMaker, { getNetwork } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'modules/app/stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
-import { TXMined } from 'types/transaction';
+import { TXMined } from 'modules/app/types/transaction';
 import { Poll } from 'modules/polling/types';
 
 type Props = {

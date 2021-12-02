@@ -1,5 +1,5 @@
 import getMaker from 'lib/maker';
-import { accountsApi } from 'stores/accounts';
+import { accountsApi } from 'modules/app/stores/accounts';
 
 export async function useAccountChange() {
   // if we are on the browser start listening for account changes as soon as possible

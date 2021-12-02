@@ -1,7 +1,8 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import waitForExpect from 'wait-for-expect';
 
-import { TX_NOT_ENOUGH_FUNDS } from '../../lib/errors';
+import { TX_NOT_ENOUGH_FUNDS } from '../../../../lib/errors';
 
 waitForExpect.defaults.interval = 1;
 
@@ -13,9 +14,9 @@ describe('Transactions', () => {
 
   beforeEach(async () => {
     jest.resetModules();
-    maker = await require('../../lib/maker').default();
-    ({ ETH } = require('../../lib/maker'));
-    ({ transactionsApi, transactionsSelectors } = require('../../stores/transactions'));
+    maker = await require('../../../../lib/maker').default();
+    ({ ETH } = require('../../../../lib/maker'));
+    ({ transactionsApi, transactionsSelectors } = require('../transactions'));
   });
 
   test('should call initTx, setPending, and setMined for successful transactions', async () => {

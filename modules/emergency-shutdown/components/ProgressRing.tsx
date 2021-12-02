@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Box, Flex } from 'theme-ui';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 
 const ProgressRing = ({
   progress,

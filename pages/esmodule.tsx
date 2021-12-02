@@ -7,7 +7,7 @@ import BurnModal from 'modules/emergency-shutdown/components/BurnModal';
 import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
 import ProgressRing from 'modules/emergency-shutdown/components/ProgressRing';
 import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
 import { HeadComponent } from 'modules/app/components/layout/Head';

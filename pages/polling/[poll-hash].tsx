@@ -20,8 +20,8 @@ import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
 import { Poll, PollTally } from 'modules/polling/types';
 
 // stores
-import useAccountsStore from 'stores/accounts';
-import useBallotStore from 'stores/ballot';
+import useAccountsStore from 'modules/app/stores/accounts';
+import useBallotStore from 'modules/polling/stores/ballotStore';
 
 // components
 import Skeleton from 'modules/app/components/SkeletonThemed';

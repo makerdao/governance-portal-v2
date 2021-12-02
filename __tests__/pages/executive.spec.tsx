@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { ExecutiveOverview } from '../../pages/executive';
 import proposals from 'modules/executive/api/mocks/proposals.json';
-import { accountsApi } from 'stores/accounts';
+import { accountsApi } from 'modules/app/stores/accounts';
 
 jest.mock('@theme-ui/match-media', () => {
   return {

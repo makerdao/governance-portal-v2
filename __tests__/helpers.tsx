@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import theme from 'lib/theme';
 import React from 'react';
-import { accountsApi } from 'stores/accounts';
+import { accountsApi } from 'modules/app/stores/accounts';
 import { createCurrency } from '@makerdao/currency';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';

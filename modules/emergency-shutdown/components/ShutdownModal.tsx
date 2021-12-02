@@ -3,10 +3,10 @@ import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { getNetwork } from 'lib/maker';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'modules/app/stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
-import { TXMined } from 'types/transaction';
-import { CurrencyObject } from 'types/currency';
+import { TXMined } from 'modules/app/types/transaction';
+import { CurrencyObject } from 'modules/app/types/currency';
 
 const ModalContent = ({
   setShowDialog,

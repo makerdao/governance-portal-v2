@@ -7,7 +7,7 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
 import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
