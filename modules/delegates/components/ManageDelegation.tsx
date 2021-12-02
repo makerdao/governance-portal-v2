@@ -1,7 +1,7 @@
 import { Card, Box, Button, Heading } from 'theme-ui';
 import React, { useState } from 'react';
 import { Delegate } from '../types';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { DelegateModal } from './modals/DelegateModal';
