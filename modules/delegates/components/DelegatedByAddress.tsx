@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink, Flex, IconButton } from 'theme-ui';
+import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'bignumber.js';
@@ -29,19 +29,26 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
   const { address, lockAmount, events } = delegator;
   return (
     <tr>
-      <Flex as="td" sx={{ flexDirection: 'column' }}>
-        <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
+      <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
+        <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
-            <ThemeUILink title="View address detail">
+            <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
               <Address address={address} />
             </ThemeUILink>
           </Link>
-        </Text>
+        </Heading>
         {expanded && (
           <Flex sx={{ pl: 3, flexDirection: 'column' }}>
             {events.map(({ blockTimestamp }) => {
               return (
-                <Text key={blockTimestamp} variant="smallCaps" sx={{ py: 1 }}>
+                <Text
+                  key={blockTimestamp}
+                  variant="smallCaps"
+                  sx={{
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
                   {format(new Date(blockTimestamp), dateFormat)}
                 </Text>
               );
@@ -57,7 +64,14 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           <Flex sx={{ flexDirection: 'column' }}>
             {events.map(({ blockTimestamp, lockAmount }) => {
               return (
-                <Flex key={blockTimestamp} sx={{ alignItems: 'center', py: 1 }}>
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    alignItems: 'center',
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
                   {lockAmount.indexOf('-') === 0 ? (
                     <Icon name="decrease" size={2} color="bear" />
                   ) : (
@@ -89,7 +103,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         <Flex
           sx={{
             bg: 'background',
-            size: 4,
+            size: 'auto',
+            width: '17px',
+            height: '17px',
             float: 'right',
             alignItems: 'center',
             justifyContent: 'center',
@@ -141,10 +157,10 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               MKR Delegated
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-              Total Percent
+              Voting Weight
             </Text>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
-              Verify
+              Expand
             </Text>
           </tr>
         </thead>
