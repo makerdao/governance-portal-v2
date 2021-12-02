@@ -24,8 +24,7 @@ const mockPoll: Poll = {
 };
 
 describe('getPollTally', () => {
-  // 29-11-2021, the gov portal crashed due to a empty options object being returned to the UI and not handled
-  // correctly. We add this test to check that we always return a non-empty options object to the FE
+  // We add this test to check that we always return a non-empty options object to the FE so the components that rely on populated data won't crash
   it('Returns a correct tally even when the options are empty', async () => {
     (fetchPollTally as jest.Mock).mockReturnValue(
       Promise.resolve({
