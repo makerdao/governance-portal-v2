@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, useColorMode } from 'theme-ui';
+import { Heading, Container, Grid, Text, Flex, useColorMode, Box, Button } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -26,6 +26,7 @@ import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
+import VideoModal from 'modules/app/components/VideoModal';
 
 type Props = {
   proposals: CMSProposal[];
@@ -37,6 +38,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
@@ -62,6 +64,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundRepeat: 'no-repeat'
         }}
       />
+      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
         {/* <Flex sx={{ justifyContent: 'center' }}>
           <Badge
@@ -139,6 +142,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
                     <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
                   </Flex>
+                  <Box>
+                    <Button
+                      variant="outline"
+                      sx={{ borderRadius: 'round' }}
+                      onClick={() => setVideoOpen(true)}
+                    >
+                      How to vote
+                    </Button>
+                  </Box>
                 </Stack>
               </Container>
             </Stack>
