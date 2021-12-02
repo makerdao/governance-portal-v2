@@ -18,8 +18,8 @@ export function filterPolls(
   return polls
     .filter(poll => {
       // check date filters first
-      if (startDate && new Date(poll.startDate).getTime() < startDate.getTime()) return false;
-      if (endDate && new Date(poll.startDate).getTime() > endDate.getTime()) return false;
+      if (startDate && new Date(poll.endDate).getTime() < startDate.getTime()) return false;
+      if (endDate && new Date(poll.endDate).getTime() > endDate.getTime()) return false;
 
       // if no category filters selected, return all, otherwise, check if poll contains category
       return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);

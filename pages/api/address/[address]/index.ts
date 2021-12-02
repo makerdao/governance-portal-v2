@@ -7,7 +7,6 @@ import { DEFAULT_NETWORK } from 'lib/constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { resolveENS } from 'modules/web3/ens';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressApiResponse>) => {
@@ -43,18 +42,13 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
       : undefined;
 
   const delegate = await fetchDelegate(address, network);
-  const pollVoteHistory = await fetchAddressPollVoteHistory(hot ? hot : address, network);
 
   const response: AddressApiResponse = {
     isDelegate: !!delegate,
     isProxyContract: !!hot,
     voteProxyInfo,
     delegateInfo: delegate,
-    address,
-    stats: {
-      pollVoteHistory,
-      lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
-    }
+    address
   };
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

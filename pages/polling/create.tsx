@@ -15,7 +15,7 @@ import ResourceBox from 'modules/app/components/ResourceBox';
 import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/utils';
 import { HeadComponent } from 'modules/app/components/layout/Head';

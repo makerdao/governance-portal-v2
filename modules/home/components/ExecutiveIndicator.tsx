@@ -7,7 +7,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { CMSProposal, SpellData } from 'modules/executive/types';
 
 type Props = {

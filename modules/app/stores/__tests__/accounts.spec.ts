@@ -1,8 +1,8 @@
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import waitForExpect from 'wait-for-expect';
 
-import { accountsApi } from '../../stores/accounts';
-import getMaker from '../../lib/maker';
+import { accountsApi } from '../accounts';
+import getMaker from '../../../../lib/maker';
 
 let maker;
 describe('Store accounts', () => {
@@ -10,10 +10,10 @@ describe('Store accounts', () => {
     maker = await getMaker();
     accountsApi.getState().addAccountsListener(maker);
   });
-  
+
   test('should automatically add an account changed listener to dai.js', async () => {
     expect(accountsApi.getState().currentAccount).toBeUndefined();
-  
+
     const nextAccount = TestAccountProvider.nextAccount();
     await maker.service('accounts').addAccount('test-account', {
       type: 'privateKey',
@@ -26,5 +26,4 @@ describe('Store accounts', () => {
       expect(currentAccount?.name).toBe('test-account');
     });
   });
-    
 });

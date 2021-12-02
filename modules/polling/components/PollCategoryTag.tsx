@@ -1,5 +1,5 @@
 import { Box, Text } from 'theme-ui';
-import useUiFiltersStore from 'stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import shallow from 'zustand/shallow';
 
 export function PollCategoryTag({

@@ -10,8 +10,8 @@ import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from 'stores/accounts';
-import useBallotStore from 'stores/ballot';
+import useAccountsStore from 'modules/app/stores/accounts';
+import useBallotStore from 'modules/polling/stores/ballotStore';
 import QuickVote from './QuickVote';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -190,15 +190,22 @@ export default function PollOverviewCard({
 
             {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
               <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
-                {tally && <PollVotePluralityResultsCompact tally={tally} showTitles={false} />}
+                {tally && tally.totalMkrParticipation > 0 && (
+                  <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                )}
                 {!tally && <SkeletonThemed width={'265px'} height={'30px'} />}
               </Box>
             )}
           </Flex>
         </Box>
       </Box>
-      <Divider my={0} />
-      <PollWinningOptionBox tally={tally} poll={poll} />
+
+      {tally && tally.totalMkrParticipation > 0 && (
+        <Box>
+          <Divider my={0} />
+          <PollWinningOptionBox tally={tally} poll={poll} />
+        </Box>
+      )}
     </Box>
   );
 }

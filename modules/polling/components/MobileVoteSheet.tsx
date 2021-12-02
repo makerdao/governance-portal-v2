@@ -9,13 +9,13 @@ import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 
-import { Account } from 'types/account';
+import { Account } from 'modules/app/types/account';
 import { Poll } from 'modules/polling/types';
-import useBallotStore from 'stores/ballot';
+import useBallotStore from 'modules/polling/stores/ballotStore';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';

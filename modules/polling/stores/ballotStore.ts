@@ -2,10 +2,9 @@ import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker from 'lib/maker';
-import { Ballot } from 'types/ballot';
-import { transactionsApi } from './transactions';
-import { accountsApi } from './accounts';
-import { poll } from 'ethers/lib/utils';
+import { Ballot } from '../types/ballot';
+import { transactionsApi } from 'modules/app/stores/transactions';
+import { accountsApi } from 'modules/app/stores/accounts';
 
 type Store = {
   ballot: Ballot;

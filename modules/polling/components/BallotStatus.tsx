@@ -3,9 +3,9 @@ import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
-import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
-import { Transaction } from 'types/transaction';
-import useBallotStore from 'stores/ballot';
+import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
+import { Transaction } from 'modules/app/types/transaction';
+import useBallotStore from 'modules/polling/stores/ballotStore';
 import { getNetwork } from 'lib/maker';
 
 const BallotStatus = (props: any): JSX.Element => {

@@ -1,7 +1,7 @@
 import getMaker from 'lib/maker';
 import BigNumber from 'bignumber.js';
-import { CurrencyObject } from 'types/currency';
-import { StakingHistoryRow } from 'types/esmodule';
+import { CurrencyObject } from 'modules/app/types/currency';
+import { StakingHistoryRow } from 'modules/emergency-shutdown/types/esmodule';
 
 export type ESModuleStats = [
   CurrencyObject,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
@@ -8,18 +7,27 @@ import AddressIcon from './AddressIcon';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
 import Tooltip from 'modules/app/components/Tooltip';
-import { cutMiddle } from 'lib/string';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { Address } from './Address';
+import useSWR from 'swr';
+import { fetchJson } from 'lib/fetchJson';
+import LastVoted from 'modules/polling/components/LastVoted';
 
 type PropTypes = {
   address: string;
-  stats: AddressAPIStats;
   voteProxyInfo?: VoteProxyInfo;
 };
 
-export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): React.ReactElement {
-  const bpi = useBreakpointIndex();
+export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
+  const { data: statsData } = useSWR<AddressAPIStats>(
+    `/api/address/${address}/stats?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 0,
+      revalidateOnMount: true
+    }
+  );
 
   const tooltipLabel = voteProxyInfo ? (
     <Box sx={{ p: 2 }}>
@@ -36,9 +44,18 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
   ) : null;
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Box sx={{ p: [3, 4] }}>
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+          flexDirection: ['column', 'row'],
+          alignItems: ['flex-start', 'center'],
+          p: [3, 4]
+        }}
+      >
         <Flex>
-          <AddressIcon address={address} width="41px" />
+          <Box sx={{ width: '52px', mr: 2 }}>
+            <AddressIcon address={address} width="52px" />
+          </Box>
           <Flex
             sx={{
               ml: 2,
@@ -68,7 +85,11 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
             )}
           </Flex>
         </Flex>
-      </Box>
+
+        <Box sx={{ pt: [2, 0] }}>
+          <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
+        </Box>
+      </Flex>
 
       <Divider mt={1} mb={1} />
 
@@ -85,9 +106,9 @@ export function AddressDetail({ address, stats, voteProxyInfo }: PropTypes): Rea
         <Divider mt={3} />
       </Box>
 
-      <PollVoteHistoryList votes={stats.pollVoteHistory} />
+      {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
 
-      <PollingParticipationOverview votes={stats.pollVoteHistory} />
+      {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>
   );
 }

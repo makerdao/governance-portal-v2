@@ -2,7 +2,7 @@ import { Flex, Box, Checkbox, Label, Text, Divider } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { Poll, PollCategory } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
-import useUiFiltersStore from 'stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useMemo } from 'react';
 import { filterPolls } from '../helpers/filterPolls';

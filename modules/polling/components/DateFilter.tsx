@@ -3,7 +3,7 @@ import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from 'modules/app/components/FilterButton';
-import useUiFiltersStore from 'stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 const displayDate = date => {
   try {
@@ -45,7 +45,7 @@ export default function DateFilter(props): JSX.Element {
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>After</Text>
+        <Text>Ended after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={startInput}
@@ -54,7 +54,7 @@ export default function DateFilter(props): JSX.Element {
           />
         </Flex>
 
-        <Text>Before</Text>
+        <Text>Ended before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input ref={endInput} type="date" onChange={e => setEndDate('poll', new Date(e.target.value))} />
         </Flex>

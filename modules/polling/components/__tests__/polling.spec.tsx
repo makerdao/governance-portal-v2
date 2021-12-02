@@ -10,7 +10,7 @@ import PollingOverviewPage from '../../../../pages/polling';
 import getMaker from '../../../../lib/maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import mockCategories from '../__mocks__/categories.json';
-import { accountsApi } from '../../../../stores/accounts';
+import { accountsApi } from '../../../app/stores/accounts';
 import { Poll, PollCategory } from 'modules/polling/types';
 
 let maker;

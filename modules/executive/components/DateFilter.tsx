@@ -3,7 +3,7 @@ import { Grid, Flex, Input, Text, Button } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 import FilterButton from 'modules/app/components/FilterButton';
-import useUiFiltersStore from 'stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 const displayDate = date => {
   try {
@@ -43,14 +43,14 @@ export default function DateFilter(props): JSX.Element {
     <FilterButton
       name={() => {
         if (!startDateDisplay && !endDateDisplay) return 'Date Posted';
-        if (!startDateDisplay) return `Date Posted: before ${endDateDisplay}`;
-        if (!endDateDisplay) return `Date Posted: after ${startDateDisplay}`;
-        return `Date Posted: ${startDateDisplay} - ${endDateDisplay}`;
+        if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
+        if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
+        return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
       }}
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>
-        <Text>After</Text>
+        <Text>Posted after:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={startInput}
@@ -59,7 +59,7 @@ export default function DateFilter(props): JSX.Element {
           />
         </Flex>
 
-        <Text>Before</Text>
+        <Text>Posted before:</Text>
         <Flex sx={{ alignItems: 'center' }}>
           <Input
             ref={endInput}

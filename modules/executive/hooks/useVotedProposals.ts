@@ -1,7 +1,7 @@
 import getMaker from 'lib/maker';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import useSWR from 'swr';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 
 type VotedProposalsResponse = {
   data: any;
