@@ -1,21 +1,13 @@
 import { Flex, Text } from 'theme-ui';
-import useSWR from 'swr';
 import useAccountsStore from 'modules/app/stores/accounts';
-import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 
 export default function VotingWeight(props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
-  const { data: votingWeight } = useSWR(
-    addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address)),
-    {
-      revalidateOnFocus: true,
-      refreshInterval: 30000
-    }
-  );
+  const { data: votingWeight } = useMKRVotingWeight(addressToCheck);
 
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);
 

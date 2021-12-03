@@ -37,7 +37,7 @@ export function PollingParticipationOverview({
           Polling Participation Overview
         </Text>
         <Text as="p" variant="secondary" color="onSurface">
-          Percentage of times that voted yes, no or abstain over time
+          Percentage of times this delegate has voted yes, no, or abstain over time
         </Text>
       </Box>
       <YesNoAbstainBar yesPercent={yesPercent} noPercent={noPercent} abstainPercent={abstainPercent} />

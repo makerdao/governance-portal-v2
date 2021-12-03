@@ -1,34 +1,31 @@
-import { useState } from 'react';
 import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
+
 import BigNumber from 'bignumber.js';
-import { format } from 'date-fns';
 import { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
+import { format } from 'date-fns';
+import { useState } from 'react';
 import { getEtherscanLink } from 'lib/utils';
 
-type DelegatedByAddressProps = {
-  delegators: DelegationHistory[];
-  totalDelegated: CurrencyObject;
-};
-
 type CollapsableRowProps = {
-  delegator: DelegationHistory;
+  delegate: DelegationHistory;
   network: string;
   bpi: number;
-  totalDelegated: CurrencyObject;
+  totalDelegated: number;
 };
 
-const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: CollapsableRowProps) => {
+const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
   const dateFormat = 'MMM dd yyyy h:mm';
   const [expanded, setExpanded] = useState(false);
-  const { address, lockAmount, events } = delegator;
+
+  const { address, lockAmount, events } = delegate;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
+
   return (
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
@@ -90,17 +87,40 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Box>
-      <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
-        {totalDelegated ? (
-          <Text>
-            {`${new BigNumber(lockAmount).div(totalDelegated.toBigNumber()).times(100).toFormat(1)}%`}
-          </Text>
-        ) : (
-          <Box sx={{ width: '100%' }}>
-            <Skeleton />
-          </Box>
+      <Box as="td" sx={{ verticalAlign: 'top' }}>
+        <Flex sx={{ alignSelf: 'flex-start' }}>
+          {totalDelegated ? (
+            <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
+          ) : (
+            <Box sx={{ width: '100%' }}>
+              <Skeleton />
+            </Box>
+          )}
+        </Flex>
+        {expanded && (
+          <Flex sx={{ flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+              return (
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    alignItems: 'center',
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {new BigNumber(lockAmount).isGreaterThan(0)
+                      ? new BigNumber(lockAmount).dividedBy(totalDelegated).multipliedBy(100).toFormat(4)
+                      : '0'}
+                    %
+                  </Text>
+                </Flex>
+              );
+            })}
+          </Flex>
         )}
-      </Flex>
+      </Box>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
         <Box sx={{ height: '32px' }}>
           <Flex
@@ -115,7 +135,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
               borderRadius: 'round'
             }}
           >
-            <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
+            <IconButton aria-label="Delegated to expand" onClick={() => setExpanded(!expanded)}>
               <Icon name={expanded ? 'minus' : 'plus'} />
             </IconButton>
           </Flex>
@@ -152,27 +172,17 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
   );
 };
 
-const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
+type DelegatedByAddressProps = {
+  delegatedTo: DelegationHistory[];
+  totalDelegated: number;
+};
+
+const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
   const network = getNetwork();
 
   return (
     <Box>
-      <Box mb={3}>
-        <Text
-          as="p"
-          variant="h2"
-          sx={{
-            fontSize: 4,
-            fontWeight: 'semiBold'
-          }}
-        >
-          Delegators
-        </Text>
-        <Text as="p" variant="secondary" color="onSurface">
-          Addresses that have delegated MKR to this delegate
-        </Text>
-      </Box>
       <table
         style={{
           width: '100%',
@@ -190,17 +200,14 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
               Voting Weight
             </Text>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
-              Expand
-            </Text>
           </tr>
         </thead>
         <tbody>
-          {delegators ? (
-            delegators.map((delegator, i) => (
+          {delegatedTo ? (
+            delegatedTo.map((delegate, i) => (
               <CollapsableRow
                 key={i}
-                delegator={delegator}
+                delegate={delegate}
                 network={network}
                 bpi={bpi}
                 totalDelegated={totalDelegated}
@@ -221,4 +228,4 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
   );
 };
 
-export default DelegatedByAddress;
+export default AddressDelegatedTo;
