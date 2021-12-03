@@ -12,6 +12,7 @@ import { Address } from './Address';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
+import AddressDelegatedTo from './AddressDelegatedTo';
 
 type PropTypes = {
   address: string;
@@ -90,6 +91,24 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
         </Box>
       </Flex>
+
+      <Divider mt={1} mb={1} />
+
+      <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+        <Text
+          as="p"
+          sx={{
+            fontSize: 4,
+            fontWeight: 'semiBold'
+          }}
+        >
+          Delegates
+        </Text>
+        <Divider mt={3} />
+      </Box>
+      <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
+        <AddressDelegatedTo delegatedTo={statsData?.delegatedTo} />
+      </Box>
 
       <Divider mt={1} mb={1} />
 
