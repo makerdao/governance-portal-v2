@@ -47,5 +47,5 @@ export type DelegationHistory = {
 export type DelegationHistoryEvent = {
   lockAmount: string;
   blockTimestamp: string;
-  hash?: string;
+  hash: string;
 };

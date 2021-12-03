@@ -10,6 +10,7 @@ import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
+import { getEtherscanLink } from 'lib/utils';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -101,22 +102,51 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         )}
       </Flex>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
-        <Flex
-          sx={{
-            bg: 'background',
-            size: 'auto',
-            width: '17px',
-            height: '17px',
-            float: 'right',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 'round'
-          }}
-        >
-          <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
-            <Icon name={expanded ? 'minus' : 'plus'} />
-          </IconButton>
-        </Flex>
+        <Box sx={{ height: '32px' }}>
+          <Flex
+            sx={{
+              bg: 'background',
+              size: 'auto',
+              width: '17px',
+              height: '17px',
+              float: 'right',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 'round'
+            }}
+          >
+            <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
+              <Icon name={expanded ? 'minus' : 'plus'} />
+            </IconButton>
+          </Flex>
+        </Box>
+        {expanded && (
+          <Flex sx={{ flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp, hash }) => {
+              return (
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    justifyContent: 'flex-end',
+                    lineHeight: '20px',
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  <ThemeUILink
+                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    target="_blank"
+                    title="View on Etherscan"
+                    sx={{
+                      textAlign: 'right'
+                    }}
+                  >
+                    <Icon name="arrowTopRight" size={2} />
+                  </ThemeUILink>
+                </Flex>
+              );
+            })}
+          </Flex>
+        )}
       </Box>
     </tr>
   );
@@ -140,7 +170,7 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
           Delegators
         </Text>
         <Text as="p" variant="secondary" color="onSurface">
-          Addresses that have delegated MKR
+          Addresses that have delegated MKR to this delegate
         </Text>
       </Box>
       <table

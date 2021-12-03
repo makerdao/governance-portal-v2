@@ -135,7 +135,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
               borderRadius: 'round'
             }}
           >
-            <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
+            <IconButton aria-label="Delegated to expand" onClick={() => setExpanded(!expanded)}>
               <Icon name={expanded ? 'minus' : 'plus'} />
             </IconButton>
           </Flex>
