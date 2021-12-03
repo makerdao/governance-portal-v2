@@ -1,26 +1,17 @@
-import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
+import { Box, Text, Link as ThemeUILink, Flex, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'bignumber.js';
-import { format } from 'date-fns';
 import { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 
-type DelegatedByAddressProps = {
-  delegators: DelegationHistory[];
-  totalDelegated: CurrencyObject;
-};
-
 type CollapsableRowProps = {
-  delegator: DelegationHistory;
+  delegate: DelegationHistory;
   network: string;
   bpi: number;
-  totalDelegated: CurrencyObject;
+  totalDelegated: number;
 };
 
 const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
@@ -44,9 +35,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Box>
       <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
         {totalDelegated ? (
-          <Text>
-            {`${new BigNumber(lockAmount).div(totalDelegated.toBigNumber()).times(100).toFormat(1)}%`}
-          </Text>
+          <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
         ) : (
           <Box sx={{ width: '100%' }}>
             <Skeleton />
@@ -55,6 +44,11 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
     </tr>
   );
+};
+
+type DelegatedByAddressProps = {
+  delegatedTo: DelegationHistory[];
+  totalDelegated: number;
 };
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressProps): JSX.Element => {

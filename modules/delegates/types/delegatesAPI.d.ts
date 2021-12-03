@@ -23,3 +23,8 @@ export type MKRLockedDelegateAPIResponse = {
   blockTimestamp: string;
   lockTotal: string;
 };
+
+export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
+  hash: string;
+  immediateCaller: string;
+};

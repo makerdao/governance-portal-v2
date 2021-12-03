@@ -1,5 +1,4 @@
 import invariant from 'tiny-invariant';
-import { utils } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 import getMaker from 'lib/maker';
 import voteProxyFactoryAbi from 'lib/abis/voteProxyAbi.json';
@@ -9,7 +8,6 @@ import withApiHandler from 'lib/api/withApiHandler';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import { resolveENS } from 'modules/web3/ens';
-import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 
 /**
  * @swagger
@@ -98,14 +96,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
 
   const pollVoteHistory = await fetchAddressPollVoteHistory(hot ? hot : address, network);
 
-  const delegatedTo = await fetchDelegatedTo(address, network);
-
   const response: AddressAPIStats = {
     pollVoteHistory,
-    lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0],
-    delegatedTo: delegatedTo
-      .filter(({ lockAmount }) => utils.parseEther(lockAmount).gt(0))
-      .sort((a, b) => (utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1))
+    lastVote: pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0]
   };
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

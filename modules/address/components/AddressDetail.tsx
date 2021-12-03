@@ -13,6 +13,9 @@ import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import LastVoted from 'modules/polling/components/LastVoted';
 import AddressDelegatedTo from './AddressDelegatedTo';
+import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated-to';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 
 type PropTypes = {
   address: string;
@@ -22,6 +25,16 @@ type PropTypes = {
 export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
   const { data: statsData } = useSWR<AddressAPIStats>(
     `/api/address/${address}/stats?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 0,
+      revalidateOnMount: true
+    }
+  );
+
+  const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
+    `/api/address/${address}/delegated-to?network=${getNetwork()}`,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -92,6 +105,9 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
         </Box>
       </Flex>
 
+      <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
+        <AddressMKRDelegatedStats totalMKRDelegated={delegatedToData?.totalDelegated} address={address} />
+      </Box>
       <Divider mt={1} mb={1} />
 
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
@@ -99,15 +115,28 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           as="p"
           sx={{
             fontSize: 4,
+            mb: 3,
             fontWeight: 'semiBold'
           }}
         >
-          Delegates
+          MKR Delegated per address
         </Text>
-        <Divider mt={3} />
-      </Box>
-      <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
-        <AddressDelegatedTo delegatedTo={statsData?.delegatedTo} />
+        {!delegatedToData && (
+          <Box mb={2}>
+            <SkeletonThemed width={'300px'} height={'30px'} />
+          </Box>
+        )}
+        {delegatedToData && delegatedToData.delegatedTo.length > 0 && (
+          <AddressDelegatedTo
+            delegatedTo={delegatedToData?.delegatedTo}
+            totalDelegated={delegatedToData?.totalDelegated}
+          />
+        )}
+        {delegatedToData && delegatedToData.delegatedTo.length === 0 && (
+          <Box mb={3}>
+            <Text>No MKR delegated</Text>
+          </Box>
+        )}
       </Box>
 
       <Divider mt={1} mb={1} />
