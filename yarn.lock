@@ -1284,10 +1284,10 @@
     babel-runtime "^6.26.0"
     bignumber.js "^8.1.1"
 
-"@makerdao/dai-plugin-governance@^0.16.3":
-  version "0.16.3"
-  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.16.3.tgz#3a1a8900fa9a231fd42a6be18db60ddfcdde725b"
-  integrity sha512-HL21dGvOb0J07rKSiyXfBi8XD/fvhEX8/xCS5D3lDtK7xRlB3wP+tsIMLtEKa4jYOn+xHTeq8EaFmjE7/HBaxg==
+"@makerdao/dai-plugin-governance@^0.16.4":
+  version "0.16.4"
+  resolved "https://registry.yarnpkg.com/@makerdao/dai-plugin-governance/-/dai-plugin-governance-0.16.4.tgz#f2bdb6c4fc0a7ed5a4ef71d06686b2403dffe712"
+  integrity sha512-MA4nKC0Z0/RInmKW61sRJS+bB3u4+p1/vXY3Qa/mrNNjVPsMpfZqg82tBfjZIcDozGHq7vGbiwf0QTjda+TY7g==
   dependencies:
     "@makerdao/currency" "^0.9.10"
     "@makerdao/dai" "^0.42.3"
@@ -13826,7 +13826,7 @@ web3-net@1.6.0:
     web3-core-method "1.6.0"
     web3-utils "1.6.0"
 
-web3-provider-engine@14.0.4, "web3-provider-engine@github:makerdao/provider-engine#kovan-fix-dist", web3-provider-engine@makerdao/provider-engine#kovan-fix-dist:
+web3-provider-engine@14.0.4, web3-provider-engine@makerdao/provider-engine#kovan-fix-dist:
   version "14.0.4"
   resolved "https://codeload.github.com/makerdao/provider-engine/tar.gz/7c4b187809f156409473246de15dc595e1fe3356"
   dependencies:

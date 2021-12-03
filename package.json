@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@makerdao/dai": "^0.42.2",
-    "@makerdao/dai-plugin-governance": "^0.16.3",
+    "@makerdao/dai-plugin-governance": "^0.16.4",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.8.3",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",
