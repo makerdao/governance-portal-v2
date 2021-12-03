@@ -122,7 +122,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           MKR Delegated per address
         </Text>
         {!delegatedToData && (
-          <Box mb={2}>
+          <Box mb={3}>
             <SkeletonThemed width={'300px'} height={'30px'} />
           </Box>
         )}
@@ -152,6 +152,12 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           Polling Proposals
         </Text>
         <Divider mt={3} />
+
+        {!statsData && (
+          <Box mb={3}>
+            <SkeletonThemed width={'300px'} height={'30px'} />
+          </Box>
+        )}
       </Box>
 
       {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}

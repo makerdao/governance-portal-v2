@@ -10,6 +10,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { format } from 'date-fns';
 import { useState } from 'react';
+import { getEtherscanLink } from 'lib/utils';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -86,32 +87,86 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           </Flex>
         )}
       </Box>
-      <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
-        {totalDelegated ? (
-          <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
-        ) : (
-          <Box sx={{ width: '100%' }}>
-            <Skeleton />
-          </Box>
-        )}
-      </Flex>
-      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
-        <Flex
-          sx={{
-            bg: 'background',
-            size: 'auto',
-            width: '17px',
-            height: '17px',
-            float: 'right',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 'round'
-          }}
-        >
-          <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
-            <Icon name={expanded ? 'minus' : 'plus'} />
-          </IconButton>
+      <Box as="td" sx={{ verticalAlign: 'top' }}>
+        <Flex sx={{ alignSelf: 'flex-start' }}>
+          {totalDelegated ? (
+            <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
+          ) : (
+            <Box sx={{ width: '100%' }}>
+              <Skeleton />
+            </Box>
+          )}
         </Flex>
+        {expanded && (
+          <Flex sx={{ flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+              return (
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    alignItems: 'center',
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {new BigNumber(lockAmount).isGreaterThan(0)
+                      ? new BigNumber(lockAmount).dividedBy(totalDelegated).multipliedBy(100).toFormat(4)
+                      : '0'}
+                    %
+                  </Text>
+                </Flex>
+              );
+            })}
+          </Flex>
+        )}
+      </Box>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+        <Box sx={{ height: '32px' }}>
+          <Flex
+            sx={{
+              bg: 'background',
+              size: 'auto',
+              width: '17px',
+              height: '17px',
+              float: 'right',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 'round'
+            }}
+          >
+            <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
+              <Icon name={expanded ? 'minus' : 'plus'} />
+            </IconButton>
+          </Flex>
+        </Box>
+        {expanded && (
+          <Flex sx={{ flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp, hash }) => {
+              return (
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    justifyContent: 'flex-end',
+                    lineHeight: '20px',
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  <ThemeUILink
+                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    target="_blank"
+                    title="View on Etherscan"
+                    sx={{
+                      textAlign: 'right'
+                    }}
+                  >
+                    <Icon name="arrowTopRight" size={2} />
+                  </ThemeUILink>
+                </Flex>
+              );
+            })}
+          </Flex>
+        )}
       </Box>
     </tr>
   );
