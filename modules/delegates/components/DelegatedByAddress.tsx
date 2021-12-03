@@ -6,7 +6,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'bignumber.js';
 import { format } from 'date-fns';
 import { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
