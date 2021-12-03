@@ -1,11 +1,15 @@
 import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink, Flex, Heading } from 'theme-ui';
+import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Icon } from '@makerdao/dai-ui-icons';
+
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
+import { format } from 'date-fns';
+import { useState } from 'react';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -16,7 +20,11 @@ type CollapsableRowProps = {
 
 const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
   const dateFormat = 'MMM dd yyyy h:mm';
-  const { address, lockAmount } = delegate;
+  const [expanded, setExpanded] = useState(false);
+
+  const { address, lockAmount, events } = delegate;
+  const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
+
   return (
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
@@ -27,11 +35,56 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
             </ThemeUILink>
           </Link>
         </Heading>
+        {expanded && (
+          <Flex sx={{ pl: 3, flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp }) => {
+              return (
+                <Text
+                  key={blockTimestamp}
+                  variant="smallCaps"
+                  sx={{
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  {format(new Date(blockTimestamp), dateFormat)}
+                </Text>
+              );
+            })}
+          </Flex>
+        )}
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top' }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
           {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
+        {expanded && (
+          <Flex sx={{ flexDirection: 'column' }}>
+            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
+              return (
+                <Flex
+                  key={blockTimestamp}
+                  sx={{
+                    alignItems: 'center',
+                    ':first-of-type': { pt: 3 },
+                    ':not(:last-of-type)': { pb: 2 }
+                  }}
+                >
+                  {lockAmount.indexOf('-') === 0 ? (
+                    <Icon name="decrease" size={2} color="bear" />
+                  ) : (
+                    <Icon name="increase" size={2} color="bull" />
+                  )}
+                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
+                    {new BigNumber(
+                      lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
+                    ).toFormat(2)}
+                  </Text>
+                </Flex>
+              );
+            })}
+          </Flex>
+        )}
       </Box>
       <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
         {totalDelegated ? (
@@ -42,6 +95,24 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           </Box>
         )}
       </Flex>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+        <Flex
+          sx={{
+            bg: 'background',
+            size: 'auto',
+            width: '17px',
+            height: '17px',
+            float: 'right',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 'round'
+          }}
+        >
+          <IconButton aria-label="Delegate history expand" onClick={() => setExpanded(!expanded)}>
+            <Icon name={expanded ? 'minus' : 'plus'} />
+          </IconButton>
+        </Flex>
+      </Box>
     </tr>
   );
 };

@@ -27,6 +27,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
   const dateFormat = 'MMM dd yyyy h:mm';
   const [expanded, setExpanded] = useState(false);
   const { address, lockAmount, events } = delegator;
+  const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
   return (
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
@@ -39,7 +40,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         </Heading>
         {expanded && (
           <Flex sx={{ pl: 3, flexDirection: 'column' }}>
-            {events.map(({ blockTimestamp }) => {
+            {sortedEvents.map(({ blockTimestamp }) => {
               return (
                 <Text
                   key={blockTimestamp}
@@ -62,7 +63,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
-            {events.map(({ blockTimestamp, lockAmount }) => {
+            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
               return (
                 <Flex
                   key={blockTimestamp}

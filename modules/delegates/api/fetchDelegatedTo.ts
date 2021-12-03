@@ -15,19 +15,20 @@ export async function fetchDelegatedTo(
       .service('voteDelegate')
       .getMkrDelegatedTo(address);
 
-    const delegatedTox = delRes.reduce((acc, { immediateCaller, lockAmount }) => {
+    const delegatedTox = delRes.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === immediateCaller) as
-        | MKRDelegatedToDAIResponse
+        | DelegationHistory
         | undefined;
       if (existing) {
         existing.lockAmount = utils.formatEther(
           utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
         );
+        existing.events.push({ lockAmount, blockTimestamp, hash });
       } else {
         acc.push({
           address: immediateCaller,
           lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
-          events: []
+          events: [{ lockAmount, blockTimestamp, hash }]
         } as DelegationHistory);
       }
 
