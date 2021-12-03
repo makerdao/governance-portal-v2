@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 import { Flex } from 'theme-ui';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
@@ -10,7 +11,7 @@ export function AddressMKRDelegatedStats({
   totalMKRDelegated?: number;
   address: string;
 }): React.ReactElement {
-  const { data: mkrBalance } = useMkrBalance(address);
+  const { data: votingWeight } = useMKRVotingWeight(address);
 
   return (
     <Flex
@@ -23,7 +24,7 @@ export function AddressMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={mkrBalance ? mkrBalance.toBigNumber().toFormat(2) : '0.00'}
+        value={votingWeight ? votingWeight.total.toBigNumber().toFormat(2) : '0.00'}
         label={'Total MKR Balance'}
       />
 
