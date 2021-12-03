@@ -79,7 +79,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
             }}
           >
             <ExternalLink
-              title="View on etherescan"
+              title="View on etherscan"
               href={getEtherscanLink(getNetwork(), address, 'address')}
               target="_blank"
             >

@@ -20,7 +20,7 @@ export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
       refreshInterval: 30000
     }
   );
-  console.log(data);
+
   return {
     data,
     loading: !error && !data,

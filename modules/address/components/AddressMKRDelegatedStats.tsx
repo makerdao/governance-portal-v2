@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Flex } from 'theme-ui';
 import { StatBox } from 'modules/app/components/StatBox';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 
 export function AddressMKRDelegatedStats({

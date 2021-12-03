@@ -11,11 +11,9 @@ export async function fetchDelegatedTo(
   const maker = await getMaker(network);
 
   try {
-    const delRes: MKRDelegatedToDAIResponse[] = await maker
-      .service('voteDelegate')
-      .getMkrDelegatedTo(address);
+    const res: MKRDelegatedToDAIResponse[] = await maker.service('voteDelegate').getMkrDelegatedTo(address);
 
-    const delegatedTox = delRes.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
+    const delegatedTo = res.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === immediateCaller) as
         | DelegationHistory
         | undefined;
@@ -35,11 +33,11 @@ export async function fetchDelegatedTo(
       return acc;
     }, [] as DelegationHistory[]);
 
-    return delegatedTox.sort((prev, next) =>
+    return delegatedTo.sort((prev, next) =>
       new BigNumber(prev.lockAmount).isGreaterThan(new BigNumber(next.lockAmount)) ? -1 : 1
     );
   } catch (e) {
-    console.error('delegated to error', e.message);
+    console.error('Error fetching MKR delegated to address', e.message);
     return [];
   }
 }

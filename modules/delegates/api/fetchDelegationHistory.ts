@@ -8,34 +8,37 @@ export async function fetchDelegationHistory(
   network: SupportedNetworks
 ): Promise<DelegationHistory[]> {
   const maker = await getMaker(network);
-  const addressData: MKRLockedDelegateAPIResponse[] = await maker
-    .service('voteDelegate')
-    .getMkrLockedDelegate(address);
+  try {
+    const addressData: MKRLockedDelegateAPIResponse[] = await maker
+      .service('voteDelegate')
+      .getMkrLockedDelegate(address);
 
-  console.log('address data', addressData);
+    const delegators = addressData.reduce<DelegationHistory[]>(
+      (acc, { fromAddress, lockAmount, blockTimestamp, hash }) => {
+        const existing = acc.find(({ address }) => address === fromAddress);
+        if (existing) {
+          existing.lockAmount = utils.formatEther(
+            utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
+          );
+          existing.events.push({ lockAmount, blockTimestamp, hash });
+        } else {
+          acc.push({
+            address: fromAddress,
+            lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
+            events: [{ lockAmount, blockTimestamp, hash }]
+          });
+        }
 
-  const delegators = addressData.reduce<DelegationHistory[]>(
-    (acc, { fromAddress, lockAmount, blockTimestamp, hash }) => {
-      const existing = acc.find(({ address }) => address === fromAddress);
-      if (existing) {
-        existing.lockAmount = utils.formatEther(
-          utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
-        );
-        existing.events.push({ lockAmount, blockTimestamp, hash });
-      } else {
-        acc.push({
-          address: fromAddress,
-          lockAmount: utils.formatEther(utils.parseEther(lockAmount)),
-          events: [{ lockAmount, blockTimestamp, hash }]
-        });
-      }
+        return acc;
+      },
+      []
+    );
 
-      return acc;
-    },
-    []
-  );
-
-  return delegators.sort((a, b) =>
-    utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1
-  );
+    return delegators.sort((a, b) =>
+      utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1
+    );
+  } catch (e) {
+    console.error('Error fetching delegation history', e.message);
+    return [];
+  }
 }
