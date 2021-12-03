@@ -33,6 +33,31 @@ export async function fetchDelegationHistory(
     []
   );
 
+  const delegateD: MKRLockedDelegateAPIResponse[] = await maker
+    .service('voteDelegate')
+    .getMkrDelegatedTo('0xc0583df0d10c2e87ae1873b728a0bda04d8b660c');
+
+  const reddelegateD = delegateD.reduce(
+    (acc, { fromAddress, immediateCaller, lockAmount, blockTimestamp }) => {
+      const existing = acc.find(({ address }) => address === immediateCaller);
+      if (existing) {
+        existing.lockAmount = utils.formatEther(
+          utils.parseEther(existing.lockAmount).add(utils.parseEther(lockAmount))
+        );
+      } else {
+        acc.push({
+          address: immediateCaller,
+          lockAmount: utils.formatEther(utils.parseEther(lockAmount))
+        });
+      }
+
+      return acc;
+    },
+    []
+  );
+
+  console.log('got reddelegateD:', reddelegateD);
+
   return delegators.sort((a, b) =>
     utils.parseEther(a.lockAmount).gt(utils.parseEther(b.lockAmount)) ? -1 : 1
   );
