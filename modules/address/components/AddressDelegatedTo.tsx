@@ -8,9 +8,10 @@ import { getNetwork } from 'lib/maker';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
-import { format } from 'date-fns';
 import { useState } from 'react';
 import { getEtherscanLink } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
+import Tooltip from 'modules/app/components/Tooltip';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -20,7 +21,6 @@ type CollapsableRowProps = {
 };
 
 const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
-  const dateFormat = 'MMM dd yyyy h:mm';
   const [expanded, setExpanded] = useState(false);
 
   const { address, lockAmount, events } = delegate;
@@ -48,7 +48,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  {format(new Date(blockTimestamp), dateFormat)}
+                  {formatDateWithTime(blockTimestamp)}
                 </Text>
               );
             })}
@@ -77,9 +77,9 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     <Icon name="increase" size={2} color="bull" />
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {new BigNumber(
+                    {`${new BigNumber(
                       lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
-                    ).toFormat(2)}
+                    ).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
               );
@@ -97,29 +97,6 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
             </Box>
           )}
         </Flex>
-        {expanded && (
-          <Flex sx={{ flexDirection: 'column' }}>
-            {sortedEvents.map(({ blockTimestamp, lockAmount }) => {
-              return (
-                <Flex
-                  key={blockTimestamp}
-                  sx={{
-                    alignItems: 'center',
-                    ':first-of-type': { pt: 3 },
-                    ':not(:last-of-type)': { pb: 2 }
-                  }}
-                >
-                  <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {new BigNumber(lockAmount).isGreaterThan(0)
-                      ? new BigNumber(lockAmount).dividedBy(totalDelegated).multipliedBy(100).toFormat(4)
-                      : '0'}
-                    %
-                  </Text>
-                </Flex>
-              );
-            })}
-          </Flex>
-        )}
       </Box>
       <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
         <Box sx={{ height: '32px' }}>
@@ -197,8 +174,13 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressP
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
               MKR Delegated
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-              Voting Weight
+            <Tooltip label={'This is the percentage of the total MKR delegated by this address.'}>
+              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
+                Voting Weight
+              </Text>
+            </Tooltip>
+            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
+              Expand
             </Text>
           </tr>
         </thead>

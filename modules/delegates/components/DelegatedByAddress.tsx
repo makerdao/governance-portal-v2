@@ -4,13 +4,14 @@ import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'bignumber.js';
-import { format } from 'date-fns';
 import { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
+import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
 import { getEtherscanLink } from 'lib/utils';
+import { formatDateWithTime } from 'lib/datetime';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -25,7 +26,6 @@ type CollapsableRowProps = {
 };
 
 const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: CollapsableRowProps) => {
-  const dateFormat = 'MMM dd yyyy h:mm';
   const [expanded, setExpanded] = useState(false);
   const { address, lockAmount, events } = delegator;
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
@@ -51,7 +51,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  {format(new Date(blockTimestamp), dateFormat)}
+                  {formatDateWithTime(blockTimestamp)}
                 </Text>
               );
             })}
@@ -80,9 +80,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     <Icon name="increase" size={2} color="bull" />
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {new BigNumber(
+                    {`${new BigNumber(
                       lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
-                    ).toFormat(2)}
+                    ).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
               );
@@ -187,9 +187,11 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
               MKR Delegated
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-              Voting Weight
-            </Text>
+            <Tooltip label={'This is the percentage of the total MKR delegated to this delegate.'}>
+              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
+                Voting Weight
+              </Text>
+            </Tooltip>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
               Expand
             </Text>
