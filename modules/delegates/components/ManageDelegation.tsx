@@ -32,7 +32,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
               trackButtonClick('openDelegateModal');
               setShowDelegateModal(true);
             }}
-            sx={{ width: '100%', height: '45px', mb: [3] }}
+            sx={{ width: '100%', height: 'auto', mb: [3] }}
           >
             Delegate your MKR to this Delegate
           </Button>
@@ -46,7 +46,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
               trackButtonClick('openUndelegateModal');
               setShowUndelegateModal(true);
             }}
-            sx={{ width: '100%', height: '45px' }}
+            sx={{ width: '100%', height: 'auto' }}
           >
             Undelegate your MKR from this Delegate
           </Button>
