@@ -14,9 +14,9 @@ export default function DelegatesSort(): JSX.Element {
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
+          <ListboxOption value={delegatesSortEnum.random}>Sort order</ListboxOption>
           <ListboxOption value={delegatesSortEnum.mkrDelegated}>Sort by MKR delegated</ListboxOption>
-          <ListboxOption value={delegatesSortEnum.random}>Sort randomly</ListboxOption>
-          <ListboxOption value={delegatesSortEnum.creationDate}>Sort by date</ListboxOption>
+          <ListboxOption value={delegatesSortEnum.creationDate}>Sort by creation date</ListboxOption>
         </ListboxList>
       </ListboxPopover>
     </ListboxInput>

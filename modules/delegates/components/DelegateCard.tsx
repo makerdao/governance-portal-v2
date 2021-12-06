@@ -156,7 +156,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               sx={{
                 flexDirection: ['column', 'column', 'row', 'column', 'row'],
                 justifyContent: 'space-between',
-                width: '100%'
+                width: ['50%', '100%']
               }}
             >
               <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
@@ -215,7 +215,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               sx={{
                 flexDirection: ['column', 'column', 'row', 'column', 'row'],
                 justifyContent: 'space-between',
-                width: '100%',
+                width: ['50%', '100%'],
                 mb: [0, 0, 3, 0, 3]
               }}
             >

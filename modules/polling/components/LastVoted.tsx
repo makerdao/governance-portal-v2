@@ -74,8 +74,8 @@ export default function LastVoted({
               ? styles.redCalendar
               : isLongerThan21Days
               ? styles.orangeCalendar
-                ? isLongerThan14Days
-                : styles.yellowCalendar
+              : isLongerThan14Days
+              ? styles.yellowCalendar
               : styles.activeCalendar
           }
         />

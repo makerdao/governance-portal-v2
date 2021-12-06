@@ -96,7 +96,7 @@ const Delegates = ({ delegates, stats }: Props) => {
           <DelegatesFilter delegates={delegates} />
         </Flex>
 
-        <Flex sx={{ ml: 3, mt: [2, 0] }}>
+        <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
           <Button variant={'outline'} sx={{ mr: 3 }} onClick={resetFilters}>
             Clear filters
           </Button>
