@@ -18,16 +18,16 @@ export default function LastVoted({
       stroke: '#D8E0E3'
     },
     yellowCalendar: {
-      fill: 'yellow',
-      stroke: 'yellow'
+      fill: '#FDC134',
+      stroke: '#FDC134'
     },
     orangeCalendar: {
-      fill: 'orange',
-      stroke: 'orange'
+      fill: '#F77249',
+      stroke: '#F77249'
     },
     redCalendar: {
-      fill: 'red',
-      stroke: 'red'
+      fill: '#FF0000',
+      stroke: '#FF0000'
     },
     activeCalendar: {
       fill: 'primary',
