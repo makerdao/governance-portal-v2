@@ -1,7 +1,7 @@
 import shallow from 'zustand/shallow';
 import { MenuItem } from '@reach/menu-button';
 
-import useUiFiltersStore from 'stores/uiFilters';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import FilterButton from 'modules/app/components/FilterButton';
 
 export default function ProposalsSortBy(props): JSX.Element {

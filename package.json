@@ -12,12 +12,12 @@
     "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
-    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ stores/ types/",
-    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/ stores/ types/"
+    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
+    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
   },
   "dependencies": {
     "@makerdao/dai": "^0.42.2",
-    "@makerdao/dai-plugin-governance": "^0.16.2",
+    "@makerdao/dai-plugin-governance": "^0.16.6",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
     "@makerdao/dai-plugin-mcd": "^1.8.3",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",

@@ -6,7 +6,13 @@ import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
-export function DelegatePicture({ delegate }: { delegate: Delegate }): React.ReactElement {
+export function DelegatePicture({
+  delegate,
+  width = '41px'
+}: {
+  delegate: Delegate;
+  width?: string;
+}): React.ReactElement {
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
       <Flex
@@ -35,7 +41,7 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
   );
 
   return (
-    <Box sx={{ width: '41px', height: '41px', position: 'relative', minWidth: '41px' }}>
+    <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
       {delegate.picture ? (
         <Tooltip label={delegateMetrics}>
           <Image
@@ -45,12 +51,12 @@ export function DelegatePicture({ delegate }: { delegate: Delegate }): React.Rea
               objectFit: 'cover',
               width: '100%',
               borderRadius: '100%',
-              maxHeight: '41px'
+              maxHeight: width
             }}
           />
         </Tooltip>
       ) : (
-        <Jazzicon address={delegate.address} sx={{ height: '41px', width: '41px' }} />
+        <Jazzicon address={delegate.address} sx={{ height: width, width: width }} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon

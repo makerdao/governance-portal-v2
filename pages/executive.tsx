@@ -34,8 +34,8 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 
 // stores
-import useAccountsStore from 'stores/accounts';
-import useUiFiltersStore from 'stores/uiFilters';
+import useAccountsStore from 'modules/app/stores/accounts';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
 import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';

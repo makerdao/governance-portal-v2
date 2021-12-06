@@ -34,8 +34,8 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { getEtherscanLink } from 'lib/utils';
 
 // stores
-import useAccountsStore from 'stores/accounts';
-import { ZERO_ADDRESS } from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
+import { ZERO_ADDRESS } from 'modules/app/stores/accounts';
 
 //components
 import Comments from 'modules/executive/components/Comments';
@@ -51,7 +51,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 
 type Props = {

@@ -3,7 +3,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import VotingStatus from './PollVotingStatus';
 import QuickVote from './QuickVote';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
 

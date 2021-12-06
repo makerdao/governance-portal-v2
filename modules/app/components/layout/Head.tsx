@@ -40,7 +40,7 @@ export function HeadComponent({
         httpEquiv="Content-Security-Policy"
         content={
           "default-src 'none';" +
-          'frame-src https://connect.trezor.io;' +
+          'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com;' +
           "font-src 'self';" +
           "connect-src 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +

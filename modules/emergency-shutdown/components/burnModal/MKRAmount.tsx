@@ -3,7 +3,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { MKR } from 'lib/maker';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 
 type Props = {
   setBurnAmount: (burnAmount: CurrencyObject) => void;

@@ -1,17 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { SupportedNetworks } from 'lib/constants';
-import getMaker, { getNetwork } from 'lib/maker';
+import { getNetwork } from 'lib/maker';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';
+import { fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-import {
-  Poll,
-  PollTally,
-  PollTallyVote,
-  PollVoteType,
-  RawPollTally,
-  RawPollTallyRankedChoice
-} from '../types';
+import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from '../types';
 import { parseRawPollTally } from './parseRawTally';
 
 export async function getPollTally(poll: Poll, network?: SupportedNetworks): Promise<PollTally> {
@@ -23,10 +17,8 @@ export async function getPollTally(poll: Poll, network?: SupportedNetworks): Pro
   const tally: RawPollTally = await backoffRetry(3, () =>
     fetchPollTally(poll.pollId, voteType, false, currentNetwork)
   );
-  const maker = await getMaker(currentNetwork);
-  const votesByAddress: PollTallyVote[] = (
-    await maker.service('govPolling').getMkrAmtVotedByAddress(poll.pollId)
-  ).sort((a, b) => (new BigNumber(a.mkrSupport).lt(new BigNumber(b.mkrSupport)) ? 1 : -1));
+
+  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, currentNetwork);
 
   const totalMkrParticipation = tally.totalMkrParticipation;
   const winner: string = tally.winner || '';

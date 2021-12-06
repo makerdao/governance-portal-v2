@@ -3,7 +3,7 @@ import { Grid, Text, Box, Link as ExternalLink } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { SpellStateDiff } from 'types/spellStateDiff';
+import { SpellStateDiff } from 'modules/app/types/spellStateDiff';
 import { formatAddress } from 'lib/utils';
 import { ethers } from 'ethers';
 

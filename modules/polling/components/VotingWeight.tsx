@@ -2,7 +2,7 @@ import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
 import useSWR from 'swr';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
 

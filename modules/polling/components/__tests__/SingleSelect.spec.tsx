@@ -8,7 +8,7 @@ import {
   renderWithAccountSelect as render
 } from '../../../../__tests__/helpers';
 import { Poll, PollCategory } from 'modules/polling/types';
-import { accountsApi } from 'stores/accounts';
+import { accountsApi } from 'modules/app/stores/accounts';
 import getMaker from 'lib/maker';
 import PollingOverviewPage from '../../../../pages/polling';
 

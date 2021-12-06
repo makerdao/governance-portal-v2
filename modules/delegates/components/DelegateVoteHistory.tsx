@@ -2,19 +2,23 @@ import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryL
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { Box, Divider, Text } from 'theme-ui';
 import { Delegate } from '../types';
-import { DelegateMKRChart } from './DelegateMKRChart';
-import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
+import useSWR from 'swr';
+import { getNetwork } from 'lib/maker';
+import { fetchJson } from 'lib/fetchJson';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
-export function DelegateVoteHistory({
-  delegate,
-  stats
-}: {
-  delegate: Delegate;
-  stats: AddressAPIStats;
-}): React.ReactElement {
+export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React.ReactElement {
+  const { data: statsData } = useSWR<AddressAPIStats>(
+    `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
+    fetchJson,
+    {
+      revalidateOnMount: true
+    }
+  );
+
   return (
     <Box>
-      <Box>
+      <Box sx={{ pb: 2 }}>
         <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
           <Text
             as="p"
@@ -28,16 +32,14 @@ export function DelegateVoteHistory({
           <Divider mt={3} mb={3} />
         </Box>
 
-        <PollVoteHistoryList votes={stats.pollVoteHistory} />
-
-        <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
-          <DelegateMKRChart delegate={delegate} />
-        </Box>
-
-        <Divider mt={3} mb={3} />
+        {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
+        {!statsData &&
+          [1, 2, 3, 4, 5].map(i => (
+            <Box sx={{ p: 4 }} key={`loading-${i}`}>
+              <SkeletonThemed width={'100%'} height={'30px'} />
+            </Box>
+          ))}
       </Box>
-
-      <PollingParticipationOverview votes={stats.pollVoteHistory} />
     </Box>
   );
 }

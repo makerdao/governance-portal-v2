@@ -18,5 +18,4 @@ export type AddressApiResponse = {
   voteProxyInfo?: VoteProxyInfo;
   delegateInfo?: Delegate;
   address: string;
-  stats: AddressAPIStats;
 };

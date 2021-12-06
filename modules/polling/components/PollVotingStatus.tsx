@@ -4,9 +4,9 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import isNil from 'lodash/isNil';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'stores/accounts';
-import useBallotStore from 'stores/ballot';
-import useTransactionStore, { transactionsSelectors } from 'stores/transactions';
+import useAccountsStore from 'modules/app/stores/accounts';
+import useBallotStore from 'modules/polling/stores/ballotStore';
+import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
 import { Poll } from 'modules/polling/types';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {

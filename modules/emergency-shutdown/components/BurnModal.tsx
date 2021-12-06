@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'stores/transactions';
-import useAccountsStore from 'stores/accounts';
+import useTransactionStore, { transactionsApi, transactionsSelectors } from 'modules/app/stores/transactions';
+import useAccountsStore from 'modules/app/stores/accounts';
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnSigning from './burnModal/BurnSigning';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 

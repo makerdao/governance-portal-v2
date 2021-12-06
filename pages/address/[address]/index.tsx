@@ -4,6 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
+
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -19,6 +20,7 @@ import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const network = getNetwork();
@@ -60,19 +62,16 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && (
-              <DelegateDetail delegate={addressInfo.delegateInfo} stats={addressInfo.stats} />
-            )}
+            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
             {!addressInfo.delegateInfo && (
-              <AddressDetail
-                address={addressInfo.address}
-                stats={addressInfo.stats}
-                voteProxyInfo={addressInfo.voteProxyInfo}
-              />
+              <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
             )}
           </Box>
         </Stack>
         <Stack gap={3}>
+          {addressInfo.isDelegate && addressInfo.delegateInfo && (
+            <ManageDelegation delegate={addressInfo.delegateInfo} />
+          )}
           <SystemStatsSidebar
             fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
           />

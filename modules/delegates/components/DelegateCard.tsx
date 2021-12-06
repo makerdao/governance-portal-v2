@@ -7,14 +7,9 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import useAccountsStore from 'stores/accounts';
+import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
-import {
-  DelegatePicture,
-  DelegateModal,
-  UndelegateModal,
-  DelegateLastVoted
-} from 'modules/delegates/components';
+import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
   participationTooltipLabel,
   communicationTooltipLabel
@@ -24,6 +19,8 @@ import { CurrentlySupportingExecutive } from 'modules/executive/components/Curre
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
+import LastVoted from 'modules/polling/components/LastVoted';
 
 type PropTypes = {
   delegate: Delegate;
@@ -42,7 +39,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
-  const { data: lastVoteData } = useSWR(
+  const { data: lastVoteData } = useSWR<{ lastVote: PollVoteHistory }>(
     `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${getNetwork()}`,
     fetchJson,
     {
@@ -65,7 +62,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
           {lastVoteData && (
-            <DelegateLastVoted delegate={delegate} date={lastVoteData.lastVote?.blockTimestamp} left />
+            <LastVoted expired={delegate.expired} date={lastVoteData.lastVote?.blockTimestamp} left />
           )}
           {!lastVoteData && <SkeletonThemed width={'200px'} height={'15px'} />}
         </Box>
@@ -159,7 +156,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               sx={{
                 flexDirection: ['column', 'column', 'row', 'column', 'row'],
                 justifyContent: 'space-between',
-                width: '100%'
+                width: ['50%', '100%']
               }}
             >
               <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
@@ -218,7 +215,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               sx={{
                 flexDirection: ['column', 'column', 'row', 'column', 'row'],
                 justifyContent: 'space-between',
-                width: '100%',
+                width: ['50%', '100%'],
                 mb: [0, 0, 3, 0, 3]
               }}
             >

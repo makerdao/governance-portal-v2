@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 import getMaker from 'lib/maker';
-import { CurrencyObject } from 'types/currency';
-import { VoteDelegateContract } from 'types/voteDelegateContract';
-import { VoteProxyContract } from 'types/voteProxyContract';
+import { CurrencyObject } from 'modules/app/types/currency';
+import { VoteDelegateContract } from 'modules/delegates/types/voteDelegateContract';
+import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
 
 type LockedMkrData = {
   data: CurrencyObject;

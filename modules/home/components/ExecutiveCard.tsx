@@ -2,10 +2,10 @@ import Link from 'next/link';
 import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { ZERO_ADDRESS } from 'stores/accounts';
+import { ZERO_ADDRESS } from 'modules/app/stores/accounts';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'types/currency';
+import { CurrencyObject } from 'modules/app/types/currency';
 import { CMSProposal } from 'modules/executive/types';
 
 type Props = {

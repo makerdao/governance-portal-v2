@@ -1,16 +1,15 @@
-import { Delegate } from '../types';
 import { Text, Flex } from 'theme-ui';
 import React from 'react';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
 
-export function DelegateLastVoted({
-  delegate,
+export default function LastVoted({
+  expired,
   date,
   left = false
 }: {
-  delegate: Delegate;
-  date?: string;
+  expired: boolean;
+  date?: string | number;
   left?: boolean;
 }): React.ReactElement {
   const styles = {
@@ -19,16 +18,16 @@ export function DelegateLastVoted({
       stroke: '#D8E0E3'
     },
     yellowCalendar: {
-      fill: 'yellow',
-      stroke: 'yellow'
+      fill: '#FDC134',
+      stroke: '#FDC134'
     },
     orangeCalendar: {
-      fill: 'orange',
-      stroke: 'orange'
+      fill: '#F77249',
+      stroke: '#F77249'
     },
     redCalendar: {
-      fill: 'red',
-      stroke: 'red'
+      fill: '#FF0000',
+      stroke: '#FF0000'
     },
     activeCalendar: {
       fill: 'primary',
@@ -55,7 +54,7 @@ export function DelegateLastVoted({
     >
       <Text
         variant="secondary"
-        color={delegate.expired ? '#D8E0E3' : 'onSecondary'}
+        color={expired ? '#D8E0E3' : 'onSecondary'}
         sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
       >
         {lastVoteDate}
@@ -69,14 +68,14 @@ export function DelegateLastVoted({
         <Icon
           name="calendar"
           sx={
-            delegate.expired || !date
+            expired || !date
               ? styles.expiredCalendar
               : isLongerThan28Days
               ? styles.redCalendar
               : isLongerThan21Days
               ? styles.orangeCalendar
-                ? isLongerThan14Days
-                : styles.yellowCalendar
+              : isLongerThan14Days
+              ? styles.yellowCalendar
               : styles.activeCalendar
           }
         />

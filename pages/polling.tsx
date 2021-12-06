@@ -14,7 +14,6 @@ import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { getCategories } from 'modules/polling/helpers/getCategories';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -24,9 +23,9 @@ import CategoryFilter from 'modules/polling/components/CategoryFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useBallotStore from 'stores/ballot';
-import useAccountsStore from 'stores/accounts';
-import useUiFiltersStore from 'stores/uiFilters';
+import useBallotStore from 'modules/polling/stores/ballotStore';
+import useAccountsStore from 'modules/app/stores/accounts';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
@@ -36,6 +35,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { filterPolls } from 'modules/polling/helpers/filterPolls';
 
 type Props = {
   polls: Poll[];
@@ -44,18 +44,28 @@ type Props = {
 
 const PollingOverview = ({ polls, categories }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const [startDate, endDate, categoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.showHistorical,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [
+    startDate,
+    endDate,
+    categoryFilter,
+    showHistorical,
+    showPollActive,
+    showPollEnded,
+    setShowHistorical,
+    resetPollFilters
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.showHistorical,
+      state.pollFilters.showPollActive,
+      state.pollFilters.showPollEnded,
+      state.setShowHistorical,
+      state.resetPollFilters
+    ],
+    shallow
+  );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
@@ -64,22 +74,12 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
 
-  const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
-  const start = startDate && new Date(startDate);
-  const end = endDate && new Date(endDate);
-
   const filteredPolls = useMemo(() => {
-    return polls.filter(poll => {
-      // check date filters first
-      if (start && new Date(poll.startDate).getTime() < start.getTime()) return false;
-      if (end && new Date(poll.startDate).getTime() > end.getTime()) return false;
+    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
+  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
-      // if no category filters selected, return all, otherwise, check if poll contains category
-      return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
-    });
-  }, [polls, startDate, endDate, categoryFilter]);
-
-  const [activePolls, historicalPolls] = partition(filteredPolls, isActivePoll);
+  const [activePolls, setActivePolls] = useState([]);
+  const [historicalPolls, setHistoricalPolls] = useState([]);
 
   const groupedActivePolls = groupBy(activePolls, 'endDate');
   const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
@@ -88,10 +88,15 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   useEffect(() => {
-    if (activePolls.length === 0) {
+    const [active, historical] = partition(filteredPolls, isActivePoll);
+
+    if (active.length === 0) {
       setShowHistorical(true);
     }
-  }, []);
+
+    setActivePolls(active);
+    setHistoricalPolls(historical);
+  }, [filteredPolls]);
 
   const loadMore = entries => {
     const target = entries.pop();
@@ -156,7 +161,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
               Filters
             </Heading>
-            <CategoryFilter categories={categories} />
+            <CategoryFilter categories={categories} polls={polls} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
           <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
