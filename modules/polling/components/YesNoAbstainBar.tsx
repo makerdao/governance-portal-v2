@@ -35,7 +35,7 @@ export function YesNoAbstainBar({
       width: `${noPercent}%`
     },
     abstainBar: {
-      backgroundColor: 'secondary',
+      backgroundColor: 'secondaryEmphasis',
       height: '4px',
       width: `${abstainPercent}%`
     },
