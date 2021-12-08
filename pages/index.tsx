@@ -150,8 +150,8 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                       onClick={() => setVideoOpen(true)}
                     >
                       <Flex sx={{ alignItems: 'center' }}>
+                        <Icon sx={{ mr: 2 }} name="play" size={3} fill="#7e7e88" />
                         <Text>How to vote</Text>
-                        <Icon sx={{ ml: 2 }} name="play_outline" size={3} />
                       </Flex>
                     </Button>
                   </Box>
