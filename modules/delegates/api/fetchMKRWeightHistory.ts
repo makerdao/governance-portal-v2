@@ -34,7 +34,7 @@ export async function fetchDelegatesMKRWeightHistory(
   const output: MKRWeightHisory[] = [];
 
   for (let i = start; i <= end; i++) {
-    const existingItem = addressData.find(item => {
+    const existingItem = addressData.filter(item => {
       const day = parseInt(
         format(new Date(item.blockTimestamp), 'D', {
           useAdditionalDayOfYearTokens: true
@@ -44,12 +44,15 @@ export async function fetchDelegatesMKRWeightHistory(
         return item;
       }
     });
-    if (existingItem) {
+
+    if (existingItem && existingItem.length > 0) {
+      // If we have multiple items for the same day, use the final one because the lockTotal will be accurate.
+      const mostRecent = existingItem[existingItem.length - 1];
       output.push({
-        date: parse(i.toString(), 'D', new Date(existingItem.blockTimestamp), {
+        date: parse(i.toString(), 'D', new Date(mostRecent.blockTimestamp), {
           useAdditionalDayOfYearTokens: true
         }),
-        MKR: new BigNumber(existingItem.lockTotal).toNumber()
+        MKR: new BigNumber(mostRecent.lockTotal).toNumber()
       });
     } else {
       output.push({
