@@ -22,6 +22,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import invariant from 'tiny-invariant';
 import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -425,7 +426,17 @@ export default function ProposalPage({
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
+
+  const spellAddress = prefetchedProposal?.address;
+  // const spellAddress = '0xad92310c5e1b3622ab6987917d6a074bca428e61';
+
+  // TODO here we check if we have diffs, if not, fetch from useSWR -- create a hook? --
+  const { data: simulatedDiffs } = useSWR(
+    `/api/executive/state-diff/${spellAddress}?network=${getNetwork()}`
+  );
+
   // fetch proposal contents at run-time if on any network other than the default
+  // TODO should we do it for spell diffs too?
   useEffect(() => {
     if (!isDefaultNetwork() && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
@@ -457,109 +468,9 @@ export default function ProposalPage({
     );
 
   const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  return <ProposalView proposal={proposal as Proposal} spellDiffs={prefetchedSpellDiffs} />;
+  const spellDiffs = prefetchedSpellDiffs?.length > 0 ? prefetchedSpellDiffs : simulatedDiffs;
+  return <ProposalView proposal={proposal as Proposal} spellDiffs={spellDiffs} />;
 }
-
-///// BEGIN API STUFF
-
-async function ethCall(provider, encoder, method, to) {
-  const calldata = {
-    to,
-    data: encoder.encodeFunctionData(method)
-  };
-
-  return encoder.decodeFunctionResult(method, await provider.call(calldata));
-}
-
-const getSpellData = async (proposalAddress): Promise<SpellDiff[]> => {
-  if (!proposalAddress) return [];
-  const castSig = '0x96d373e5';
-  const network = SupportedNetworks.MAINNET;
-  const maker = await getMaker(network);
-  // We need this to check if the spell has been cast
-  const data = await analyzeSpell(proposalAddress, maker);
-  console.log('spelldata2', data);
-
-  // const hasCast = data.hasBeenCast;
-  const hasCast = false;
-
-  if (hasCast) {
-    // Need to find the tx of the cast spell
-    const provider = new ethers.providers.EtherscanProvider();
-    const history = await provider.getHistory(proposalAddress);
-    const castTx = history.filter(h => h.data === castSig);
-
-    if (castTx.length > 1) {
-      // TODO: Need to loop & fetch the txns from the provider to find the successful one
-      console.warn('multiple matching txs', castTx);
-    }
-    const [{ hash }] = castTx;
-
-    // TODO: currently the endpoint is hardcoded to only allow the following hash:
-    const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
-    const url = `http://18.157.179.179/api/v1/transactions/${hcHash}/diffs/decoded`;
-
-    const diff = await fetchJson(url);
-
-    return diff;
-  } else {
-    console.log('HAS NOT BEEN CAST');
-    // TODO split these two blocks into own function
-    const spellAddress = '0x82b24156f0223879aaaC2DD0996a25Fe1FF74e1a'; // nov 11
-
-    const network = SupportedNetworks.MAINNET;
-    const maker = await getMaker(network);
-
-    const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
-    const provider = ethers.getDefaultProvider(network, {
-      infura: config.INFURA_KEY,
-      alchemy: config.ALCHEMY_KEY
-    });
-    const encoder = new ethers.utils.Interface([
-      'function sig() returns (bytes)',
-      'function action() returns (address)',
-      'function done() returns (bool)',
-      'function exec(address, bytes)',
-      'function actions()'
-    ]);
-
-    const [usr] = await ethCall(provider, encoder, 'action', spellAddress);
-
-    console.log('^^^usr2', usr);
-    const data2 = encoder.encodeFunctionData('exec', [usr, encoder.encodeFunctionData('actions')]);
-    console.log('^^^data3', data2);
-
-    // const from_address = MCD_PAUSE;
-    // const to_address = '0xad92310c5e1b3622ab6987917d6a074bca428e61'; // spell address from example
-    // const data = '0x2b5e3af16b1880000';
-    // OLD WAY
-    // const to_address = MCD_PAUSE_PROXY;
-    // const data = data2;
-    // const gas = '0x1c6b9e';
-    // const gas_price = '0x23bd501f00';
-    // const execute_on_top_of_block_number = 13624482; // block fromlatest cast
-    // const timestamp = 1637047755; // 11/15 5:29pm mst
-    // const url = `http://3.123.40.243/api/v1/transactions/simulation/?from_address=${from_address}&to_address=${to_address}&data=${data}&gas=${gas}&gas_price=${gas_price}&execute_on_top_of_block_number=${execute_on_top_of_block_number}&timestamp=${timestamp}`;
-
-    // New way
-    const from_address = '0x5cab1e5286529370880776461c53a0e47d74fb63'; // Think its just the caster of the spell, could be anyone?
-    const to_address = '0x82b24156f0223879aaac2dd0996a25fe1ff74e1a'; // the spell address
-    // const data = data2;
-    const data = '0x96d373e5'; // The spell signature can also be pulled from the interface but should always be "cast" right?
-    const gas = '0x1c6b9e'; // from the example, should see if we can get it dynamically
-    const gas_price = '0x23bd501f00';
-    const execute_on_top_of_block_number = 13624481; // from example. could be current block, eh?
-    // const timestamp = 1637047755; // 11/15 5:29pm mst
-    const value = 0; // think its always 0
-
-    const ip = '18.157.179.179';
-    const url = `http://${ip}/api/v1/transactions/simulation/?from_address=${from_address}&to_address=${to_address}&data=${data}&gas=${gas}&gas_price=${gas_price}&execute_on_top_of_block_number=${execute_on_top_of_block_number}&value=${value}`;
-    // const url =
-    //   'http://18.157.179.179/api/v1/transactions/simulation/?from_address=0x5cab1e5286529370880776461c53a0e47d74fb63&to_address=0x82b24156f0223879aaac2dd0996a25fe1ff74e1a&data=0x96d373e5&gas=0x1c6b9e&gas_price=0x23bd501f00&value=0&execute_on_top_of_block_number=13624481';
-    const { diffs } = await fetchJson(url);
-    return diffs;
-  }
-};
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch proposal contents at build-time if on the default network
@@ -570,7 +481,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
-  const spellDiffs: SpellDiff[] = await getSpellData(proposal?.address);
+  // TODO: only fetch at build time if spell has been cast otherwise we do it client side (because it's dependant on current chain state)
+  const network = SupportedNetworks.MAINNET; // we only prefetch on mainnet
+  //TODO: this means we can't use existance as a valid comparison in the component
+  const maker = await getMaker(network);
+  const { hasBeenCast } = await analyzeSpell(proposal?.address, maker);
+  // const hasBeenCast = false;
+
+  // TODO: getSpellData should be moved into a separate file (api utils or something?)
+  const spellDiffs: SpellDiff[] = hasBeenCast ? await fetchHistoricalSpellDiff(proposal?.address) : [];
 
   return {
     props: {
