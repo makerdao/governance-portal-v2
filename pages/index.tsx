@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, Flex, useColorMode, Box, Button } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -148,7 +149,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                       sx={{ borderRadius: 'round' }}
                       onClick={() => setVideoOpen(true)}
                     >
-                      How to vote
+                      <Flex sx={{ alignItems: 'center' }}>
+                        <Text>How to vote</Text>
+                        <Icon sx={{ ml: 2 }} name="play_outline" size={3} />
+                      </Flex>
                     </Button>
                   </Box>
                 </Stack>
