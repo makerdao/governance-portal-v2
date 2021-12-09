@@ -1,15 +1,14 @@
 import { ethers } from 'ethers';
 import { isValid, format } from 'date-fns';
+import { DecodedDiffAPIResponse, SimulationDiffAPIResponse, SpellDiff } from '../types';
 
 // Standardize the diff properties and use the decoded ones when available
-export const validateDiff = diff => {
-  const contract = diff.decoded_contract ?? (diff.contract || 'N/A');
-  const location = diff.decoded_location ?? (diff.location || 'N/A');
-  const fromVal = diff.decoded_from_val ?? (diff.from_val || 'N/A');
-  const toVal = diff.decoded_to_val ?? (diff.to_val || 'N/A');
-
-  return { contract, location, fromVal, toVal };
-};
+export const validateDiff = (diff: DecodedDiffAPIResponse | SimulationDiffAPIResponse): SpellDiff => ({
+  contract: (diff as DecodedDiffAPIResponse).decoded_contract ?? diff.contract,
+  location: (diff as DecodedDiffAPIResponse).decoded_location ?? diff.location,
+  fromVal: (diff as DecodedDiffAPIResponse).decoded_from_val ?? diff.from_val,
+  toVal: (diff as DecodedDiffAPIResponse).decoded_to_val ?? diff.to_val
+});
 
 export const formatLocation = location => {
   if (location.indexOf(']') !== -1) {

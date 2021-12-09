@@ -1,7 +1,10 @@
 import { fetchJson } from 'lib/fetchJson';
-import { validateDiff, formatLocation, formatValue } from '../helpers/spellDiffParsers';
+import { validateDiff } from '../helpers/spellDiffParsers';
+import { SimulationDiffAPIResponse, SpellDiff } from '../types';
 
-export async function fetchSimulationSpellDiffs() {
+type Response = Record<'diffs', SimulationDiffAPIResponse[]>;
+
+export async function fetchSimulationSpellDiffs(proposalAddress: string): Promise<SpellDiff[]> {
   const from_address = '0x5cab1e5286529370880776461c53a0e47d74fb63'; // Think its just the caster of the spell, could be anyone?
   const to_address = '0x82b24156f0223879aaac2dd0996a25fe1ff74e1a'; // the spell address
   // const data = data2;
@@ -14,7 +17,7 @@ export async function fetchSimulationSpellDiffs() {
 
   const ip = '18.157.179.179';
   const url = `http://${ip}/api/v1/transactions/simulation/?from_address=${from_address}&to_address=${to_address}&data=${data}&gas=${gas}&gas_price=${gas_price}&execute_on_top_of_block_number=${execute_on_top_of_block_number}&value=${value}`;
-  const { diffs } = await fetchJson(url);
+  const { diffs } = <Response>await fetchJson(url);
   const validated = diffs.map(diff => validateDiff(diff));
   return validated;
 }

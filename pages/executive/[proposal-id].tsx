@@ -50,7 +50,7 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
-import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'types/currency';
 import { fetchJson } from 'lib/fetchJson';
@@ -59,13 +59,6 @@ import { SupportedNetworks } from 'lib/constants';
 import { Address } from 'modules/address/components/Address';
 
 import { config } from 'lib/config';
-
-export type SpellDiff = {
-  decoded_contract: string;
-  decoded_location: string;
-  decoded_from_val: string;
-  decoded_to_val: string;
-};
 
 type Props = {
   proposal: Proposal;

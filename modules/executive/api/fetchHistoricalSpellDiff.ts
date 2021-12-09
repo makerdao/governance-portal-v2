@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
 import { validateDiff } from '../helpers/spellDiffParsers';
+import { DecodedDiffAPIResponse, SpellDiff } from '../types';
 
-// const getSpellData = async (proposalAddress): Promise<SpellDiff[]> => {
-export async function fetchHistoricalSpellDiff(proposalAddress) {
+export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise<SpellDiff[]> {
   if (!proposalAddress) return [];
   // TODO: this sig is for 'cast()' which is what we're looking for.
   // It could also also be retrieved by using ethers Interface.encodeFunctionData(), but we always know it, so...
@@ -25,7 +25,7 @@ export async function fetchHistoricalSpellDiff(proposalAddress) {
   const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
   const url = `http://18.157.179.179/api/v1/transactions/${hcHash}/diffs/decoded`;
 
-  const diffs = await fetchJson(url);
+  const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
   const validated = diffs.map(diff => validateDiff(diff));
 
   return validated;
