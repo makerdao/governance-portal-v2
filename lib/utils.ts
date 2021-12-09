@@ -5,6 +5,7 @@ import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
+import { format } from 'date-fns';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { SpellStateDiff } from 'modules/app/types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
@@ -176,3 +177,19 @@ export const sortBytesArray = _array =>
 
 export const formatRound = (num, decimals = 2) =>
   isNaN(num) ? '----' : round(num, decimals).toLocaleString({}, { minimumFractionDigits: decimals });
+
+export const isoDateConversion = isoDate => {
+  if (isoDate) {
+    const d = isoDate.split(/[-T:]/);
+    return new Date(d[0], d[1] - 1, d[2], d[3], d[4]);
+  } else {
+    return isoDate;
+  }
+};
+
+export const formatIsoDateConversion = date =>
+  parseInt(
+    format(new Date(isoDateConversion(date)), 'D', {
+      useAdditionalDayOfYearTokens: true
+    })
+  );

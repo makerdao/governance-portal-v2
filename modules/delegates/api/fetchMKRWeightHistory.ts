@@ -1,4 +1,5 @@
 import { SupportedNetworks } from 'lib/constants';
+import { formatIsoDateConversion } from 'lib/utils';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { MKRWeightHisory } from '../types/mkrWeight';
 import getMaker from 'lib/maker';
@@ -19,11 +20,7 @@ export async function fetchDelegatesMKRWeightHistory(
 
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
-  const start = parseInt(
-    format(new Date(addressData[0].blockTimestamp), 'D', {
-      useAdditionalDayOfYearTokens: true
-    })
-  );
+  const start = formatIsoDateConversion(addressData[0].blockTimestamp);
 
   const end = parseInt(
     format(new Date(), 'D', {
@@ -35,11 +32,7 @@ export async function fetchDelegatesMKRWeightHistory(
 
   for (let i = start; i <= end; i++) {
     const existingItem = addressData.filter(item => {
-      const day = parseInt(
-        format(new Date(item.blockTimestamp), 'D', {
-          useAdditionalDayOfYearTokens: true
-        })
-      );
+      const day = formatIsoDateConversion(item.blockTimestamp);
       if (day === i) {
         return item;
       }
