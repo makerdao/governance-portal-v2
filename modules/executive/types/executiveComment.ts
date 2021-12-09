@@ -1,7 +1,7 @@
-export type Comment = {
+export type ExecutiveComment = {
   voterAddress: string;
   voterWeight: string;
   comment: string;
   date: Date;
-  proposalAddress: string;
+  spellAddress: string;
 };

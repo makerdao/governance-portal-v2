@@ -35,7 +35,6 @@ import { getEtherscanLink } from 'lib/utils';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
-import { ZERO_ADDRESS } from 'modules/app/stores/accounts';
 
 //components
 import Comments from 'modules/executive/components/Comments';
@@ -53,6 +52,8 @@ import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
+import { ExecutiveComment } from 'modules/executive/types/executiveComment';
+import { ZERO_ADDRESS } from 'modules/app/constants';
 
 type Props = {
   proposal: Proposal;
@@ -104,7 +105,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: hat } = useHat();
   const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
-  const { data: comments, error: commentsError } = useSWR(
+  const { data: comments, error: commentsError } = useSWR<ExecutiveComment[]>(
     `/api/executive/comments/list/${proposal.address}`,
     { refreshInterval: 60000 }
   );

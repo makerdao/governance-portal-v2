@@ -17,7 +17,7 @@ import { formatDateWithTime } from 'lib/datetime';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -41,6 +41,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
+import { usePollComments } from 'modules/polling/hooks/usePollComments';
+import PollComments from 'modules/polling/components/PollComments';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -62,6 +64,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
   const { tally } = usePollTally(poll.pollId, 10000);
+  const { comments } = usePollComments(poll.pollId);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
@@ -188,7 +191,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
-              tabTitles={['Poll Detail', 'Vote Breakdown']}
+              tabTitles={[
+                'Poll Detail',
+                'Vote Breakdown',
+                `Comments${comments ? ` (${comments.length})` : ''}`
+              ]}
               tabPanels={[
                 <div key={1}>
                   <div
@@ -197,7 +204,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   />
                 </div>,
                 !tally ? (
-                  <Box sx={{ m: 4 }}>
+                  <Box sx={{ m: 4 }} key={2}>
                     <Skeleton />
                   </Box>
                 ) : (
@@ -279,7 +286,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       {tally && <VotingWeightComponent tally={tally} poll={poll} />}
                     </Flex>
                   ]
-                )
+                ),
+                <div key={3}>
+                  <PollComments comments={comments} />
+                </div>
               ]}
               banner={
                 tally &&

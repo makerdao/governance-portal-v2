@@ -4,12 +4,12 @@ import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import CommentSortBy from './CommentSortBy';
-import { Comment } from 'modules/app/types/comment';
 import { Proposal } from '../types';
 import { getEtherscanLink, formatAddress } from 'lib/utils';
 import { formatDateWithTime } from 'lib/datetime';
 import { getNetwork } from 'lib/maker';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import { ExecutiveComment } from '../types/executiveComment';
 
 export default function CommentsTab({
   proposal,
@@ -17,7 +17,7 @@ export default function CommentsTab({
   ...props
 }: {
   proposal: Proposal;
-  comments: Comment[] | undefined;
+  comments: ExecutiveComment[] | undefined;
 }): JSX.Element {
   const commentSortBy = useUiFiltersStore(state => state.commentSortBy);
 

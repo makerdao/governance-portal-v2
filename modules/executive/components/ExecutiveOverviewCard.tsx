@@ -10,13 +10,13 @@ import { formatDateWithoutTime } from 'lib/datetime';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import useAccountsStore from 'modules/app/stores/accounts';
-import { ZERO_ADDRESS } from 'modules/app/stores/accounts';
 import { Proposal, SpellData } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { ZERO_ADDRESS } from 'modules/app/constants';
 
 type Props = {
   proposal: Proposal;

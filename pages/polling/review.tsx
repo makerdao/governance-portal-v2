@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, Button, Flex } from 'theme-ui';
+import { Heading, Box, Button, Flex, Text, Textarea } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -29,15 +28,34 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, txId, submitBallot] = useBallotStore(
-    state => [state.ballot, state.txId, state.submitBallot],
+  const [ballot, txId, submitBallot, setComments, updateComment, comments] = useBallotStore(
+    state => [
+      state.ballot,
+      state.txId,
+      state.submitBallot,
+      state.setComments,
+      state.updateComment,
+      state.comments
+    ],
     shallow
   );
 
   const account = useAccountsStore(state => state.currentAccount);
+
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
+
+  const votedPolls = Object.keys(ballot)
+    .map(pollId => {
+      return findPollById(polls, pollId);
+    })
+    .filter(p => !!p) as Poll[];
+
+  useEffect(() => {
+    // Reset previous comments on load.
+    setComments([]);
+  }, []);
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
@@ -56,7 +74,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       </Flex>
     </Flex>
   );
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {mobileVotingPoll && (
@@ -84,12 +101,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
-                  {Object.keys(ballot).map((pollId, index) => {
-                    const poll = findPollById(polls, pollId);
-
-                    if (!poll) {
-                      return null;
-                    }
+                  {votedPolls.map((poll, index) => {
                     return (
                       <PollOverviewCard
                         key={poll.multiHash}
@@ -98,7 +110,26 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         showVoting={true}
                         startMobileVoting={() => setMobileVotingPoll(poll)}
                         sx={cardStyles(index, ballotLength)}
-                      />
+                      >
+                        <Box sx={{ pt: 2 }}>
+                          <Text
+                            as="p"
+                            variant="h2"
+                            sx={{
+                              fontWeight: 'semiBold',
+                              mb: 2
+                            }}
+                          >
+                            Why are you voting for this proposal?
+                          </Text>
+                          <Textarea
+                            value={comments.find(i => i.pollId === poll.pollId)?.comment}
+                            onChange={e => updateComment(e.target.value, poll.pollId)}
+                            placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
+                            maxLength={250}
+                          />
+                        </Box>
+                      </PollOverviewCard>
                     );
                   })}
                 </Stack>

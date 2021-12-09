@@ -23,6 +23,7 @@ import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import React from 'react';
 
 type Props = {
   poll: Poll;
@@ -30,12 +31,14 @@ type Props = {
   reviewPage: boolean;
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
+  children?: React.ReactNode;
 };
 export default function PollOverviewCard({
   poll,
   startMobileVoting,
   reviewPage,
   showVoting,
+  children,
   ...props
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
@@ -129,7 +132,7 @@ export default function PollOverviewCard({
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 width: bpi > 0 ? 'auto' : '100%',
-                p: bpi > 0 ? 0 : 2
+                p: 0
               }}
             >
               {canVote &&
@@ -198,6 +201,8 @@ export default function PollOverviewCard({
             )}
           </Flex>
         </Box>
+
+        {children && <Box>{children}</Box>}
       </Box>
 
       {tally && tally.totalMkrParticipation > 0 && (
