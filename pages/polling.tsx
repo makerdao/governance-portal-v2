@@ -184,7 +184,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                   <Stack>
                     {sortedEndDatesActive.map(date => (
                       <div key={date}>
-                        <Text variant="caps" color="textSecondary" mb={2}>
+                        <Text as="p" variant="caps" color="textSecondary" mb={2}>
                           {groupedActivePolls[date].length} Poll
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}

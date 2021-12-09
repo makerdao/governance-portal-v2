@@ -44,7 +44,8 @@ export default function PollOverviewCard({
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
-  const showQuickVote = canVote && bpi > 0 && showVoting;
+  const showQuickVote = canVote && showVoting;
+
   const ballot = useBallotStore(state => state.ballot);
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
@@ -58,7 +59,9 @@ export default function PollOverviewCard({
             {bpi === 0 && (
               <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
                 <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-                <VotingStatus poll={poll} />
+                <Box sx={{ mt: 1 }}>
+                  <VotingStatus poll={poll} />
+                </Box>
               </Box>
             )}
             <Box sx={{ cursor: 'pointer' }}>
@@ -103,7 +106,7 @@ export default function PollOverviewCard({
               </Box>
             )}
           </Stack>
-          {showQuickVote && (
+          {showQuickVote && bpi > 0 && (
             <Box sx={{ ml: 2, minWidth: '265px' }}>
               <QuickVote
                 poll={poll}
@@ -121,7 +124,7 @@ export default function PollOverviewCard({
             sx={{
               alignItems: 'center',
               justifyContent: 'space-between',
-              flexDirection: ['column-reverse', 'row']
+              flexDirection: ['column', 'row']
             }}
           >
             <Flex
@@ -129,43 +132,9 @@ export default function PollOverviewCard({
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 width: bpi > 0 ? 'auto' : '100%',
-                p: bpi > 0 ? 0 : 2
+                mt: 3
               }}
             >
-              {canVote &&
-                showVoting &&
-                bpi === 0 &&
-                (onBallot ? (
-                  <Button
-                    variant="outline"
-                    mr={2}
-                    onClick={() => {
-                      trackButtonClick('showHistoricalPolls');
-                      startMobileVoting && startMobileVoting();
-                    }}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      flexWrap: 'nowrap',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Icon name="edit" size={3} mr={2} />
-                    Edit Choices
-                  </Button>
-                ) : (
-                  <Button
-                    variant="primary"
-                    mr={2}
-                    px={4}
-                    onClick={() => {
-                      trackButtonClick('startMobileVoting');
-                      startMobileVoting && startMobileVoting();
-                    }}
-                  >
-                    Vote
-                  </Button>
-                ))}
               <Link
                 key={poll.slug}
                 href={{ pathname: '/polling/[poll-hash]', query: { network } }}
@@ -188,10 +157,18 @@ export default function PollOverviewCard({
               </Link>
             </Flex>
 
+            {showQuickVote && bpi === 0 && (
+              <Box sx={{ mt: 3, width: '100%' }}>
+                <QuickVote poll={poll} showHeader={false} account={account} showStatus={!reviewPage} />
+              </Box>
+            )}
+
             {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
               <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                 {tally && tally.totalMkrParticipation > 0 && (
-                  <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                  <Box sx={{ mt: 3 }}>
+                    <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                  </Box>
                 )}
                 {!tally && <SkeletonThemed width={'265px'} height={'30px'} />}
               </Box>
