@@ -59,9 +59,6 @@ export default function PollOverviewCard({
             {bpi === 0 && (
               <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
                 <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-                <Box sx={{ mt: 1 }}>
-                  <VotingStatus poll={poll} />
-                </Box>
               </Box>
             )}
             <Box sx={{ cursor: 'pointer' }}>
@@ -159,6 +156,7 @@ export default function PollOverviewCard({
 
             {showQuickVote && bpi === 0 && (
               <Box sx={{ mt: 3, width: '100%' }}>
+                <VotingStatus poll={poll} />
                 <QuickVote poll={poll} showHeader={false} account={account} showStatus={!reviewPage} />
               </Box>
             )}
