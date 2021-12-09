@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
-import isNil from 'lodash/isNil';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { getNetwork } from 'lib/maker';
@@ -11,10 +9,7 @@ import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import useAccountsStore from 'modules/app/stores/accounts';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 import QuickVote from './QuickVote';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { POLL_VOTE_TYPE } from '../polling.constants';
@@ -26,28 +21,16 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 type Props = {
   poll: Poll;
-  startMobileVoting?: () => void;
   reviewPage: boolean;
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
 };
-export default function PollOverviewCard({
-  poll,
-  startMobileVoting,
-  reviewPage,
-  showVoting,
-  ...props
-}: Props): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-
+export default function PollOverviewCard({ poll, reviewPage, showVoting, ...props }: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
-
-  const ballot = useBallotStore(state => state.ballot);
-  const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   const { tally } = usePollTally(poll.pollId);
 
