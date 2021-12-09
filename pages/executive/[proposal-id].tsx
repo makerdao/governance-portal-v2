@@ -430,9 +430,10 @@ export default function ProposalPage({
   const spellAddress = prefetchedProposal?.address;
   // const spellAddress = '0xad92310c5e1b3622ab6987917d6a074bca428e61';
 
-  // TODO here we check if we have diffs, if not, fetch from useSWR -- create a hook? --
   const { data: simulatedDiffs } = useSWR(
-    `/api/executive/state-diff/${spellAddress}?network=${getNetwork()}`
+    prefetchedSpellDiffs.length === 0
+      ? `/api/executive/state-diff/${spellAddress}?network=${getNetwork()}`
+      : null
   );
 
   // fetch proposal contents at run-time if on any network other than the default
@@ -468,7 +469,7 @@ export default function ProposalPage({
     );
 
   const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  const spellDiffs = prefetchedSpellDiffs?.length > 0 ? prefetchedSpellDiffs : simulatedDiffs;
+  const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : simulatedDiffs;
   return <ProposalView proposal={proposal as Proposal} spellDiffs={spellDiffs} />;
 }
 
@@ -481,20 +482,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ? { address: proposalId, key: proposalId }
     : await getExecutiveProposal(proposalId);
 
-  // TODO: only fetch at build time if spell has been cast otherwise we do it client side (because it's dependant on current chain state)
   const network = SupportedNetworks.MAINNET; // we only prefetch on mainnet
-  //TODO: this means we can't use existance as a valid comparison in the component
   const maker = await getMaker(network);
   const { hasBeenCast } = await analyzeSpell(proposal?.address, maker);
   // const hasBeenCast = false;
 
-  // TODO: getSpellData should be moved into a separate file (api utils or something?)
+  // Only fetch at build time if spell has been cast, otherwise we do it client side
   const spellDiffs: SpellDiff[] = hasBeenCast ? await fetchHistoricalSpellDiff(proposal?.address) : [];
 
   return {
     props: {
       proposal,
-      spellDiffs
+      spellDiffs,
+      revalidate: 30 // Ensures that after a spell is cast, we regenerate the static page with fetchHistoricalSpellDiff
     }
   };
 };
