@@ -20,7 +20,7 @@ import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
 import { format } from 'date-fns';
-import { isoDateConversion } from 'lib/utils';
+import { isoDateConversion } from 'lib/datetime';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
