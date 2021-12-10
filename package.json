@@ -51,7 +51,7 @@
     "lottie-web": "^5.7.1",
     "mixpanel-browser": "^2.39.0",
     "mongodb": "^3.6.2",
-    "next": "^12.0.5",
+    "next": "^12.0.6",
     "next-swagger-doc": "^0.1.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
