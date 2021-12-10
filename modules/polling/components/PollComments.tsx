@@ -10,25 +10,69 @@ import { getNetwork } from 'lib/maker';
 import { MenuItem } from '@reach/menu-button';
 import FilterButton from 'modules/app/components/FilterButton';
 import { PollComment } from '../types/pollComments';
-export default function PollComments({ comments }: { comments: PollComment[] | undefined }): JSX.Element {
+import { Poll, PollTally } from '../types';
+import useAccountsStore from 'modules/app/stores/accounts';
+
+type PollCommentWithWeight = PollComment & {
+  voterWeight: BigNumber;
+};
+
+export default function PollComments({
+  comments,
+  tally,
+  poll
+}: {
+  comments: PollComment[] | undefined;
+  tally?: PollTally;
+  poll: Poll;
+}): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useState('date');
 
+  // Used to display the share button in owned comments
+  const account = useAccountsStore(state => state.currentAccount);
+
+  const mergedComments: PollCommentWithWeight[] = useMemo(() => {
+    if (!comments) {
+      return [];
+    }
+    if (!tally) {
+      return comments?.map(
+        c =>
+          ({
+            ...c,
+            voterWeight: new BigNumber(0)
+          } as PollCommentWithWeight)
+      );
+    } else {
+      return comments?.map(c => {
+        const tallyVote = tally.votesByAddress?.find(i => {
+          return i.voter === c.voterAddress;
+        });
+        return {
+          ...c,
+          voterWeight: new BigNumber(tallyVote ? tallyVote.mkrSupport : 0)
+        } as PollCommentWithWeight;
+      });
+    }
+  }, [comments, tally]);
+
   const sortedComments = useMemo(() => {
-    return comments?.sort((a, b) => {
+    return mergedComments.sort((a, b) => {
       if (commentSortBy === 'Latest') {
         const aDate = a.date || 0;
         const bDate = b.date || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
       } else if (commentSortBy === 'MKR Amount') {
-        const aWeight = new BigNumber(a.voterWeight || 0);
-        const bWeight = new BigNumber(b.voterWeight || 0);
-        return aWeight.lt(bWeight) ? 1 : aWeight.eq(bWeight) ? 0 : -1;
+        return a.voterWeight.lt(b.voterWeight) ? 1 : a.voterWeight.eq(b.voterWeight) ? 0 : -1;
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [commentSortBy, comments]);
+  }, [commentSortBy, mergedComments]);
 
-  const twitterMessage = `I voted on this poll ${'e'}`;
+  const getTwitterMessage = (comment: PollComment) => {
+    return `I voted on a MakerDAO governance poll: ${poll.title}. Learn more about this poll, here: `;
+  };
+
   return (
     <Stack gap={3} sx={{ p: 4 }}>
       <Flex
@@ -98,14 +142,20 @@ export default function PollComments({ comments }: { comments: PollComment[] | u
                     <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
                       {formatDateWithTime(comment.date)}
                     </Text>
-                    <ExternalLink
-                      href={`https://twitter.com/intent/tweet?text=${twitterMessage}`}
-                      target="_blank"
-                    >
-                      <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
-                        Share <Icon name="twitter" size={12} ml={1} />
-                      </Text>
-                    </ExternalLink>
+                    {account?.address === comment.voterAddress && (
+                      <ExternalLink
+                        href={`https://twitter.com/intent/tweet?text=${getTwitterMessage(
+                          comment
+                        )}&url=${`https://vote.makerdao.com/polling/${
+                          poll.slug
+                        }#comments?network=${getNetwork()}`}`}
+                        target="_blank"
+                      >
+                        <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
+                          Share <Icon name="twitter" size={12} ml={1} />
+                        </Text>
+                      </ExternalLink>
+                    )}
                   </Flex>
                   <Flex sx={{ flexDirection: 'row', mt: 1 }}>
                     <ExternalLink
@@ -115,7 +165,7 @@ export default function PollComments({ comments }: { comments: PollComment[] | u
                       <Text>{formatAddress(comment.voterAddress)}</Text>
                     </ExternalLink>
                     <Text variant="text" sx={{ ml: 1, fontWeight: 'normal' }}>
-                      voted with {comment.voterWeight} MKR{' '}
+                      voted with {comment.voterWeight.toFixed(2)} MKR{' '}
                     </Text>
                   </Flex>
                   <Text mt={2} variant="text" color="secondaryEmphasis" sx={{ overflowWrap: 'break-word' }}>

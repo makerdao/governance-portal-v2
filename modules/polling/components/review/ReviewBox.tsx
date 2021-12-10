@@ -32,14 +32,16 @@ export default function ReviewBox({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
+  const { clearTx, voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(
     state => ({
       clearTx: state.clearTx,
       voteTxId: state.txId,
       ballot: state.ballot,
-      submitBallot: state.submitBallot
-    }),
-    shallow
+      submitBallot: state.submitBallot,
+      signComments: state.signComments,
+      signedMessage: state.signedMessage,
+      comments: state.comments
+    })
   );
 
   const transaction = useTransactionStore(
@@ -58,17 +60,45 @@ export default function ReviewBox({
       <Divider m={0} sx={{ display: ['none', 'block'] }} />
       {bpi > 2 && (
         <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-          <Button
-            onClick={() => {
-              trackButtonClick('submitBallot');
-              submitBallot();
-            }}
-            variant="primaryLarge"
-            disabled={!ballotLength || !!voteTxId}
-            sx={{ width: '100%' }}
-          >
-            Submit Your Ballot
-          </Button>
+          {comments.filter(i => !!i.comment).length > 0 ? (
+            <Box>
+              <Button
+                onClick={() => {
+                  trackButtonClick('signCommentsPolling');
+                  signComments();
+                }}
+                variant="primaryOutline"
+                disabled={!ballotLength || !!voteTxId || !!signedMessage}
+                sx={{ width: '100%' }}
+              >
+                1 - Sign your comments
+              </Button>
+              <Button
+                mt={2}
+                onClick={() => {
+                  trackButtonClick('submitBallot');
+                  submitBallot();
+                }}
+                variant="primaryLarge"
+                disabled={!ballotLength || !!voteTxId || !signedMessage}
+                sx={{ width: '100%' }}
+              >
+                2 - Submit Your Ballot
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              onClick={() => {
+                trackButtonClick('submitBallot');
+                submitBallot();
+              }}
+              variant="primaryLarge"
+              disabled={!ballotLength || !!voteTxId}
+              sx={{ width: '100%' }}
+            >
+              Submit Your Ballot
+            </Button>
+          )}
         </Flex>
       )}
     </ReviewBoxCard>
@@ -210,7 +240,7 @@ export default function ReviewBox({
     if (isMined) return <Mined />;
     if (hasFailed) return <Error />;
     return <Default />;
-  }, [isInitialized, isPending, isMined, hasFailed, bpi]);
+  }, [isInitialized, isPending, isMined, hasFailed, bpi, signedMessage, comments]);
 
   return <Box {...props}>{view}</Box>;
 }

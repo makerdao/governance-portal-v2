@@ -19,15 +19,20 @@ type Store = {
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
   submitBallot: () => Promise<void>;
+  signComments: () => Promise<void>;
+  signedMessage: string;
+  rawMessage: string;
 };
 
 const [useBallotStore] = create<Store>((set, get) => ({
   ballot: {},
   txId: null,
   comments: [],
+  signedMessage: '',
+  rawMessage: '',
 
   setComments: (newComments: Partial<PollComment>[]) => {
-    set({ comments: newComments });
+    set({ comments: newComments, signedMessage: '', rawMessage: '' });
   },
 
   updateComment: (text: string, pollId: number) => {
@@ -35,6 +40,8 @@ const [useBallotStore] = create<Store>((set, get) => ({
     const exist = comments.find(i => i.pollId === pollId);
 
     set(state => ({
+      signedMessage: '',
+      rawMessage: '',
       comments: exist
         ? state.comments.map(comment => {
             if (comment.pollId === pollId) {
@@ -72,6 +79,22 @@ const [useBallotStore] = create<Store>((set, get) => ({
     set({ ballot: {} });
   },
 
+  signComments: async () => {
+    const comments = get().comments;
+
+    // Sign message for commenting
+    const rawMessage = `I am leaving ${comments.length} comments for my votes.
+  ${comments.map(comment => `- Poll ${comment.pollId}: ${comment.comment}.  `).join('\n')}
+    `;
+
+    const signedMessage = comments.length > 0 ? await personalSign(rawMessage) : '';
+
+    set({
+      signedMessage,
+      rawMessage
+    });
+  },
+
   submitBallot: async () => {
     const newBallot = {};
     const maker = await getMaker();
@@ -89,19 +112,13 @@ const [useBallotStore] = create<Store>((set, get) => ({
     });
 
     const comments = get().comments;
-
-    // Sign message for commenting
-    const messageToSign = `I am leaving ${comments.length} comments for my votes.
-  ${comments.map(comment => `- Poll ${comment.pollId}: ${comment.comment}.  `).join('\n')}
-    `;
-    const signedMessage = comments.length > 0 ? await personalSign(messageToSign) : '';
-
     const account = accountsApi.getState().currentAccount;
     const voteDelegate = accountsApi.getState().voteDelegate;
 
     const voteTxCreator = voteDelegate
       ? () => voteDelegate.votePoll(pollIds, pollOptions)
       : () => maker.service('govPolling').vote(pollIds, pollOptions);
+
     const txId = await transactionsApi
       .getState()
       .track(voteTxCreator, `Voting on ${Object.keys(ballot).length} polls`, {
@@ -111,8 +128,8 @@ const [useBallotStore] = create<Store>((set, get) => ({
             const commentsRequest: PollsCommentsRequestBody = {
               voterAddress: account?.address || '',
               comments,
-              messageToSign,
-              signedMessage,
+              rawMessage: get().rawMessage,
+              signedMessage: get().signedMessage,
               txHash
             };
 

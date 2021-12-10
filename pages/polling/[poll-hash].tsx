@@ -288,7 +288,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   ]
                 ),
                 <div key={3}>
-                  <PollComments comments={comments} />
+                  <PollComments comments={comments} tally={tally} poll={poll} />
                 </div>
               ]}
               banner={

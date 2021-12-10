@@ -24,20 +24,21 @@ export default withApiHandler(
     });
 
     // verify tx
-    const { from } = await provider.getTransaction(body.txHash);
+    const transaction = await provider.getTransaction(body.txHash);
     invariant(
-      ethers.utils.getAddress(from) === ethers.utils.getAddress(body.voterAddress),
+      ethers.utils.getAddress(transaction.from) === ethers.utils.getAddress(body.voterAddress),
       "invalid 'from' address"
     );
 
     // verify signature
     invariant(
-      ethers.utils.verifyMessage(body.messageToSign, body.signedMessage) ===
+      ethers.utils.verifyMessage(body.rawMessage, body.signedMessage) ===
         ethers.utils.getAddress(body.voterAddress),
       'invalid message signature'
     );
 
     // TODO: check that the transaction is from a real polling contract
+    console.log(transaction);
 
     // query db
     const { db, client } = await connectToDatabase();

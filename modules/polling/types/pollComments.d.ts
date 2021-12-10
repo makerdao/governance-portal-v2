@@ -11,7 +11,7 @@ export type PollComment = {
 export type PollsCommentsRequestBody = {
   voterAddress: string;
   comments: Partial<PollComment>[];
-  messageToSign: string;
+  rawMessage: string;
   signedMessage: string;
   txHash: string;
 };
