@@ -1,4 +1,4 @@
-import { formatDistance } from 'date-fns';
+import { formatDistance, format as formatDate } from 'date-fns';
 import { format, utcToZonedTime } from 'date-fns-tz';
 
 export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
@@ -35,3 +35,19 @@ export const formatTimeAgo = (dateString: Date | undefined | number | string): s
     return '--';
   }
 };
+
+export const isoDateConversion = isoDate => {
+  if (isoDate) {
+    const d = isoDate.split(/[-T:]/);
+    return new Date(d[0], d[1] - 1, d[2], d[3], d[4]);
+  } else {
+    return isoDate;
+  }
+};
+
+export const formatIsoDateConversion = date =>
+  parseInt(
+    formatDate(new Date(isoDateConversion(date)), 'D', {
+      useAdditionalDayOfYearTokens: true
+    })
+  );

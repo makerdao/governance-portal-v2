@@ -20,6 +20,7 @@ import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import { getNetwork } from 'lib/maker';
 import { format } from 'date-fns';
+import { isoDateConversion } from 'lib/datetime';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
@@ -87,7 +88,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
       // Sometimes the tickItem is "auto", ignore this case
       return 'auto';
     }
-    return format(new Date(tickItem), dateFormat);
+    return format(new Date(isoDateConversion(tickItem)), dateFormat);
   };
 
   return (
