@@ -26,7 +26,6 @@ import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -69,7 +68,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const ballot = useBallotStore(state => state.ballot);
-  const ballotLength = Object.keys(ballot).length;
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
@@ -136,8 +134,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
     mutateAllUserVotes();
   }, [addressToCheck]);
 
-  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>();
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -145,15 +141,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
         description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
       />
 
-      {mobileVotingPoll && (
-        <MobileVoteSheet
-          account={account}
-          ballotCount={ballotLength}
-          poll={mobileVotingPoll}
-          setPoll={setMobileVotingPoll}
-          close={() => setMobileVotingPoll(null)}
-        />
-      )}
       <Stack gap={3}>
         {bpi <= 1 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
@@ -184,7 +171,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                   <Stack>
                     {sortedEndDatesActive.map(date => (
                       <div key={date}>
-                        <Text variant="caps" color="textSecondary" mb={2}>
+                        <Text as="p" variant="caps" color="textSecondary" mb={2}>
                           {groupedActivePolls[date].length} Poll
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}
@@ -195,7 +182,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
                               key={poll.multiHash}
                               poll={poll}
                               showVoting={true}
-                              startMobileVoting={() => setMobileVotingPoll(poll)}
                               reviewPage={false}
                             />
                           ))}

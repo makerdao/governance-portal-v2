@@ -8,7 +8,6 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
-  const voteBoxStyle = props.showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof choice === 'number';
   return (
     <Box {...props}>
@@ -35,8 +34,7 @@ const ChoiceSummary = ({ choice, poll, edit, voteIsPending, ...props }): React.R
         sx={{
           display: voteIsPending ? 'none' : 'inline-flex',
           flexDirection: 'row',
-          alignItems: 'center',
-          ...voteBoxStyle
+          alignItems: 'center'
         }}
       >
         <Icon name="edit" size={3} mr={1} />

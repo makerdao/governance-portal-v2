@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Heading, Box, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
 
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -19,7 +18,6 @@ import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useAccountsStore from 'modules/app/stores/accounts';
-import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -37,7 +35,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const account = useAccountsStore(state => state.currentAccount);
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
-  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
@@ -59,14 +56,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      {mobileVotingPoll && (
-        <MobileVoteSheet
-          account={account}
-          editingOnly
-          poll={mobileVotingPoll}
-          close={() => setMobileVotingPoll(null)}
-        />
-      )}
       <Stack gap={3}>
         <Heading mb={3} as="h4">
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
@@ -96,7 +85,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         poll={poll}
                         reviewPage={true}
                         showVoting={true}
-                        startMobileVoting={() => setMobileVotingPoll(poll)}
                         sx={cardStyles(index, ballotLength)}
                       />
                     );
@@ -168,7 +156,7 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();
 
