@@ -27,7 +27,13 @@ type Props = {
   showVoting?: boolean;
   children?: React.ReactNode;
 };
-export default function PollOverviewCard({ poll, reviewPage, showVoting, children, ...props }: Props): JSX.Element {
+export default function PollOverviewCard({
+  poll,
+  reviewPage,
+  showVoting,
+  children,
+  ...props
+}: Props): JSX.Element {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });

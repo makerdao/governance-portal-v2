@@ -67,12 +67,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
-        <MobileVoteSheet
-          account={account}
-          setPoll={setMobileVotingPoll}
-          poll={mobileVotingPoll}
-          withStart
-        />
+        <MobileVoteSheet account={account} setPoll={setMobileVotingPoll} poll={mobileVotingPoll} withStart />
       )}
       <SidebarLayout>
         <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />

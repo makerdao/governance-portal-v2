@@ -18,8 +18,11 @@ type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const [voteTxId, clearTx, ballot] = useBallotStore(state => [state.txId, state.clearTx, state.ballot], shallow);
-  
+  const [voteTxId, clearTx, ballot] = useBallotStore(
+    state => [state.txId, state.clearTx, state.ballot],
+    shallow
+  );
+
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
     shallow
@@ -62,7 +65,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <PollBar polls={polls} activePolls={activePolls}/>
+          <PollBar polls={polls} activePolls={activePolls} />
 
           <Divider />
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />

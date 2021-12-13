@@ -270,9 +270,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
             )}
           </Box>
           <Stack gap={3}>
-            {account && bpi > 0 && (
-              <BallotBox polls={polls} activePolls={activePolls} network={network} />
-            )}
+            {account && bpi > 0 && <BallotBox polls={polls} activePolls={activePolls} network={network} />}
             <SystemStatsSidebar
               fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
             />

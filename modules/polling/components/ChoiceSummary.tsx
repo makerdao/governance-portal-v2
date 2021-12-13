@@ -57,7 +57,7 @@ const ChoiceSummary = ({
           sx={{
             display: voteIsPending ? 'none' : 'inline-flex',
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'center'
           }}
         >
           <Icon name="edit" size={3} mr={1} />
@@ -73,8 +73,7 @@ const ChoiceSummary = ({
               display: voteIsPending ? 'none' : 'inline-flex',
               flexDirection: 'row',
               alignItems: 'center',
-              ml: 2,
-
+              ml: 2
             }}
           >
             {' '}
