@@ -21,7 +21,7 @@ export default function PollComments({
   const [commentSortBy, setCommentSortBy] = useState('latest');
 
   const getCommentVote = (comment: PollComment): PollTallyVote | undefined => {
-    const tallyVote = tally.votesByAddress?.find(i => {
+    const tallyVote = tally?.votesByAddress?.find(i => {
       return i.voter === comment.voterAddress;
     });
     return tallyVote;
@@ -61,7 +61,7 @@ export default function PollComments({
         return a.voterWeight.lt(b.voterWeight) ? 1 : a.voterWeight.eq(b.voterWeight) ? 0 : -1;
       }
 
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
+      return new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : -1;
     });
   }, [commentSortBy, mergedComments]);
 
@@ -127,7 +127,7 @@ export default function PollComments({
                     ':not(:last-of-type)': { borderBottom: '1px solid', borderColor: 'secondaryMuted' },
                     py: 4
                   }}
-                  key={comment.voterAddress}
+                  key={comment.voterAddress + comment.date}
                 >
                   <PollCommentItem comment={comment} commentVote={getCommentVote(comment)} poll={poll} />
                 </Box>

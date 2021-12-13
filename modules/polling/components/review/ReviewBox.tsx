@@ -33,10 +33,9 @@ export default function ReviewBox({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const { clearTx, voteTxId, ballot, signedMessage, comments } = useBallotStore(state => ({
+  const { clearTx, voteTxId, signedMessage, comments } = useBallotStore(state => ({
     clearTx: state.clearTx,
     voteTxId: state.txId,
-    ballot: state.ballot,
     signedMessage: state.signedMessage,
     comments: state.comments
   }));
@@ -50,7 +49,7 @@ export default function ReviewBox({
 
   const Default = props => (
     <ReviewBoxCard {...props}>
-      <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
+      <PollBar polls={polls} activePolls={activePolls} />
       <Divider />
       <VotingWeight sx={{ px: 3, py: [2, 2], mb: 1 }} />
       <Divider m={0} sx={{ display: ['none', 'block'] }} />
