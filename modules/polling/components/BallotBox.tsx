@@ -5,7 +5,6 @@ import shallow from 'zustand/shallow';
 import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
 import { Poll } from 'modules/polling/types';
-import { Ballot } from 'modules/polling/types/ballot';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
@@ -14,15 +13,18 @@ import PollBar from './PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
-type Props = { ballot: Ballot; activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
-export default function BallotBox({ ballot, activePolls, network, polls }: Props): JSX.Element {
+type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
+
+export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const [voteTxId, clearTx] = useBallotStore(state => [state.txId, state.clearTx], shallow);
+  const [voteTxId, clearTx, ballot] = useBallotStore(state => [state.txId, state.clearTx, state.ballot], shallow);
+  
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
     shallow
   );
+
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
   const startReview = () => {
@@ -60,7 +62,7 @@ export default function BallotBox({ ballot, activePolls, network, polls }: Props
         </Card>
       ) : (
         <Card variant="compact" p={[0, 0]}>
-          <PollBar polls={polls} activePolls={activePolls} ballot={ballot} />
+          <PollBar polls={polls} activePolls={activePolls}/>
 
           <Divider />
           <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />

@@ -18,7 +18,6 @@ import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useAccountsStore from 'modules/app/stores/accounts';
-import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -38,7 +37,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
-  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
 
   const votedPolls = Object.keys(ballot)
     .map(pollId => {
@@ -62,14 +60,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      {mobileVotingPoll && (
-        <MobileVoteSheet
-          account={account}
-          editingOnly
-          poll={mobileVotingPoll}
-          close={() => setMobileVotingPoll(null)}
-        />
-      )}
       <Stack gap={3}>
         <Heading mb={3} as="h4">
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
@@ -94,7 +84,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         poll={poll}
                         reviewPage={true}
                         showVoting={true}
-                        startMobileVoting={() => setMobileVotingPoll(poll)}
                         sx={cardStyles(index, ballotLength)}
                       >
                         <Box sx={{ pt: 2 }}>
@@ -185,7 +174,7 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();
 

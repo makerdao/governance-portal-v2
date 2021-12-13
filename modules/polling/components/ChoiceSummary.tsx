@@ -25,7 +25,6 @@ const ChoiceSummary = ({
 }): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
-  const voteBoxStyle = showHeader ? {} : { width: '100%', justifyContent: 'center', mt: 3 };
   const isSingleSelect = typeof choice === 'number';
 
   const [removeFromBallot, ballot] = useBallotStore(state => [state.removeFromBallot, state.ballot], shallow);
@@ -59,7 +58,6 @@ const ChoiceSummary = ({
             display: voteIsPending ? 'none' : 'inline-flex',
             flexDirection: 'row',
             alignItems: 'center',
-            ...voteBoxStyle
           }}
         >
           <Icon name="edit" size={3} mr={1} />
@@ -76,7 +74,7 @@ const ChoiceSummary = ({
               flexDirection: 'row',
               alignItems: 'center',
               ml: 2,
-              ...voteBoxStyle
+
             }}
           >
             {' '}

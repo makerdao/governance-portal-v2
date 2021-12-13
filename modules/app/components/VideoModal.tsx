@@ -21,8 +21,20 @@ const VideoModal = ({
         aria-label="Video"
         sx={
           bpi === 0
-            ? { p: 0, variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-            : { p: 0, variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease` }
+            ? {
+                variant: 'dialog.mobile',
+                animation: `${slideUp} 350ms ease`,
+                borderRadius: 0,
+                p: 0,
+                background: 'black'
+              }
+            : {
+                variant: 'dialog.desktop',
+                animation: `${fadeIn} 350ms ease`,
+                borderRadius: 0,
+                p: 0,
+                background: 'black'
+              }
         }
       >
         <Box sx={{ height: ['180px', '445px'] }}>
@@ -38,18 +50,6 @@ const VideoModal = ({
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
           />
-          {/* <iframe 
-          width="600" 
-          height="400" 
-          sx={{
-            width: '100%',
-            height: '100%'
-          }}
-          src={`https://www.youtube-nocookie.com/embed/${embedId}?controls=0`} 
-          title="YouTube video player" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen /> */}
         </Box>
       </DialogContent>
     </DialogOverlay>

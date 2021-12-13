@@ -50,7 +50,7 @@ export default function RankedChoiceSelect({
     <Box {...props}>
       <Stack gap={2}>
         {Array.from({ length: numConfirmed }).map((_, index) => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
+          <Flex sx={{ backgroundColor: 'background', p: 2 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text>{poll.options[choice[index]]}</Text>
@@ -85,7 +85,7 @@ export default function RankedChoiceSelect({
             }}
           >
             <ListboxButton
-              sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [3, 2] }}
+              sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: 2 }}
               arrow={<Icon name="chevron_down" size={2} />}
             />
             <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>

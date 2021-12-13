@@ -53,8 +53,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
-  const ballot = useBallotStore(state => state.ballot);
-  const ballotLength = Object.keys(ballot).length;
   const [shownOptions, setShownOptions] = useState(6);
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
@@ -71,7 +69,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
       {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet
           account={account}
-          ballotCount={ballotLength}
           setPoll={setMobileVotingPoll}
           poll={mobileVotingPoll}
           withStart
