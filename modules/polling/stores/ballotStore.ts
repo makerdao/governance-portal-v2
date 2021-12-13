@@ -127,6 +127,7 @@ const [useBallotStore] = create<Store>((set, get) => ({
           if (comments.length > 0) {
             const commentsRequest: PollsCommentsRequestBody = {
               voterAddress: account?.address || '',
+              delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
               comments,
               rawMessage: get().rawMessage,
               signedMessage: get().signedMessage,

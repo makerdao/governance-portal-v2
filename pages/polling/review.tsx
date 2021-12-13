@@ -23,20 +23,14 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, txId, submitBallot, setComments, updateComment, comments] = useBallotStore(
-    state => [
-      state.ballot,
-      state.txId,
-      state.submitBallot,
-      state.setComments,
-      state.updateComment,
-      state.comments
-    ],
+  const [ballot, setComments, updateComment, comments] = useBallotStore(
+    state => [state.ballot, state.setComments, state.updateComment, state.comments],
     shallow
   );
 
@@ -59,19 +53,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Button
-          onClick={() => {
-            trackButtonClick('submitBallot');
-            submitBallot();
-          }}
-          variant="primaryLarge"
-          disabled={!ballotLength || !!txId}
-          sx={{ width: '100%', mt: 2 }}
-        >
-          Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
-        </Button>
-      </Flex>
+      <SubmitBallotsButtons
+        onSubmit={() => {
+          trackButtonClick('submitBallot');
+        }}
+      />
     </Flex>
   );
   return (
