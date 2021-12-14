@@ -78,7 +78,7 @@ export default function DefaultVoteModalView({
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
   const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new BigNumber(spellData.mkrSupport).toFormat(3) : 0;
-  const afterVote = currentSlate.includes(proposal.address)
+  const afterVote = currentSlate && currentSlate.includes(proposal.address)
     ? mkrSupporting
     : lockedMkr && spellData
     ? lockedMkr.toBigNumber().plus(new BigNumber(spellData.mkrSupport)).toFormat(3)
@@ -148,9 +148,9 @@ export default function DefaultVoteModalView({
   );
 
   const votingMessage =
-    currentSlate.includes(proposal.address) && currentSlate.length > 1
+    currentSlate && currentSlate.includes(proposal.address) && currentSlate.length > 1
       ? 'Concentrate all my MKR on this proposal'
-      : !currentSlate.includes(proposal.address) && isHat
+      : currentSlate && !currentSlate.includes(proposal.address) && isHat
       ? 'Add MKR to secure the protocol'
       : 'Submit Vote';
 

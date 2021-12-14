@@ -26,7 +26,7 @@ export default withApiHandler(
       delegateAddress
     }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
-    const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
+    const provider = ethers.getDefaultProvider(network, {
       infura: config.INFURA_KEY,
       alchemy: config.ALCHEMY_KEY
     });

@@ -25,15 +25,13 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
 
   const [step, setStep] = useState<ModalStep>('confirm');
-  
-  
+
   const [txId, setTxId] = useState('');
 
-  const [tx] = useTransactionsStore(
-    state => [txId ? transactionsSelectors.getTransaction(state, txId) : null],
+  const tx = useTransactionsStore(
+    state => txId ? transactionsSelectors.getTransaction(state, txId) : null,
     shallow
   );
-
 
   return (
     <DialogOverlay style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }} onDismiss={close}>
