@@ -5,7 +5,7 @@ import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { Ballot } from '../types/ballot';
 import { transactionsApi } from 'modules/app/stores/transactions';
 import { accountsApi } from 'modules/app/stores/accounts';
-import { PollComment, PollsCommentsRequestBody } from '../types/pollComments';
+import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
 
 type Store = {
@@ -134,7 +134,7 @@ const [useBallotStore] = create<Store>((set, get) => ({
               txHash
             };
 
-            fetchJson(`/api/polling/comments/add?network=${getNetwork()}`, {
+            fetchJson(`/api/comments/polling/add?network=${getNetwork()}`, {
               method: 'POST',
               body: JSON.stringify(commentsRequest)
             })

@@ -40,7 +40,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy);
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(address, voteProxy);
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
@@ -115,6 +115,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
             const txId = await track(freeTxCreator, 'Withdrawing MKR', {
               mined: txId => {
+                // Mutate locked amount
+                mutateLocked();
                 transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
                 close();
               },

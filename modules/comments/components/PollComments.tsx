@@ -5,48 +5,62 @@ import BigNumber from 'bignumber.js';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MenuItem } from '@reach/menu-button';
 import FilterButton from 'modules/app/components/FilterButton';
-import { PollComment, PollCommentWithWeight } from '../types/pollComments';
-import { Poll, PollTally, PollTallyVote } from '../types';
+import { Poll, PollTally, PollTallyVote } from '../../polling/types';
 import PollCommentItem from './PollCommentItem';
+import {
+  PollCommentsAPIResponseItem,
+  PollCommentsAPIResponseItemWithWeight
+} from 'modules/comments/types/comments';
 
 export default function PollComments({
   comments,
   tally,
   poll
 }: {
-  comments: PollComment[] | undefined;
+  comments: PollCommentsAPIResponseItem[] | undefined;
   tally?: PollTally;
   poll: Poll;
 }): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useState('latest');
 
-  const getCommentVote = (comment: PollComment): PollTallyVote | undefined => {
+  const getCommentVote = (item: PollCommentsAPIResponseItem): PollTallyVote | undefined => {
     const tallyVote = tally?.votesByAddress?.find(i => {
-      return i.voter === comment.voterAddress;
+      // Get the right voting weight by looking at the proxy contract, delegate address or normal address
+      return (
+        i.voter ===
+        (item.address.isProxyContract
+          ? item.address.voteProxyInfo
+          : item.address.isDelegate
+          ? item.address.delegateInfo?.voteDelegateAddress
+          : item.address.address)
+      );
     });
     return tallyVote;
   };
 
   // Merge comments with voting weight from the tally. Used for sorting by MKR weight and representation
-  const mergedComments: PollCommentWithWeight[] = useMemo(() => {
+  const mergedComments: PollCommentsAPIResponseItemWithWeight[] = useMemo(() => {
     if (!comments) {
       return [];
     }
     if (!tally) {
-      return comments?.map(
-        c =>
-          ({
-            ...c,
-            voterWeight: new BigNumber(0)
-          } as PollCommentWithWeight)
-      );
+      return comments?.map(c => ({
+        ...c,
+        comment: {
+          ...c.comment,
+          voterWeight: new BigNumber(0)
+        }
+      }));
     } else {
       return comments?.map(c => {
         const tallyVote = getCommentVote(c);
         return {
           ...c,
-          voterWeight: new BigNumber(tallyVote ? tallyVote.mkrSupport : 0)
-        } as PollCommentWithWeight;
+          comment: {
+            ...c.comment,
+            voterWeight: new BigNumber(tallyVote ? tallyVote.mkrSupport : 0)
+          }
+        };
       });
     }
   }, [comments, tally]);
@@ -54,14 +68,18 @@ export default function PollComments({
   const sortedComments = useMemo(() => {
     return mergedComments.sort((a, b) => {
       if (commentSortBy === 'latest') {
-        const aDate = new Date(a.date).getTime() || 0;
-        const bDate = new Date(b.date).getTime() || 0;
+        const aDate = new Date(a.comment.date).getTime() || 0;
+        const bDate = new Date(b.comment.date).getTime() || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
       } else if (commentSortBy === 'MKR Amount') {
-        return a.voterWeight.lt(b.voterWeight) ? 1 : a.voterWeight.eq(b.voterWeight) ? 0 : -1;
+        return a.comment.voterWeight.lt(b.comment.voterWeight)
+          ? 1
+          : a.comment.voterWeight.eq(b.comment.voterWeight)
+          ? 0
+          : -1;
       }
 
-      return new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : -1;
+      return new Date(a.comment.date).getTime() > new Date(b.comment.date).getTime() ? 1 : -1;
     });
   }, [commentSortBy, mergedComments]);
 
@@ -119,7 +137,7 @@ export default function PollComments({
       </Flex>
       <Stack gap={3}>
         <Box>
-          {sortedComments ? (
+          {sortedComments && sortedComments.length > 0 ? (
             <Box>
               {sortedComments.map(comment => (
                 <Box
@@ -127,7 +145,7 @@ export default function PollComments({
                     ':not(:last-of-type)': { borderBottom: '1px solid', borderColor: 'secondaryMuted' },
                     py: 4
                   }}
-                  key={comment.voterAddress + comment.date}
+                  key={comment.comment.voterAddress + comment.comment.date}
                 >
                   <PollCommentItem comment={comment} commentVote={getCommentVote(comment)} poll={poll} />
                 </Box>

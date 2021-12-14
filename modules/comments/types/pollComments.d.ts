@@ -9,6 +9,10 @@ export type PollComment = {
   network: SupportedNetworks;
 };
 
+export type PollCommentFromDB = PollComment & {
+  _id: string;
+};
+
 export type PollsCommentsRequestBody = {
   voterAddress: string;
   delegateAddress?: string;

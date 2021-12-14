@@ -1,16 +1,16 @@
 import { fetchJson } from 'lib/fetchJson';
 import { getNetwork } from 'lib/maker';
 import useSWR from 'swr';
-import { PollComment } from '../types/pollComments';
+import { PollCommentsAPIResponseItem } from '../types/comments';
 
 type UsePollCommentsResponse = {
-  comments: PollComment[] | undefined;
+  comments: PollCommentsAPIResponseItem[] | undefined;
   mutate: () => void;
 };
 
 export function usePollComments(pollId: number, refreshInterval = 0): UsePollCommentsResponse {
-  const { data: commentsDatas, mutate } = useSWR<PollComment[]>(
-    `/api/polling/comments/${pollId}?network=${getNetwork()}`,
+  const { data: commentsDatas, mutate } = useSWR<PollCommentsAPIResponseItem[]>(
+    `/api/comments/polling/${pollId}?network=${getNetwork()}`,
     fetchJson,
     {
       revalidateOnFocus: false,

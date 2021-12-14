@@ -122,7 +122,7 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
         setStep('pending');
         // if comment included, add to comments db
         if (comment.length > 0) {
-          fetchJson(`/api/executive/comments/add/${proposal.address}`, {
+          fetchJson(`/api/comments/executive/add/${proposal.address}`, {
             method: 'POST',
             body: JSON.stringify({
               voterAddress: account?.address,
@@ -154,6 +154,13 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
 
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
+
+    const votingMessage =
+      currentSlate.includes(proposal.address) && currentSlate.length > 1
+        ? 'Concentrate all my MKR on this proposal'
+        : !currentSlate.includes(proposal.address) && isHat
+        ? 'Add MKR to secure the protocol'
+        : 'Submit Vote';
     return (
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
         <Close
@@ -274,21 +281,44 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
           </Box>
         </Box>
         <Box sx={{ width: '100%' }}>
-          <Button
-            variant="primaryLarge"
-            sx={{ width: '100%' }}
-            onClick={() => {
-              trackButtonClick('vote');
-              vote(hatChecked, comment);
-            }}
-            disabled={comment.length > 250 || !hasVotingWeight}
-          >
-            {currentSlate.includes(proposal.address) && currentSlate.length > 1
-              ? 'Concentrate all my MKR on this proposal'
-              : !currentSlate.includes(proposal.address) && isHat
-              ? 'Add MKR to secure the protocol'
-              : 'Submit Vote'}
-          </Button>
+          {comment.length > 0 ? (
+            <Box>
+              <Button
+                onClick={() => {
+                  // SIgn comments
+                }}
+                variant="primaryOutline"
+                disabled={comment.length > 250 || !hasVotingWeight}
+                sx={{ width: '100%' }}
+              >
+                1 - Sign your comment
+              </Button>
+              <Button
+                mt={2}
+                onClick={() => {
+                  trackButtonClick('vote');
+                  vote(hatChecked, comment);
+                }}
+                variant="primaryLarge"
+                disabled={comment.length > 250 || !hasVotingWeight}
+                sx={{ width: '100%' }}
+              >
+                2 - {votingMessage}
+              </Button>
+            </Box>
+          ) : (
+            <Button
+              variant="primaryLarge"
+              sx={{ width: '100%' }}
+              onClick={() => {
+                trackButtonClick('vote');
+                vote(hatChecked, comment);
+              }}
+              disabled={!hasVotingWeight}
+            >
+              {votingMessage}
+            </Button>
+          )}
           {showHatCheckbox ? (
             <Label
               sx={{

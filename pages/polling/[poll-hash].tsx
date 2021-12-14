@@ -41,8 +41,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
-import { usePollComments } from 'modules/polling/hooks/usePollComments';
-import PollComments from 'modules/polling/components/PollComments';
+import { usePollComments } from 'modules/comments/hooks/usePollComments';
+import PollComments from 'modules/comments/components/PollComments';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title

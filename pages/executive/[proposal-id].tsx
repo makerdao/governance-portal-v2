@@ -37,7 +37,6 @@ import { getEtherscanLink } from 'lib/utils';
 import useAccountsStore from 'modules/app/stores/accounts';
 
 //components
-import Comments from 'modules/executive/components/Comments';
 import VoteModal from 'modules/executive/components/VoteModal';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
@@ -52,8 +51,9 @@ import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
-import { ExecutiveComment } from 'modules/executive/types/executiveComment';
 import { ZERO_ADDRESS } from 'modules/app/constants';
+import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
+import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 
 type Props = {
   proposal: Proposal;
@@ -105,33 +105,12 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: hat } = useHat();
   const isHat = hat && hat.toLowerCase() === proposal.address.toLowerCase();
 
-  const { data: comments, error: commentsError } = useSWR<ExecutiveComment[]>(
-    `/api/executive/comments/list/${proposal.address}`,
-    { refreshInterval: 60000 }
-  );
+  const { comments, error: commentsError } = useExecutiveComments(proposal.address, 60000);
 
   const supporters = allSupporters ? allSupporters[proposal.address.toLowerCase()] : null;
 
   const [voting, setVoting] = useState(false);
   const close = () => setVoting(false);
-
-  const commentsTab = (
-    <div key={'comments'} sx={{ p: [3, 4] }}>
-      {comments ? (
-        <Comments proposal={proposal} comments={comments} />
-      ) : (
-        <Flex sx={{ alignItems: 'center' }}>
-          {commentsError ? (
-            'Unable to fetch comments'
-          ) : (
-            <>
-              Loading <Spinner size={20} ml={2} />
-            </>
-          )}
-        </Flex>
-      )}
-    </div>
-  );
 
   const hasVotedFor =
     votedProposals &&
@@ -244,7 +223,21 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   <div key={'spell'} sx={{ p: [3, 4] }}>
                     <SpellEffectsTab proposal={proposal} spellData={spellData} />
                   </div>,
-                  commentsTab
+                  <div key={'comments'} sx={{ p: [3, 4] }}>
+                    {comments ? (
+                      <ExecutiveComments proposal={proposal} comments={comments} />
+                    ) : (
+                      <Flex sx={{ alignItems: 'center' }}>
+                        {commentsError ? (
+                          'Unable to fetch comments'
+                        ) : (
+                          <>
+                            Loading <Spinner size={20} ml={2} />
+                          </>
+                        )}
+                      </Flex>
+                    )}
+                  </div>
                 ]}
                 banner={
                   <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />

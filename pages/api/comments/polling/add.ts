@@ -6,7 +6,7 @@ import { connectToDatabase } from 'lib/api/utils';
 import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
 import { SupportedNetworks } from 'lib/constants';
-import { PollComment, PollsCommentsRequestBody } from 'modules/polling/types/pollComments';
+import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -17,6 +17,8 @@ export default withApiHandler(
     }
 
     const network = req.query.network as SupportedNetworks;
+
+    invariant(network && network.length > 0, 'Network not supported');
 
     const provider = ethers.getDefaultProvider(network, {
       infura: config.INFURA_KEY,

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
+import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { formatAddress, getEtherscanLink } from 'lib/utils';
 import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
@@ -110,6 +111,13 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
+                  <Link href={`/address/${delegate.address}`} passHref>
+                    <ExternalLink>
+                      <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
+                        Deployed by: {formatAddress(delegate.address)}
+                      </Text>
+                    </ExternalLink>
+                  </Link>
                 </Box>
               </Box>
             </Flex>
