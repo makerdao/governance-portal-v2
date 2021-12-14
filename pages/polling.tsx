@@ -181,7 +181,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                             <PollOverviewCard
                               key={poll.multiHash}
                               poll={poll}
-                              showVoting={true}
+                              showVoting={!!account}
                               reviewPage={false}
                             />
                           ))}
@@ -220,7 +220,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                                 key={poll.multiHash}
                                 poll={poll}
                                 reviewPage={false}
-                                showVoting={true}
+                                showVoting={false}
                               />
                             ))}
                           </Stack>
