@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
 import { takeSnapshot, restoreSnapshot } from '@makerdao/test-helpers';
+import { mockIntersectionObserver } from '../__tests__/helpers';
 
 let snapshotData;
 beforeAll(async () => {
@@ -19,6 +20,7 @@ beforeAll(async () => {
       dispatchEvent: jest.fn()
     }))
   });
+  global.IntersectionObserver = mockIntersectionObserver;
 });
 
 afterAll(() => {
