@@ -65,6 +65,27 @@ export type RawPollTallyPlurality = {
   votesByAddress?: PollTallyVote[];
 };
 
+export type PollTallyRankedChoice = {
+  pollVoteType: PollVoteType;
+  winner: string | null;
+  rounds?: number;
+  numVoters: number;
+  results: RankedChoiceResult[];
+  winningOptionName: string;
+  totalMkrParticipation: number;
+  votesByAddress?: PollTallyVote[];
+};
+
+export type PollTallyPlurality = {
+  pollVoteType: PollVoteType;
+  winner: string | null;
+  numVoters: number;
+  results: PluralityResult[];
+  winningOptionName: string;
+  totalMkrParticipation: number;
+  votesByAddress?: PollTallyVote[];
+};
+
 export type RawPollTally = RawPollTallyRankedChoice | RawPollTallyPlurality;
 
 export type PollTally = PollTallyRankedChoice | PollTallyPlurality;

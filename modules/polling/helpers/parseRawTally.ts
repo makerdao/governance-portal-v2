@@ -57,6 +57,9 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return valueA.gt(valueB) ? -1 : 1;
     });
 
+  // Now we have created the results object, delete options to avoid confusion
+  delete rawTally.options;
+
   return {
     ...rawTally,
     results: poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? pluralityResult : rankedChoiceResult,
