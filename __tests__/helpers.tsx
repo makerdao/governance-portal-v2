@@ -53,7 +53,6 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
   );
 }
 
-
 export async function connectAccount(address = DEMO_ACCOUNT_TESTS): Promise<void> {
   try {
     accountsApi.setState({
@@ -114,3 +113,13 @@ export const sendMkrToAddress = async (maker, receiver, amount) => {
   const mkr = await maker.getToken(MKR);
   await mkr.transfer(receiver, amount);
 };
+
+export const mockIntersectionObserver = jest.fn(() => ({
+  root: null,
+  rootMargin: '600px',
+  thresholds: [1],
+  disconnect: jest.fn(),
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  takeRecords: jest.fn()
+}));
