@@ -68,12 +68,12 @@ export type RawPollTallyPlurality = {
 export type PollTallyRankedChoice = {
   pollVoteType: PollVoteType;
   winner: string | null;
-  rounds?: number;
   numVoters: number;
   results: RankedChoiceResult[];
   winningOptionName: string;
   totalMkrParticipation: number;
   votesByAddress?: PollTallyVote[];
+  rounds?: number;
 };
 
 export type PollTallyPlurality = {
