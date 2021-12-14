@@ -29,7 +29,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
   const [txId, setTxId] = useState('');
 
   const tx = useTransactionsStore(
-    state => txId ? transactionsSelectors.getTransaction(state, txId) : null,
+    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
     shallow
   );
 

@@ -8,6 +8,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionsStore, { transactionsApi } from 'modules/app/stores/transactions';
+import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -57,6 +58,8 @@ export default function DefaultVoteModalView({
 
   const [hatChecked, setHatChecked] = useState(true);
   const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
+  const { mutate: mutateComments } = useExecutiveComments(proposal.address);
+
 
   const [comment, setComment] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
@@ -78,11 +81,12 @@ export default function DefaultVoteModalView({
   const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
   const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new BigNumber(spellData.mkrSupport).toFormat(3) : 0;
-  const afterVote = currentSlate && currentSlate.includes(proposal.address)
-    ? mkrSupporting
-    : lockedMkr && spellData
-    ? lockedMkr.toBigNumber().plus(new BigNumber(spellData.mkrSupport)).toFormat(3)
-    : 0;
+  const afterVote =
+    currentSlate && currentSlate.includes(proposal.address)
+      ? mkrSupporting
+      : lockedMkr && spellData
+      ? lockedMkr.toBigNumber().plus(new BigNumber(spellData.mkrSupport)).toFormat(3)
+      : 0;
 
   const vote = async hatChecked => {
     const maker = await getMaker();
@@ -115,7 +119,10 @@ export default function DefaultVoteModalView({
             method: 'POST',
             body: JSON.stringify(requestBody)
           })
-            .then(() => console.log('comment successfully added'))
+            .then(() => {
+                console.log('comment successfully added');
+                mutateComments();
+            })
             .catch(() => console.error('failed to add comment'));
         }
 
