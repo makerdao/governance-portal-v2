@@ -37,7 +37,7 @@ import { getEtherscanLink } from 'lib/utils';
 import useAccountsStore from 'modules/app/stores/accounts';
 
 //components
-import VoteModal from 'modules/executive/components/VoteModal';
+import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -127,7 +127,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         }.`}
       />
 
-      {voting && <VoteModal close={close} proposal={proposal} currentSlate={votedProposals} />}
+      {voting && <VoteModal close={close} proposal={proposal} />}
       {account && bpi === 0 && (
         <Box
           sx={{

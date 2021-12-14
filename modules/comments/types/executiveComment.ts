@@ -13,3 +13,12 @@ export type ExecutiveComment = {
 export type ExecutiveCommentFromDB = ExecutiveComment & {
   _id: string;
 };
+
+export type ExecutiveCommentsRequestBody = {
+  voterAddress: string;
+  delegateAddress?: string;
+  comment: string;
+  signedMessage: string;
+  voterWeight: string;
+  txHash: string;
+};
