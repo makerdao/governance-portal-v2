@@ -60,7 +60,6 @@ export default function DefaultVoteModalView({
   const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
   const { mutate: mutateComments } = useExecutiveComments(proposal.address);
 
-
   const [comment, setComment] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
 
@@ -120,8 +119,8 @@ export default function DefaultVoteModalView({
             body: JSON.stringify(requestBody)
           })
             .then(() => {
-                console.log('comment successfully added');
-                mutateComments();
+              console.log('comment successfully added');
+              mutateComments();
             })
             .catch(() => console.error('failed to add comment'));
         }
