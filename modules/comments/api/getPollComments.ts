@@ -40,6 +40,6 @@ export async function getPollComments(
   });
 
   const response = await Promise.all(promises);
-
-  return response;
+ 
+  return response as PollCommentsAPIResponseItem[];
 }
