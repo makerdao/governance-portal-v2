@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import InternalIcon from 'modules/app/components/Icon';
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
@@ -20,6 +19,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/app/constants';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
+import CommentCount from 'modules/comments/components/CommentCount';
 
 type Props = {
   proposal: Proposal;
@@ -175,12 +175,9 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
           </Flex>
 
           {comments && comments.length > 0 && (
-            <Flex sx={{ alignItems: 'center', mt: 2 }}>
-              <InternalIcon name="comment" />
-              <Text as="p" variant="smallCaps" sx={{ ml: 2 }}>
-                {comments.length} Comments
-              </Text>
-            </Flex>
+            <Box sx={{ mt: 2 }}>
+              <CommentCount count={comments.length} />
+            </Box>
           )}
         </Box>
 

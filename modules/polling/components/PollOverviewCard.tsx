@@ -19,6 +19,8 @@ import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import React from 'react';
+import CommentCount from 'modules/comments/components/CommentCount';
+import { usePollComments } from 'modules/comments/hooks/usePollComments';
 
 type Props = {
   poll: Poll;
@@ -39,6 +41,7 @@ export default function PollOverviewCard({
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
+  const { comments } = usePollComments(poll.pollId);
 
   const { tally } = usePollTally(poll.pollId);
 
@@ -87,11 +90,18 @@ export default function PollOverviewCard({
                 </Box>
               ))}
             </Flex>
-
             {bpi > 0 && (
-              <Box mb={1}>
-                <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-              </Box>
+              <Flex mb={1}>
+                <Box mr={2}>
+                  <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                </Box>
+
+                {comments && comments.length > 0 && (
+                  <Box>
+                    <CommentCount count={comments.length} />
+                  </Box>
+                )}
+              </Flex>
             )}
           </Stack>
           {showQuickVote && bpi > 0 && (
