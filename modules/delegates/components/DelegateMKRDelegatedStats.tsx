@@ -33,7 +33,7 @@ export function DelegateMKRDelegatedStats({
         label={'Total MKR Delegated'}
       />
       <StatBox
-        value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(2) : '--'}
+        value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
         label={'Total Active Delegators'}
       />
       <StatBox
