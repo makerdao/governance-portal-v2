@@ -67,13 +67,20 @@ import invariant from 'tiny-invariant';
  *           prev: null
  *           next: null
  *
- * /api/polling/[slug]:
+ * /api/polling/{slug}:
  *   get:
  *     tags:
  *     - "polls"
  *     description: Returns a poll detail
  *     produces:
  *     - "application/json"
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Slug of the poll
  *     responses:
  *       '200':
  *         description: "Detail of a Pols"
