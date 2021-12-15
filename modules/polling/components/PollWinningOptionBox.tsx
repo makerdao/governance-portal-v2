@@ -21,7 +21,7 @@ export default function PollWinningOptionBox({
       {tally && tally.results.length > 0 && tally.winningOptionName ? (
         <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
           {textWin}:{' '}
-          <span sx={{ color: getVoteColor(parseInt(tally.winner), poll.voteType) }}>
+          <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.voteType) }}>
             {tally?.winningOptionName}
           </span>{' '}
           {tally.pollVoteType === POLL_VOTE_TYPE.PLURALITY_VOTE &&

@@ -65,7 +65,7 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
   return {
     ...remainder,
     results: poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? pluralityResult : rankedChoiceResult,
-    totalMkrParticipation,
+    totalMkrParticipation: totalMkrParticipation.toNumber(),
     winningOptionName
   } as PollTally;
 }
