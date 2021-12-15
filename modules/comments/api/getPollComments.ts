@@ -4,6 +4,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollCommentsAPIResponseItem } from '../types/comments';
 import { PollComment, PollCommentFromDB } from '../types/pollComments';
+import uniqBy from 'lodash/uniqBy';
 
 export async function getPollComments(
   pollId: number,
@@ -25,7 +26,10 @@ export async function getPollComments(
     return rest;
   });
 
-  const promises = comments.map(async comment => {
+  // only return the latest comment from each address
+  const uniqueComments = uniqBy(comments, 'voterAddress');
+
+  const promises = uniqueComments.map(async comment => {
     return {
       comment,
       address: await getAddressInfo(

@@ -8,6 +8,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionsStore, { transactionsApi } from 'modules/app/stores/transactions';
+import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
@@ -245,42 +246,13 @@ export default function DefaultVoteModalView({
         </Box>
       </Grid>
       <Box sx={{ width: '100%', my: 3 }}>
-        <Box
-          sx={{
-            borderRadius: 'medium',
-            my: 2,
-            mb: 4,
-            width: '100%',
-            borderColor: 'secondaryMuted'
+        <CommentTextBox
+          onChange={(val: string) => {
+            setComment(val);
+            setSignedMessage('');
           }}
-        >
-          <Label variant="microHeading" sx={{ fontSize: 3, mb: 1 }}>
-            Why are you voting for this proposal?
-          </Label>
-          <Textarea
-            sx={{
-              color: 'text',
-              height: '96px',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
-              display: 'flex',
-              resize: 'none'
-            }}
-            onChange={event => {
-              setComment(event.target.value);
-              setSignedMessage('');
-            }}
-          />
-
-          <Text
-            as="p"
-            variant="text"
-            sx={{ fontSize: 1, color: comment.length > 250 ? 'error' : 'textMuted', mt: 1 }}
-          >
-            Optional. You&apos;ll be prompted to sign a message with your wallet. {250 - comment.length}{' '}
-            characters remaining.
-          </Text>
-        </Box>
+          value={comment}
+        />
       </Box>
       <Box sx={{ width: '100%' }}>
         {comment.length > 0 ? (

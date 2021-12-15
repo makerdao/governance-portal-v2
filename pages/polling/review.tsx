@@ -23,6 +23,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
+import CommentTextBox from 'modules/comments/components/CommentTextBox';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -87,21 +88,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         sx={cardStyles(index, ballotLength)}
                       >
                         <Box sx={{ pt: 2 }}>
-                          <Text
-                            as="p"
-                            variant="h2"
-                            sx={{
-                              fontWeight: 'semiBold',
-                              mb: 2
+                          <CommentTextBox
+                            onChange={(val: string) => {
+                              updateComment(val, poll.pollId);
                             }}
-                          >
-                            Why are you voting for this proposal?
-                          </Text>
-                          <Textarea
-                            value={comments.find(i => i.pollId === poll.pollId)?.comment}
-                            onChange={e => updateComment(e.target.value, poll.pollId)}
-                            placeholder="Optional. 250 character max. You'll be prompted to sign a message with your wallet."
-                            maxLength={250}
+                            value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
                           />
                         </Box>
                       </PollOverviewCard>

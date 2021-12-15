@@ -11,7 +11,7 @@ import AddressDelegatedTo from './AddressDelegatedTo';
 import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated-to';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
-import AdressIconBox from './AddressIconBox';
+import AddressIconBox from './AddressIconBox';
 
 type PropTypes = {
   address: string;
@@ -49,7 +49,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           p: [3, 4]
         }}
       >
-        <AdressIconBox address={address} voteProxyInfo={voteProxyInfo} showExternalLink />
+        <AddressIconBox address={address} voteProxyInfo={voteProxyInfo} showExternalLink />
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />

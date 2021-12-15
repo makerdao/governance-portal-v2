@@ -13,9 +13,11 @@ import { getEtherscanLink } from 'lib/utils';
 
 export default function CommentItem({
   comment,
+  votedOption,
   twitterUrl
 }: {
   comment: PollCommentsAPIResponseItemWithWeight | ExecutiveCommentsAPIResponseItem;
+  votedOption?: React.ReactNode;
   twitterUrl: string;
 }): React.ReactElement {
   // TODO: Remove this once tweeting functionality gets re-enabled
@@ -36,7 +38,8 @@ export default function CommentItem({
         sx={{
           alignItems: ['flex-start', 'center'],
           justifyContent: 'space-between',
-          flexDirection: ['column', 'row']
+          flexDirection: ['column', 'row'],
+          mb: 2
         }}
       >
         <Box>
@@ -78,12 +81,14 @@ export default function CommentItem({
             </Box>
           )}
         </Box>
-        <Box>
+        <Flex sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
           <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
             {formatDateWithTime(comment.comment.date)}
           </Text>
           <Text variant="smallCaps">
-            Voted with {new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR{' '}
+            {votedOption
+              ? votedOption
+              : `Voted with ${new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR`}
           </Text>
           {comment.comment.txHash && (
             <Box>
@@ -99,7 +104,7 @@ export default function CommentItem({
               </ExternalLink>
             </Box>
           )}
-        </Box>
+        </Flex>
         {account?.address === comment.comment.voterAddress && twitterEnabled && (
           <ExternalLink href={twitterUrl} target="_blank">
             <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>

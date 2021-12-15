@@ -3,9 +3,11 @@ import { getNetwork } from 'lib/maker';
 import { Poll, PollTallyVote } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { Flex, Text, Box, Link as ExternalLink } from 'theme-ui';
+import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
 import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
+import BigNumber from 'bignumber.js';
 
 export default function PollCommentItem({
   comment,
@@ -32,10 +34,35 @@ export default function PollCommentItem({
     return `I voted "${voteOptionText}" for "${poll.title}". View proposal: `;
   };
 
+  const getVotedOption = () => {
+    if (!commentVote) {
+      // This should not happen but in case the tally is missing
+      return 'Voted';
+    }
+
+    const voteOptionText =
+      poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? (
+        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.voteType) }}>
+          {poll.options[commentVote.optionId]}
+        </Text>
+      ) : (
+        (commentVote.rankedChoiceOption || [])
+          .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
+          .join(', ')
+      );
+
+    return (
+      <Text>
+        Voted {voteOptionText} with {new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR
+      </Text>
+    );
+  };
+
   return (
     <Box>
       <CommentItem
         comment={comment}
+        votedOption={getVotedOption()}
         twitterUrl={`https://twitter.com/intent/tweet?text=${getTwitterMessage()}&url=${`https://vote.makerdao.com/polling/${
           poll.slug
         }#comments?network=${getNetwork()}`}`}
