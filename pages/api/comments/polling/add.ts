@@ -55,7 +55,8 @@ export default withApiHandler(
         network,
         date: new Date(),
         voterAddress: body.voterAddress,
-        delegateAddress: body.delegateAddress || ''
+        delegateAddress: body.delegateAddress || '',
+        txHash: body.txHash
       };
       await collection.insertOne(commentToInsert);
     });

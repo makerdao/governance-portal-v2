@@ -8,6 +8,7 @@ export type ExecutiveComment = {
   date: Date;
   spellAddress: string;
   network: SupportedNetworks;
+  txHash?: string
 };
 
 export type ExecutiveCommentFromDB = ExecutiveComment & {

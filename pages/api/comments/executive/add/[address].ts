@@ -58,7 +58,8 @@ export default withApiHandler(
       comment,
       voterWeight,
       date: new Date(),
-      network
+      network,
+      txHash
     };
 
     await collection.insertOne(newComment);

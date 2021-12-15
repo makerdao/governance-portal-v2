@@ -83,9 +83,9 @@ const [useBallotStore] = create<Store>((set, get) => ({
     const comments = get().comments;
 
     // Sign message for commenting
-    const rawMessage = `I am leaving ${comments.length} comments for my votes.
+    const rawMessage = comments.length > 1 ? `I am leaving ${comments.length} comments for my votes.
   ${comments.map(comment => `- Poll ${comment.pollId}: ${comment.comment}.  `).join('\n')}
-    `;
+    `: `${comments[0].comment}`;
 
     const signedMessage = comments.length > 0 ? await personalSign(rawMessage) : '';
 
