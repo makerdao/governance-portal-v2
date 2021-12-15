@@ -13,20 +13,20 @@ describe('Poll vote history item', () => {
       rounds: 1,
       winner: 1,
       totalMkrParticipation: 70288.579356787892861292,
-      options: {
-        0: {
+      results: [
+        {
           firstChoice: 2.001309,
           transfer: 0,
           winner: false,
           eliminated: false
         },
-        1: {
+        {
           firstChoice: 70286.578047787892861292,
           transfer: 0,
           winner: true,
           eliminated: false
         }
-      },
+      ],
       numVoters: 13
     });
   });

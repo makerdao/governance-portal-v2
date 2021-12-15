@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Box } from 'theme-ui';
-import { PollTally, PollTallyPluralityOption } from '../types';
+import { PollTally, PluralityResult } from '../types';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
 
 export function PollVotePluralityResultsCompact({
@@ -10,24 +10,18 @@ export function PollVotePluralityResultsCompact({
   tally: PollTally;
   showTitles?: boolean;
 }): React.ReactElement {
-  const max = new BigNumber(tally.totalMkrParticipation);
+  const voteTallyResults = tally.results as PluralityResult[];
 
-  const voteTallyOptions = tally.options as PollTallyPluralityOption;
-
-  const abstainValue = new BigNumber(voteTallyOptions['0'] ? voteTallyOptions['0'].mkrSupport : 0);
-  const yesValue = new BigNumber(voteTallyOptions['1'] ? voteTallyOptions['1'].mkrSupport : 0);
-  const noValue = new BigNumber(voteTallyOptions['2'] ? voteTallyOptions['2'].mkrSupport : 0);
-
-  const yesPercent = max.isGreaterThan(0) ? yesValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
-  const abstainPercent = max.isGreaterThan(0) ? abstainValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
-  const noPercent = max.isGreaterThan(0) ? noValue.dividedBy(max).multipliedBy(100).toFixed(0) : 0;
+  const yesPercent = voteTallyResults.find(({ optionId }) => optionId === '1')?.firstPct || 0;
+  const abstainPercent = voteTallyResults.find(({ optionId }) => optionId === '0')?.firstPct || 0;
+  const noPercent = voteTallyResults.find(({ optionId }) => optionId === '2')?.firstPct || 0;
 
   return (
     <Box>
       <YesNoAbstainBar
-        yesPercent={yesPercent}
-        noPercent={noPercent}
-        abstainPercent={abstainPercent}
+        yesPercent={new BigNumber(yesPercent).toFixed(0)}
+        noPercent={new BigNumber(noPercent).toFixed(0)}
+        abstainPercent={new BigNumber(abstainPercent).toFixed(0)}
         showTitles={showTitles}
       />
     </Box>
