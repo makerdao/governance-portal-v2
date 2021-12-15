@@ -49,7 +49,7 @@ import { resolveENS } from 'modules/web3/ens';
  *       lastVote:
  *         $ref: '#/definitions/VoteHistory'
  *
- * /api/{address}/stats:
+ * /api/address/{address}/stats:
  *   get:
  *     tags:
  *     - "address"

@@ -18,7 +18,7 @@ export function useExecutiveComments(
     mutate,
     error
   } = useSWR<ExecutiveCommentsAPIResponseItem[]>(
-    `/api/comments/executive/list/${proposalAddress}?network=${getNetwork()}`,
+    `/api/comments/executive/${proposalAddress}?network=${getNetwork()}`,
     fetchJson,
     {
       revalidateOnFocus: false,

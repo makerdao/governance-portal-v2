@@ -1,20 +1,22 @@
+import invariant from 'tiny-invariant';
+import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
+
 import withApiHandler from 'lib/api/withApiHandler';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
-import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
-import { getPollComments } from 'modules/comments/api/getPollComments';
+import { getExecutiveComments } from 'modules/comments/api/getExecutiveComments';
 
 /**
  * @swagger
  * definitions:
- *   PollingComment:
+ *   ExecutiveComment:
  *     type: object
  *     properties:
  *       network:
  *         type: number
  *         enum: ['mainnet', 'goerli']
- *       pollId:
- *         type: number
+ *       spellAddress:
+ *         type: string
  *       comment:
  *         type: string
  *       date:
@@ -23,31 +25,34 @@ import { getPollComments } from 'modules/comments/api/getPollComments';
  *         type: string
  *       delegateAddress:
  *         type: string
+ *       voterWeight:
+ *         type: string
  *     example:
- *       - pollId: 4
+ *       - spellAddress: "0x123123123123"
  *         comment: 'This is a great comment'
  *         network: "mainnet"
  *         date: "2021-12-15T11:11:23.841Z"
  *         voterAddress: "0x123123212"
  *         delegateAddress: "0x12312321321"
+ *         voterWeight: "4.223"
  *
- * /api/comments/polling/{pollId}:
+ * /api/comments/executive/{address}:
  *   get:
  *     tags:
  *     - "comments"
- *     description: Returns all the comments for a poll
+ *     description: Returns all the comments for an executive
  *     produces:
  *     - "application/json"
  *     parameters:
  *       - in: path
- *         name: pollId
+ *         name: address
  *         schema:
- *           type: number
+ *           type: string
  *         required: true
- *         description: Poll Id
+ *         description: Proposal address
  *     responses:
  *       '200':
- *         description: "Comments of a poll"
+ *         description: "Comments of an executive"
  *         content:
  *           application/json:
  *             schema:
@@ -56,20 +61,19 @@ import { getPollComments } from 'modules/comments/api/getPollComments';
  *                 type: object
  *                 properties:
  *                   comment:
- *                     $ref: '#/definitions/PollingComment'
+ *                     $ref: '#/definitions/ExecutiveComment'
  *                   address:
  *                     $ref: '#/definitions/Address'
  */
-export default withApiHandler(
-  async (req: NextApiRequest, res: NextApiResponse<PollCommentsAPIResponseItem[]>) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
+  const spellAddress: string = req.query.address as string;
+  invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-    const pollId = parseInt(req.query['poll-id'] as string, 10);
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+  invariant(network && network.length > 0, 'Network not supported');
 
-    const response = await getPollComments(pollId, network);
+  const response = await getExecutiveComments(spellAddress, network);
+  res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
 
-    res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
-    // only return the latest comment from each address
-    res.status(200).json(response);
-  }
-);
+  res.status(200).json(response);
+});

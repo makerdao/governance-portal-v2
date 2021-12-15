@@ -90,7 +90,7 @@ import { getPollById } from 'modules/polling/api/fetchPolls';
  *             optionId: 1
  *             optionIdRaw: "1"
  *             mkrSupport: "23232.23132"
- *             rankedChoiceOption: [1] 
+ *             rankedChoiceOption: [1]
  *         results:
  *           - optionId: "1"
  *             optionName: "Yes"
@@ -99,7 +99,7 @@ import { getPollById } from 'modules/polling/api/fetchPolls';
  *             mkrSupport: "23232.23132"
  *             firstPct: "12.222"
  *             winner: true
- *             eliminated: false 
+ *             eliminated: false
  *
  * /api/polling/tally/{pollId}:
  *   get:
@@ -114,7 +114,7 @@ import { getPollById } from 'modules/polling/api/fetchPolls';
  *         schema:
  *           type: number
  *         required: true
- *         description: Poll Id 
+ *         description: Poll Id
  *     responses:
  *       '200':
  *         description: "Tally of a poll"
