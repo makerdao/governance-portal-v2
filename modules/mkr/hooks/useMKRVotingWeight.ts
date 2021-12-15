@@ -1,4 +1,4 @@
-import getMaker, { MKR } from 'lib/maker';
+import getMaker from 'lib/maker';
 import useSWR from 'swr';
 import { CurrencyObject } from 'modules/app/types/currency';
 

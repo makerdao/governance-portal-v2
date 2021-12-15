@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, Button, Flex } from 'theme-ui';
+import { Heading, Box, Button, Flex, Text, Textarea } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
@@ -22,38 +22,43 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
+import CommentTextBox from 'modules/comments/components/CommentTextBox';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, txId, submitBallot] = useBallotStore(
-    state => [state.ballot, state.txId, state.submitBallot],
+  const [ballot, setComments, updateComment, comments] = useBallotStore(
+    state => [state.ballot, state.setComments, state.updateComment, state.comments],
     shallow
   );
 
   const account = useAccountsStore(state => state.currentAccount);
+
   const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
+  const votedPolls = Object.keys(ballot)
+    .map(pollId => {
+      return findPollById(polls, pollId);
+    })
+    .filter(p => !!p) as Poll[];
+
+  useEffect(() => {
+    // Reset previous comments on load.
+    setComments([]);
+  }, []);
+
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Button
-          onClick={() => {
-            trackButtonClick('submitBallot');
-            submitBallot();
-          }}
-          variant="primaryLarge"
-          disabled={!ballotLength || !!txId}
-          sx={{ width: '100%', mt: 2 }}
-        >
-          Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
-        </Button>
-      </Flex>
+      <SubmitBallotsButtons
+        onSubmit={() => {
+          trackButtonClick('submitBallot');
+        }}
+      />
     </Flex>
   );
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
@@ -73,12 +78,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
-                  {Object.keys(ballot).map((pollId, index) => {
-                    const poll = findPollById(polls, pollId);
-
-                    if (!poll) {
-                      return null;
-                    }
+                  {votedPolls.map((poll, index) => {
                     return (
                       <PollOverviewCard
                         key={poll.multiHash}
@@ -86,7 +86,16 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         reviewPage={true}
                         showVoting={true}
                         sx={cardStyles(index, ballotLength)}
-                      />
+                      >
+                        <Box sx={{ pt: 2 }}>
+                          <CommentTextBox
+                            onChange={(val: string) => {
+                              updateComment(val, poll.pollId);
+                            }}
+                            value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
+                          />
+                        </Box>
+                      </PollOverviewCard>
                     );
                   })}
                 </Stack>

@@ -2,15 +2,16 @@ import { Box, Text, Flex } from 'theme-ui';
 import isEqual from 'lodash/isEqual';
 
 import { Poll } from 'modules/polling/types';
-import { Ballot } from 'modules/polling/types/ballot';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import useAccountsStore from 'modules/app/stores/accounts';
+import useBallotStore from '../stores/ballotStore';
 
-type Props = { ballot: Ballot; polls: Poll[]; activePolls: Poll[] };
+type Props = { polls: Poll[]; activePolls: Poll[] };
 
-export default function PollBar({ ballot, polls, activePolls, ...props }: Props): JSX.Element {
+export default function PollBar({ polls, activePolls, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
+  const ballot = useBallotStore(state => state.ballot);
   const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
   const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);

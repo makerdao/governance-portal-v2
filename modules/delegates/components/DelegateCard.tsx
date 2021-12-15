@@ -21,6 +21,8 @@ import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
+import { formatAddress } from 'lib/utils';
+import DelegateAvatarName from './DelegateAvatarName';
 
 type PropTypes = {
   delegate: Delegate;
@@ -86,41 +88,9 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               passHref
             >
               <ThemeUILink title="Profile details" variant="nostyle">
-                <Flex sx={{ mr: [0, 2] }}>
-                  <DelegatePicture delegate={delegate} />
-
-                  <Box sx={{ ml: 2 }}>
-                    <Flex sx={{ alignItems: 'center' }}>
-                      <Text as="p" variant="microHeading" sx={{ fontSize: [3, 4] }}>
-                        {delegate.name
-                          ? limitString(delegate.name, isOwner ? 23 : 43, '...')
-                          : limitString('Unknown', isOwner ? 12 : 43, '...')}
-                      </Text>
-                      {isOwner && (
-                        <Flex
-                          sx={{
-                            display: 'inline-flex',
-                            backgroundColor: 'tagColorSevenBg',
-                            borderRadius: 'roundish',
-                            padding: '3px 6px',
-                            alignItems: 'center',
-                            color: 'tagColorSeven',
-                            ml: 2
-                          }}
-                        >
-                          <Text sx={{ fontSize: 1 }}>Owner</Text>
-                        </Flex>
-                      )}
-                    </Flex>
-                    <Text>
-                      {delegate.voteDelegateAddress.substr(0, 6)}...
-                      {delegate.voteDelegateAddress.substr(
-                        delegate.voteDelegateAddress.length - 5,
-                        delegate.voteDelegateAddress.length - 1
-                      )}
-                    </Text>
-                  </Box>
-                </Flex>
+                <Box sx={{ mr: [0, 2] }}>
+                  <DelegateAvatarName delegate={delegate} isOwner={isOwner} />
+                </Box>
               </ThemeUILink>
             </Link>
 

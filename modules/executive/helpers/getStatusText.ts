@@ -3,8 +3,8 @@ import { formatDateWithTime } from 'lib/datetime';
 import { isBefore } from 'date-fns';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
-import { ZERO_ADDRESS } from 'modules/app/stores/accounts';
 import { CurrencyObject } from 'modules/app/types/currency';
+import { ZERO_ADDRESS } from 'modules/app/constants';
 
 export const getStatusText = ({
   proposalAddress,
