@@ -75,8 +75,6 @@ export default function CommentItem({
                   </Link>
                 </Box>
               )}
-
-             
             </Box>
           )}
         </Box>
@@ -88,19 +86,19 @@ export default function CommentItem({
             Voted with {new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR{' '}
           </Text>
           {comment.comment.txHash && (
-               <Box>
- <ExternalLink
-                  target="_blank"
-                  href={getEtherscanLink(getNetwork(), comment.comment.txHash, 'transaction')}
-                  sx={{ my: 3 }}
-                >
-                  <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                    View on Etherscan
-                    <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-                  </Text>
-                </ExternalLink>
-                </Box>
-              )}
+            <Box>
+              <ExternalLink
+                target="_blank"
+                href={getEtherscanLink(getNetwork(), comment.comment.txHash, 'transaction')}
+                sx={{ my: 3 }}
+              >
+                <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+                  View on Etherscan
+                  <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+                </Text>
+              </ExternalLink>
+            </Box>
+          )}
         </Box>
         {account?.address === comment.comment.voterAddress && twitterEnabled && (
           <ExternalLink href={twitterUrl} target="_blank">

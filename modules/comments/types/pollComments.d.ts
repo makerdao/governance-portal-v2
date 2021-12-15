@@ -7,7 +7,7 @@ export type PollComment = {
   date: Date;
   pollId: number;
   network: SupportedNetworks;
-  txHash?: string
+  txHash?: string;
 };
 
 export type PollCommentFromDB = PollComment & {
