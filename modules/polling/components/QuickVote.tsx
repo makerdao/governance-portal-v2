@@ -60,6 +60,10 @@ const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): 
     if (!choice) setChoice(currentVote);
   }, [allUserVotes]);
 
+  useEffect(() => {
+    setChoice(null);
+  }, [account]);
+
   const submit = () => {
     invariant(isChoiceValid);
     if (currentVote && isEqual(currentVote, choice)) {
