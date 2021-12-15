@@ -142,7 +142,7 @@ const [useBallotStore] = create<Store>((set, get) => ({
               body: JSON.stringify(commentsRequest)
             })
               .then(() => {
-                console.log('comment successfully added');
+                // console.log('comment successfully added');
                 get().setComments([]);
               })
               .catch(() => {

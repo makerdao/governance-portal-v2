@@ -120,7 +120,7 @@ export default function DefaultVoteModalView({
             body: JSON.stringify(requestBody)
           })
             .then(() => {
-              console.log('comment successfully added');
+              // console.log('comment successfully added');
               mutateComments();
             })
             .catch(() => console.error('failed to add comment'));
