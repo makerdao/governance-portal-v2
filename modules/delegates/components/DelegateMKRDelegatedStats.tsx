@@ -10,7 +10,7 @@ export function DelegateMKRDelegatedStats({
   delegatorCount
 }: {
   delegate: Delegate;
-  delegatorCount: number;
+  delegatorCount?: number;
 }): React.ReactElement {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
@@ -32,9 +32,12 @@ export function DelegateMKRDelegatedStats({
         value={new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}
         label={'Total MKR Delegated'}
       />
-      <StatBox value={new BigNumber(delegatorCount).toFormat(2)} label={'Total Active Delegators'} />
       <StatBox
-        value={mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+        value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(2) : '--'}
+        label={'Total Active Delegators'}
+      />
+      <StatBox
+        value={typeof mkrStaked !== 'undefined' ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
         label={'MKR Delegated by you'}
       />
     </Flex>

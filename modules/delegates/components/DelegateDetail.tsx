@@ -49,7 +49,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
 
   const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
-  const delegatorCount = activeDelegators?.length || 0;
+  const delegatorCount = delegators ? activeDelegators?.length : undefined;
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
