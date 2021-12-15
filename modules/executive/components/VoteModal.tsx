@@ -155,7 +155,13 @@ const VoteModal = ({ close, proposal, currentSlate = [], onMined }: Props): JSX.
     const [hatChecked, setHatChecked] = useState(true);
     const [comment, setComment] = useState('');
     return (
-      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Flex
+        sx={{
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <Close
           aria-label="close"
           sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
