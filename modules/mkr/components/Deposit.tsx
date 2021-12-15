@@ -18,6 +18,7 @@ import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import BigNumber from 'bignumber.js';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
@@ -27,6 +28,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   const [txId, setTxId] = useState(null);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { data: mkrBalance } = useMkrBalance(address);
+
+  const { mutate: mutateLocked } = useLockedMkr(address, voteProxy);
 
   const { data: chiefAllowance } = useSWR<CurrencyObject>(
     ['/user/chief-allowance', address, !!voteProxy],
@@ -106,6 +109,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               : () => maker.service('chief').lock(mkrToDeposit);
             const txId = await track(lockTxCreator, 'Depositing MKR', {
               mined: txId => {
+                // Mutate locked state
+                mutateLocked();
                 transactionsApi.getState().setMessage(txId, 'MKR deposited');
                 close();
               },

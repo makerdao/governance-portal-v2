@@ -23,7 +23,6 @@ import CategoryFilter from 'modules/polling/components/CategoryFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
@@ -67,7 +66,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
   );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const ballot = useBallotStore(state => state.ballot);
   const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
@@ -272,9 +270,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
             )}
           </Box>
           <Stack gap={3}>
-            {account && bpi > 0 && (
-              <BallotBox polls={polls} activePolls={activePolls} ballot={ballot} network={network} />
-            )}
+            {account && bpi > 0 && <BallotBox polls={polls} activePolls={activePolls} network={network} />}
             <SystemStatsSidebar
               fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
             />

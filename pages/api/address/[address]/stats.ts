@@ -49,7 +49,7 @@ import { resolveENS } from 'modules/web3/ens';
  *       lastVote:
  *         $ref: '#/definitions/VoteHistory'
  *
- * /api/[address]/stats:
+ * /api/address/{address}/stats:
  *   get:
  *     tags:
  *     - "address"
@@ -57,11 +57,12 @@ import { resolveENS } from 'modules/web3/ens';
  *     produces:
  *     - "application/json"
  *     parameters:
- *     - name: "address"
- *       in: "query"
- *       description: "Address"
- *       required: true
- *       type: "string"
+ *       - in: path
+ *         name: address
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Address to check
  *     responses:
  *       '200':
  *         description: "Stats of the address"

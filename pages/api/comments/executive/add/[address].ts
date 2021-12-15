@@ -5,22 +5,28 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToDatabase } from 'lib/api/utils';
 import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
-import { SupportedNetworks } from 'lib/constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
+import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const spellAddress: string = req.query.address as string;
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-    const { voterAddress, comment, commentSig, txHash, voterWeight } = JSON.parse(req.body);
+    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
 
-    // only store comments for mainnet votes
-    invariant(
-      !req.query.network || req.query.network === SupportedNetworks.MAINNET,
-      `unsupported network ${req.query.network}`
-    );
+    invariant(network && network.length > 0, 'Network not supported');
 
-    const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
+    const {
+      voterAddress,
+      comment,
+      signedMessage,
+      txHash,
+      voterWeight,
+      delegateAddress
+    }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
+
+    const provider = ethers.getDefaultProvider(network, {
       infura: config.INFURA_KEY,
       alchemy: config.ALCHEMY_KEY
     });
@@ -34,7 +40,7 @@ export default withApiHandler(
 
     // verify signature
     invariant(
-      ethers.utils.verifyMessage(comment, commentSig) === ethers.utils.getAddress(voterAddress),
+      ethers.utils.verifyMessage(comment, signedMessage) === ethers.utils.getAddress(voterAddress),
       'invalid message signature'
     );
 
@@ -44,7 +50,19 @@ export default withApiHandler(
     invariant(await client.isConnected(), 'Mongo client failed to connect');
 
     const collection = db.collection('executiveComments');
-    await collection.insertOne({ spellAddress, voterAddress, comment, voterWeight, date: new Date() });
+
+    const newComment: ExecutiveComment = {
+      spellAddress,
+      voterAddress,
+      delegateAddress,
+      comment,
+      voterWeight,
+      date: new Date(),
+      network,
+      txHash
+    };
+
+    await collection.insertOne(newComment);
 
     res.status(200).json({ success: 'Added Successfully' });
   },

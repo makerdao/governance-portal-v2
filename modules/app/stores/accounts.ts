@@ -1,13 +1,9 @@
 import create from 'zustand';
-import getMaker from 'lib/maker';
-import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
-import { getNetwork } from 'lib/maker';
-import { oldVoteProxyFactoryAddress, SupportedNetworks } from 'lib/constants';
+import getMaker, { getNetwork } from 'lib/maker';
 import { Account } from 'modules/app/types/account';
 import { OldVoteProxyContract, VoteProxyContract } from 'modules/app/types/voteProxyContract';
 import { VoteDelegateContract } from 'modules/delegates/types/voteDelegateContract';
-
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+import { getOldProxyStatus } from 'modules/mkr/lib/getOldProxyStatus';
 
 type Store = {
   currentAccount?: Account;
@@ -17,26 +13,6 @@ type Store = {
   setVoteDelegate: (address: string) => Promise<void>;
   addAccountsListener: (maker) => Promise<void>;
   disconnectAccount: () => Promise<void>;
-};
-
-const getOldProxyStatus = async (address, maker) => {
-  if (getNetwork() === SupportedNetworks.GOERLI) {
-    return { role: '', address: '' };
-  }
-  try {
-    const oldFactory = maker
-      .service('smartContract')
-      .getContractByAddressAndAbi(oldVoteProxyFactoryAddress[getNetwork()], oldVoteProxyFactoryAbi);
-    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-      oldFactory.coldMap(address),
-      oldFactory.hotMap(address)
-    ]);
-    if (proxyAddressCold !== ZERO_ADDRESS) return { role: 'cold', address: proxyAddressCold };
-    if (proxyAddressHot !== ZERO_ADDRESS) return { role: 'hot', address: proxyAddressHot };
-  } catch (err) {
-    console.log(err);
-  }
-  return { role: '', address: '' };
 };
 
 const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
@@ -55,7 +31,7 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
       const { address } = account;
       const [{ hasProxy, voteProxy }, oldProxy] = await Promise.all([
         maker.service('voteProxy').getVoteProxy(address),
-        getOldProxyStatus(address, maker)
+        getOldProxyStatus(address, maker, getNetwork())
       ]);
 
       await get().setVoteDelegate(address);

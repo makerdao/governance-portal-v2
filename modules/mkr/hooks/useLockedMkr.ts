@@ -8,7 +8,7 @@ type LockedMkrData = {
   data: CurrencyObject;
   loading: boolean;
   error: Error;
-  mutate: any;
+  mutate: () => void;
 };
 
 export const useLockedMkr = (

@@ -16,6 +16,7 @@ import TxIndicators from 'modules/app/components/TxIndicators';
 import PollBar from '../PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { SubmitBallotsButtons } from '../SubmitBallotButtons';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -32,15 +33,12 @@ export default function ReviewBox({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const { clearTx, voteTxId, ballot, submitBallot } = useBallotStore(
-    state => ({
-      clearTx: state.clearTx,
-      voteTxId: state.txId,
-      ballot: state.ballot,
-      submitBallot: state.submitBallot
-    }),
-    shallow
-  );
+  const { clearTx, voteTxId, signedMessage, comments } = useBallotStore(state => ({
+    clearTx: state.clearTx,
+    voteTxId: state.txId,
+    signedMessage: state.signedMessage,
+    comments: state.comments
+  }));
 
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
@@ -48,28 +46,19 @@ export default function ReviewBox({
   );
 
   const bpi = useBreakpointIndex();
-  const ballotLength = Object.keys(ballot).length;
 
   const Default = props => (
     <ReviewBoxCard {...props}>
-      <PollBar ballot={ballot} polls={polls} activePolls={activePolls} />
+      <PollBar polls={polls} activePolls={activePolls} />
       <Divider />
       <VotingWeight sx={{ px: 3, py: [2, 2], mb: 1 }} />
       <Divider m={0} sx={{ display: ['none', 'block'] }} />
       {bpi > 2 && (
-        <Flex p={3} sx={{ flexDirection: 'column', width: '100%', m: '0' }}>
-          <Button
-            onClick={() => {
-              trackButtonClick('submitBallot');
-              submitBallot();
-            }}
-            variant="primaryLarge"
-            disabled={!ballotLength || !!voteTxId}
-            sx={{ width: '100%' }}
-          >
-            Submit Your Ballot
-          </Button>
-        </Flex>
+        <SubmitBallotsButtons
+          onSubmit={() => {
+            trackButtonClick('submitBallot');
+          }}
+        />
       )}
     </ReviewBoxCard>
   );
@@ -168,17 +157,11 @@ export default function ReviewBox({
         Something went wrong with your transaction. Please try again.
       </Text>
       <Flex p={3} sx={{ flexDirection: 'column' }}>
-        <Button
-          onClick={() => {
+        <SubmitBallotsButtons
+          onSubmit={() => {
             trackButtonClick('submitBallot');
-            submitBallot();
           }}
-          variant="primaryLarge"
-          disabled={!ballotLength}
-          sx={{ width: '100%' }}
-        >
-          Submit Your Ballot
-        </Button>
+        />
       </Flex>
       <Link href={{ pathname: '/polling/review', query: { network: getNetwork() } }}>
         <Button
@@ -210,7 +193,7 @@ export default function ReviewBox({
     if (isMined) return <Mined />;
     if (hasFailed) return <Error />;
     return <Default />;
-  }, [isInitialized, isPending, isMined, hasFailed, bpi]);
+  }, [isInitialized, isPending, isMined, hasFailed, bpi, signedMessage, comments]);
 
   return <Box {...props}>{view}</Box>;
 }
