@@ -5,10 +5,15 @@ import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import useAccountsStore from 'modules/app/stores/accounts';
 
-export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }): React.ReactElement {
+export function DelegateMKRDelegatedStats({
+  delegate,
+  delegatorCount
+}: {
+  delegate: Delegate;
+  delegatorCount?: number;
+}): React.ReactElement {
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-
   // TODO: Fetch addresses suporting through API fetching
 
   const { data: mkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
@@ -27,10 +32,12 @@ export function DelegateMKRDelegatedStats({ delegate }: { delegate: Delegate }):
         value={new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}
         label={'Total MKR Delegated'}
       />
-      {/* TODO add once we have data */}
-      {/* <StatBox value={'TBD'} label={'Delegators (wallets)'} />*/}
       <StatBox
-        value={mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+        value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
+        label={'Total Active Delegators'}
+      />
+      <StatBox
+        value={typeof mkrStaked !== 'undefined' ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
         label={'MKR Delegated by you'}
       />
     </Flex>
