@@ -9,7 +9,7 @@ type Props = {
   tabPanels: React.ReactNode[];
   tabListStyles?: ThemeUIStyleObject;
   hashRoute?: boolean;
-  banner?: JSX.Element;
+  banner?: JSX.Element | null;
 };
 
 const TabbedLayout = ({

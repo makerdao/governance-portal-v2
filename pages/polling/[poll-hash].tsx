@@ -17,7 +17,7 @@ import { formatDateWithTime } from 'lib/datetime';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -282,14 +282,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 )
               ]}
               banner={
-                tally &&
-                tally.totalMkrParticipation > 0 && (
+                tally && tally.totalMkrParticipation > 0 ? (
                   <Box>
                     <Divider my={0} />
                     <PollWinningOptionBox tally={tally} poll={poll} />
                     <Divider my={0} />
                   </Box>
-                )
+                ) : null
               }
             />
           </Card>
