@@ -23,7 +23,7 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
-import { DelegationHistory } from 'modules/delegates/types';
+import { DelegationHistory } from 'modules/delegates/types/delegate';
 
 type PropTypes = {
   delegate: Delegate;
@@ -48,6 +48,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+
+  const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
+  const delegatorCount = delegators ? activeDelegators?.length : undefined;
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
@@ -128,7 +131,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
         <Box sx={{ mt: [2], display: 'flex', flexDirection: 'column' }}>
-          <DelegateMKRDelegatedStats delegate={delegate} />
+          <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
 

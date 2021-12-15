@@ -1,6 +1,7 @@
 import { utils } from 'ethers';
 import { SupportedNetworks } from 'lib/constants';
-import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types';
+import { DelegationHistory } from '../types/delegate';
+import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
 import getMaker from 'lib/maker';
 
 export async function fetchDelegationHistory(
