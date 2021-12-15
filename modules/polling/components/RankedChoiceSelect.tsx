@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Box, Flex, Text, Close } from 'theme-ui';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -30,6 +30,10 @@ export default function RankedChoiceSelect({
   const [showAddButton, setShowAddButton] = useState(false);
   const totalNumOptions = Object.keys(poll.options).length;
   const canAddOption = totalNumOptions > numConfirmed + 1;
+
+  useEffect(() => {
+    setNumConfirmed(choice.length);
+  }, [_choice]);
 
   const availableChoices = useMemo(
     () =>
