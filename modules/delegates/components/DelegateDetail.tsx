@@ -69,18 +69,23 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegators && delegators?.length > 0 && (
+      {delegators && delegators?.length > 0 ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
             <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
           </Box>
           <Divider />
+
+          <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
+            <DelegateMKRChart delegate={delegate} />
+          </Box>
+          <Divider />
         </>
+      ) : (
+        <Box p={[3, 4]} mt={1}>
+          <Text>No metrics data found</Text>
+        </Box>
       )}
-      <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
-        <DelegateMKRChart delegate={delegate} />
-      </Box>
-      <Divider />
       {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>,
     <Box key="delegate-vote-history">
