@@ -176,7 +176,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
 
           {comments && comments.length > 0 && (
             <Box sx={{ mt: 2 }}>
-              <InternalLink href={`/executive/${proposal.key}/#comments`}>
+              <InternalLink href={`/executive/${proposal.key}?network=${getNetwork()}#comments`}>
                 <CommentCount count={comments.length} />
               </InternalLink>
             </Box>

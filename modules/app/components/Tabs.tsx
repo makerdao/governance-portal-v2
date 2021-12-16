@@ -15,14 +15,14 @@ type Props = {
 
 const TabbedLayout = ({
   tabTitles,
-  tabRoutes,
+  tabRoutes = [],
   tabPanels,
   tabListStyles = {},
   hashRoute = true,
   banner
 }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
-  if (!tabRoutes) tabRoutes = tabTitles;
+  if (tabRoutes.length === 0) tabRoutes = tabTitles;
   const activeTab = tabRoutes[activeTabIndex];
 
   useEffect(() => {

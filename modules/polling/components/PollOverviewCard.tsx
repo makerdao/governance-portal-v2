@@ -97,7 +97,7 @@ export default function PollOverviewCard({
                 </Box>
 
                 {comments && comments.length > 0 && (
-                  <InternalLink href={`/polling/${poll.slug}/#comments`}>
+                  <InternalLink href={`/polling/${poll.slug}?network=${getNetwork()}#comments`}>
                     <CommentCount count={comments.length} />
                   </InternalLink>
                 )}
