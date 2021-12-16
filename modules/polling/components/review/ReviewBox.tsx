@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -182,18 +182,24 @@ export default function ReviewBox({
     </ReviewBoxCard>
   );
 
-  const isInitialized = transaction?.status === 'initialized';
-  const isPending = transaction?.status === 'pending';
-  const isMined = transaction?.status === 'mined';
-  const hasFailed = transaction?.status === 'error';
+  const [transactionStatus, setTransactionStatus] = useState('default');
+
+  useEffect(() => {
+    setTransactionStatus('default');
+  }, [comments]);
+
+  useEffect(() => {
+    setTransactionStatus(transaction?.status || 'default');
+  }, [transaction]);
 
   const view = useMemo(() => {
-    if (isInitialized) return <Initializing />;
-    if (isPending) return <Pending />;
-    if (isMined) return <Mined />;
-    if (hasFailed) return <Error />;
+    if (transactionStatus === 'default') return <Default />;
+    if (transactionStatus === 'initialized') return <Initializing />;
+    if (transactionStatus === 'pending') return <Pending />;
+    if (transactionStatus === 'mined') return <Mined />;
+    if (transactionStatus === 'error') return <Error />;
     return <Default />;
-  }, [isInitialized, isPending, isMined, hasFailed, bpi, signedMessage, comments]);
+  }, [transactionStatus, bpi, signedMessage, comments]);
 
   return <Box {...props}>{view}</Box>;
 }

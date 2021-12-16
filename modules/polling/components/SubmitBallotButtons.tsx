@@ -1,5 +1,7 @@
 import useBallotStore from '../stores/ballotStore';
 import { Box, Flex, Button } from 'theme-ui';
+import useTransactionsStore, { transactionsSelectors } from 'modules/app/stores/transactions';
+import shallow from 'zustand/shallow';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
@@ -12,6 +14,11 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
     comments: state.comments
   }));
 
+  const transaction = useTransactionsStore(
+    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
+    shallow
+  );
+
   const ballotLength = Object.keys(ballot).length;
 
   return (
@@ -23,7 +30,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
               signComments();
             }}
             variant="primaryOutline"
-            disabled={!ballotLength || !!voteTxId || !!signedMessage}
+            disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error') || !!signedMessage}
             sx={{ width: '100%' }}
           >
             1 - Sign your comments
@@ -35,7 +42,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
               onSubmit();
             }}
             variant="primaryLarge"
-            disabled={!ballotLength || !!voteTxId || !signedMessage}
+            disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error') || !signedMessage}
             sx={{ width: '100%' }}
           >
             2 - Submit Your Ballot
@@ -48,7 +55,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             onSubmit();
           }}
           variant="primaryLarge"
-          disabled={!ballotLength || !!voteTxId}
+          disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error')}
           sx={{ width: '100%' }}
         >
           Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
