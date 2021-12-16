@@ -131,7 +131,8 @@ export default function MobileVoteSheet({
           backgroundColor: 'surface',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          zIndex: 1
         }}
       >
         <VotingStatus poll={poll} />
