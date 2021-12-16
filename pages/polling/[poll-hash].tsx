@@ -188,6 +188,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 'Vote Breakdown',
                 `Comments${comments ? ` (${comments.length})` : ''}`
               ]}
+              tabRoutes={['Poll Detail', 'Vote Breakdown', 'Comments']}
               tabPanels={[
                 <div key={1}>
                   <div

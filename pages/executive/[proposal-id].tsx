@@ -210,10 +210,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 tabListStyles={{ pl: [3, 4] }}
                 tabTitles={[
                   'Proposal Detail',
-
                   'Spell Details',
                   `Comments ${comments ? `(${comments.length})` : ''}`
                 ]}
+                tabRoutes={['Proposal Detail', 'Spell Details', 'Comments']}
                 tabPanels={[
                   <div
                     key={'about'}

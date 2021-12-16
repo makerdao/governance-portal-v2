@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
+import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -176,7 +176,9 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
 
           {comments && comments.length > 0 && (
             <Box sx={{ mt: 2 }}>
-              <CommentCount count={comments.length} />
+              <InternalLink href={`/executive/${proposal.key}/#comments`}>
+                <CommentCount count={comments.length} />
+              </InternalLink>
             </Box>
           )}
         </Box>
