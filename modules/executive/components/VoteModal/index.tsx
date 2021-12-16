@@ -46,6 +46,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}
+            close={close}
             onTransactionPending={() => setStep('pending')}
             onTransactionFailed={() => setStep('failed')}
             onTransactionCreated={transactionId => setTxId(transactionId)}

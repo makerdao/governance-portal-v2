@@ -24,12 +24,14 @@ import shallow from 'zustand/shallow';
 
 export default function DefaultVoteModalView({
   proposal,
+  close,
   onTransactionPending,
   onTransactionMined,
   onTransactionCreated,
   onTransactionFailed
 }: {
   proposal: Proposal;
+  close: () => void;
   onTransactionPending: () => void;
   onTransactionMined: () => void;
   onTransactionFailed: () => void;
