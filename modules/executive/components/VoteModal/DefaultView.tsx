@@ -113,6 +113,7 @@ export default function DefaultVoteModalView({
             voterAddress: account?.address || '',
             delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
             comment: comment,
+            voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
             signedMessage: signedMessage,
             txHash,
             voterWeight: votingWeight

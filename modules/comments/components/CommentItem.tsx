@@ -24,14 +24,20 @@ export default function CommentItem({
   const twitterEnabled = false;
 
   // Used to display the share button in owned comments
-  const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
+  const account = useAccountsStore(state => state.currentAccount);
+  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
+  );
 
   // isOwner if the delegateAddress registered in the comment is the same one from the current user
   // isOwner also if the address is equal to the current account address
-  const isOwner = comment.comment.delegateAddress
-    ? comment.comment.delegateAddress?.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase()
-    : comment.address.address.toLowerCase() === account?.address.toLowerCase();
-
+  const isOwner =
+    (comment.comment.voteProxyAddress &&
+      comment.comment.voteProxyAddress?.toLowerCase() === voteProxy?.getProxyAddress().toLowerCase()) ||
+    (comment.comment.delegateAddress &&
+      comment.comment.delegateAddress?.toLowerCase() ===
+        voteDelegate?.getVoteDelegateAddress().toLowerCase()) ||
+    comment.address.address.toLowerCase() === account?.address.toLowerCase();
   return (
     <Box>
       <Flex
@@ -72,6 +78,7 @@ export default function CommentItem({
                       <AddressIconBox
                         address={comment.address.address}
                         voteProxyInfo={comment.address.voteProxyInfo}
+                        isOwner={isOwner}
                         showExternalLink={false}
                       />
                     </ExternalLink>

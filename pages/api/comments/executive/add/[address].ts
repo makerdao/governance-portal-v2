@@ -23,7 +23,8 @@ export default withApiHandler(
       signedMessage,
       txHash,
       voterWeight,
-      delegateAddress
+      delegateAddress,
+      voteProxyAddress
     }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
     const provider = ethers.getDefaultProvider(network, {
@@ -57,6 +58,7 @@ export default withApiHandler(
       delegateAddress,
       comment,
       voterWeight,
+      voteProxyAddress: voteProxyAddress || '',
       date: new Date(),
       network,
       txHash
