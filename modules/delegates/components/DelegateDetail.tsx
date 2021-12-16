@@ -24,6 +24,7 @@ import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { DelegationHistory } from 'modules/delegates/types/delegate';
+import useAccountsStore from 'modules/app/stores/accounts';
 
 type PropTypes = {
   delegate: Delegate;
@@ -48,9 +49,12 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+  const voteDelegate = useAccountsStore(state => state.voteDelegate);
 
   const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
   const delegatorCount = delegators ? activeDelegators?.length : undefined;
+  const isOwner =
+    delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
@@ -107,9 +111,26 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
               <DelegatePicture delegate={delegate} key={delegate.id} width={'52px'} />
               <Box sx={{ width: '100%' }}>
                 <Box sx={{ ml: 3 }}>
-                  <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                    {delegate.name !== '' ? delegate.name : 'Shadow Delegate'}
-                  </Text>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                      {delegate.name !== '' ? delegate.name : 'Shadow Delegate'}
+                    </Text>
+                    {isOwner && (
+                      <Flex
+                        sx={{
+                          display: 'inline-flex',
+                          backgroundColor: 'tagColorSevenBg',
+                          borderRadius: 'roundish',
+                          padding: '3px 6px',
+                          alignItems: 'center',
+                          color: 'tagColorSeven',
+                          ml: 2
+                        }}
+                      >
+                        <Text sx={{ fontSize: 1 }}>Owner</Text>
+                      </Flex>
+                    )}
+                  </Flex>
                   <ExternalLink
                     title="View on etherescan"
                     href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
