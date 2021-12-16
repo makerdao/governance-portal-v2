@@ -85,7 +85,7 @@ export default function CommentItem({
           <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
             {formatDateWithTime(comment.comment.date)}
           </Text>
-          <Text variant="smallCaps" sx={{ maxWidth: ['100%', '40%'] }}>
+          <Text variant="smallCaps">
             {votedOption
               ? votedOption
               : `Voted with ${new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR`}
