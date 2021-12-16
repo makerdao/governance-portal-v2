@@ -13,7 +13,6 @@ export default function CommentTextBox({
       sx={{
         borderRadius: 'medium',
         my: 2,
-        mb: 4,
         width: '100%',
         borderColor: 'secondaryMuted'
       }}

@@ -82,7 +82,12 @@ export default function CommentItem({
           )}
         </Box>
         <Flex
-          sx={{ flexDirection: 'column', alignItems: ['flex-start', 'flex-end'], maxWidth: ['100%', '50%'] }}
+          sx={{
+            flexDirection: 'column',
+            alignItems: ['flex-start', 'flex-end'],
+            maxWidth: ['100%', '265px'],
+            textAlign: ['left', 'right']
+          }}
         >
           <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
             {formatDateWithTime(comment.comment.date)}

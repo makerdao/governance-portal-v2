@@ -19,7 +19,7 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { CMSProposal, Proposal } from 'modules/executive/types';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import React, { useEffect, useState } from 'react';
-import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox, Textarea } from 'theme-ui';
+import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import shallow from 'zustand/shallow';
 
 export default function DefaultVoteModalView({
@@ -78,7 +78,7 @@ export default function DefaultVoteModalView({
   const isHat = hat && hat === proposal.address;
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
-  const votingWeight = lockedMkr?.toBigNumber().toFormat(6);
+  const votingWeight = lockedMkr?.toBigNumber().toFormat(3);
   const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
   const mkrSupporting = spellData ? new BigNumber(spellData.mkrSupport).toFormat(3) : 0;
   const afterVote =
