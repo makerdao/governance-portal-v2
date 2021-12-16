@@ -38,7 +38,6 @@ export default function CommentItem({
       comment.comment.delegateAddress?.toLowerCase() ===
         voteDelegate?.getVoteDelegateAddress().toLowerCase()) ||
     comment.address.address.toLowerCase() === account?.address.toLowerCase();
-
   return (
     <Box>
       <Flex
@@ -79,6 +78,7 @@ export default function CommentItem({
                       <AddressIconBox
                         address={comment.address.address}
                         voteProxyInfo={comment.address.voteProxyInfo}
+                        isOwner={isOwner}
                         showExternalLink={false}
                       />
                     </ExternalLink>
