@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, Button, Flex, Text, Textarea } from 'theme-ui';
+import { Heading, Box, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
-
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -36,7 +35,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const account = useAccountsStore(state => state.currentAccount);
 
-  const ballotLength = Object.keys(ballot).length;
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
   const votedPolls = Object.keys(ballot)
@@ -78,15 +76,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
-                  {votedPolls.map((poll, index) => {
+                  {votedPolls.map(poll => {
                     return (
-                      <PollOverviewCard
-                        key={poll.multiHash}
-                        poll={poll}
-                        reviewPage={true}
-                        showVoting={true}
-                        sx={cardStyles(index, ballotLength)}
-                      >
+                      <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={true} showVoting={true}>
                         <Box sx={{ pt: 2 }}>
                           <CommentTextBox
                             onChange={(val: string) => {
@@ -116,27 +108,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     </PrimaryLayout>
   );
 };
-
-const cardStyles = (index, ballotLength) =>
-  ballotLength === 1
-    ? {}
-    : index === 0
-    ? {
-        borderBottomLeftRadius: '0 !important',
-        borderBottomRightRadius: '0 !important',
-        borderBottom: '0 !important'
-      }
-    : index === ballotLength - 1
-    ? {
-        borderTopLeftRadius: '0 !important',
-        borderTopRightRadius: '0 !important',
-        mt: '0 !important'
-      }
-    : {
-        borderRadius: '0 !important',
-        borderBottom: '0 !important',
-        mt: '0 !important'
-      };
 
 export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
