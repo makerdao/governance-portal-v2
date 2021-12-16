@@ -257,6 +257,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Text>
                       {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
                         <VotesByAddress tally={tally} poll={poll} />
+                      ) : tally && tally.numVoters === 0 ? (
+                        <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>
@@ -276,7 +278,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Weight
                       </Text>
-                      {tally && <VotingWeightComponent tally={tally} poll={poll} />}
+                      {tally && tally.numVoters > 0 && <VotingWeightComponent tally={tally} poll={poll} />}
+                      {tally && tally.numVoters === 0 && (
+                        <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>
+                      )}
                     </Flex>
                   ]
                 ),
