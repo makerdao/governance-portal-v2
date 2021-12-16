@@ -1,5 +1,6 @@
+import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballotStore';
-import { Box, Flex, Button } from 'theme-ui';
+import { Box, Flex, Button, Text } from 'theme-ui';
 import useTransactionsStore, { transactionsSelectors } from 'modules/app/stores/transactions';
 import shallow from 'zustand/shallow';
 
@@ -33,7 +34,10 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error') || !!signedMessage}
             sx={{ width: '100%' }}
           >
-            1 - Sign your comments
+            <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              {!!signedMessage && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
+              <Text>1 - Sign your comments</Text>
+            </Flex>
           </Button>
           <Button
             mt={2}
