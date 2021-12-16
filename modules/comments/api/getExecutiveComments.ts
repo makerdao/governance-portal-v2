@@ -6,6 +6,7 @@ import uniqBy from 'lodash/uniqBy';
 import { ExecutiveComment, ExecutiveCommentFromDB } from '../types/executiveComment';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
+import ExecutiveComments from '../components/ExecutiveComments';
 
 export async function getExecutiveComments(
   spellAddress: string,
@@ -30,11 +31,15 @@ export async function getExecutiveComments(
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');
 
-  const promises = uniqueComments.map(async comment => {
+  const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     return {
       comment,
       address: await getAddressInfo(
-        comment.delegateAddress ? comment.delegateAddress : comment.voterAddress,
+        comment.delegateAddress
+          ? comment.delegateAddress
+          : comment.voteProxyAddress
+          ? comment.voteProxyAddress
+          : comment.voterAddress,
         network
       )
     };

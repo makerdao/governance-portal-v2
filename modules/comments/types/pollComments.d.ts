@@ -3,6 +3,7 @@ import { SupportedNetworks } from 'lib/constants';
 export type PollComment = {
   voterAddress: string;
   delegateAddress?: string;
+  voteProxyAddress?: string;
   comment: string;
   date: Date;
   pollId: number;
@@ -18,6 +19,7 @@ export type PollsCommentsRequestBody = {
   voterAddress: string;
   delegateAddress?: string;
   comments: Partial<PollComment>[];
+  voteProxyAddress?: string;
   rawMessage: string;
   signedMessage: string;
   txHash: string;

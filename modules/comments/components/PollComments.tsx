@@ -29,7 +29,7 @@ export default function PollComments({
       return (
         i.voter ===
         (item.address.isProxyContract
-          ? item.address.voteProxyInfo
+          ? item.address.voteProxyInfo?.voteProxyAddress
           : item.address.isDelegate
           ? item.address.delegateInfo?.voteDelegateAddress
           : item.address.address)

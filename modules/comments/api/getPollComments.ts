@@ -29,11 +29,15 @@ export async function getPollComments(
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');
 
-  const promises = uniqueComments.map(async comment => {
+  const promises = uniqueComments.map(async (comment: PollComment) => {
     return {
       comment,
       address: await getAddressInfo(
-        comment.delegateAddress ? comment.delegateAddress : comment.voterAddress,
+        comment.delegateAddress
+          ? comment.delegateAddress
+          : comment.voteProxyAddress
+          ? comment.voteProxyAddress
+          : comment.voterAddress,
         network
       )
     };

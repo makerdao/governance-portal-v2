@@ -117,6 +117,7 @@ const [useBallotStore] = create<Store>((set, get) => ({
     const comments = get().comments;
     const account = accountsApi.getState().currentAccount;
     const voteDelegate = accountsApi.getState().voteDelegate;
+    const voteProxy = account?.address ? accountsApi.getState().proxies[account?.address] : null;
 
     const voteTxCreator = voteDelegate
       ? () => voteDelegate.votePoll(pollIds, pollOptions)
@@ -131,6 +132,7 @@ const [useBallotStore] = create<Store>((set, get) => ({
             const commentsRequest: PollsCommentsRequestBody = {
               voterAddress: account?.address || '',
               delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
+              voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
               comments,
               rawMessage: get().rawMessage,
               signedMessage: get().signedMessage,
