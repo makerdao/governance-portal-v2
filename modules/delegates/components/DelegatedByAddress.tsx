@@ -25,6 +25,11 @@ type CollapsableRowProps = {
   totalDelegated: CurrencyObject;
 };
 
+const formatTotalDelegated = (num, denom) => {
+  const weight = new BigNumber(num).div(denom.toBigNumber()).times(100);
+  return weight.isNaN() ? '0.0' : weight.toFormat(1);
+};
+
 const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: CollapsableRowProps) => {
   const [expanded, setExpanded] = useState(false);
   const { address, lockAmount, events } = delegator;
@@ -92,9 +97,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Box>
       <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
         {totalDelegated ? (
-          <Text>
-            {`${new BigNumber(lockAmount).div(totalDelegated.toBigNumber()).times(100).toFormat(1)}%`}
-          </Text>
+          <Text>{`${formatTotalDelegated(lockAmount, totalDelegated)}%`}</Text>
         ) : (
           <Box sx={{ width: '100%' }}>
             <Skeleton />
