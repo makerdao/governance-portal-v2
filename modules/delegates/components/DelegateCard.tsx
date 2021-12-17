@@ -126,10 +126,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               sx={{
                 flexDirection: ['column', 'column', 'row', 'column', 'row'],
                 justifyContent: 'space-between',
-                width: ['50%', '100%']
+                width: ['50%', '100%'],
+                mr: [1, 0]
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
+              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
                 <Text
                   as="p"
                   variant="microHeading"
@@ -148,7 +149,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   </Text>
                 </Tooltip>
               </Box>
-              <Box sx={{ width: '200px' }}>
+              <Box sx={{ width: ['auto', '200px'] }}>
                 <Text
                   as="p"
                   variant="microHeading"
@@ -175,7 +176,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                     trackButtonClick('openUndelegateModal');
                     setShowUndelegateModal(true);
                   }}
-                  sx={{ width: '150px', height: '45px', mt: [4, 4, 0, 4, 0] }}
+                  sx={{ width: ['100%', '150px'], height: '45px', maxWidth: '150px', mt: [4, 4, 0, 4, 0] }}
                 >
                   Undelegate
                 </Button>
@@ -189,7 +190,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 mb: [0, 0, 3, 0, 3]
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: '200px' }}>
+              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
                 <Text
                   as="p"
                   variant="microHeading"
@@ -202,7 +203,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   Total MKR delegated
                 </Text>
               </Box>
-              <Box sx={{ width: '200px' }}>
+              <Box sx={{ width: ['auto', '200px'] }}>
                 <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
@@ -218,7 +219,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                     trackButtonClick('openDelegateModal');
                     setShowDelegateModal(true);
                   }}
-                  sx={{ width: '150px', height: '45px', mt: [4, 4, 0, 4, 0] }}
+                  sx={{ width: ['100%', '150px'], maxWidth: '150px', height: '45px', mt: [4, 4, 0, 4, 0] }}
                 >
                   Delegate
                 </Button>
