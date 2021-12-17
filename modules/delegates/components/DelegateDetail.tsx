@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
+import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { formatAddress, getEtherscanLink } from 'lib/utils';
 import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
@@ -22,7 +23,8 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
-import { DelegationHistory } from 'modules/delegates/types';
+import { DelegationHistory } from 'modules/delegates/types/delegate';
+import useAccountsStore from 'modules/app/stores/accounts';
 
 type PropTypes = {
   delegate: Delegate;
@@ -47,6 +49,12 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
+  const voteDelegate = useAccountsStore(state => state.voteDelegate);
+
+  const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
+  const delegatorCount = delegators ? activeDelegators?.length : undefined;
+  const isOwner =
+    delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
@@ -65,18 +73,23 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegators && delegators?.length > 0 && (
+      {delegators && delegators?.length > 0 ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
             <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
           </Box>
           <Divider />
+
+          <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
+            <DelegateMKRChart delegate={delegate} />
+          </Box>
+          <Divider />
         </>
+      ) : (
+        <Box p={[3, 4]} mt={1}>
+          <Text>No metrics data found</Text>
+        </Box>
       )}
-      <Box sx={{ pl: [3, 4], pr: [3, 4], pb: [3, 4] }}>
-        <DelegateMKRChart delegate={delegate} />
-      </Box>
-      <Divider />
       {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
     </Box>,
     <Box key="delegate-vote-history">
@@ -98,9 +111,26 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
               <DelegatePicture delegate={delegate} key={delegate.id} width={'52px'} />
               <Box sx={{ width: '100%' }}>
                 <Box sx={{ ml: 3 }}>
-                  <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                    {delegate.name !== '' ? delegate.name : 'Shadow Delegate'}
-                  </Text>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                      {delegate.name !== '' ? delegate.name : 'Shadow Delegate'}
+                    </Text>
+                    {isOwner && (
+                      <Flex
+                        sx={{
+                          display: 'inline-flex',
+                          backgroundColor: 'tagColorSevenBg',
+                          borderRadius: 'roundish',
+                          padding: '3px 6px',
+                          alignItems: 'center',
+                          color: 'tagColorSeven',
+                          ml: 2
+                        }}
+                      >
+                        <Text sx={{ fontSize: 1 }}>Owner</Text>
+                      </Flex>
+                    )}
+                  </Flex>
                   <ExternalLink
                     title="View on etherescan"
                     href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
@@ -110,6 +140,13 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
+                  <Link href={`/address/${delegate.address}`} passHref>
+                    <ExternalLink>
+                      <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
+                        Deployed by: {formatAddress(delegate.address)}
+                      </Text>
+                    </ExternalLink>
+                  </Link>
                 </Box>
               </Box>
             </Flex>
@@ -120,7 +157,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
         <Box sx={{ mt: [2], display: 'flex', flexDirection: 'column' }}>
-          <DelegateMKRDelegatedStats delegate={delegate} />
+          <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
 

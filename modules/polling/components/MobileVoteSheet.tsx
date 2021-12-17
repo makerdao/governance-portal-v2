@@ -41,7 +41,7 @@ type Props = {
   poll: Poll;
   close?: () => void;
   setPoll?: (poll: Poll) => void;
-  ballotCount?: number;
+
   editingOnly?: boolean;
   withStart?: boolean;
 };
@@ -50,7 +50,6 @@ export default function MobileVoteSheet({
   poll,
   setPoll,
   close,
-  ballotCount = 0,
   editingOnly,
   withStart
 }: Props): JSX.Element {
@@ -65,6 +64,8 @@ export default function MobileVoteSheet({
     state => [state.addToBallot, state.removeFromBallot, state.ballot],
     shallow
   );
+  const ballotCount = Object.keys(ballot).length;
+
   const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
@@ -130,7 +131,8 @@ export default function MobileVoteSheet({
           backgroundColor: 'surface',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          zIndex: 1
         }}
       >
         <VotingStatus poll={poll} />

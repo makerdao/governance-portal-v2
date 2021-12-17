@@ -6,26 +6,29 @@ import { slugify } from 'lib/utils';
 
 type Props = {
   tabTitles: string[];
+  tabRoutes?: string[];
   tabPanels: React.ReactNode[];
   tabListStyles?: ThemeUIStyleObject;
   hashRoute?: boolean;
-  banner?: JSX.Element;
+  banner?: JSX.Element | null;
 };
 
 const TabbedLayout = ({
   tabTitles,
+  tabRoutes = [],
   tabPanels,
   tabListStyles = {},
   hashRoute = true,
   banner
 }: Props): JSX.Element => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
-  const activeTab = tabTitles[activeTabIndex];
+  if (tabRoutes.length === 0) tabRoutes = tabTitles;
+  const activeTab = tabRoutes[activeTabIndex];
 
   useEffect(() => {
     const [, hash] = location.href.split('#');
     if (hashRoute && hash) {
-      tabTitles.forEach((title, i) => {
+      tabRoutes.forEach((title, i) => {
         if (slugify(title) === hash) setActiveTabIndex(i);
       });
     }
@@ -45,14 +48,14 @@ const TabbedLayout = ({
     >
       <Tabs index={activeTabIndex} onChange={index => setActiveTabIndex(index)}>
         <TabList sx={{ display: ['flex', 'block'], bg: 'inherit', ...tabListStyles }}>
-          {tabTitles.map((tabTitle, index) => (
+          {tabRoutes.map((tabRoute, index) => (
             <Tab
-              key={tabTitle}
+              key={tabRoute}
               sx={{
-                ...getTabStyles({ isActive: activeTab === tabTitle, isFirst: index === 0 })
+                ...getTabStyles({ isActive: activeTab === tabRoute, isFirst: index === 0 })
               }}
             >
-              {tabTitle}
+              {tabTitles[index]}
             </Tab>
           ))}
         </TabList>

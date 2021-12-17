@@ -1,4 +1,3 @@
-import { MKR } from 'lib/maker';
 import BigNumber from 'bignumber.js';
 import invariant from 'tiny-invariant';
 import { Poll, PollTally, RawPollTally, PluralityResult, RankedChoiceResult } from '../types';
@@ -57,10 +56,16 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return valueA.gt(valueB) ? -1 : 1;
     });
 
+  // Now we have created the results object, we intentionally omit 'options' to avoid confusion
+  const {
+    options: _, // eslint-disable-line @typescript-eslint/no-unused-vars
+    ...remainder
+  } = rawTally;
+
   return {
-    ...rawTally,
+    ...remainder,
     results: poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? pluralityResult : rankedChoiceResult,
-    totalMkrParticipation,
+    totalMkrParticipation: totalMkrParticipation.toNumber(),
     winningOptionName
   } as PollTally;
 }

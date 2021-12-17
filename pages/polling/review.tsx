@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react';
 import { Heading, Box, Button, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-import invariant from 'tiny-invariant';
 import shallow from 'zustand/shallow';
-
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -19,54 +17,48 @@ import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useAccountsStore from 'modules/app/stores/accounts';
-import MobileVoteSheet from 'modules/polling/components/MobileVoteSheet';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
+import CommentTextBox from 'modules/comments/components/CommentTextBox';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, txId, submitBallot] = useBallotStore(
-    state => [state.ballot, state.txId, state.submitBallot],
+  const [ballot, setComments, updateComment, comments] = useBallotStore(
+    state => [state.ballot, state.setComments, state.updateComment, state.comments],
     shallow
   );
 
   const account = useAccountsStore(state => state.currentAccount);
-  const ballotLength = Object.keys(ballot).length;
+
   const activePolls = polls.filter(poll => isActivePoll(poll));
-  const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll | null>(null);
+
+  const votedPolls = Object.keys(ballot)
+    .map(pollId => {
+      return findPollById(polls, pollId);
+    })
+    .filter(p => !!p) as Poll[];
+
+  useEffect(() => {
+    // Reset previous comments on load.
+    setComments([]);
+  }, []);
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Button
-          onClick={() => {
-            trackButtonClick('submitBallot');
-            submitBallot();
-          }}
-          variant="primaryLarge"
-          disabled={!ballotLength || !!txId}
-          sx={{ width: '100%', mt: 2 }}
-        >
-          Submit Your Ballot ({ballotLength} vote{ballotLength === 1 ? '' : 's'})
-        </Button>
-      </Flex>
+      <SubmitBallotsButtons
+        onSubmit={() => {
+          trackButtonClick('submitBallot');
+        }}
+      />
     </Flex>
   );
-
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
-      {mobileVotingPoll && (
-        <MobileVoteSheet
-          account={account}
-          editingOnly
-          poll={mobileVotingPoll}
-          close={() => setMobileVotingPoll(null)}
-        />
-      )}
       <Stack gap={3}>
         <Heading mb={3} as="h4">
           {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
@@ -84,21 +76,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
-                  {Object.keys(ballot).map((pollId, index) => {
-                    const poll = findPollById(polls, pollId);
-
-                    if (!poll) {
-                      return null;
-                    }
+                  {votedPolls.map(poll => {
                     return (
-                      <PollOverviewCard
-                        key={poll.multiHash}
-                        poll={poll}
-                        reviewPage={true}
-                        showVoting={true}
-                        startMobileVoting={() => setMobileVotingPoll(poll)}
-                        sx={cardStyles(index, ballotLength)}
-                      />
+                      <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={true} showVoting={true}>
+                        <Box sx={{ pt: 2 }}>
+                          <CommentTextBox
+                            onChange={(val: string) => {
+                              updateComment(val, poll.pollId);
+                            }}
+                            value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
+                          />
+                        </Box>
+                      </PollOverviewCard>
                     );
                   })}
                 </Stack>
@@ -119,27 +108,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     </PrimaryLayout>
   );
 };
-
-const cardStyles = (index, ballotLength) =>
-  ballotLength === 1
-    ? {}
-    : index === 0
-    ? {
-        borderBottomLeftRadius: '0 !important',
-        borderBottomRightRadius: '0 !important',
-        borderBottom: '0 !important'
-      }
-    : index === ballotLength - 1
-    ? {
-        borderTopLeftRadius: '0 !important',
-        borderTopRightRadius: '0 !important',
-        mt: '0 !important'
-      }
-    : {
-        borderRadius: '0 !important',
-        borderBottom: '0 !important',
-        mt: '0 !important'
-      };
 
 export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
@@ -168,7 +136,7 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
   return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();
 

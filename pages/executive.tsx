@@ -363,7 +363,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       <Stack>
         {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegate} />}
         <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3}>
+          <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters
           </Heading>
           <ProposalsSortBy sx={{ mr: 3 }} />

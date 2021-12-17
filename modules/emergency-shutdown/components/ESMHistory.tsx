@@ -70,7 +70,7 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       overflow: hidden;
                     `}
                   >
-                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}>
                       {bpi > 0 ? formatDateWithTime(action.time) : formatDateWithoutTime(action.time)}
                     </Text>
                   </td>
@@ -79,10 +79,10 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       white-space: nowrap;
                     `}
                   >
-                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2 }}>
+                    <Text as="p" color="text" variant="caption" sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}>
                       {action.amount.gte(0.1)
                         ? formatRound(action.amount.toNumber())
-                        : formatRound(action.amount.toNumber(), 6)}{' '}
+                        : formatRound(action.amount.toNumber(), 3)}{' '}
                       MKR
                     </Text>
                   </td>
@@ -93,7 +93,14 @@ const ESMHistory = ({ stakingHistory }: Props): JSX.Element => {
                       variant="caption"
                       color="accentBlue"
                     >
-                      {cutMiddle(action.senderAddress, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
+                      <Text
+                        as="p"
+                        color="accentBlue"
+                        variant="caption"
+                        sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
+                      >
+                        {cutMiddle(action.senderAddress, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
+                      </Text>
                     </Link>
                   </td>
                 </tr>

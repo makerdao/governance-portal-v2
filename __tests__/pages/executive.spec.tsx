@@ -98,7 +98,6 @@ describe('Executive page', () => {
     click(submitButton);
 
     // wait for transaction to progress
-    await screen.findByText('Confirm Transaction');
     await screen.findByText('Transaction Sent');
     await screen.findByText('Close');
   });

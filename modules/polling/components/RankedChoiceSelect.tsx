@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Box, Flex, Text, Close } from 'theme-ui';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -31,6 +31,10 @@ export default function RankedChoiceSelect({
   const totalNumOptions = Object.keys(poll.options).length;
   const canAddOption = totalNumOptions > numConfirmed + 1;
 
+  useEffect(() => {
+    setNumConfirmed(choice.length);
+  }, [_choice]);
+
   const availableChoices = useMemo(
     () =>
       omitBy(
@@ -50,7 +54,7 @@ export default function RankedChoiceSelect({
     <Box {...props}>
       <Stack gap={2}>
         {Array.from({ length: numConfirmed }).map((_, index) => (
-          <Flex sx={{ backgroundColor: 'background', py: 2, px: 3 }} key={index}>
+          <Flex sx={{ backgroundColor: 'background', p: 2 }} key={index}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
               <Text>{poll.options[choice[index]]}</Text>
@@ -85,7 +89,7 @@ export default function RankedChoiceSelect({
             }}
           >
             <ListboxButton
-              sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: [3, 2] }}
+              sx={{ variant: 'listboxes.default.button', fontWeight: 400, py: 2 }}
               arrow={<Icon name="chevron_down" size={2} />}
             />
             <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>

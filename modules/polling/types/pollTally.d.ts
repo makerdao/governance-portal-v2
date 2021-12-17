@@ -1,4 +1,3 @@
-import CurrencyObject from './currency';
 import BigNumber from 'bignumber.js';
 import { PollVoteType } from './pollVoteType';
 
@@ -16,7 +15,7 @@ export type RankedChoiceResult = {
 export type PluralityResult = {
   optionId: string;
   optionName: string;
-  winner;
+  winner: boolean;
   mkrSupport: BigNumber;
   winner: boolean;
   firstPct: BigNumber; // TODO rename to "percent"?
@@ -45,11 +44,9 @@ export type PollTallyVote = {
 export type RawPollTallyRankedChoice = {
   pollVoteType: PollVoteType;
   winner: string | null;
-  rounds?: number;
+  rounds: number;
   numVoters: number;
   options: Record<number, PollTallyRankedChoiceOption>;
-  results: RankedChoiceResult[];
-  winningOptionName: string;
   totalMkrParticipation: number;
   votesByAddress?: PollTallyVote[];
 };
@@ -59,6 +56,25 @@ export type RawPollTallyPlurality = {
   winner: string | null;
   numVoters: number;
   options: Record<number, PollTallyPluralityOption>;
+  totalMkrParticipation: number;
+  votesByAddress?: PollTallyVote[];
+};
+
+export type PollTallyRankedChoice = {
+  pollVoteType: PollVoteType;
+  winner: string | null;
+  numVoters: number;
+  results: RankedChoiceResult[];
+  winningOptionName: string;
+  totalMkrParticipation: number;
+  votesByAddress?: PollTallyVote[];
+  rounds?: number;
+};
+
+export type PollTallyPlurality = {
+  pollVoteType: PollVoteType;
+  winner: string | null;
+  numVoters: number;
   results: PluralityResult[];
   winningOptionName: string;
   totalMkrParticipation: number;

@@ -130,7 +130,7 @@ function isTestnet(): boolean {
   return getNetwork() === SupportedNetworks.TESTNET || !!config.TESTNET;
 }
 
-async function personalSign(message) {
+async function personalSign(message: string): Promise<any> {
   const maker = await getMaker();
   const provider = maker.service('web3')._web3.currentProvider;
   const from = maker.currentAddress();

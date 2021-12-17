@@ -17,7 +17,7 @@ import { formatDateWithTime } from 'lib/datetime';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
-import { Poll, PollTally } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -41,6 +41,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import BigNumber from 'bignumber.js';
 import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBox';
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
+import { usePollComments } from 'modules/comments/hooks/usePollComments';
+import PollComments from 'modules/comments/components/PollComments';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -51,8 +53,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
-  const ballot = useBallotStore(state => state.ballot);
-  const ballotLength = Object.keys(ballot).length;
   const [shownOptions, setShownOptions] = useState(6);
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
@@ -62,17 +62,12 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
   const { tally } = usePollTally(poll.pollId, 10000);
+  const { comments } = usePollComments(poll.pollId);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
-        <MobileVoteSheet
-          account={account}
-          ballotCount={ballotLength}
-          setPoll={setMobileVotingPoll}
-          poll={mobileVotingPoll}
-          withStart
-        />
+        <MobileVoteSheet account={account} setPoll={setMobileVotingPoll} poll={mobileVotingPoll} withStart />
       )}
       <SidebarLayout>
         <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />
@@ -188,7 +183,12 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
-              tabTitles={['Poll Detail', 'Vote Breakdown']}
+              tabTitles={[
+                'Poll Detail',
+                'Vote Breakdown',
+                `Comments${comments ? ` (${comments.length})` : ''}`
+              ]}
+              tabRoutes={['Poll Detail', 'Vote Breakdown', 'Comments']}
               tabPanels={[
                 <div key={1}>
                   <div
@@ -197,7 +197,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   />
                 </div>,
                 !tally ? (
-                  <Box sx={{ m: 4 }}>
+                  <Box sx={{ m: 4 }} key={2}>
                     <Skeleton />
                   </Box>
                 ) : (
@@ -257,6 +257,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Text>
                       {tally && tally.votesByAddress && tally.totalMkrParticipation ? (
                         <VotesByAddress tally={tally} poll={poll} />
+                      ) : tally && tally.numVoters === 0 ? (
+                        <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>
                       ) : (
                         <Box sx={{ width: '100%' }}>
                           <Box mb={2}>
@@ -276,20 +278,25 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Weight
                       </Text>
-                      {tally && <VotingWeightComponent tally={tally} poll={poll} />}
+                      {tally && tally.numVoters > 0 && <VotingWeightComponent tally={tally} poll={poll} />}
+                      {tally && tally.numVoters === 0 && (
+                        <Text sx={{ color: 'textSecondary' }}>No votes yet</Text>
+                      )}
                     </Flex>
                   ]
-                )
+                ),
+                <div key={3}>
+                  <PollComments comments={comments} tally={tally} poll={poll} />
+                </div>
               ]}
               banner={
-                tally &&
-                tally.totalMkrParticipation > 0 && (
+                tally && tally.totalMkrParticipation > 0 ? (
                   <Box>
                     <Divider my={0} />
                     <PollWinningOptionBox tally={tally} poll={poll} />
                     <Divider my={0} />
                   </Box>
-                )
+                ) : null
               }
             />
           </Card>
