@@ -6,7 +6,7 @@ import { SupportedNetworks } from 'lib/constants';
 import { getNetwork } from 'lib/maker';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
-import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
+import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { getEtherscanLink } from 'lib/utils';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';

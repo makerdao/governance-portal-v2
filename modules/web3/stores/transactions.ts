@@ -1,9 +1,9 @@
 import create from 'zustand';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
-import { parseTxError } from 'lib/errors';
 import getMaker from 'lib/maker';
-import { Transaction, TXMined, TXPending, TXInitialized, TXError } from 'modules/app/types/transaction';
+import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
+import { parseTxError } from '../helpers/errors';
 
 type Hooks = {
   pending?: (txHash: string) => void;

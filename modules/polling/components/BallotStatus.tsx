@@ -3,8 +3,8 @@ import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 
-import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
-import { Transaction } from 'modules/app/types/transaction';
+import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
+import { Transaction } from 'modules/web3/types/transaction';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import { getNetwork } from 'lib/maker';
 

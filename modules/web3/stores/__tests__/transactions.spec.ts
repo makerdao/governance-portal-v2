@@ -2,7 +2,7 @@
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import waitForExpect from 'wait-for-expect';
 
-import { TX_NOT_ENOUGH_FUNDS } from '../../../../lib/errors';
+import { TX_NOT_ENOUGH_FUNDS } from '../../helpers/errors';
 
 waitForExpect.defaults.interval = 1;
 

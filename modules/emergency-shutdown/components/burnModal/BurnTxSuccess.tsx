@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'lib/utils';
-import { TXMined } from 'modules/app/types/transaction';
+import { TXMined } from 'modules/web3/types/transaction';
 
 const BurnTxSuccess = ({ tx, close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

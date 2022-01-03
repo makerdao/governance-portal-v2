@@ -6,15 +6,18 @@ import shallow from 'zustand/shallow';
 
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { useTokenAllowance } from 'lib/hooks';
 import { Delegate } from '../../types';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 
 type Props = {
   isOpen: boolean;

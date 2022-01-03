@@ -12,7 +12,10 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
 import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';

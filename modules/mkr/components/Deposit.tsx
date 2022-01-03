@@ -13,7 +13,10 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { CurrencyObject } from 'modules/app/types/currency';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { fadeIn } from 'lib/keyframes';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import invariant from 'tiny-invariant';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';

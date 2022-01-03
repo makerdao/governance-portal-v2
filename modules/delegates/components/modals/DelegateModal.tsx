@@ -6,10 +6,12 @@ import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
 import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { useTokenAllowance } from 'lib/hooks';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import useAccountsStore from 'modules/app/stores/accounts';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
 import { Delegate } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
@@ -18,6 +20,7 @@ import { TxDisplay } from './TxDisplay';
 import { ConfirmContent } from './Confirm';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 
 type Props = {
   isOpen: boolean;

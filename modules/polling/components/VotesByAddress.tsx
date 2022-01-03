@@ -3,11 +3,10 @@ import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { getNetwork } from 'lib/maker';
-import { cutMiddle } from 'lib/string';
-import { useDelegateAddressMap } from 'lib/hooks';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { Address } from 'modules/address/components/Address';
+import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 type Props = {
   tally: PollTally;
