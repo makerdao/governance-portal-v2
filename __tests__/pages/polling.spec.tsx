@@ -4,13 +4,13 @@ import {
   createTestPolls,
   renderWithAccountSelect as render,
   DEMO_ACCOUNT_TESTS
-} from '../../../../__tests__/helpers';
+} from '../helpers';
 import { formatAddress } from 'lib/utils';
-import PollingOverviewPage from '../../../../pages/polling';
-import getMaker from '../../../../lib/maker';
+import PollingOverviewPage from '../../pages/polling';
+import getMaker from '../../lib/maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
-import mockCategories from '../__mocks__/categories.json';
-import { accountsApi } from '../../../app/stores/accounts';
+import mockCategories from '../../modules/polling/components/__mocks__/categories.json';
+import { accountsApi } from '../../modules/app/stores/accounts';
 import { Poll, PollCategory } from 'modules/polling/types';
 
 let maker;
@@ -21,7 +21,7 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-describe('Polling', () => {
+describe('polling page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
@@ -37,15 +37,22 @@ describe('Polling', () => {
     });
   });
 
-  describe('renders expected voting options for each poll type', () => {
-    test('allows users to vote when account is connected', async () => {
-      // Find a heading and checkbox with the text.
+  describe('renders polls', () => {
+    test('renders active polls', async () => {
       const activePollsText = await screen.findAllByText('Active Polls', {}, { timeout: 15000 });
-
       expect(activePollsText.length).toBe(2);
       expect(activePollsText[0]).toBeInTheDocument();
       expect(activePollsText[1]).toBeInTheDocument();
+    });
+
+    test('shows ballot when account is connected', async () => {
       expect(await screen.findByText('Your Ballot', {}, { timeout: 15000 })).toBeInTheDocument();
+      await screen.findByText(formatAddress(DEMO_ACCOUNT_TESTS));
+    });
+
+    // TODO
+    xtest('does not show ballot when no account connected', async () => {
+      expect(await screen.findByText('Your Ballot', {}, { timeout: 15000 })).not.toBeInTheDocument();
       await screen.findByText(formatAddress(DEMO_ACCOUNT_TESTS));
     });
   });
