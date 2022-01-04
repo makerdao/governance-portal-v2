@@ -27,6 +27,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
     <FilterButton
       name={() => `Delegate Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
+      data-testid="delegate-type-filter"
     >
       <Box p={2}>
         <Flex>
@@ -34,6 +35,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showRecognized}
+              data-testid="delegate-type-filter-show-recognized"
               onChange={event => setShowRecognizedFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
@@ -49,6 +51,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showShadow}
+              data-testid="delegate-type-filter-show-shadow"
               onChange={event => setShowShadowFilter(event.target.checked)}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>

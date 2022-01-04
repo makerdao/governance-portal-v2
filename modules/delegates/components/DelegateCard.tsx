@@ -60,6 +60,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         p: [0, 0],
         borderColor: isOwner ? 'onSecondary' : 'muted'
       }}
+      data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
