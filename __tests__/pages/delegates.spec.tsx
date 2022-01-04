@@ -168,8 +168,6 @@ describe('Delegates list page', () => {
     const delegateButton = screen.getByText('Delegate');
     click(delegateButton);
 
-    
-    console.log(voteDelegateAddress)
 
     // Approval Process
     const approveMKRButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
