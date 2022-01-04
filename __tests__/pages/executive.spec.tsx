@@ -6,7 +6,9 @@ import {
   renderWithAccountSelect as render,
   createDelegate,
   switchAccount,
-  DEMO_ACCOUNT_TESTS
+  DEMO_ACCOUNT_TESTS,
+  sendMkrToAddress,
+  aproveDelegateContractAndAddMKR
 } from '../helpers';
 import { ExecutiveOverview } from '../../pages/executive';
 import proposals from 'modules/executive/api/mocks/proposals.json';
@@ -33,7 +35,7 @@ async function setup() {
   return view;
 }
 
-describe('executive page', () => {
+describe('Executive Detail page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
@@ -113,6 +115,31 @@ describe('executive page', () => {
     // switch to non-delegate account
     await switchAccount(maker);
 
+    // Checks that after switching account we can see the voting contract
     await screen.findByText(/In voting contract:/i);
+
+    
+  });
+
+  test('Can vote on an executive as a delegate', async () => {
+    await sendMkrToAddress(maker, accountsApi.getState().currentAccount?.address, '5');
+    await createDelegate(maker);
+    accountsApi.getState().addAccountsListener(maker);
+    
+    // set delegate in state
+    accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');
+    await aproveDelegateContractAndAddMKR(maker, accountsApi.getState().voteDelegate?.getVoteDelegateAddress() as string, 3 );
+
+    await screen.findByText(/In delegate contract:/i);
+
+    const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
+    click(voteButtonOne);
+    const submitButton = screen.getByText('Submit Vote');
+    click(submitButton);
+
+    // wait for transaction to progress
+    await screen.findByText('Transaction Pending');
+    await screen.findByText('Close');
+
   });
 });

@@ -114,6 +114,12 @@ export const sendMkrToAddress = async (maker, receiver, amount) => {
   await mkr.transfer(receiver, amount);
 };
 
+export const aproveDelegateContractAndAddMKR =  async (maker, voteDelegateAddress: string, mkrToDeposit: number) => {
+  const mkr = await maker.getToken(MKR);
+  await mkr.approveUnlimited(voteDelegateAddress);
+  await maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+};
+
 export const mockIntersectionObserver = jest.fn(() => ({
   root: null,
   rootMargin: '600px',

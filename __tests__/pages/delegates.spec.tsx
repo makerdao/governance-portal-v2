@@ -165,8 +165,8 @@ describe('Delegates list page', () => {
     await screen.findAllByText('Recognized Delegates');
 
     // Open delegate modal
-    const delegateButton = screen.getByText('Delegate');
-    click(delegateButton);
+    const delegateButton = screen.getAllByText('Delegate');
+    click(delegateButton[0]);
 
 
     // Approval Process
@@ -209,8 +209,8 @@ describe('Delegates list page', () => {
     expect(delegatedByYou.parentElement).toHaveTextContent(/MKR delegated by you/);
 
     // Open undelegate modal
-    const unDelegateButton = screen.getByText('Undelegate');
-    click(unDelegateButton);
+    const unDelegateButton = screen.getAllByText('Undelegate');
+    click(unDelegateButton[0]);
 
     // IOU Approval Process
     const approveIOUButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
@@ -240,11 +240,11 @@ describe('Delegates list page', () => {
     click(closeUndelegateBtn);
 
     // Voting weights are returned to 0 after undelegating
-    const newTotal = screen.getByTestId('total-mkr-delegated');
-    const newByYou = await screen.findByText(/MKR delegated by you/);
+    const newTotal = screen.getAllByTestId('total-mkr-delegated');
+    const newByYou = await screen.findAllByText(/MKR delegated by you/);
 
-    expect(newTotal).toHaveTextContent('0.00');
-    expect(newByYou.previousSibling).toHaveTextContent('0.00');
+    expect(newTotal[0]).toHaveTextContent('0.00');
+    expect(newByYou[0].previousSibling).toHaveTextContent('0.00');
   });
 
   
