@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
-import { Transaction, TXPending } from 'modules/app/types/transaction';
+import { Transaction, TXPending } from 'modules/web3/types/transaction';
 
 type Props = {
   tx: Transaction;

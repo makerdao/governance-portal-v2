@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballotStore';
 import { Box, Flex, Button, Text } from 'theme-ui';
-import useTransactionsStore, { transactionsSelectors } from 'modules/app/stores/transactions';
+import useTransactionsStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import shallow from 'zustand/shallow';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {

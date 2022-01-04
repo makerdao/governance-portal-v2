@@ -10,7 +10,10 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsSelectors,
+  transactionsApi
+} from 'modules/web3/stores/transactions';
 import invariant from 'tiny-invariant';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';

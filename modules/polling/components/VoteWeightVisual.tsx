@@ -5,10 +5,9 @@ import { pack, hierarchy } from 'd3-hierarchy';
 import { useRouter } from 'next/router';
 import { getNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
-import { useDelegateAddressMap } from 'lib/hooks';
 import { Poll, PollTally } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { Address } from 'modules/address/components/Address';
+import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 type CircleProps = {
   poll: Poll;

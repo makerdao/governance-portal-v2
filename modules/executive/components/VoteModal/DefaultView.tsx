@@ -7,7 +7,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import useAccountsStore from 'modules/app/stores/accounts';
-import useTransactionsStore, { transactionsApi } from 'modules/app/stores/transactions';
+import useTransactionsStore, { transactionsApi } from 'modules/web3/stores/transactions';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';

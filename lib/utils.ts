@@ -6,7 +6,6 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { SpellStateDiff } from 'modules/app/types/spellStateDiff';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
@@ -114,35 +113,6 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyle
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
   }
-}
-
-export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
-  invariant(
-    rawStateDiff?.hasBeenCast !== undefined && rawStateDiff?.decodedDiff !== undefined,
-    'invalid or undefined raw state diff'
-  );
-
-  const { hasBeenCast, executedOn, decodedDiff = [] } = rawStateDiff;
-  const groupedDiff: { [key: string]: any } = decodedDiff.reduce((groups, diff) => {
-    const keys = diff.keys
-      ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
-      : null;
-
-    const parsedDiff = {
-      from: diff.from,
-      to: diff.to,
-      name: diff.name,
-      field: diff.field,
-      keys
-    };
-
-    groups[diff.address.label] = groups[diff.address.label]
-      ? groups[diff.address.label].concat([parsedDiff])
-      : [parsedDiff];
-    return groups;
-  }, {});
-
-  return { hasBeenCast, executedOn, groupedDiff };
 }
 
 export async function initTestchainPolls() {

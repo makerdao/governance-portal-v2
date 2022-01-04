@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { Ballot } from '../types/ballot';
-import { transactionsApi } from 'modules/app/stores/transactions';
+import { transactionsApi } from 'modules/web3/stores/transactions';
 import { accountsApi } from 'modules/app/stores/accounts';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';

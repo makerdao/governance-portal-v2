@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { MKR } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'modules/app/stores/transactions';
+import useTransactionStore, {
+  transactionsApi,
+  transactionsSelectors
+} from 'modules/web3/stores/transactions';
 import useAccountsStore from 'modules/app/stores/accounts';
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';

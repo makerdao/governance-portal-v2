@@ -11,7 +11,7 @@ import getMaker, { getNetwork, chainIdToNetworkName } from 'lib/maker';
 import { getLibrary, connectors, ConnectorName } from 'lib/maker/web3react';
 import { syncMakerAccount, useEagerConnect } from 'lib/maker/web3react/hooks';
 import { formatAddress } from 'lib/utils';
-import useTransactionStore from 'modules/app/stores/transactions';
+import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
