@@ -6,7 +6,7 @@ export default function CommentCount({ count }: { count: number }): React.ReactE
     <Flex sx={{ alignItems: 'center' }}>
       <InternalIcon name="comment" />
       <Text as="p" variant="caps" sx={{ ml: 2 }}>
-        {count} Comments
+        {count} Comment{count > 1 ? 's' : ''}
       </Text>
     </Flex>
   );
