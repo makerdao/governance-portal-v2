@@ -33,7 +33,7 @@ async function setup() {
   return view;
 }
 
-describe('Executive page', () => {
+describe('executive page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
@@ -46,7 +46,7 @@ describe('Executive page', () => {
     await setup();
   });
 
-  test('can deposit and withdraw', async () => {
+  test('can deposit and withdraw into chief', async () => {
     const depositButton = await screen.findByTestId('deposit-button');
 
     click(depositButton);
@@ -91,7 +91,7 @@ describe('Executive page', () => {
     expect(lockedMKR).toHaveTextContent(/^4.000000 MKR$/); //find exact match
   });
 
-  test('can vote', async () => {
+  test('can vote on an executive', async () => {
     const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
     click(voteButtonOne);
     const submitButton = screen.getByText('Submit Vote');
