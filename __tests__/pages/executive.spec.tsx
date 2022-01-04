@@ -91,7 +91,7 @@ describe('executive page', () => {
     expect(lockedMKR).toHaveTextContent(/^4.000000 MKR$/); //find exact match
   });
 
-  test('can vote on executive', async () => {
+  test('can vote on an executive', async () => {
     const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
     click(voteButtonOne);
     const submitButton = screen.getByText('Submit Vote');
