@@ -1,20 +1,23 @@
 import { renderWithTheme as render, connectAccount } from '../../../../__tests__/helpers';
-import { act, fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { act, screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
-
-const { click } = fireEvent;
 
 describe('Account select', () => {
   test('can connect an account', async () => {
-    const view = render(<WrappedAccountSelect />);
+    render(<WrappedAccountSelect />);
     const connectButton = await screen.findByText('Connect wallet');
     expect(connectButton).toBeInTheDocument();
 
-    click(connectButton);
+    act(() => {
+      userEvent.click(connectButton);
+    });
 
     const metamaskButton = await screen.findByText('MetaMask');
 
-    click(metamaskButton);
+    act(() => {
+      userEvent.click(metamaskButton);
+    });
 
     await act(async () => {
       await connectAccount();
