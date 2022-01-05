@@ -1,29 +1,15 @@
-// @ts-nocheck
-import { renderWithTheme } from '../helpers';
-import { fireEvent, waitFor, configure, screen } from '@testing-library/react';
+import { renderWithTheme, UINT256_MAX, WAD } from '../helpers';
+import { act, waitFor, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../modules/app/stores/accounts';
-import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 
-export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
-configure({
-  getElementError: (message, container) => {
-    const error = new Error(message);
-    error.name = 'TestingLibraryElementError';
-    error.stack = null;
-    return error;
-  }
-});
-
-export const WAD = new BigNumber('1e18');
-
 let maker;
-describe('ESM page', () => {
+describe('/esmodule page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
@@ -97,16 +83,22 @@ describe('ESM page', () => {
 
       // First Step Render
       const burnButton = await screen.findByText('Burn Your MKR', {}, { timeout: 5000 });
-      fireEvent.click(burnButton);
+      act(() => {
+        userEvent.click(burnButton);
+      });
       await screen.findByText('Are you sure you want to burn MKR?');
-      fireEvent.click(screen.getByText('Continue'));
+      act(() => {
+        userEvent.click(screen.getByText('Continue'));
+      });
 
       // Second Step Render
       await screen.findByText('Enter the amount of MKR to burn');
 
       // Not Enough MKR Check
-      const amount = 35;
-      fireEvent.change(screen.getByTestId('mkr-input'), { target: { value: amount } });
+      const amount = '35';
+      act(() => {
+        userEvent.type(screen.getByTestId('mkr-input'), amount);
+      });
       const tooLow = await screen.findByText('MKR balance too low', {}, { timeout: 3000 });
       expect(tooLow).toBeInTheDocument();
 
@@ -117,50 +109,62 @@ describe('ESM page', () => {
       const input = screen.getByTestId('mkr-input');
       const continueButton = screen.getByText('Continue');
 
-      expect(continueButton.disabled).toBeTruthy();
+      expect(continueButton).toBeDisabled();
 
       // Set Max Check
       const setMaxButton = screen.getByTestId('mkr-input-set-max');
       // Click on the button
-      fireEvent.click(setMaxButton);
+      act(() => {
+        userEvent.click(setMaxButton);
+      });
       expect(input).toHaveValue(2.0);
-
-      // MKR is Chief Check
-      // screen.getByTestId('voting-power');
 
       // Valid Amount Check
       fireEvent.change(input, { target: { value: 1 } });
-      await waitFor(() => expect(continueButton.disabled).toBeFalsy(), { timeout: 5000 });
-      fireEvent.click(continueButton);
+      await waitFor(() => expect(continueButton).toBeEnabled());
+
+      expect(continueButton).toBeEnabled();
+      act(() => {
+        userEvent.click(continueButton);
+      });
 
       // Third Step Render
       await screen.findByText('Burn amount', {}, { timeout: 5000 });
       await screen.findByText('New ESM total');
 
-      const confirmInput = await screen.findByTestId('confirm-input');
       const burnMKRbutton = await screen.findByText('Continue');
-      await waitFor(() => expect(burnMKRbutton.disabled).toBeTruthy());
+      await waitFor(() => expect(burnMKRbutton).toBeDisabled());
 
       // click the terms of service
       const tos = await screen.findByTestId('tosCheck');
-      fireEvent.click(tos);
-      await waitFor(() => expect(tos.checked).toBeTruthy());
+      act(() => {
+        userEvent.click(tos);
+      });
+      await waitFor(() => expect(tos).toBeChecked());
 
       // click the unlock mkr
-      const allowanceBtn = screen.getByTestId('allowance-toggle');
-      await waitFor(() => expect(!allowanceBtn.disabled).toBeTruthy());
-      fireEvent.click(allowanceBtn);
-      await waitFor(() => expect(allowanceBtn.disabled).toBeTruthy());
+      const allowanceBtn = await screen.findByTestId('allowance-toggle');
+      expect(allowanceBtn).toBeEnabled();
+      act(() => {
+        userEvent.click(allowanceBtn);
+      });
+      await waitFor(() => expect(allowanceBtn).toBeDisabled());
 
+      const confirmInput = screen.getByTestId('confirm-input');
       // Incorrect Input Check
       fireEvent.change(confirmInput, { target: { value: 'I am burning 2.00 MKR' } });
-      await waitFor(() => expect(burnMKRbutton.disabled).toBeTruthy());
+      await waitFor(() => expect(burnMKRbutton).toBeDisabled());
 
-      // Correct Input Check
-      fireEvent.change(confirmInput, { target: { value: 'I am burning 1.00 MKR' } });
-      await waitFor(() => expect(!burnMKRbutton.disabled).toBeTruthy(), { timeout: 5000 });
+      act(() => {
+        // userEvent type doesn't work on this input
+        fireEvent.change(confirmInput, { target: { value: 'I am burning 1.00 MKR' } });
+      });
 
-      fireEvent.click(burnMKRbutton);
+      await waitFor(() => expect(burnMKRbutton).toBeEnabled());
+
+      act(() => {
+        userEvent.click(burnMKRbutton);
+      });
 
       // Third Step Render
       const signTransaction = await screen.findByText('Sign Transaction');
@@ -195,7 +199,7 @@ describe('ESM page', () => {
       await esm.fire();
       await renderWithTheme(<ESModule />);
       const initiateButton = await screen.findByText('Initiate Emergency Shutdown', {}, { timeout: 30000 });
-      await waitFor(() => expect(initiateButton.disabled).toBeTruthy());
+      await waitFor(() => expect(initiateButton).toBeDisabled());
       // await wait(() => screen.getByTestId('shutdown-initiated'));
     });
   });

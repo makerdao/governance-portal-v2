@@ -1,4 +1,4 @@
-import { act, render, RenderResult, screen } from '@testing-library/react';
+import { render, RenderResult, screen } from '@testing-library/react';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import { formatAddress } from 'lib/utils';
 import { ThemeProvider } from 'theme-ui';
@@ -10,14 +10,19 @@ import { accountsApi } from 'modules/app/stores/accounts';
 import { createCurrency } from '@makerdao/currency';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
+import BigNumber from 'bignumber.js';
 
 const MKR = createCurrency('MKR');
+
+export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+export const WAD = new BigNumber('1e18');
+
+export const DEMO_ACCOUNT_TESTS = '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6';
 
 export function renderWithTheme(component: React.ReactNode): RenderResult {
   return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
 }
-
-export const DEMO_ACCOUNT_TESTS = '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6';
 
 // TODO: research when/why this is necesssary as it tends to cause an error "Warning: eth_requestAccounts was unsuccessful, falling back to enable"
 export function injectProvider(address = DEMO_ACCOUNT_TESTS): void {
