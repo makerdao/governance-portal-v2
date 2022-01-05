@@ -1,4 +1,5 @@
-import { act, fireEvent, configure, screen } from '@testing-library/react';
+import { act, configure, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import getMaker from '../../lib/maker';
 import CreateDelegate from '../../pages/account';
 import { connectAccount, renderWithAccountSelect as render } from '../helpers';
@@ -11,8 +12,6 @@ jest.mock('@theme-ui/match-media', () => {
 });
 
 let maker;
-
-const { click } = fireEvent;
 
 async function setup() {
   const view = render(
@@ -28,7 +27,7 @@ async function setup() {
   return view;
 }
 
-describe('Delegate Create page', () => {
+describe('/account page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
@@ -42,13 +41,13 @@ describe('Delegate Create page', () => {
   test('can create a delegate contract', async () => {
     const checkbox = screen.getByRole('checkbox');
     act(() => {
-      click(checkbox);
+      userEvent.click(checkbox);
     });
 
     const createButton = screen.getByTestId('create-button');
 
     act(() => {
-      click(createButton);
+      userEvent.click(createButton);
     });
 
     // Transaction is initialized
@@ -63,7 +62,7 @@ describe('Delegate Create page', () => {
     const closeButton = screen.getByText('Close');
 
     act(() => {
-      click(closeButton);
+      userEvent.click(closeButton);
     });
 
     // Fetch address of our newly create vote delegate contract
