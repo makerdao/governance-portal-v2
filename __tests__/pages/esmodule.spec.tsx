@@ -120,6 +120,8 @@ describe('/esmodule page', () => {
       expect(input).toHaveValue(2.0);
 
       // Valid Amount Check
+
+      // userEvent type doesn't work on this input
       fireEvent.change(input, { target: { value: 1 } });
       await waitFor(() => expect(continueButton).toBeEnabled());
 
@@ -152,6 +154,8 @@ describe('/esmodule page', () => {
 
       const confirmInput = screen.getByTestId('confirm-input');
       // Incorrect Input Check
+
+      // userEvent type doesn't work on this input
       fireEvent.change(confirmInput, { target: { value: 'I am burning 2.00 MKR' } });
       await waitFor(() => expect(burnMKRbutton).toBeDisabled());
 
