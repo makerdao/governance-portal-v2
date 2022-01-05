@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { act, fireEvent, configure, screen } from '@testing-library/react';
-import getMaker from '../../lib/maker';
+import getMaker, { MKR } from 'lib/maker';
 import DelegatesPage from '../../pages/delegates';
 import {
   connectAccount,
@@ -15,6 +15,25 @@ import { DelegatesAPIResponse } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
 const NEXT_ACCOUNT = '0x81431b69b1e0e334d4161a13c2955e0f3599381e';
+
+export const aproveDelegateContractAndAddMKR = async (
+  maker,
+  voteDelegateAddress: string,
+  mkrToDeposit: number
+): void => {
+  const mkr = await maker.getToken(MKR);
+  await mkr.approveUnlimited(voteDelegateAddress);
+
+  // this is only to verify the lock deposits worked, it can be deleted:
+  const preLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
+  console.log('preLockDeposits', preLockDeposits);
+
+  await maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+
+  // this is only to verify the lock deposits worked, it can be deleted:
+  const postLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
+  console.log('postLockDeposits', postLockDeposits);
+};
 
 const getMockedDelegates = delegatesConfig => [
   {
@@ -91,15 +110,25 @@ describe('Delegates list page', () => {
     sendMkrToAddress(maker, NEXT_ACCOUNT, '5');
 
     voteDelegateAddress = await createDelegate(maker);
-    const mockResponse = getMockApiResponse({ delegates: { voteDelegateAddress } });
+
+    /**
+     * This breaks the test 'can delegate MKR to a delegate'
+     * because now there is additional MKR delegated in the UI.
+     * Need to update the values expected in that test.
+     */
+    const amountToLock = 1;
+    await aproveDelegateContractAndAddMKR(maker, voteDelegateAddress, amountToLock);
 
     // Change to a new, non-delegate account
     await switchAccount(maker);
+  });
 
+  beforeEach(async () => {
+    const mockResponse = getMockApiResponse({ delegates: { voteDelegateAddress } });
     await setup(maker, mockResponse);
   });
 
-  test('List delegates, shows all delegates', async() => {
+  test('List delegates, shows all delegates', async () => {
     // Should show a list of delegates
     await screen.findAllByText('Recognized Delegates');
 
@@ -113,16 +142,16 @@ describe('Delegates list page', () => {
 
     const buttonFilter = await screen.findByTestId('delegate-type-filter');
 
-    click(buttonFilter );
+    click(buttonFilter);
 
     const buttonFilterRecognized = await screen.findByTestId('delegate-type-filter-show-recognized');
     await screen.findByTestId('delegate-type-filter-show-shadow');
-    
+
     // Filters by only recognized delegates
     click(buttonFilterRecognized);
 
     const delegateCardsFiltered = await screen.findAllByTestId('delegate-card');
-    
+
     expect(delegateCardsFiltered.length).toEqual(1);
 
     // Clear filters
@@ -131,7 +160,6 @@ describe('Delegates list page', () => {
 
     const delegatesRestored = await screen.findAllByTestId('delegate-card');
     expect(delegatesRestored.length).toEqual(2);
-
   });
 
   test('Delegates System Info', async () => {
@@ -168,7 +196,6 @@ describe('Delegates list page', () => {
     const delegateButton = screen.getAllByText('Delegate');
     click(delegateButton[0]);
 
-
     // Approval Process
     const approveMKRButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
     click(approveMKRButton);
@@ -190,7 +217,6 @@ describe('Delegates list page', () => {
     // Make sure modal displays etherscan links correctly
     screen.getByText(/You are delegating/);
     const [delegateLink, creatorLink] = screen.getAllByRole('link');
-
 
     expect(delegateLink).toHaveAttribute('href', `https://etherscan.io/address/${voteDelegateAddress}`);
     screen.getByText(/This delegate contract was created by/);
@@ -246,6 +272,4 @@ describe('Delegates list page', () => {
     expect(newTotal[0]).toHaveTextContent('0.00');
     expect(newByYou[0].previousSibling).toHaveTextContent('0.00');
   });
-
-  
 });
