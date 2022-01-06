@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   install:
     docker:
-      - image: circleci/node:14.17.3
+      - image: cypress/base-14
     steps:
       - checkout
       - restore_cache:
