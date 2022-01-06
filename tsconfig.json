@@ -20,7 +20,8 @@
     "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
     "types": [
-      "jest"
+      "jest",
+      "cypress"
     ],
     "baseUrl": "./",
     "typeRoots": [
@@ -30,7 +31,6 @@
   },
   "exclude": [
     "node_modules",
-    "**/*.spec.ts",
     "**/*.test.ts"
   ],
   "include": [

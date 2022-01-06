@@ -11,6 +11,10 @@
     "export": "next export",
     "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
+    "e2e": "start-server-and-test dev http://localhost:3000 cypress",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
@@ -81,6 +85,7 @@
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
     "bignumber.js": "^9.0.1",
+    "cypress": "^9.2.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.5.0",
     "eslint-config-next": "^11.0.1",
@@ -92,6 +97,7 @@
     "husky": "^6.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.3.4",
     "wait-for-expect": "^3.0.2"
   }

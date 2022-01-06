@@ -40,6 +40,19 @@ If API keys aren't provided, both Alchemy and Infura will default to the public 
 
 ![](./architecture-diagram.png)
 
+### Tests
+
+The Governance portal includes 2 test suite: Jest and Cypress.
+
+Jest tests under the folder __tests__ currently execute some integration and unit tests of the platform. We are in the process of migrating to Cypress for the integration tests. You can find Cypress tests under the cypress folder.
+
+```
+- npm run test -> runs Jest tests on livereload mode
+- npm run test:ci -> runs all the Jest tests
+- npm run e2e -> opens a Cypress browser for the e2e
+- npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
+```
+
 ### Contributing
 
 See our [contributing guide](./CONTRIBUTING.md)

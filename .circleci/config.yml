@@ -30,6 +30,7 @@ jobs:
           name: Run tests
           command: |
             source /home/circleci/setup-env.sh
+            yarn e2e:headless
             yarn test:ci
             USE_FS_CACHE=1 yarn build
             yarn add --dev codecov
