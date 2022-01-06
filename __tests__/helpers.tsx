@@ -114,10 +114,22 @@ export const sendMkrToAddress = async (maker, receiver, amount) => {
   await mkr.transfer(receiver, amount);
 };
 
+
 export const aproveDelegateContractAndAddMKR =  async (maker, voteDelegateAddress: string, mkrToDeposit: number) => {
-  const mkr = await maker.getToken(MKR);
-  await mkr.approveUnlimited(voteDelegateAddress);
-  await maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+
+    const mkr = await maker.getToken(MKR);
+    await mkr.approveUnlimited(voteDelegateAddress);
+  
+    // this is only to verify the lock deposits worked, it can be deleted:
+    const preLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
+    console.log('preLockDeposits', preLockDeposits);
+  
+    await maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+  
+    // this is only to verify the lock deposits worked, it can be deleted:
+    const postLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
+    console.log('postLockDeposits', postLockDeposits);
+  
 };
 
 export const mockIntersectionObserver = jest.fn(() => ({

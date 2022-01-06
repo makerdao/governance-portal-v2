@@ -36,7 +36,8 @@ async function setup() {
 }
 
 describe('Executive Detail page', () => {
-  beforeAll(async () => {
+  
+  beforeEach(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
 
@@ -122,12 +123,16 @@ describe('Executive Detail page', () => {
   });
 
   test('Can vote on an executive as a delegate', async () => {
-    await sendMkrToAddress(maker, accountsApi.getState().currentAccount?.address, '5');
-    await createDelegate(maker);
+
+    console.log('<<<<<<<<<<<<<<<<<<<<<<<< ', accountsApi.getState().currentAccount?.address)
+    // await sendMkrToAddress(maker, accountsApi.getState().currentAccount?.address, 1);
+    
     accountsApi.getState().addAccountsListener(maker);
     
     // set delegate in state
-    accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');
+    await accountsApi.getState().setVoteDelegate(accountsApi.getState().currentAccount?.address || '');
+
+    console.log('<<<<<<<<<<<<<<<<<<<<<<<< ', accountsApi.getState().voteDelegate?.getVoteDelegateAddress())
     await aproveDelegateContractAndAddMKR(maker, accountsApi.getState().voteDelegate?.getVoteDelegateAddress() as string, 3 );
 
     await screen.findByText(/In delegate contract:/i);

@@ -7,33 +7,11 @@ import {
   renderWithAccountSelect as render,
   createDelegate,
   switchAccount,
-  DEMO_ACCOUNT_TESTS,
-  sendMkrToAddress
+  DEMO_ACCOUNT_TESTS
 } from '../helpers';
 import { SWRConfig } from 'swr';
 import { DelegatesAPIResponse } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-
-const NEXT_ACCOUNT = '0x81431b69b1e0e334d4161a13c2955e0f3599381e';
-
-export const aproveDelegateContractAndAddMKR = async (
-  maker,
-  voteDelegateAddress: string,
-  mkrToDeposit: number
-): void => {
-  const mkr = await maker.getToken(MKR);
-  await mkr.approveUnlimited(voteDelegateAddress);
-
-  // this is only to verify the lock deposits worked, it can be deleted:
-  const preLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
-  console.log('preLockDeposits', preLockDeposits);
-
-  await maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
-
-  // this is only to verify the lock deposits worked, it can be deleted:
-  const postLockDeposits = await maker.service('chief').getNumDeposits(voteDelegateAddress);
-  console.log('postLockDeposits', postLockDeposits);
-};
 
 const getMockedDelegates = delegatesConfig => [
   {
@@ -107,17 +85,8 @@ describe('Delegates list page', () => {
     configure({ asyncUtilTimeout: 4500 });
     maker = await getMaker();
 
-    sendMkrToAddress(maker, NEXT_ACCOUNT, '5');
-
+  
     voteDelegateAddress = await createDelegate(maker);
-
-    /**
-     * This breaks the test 'can delegate MKR to a delegate'
-     * because now there is additional MKR delegated in the UI.
-     * Need to update the values expected in that test.
-     */
-    const amountToLock = 1;
-    await aproveDelegateContractAndAddMKR(maker, voteDelegateAddress, amountToLock);
 
     // Change to a new, non-delegate account
     await switchAccount(maker);
