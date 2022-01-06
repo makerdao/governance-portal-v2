@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   install:
     docker:
-      - image: cypress/base-14
+      - image: cypress/base:14
     steps:
       - checkout
       - restore_cache:
