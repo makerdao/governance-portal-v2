@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 jobs:
   install:
     docker:
@@ -10,11 +10,11 @@ jobs:
             - dependency-cache-ci-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: |
-            yarn
+          command: npm ci
       - save_cache:
           paths:
             - ~/.cache
+            - ~/.npm
           key: dependency-cache-ci-{{ checksum "yarn.lock" }}
   test:
     docker:
@@ -22,13 +22,10 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            yarn
       - restore_cache:
           keys:
             - dependency-cache-ci-{{ checksum "yarn.lock" }}
+      - run: npm ci
       - run:
           name: Run tests
           command: |
