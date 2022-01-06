@@ -21,7 +21,7 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-describe('polling page', () => {
+describe('/polling page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     maker = await getMaker();
@@ -54,7 +54,9 @@ describe('polling page', () => {
 
     test('does not show ballot when no account connected', async () => {
       // remove account from state
-      accountsApi.setState({ currentAccount: undefined });
+      act(() => {
+        accountsApi.setState({ currentAccount: undefined });
+      });
       const address = screen.queryByText(formatAddress(DEMO_ACCOUNT_TESTS));
       expect(address).not.toBeInTheDocument();
       const ballot = screen.queryByText('Your Ballot');
