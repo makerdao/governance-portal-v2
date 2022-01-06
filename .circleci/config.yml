@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-ci-{{ checksum "yarn.lock" }}
+            - dependency-cache-tests-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --frozen-lockfile
@@ -15,7 +15,7 @@ jobs:
           paths:
             - ~/.cache
             - ~/.npm
-          key: dependency-cache-ci-{{ checksum "yarn.lock" }}
+          key: dependency-cache-tests-{{ checksum "yarn.lock" }}
   test:
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
@@ -24,7 +24,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-ci-{{ checksum "yarn.lock" }}
+            - dependency-cache-tests-{{ checksum "yarn.lock" }}
       - run: yarn install --frozen-lockfile
       - run:
           name: Run tests
@@ -39,7 +39,7 @@ jobs:
           paths:
             - ~/.cache
             - ./.next/cache
-          key: dependency-cache-ci-{{ checksum "yarn.lock" }}
+          key: dependency-cache-tests-{{ checksum "yarn.lock" }}
 
 workflows:
   version: 2
