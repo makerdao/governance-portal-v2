@@ -39,21 +39,26 @@ describe('polling page', () => {
 
   describe('renders polls', () => {
     test('renders active polls', async () => {
-      const activePollsText = await screen.findAllByText('Active Polls', {}, { timeout: 15000 });
+      const activePollsText = screen.queryAllByText('Active Polls');
       expect(activePollsText.length).toBe(2);
       expect(activePollsText[0]).toBeInTheDocument();
       expect(activePollsText[1]).toBeInTheDocument();
     });
 
     test('shows ballot when account is connected', async () => {
-      expect(await screen.findByText('Your Ballot', {}, { timeout: 15000 })).toBeInTheDocument();
-      await screen.findByText(formatAddress(DEMO_ACCOUNT_TESTS));
+      const address = screen.queryByText(formatAddress(DEMO_ACCOUNT_TESTS));
+      expect(address).toBeInTheDocument();
+      const ballot = screen.queryByText('Your Ballot');
+      expect(ballot).toBeInTheDocument();
     });
 
-    // TODO
-    xtest('does not show ballot when no account connected', async () => {
-      expect(await screen.findByText('Your Ballot', {}, { timeout: 15000 })).not.toBeInTheDocument();
-      await screen.findByText(formatAddress(DEMO_ACCOUNT_TESTS));
+    test('does not show ballot when no account connected', async () => {
+      // remove account from state
+      accountsApi.setState({ currentAccount: undefined });
+      const address = screen.queryByText(formatAddress(DEMO_ACCOUNT_TESTS));
+      expect(address).not.toBeInTheDocument();
+      const ballot = screen.queryByText('Your Ballot');
+      expect(ballot).not.toBeInTheDocument();
     });
   });
 });
