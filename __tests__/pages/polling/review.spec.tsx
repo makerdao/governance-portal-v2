@@ -1,4 +1,5 @@
 import { act, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import getMaker from '../../../lib/maker';
 import { accountsApi } from '../../../modules/app/stores/accounts';
 import { ballotApi } from '../../../modules/polling/stores/ballotStore';
@@ -58,6 +59,20 @@ describe('/polling page', () => {
       const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
       expect(pollOverviewCards).toHaveLength(2);
       expect(submitBallotText.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test('can submit ballot', async () => {
+      act(() => {
+        ballotApi.setState({ ballot: mockBallot });
+      });
+      const pollOverviewCards = screen.getAllByTestId('poll-overview');
+      const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
+      expect(pollOverviewCards).toHaveLength(2);
+      act(() => {
+        userEvent.click(submitBallotText[0]);
+      });
+      await screen.findByText('Transaction Sent!');
+      await screen.findByText('Votes will update once the transaction is confirmed.');
     });
   });
 });
