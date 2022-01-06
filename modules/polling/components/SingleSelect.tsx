@@ -13,7 +13,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
 
   return (
     <ListboxInput
-      data-testid="single select"
+      data-testid="single-select"
       onChange={x => {
         setChoice(parseInt(x));
       }}
@@ -30,7 +30,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
             Your choice
           </ListboxOption>
           {Object.values(poll.options).map((label, id) => (
-            <ListboxOption data-testid={'single select option'} key={id} value={id.toString()}>
+            <ListboxOption data-testid={'single-select-option'} key={id} value={id.toString()}>
               {label}
             </ListboxOption>
           ))}

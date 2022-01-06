@@ -58,7 +58,7 @@ describe('/polling page', () => {
       const pollOverviewCards = screen.getAllByTestId('poll-overview');
       const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
       expect(pollOverviewCards).toHaveLength(2);
-      expect(submitBallotText.length).toBeGreaterThanOrEqual(1);
+      expect(submitBallotText[0]).toBeInTheDocument();
     });
 
     test('can submit ballot', async () => {
@@ -73,6 +73,63 @@ describe('/polling page', () => {
       });
       await screen.findByText('Transaction Sent!');
       await screen.findByText('Votes will update once the transaction is confirmed.');
+    });
+
+    xtest('can comment on poll vote', async () => {
+      act(() => {
+        ballotApi.setState({ ballot: mockBallot });
+      });
+      const pollOverviewCards = screen.getAllByTestId('poll-overview');
+      expect(pollOverviewCards).toHaveLength(2);
+
+      // sign comments button only appears after typing in comment input
+      expect(screen.queryByText(/Sign Your Comments/i)).not.toBeInTheDocument();
+
+      const commentInputs = screen.getAllByRole('textbox');
+      expect(commentInputs.length).toBe(2);
+
+      userEvent.type(commentInputs[0], 'can devs do something?');
+      const signCommentButtons = screen.queryAllByText(/Sign Your Comments/i);
+      expect(signCommentButtons[0]).toBeInTheDocument();
+
+      userEvent.click(signCommentButtons[0]);
+
+      // TODO: figure out how to sign message pop up
+      const signedCheckmark = await screen.findByTestId('checkmark');
+      expect(signedCheckmark).toBeInTheDocument();
+    });
+
+    test('can edit ballot choices', async () => {
+      act(() => {
+        ballotApi.setState({ ballot: mockBallot });
+      });
+      const pollOverviewCards = screen.getAllByTestId('poll-overview');
+      expect(pollOverviewCards).toHaveLength(2);
+
+      const editButtons = screen.getAllByText(/Edit Choice/i);
+      expect(editButtons.length).toBe(2);
+
+      const choiceSummary = await screen.findAllByTestId('choice');
+      expect(choiceSummary[0]).toHaveTextContent('Abstain');
+
+      userEvent.click(editButtons[0]);
+
+      const updateButton = screen.getByText(/Update vote/i);
+      expect(updateButton).toBeInTheDocument();
+      expect(updateButton).toBeDisabled();
+
+      const choiceDropdown = screen.getAllByText(/Your choice/i);
+      userEvent.click(choiceDropdown[0]);
+
+      const options = screen.getAllByTestId('single-select-option');
+      userEvent.click(options[1]);
+      expect(updateButton).toBeEnabled();
+      userEvent.click(updateButton);
+      expect(updateButton).not.toBeInTheDocument();
+      expect(editButtons.length).toBe(2);
+
+      const choiceSummaryNew = await screen.findAllByTestId('choice');
+      expect(choiceSummaryNew[0]).toHaveTextContent('Yes');
     });
   });
 });
