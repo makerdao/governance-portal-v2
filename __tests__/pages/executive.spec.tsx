@@ -49,41 +49,29 @@ describe('/executive page', () => {
   test('can deposit and withdraw into chief', async () => {
     const depositButton = await screen.findByTestId('deposit-button');
 
-    act(() => {
-      userEvent.click(depositButton);
-    });
+    userEvent.click(depositButton);
 
     await screen.findByText('Approve voting contract');
     const approveButton = screen.getByTestId('deposit-approve-button');
 
-    act(() => {
-      userEvent.click(approveButton);
-    });
+    userEvent.click(approveButton);
 
     await screen.findByText('Deposit into voting contract');
     const input = screen.getByTestId('mkr-input');
-    act(() => {
-      userEvent.type(input, '10');
-    });
+    userEvent.type(input, '10');
     const finalDepositButton = await screen.findByText('Deposit MKR');
     expect(finalDepositButton).toBeEnabled();
 
-    act(() => {
-      userEvent.click(finalDepositButton);
-    });
+    userEvent.click(finalDepositButton);
 
     const withdrawButton = await screen.findByTestId('withdraw-button');
 
-    act(() => {
-      userEvent.click(withdrawButton);
-    });
+    userEvent.click(withdrawButton);
 
     await screen.findByText('Approve voting contract');
     const approveButtonWithdraw = screen.getByTestId('withdraw-approve-button', {}, { timeout: 15000 });
 
-    act(() => {
-      userEvent.click(approveButtonWithdraw);
-    });
+    userEvent.click(approveButtonWithdraw);
 
     await screen.findByText('Withdraw from voting contract');
     const inputWithdraw = screen.getByTestId('mkr-input');
@@ -93,9 +81,7 @@ describe('/executive page', () => {
 
     expect(finalDepositButtonWithdraw).toBeEnabled();
 
-    act(() => {
-      userEvent.click(finalDepositButtonWithdraw);
-    });
+    userEvent.click(finalDepositButtonWithdraw);
 
     const dialog = screen.getByRole('dialog');
     await waitForElementToBeRemoved(dialog);
@@ -107,13 +93,9 @@ describe('/executive page', () => {
 
   test('can vote on an executive', async () => {
     const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
-    act(() => {
-      userEvent.click(voteButtonOne);
-    });
+    userEvent.click(voteButtonOne);
     const submitButton = screen.getByText('Submit Vote');
-    act(() => {
-      userEvent.click(submitButton);
-    });
+    userEvent.click(submitButton);
 
     // wait for transaction to progress
     await screen.findByText('Transaction Sent');

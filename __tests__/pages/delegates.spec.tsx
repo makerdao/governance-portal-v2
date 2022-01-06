@@ -90,15 +90,11 @@ describe('/delegates page', () => {
 
     // Open delegate modal
     const delegateButton = screen.getByText('Delegate');
-    act(() => {
-      userEvent.click(delegateButton);
-    });
+    userEvent.click(delegateButton);
 
     // Approval Process
     const approveMKRButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
-    act(() => {
-      userEvent.click(approveMKRButton);
-    });
+    userEvent.click(approveMKRButton);
 
     // Transaction is initialized
     await screen.findByText('Confirm Transaction');
@@ -109,15 +105,11 @@ describe('/delegates page', () => {
 
     const input = screen.getByTestId('mkr-input');
 
-    act(() => {
-      userEvent.type(input, mkrToDeposit);
-    });
+    userEvent.type(input, mkrToDeposit);
 
     // Delegate Process
     const delegateMKRButton = screen.getByText('Delegate MKR', { selector: 'button' });
-    act(() => {
-      userEvent.click(delegateMKRButton);
-    });
+    userEvent.click(delegateMKRButton);
 
     // Make sure modal displays etherscan links correctly
     screen.getByText(/You are delegating/);
@@ -128,9 +120,7 @@ describe('/delegates page', () => {
     expect(creatorLink).toHaveAttribute('href', `https://etherscan.io/address/${DEMO_ACCOUNT_TESTS}`);
 
     const confirmButton = await screen.findByText(/Confirm Transaction/, { selector: 'button' });
-    act(() => {
-      userEvent.click(confirmButton);
-    });
+    userEvent.click(confirmButton);
 
     // Wait for transactions again...
     await screen.findByText('Transaction Pending');
@@ -143,15 +133,11 @@ describe('/delegates page', () => {
 
     // Open undelegate modal
     const unDelegateButton = screen.getByText('Undelegate');
-    act(() => {
-      userEvent.click(unDelegateButton);
-    });
+    userEvent.click(unDelegateButton);
 
     // IOU Approval Process
     const approveIOUButton = screen.getByText('Approve Delegate Contract', { selector: 'button' });
-    act(() => {
-      userEvent.click(approveIOUButton);
-    });
+    userEvent.click(approveIOUButton);
 
     // More transaction screens...
     await screen.findByText('Confirm Transaction');
@@ -160,17 +146,13 @@ describe('/delegates page', () => {
 
     // Set max button adds input value correctly
     const setMaxButton = screen.getByRole('button', { name: /Set max/ });
-    act(() => {
-      userEvent.click(setMaxButton);
-    });
+    userEvent.click(setMaxButton);
 
     const unInput = screen.getByRole('spinbutton') as HTMLInputElement;
     expect(unInput.value).toBe('3.2');
 
     const undelegateMKRButton = screen.getByText('Undelegate MKR', { selector: 'button' });
-    act(() => {
-      userEvent.click(undelegateMKRButton);
-    });
+    userEvent.click(undelegateMKRButton);
 
     // Wait for transactions again...
     await screen.findByText('Transaction Pending');
@@ -178,9 +160,7 @@ describe('/delegates page', () => {
 
     // Close the modal
     const closeUndelegateBtn = screen.getByText(/Close/, { selector: 'button' });
-    act(() => {
-      userEvent.click(closeUndelegateBtn);
-    });
+    userEvent.click(closeUndelegateBtn);
 
     // Voting weights are returned to 0 after undelegating
     const newTotal = screen.getByTestId('total-mkr-delegated');
