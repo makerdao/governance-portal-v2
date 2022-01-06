@@ -9,15 +9,11 @@ describe('Account select', () => {
     const connectButton = await screen.findByText('Connect wallet');
     expect(connectButton).toBeInTheDocument();
 
-    act(() => {
-      userEvent.click(connectButton);
-    });
+    userEvent.click(connectButton);
 
     const metamaskButton = await screen.findByText('MetaMask');
 
-    act(() => {
-      userEvent.click(metamaskButton);
-    });
+    userEvent.click(metamaskButton);
 
     await act(async () => {
       await connectAccount();
