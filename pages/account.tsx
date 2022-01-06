@@ -176,7 +176,7 @@ const AccountPage = (): JSX.Element => {
                   <Label sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}>
                     <Checkbox
                       checked={warningRead}
-                      onClick={event => {
+                      onChange={() => {
                         setWarningRead(!warningRead);
                         trackButtonClick('setWarningRead');
                       }}
@@ -201,7 +201,7 @@ const AccountPage = (): JSX.Element => {
                   <Text as="p">
                     You have a DSChief balance of{' '}
                     <Text sx={{ fontWeight: 'bold' }}>{chiefBalance.toBigNumber().toFormat(6)} MKR.</Text>
-                    <Text as="p" sx={{ my: 2 }}>
+                    <Text sx={{ display: 'block', my: 2 }}>
                       {voteDelegate
                         ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
                         : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}

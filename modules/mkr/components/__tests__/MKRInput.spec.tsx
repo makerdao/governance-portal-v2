@@ -51,9 +51,7 @@ describe('MKRInput', () => {
     const setMaxButton = screen.getByTestId('mkr-input-set-max');
     const input = screen.getByTestId('mkr-input');
 
-    act(() => {
-      userEvent.click(setMaxButton);
-    });
+    userEvent.click(setMaxButton);
 
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(24.5));
 
@@ -69,9 +67,7 @@ describe('MKRInput', () => {
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
-    act(() => {
-      userEvent.type(input, '3.2');
-    });
+    userEvent.type(input, '3.2');
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(3.2));
     expect(input).toHaveValue(3.2);
   });

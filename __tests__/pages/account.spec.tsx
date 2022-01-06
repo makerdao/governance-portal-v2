@@ -40,15 +40,11 @@ describe('/account page', () => {
 
   test('can create a delegate contract', async () => {
     const checkbox = screen.getByRole('checkbox');
-    act(() => {
-      userEvent.click(checkbox);
-    });
+    userEvent.click(checkbox);
 
     const createButton = screen.getByTestId('create-button');
 
-    act(() => {
-      userEvent.click(createButton);
-    });
+    userEvent.click(createButton);
 
     // Transaction is initialized
     await screen.findByText('Confirm Transaction');
@@ -61,15 +57,15 @@ describe('/account page', () => {
 
     const closeButton = screen.getByText('Close');
 
-    act(() => {
-      userEvent.click(closeButton);
-    });
+    userEvent.click(closeButton);
 
     // Fetch address of our newly create vote delegate contract
-    const { voteDelegate } = await maker
-      .service('voteDelegateFactory')
-      .getVoteDelegate(maker.currentAccount().address);
+    await act(async () => {
+      const { voteDelegate } = await maker
+        .service('voteDelegateFactory')
+        .getVoteDelegate(maker.currentAccount().address);
 
-    await screen.findByText(voteDelegate.getVoteDelegateAddress());
+      await screen.findByText(voteDelegate.getVoteDelegateAddress());
+    });
   });
 });
