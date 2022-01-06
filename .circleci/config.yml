@@ -7,21 +7,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "yarn.lock" }}
+            - dependency-cache-ci-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: |
             yarn
       - save_cache:
           paths:
-            - node_modules
-            - ./node_modules
-          key: dependency-cache-{{ checksum "yarn.lock" }}
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules/*
-            - cypress/*
+            - ~/.cache
+          key: dependency-cache-ci-{{ checksum "yarn.lock" }}
   test:
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
@@ -30,7 +24,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-{{ checksum "yarn.lock" }}
+            - dependency-cache-ci-{{ checksum "yarn.lock" }}
       - run:
           name: Run tests
           command: |
@@ -42,10 +36,9 @@ jobs:
             ./node_modules/.bin/codecov
       - save_cache:
           paths:
-            - node_modules
-            - ./node_modules
+            - ~/.cache
             - ./.next/cache
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+          key: dependency-cache-ci-{{ checksum "yarn.lock" }}
 
 workflows:
   version: 2
