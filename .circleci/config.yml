@@ -17,6 +17,11 @@ jobs:
             - node_modules
             - ./node_modules
           key: dependency-cache-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules/*
+            - cypress/*
   test:
     docker:
       - image: makerdaodux/dapptools-node-circleci-docker
