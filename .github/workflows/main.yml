@@ -52,6 +52,7 @@ jobs:
       MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -67,7 +68,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           # we have already installed all dependencies above
-          install: false
+          # use (install: false) if you want to do parallel jobs.
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
