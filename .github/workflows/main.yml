@@ -3,9 +3,12 @@ name: Cypress Tests
 on: [push]
 
 jobs:
+  # Meanwhile we rely in the testchain, we need to use the dapptools image
+  unit:
+  
   install:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome91-ff89    
+    container: makerdaodux/cypress-dapptools-node-14:latest   
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -47,7 +50,7 @@ jobs:
 
   ui-chrome-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.0-chrome91-ff89    
+    container:  makerdaodux/cypress-dapptools-node-14:latest 
     needs: install
     strategy:
       fail-fast: false
