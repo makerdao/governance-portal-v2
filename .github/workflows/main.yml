@@ -5,7 +5,7 @@ on: [push]
 jobs:
   install:
     runs-on: ubuntu-latest
-    container: makerdaodux/dapptools-node-circleci-docker   
+    container: cypress/browsers:node14.17.0-chrome91-ff89    
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
