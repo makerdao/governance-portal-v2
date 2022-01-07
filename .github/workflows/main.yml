@@ -9,6 +9,7 @@ jobs:
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      USE_FS_CACHE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,7 +20,7 @@ jobs:
         with:
           # Disable running of tests within install job
           runTests: false
-          build: USE_FS_CACHE=1 yarn build
+          build: yarn build
 
       - run: yarn lint
       - run: yarn test:ci
