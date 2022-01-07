@@ -6,7 +6,7 @@ module.exports = {
   ],
   coverageReporters: ['json', 'lcov', 'text-summary'],
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
-  testPathIgnorePatterns: ['/node_modules/', '/.next/', '/setup',  '__tests__/helpers.tsx', '/__tests__/__mocks__', '__tests__/lib/polling/poll-327.js', '__tests__/lib/polling/poll-431.js'],
+  testPathIgnorePatterns: ['/node_modules/', '/cypress/', '/.next/', '/setup',  '__tests__/helpers.tsx', '/__tests__/__mocks__', '__tests__/lib/polling/poll-327.js', '__tests__/lib/polling/poll-431.js'],
   transformIgnorePatterns: ['/node_modules/'],
   moduleDirectories: ['node_modules'],
   globals: {
