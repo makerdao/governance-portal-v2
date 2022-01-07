@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Flex, Text, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { ConnectorName } from 'lib/maker/web3react';
+import { ConnectorName } from 'lib/web3react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress, getEtherscanLink } from 'lib/utils';

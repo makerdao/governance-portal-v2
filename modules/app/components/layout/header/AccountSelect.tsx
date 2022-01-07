@@ -8,8 +8,8 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
 import getMaker, { getNetwork, chainIdToNetworkName } from 'lib/maker';
-import { getLibrary, connectors, ConnectorName } from 'lib/maker/web3react';
-import { syncMakerAccount, useEagerConnect } from 'lib/maker/web3react/hooks';
+import { getLibrary, connectors, ConnectorName } from 'lib/web3react';
+import { syncMakerAccount, useEagerConnect } from 'lib/web3react/hooks';
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
