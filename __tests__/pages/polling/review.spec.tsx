@@ -57,7 +57,7 @@ describe('/polling page', () => {
       });
       const pollOverviewCards = screen.getAllByTestId('poll-overview');
       const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
-      expect(pollOverviewCards).toHaveLength(2);
+      expect(pollOverviewCards.length).toBe(2);
       expect(submitBallotText[0]).toBeInTheDocument();
     });
 
@@ -67,7 +67,7 @@ describe('/polling page', () => {
       });
       const pollOverviewCards = screen.getAllByTestId('poll-overview');
       const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
-      expect(pollOverviewCards).toHaveLength(2);
+      expect(pollOverviewCards.length).toBe(2);
       act(() => {
         userEvent.click(submitBallotText[0]);
       });
@@ -130,6 +130,23 @@ describe('/polling page', () => {
 
       const choiceSummaryNew = await screen.findAllByTestId('choice');
       expect(choiceSummaryNew[0]).toHaveTextContent('Yes');
+    });
+
+    test('can remove a vote from ballot', async () => {
+      act(() => {
+        ballotApi.setState({ ballot: mockBallot });
+      });
+      const pollOverviewCards = screen.getAllByTestId('poll-overview');
+      expect(pollOverviewCards.length).toBe(2);
+
+      const removeButtons = screen.getAllByText(/Remove Vote/i);
+      expect(removeButtons.length).toBe(2);
+
+      userEvent.click(removeButtons[0]);
+
+      const pollOverviewCardsUpdated = screen.getAllByTestId('poll-overview');
+
+      expect(pollOverviewCardsUpdated.length).toBe(1);
     });
   });
 });
