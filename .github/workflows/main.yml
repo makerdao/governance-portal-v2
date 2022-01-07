@@ -13,7 +13,9 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          build: yarn run build
+          # TODO: Build requires having configured the sentry credentials in the CI. 
+          #build: yarn run build
+          lint: yarn run lint
           start: npm start
       - name: Unit tests
         run: yarn test:ci
