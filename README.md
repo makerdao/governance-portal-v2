@@ -53,6 +53,15 @@ Jest tests under the folder __tests__ currently execute some integration and uni
 - npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
 ```
 
+### CI/CD
+
+The CI/CD system is integrated with Github Actions.
+
+After each push the system will execute:
+- Lint, verify type consistency
+- Unit test, execute Jest test suite
+- E2E, executy cypress test suite and record results at https://dashboard.cypress.io/projects/uckcr1/runs 
+
 ### Contributing
 
 See our [contributing guide](./CONTRIBUTING.md)
