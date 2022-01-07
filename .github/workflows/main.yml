@@ -14,6 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install dapptools
+        run: |
+          curl -L https://nixos.org/nix/install | sh
+          . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          curl https://dapp.tools/install | sh
+
 
       - name: Cypress install
         uses: cypress-io/github-action@v2
@@ -23,7 +29,9 @@ jobs:
           build: yarn build
 
       - run: yarn lint
+
       - run: yarn test:ci
+
       - name: Codecov
         run: |
           yarn add --dev codecov
