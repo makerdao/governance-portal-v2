@@ -50,7 +50,7 @@ jobs:
 
   ui-chrome-tests:
     runs-on: ubuntu-latest
-    container:  makerdaodux/cypress-dapptools-node-14:latest 
+    container: makerdaodux/cypress-dapptools-node-14:latest 
     needs: install
     strategy:
       fail-fast: false
