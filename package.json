@@ -13,6 +13,8 @@
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "e2e": "start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
