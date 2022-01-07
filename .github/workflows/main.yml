@@ -6,6 +6,9 @@ jobs:
   install:
     runs-on: ubuntu-latest
     container: cypress/browsers:node14.17.0-chrome91-ff89    
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -16,10 +19,15 @@ jobs:
         with:
           # Disable running of tests within install job
           runTests: false
-          build: yarn build
+          build: USE_FS_CACHE=1 yarn build
 
       - run: yarn lint
-      - run: yarn test:unit:ci
+      - run: yarn test:ci
+      - name: Codecov
+        run: |
+          yarn add --dev codecov
+          ./node_modules/.bin/codecov
+          
 
       - name: Save build folder
         uses: actions/upload-artifact@v2
@@ -34,6 +42,11 @@ jobs:
     needs: install
     strategy:
       fail-fast: false
+    env:
+      INFURA_KEY: ${{ secrets.INFURA_KEY }}
+      MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -49,7 +62,7 @@ jobs:
         with:
           # we have already installed all dependencies above
           install: false
-          start: yarn start:ci
+          start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome
