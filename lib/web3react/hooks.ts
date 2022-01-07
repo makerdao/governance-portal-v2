@@ -3,11 +3,9 @@
 // TODO: handle account disconnection (e.g. when WalletConnect access is revoked)
 // by handling Web3ReactDeactivate event
 
-import { useContext, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { useContext, useEffect } from 'react';
 
 import getMaker from '../maker/index';
-import { injectedConnector } from './index';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 
 export const syncMakerAccount = (library, account, chainIdError) => {
@@ -36,30 +34,3 @@ export const syncMakerAccount = (library, account, chainIdError) => {
     })();
   }, [library, account]);
 };
-
-// from https://github.com/NoahZinsmeister/web3-react/tree/v6/example
-export function useEagerConnect() {
-  const { activate, active } = useWeb3React();
-
-  const [tried, setTried] = useState(false);
-
-  useEffect(() => {
-    injectedConnector.isAuthorized().then((isAuthorized: boolean) => {
-      if (isAuthorized) {
-        activate(injectedConnector, undefined, true).catch(() => {
-          setTried(true);
-        });
-      } else {
-        setTried(true);
-      }
-    });
-  }, []); // intentionally only running on mount (make sure it's only mounted once :))
-
-  // if the connection worked, wait until we get confirmation of that to flip the flag
-
-  useEffect(() => {
-    if (!tried && active) {
-      setTried(true);
-    }
-  }, [tried, active]);
-}

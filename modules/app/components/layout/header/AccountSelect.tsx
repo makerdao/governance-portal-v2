@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Text, Button, Close } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
-import getMaker, { getNetwork, chainIdToNetworkName } from 'lib/maker';
-import { getLibrary, connectors, ConnectorName } from 'lib/web3react';
-import { syncMakerAccount, useEagerConnect } from 'lib/web3react/hooks';
+import getMaker, { getNetwork } from 'lib/maker';
+import { syncMakerAccount } from 'lib/web3react/hooks';
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -20,13 +19,16 @@ import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
+import { getLibrary } from 'modules/web3/helpers';
+import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
+import { ConnectorName, SUPPORTED_WALLETS, chainIdToNetworkName } from 'modules/web3/web3.constants';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
-const walletButtonStyle = {
+const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
   width: '100%',
   p: 3,
@@ -42,13 +44,13 @@ const walletButtonStyle = {
   }
 };
 
-const disabledWalletButtonStyle = {
+const disabledWalletButtonStyle: ThemeUICSSObject = {
   ...walletButtonStyle,
   cursor: 'not-allowed',
   '&:hover': null
 };
 
-const closeButtonStyle = {
+const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
   width: 4,
   p: 0,
@@ -245,9 +247,13 @@ const AccountSelect = (): React.ReactElement => {
     }
   };
 
-  const walletOptions = connectors
-    .map(([name, connector]) => (
-      <Flex sx={walletButtonStyle as any} key={name} onClick={() => onClickConnector(connector, name)}>
+  const walletOptions = Object.keys(SUPPORTED_WALLETS)
+    .map((name: ConnectorName) => (
+      <Flex
+        sx={walletButtonStyle}
+        key={name}
+        onClick={() => onClickConnector(SUPPORTED_WALLETS[name].connector, name)}
+      >
         <Icon name={name} />
         <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...' : name}</Text>
       </Flex>
@@ -260,7 +266,7 @@ const AccountSelect = (): React.ReactElement => {
         <Icon name="chevron_left" color="primary" size="10px" mr="2" />
         Back
       </Button>
-      <Close sx={closeButtonStyle as any} aria-label="close" onClick={close} />
+      <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
 
@@ -316,7 +322,7 @@ const AccountSelect = (): React.ReactElement => {
               {addresses
                 .slice(hwPageNum * ADDRESSES_PER_PAGE, (hwPageNum + 1) * ADDRESSES_PER_PAGE)
                 .map(address => (
-                  <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
+                  <Flex sx={walletButtonStyle} key={address} onClick={() => addHwAccount(address)}>
                     <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
                   </Flex>
                 ))}
@@ -333,7 +339,7 @@ const AccountSelect = (): React.ReactElement => {
                     setAccountName(undefined);
                     close();
                   }}
-                  sx={walletButtonStyle as any}
+                  sx={walletButtonStyle}
                 >
                   Disconnect
                 </Flex>
@@ -345,7 +351,7 @@ const AccountSelect = (): React.ReactElement => {
                 <Text variant="microHeading" color="onBackgroundAlt">
                   {address ? 'Account' : 'Select a Wallet'}
                 </Text>
-                <Close aria-label="close" sx={closeButtonStyle as any} onClick={close} />
+                <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
               </Flex>
               {address ? (
                 <>

@@ -4,32 +4,18 @@ import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
 import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
 import { Web3ReactPlugin } from '../web3react';
-
-import { SupportedNetworks, DEFAULT_NETWORK } from '../constants';
-import { networkToRpc } from './network';
+import {
+  SupportedNetworks,
+  DEFAULT_NETWORK,
+  chainIdToNetworkName,
+  networkToRpc
+} from 'modules/web3/web3.constants';
 import { config } from '../config';
 import { MakerClass } from '@makerdao/dai/dist/Maker';
 
 export const ETH = Maker.currencies.ETH;
 export const USD = Maker.currencies.USD;
 export { MKR };
-
-function chainIdToNetworkName(chainId: number): SupportedNetworks {
-  switch (chainId) {
-    case 1:
-      return SupportedNetworks.MAINNET;
-    case 5:
-      return SupportedNetworks.GOERLI;
-    case 42:
-      return SupportedNetworks.KOVAN;
-    case 999:
-      return SupportedNetworks.TESTNET;
-    case 1337:
-      return SupportedNetworks.TESTNET;
-    default:
-      throw new Error(`Unsupported chain id ${chainId}`);
-  }
-}
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
@@ -150,12 +136,4 @@ async function personalSign(message: string): Promise<any> {
 }
 
 export default getMaker;
-export {
-  DAI,
-  getNetwork,
-  isDefaultNetwork,
-  isSupportedNetwork,
-  chainIdToNetworkName,
-  isTestnet,
-  personalSign
-};
+export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, isTestnet, personalSign };

@@ -1,9 +1,7 @@
-export enum SupportedNetworks {
-  MAINNET = 'mainnet',
-  KOVAN = 'kovan',
-  GOERLI = 'goerli',
-  TESTNET = 'testnet'
-}
+import { SupportedNetworks } from 'modules/web3/web3.constants';
+
+// TODO: too lazy to fix all imports of SupportedNetworks from this file across the app right now.
+export { SupportedNetworks };
 
 export const CMS_ENDPOINTS = {
   [SupportedNetworks.MAINNET]: {
@@ -15,14 +13,6 @@ export const CMS_ENDPOINTS = {
     allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
   }
   // no goerli CMS endpoints
-};
-
-export const DEFAULT_NETWORK = SupportedNetworks.MAINNET;
-
-export const ETHERSCAN_PREFIXES = {
-  [SupportedNetworks.MAINNET]: '',
-  [SupportedNetworks.KOVAN]: 'kovan.',
-  [SupportedNetworks.GOERLI]: 'goerli.'
 };
 
 export const ETH_TX_STATE_DIFF_ENDPOINT = (
