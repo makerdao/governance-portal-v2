@@ -16,7 +16,7 @@ import mockBallot from 'modules/polling/api/mocks/ballot.json';
 
 let maker;
 
-describe('/polling page', () => {
+describe('/polling/review page', () => {
   beforeAll(async () => {
     maker = await getMaker();
     accountsApi.getState().addAccountsListener(maker);
@@ -31,122 +31,120 @@ describe('/polling page', () => {
     });
   });
 
-  describe('/polling/review page', () => {
-    test('renders page without connected account', async () => {
-      act(() => {
-        accountsApi.setState({ currentAccount: undefined });
-      });
-      const reviewHeader = screen.getByText('Review & Submit Ballot');
-      const noWalletText = screen.getByText('Connect a wallet to vote');
-      expect(reviewHeader).toBeInTheDocument();
-      expect(noWalletText).toBeInTheDocument();
+  test('renders page without connected account', async () => {
+    act(() => {
+      accountsApi.setState({ currentAccount: undefined });
     });
+    const reviewHeader = screen.getByText('Review & Submit Ballot');
+    const noWalletText = screen.getByText('Connect a wallet to vote');
+    expect(reviewHeader).toBeInTheDocument();
+    expect(noWalletText).toBeInTheDocument();
+  });
 
-    test('renders page with connected account but empty ballot', async () => {
-      const address = screen.getByText(formatAddress(DEMO_ACCOUNT_TESTS));
-      const reviewHeader = screen.getByText('Review & Submit Ballot');
-      const emptyBallotText = screen.getByText('Your ballot is empty');
-      expect(address).toBeInTheDocument();
-      expect(reviewHeader).toBeInTheDocument();
-      expect(emptyBallotText).toBeInTheDocument();
+  test('renders page with connected account but empty ballot', async () => {
+    const address = screen.getByText(formatAddress(DEMO_ACCOUNT_TESTS));
+    const reviewHeader = screen.getByText('Review & Submit Ballot');
+    const emptyBallotText = screen.getByText('Your ballot is empty');
+    expect(address).toBeInTheDocument();
+    expect(reviewHeader).toBeInTheDocument();
+    expect(emptyBallotText).toBeInTheDocument();
+  });
+
+  test('renders page with polls in ballot state', async () => {
+    act(() => {
+      ballotApi.setState({ ballot: mockBallot });
     });
+    const pollOverviewCards = screen.getAllByTestId('poll-overview');
+    const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
+    expect(pollOverviewCards.length).toBe(2);
+    expect(submitBallotText[0]).toBeInTheDocument();
+  });
 
-    test('renders page with polls in ballot state', async () => {
-      act(() => {
-        ballotApi.setState({ ballot: mockBallot });
-      });
-      const pollOverviewCards = screen.getAllByTestId('poll-overview');
-      const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
-      expect(pollOverviewCards.length).toBe(2);
-      expect(submitBallotText[0]).toBeInTheDocument();
+  test('can submit ballot', async () => {
+    act(() => {
+      ballotApi.setState({ ballot: mockBallot });
     });
-
-    test('can submit ballot', async () => {
-      act(() => {
-        ballotApi.setState({ ballot: mockBallot });
-      });
-      const pollOverviewCards = screen.getAllByTestId('poll-overview');
-      const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
-      expect(pollOverviewCards.length).toBe(2);
-      act(() => {
-        userEvent.click(submitBallotText[0]);
-      });
-      await screen.findByText('Transaction Sent!');
-      await screen.findByText('Votes will update once the transaction is confirmed.');
+    const pollOverviewCards = screen.getAllByTestId('poll-overview');
+    const submitBallotText = screen.getAllByText(/Submit Your Ballot/i);
+    expect(pollOverviewCards.length).toBe(2);
+    act(() => {
+      userEvent.click(submitBallotText[0]);
     });
+    await screen.findByText('Transaction Sent!');
+    await screen.findByText('Votes will update once the transaction is confirmed.');
+  });
 
-    test('can comment on poll vote', async () => {
-      act(() => {
-        ballotApi.setState({ ballot: mockBallot });
-      });
-      const pollOverviewCards = screen.getAllByTestId('poll-overview');
-      expect(pollOverviewCards).toHaveLength(2);
-
-      // sign comments button only appears after typing in comment input
-      expect(screen.queryByText(/Sign Your Comments/i)).not.toBeInTheDocument();
-
-      const commentInputs = screen.getAllByRole('textbox');
-      expect(commentInputs.length).toBe(2);
-
-      userEvent.type(commentInputs[0], 'can devs do something?');
-      const signCommentButtons = screen.queryAllByText(/Sign Your Comments/i);
-      expect(signCommentButtons[0]).toBeInTheDocument();
-
-      userEvent.click(signCommentButtons[0]);
-
-      // TODO: figure out how to sign message pop up
-      // const signedCheckmark = await screen.findByTestId('checkmark');
-      // expect(signedCheckmark).toBeInTheDocument();
+  test('can comment on poll vote', async () => {
+    act(() => {
+      ballotApi.setState({ ballot: mockBallot });
     });
+    const pollOverviewCards = screen.getAllByTestId('poll-overview');
+    expect(pollOverviewCards).toHaveLength(2);
 
-    test('can edit ballot choices', async () => {
-      act(() => {
-        ballotApi.setState({ ballot: mockBallot });
-      });
-      const pollOverviewCards = screen.getAllByTestId('poll-overview');
-      expect(pollOverviewCards).toHaveLength(2);
+    // sign comments button only appears after typing in comment input
+    expect(screen.queryByText(/Sign Your Comments/i)).not.toBeInTheDocument();
 
-      const editButtons = screen.getAllByText(/Edit Choice/i);
-      expect(editButtons.length).toBe(2);
+    const commentInputs = screen.getAllByRole('textbox');
+    expect(commentInputs.length).toBe(2);
 
-      const choiceSummary = await screen.findAllByTestId('choice');
-      expect(choiceSummary[0]).toHaveTextContent('Abstain');
+    userEvent.type(commentInputs[0], 'can devs do something?');
+    const signCommentButtons = screen.queryAllByText(/Sign Your Comments/i);
+    expect(signCommentButtons[0]).toBeInTheDocument();
 
-      userEvent.click(editButtons[0]);
+    userEvent.click(signCommentButtons[0]);
 
-      const updateButton = screen.getByText(/Update vote/i);
-      expect(updateButton).toBeInTheDocument();
-      expect(updateButton).toBeDisabled();
+    // TODO: figure out how to sign message pop up
+    // const signedCheckmark = await screen.findByTestId('checkmark');
+    // expect(signedCheckmark).toBeInTheDocument();
+  });
 
-      const choiceDropdown = screen.getAllByText(/Your choice/i);
-      userEvent.click(choiceDropdown[0]);
-
-      const options = screen.getAllByTestId('single-select-option');
-      userEvent.click(options[1]);
-      expect(updateButton).toBeEnabled();
-      userEvent.click(updateButton);
-      expect(updateButton).not.toBeInTheDocument();
-      expect(editButtons.length).toBe(2);
-
-      const choiceSummaryNew = await screen.findAllByTestId('choice');
-      expect(choiceSummaryNew[0]).toHaveTextContent('Yes');
+  test('can edit ballot choices', async () => {
+    act(() => {
+      ballotApi.setState({ ballot: mockBallot });
     });
+    const pollOverviewCards = screen.getAllByTestId('poll-overview');
+    expect(pollOverviewCards).toHaveLength(2);
 
-    test('can remove a vote from ballot', async () => {
-      act(() => {
-        ballotApi.setState({ ballot: mockBallot });
-      });
-      const pollOverviewCards = screen.getAllByTestId('poll-overview');
-      expect(pollOverviewCards.length).toBe(2);
+    const editButtons = screen.getAllByText(/Edit Choice/i);
+    expect(editButtons.length).toBe(2);
 
-      const removeButtons = screen.getAllByText(/Remove Vote/i);
-      expect(removeButtons.length).toBe(2);
+    const choiceSummary = await screen.findAllByTestId('choice');
+    expect(choiceSummary[0]).toHaveTextContent('Abstain');
 
-      userEvent.click(removeButtons[0]);
+    userEvent.click(editButtons[0]);
 
-      const pollOverviewCardsUpdated = screen.getAllByTestId('poll-overview');
+    const updateButton = screen.getByText(/Update vote/i);
+    expect(updateButton).toBeInTheDocument();
+    expect(updateButton).toBeDisabled();
 
-      expect(pollOverviewCardsUpdated.length).toBe(1);
+    const choiceDropdown = screen.getAllByText(/Your choice/i);
+    userEvent.click(choiceDropdown[0]);
+
+    const options = screen.getAllByTestId('single-select-option');
+    userEvent.click(options[1]);
+    expect(updateButton).toBeEnabled();
+    userEvent.click(updateButton);
+    expect(updateButton).not.toBeInTheDocument();
+    expect(editButtons.length).toBe(2);
+
+    const choiceSummaryNew = await screen.findAllByTestId('choice');
+    expect(choiceSummaryNew[0]).toHaveTextContent('Yes');
+  });
+
+  test('can remove a vote from ballot', async () => {
+    act(() => {
+      ballotApi.setState({ ballot: mockBallot });
     });
+    const pollOverviewCards = screen.getAllByTestId('poll-overview');
+    expect(pollOverviewCards.length).toBe(2);
+
+    const removeButtons = screen.getAllByText(/Remove Vote/i);
+    expect(removeButtons.length).toBe(2);
+
+    userEvent.click(removeButtons[0]);
+
+    const pollOverviewCardsUpdated = screen.getAllByTestId('poll-overview');
+
+    expect(pollOverviewCardsUpdated.length).toBe(1);
   });
 });
