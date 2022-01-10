@@ -3,7 +3,7 @@ import zipObject from 'lodash/zipObject';
 
 import withApiHandler from 'lib/api/withApiHandler';
 import { analyzeSpell } from './[address]';
-import { DEFAULT_NETWORK } from 'lib/constants';
+import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import invariant from 'tiny-invariant';
 import getMaker, { isSupportedNetwork } from 'lib/maker';
 

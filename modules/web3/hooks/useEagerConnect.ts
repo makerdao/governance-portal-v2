@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { injectedConnector } from '../web3.constants';
+import { injectedConnector } from '../connectors';
 
 // from https://github.com/NoahZinsmeister/web3-react/tree/v6/example
 export function useEagerConnect(): void {

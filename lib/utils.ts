@@ -6,7 +6,7 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
+import { SupportedNetworks } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
@@ -54,6 +54,13 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
     retries > 1 ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2)) : Promise.reject(err)
   );
 }
+
+//TODO: obtain the prefixes from the CHAIN_INFO const in web3.constants.ts
+export const ETHERSCAN_PREFIXES = {
+  [SupportedNetworks.MAINNET]: '',
+  [SupportedNetworks.KOVAN]: 'kovan.',
+  [SupportedNetworks.GOERLI]: 'goerli.'
+};
 
 export function getEtherscanLink(
   network: SupportedNetworks,

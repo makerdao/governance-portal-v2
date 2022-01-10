@@ -4,14 +4,10 @@ import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
 import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
 import { Web3ReactPlugin } from '../web3react';
-import {
-  SupportedNetworks,
-  DEFAULT_NETWORK,
-  chainIdToNetworkName,
-  networkToRpc
-} from 'modules/web3/web3.constants';
+import { SupportedNetworks, DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import { config } from '../config';
 import { MakerClass } from '@makerdao/dai/dist/Maker';
+import { chainIdToNetworkName, networkToRpc } from 'modules/web3/helpers';
 
 export const ETH = Maker.currencies.ETH;
 export const USD = Maker.currencies.USD;

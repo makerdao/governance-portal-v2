@@ -3,8 +3,9 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'lib/constants';
 import { getExecutiveComments } from 'modules/comments/api/getExecutiveComments';
+import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 
 /**
  * @swagger

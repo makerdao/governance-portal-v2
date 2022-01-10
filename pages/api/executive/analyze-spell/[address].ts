@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getMaker, { isSupportedNetwork } from 'lib/maker';
-import { DEFAULT_NETWORK } from 'lib/constants';
+import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'modules/executive/types/spellData';
 

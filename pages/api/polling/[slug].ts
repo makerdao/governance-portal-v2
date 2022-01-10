@@ -1,5 +1,5 @@
 import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'lib/constants';
+import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import { isSupportedNetwork } from 'lib/maker';
 import { getPoll } from 'modules/polling/api/fetchPolls';
 import { NextApiRequest, NextApiResponse } from 'next';

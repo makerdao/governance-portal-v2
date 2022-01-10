@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'lib/constants';
 import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
 import { getPollComments } from 'modules/comments/api/getPollComments';
+import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 
 /**
  * @swagger
