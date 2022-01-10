@@ -5,6 +5,7 @@ declare global {
   interface Window {
     maker?: Maker;
     ethereum?: any;
+    setAccount: (address: string, key: string) => void
   }
   namespace NodeJS {
     interface ProcessEnv {

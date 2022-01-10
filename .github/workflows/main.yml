@@ -52,6 +52,7 @@ jobs:
       MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TESTNET: true
       
     steps:
       - name: Checkout
@@ -69,7 +70,7 @@ jobs:
         with:
           # we have already installed all dependencies above
           # use (install: false) if you want to do parallel jobs.
-          start: yarn start
+          start: TESTNET=true yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome

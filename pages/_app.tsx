@@ -19,13 +19,14 @@ import Cookies from 'modules/app/components/Cookies';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useWindowBindings } from 'modules/web3/hooks/useWindowbindings';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   // Initialize global hooks
   useAccountChange();
-
+  useWindowBindings();
   return (
     <ThemeProvider theme={theme}>
       <HeadComponent />

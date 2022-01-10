@@ -96,7 +96,10 @@ export async function createDelegate(maker, account = DEMO_ACCOUNT_TESTS) {
 }
 
 // Convenience function to add a new account maker & browser provider
-export async function switchAccount(maker, account = null) {
+export async function switchAccount(maker, account?: {
+  address: string,
+  key: string
+}) {
   const accountToUse = account ?? TestAccountProvider.nextAccount();
   await maker.service('accounts').addAccount(`test-account-${accountToUse.address}`, {
     type: 'privateKey',

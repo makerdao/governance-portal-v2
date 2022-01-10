@@ -33,7 +33,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
-  if (typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) {
+  if ((typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__ )|| process.env.TESTNET) {
     // if the testhchain global is set, connect to the testchain
     return SupportedNetworks.TESTNET;
   } else if (typeof window === 'undefined') {
