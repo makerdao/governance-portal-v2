@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, Button, Flex } from 'theme-ui';
+import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
@@ -73,6 +73,16 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 </Button>
               </Link>
               <Stack gap={3}>
+                {!account && (
+                  <Text as="p" sx={{ mt: 3 }}>
+                    Connect a wallet to vote
+                  </Text>
+                )}
+                {!!account && votedPolls.length === 0 && (
+                  <Text as="p" sx={{ mt: 3 }}>
+                    Your ballot is empty
+                  </Text>
+                )}
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>

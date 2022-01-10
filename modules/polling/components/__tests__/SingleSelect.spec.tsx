@@ -34,8 +34,8 @@ beforeEach(async () => {
 });
 
 test('single select options render properly', async () => {
-  const select = await screen.findByTestId('single select');
-  const options = await screen.findAllByTestId('single select option');
+  const select = await screen.findByTestId('single-select');
+  const options = await screen.findAllByTestId('single-select-option');
 
   expect(select).toBeInTheDocument();
   expect(options.length).toBe(2);
