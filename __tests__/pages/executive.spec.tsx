@@ -1,4 +1,5 @@
-import { configure, act, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { configure, act, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 import getMaker from '../../lib/maker';
 import {
@@ -18,7 +19,6 @@ jest.mock('@theme-ui/match-media', () => {
   };
 });
 
-const { click } = fireEvent;
 let maker;
 
 async function setup() {
@@ -33,7 +33,7 @@ async function setup() {
   return view;
 }
 
-describe('executive page', () => {
+describe('/executive page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
     configure({ asyncUtilTimeout: 4500 });
@@ -49,39 +49,39 @@ describe('executive page', () => {
   test('can deposit and withdraw into chief', async () => {
     const depositButton = await screen.findByTestId('deposit-button');
 
-    click(depositButton);
+    userEvent.click(depositButton);
 
     await screen.findByText('Approve voting contract');
     const approveButton = screen.getByTestId('deposit-approve-button');
 
-    click(approveButton);
+    userEvent.click(approveButton);
 
     await screen.findByText('Deposit into voting contract');
     const input = screen.getByTestId('mkr-input');
-    fireEvent.change(input, { target: { value: '10' } });
+    userEvent.type(input, '10');
     const finalDepositButton = await screen.findByText('Deposit MKR');
     expect(finalDepositButton).toBeEnabled();
 
-    click(finalDepositButton);
+    userEvent.click(finalDepositButton);
 
     const withdrawButton = await screen.findByTestId('withdraw-button');
 
-    click(withdrawButton);
+    userEvent.click(withdrawButton);
 
     await screen.findByText('Approve voting contract');
     const approveButtonWithdraw = screen.getByTestId('withdraw-approve-button', {}, { timeout: 15000 });
 
-    click(approveButtonWithdraw);
+    userEvent.click(approveButtonWithdraw);
 
     await screen.findByText('Withdraw from voting contract');
     const inputWithdraw = screen.getByTestId('mkr-input');
-    fireEvent.change(inputWithdraw, { target: { value: '6' } });
+    userEvent.type(inputWithdraw, '6');
 
     const finalDepositButtonWithdraw = await screen.findByText('Withdraw MKR');
 
     expect(finalDepositButtonWithdraw).toBeEnabled();
 
-    click(finalDepositButtonWithdraw);
+    userEvent.click(finalDepositButtonWithdraw);
 
     const dialog = screen.getByRole('dialog');
     await waitForElementToBeRemoved(dialog);
@@ -93,9 +93,9 @@ describe('executive page', () => {
 
   test('can vote on an executive', async () => {
     const [voteButtonOne] = screen.getAllByTestId('vote-button-exec-overview-card');
-    click(voteButtonOne);
+    userEvent.click(voteButtonOne);
     const submitButton = screen.getByText('Submit Vote');
-    click(submitButton);
+    userEvent.click(submitButton);
 
     // wait for transaction to progress
     await screen.findByText('Transaction Sent');
