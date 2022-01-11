@@ -3,15 +3,12 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
+import { modalAddressEquals, modalPollingWeightEquals } from "cypress/support/commons/account.e2e.helpers";
 import { TEST_ACCOUNTS } from "cypress/support/constants/testaccounts";
 import { elementContainsText, setAccount, visitPage } from "../support/commons";
-import { initTestchainPolls } from "../support/commons/initTestChainData";
 
 describe('Home Page', () => {
-  // beforeAll(() => {
-  //   initTestchainPolls()
-  // })
-  
+ 
   it('should navigate to the home page page and find the title', () => {
     // Start from the index page
     visitPage('/');
@@ -30,6 +27,16 @@ describe('Home Page', () => {
     // Find the Dai Savings Rate info
     cy.contains('Dai Savings Rate').should('be.visible');
 
+    // Checks that we have a correct dai savings rate and other values
+    elementContainsText('[data-testid="Dai Savings Rate-value"]', "0.01%")
+
+    elementContainsText('[data-testid="Total Dai-value"]', '98,965,778 DAI')
+
+    elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,030,717,023 DAI')
+    
+    elementContainsText('[data-testid="System Surplus-value"]', '278,245 DAI')
+
+    
     // Find the Polling Votes block
     cy.contains('Polling Votes').should('be.visible');
   });
@@ -37,14 +44,20 @@ describe('Home Page', () => {
   it('Connects wallet', () => {
      // Start from the index page
      visitPage('/');
-    // TODO: We need to define how to connect to the accounts. 
-    // With dai.js we had access to the libraries and jest mocks, but with Cypress we don't have mocks. 
-    // We have to emulate a more realistic scenario
-    // For that we should have a system that can load an account from the global window settings
+
+    
     setAccount(TEST_ACCOUNTS.normal, () => {
 
       // Should find the connected 
-      cy.contains('0xe8364...5248').should('be.visible')
+      cy.contains('0x8028e...cf0b').should('be.visible')
+
+
+      // Opens modal connection and finds 5 MKR 
+      //click on account modal
+      modalAddressEquals('0x8028e...cf0b');
+
+      modalPollingWeightEquals('100.00 MKR')
+
 
       // Save screenshot
       cy.screenshot('test')

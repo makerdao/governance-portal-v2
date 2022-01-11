@@ -358,7 +358,6 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
-  console.log(getNetwork(), process.env.TESTNET)
   const [proposals, pollsData, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),

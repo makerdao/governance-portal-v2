@@ -21,7 +21,7 @@ export const DEMO_ACCOUNT_TESTS = '0x16Fb96a5fa0427Af0C8F7cF1eB4870231c8154B6';
 
 // TODO: research when/why this is necesssary as it tends to cause an error "Warning: eth_requestAccounts was unsuccessful, falling back to enable"
 export function injectProvider(address = DEMO_ACCOUNT_TESTS): void {
-  window.ethereum = new Proxy(new ethers.providers.JsonRpcProvider('http://localhost:2000'), {
+  window.ethereum = new Proxy(new ethers.providers.JsonRpcProvider('http://localhost:8545'), {
     get(target, key) {
       if (key === 'enable') {
         return async () => [address];

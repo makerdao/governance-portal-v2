@@ -79,7 +79,6 @@ const AccountSelect = (): React.ReactElement => {
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-
   // Detect previously authorized connections and force log-in
   useEagerConnect();
 
@@ -228,7 +227,6 @@ const AccountSelect = (): React.ReactElement => {
       });
 
       await activate(connector);
-
       if (chainId) {
         setUserData({ wallet: name });
       }

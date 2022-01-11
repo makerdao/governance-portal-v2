@@ -11,7 +11,7 @@ export const getOldProxyStatus = async (
   role: string;
   address: string;
 }> => {
-  if (network === SupportedNetworks.GOERLI) {
+  if (network === SupportedNetworks.GOERLI || network === SupportedNetworks.TESTNET) {
     return { role: '', address: '' };
   }
   try {

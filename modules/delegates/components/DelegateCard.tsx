@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
-import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
   participationTooltipLabel,
   communicationTooltipLabel
@@ -21,7 +20,6 @@ import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
-import { formatAddress } from 'lib/utils';
 import DelegateAvatarName from './DelegateAvatarName';
 
 type PropTypes = {
@@ -60,6 +58,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         p: [0, 0],
         borderColor: isOwner ? 'onSecondary' : 'muted'
       }}
+      data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
@@ -214,6 +213,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Box>
                 <Button
                   variant="primaryLarge"
+                  data-testid="button-delegate"
                   disabled={!account}
                   onClick={() => {
                     trackButtonClick('openDelegateModal');
