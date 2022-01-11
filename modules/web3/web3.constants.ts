@@ -66,6 +66,7 @@ export const NETWORK_URLS = {
     [NodeProviders.ALCHEMY]: `https://eth-kovan.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
   },
   [SupportedNetworks.GOERLI]: {
+    [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
     [NodeProviders.ALCHEMY]: `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
   },
   [SupportedNetworks.TESTNET]: {
