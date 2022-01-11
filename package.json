@@ -71,6 +71,8 @@
     "zustand": "^2.2.3"
   },
   "devDependencies": {
+    "@dethcrypto/eth-sdk": "^0.2.4",
+    "@dethcrypto/eth-sdk-client": "^0.1.6",
     "@makerdao/test-helpers": "^0.3.0",
     "@makerdao/testchain": "^1.1.33-beta5",
     "@testing-library/dom": "^8.1.0",
@@ -93,6 +95,7 @@
     "husky": "^6.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.4",
     "wait-for-expect": "^3.0.2"
   }
