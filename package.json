@@ -6,7 +6,7 @@
     "prepare": "husky install",
     "dev": "next",
     "dev-https": "node server.js",
-    "build": "next build",
+    "build": "eth-sdk && next build",
     "start": "next start",
     "export": "next export",
     "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
