@@ -231,6 +231,7 @@ export default function MobileVoteSheet({
               )}
               <Button
                 variant="primaryLarge"
+                data-testid="button-add-vote-to-ballot"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => {
                   trackButtonClick('addVoteToBallot');

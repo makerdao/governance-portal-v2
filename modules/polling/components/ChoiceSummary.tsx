@@ -49,6 +49,7 @@ const ChoiceSummary = ({
       )}
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Button
+          data-testid="edit-poll-choice"
           onClick={() => {
             trackButtonClick('editChoice');
             edit();
@@ -65,6 +66,8 @@ const ChoiceSummary = ({
         </Button>
         {onBallot && (
           <Button
+          data-testid="remove-ballot-choice"
+
             onClick={() => {
               removeFromBallot(poll.pollId);
             }}

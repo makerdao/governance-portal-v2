@@ -14,7 +14,6 @@ export const syncMakerAccount = (library, account, chainIdError) => {
   const { identifyUser } = useContext(AnalyticsContext);
   useEffect(() => {
     (async () => {
-
       if (!library || !account || !!chainIdError) return;
       identifyUser(account);
       // check to see if the account already exists (i.e. switching back to one that was already added)

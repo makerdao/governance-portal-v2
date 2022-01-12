@@ -43,7 +43,8 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url:
+          'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
       },
       {
         linkTitle: 'How to set up your wallet for voting?',
@@ -68,7 +69,8 @@ const resources: Record<ResourceType, Resource> = {
       },
       {
         linkTitle: 'How is voting weight calculated?',
-        url: 'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
+        url:
+          'https://makerdao.world/en/learn/governance/how-voting-works#governance-polls-and-executive-votes'
       },
       {
         linkTitle: 'How to set up your wallet for voting?',

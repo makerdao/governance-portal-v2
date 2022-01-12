@@ -21,7 +21,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
     }
-  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK) {
     return mockPolls.map(p => ({
       ...p,
       voteType: p.voteType as PollVoteType,
@@ -29,7 +29,6 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
       endDate: new Date(p.endDate)
     }));
   }
-
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 

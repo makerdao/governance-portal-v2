@@ -173,9 +173,9 @@ const AccountPage = (): JSX.Element => {
                     affected in the user interface and not at the contract level. Future updates will address
                     this issue soon.
                   </Alert>
-                  <Label 
-                  sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}
-                  data-testid="checkbox-create-delegate"
+                  <Label
+                    sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}
+                    data-testid="checkbox-create-delegate"
                   >
                     <Checkbox
                       checked={warningRead}

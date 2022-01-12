@@ -16,7 +16,6 @@ export function networkToRpc(network: SupportedNetworks, nodeProvider?: 'infura'
     case SupportedNetworks.GOERLI:
       return `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`;
     case SupportedNetworks.TESTNET:
-      
       return 'http://localhost:8545';
     default:
       if (nodeProvider === 'alchemy') {

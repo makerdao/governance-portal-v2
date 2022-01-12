@@ -172,6 +172,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           Cancel
         </Button>
         <Button
+          data-testid="continue-burn"
           onClick={burn}
           disabled={!mkrApproved || !termsAccepted || passValue !== value || !account?.address}
           variant="outline"

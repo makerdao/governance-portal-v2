@@ -13,11 +13,7 @@ export function useExecutiveComments(
   proposalAddress: string,
   refreshInterval = 0
 ): UseExecutiveCommentsResponse {
-  const {
-    data: commentsDatas,
-    mutate,
-    error
-  } = useSWR<ExecutiveCommentsAPIResponseItem[]>(
+  const { data: commentsDatas, mutate, error } = useSWR<ExecutiveCommentsAPIResponseItem[]>(
     `/api/comments/executive/${proposalAddress}?network=${getNetwork()}`,
     fetchJson,
     {

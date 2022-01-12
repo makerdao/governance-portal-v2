@@ -22,7 +22,6 @@ const [useAccountsStore, accountsApi] = create<Store>((set, get) => ({
   voteDelegate: undefined,
 
   addAccountsListener: async maker => {
-
     maker.on('accounts/CHANGE', async ({ payload: { account } }) => {
       if (!account) {
         set({ currentAccount: account });

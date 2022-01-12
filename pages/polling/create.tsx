@@ -122,7 +122,7 @@ const PollingCreate = (): React.ReactElement => {
                         <Flex sx={{ flexDirection: 'row' }}>
                           <Input name="url" mb={3} onChange={e => setPollUrl(e.target.value)} />
                           <Button
-                            variant="smallOutline"
+                            variant="smallOutline"  
                             onClick={() => urlValidation(pollUrl)}
                             sx={{ height: '42px', width: '80px', ml: 3 }}
                           >
@@ -178,6 +178,7 @@ const PollingCreate = (): React.ReactElement => {
                       <Flex>
                         <Button
                           variant="primary"
+                          data-testid="button-create-poll"
                           onClick={() => setCreating(true)}
                           disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
                         >

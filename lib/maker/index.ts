@@ -25,7 +25,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
     case 999:
       return SupportedNetworks.TESTNET;
     case 1337:
-    case 31337: 
+    case 31337:
       return SupportedNetworks.TESTNET;
     default:
       throw new Error(`Unsupported chain id ${chainId}`);
@@ -85,7 +85,7 @@ const makerSingletons: MakerSingletons = {
 async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
-console.log(currentNetwork, 'currentNetwork', makerSingletons[currentNetwork])
+  console.log(currentNetwork, 'currentNetwork', makerSingletons[currentNetwork]);
   if (!makerSingletons[currentNetwork]) {
     const instance = Maker.create('http', {
       plugins: [
@@ -105,7 +105,7 @@ console.log(currentNetwork, 'currentNetwork', makerSingletons[currentNetwork])
       log: false,
       multicall: true
     });
-console.log('iNstance maker', instance)
+    console.log('iNstance maker', instance);
     makerSingletons[currentNetwork] = instance;
   }
 

@@ -153,6 +153,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Button
+          data-testid="button-approve-voting-contract"
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             trackButtonClick('approveWithdrawOldChief');

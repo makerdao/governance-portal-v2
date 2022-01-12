@@ -24,11 +24,9 @@ export function useWindowBindings(): void {
     }
   }, []);
 
-
   useEffect(() => {
     const changeMakerAccount = async () => {
       if (account.address && account.key) {
-        
         const maker = await getMaker();
 
         await maker.service('accounts').addAccount(`test-account-${account.address}`, {

@@ -102,6 +102,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Button
+          data-testid="button-deposit-mkr"
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
           onClick={async () => {
@@ -142,6 +143,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Button
+        
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             trackButtonClick('approveDeposit');

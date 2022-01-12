@@ -1,4 +1,4 @@
-import { validateText, hardcodedCategories } from 'modules/polling/helpers/validator';
+import { validateText, hardcodedCategories } from '../validator';
 import fs from 'fs';
 const pollMetadata = fs.readFileSync(__dirname + '/poll-431.md').toString();
 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
-import { Heading, Box, Button, Flex } from 'theme-ui';
+import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
@@ -75,7 +75,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               <Stack gap={3}>
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
-                <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
+                {votedPolls.length > 0 && <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                   {votedPolls.map(poll => {
                     return (
                       <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={true} showVoting={true}>
@@ -90,11 +90,21 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                       </PollOverviewCard>
                     );
                   })}
-                </Stack>
+                </Stack>}
+                {votedPolls.length === 0 && <Box>
+                  <Text>There are no polls added to your ballot.</Text>  
+                </Box>}
                 {bpi <= 2 && <SubmitButton />}
+
+                {!account && (
+                  <Box pt="3">
+                    <Text>Connect your wallet to review your ballot</Text>
+                  </Box>
+                )}
               </Stack>
             </Stack>
           </Box>
+
           {bpi >= 3 && !!account && (
             <Box sx={{ pt: 3 }}>
               <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>

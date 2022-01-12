@@ -4,13 +4,11 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
-import { getTestAccount, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { formatAddress } from 'lib/utils';
-import { closeModal,  setAccount, visitPage } from '../support/commons';
+import { getTestAccount } from 'cypress/support/constants/testaccounts';
+import { setAccount, visitPage } from '../support/commons';
 
 describe('Account Page', async () => {
   it('should navigate to the account page and be able to create a delegate contract', () => {
-    // Start from the index page
     visitPage('/account');
 
     cy.contains('Connect your wallet to view information about your account').should('be.visible')

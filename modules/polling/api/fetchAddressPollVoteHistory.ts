@@ -16,26 +16,28 @@ export async function fetchAddressPollVoteHistory(
   const voteHistory = await maker.service('govPolling').getAllOptionsVotingFor(address);
 
   const items = await Promise.all(
-    voteHistory.map(async (pollVote: PollVote): Promise<PollVoteHistory | null> => {
-      const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
-      // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
-      if (!poll) {
-        return null;
+    voteHistory.map(
+      async (pollVote: PollVote): Promise<PollVoteHistory | null> => {
+        const poll = pollsData.polls.find(poll => poll.pollId === pollVote.pollId);
+        // This should not happen but we do it to avoid typescript checks with undefined values. We want to force poll always being something
+        if (!poll) {
+          return null;
+        }
+
+        const optionValue =
+          pollVote.rankedChoiceOption && pollVote.rankedChoiceOption?.length > 0
+            ? poll.options[pollVote.rankedChoiceOption[0]]
+            : (pollVote.option as number) !== undefined
+            ? poll.options[pollVote.option as number]
+            : '';
+
+        return {
+          ...pollVote,
+          poll,
+          optionValue: optionValue as string
+        };
       }
-
-      const optionValue =
-        pollVote.rankedChoiceOption && pollVote.rankedChoiceOption?.length > 0
-          ? poll.options[pollVote.rankedChoiceOption[0]]
-          : (pollVote.option as number) !== undefined
-          ? poll.options[pollVote.option as number]
-          : '';
-
-      return {
-        ...pollVote,
-        poll,
-        optionValue: optionValue as string
-      };
-    })
+    )
   );
 
   return items.filter(pollVote => !!pollVote) as PollVoteHistory[];
