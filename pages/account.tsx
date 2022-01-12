@@ -102,7 +102,7 @@ const AccountPage = (): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
                     target="_blank"
                   >
-                    <Text as="p">
+                    <Text as="p" data-testid="vote-delegate-address">
                       {bpi > 0
                         ? voteDelegate.getVoteDelegateAddress()
                         : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
@@ -173,7 +173,10 @@ const AccountPage = (): JSX.Element => {
                     affected in the user interface and not at the contract level. Future updates will address
                     this issue soon.
                   </Alert>
-                  <Label sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}>
+                  <Label 
+                  sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}
+                  data-testid="checkbox-create-delegate"
+                  >
                     <Checkbox
                       checked={warningRead}
                       onClick={event => {

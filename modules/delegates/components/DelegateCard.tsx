@@ -176,6 +176,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                     setShowUndelegateModal(true);
                   }}
                   sx={{ width: ['100%', '150px'], height: '45px', maxWidth: '150px', mt: [4, 4, 0, 4, 0] }}
+                  data-testid="button-undelegate"
                 >
                   Undelegate
                 </Button>
@@ -203,7 +204,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 </Text>
               </Box>
               <Box sx={{ width: ['auto', '200px'] }}>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                <Text 
+                  as="p" 
+                  variant="microHeading" 
+                  sx={{ fontSize: [3, 5] }}
+                  data-testid="mkr-delegated-by-you">
                   {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>

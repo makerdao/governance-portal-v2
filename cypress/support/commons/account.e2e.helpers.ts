@@ -1,3 +1,5 @@
+import { closeModal } from ".";
+
 // Functions that interact with the account box on the top of the page
 export function clickConnectAccountButton() {
     cy.get('[aria-label="Connect wallet"]').click();
@@ -10,7 +12,7 @@ export function modalAddressEquals(address: string) {
 
     cy.get('[data-testid="current-wallet"]').contains(address);
 
-    cy.get('[aria-label="close"]').click();
+    closeModal()
 
 }
 
@@ -21,6 +23,6 @@ export function modalPollingWeightEquals(value: string) {
 
     cy.get('[data-testid="polling-voting-weight"]').contains(value);
 
-    cy.get('[aria-label="close"]').click();
+    closeModal()
 
 }

@@ -28,3 +28,7 @@ export async function setAccount(account: TestAccount, cb : () => void ) {
     cb();
   });
 }
+
+export function closeModal() {
+  cy.get('[aria-label="close"]').click();
+}
