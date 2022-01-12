@@ -75,25 +75,34 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
               <Stack gap={3}>
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
-                {votedPolls.length > 0 && <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
-                  {votedPolls.map(poll => {
-                    return (
-                      <PollOverviewCard key={poll.multiHash} poll={poll} reviewPage={true} showVoting={true}>
-                        <Box sx={{ pt: 2 }}>
-                          <CommentTextBox
-                            onChange={(val: string) => {
-                              updateComment(val, poll.pollId);
-                            }}
-                            value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
-                          />
-                        </Box>
-                      </PollOverviewCard>
-                    );
-                  })}
-                </Stack>}
-                {votedPolls.length === 0 && <Box>
-                  <Text>There are no polls added to your ballot.</Text>  
-                </Box>}
+                {votedPolls.length > 0 && (
+                  <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
+                    {votedPolls.map(poll => {
+                      return (
+                        <PollOverviewCard
+                          key={poll.multiHash}
+                          poll={poll}
+                          reviewPage={true}
+                          showVoting={true}
+                        >
+                          <Box sx={{ pt: 2 }}>
+                            <CommentTextBox
+                              onChange={(val: string) => {
+                                updateComment(val, poll.pollId);
+                              }}
+                              value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
+                            />
+                          </Box>
+                        </PollOverviewCard>
+                      );
+                    })}
+                  </Stack>
+                )}
+                {votedPolls.length === 0 && (
+                  <Box>
+                    <Text>There are no polls added to your ballot.</Text>
+                  </Box>
+                )}
                 {bpi <= 2 && <SubmitButton />}
 
                 {!account && (

@@ -143,7 +143,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
         </Box>
 
         <Button
-        
           sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
           onClick={async () => {
             trackButtonClick('approveDeposit');

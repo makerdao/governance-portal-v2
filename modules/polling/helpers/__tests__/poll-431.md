@@ -4,15 +4,16 @@ summary: Signal your support or opposition to increase the Dust Parameter from 5
 discussion_link: https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963
 vote_type: Plurality Voting
 categories:
-   - Risk Variable
-   - Technical
+  - Risk Variable
+  - Technical
 options:
-   0: Abstain
-   1: Yes
-   2: No
+  0: Abstain
+  1: Yes
+  2: No
 start_date: 2021-01-18T16:00:00
 end_date: 2021-01-21T16:00:00
 ---
+
 # Poll: Increase the Dust Parameter - January 18, 2021
 
 Note to developers: start_date and end_date in the front matter above were not part of the original markdown.
@@ -23,17 +24,19 @@ The Governance Facilitators have placed a Governance Poll into the voting system
 
 ## Review
 
-The community can vote in this poll to express support or opposition to modifying the [Debt Floor](https://community-development.makerdao.com/en/learn/governance/param-debt-floor) (also known as Dust) parameter for all vault-types: 
-* Increase the Dust Parameter from 500 DAI to 2000 DAI for all vault-types.
-* PSM vault-types will be excluded from this change.
+The community can vote in this poll to express support or opposition to modifying the [Debt Floor](https://community-development.makerdao.com/en/learn/governance/param-debt-floor) (also known as Dust) parameter for all vault-types:
+
+- Increase the Dust Parameter from 500 DAI to 2000 DAI for all vault-types.
+- PSM vault-types will be excluded from this change.
 
 Please review the discussion [thread](https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963) to help inform your position before voting.
 
 ## Outcomes
 
 **If the votes for the 'Yes' option exceed the votes for the 'No' option then the following actions will be taken:**
-* This change will be included in the weekly Executive Vote on the Friday following the conclusion of this poll.
-* If the Friday executive passes, then this change will become active in the Maker Protocol after the [GSM Pause Delay](https://community-development.makerdao.com/en/learn/governance/param-gsm-pause-delay) has expired.
+
+- This change will be included in the weekly Executive Vote on the Friday following the conclusion of this poll.
+- If the Friday executive passes, then this change will become active in the Maker Protocol after the [GSM Pause Delay](https://community-development.makerdao.com/en/learn/governance/param-gsm-pause-delay) has expired.
 
 **If the votes for the 'No' option equal or exceed the votes for the 'Yes' option then no further action will be taken at this time.**
 

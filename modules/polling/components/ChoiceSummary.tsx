@@ -66,8 +66,7 @@ const ChoiceSummary = ({
         </Button>
         {onBallot && (
           <Button
-          data-testid="remove-ballot-choice"
-
+            data-testid="remove-ballot-choice"
             onClick={() => {
               removeFromBallot(poll.pollId);
             }}
