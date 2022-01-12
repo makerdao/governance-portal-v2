@@ -14,54 +14,54 @@ import Header from 'modules/app/components/layout/Header';
 import debug from 'debug';
 const vitalslog = debug('govpo:vitals');
 
-import { useAccountChange } from 'modules/web3/hooks/useAccountChange';
 import Cookies from 'modules/app/components/Cookies';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { Web3ReactProvider } from '@web3-react/core';
+import { getLibrary } from 'modules/web3/helpers';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
-  // Initialize global hooks
-  useAccountChange();
-
   return (
-    <ThemeProvider theme={theme}>
-      <HeadComponent />
-      <CookiesProvider disabled={false}>
-        <AnalyticsProvider>
-          <SWRConfig
-            value={{
-              // default to 60 second refresh intervals
-              refreshInterval: 60000,
-              revalidateOnMount: true,
-              fetcher: url => fetchJson(url)
-            }}
-          >
-            <Global
-              styles={{
-                '*': {
-                  WebkitFontSmoothing: 'antialiased',
-                  MozOsxFontSmoothing: 'grayscale'
-                }
-              }}
-            />
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                variant: 'layout.root',
-                px: [3, 4]
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <ThemeProvider theme={theme}>
+        <HeadComponent />
+        <CookiesProvider disabled={false}>
+          <AnalyticsProvider>
+            <SWRConfig
+              value={{
+                // default to 60 second refresh intervals
+                refreshInterval: 60000,
+                revalidateOnMount: true,
+                fetcher: url => fetchJson(url)
               }}
             >
-              <Header />
-              <Component {...pageProps} />
-              <Cookies />
-            </Flex>
-          </SWRConfig>
-        </AnalyticsProvider>
-      </CookiesProvider>
-    </ThemeProvider>
+              <Global
+                styles={{
+                  '*': {
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale'
+                  }
+                }}
+              />
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  variant: 'layout.root',
+                  px: [3, 4]
+                }}
+              >
+                <Header />
+                <Component {...pageProps} />
+                <Cookies />
+              </Flex>
+            </SWRConfig>
+          </AnalyticsProvider>
+        </CookiesProvider>
+      </ThemeProvider>
+    </Web3ReactProvider>
   );
 };
 

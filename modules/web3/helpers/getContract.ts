@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ZERO_ADDRESS } from 'modules/app/constants';
+import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
+import { EthSdkConfig } from '@dethcrypto/eth-sdk';
 
 const sdks = {
   mainnet: getMainnetSdk,
@@ -8,7 +10,8 @@ const sdks = {
 };
 
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
-export const getContract = (network = 'mainnet') => {
+export const getContract = (chainId?: number): any => {
+  const network = chainId ? CHAIN_INFO[chainId].network : SupportedNetworks.MAINNET;
   const provider = ethers.getDefaultProvider(network);
   const account = null; // Fake not having it to test read-only
 

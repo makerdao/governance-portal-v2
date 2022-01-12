@@ -10,16 +10,16 @@ type UseDaiBalanceResponse = {
   mutate: () => void;
 };
 
-export const useMkrBalance = (): UseDaiBalanceResponse => {
+export const useDaiBalance = (): UseDaiBalanceResponse => {
   const { account, chainId } = useActiveWeb3React();
 
-  const { mkr } = getContract(chainId);
+  const { dai } = getContract(chainId);
 
-  const { data, error, mutate } = useSWR(`mkr-balance-new-${account}`, async () => {
+  const { data, error, mutate } = useSWR(`dai-balance-new-${account}`, async () => {
     if (!account) {
       return 0;
     }
-    const balance = await mkr.balanceOf(account);
+    const balance = await dai.balanceOf(account);
 
     return ethers.utils.formatUnits(balance, 18);
   });

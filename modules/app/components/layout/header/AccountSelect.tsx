@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 
 import getMaker, { getNetwork } from 'lib/maker';
 import { syncMakerAccount } from 'lib/web3react/hooks';
@@ -19,7 +19,7 @@ import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
-import { chainIdToNetworkName, getLibrary } from 'modules/web3/helpers';
+import { chainIdToNetworkName } from 'modules/web3/helpers';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
 import { SUPPORTED_WALLETS } from 'modules/web3/wallets';
 import { useContext } from 'react';
@@ -65,12 +65,6 @@ const disabledHardwareBlurb = (
     Hardware wallets currently only work through <br />
     their metamask integrations
   </>
-);
-
-const WrappedAccountSelect = (): JSX.Element => (
-  <Web3ReactProvider getLibrary={getLibrary}>
-    <AccountSelect />
-  </Web3ReactProvider>
 );
 
 const ADDRESSES_PER_PAGE = 5;
@@ -384,4 +378,4 @@ const AccountSelect = (): React.ReactElement => {
   );
 };
 
-export default WrappedAccountSelect;
+export default AccountSelect;

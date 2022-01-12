@@ -1,5 +1,16 @@
 import { config } from 'lib/config';
 
+export enum SupportedChainId {
+  MAINNET = 1,
+  GOERLI = 5,
+  KOVAN = 42,
+  TESTNET = 999
+}
+
+export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(SupportedChainId).filter(
+  id => typeof id === 'number'
+) as SupportedChainId[];
+
 export enum SupportedConnectors {
   METAMASK = 'metamask',
   WALLET_CONNECT = 'walletConnect',
@@ -21,25 +32,29 @@ export enum NodeProviders {
 }
 
 export const CHAIN_INFO = {
-  [SupportedNetworks.MAINNET]: {
+  [SupportedChainId.MAINNET]: {
     etherscanPrefix: '',
     chainId: 1,
-    label: 'Mainnet'
+    label: 'Mainnet',
+    network: SupportedNetworks.MAINNET
   },
-  [SupportedNetworks.GOERLI]: {
+  [SupportedChainId.GOERLI]: {
     etherscanPrefix: 'goerli.',
     chainId: 5,
-    label: 'Goerli'
+    label: 'Goerli',
+    network: SupportedNetworks.GOERLI
   },
-  [SupportedNetworks.KOVAN]: {
+  [SupportedChainId.KOVAN]: {
     etherscanPrefix: 'kovan.',
     chainId: 42,
-    label: 'Kovan'
+    label: 'Kovan',
+    network: SupportedNetworks.KOVAN
   },
-  [SupportedNetworks.TESTNET]: {
+  [SupportedChainId.TESTNET]: {
     //   etherscanPrefix: '',
     chainId: 999, // This is arbitrary and defined in @makerdao/testchain
-    label: 'Testnet'
+    label: 'Testnet',
+    network: SupportedNetworks.TESTNET
   }
 };
 

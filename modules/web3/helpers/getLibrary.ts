@@ -1,7 +1,7 @@
-import { providers } from 'ethers';
+import { Web3Provider } from '@ethersproject/providers';
 
-export function getLibrary(provider: any): providers.Web3Provider {
-  const library = new providers.Web3Provider(
+export function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(
     provider,
     typeof provider.chainId === 'number'
       ? provider.chainId
