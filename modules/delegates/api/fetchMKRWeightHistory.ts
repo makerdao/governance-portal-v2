@@ -3,10 +3,10 @@ import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { MKRWeightHisory } from '../types/mkrWeight';
 import getMaker from 'lib/maker';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { MKRLockedDelegateAPIResponse } from '../types';
-import { differenceInCalendarYears } from 'date-fns';
+import { differenceInCalendarYears, subDays } from 'date-fns';
 
 export async function fetchDelegatesMKRWeightHistory(
   address: string,
@@ -47,16 +47,12 @@ export async function fetchDelegatesMKRWeightHistory(
       // If we have multiple items for the same day, use the final one because the lockTotal will be accurate.
       const mostRecent = existingItem[existingItem.length - 1];
       output.push({
-        date: parse(i.toString(), 'D', new Date(mostRecent.blockTimestamp), {
-          useAdditionalDayOfYearTokens: true
-        }),
+        date: subDays(new Date(), end - i),
         MKR: new BigNumber(mostRecent.lockTotal).toNumber()
       });
     } else {
       output.push({
-        date: parse(i.toString(), 'D', new Date(), {
-          useAdditionalDayOfYearTokens: true
-        }),
+        date: subDays(new Date(), end - i),
         MKR: output[output.length - 1].MKR
       });
     }
