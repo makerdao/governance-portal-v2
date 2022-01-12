@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import { ethers } from 'ethers';
-import { getGoerliSdk } from '@dethcrypto/eth-sdk-client';
+import { getContract } from '../helpers/getContract';
 
 type UseMkrBalanceResponse = {
   data?: any;
@@ -9,13 +9,13 @@ type UseMkrBalanceResponse = {
   mutate: () => void;
 };
 
-const mainnetProvider = ethers.getDefaultProvider('mainnet');
-const defaultSigner = ethers.Wallet.createRandom().connect(mainnetProvider);
-const { mkr } = getGoerliSdk(defaultSigner);
-
 export const useMkrBalance = (address: string): UseMkrBalanceResponse => {
+  const network = 'mainnet'; // TODO: get this from state or URL
+  const { mkr, dai } = getContract(network);
+
   const { data, error, mutate } = useSWR(`mkr-balance-new-${address}`, async () => {
-    const balance = await mkr.balanceOf(address);
+    // TODO: I switched this to dai just to test on mainnet, switch back to mkr whenever
+    const balance = await dai.balanceOf(address);
 
     return ethers.utils.formatUnits(balance, 18);
   });
