@@ -6,6 +6,7 @@ import getMaker from 'lib/maker';
 import { format, parse } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { MKRLockedDelegateAPIResponse } from '../types';
+import { differenceInCalendarYears } from 'date-fns';
 
 export async function fetchDelegatesMKRWeightHistory(
   address: string,
@@ -22,11 +23,15 @@ export async function fetchDelegatesMKRWeightHistory(
   // If we get last month, we need to add all the missing days
   const start = formatIsoDateConversion(addressData[0].blockTimestamp);
 
-  const end = parseInt(
-    format(new Date(), 'D', {
-      useAdditionalDayOfYearTokens: true
-    })
-  );
+  const years = differenceInCalendarYears(Date.now(), new Date(addressData[0].blockTimestamp));
+
+  const end =
+    years * 365 +
+    parseInt(
+      format(new Date(), 'D', {
+        useAdditionalDayOfYearTokens: true
+      })
+    );
 
   const output: MKRWeightHisory[] = [];
 
