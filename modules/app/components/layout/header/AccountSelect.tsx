@@ -249,14 +249,16 @@ const AccountSelect = (): React.ReactElement => {
   };
 
   const walletOptions = Object.keys(SUPPORTED_WALLETS)
-    .map((name: ConnectorName) => (
+    .map((connectorName: ConnectorName) => (
       <Flex
         sx={walletButtonStyle}
-        key={name}
-        onClick={() => onClickConnector(SUPPORTED_WALLETS[name].connector, name)}
+        key={connectorName}
+        onClick={() => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)}
       >
-        <Icon name={name} />
-        <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...' : name}</Text>
+        <Icon name={SUPPORTED_WALLETS[connectorName].name} />
+        <Text sx={{ ml: 3 }}>
+          {loadingConnectors[connectorName] ? 'Loading...' : SUPPORTED_WALLETS[connectorName].name}
+        </Text>
       </Flex>
     ))
     .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);

@@ -10,6 +10,7 @@ import { SupportedNetworks } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
+import { CHAIN_INFO } from 'modules/web3/web3.constants';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -55,20 +56,13 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   );
 }
 
-//TODO: obtain the prefixes from the CHAIN_INFO const in web3.constants.ts
-export const ETHERSCAN_PREFIXES = {
-  [SupportedNetworks.MAINNET]: '',
-  [SupportedNetworks.KOVAN]: 'kovan.',
-  [SupportedNetworks.GOERLI]: 'goerli.'
-};
-
 export function getEtherscanLink(
   network: SupportedNetworks,
   data: string,
   type: 'transaction' | 'address'
 ): string {
   const prefix = `https://${
-    ETHERSCAN_PREFIXES[network] || ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]
+    CHAIN_INFO[network].etherscanPrefix || CHAIN_INFO[SupportedNetworks.MAINNET].etherscanPrefix
   }etherscan.io`;
 
   switch (type) {

@@ -28,6 +28,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
+import { useMkrBalance } from 'modules/web3/hooks/useMkrBalance';
 
 type Props = {
   proposals: CMSProposal[];
@@ -40,6 +41,12 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+
+  //TODO: delete me (just for testing):
+  const address = '0x688d508f3a6b0a377e266405a1583b3316f9a2b3'; //EOA
+  // const address = "0xAF8aa6846539033Eaf0c3ca4C9C7373e370E039b"; //delegate contract
+  const { data: mkrBalance } = useMkrBalance(address);
+  console.log('^^^mkrBalance', mkrBalance);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
