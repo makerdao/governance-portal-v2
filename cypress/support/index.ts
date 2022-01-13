@@ -19,8 +19,8 @@ import './commands';
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
-  return false
-})
+  return false;
+});
 
 afterEach(function onAfterEach() {
   if ((this.currentTest as Mocha.Test).state === 'failed') {
@@ -37,3 +37,5 @@ afterEach(function onAfterEach() {
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+export {};

@@ -66,7 +66,14 @@ The CI/CD system is integrated with Github Actions.
 After each push the system will execute:
 - Lint, verify type consistency
 - Unit test, execute Jest test suite
-- E2E, executy cypress test suite and record results at https://dashboard.cypress.io/projects/uckcr1/runs 
+- E2E, executy cypress test suite and record results at https://dashboard.cypress.io/projects/uckcr1/runs
+
+
+```
+npm run e2e:ci
+```
+
+The command `npm run e2e:ci` launches a detached process with hardhat, executes e2e in a headless mode and kills the hardhat process.
 
 ### Contributing
 
