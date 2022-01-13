@@ -26,7 +26,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
       return SupportedNetworks.TESTNET;
     case 1337:
     case 31337:
-      return SupportedNetworks.TESTNET;
+      return SupportedNetworks.GOERLIFORK;
     default:
       throw new Error(`Unsupported chain id ${chainId}`);
   }
@@ -48,11 +48,13 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('kovan')) {
       return SupportedNetworks.KOVAN;
+    } else if (window.location.search.includes('goerlifork')) {
+      return SupportedNetworks.GOERLIFORK;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
       return SupportedNetworks.TESTNET;
-    }
+    } 
     // 2) check the browser provider if there is one
     if (typeof window.ethereum !== 'undefined') {
       const chainId = parseInt(window.ethereum.chainId);
@@ -73,19 +75,20 @@ type MakerSingletons = {
   [SupportedNetworks.KOVAN]: null | Promise<MakerClass>;
   [SupportedNetworks.GOERLI]: null | Promise<MakerClass>;
   [SupportedNetworks.TESTNET]: null | Promise<MakerClass>;
+  [SupportedNetworks.GOERLIFORK]: null | Promise<MakerClass>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
   [SupportedNetworks.KOVAN]: null,
   [SupportedNetworks.GOERLI]: null,
-  [SupportedNetworks.TESTNET]: null
+  [SupportedNetworks.TESTNET]: null,
+  [SupportedNetworks.GOERLIFORK]: null
 };
 
 async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
-  console.log(currentNetwork, 'currentNetwork', makerSingletons[currentNetwork]);
   if (!makerSingletons[currentNetwork]) {
     const instance = Maker.create('http', {
       plugins: [
@@ -105,7 +108,6 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
       log: false,
       multicall: true
     });
-    console.log('iNstance maker', instance);
     makerSingletons[currentNetwork] = instance;
   }
 

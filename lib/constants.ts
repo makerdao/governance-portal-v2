@@ -2,7 +2,8 @@ export enum SupportedNetworks {
   MAINNET = 'mainnet',
   KOVAN = 'kovan',
   GOERLI = 'goerli',
-  TESTNET = 'testnet'
+  TESTNET = 'testnet',
+  GOERLIFORK = 'goerlifork'
 }
 
 export const CMS_ENDPOINTS = {

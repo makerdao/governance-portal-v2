@@ -16,8 +16,6 @@ export const useMkrBalance = (address?: string): MkrBalanceResponse => {
     { revalidateOnMount: true }
   );
 
-  console.log('MKR balance', data);
-
   return {
     data: data,
     loading: !error && !data,

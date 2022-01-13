@@ -23,10 +23,10 @@
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
   },
   "dependencies": {
-    "@makerdao/dai": "file:.yalc/@makerdao/dai",
-    "@makerdao/dai-plugin-governance": "file:.yalc/@makerdao/dai-plugin-governance",
+    "@makerdao/dai": "0.42.4-alpha.1",
+    "@makerdao/dai-plugin-governance": "0.16.7-alpha.1",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
-    "@makerdao/dai-plugin-mcd": "file:.yalc/@makerdao/dai-plugin-mcd",
+    "@makerdao/dai-plugin-mcd": "1.8.5-alpha.1",
     "@makerdao/dai-plugin-trezor-web": "^0.9.7",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",

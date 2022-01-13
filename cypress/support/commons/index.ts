@@ -1,10 +1,9 @@
 import { TestAccount } from '../types/TestAccount';
 
 export function visitPage(page: string) {
-  cy.visit(`http://localhost:3000${page}?network=testnet`, {
+  cy.visit(`http://localhost:3000${page}?network=goerlifork`, {
     onBeforeLoad: win => {
-      // TODO: Check if we want to preload some info on the page
-     // win.__TESTCHAIN__ = true;
+     // TODO: We can use this to preload info in the window object
     }
   });
   cy.contains('Accept configured cookies').click();

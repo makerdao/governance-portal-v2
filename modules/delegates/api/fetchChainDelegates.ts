@@ -5,7 +5,6 @@ import { DelegateContractInformation } from '../types';
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
-  console.log('Getting chain delegates', network);
   const maker = await getMaker(network);
 
   const delegates = await maker.service('voteDelegate').getAllDelegates();

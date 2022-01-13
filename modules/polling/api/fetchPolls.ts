@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import getMaker, { isTestnet } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
