@@ -1,4 +1,7 @@
+import { ethers } from 'ethers';
 import { config } from 'lib/config';
+
+const { BigNumber } = ethers;
 
 export enum SupportedChainId {
   MAINNET = 1,
@@ -82,3 +85,7 @@ export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =
   `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export const WAD = BigNumber.from('1000000000000000000');
+export const RAY = BigNumber.from('1000000000000000000000000000');
+export const RAD = BigNumber.from('1000000000000000000000000000000000000000000000');

@@ -5,13 +5,13 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import getMaker, { DAI } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import BigNumber from 'bignumber.js';
+import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 
-async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]> {
+async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
     maker.service('mcd:systemData').getSystemSurplus(),
-    maker.service('mcd:systemData').getTotalDai(),
     // @ts-ignore
     DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
@@ -25,11 +25,10 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
-    '/system-stats-index',
-    getSystemStats
-  );
-  const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
+  const { data } = useSWR<[BigNumber, CurrencyObject, CurrencyObject]>('/system-stats-index', getSystemStats);
+  const [savingsRate, systemSurplus, debtCeiling] = data || [];
+
+  const { data: totalDai } = useTotalDai();
 
   const infoUnits = [
     {
@@ -38,7 +37,7 @@ export default function SystemStats(): JSX.Element {
     },
     {
       title: 'Total Dai',
-      value: totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: totalDai ? `${new BigNumber(totalDai).toFormat(0)} DAI` : <Skeleton />
     },
     {
       title: 'Dai Debt Ceiling',

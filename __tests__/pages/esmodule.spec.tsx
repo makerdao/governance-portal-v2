@@ -6,8 +6,8 @@ import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
 import getMaker from '../../lib/maker';
 import { accountsApi } from '../../modules/app/stores/accounts';
-import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
+import { WAD } from '../../modules/web3/web3.constants';
 
 export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
@@ -19,8 +19,6 @@ configure({
     return error;
   }
 });
-
-export const WAD = new BigNumber('1e18');
 
 let maker;
 describe('ESM page', () => {
