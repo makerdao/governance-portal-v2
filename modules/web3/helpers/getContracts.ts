@@ -3,7 +3,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
-import { EthSdkConfig } from '@dethcrypto/eth-sdk';
 
 const sdks = {
   mainnet: getMainnetSdk,
@@ -11,7 +10,7 @@ const sdks = {
 };
 
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
-export const getContract = (chainId?: number, library?: AbstractConnector): any => {
+export const getContracts = (chainId?: number, library?: AbstractConnector): any => {
   const network = chainId ? CHAIN_INFO[chainId].network : SupportedNetworks.MAINNET;
   const provider = ethers.getDefaultProvider(network);
 

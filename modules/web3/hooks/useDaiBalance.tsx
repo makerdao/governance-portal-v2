@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { ethers } from 'ethers';
-import { getContract } from '../helpers/getContract';
-import useActiveWeb3React from 'modules/web3/hooks/useActiveWeb3React';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type UseDaiBalanceResponse = {
   data?: any;
@@ -11,9 +11,9 @@ type UseDaiBalanceResponse = {
 };
 
 export const useDaiBalance = (): UseDaiBalanceResponse => {
-  const { account, chainId, library } = useActiveWeb3React();
+  const { account } = useActiveWeb3React();
 
-  const { dai } = getContract(chainId, library);
+  const { dai } = useContracts();
 
   const { data, error, mutate } = useSWR(`dai-balance-new-${account}`, async () => {
     if (!account) {
