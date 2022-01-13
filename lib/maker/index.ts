@@ -54,7 +54,7 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
       return SupportedNetworks.TESTNET;
-    } 
+    }
     // 2) check the browser provider if there is one
     if (typeof window.ethereum !== 'undefined') {
       const chainId = parseInt(window.ethereum.chainId);
