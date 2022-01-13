@@ -146,13 +146,15 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const filteredProposals = useMemo(() => {
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
-    return (proposals.filter(proposal => {
-      // filter out non-cms proposals for now
-      if (!('about' in proposal) || !('date' in proposal)) return false;
-      if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
-      if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
-      return true;
-    }) as CMSProposal[]).sort((a, b) => {
+    return (
+      proposals.filter(proposal => {
+        // filter out non-cms proposals for now
+        if (!('about' in proposal) || !('date' in proposal)) return false;
+        if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
+        if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
+        return true;
+      }) as CMSProposal[]
+    ).sort((a, b) => {
       if (sortBy === 'MKR Amount') {
         const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
         const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;

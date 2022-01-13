@@ -5,7 +5,7 @@ import { mockIntersectionObserver } from '../__tests__/helpers';
 
 let snapshotData;
 beforeAll(async () => {
-  snapshotData = await takeSnapshot();
+  //snapshotData = await takeSnapshot();
   // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -24,5 +24,5 @@ beforeAll(async () => {
 });
 
 afterAll(() => {
-  restoreSnapshot(snapshotData);
+  //restoreSnapshot(snapshotData);
 });

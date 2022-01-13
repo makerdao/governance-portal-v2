@@ -9,8 +9,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "test": "jest --config=jest.config.js --runInBand --watch",
-    "test:ci": "jest --runInBand --ci --coverage",
+    "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
+    "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "e2e": "start-server-and-test dev http://localhost:3000 cypress",
     "e2e:headless": "start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
@@ -78,6 +78,7 @@
     "zustand": "^2.2.3"
   },
   "devDependencies": {
+    "@makerdao/testchain": "^1.1.33-beta5",
     "@makerdao/test-helpers": "^0.3.0",
     "@testing-library/dom": "^8.1.0",
     "@testing-library/jest-dom": "^5.14.1",
