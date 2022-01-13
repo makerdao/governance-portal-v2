@@ -8,72 +8,66 @@ import { getTestAccount, TEST_ACCOUNTS } from 'cypress/support/constants/testacc
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Executive page', async () => {
-    it('navigates to executives and can deposit into chief', () => {
-        visitPage('/executive')
+  it('navigates to executives and can deposit into chief', () => {
+    visitPage('/executive');
 
-        const newAccount = getTestAccount();
+    const newAccount = getTestAccount();
 
-        sendMKR(newAccount.address, 0.5);
-        sendETH(newAccount.address, 0.5);
-    
-        setAccount(newAccount,  () => {
-            // Sees the "In voting contract" text
-            cy.contains(/In voting contract/).should('be.visible')
+    sendMKR(newAccount.address, 0.5);
+    sendETH(newAccount.address, 0.5);
 
-            // Click deposit
-            cy.get('[data-testid="deposit-button"]').click()
+    setAccount(newAccount, () => {
+      // Sees the "In voting contract" text
+      cy.contains(/In voting contract/).should('be.visible');
 
-            // Click approve contract
-            cy.get('[data-testid="deposit-approve-button"]').click()
+      // Click deposit
+      cy.get('[data-testid="deposit-button"]').click();
 
-            // Wait until transaction completes
-            //
+      // Click approve contract
+      cy.get('[data-testid="deposit-approve-button"]').click();
 
-            // Deposit
-            cy.contains(/Deposit into voting contract/).should('be.visible')
+      // Wait until transaction completes
+      //
 
-            // Deposit
-            cy.get('[data-testid="mkr-input"]').type('0.01');
+      // Deposit
+      cy.contains(/Deposit into voting contract/).should('be.visible');
 
-            // Click button
-            cy.get('[data-testid="button-deposit-mkr"]').click()
+      // Deposit
+      cy.get('[data-testid="mkr-input"]').type('0.01');
 
+      // Click button
+      cy.get('[data-testid="button-deposit-mkr"]').click();
 
-            // Wait for tx
-            cy.contains('/Transaction Pending/').should('be.visible')
+      // Wait for tx
+      cy.contains('/Transaction Pending/').should('be.visible');
 
-            // Check MKR
-            cy.get('[data-testid="locked-mkr"]').should('have.text', '0.010000 MKR')
+      // Check MKR
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '0.010000 MKR');
 
+      // Can vote
+      cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();
 
-            // Can vote
-            cy.get('[data-testid="vote-button-exec-overview-card"]').first().click()
+      cy.contains(/Submit Vote/).click();
 
-            cy.contains(/Submit Vote/).click()
+      cy.contains(/Transaction Sent/).should('be.visible');
+    });
+  });
 
-            cy.contains(/Transaction Sent/).should('be.visible')
-        })
-    })
+  // TODO: Create delegate account
+  xit('As a delegate , see the amount of MKR in the delegate contract', () => {
+    visitPage('/executive');
 
+    setAccount(TEST_ACCOUNTS.delegate, () => {
+      cy.contains(/In delegate contract/).should('be.visible');
+    });
+  });
 
-    // TODO: Create delegate account
-    xit('As a delegate , see the amount of MKR in the delegate contract', () => {
-        visitPage('/executive');
+  // TODO: Create voty proxy account
+  xit('As a proxy voter , see the amount of MKR in the proxy contract', () => {
+    visitPage('/executive');
 
-        setAccount(TEST_ACCOUNTS.delegate, () => {
-            cy.contains(/In delegate contract/).should('be.visible')
-        })
-    })
-
-    // TODO: Create voty proxy account
-    xit('As a proxy voter , see the amount of MKR in the proxy contract', () => {
-        visitPage('/executive');
-
-        setAccount(TEST_ACCOUNTS.voteProxy, () => {
-            cy.contains(/In proxy contract/).should('be.visible')
-        })
-    })
-
-
-  
+    setAccount(TEST_ACCOUNTS.voteProxy, () => {
+      cy.contains(/In proxy contract/).should('be.visible');
+    });
+  });
 });

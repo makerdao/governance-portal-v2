@@ -4,12 +4,11 @@ import keypairs from './keypairs.json';
 enum TestAccountsEnum {
   normal = 'normal',
   delegate = 'delegate',
-  normalVoteProxy = 'normalVoteProxy',
-  
+  normalVoteProxy = 'normalVoteProxy'
 }
 
-interface  TestAccounts {
-  [key: string]: TestAccount
+interface TestAccounts {
+  [key: string]: TestAccount;
 }
 
 export const TEST_ACCOUNTS: TestAccounts = {
@@ -25,8 +24,6 @@ export const TEST_ACCOUNTS: TestAccounts = {
     key: 'b3ae65f191aac33f3e3f662b8411cabf14f91f2b48cf338151d6021ea1c08541'
   }
 };
-
-
 
 export function getTestAccount(): TestAccount {
   const number = Math.floor(Math.random() * keypairs.addresses.length);

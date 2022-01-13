@@ -1,6 +1,6 @@
 import { validateText, hardcodedCategories } from '../validator';
 import fs from 'fs';
-const pollMetadata = fs.readFileSync(__dirname + '/poll-431.md').toString();
+const pollMetadata = fs.readFileSync(__dirname + '/__helpers__/poll-431.md').toString();
 
 test('accept a valid document', () => {
   const result = validateText(pollMetadata, hardcodedCategories);

@@ -6,7 +6,7 @@
 import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
-import { closeModal,  setAccount, visitPage } from '../support/commons';
+import { closeModal, setAccount, visitPage } from '../support/commons';
 
 describe('Delegates Page', () => {
   it('should navigate to the delegates page and find a list of delegates', () => {
@@ -22,14 +22,13 @@ describe('Delegates Page', () => {
 
   it('Should find the delegates system info', () => {
     visitPage('/delegates');
-    
-    // Checks the total amount of delegates
-    cy.get('[data-testid="total-delegates-system-info"]').contains('9')
-    cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0')
-    cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('9')
-    cy.get('[data-testid="total-mkr-system-info"]').contains('821.18')
 
-  })
+    // Checks the total amount of delegates
+    cy.get('[data-testid="total-delegates-system-info"]').contains('9');
+    cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
+    cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('9');
+    cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+  });
 
   it('Should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
@@ -38,16 +37,14 @@ describe('Delegates Page', () => {
 
     cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
 
-     // See now 0 delegates
-     cy.get('[data-testid="delegate-card"]').should('have.length', 0);
+    // See now 0 delegates
+    cy.get('[data-testid="delegate-card"]').should('have.length', 0);
 
     // Reset filters
-     cy.get('[data-testid="delegate-reset-filters"]').click();
+    cy.get('[data-testid="delegate-reset-filters"]').click();
 
-     // Now see al the delegates again
-     cy.get('[data-testid="delegate-card"]').should('have.length', 9);
-
-     
+    // Now see al the delegates again
+    cy.get('[data-testid="delegate-card"]').should('have.length', 9);
   });
 
   it('Connects wallet and clicks on delegate', () => {

@@ -11,7 +11,7 @@ describe('Account Page', async () => {
   it('should navigate to the account page and be able to create a delegate contract', () => {
     visitPage('/account');
 
-    cy.contains('Connect your wallet to view information about your account').should('be.visible')
+    cy.contains('Connect your wallet to view information about your account').should('be.visible');
 
     const newAccount = getTestAccount();
 
@@ -19,33 +19,31 @@ describe('Account Page', async () => {
     sendETH(newAccount.address, 0.5);
 
     setAccount(newAccount, async () => {
-        
-        cy.contains('No vote delegate contract detected').should('be.visible');
+      cy.contains('No vote delegate contract detected').should('be.visible');
 
-        // Accept checkbox
-        cy.get('[data-testid="checkbox-create-delegate"]').click()
+      // Accept checkbox
+      cy.get('[data-testid="checkbox-create-delegate"]').click();
 
-        // Click on create
-        cy.get('[data-testid="create-button"]').click();
+      // Click on create
+      cy.get('[data-testid="create-button"]').click();
 
-        // See transaction go through
-        cy.contains('Confirm Transaction').should('be.visible')
-        cy.contains('Transaction Pending').should('be.visible')
-        cy.contains('Transaction Sent').should('be.visible')
-        
-        cy.contains('Close').click();
+      // See transaction go through
+      cy.contains('Confirm Transaction').should('be.visible');
+      cy.contains('Transaction Pending').should('be.visible');
+      cy.contains('Transaction Sent').should('be.visible');
 
-        // Find the text of delegated MKR
-        cy.contains('Delegated MKR').should('be.visible')
+      cy.contains('Close').click();
 
-        const text = await new Cypress.Promise<string>((resolve) => {
-            cy.get('[data-testid="vote-delegate-address"]')
-              .invoke('text')
-              .then((txt) => resolve(txt.toString()))
-          })
+      // Find the text of delegated MKR
+      cy.contains('Delegated MKR').should('be.visible');
 
-       // We can return "text" after creating the delegate through the ui
+      const text = await new Cypress.Promise<string>(resolve => {
+        cy.get('[data-testid="vote-delegate-address"]')
+          .invoke('text')
+          .then(txt => resolve(txt.toString()));
+      });
+
+      // We can return "text" after creating the delegate through the ui
     });
   });
-
 });

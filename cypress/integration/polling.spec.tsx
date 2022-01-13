@@ -53,7 +53,7 @@ describe('/polling page', async () => {
     expect(await screen.findByText('4', { selector: 'li' })).toBeInTheDocument();
   });
   
-  */ 
+  */
 
   // TODO: Check that filters work
 

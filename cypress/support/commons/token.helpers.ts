@@ -3,7 +3,6 @@ import { GOERLI_ADDRESSES } from 'modules/contracts/constract.constants';
 import { ethers } from 'ethers';
 import { TEST_ACCOUNTS } from '../constants/testaccounts';
 
-
 export async function sendMKR(accountTo: string, amount: number) {
   const _url = 'http://localhost:8545';
   const provider = ethers.getDefaultProvider(_url);
@@ -16,19 +15,17 @@ export async function sendMKR(accountTo: string, amount: number) {
 }
 
 export async function sendETH(accountTo: string, amount: number) {
-    const _url = 'http://localhost:8545';
-    const provider = ethers.getDefaultProvider(_url);
-    cy.wait(1500);
-    // Increase nonce
-    const accountNonce =
-    '0x' + (await provider.getTransactionCount(TEST_ACCOUNTS.normal.address) + 1).toString(16)
-    // @ts-ignore
-    const signer = new ethers.Wallet(TEST_ACCOUNTS.normal.key, provider);
-    await signer.sendTransaction({
-        to: accountTo,
-        value: ethers.utils.parseEther(amount.toString()),
-        nonce: accountNonce
-    });
-
-  }
-  
+  const _url = 'http://localhost:8545';
+  const provider = ethers.getDefaultProvider(_url);
+  cy.wait(1500);
+  // Increase nonce
+  const accountNonce =
+    '0x' + ((await provider.getTransactionCount(TEST_ACCOUNTS.normal.address)) + 1).toString(16);
+  // @ts-ignore
+  const signer = new ethers.Wallet(TEST_ACCOUNTS.normal.key, provider);
+  await signer.sendTransaction({
+    to: accountTo,
+    value: ethers.utils.parseEther(amount.toString()),
+    nonce: accountNonce
+  });
+}

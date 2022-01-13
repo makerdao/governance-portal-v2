@@ -20,7 +20,7 @@
     "hardhat:detached": "npm run hardhat & TASKHARDHAT_PID=$!",
     "e2e:detached": "npm run e2e:headless && kill $TASKHARDHAT_PID",
     "e2e:ci": "npm run --silent hardhat:detached & npm run e2e:detached",
-    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
+    "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ cypress/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
   },
   "dependencies": {
