@@ -17,7 +17,7 @@ export default function VoteBreakdown({
 }): JSX.Element {
   if (poll.voteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN)) {
     return (
-      <Box key={2} sx={{ p: [3, 4] }}>
+      <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
         <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
           Vote Breakdown
         </Text>
