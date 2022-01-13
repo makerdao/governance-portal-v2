@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';

@@ -1,4 +1,4 @@
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import getMaker from 'lib/maker';
 import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';

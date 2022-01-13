@@ -1,24 +1,3 @@
-import { SupportedNetworks } from 'modules/web3/web3.constants';
-
-// TODO: too lazy to fix all imports of SupportedNetworks from this file across the app right now.
-export { SupportedNetworks };
-
-export const CMS_ENDPOINTS = {
-  [SupportedNetworks.MAINNET]: {
-    allTopics: 'https://cms-gov.makerfoundation.com/content/governance-dashboard',
-    allSpells: 'https://cms-gov.makerfoundation.com/content/all-spells'
-  },
-  [SupportedNetworks.KOVAN]: {
-    allTopics: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard',
-    allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
-  }
-  // no goerli CMS endpoints
-};
-
-export const ETH_TX_STATE_DIFF_ENDPOINT = (
-  network: SupportedNetworks.MAINNET | SupportedNetworks.KOVAN | SupportedNetworks.GOERLI
-) => `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;
-
 export const ABSTAIN = 0;
 
 // note: no old chief deployment exists on goerli

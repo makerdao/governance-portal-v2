@@ -58,19 +58,6 @@ export const CHAIN_INFO = {
   }
 };
 
-//TODO maybe just add this to chain info
-export const CMS_ENDPOINTS = {
-  [SupportedNetworks.MAINNET]: {
-    allTopics: 'https://cms-gov.makerfoundation.com/content/governance-dashboard',
-    allSpells: 'https://cms-gov.makerfoundation.com/content/all-spells'
-  },
-  [SupportedNetworks.KOVAN]: {
-    allTopics: 'https://elb.cms-gov.makerfoundation.com:444/content/governance-dashboard',
-    allSpells: 'https://elb.cms-gov.makerfoundation.com:444/content/all-spells'
-  }
-  // no goerli CMS endpoints
-};
-
 export const NETWORK_URLS = {
   [SupportedNetworks.MAINNET]: {
     [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
@@ -90,3 +77,6 @@ export const NETWORK_URLS = {
 };
 export const DEFAULT_NETWORK = SupportedNetworks.MAINNET;
 export const DEFAULT_NODE_PROVIDER = NodeProviders.INFURA;
+
+export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =>
+  `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;

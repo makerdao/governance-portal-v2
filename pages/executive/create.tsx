@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/utils';
 import { getEtherscanLink } from 'lib/utils';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
 const ExecutiveCreate = () => {

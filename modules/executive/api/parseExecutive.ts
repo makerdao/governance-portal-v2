@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import { CMSProposal } from 'modules/executive/types';
 import { ethers } from 'ethers';
 import { slugify } from 'lib/utils';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 
 export function parseExecutive(
   proposalDoc: string,

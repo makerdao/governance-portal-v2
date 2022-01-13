@@ -2,7 +2,7 @@ import { fetchChainDelegates } from './fetchChainDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { add, isBefore } from 'date-fns';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { getNetwork } from 'lib/maker';
 import {
   DelegatesAPIResponse,

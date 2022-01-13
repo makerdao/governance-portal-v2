@@ -1,5 +1,6 @@
 import { config } from 'lib/config';
-import { EXEC_PROPOSAL_INDEX, SupportedNetworks } from 'lib/constants';
+import { EXEC_PROPOSAL_INDEX } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
 import { getNetwork, isTestnet } from 'lib/maker';

@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToDatabase } from 'lib/api/utils';
 import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 
 export default withApiHandler(

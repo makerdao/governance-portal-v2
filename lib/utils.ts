@@ -6,11 +6,10 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { SupportedNetworks } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
-import { CHAIN_INFO, SupportedChainId } from 'modules/web3/web3.constants';
+import { CHAIN_INFO, SupportedChainId, SupportedNetworks } from 'modules/web3/web3.constants';
 import { networkNameToChainId } from 'modules/web3/helpers';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
