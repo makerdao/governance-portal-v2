@@ -10,7 +10,8 @@ import { SupportedNetworks } from './constants';
 import getMaker from './maker';
 import mockPolls from 'modules/polling/api/mocks/polls.json';
 import round from 'lodash/round';
-import { CHAIN_INFO } from 'modules/web3/web3.constants';
+import { CHAIN_INFO, SupportedChainId } from 'modules/web3/web3.constants';
+import { networkNameToChainId } from 'modules/web3/helpers';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -61,8 +62,9 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'address'
 ): string {
+  const chainId = networkNameToChainId(network);
   const prefix = `https://${
-    CHAIN_INFO[network].etherscanPrefix || CHAIN_INFO[SupportedNetworks.MAINNET].etherscanPrefix
+    CHAIN_INFO[chainId].etherscanPrefix || CHAIN_INFO[SupportedChainId.MAINNET].etherscanPrefix
   }etherscan.io`;
 
   switch (type) {
