@@ -2,7 +2,7 @@ import { MakerClass } from '@makerdao/dai/dist/Maker';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
 import { SupportedNetworks } from 'modules/web3/web3.constants';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 
 export const getOldProxyStatus = async (
   address: string,

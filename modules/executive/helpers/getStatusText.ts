@@ -4,7 +4,7 @@ import { isBefore } from 'date-fns';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 
 export const getStatusText = ({
   proposalAddress,

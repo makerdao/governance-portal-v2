@@ -6,7 +6,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import getMaker, { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { CMSProposal } from 'modules/executive/types';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 
 type Props = {
   proposal: CMSProposal;

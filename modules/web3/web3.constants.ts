@@ -80,3 +80,5 @@ export const DEFAULT_NODE_PROVIDER = NodeProviders.INFURA;
 
 export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =>
   `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;
+
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';

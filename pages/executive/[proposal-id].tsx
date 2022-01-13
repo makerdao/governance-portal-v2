@@ -51,7 +51,7 @@ import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 

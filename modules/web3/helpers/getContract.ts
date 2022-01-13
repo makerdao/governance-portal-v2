@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { getGoerliSdk, getMainnetSdk } from '@dethcrypto/eth-sdk-client';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
 import { EthSdkConfig } from '@dethcrypto/eth-sdk';
 
