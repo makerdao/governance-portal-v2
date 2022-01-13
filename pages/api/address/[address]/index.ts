@@ -63,7 +63,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-  const response = await getAddressInfo(address, network);
+  const response = await getAddressInfo(address ?? tempAddress, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);
