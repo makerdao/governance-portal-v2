@@ -8,8 +8,13 @@ export async function getENS(address: string): Promise<string | null> {
     alchemy: config.ALCHEMY_KEY
   });
 
-  const name = await provider.lookupAddress(address);
-  return name;
+  try {
+    const name = await provider.lookupAddress(address);
+    return name;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
 export async function resolveENS(ensName: string): Promise<string | null> {
@@ -18,6 +23,11 @@ export async function resolveENS(ensName: string): Promise<string | null> {
     alchemy: config.ALCHEMY_KEY
   });
 
-  const address = await provider.resolveName(ensName);
-  return address;
+  try {
+    const address = await provider.resolveName(ensName);
+    return address;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
