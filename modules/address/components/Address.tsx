@@ -6,18 +6,14 @@ export function Address({ address }: { address: string }): React.ReactElement {
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
 
   async function fetchENSName(address: string) {
-    try {
-      if (!address) {
-        return;
-      }
-
-      const ens = await getENS(address);
-      setAddressFormatted(ens);
-    } catch (e) {
-      setAddressFormatted(formatAddress(address));
+    if (!address) {
+      return;
     }
-  }
 
+    const ens = await getENS(address);
+
+    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address));
+  }
   useEffect(() => {
     if (address) {
       fetchENSName(address);
