@@ -11,9 +11,9 @@ type UseDaiBalanceResponse = {
 };
 
 export const useMkrBalance = (): UseDaiBalanceResponse => {
-  const { account, chainId } = useActiveWeb3React();
+  const { account, chainId, library } = useActiveWeb3React();
 
-  const { mkr } = getContract(chainId);
+  const { mkr } = getContract(chainId, library);
 
   const { data, error, mutate } = useSWR(`mkr-balance-new-${account}`, async () => {
     if (!account) {

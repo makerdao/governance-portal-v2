@@ -74,7 +74,10 @@ const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
   const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
-  const account = useAccountsStore(state => state.currentAccount);
+  const [account, setCurrentAccount] = useAccountsStore(state => [
+    state.currentAccount,
+    state.setCurrentAccount
+  ]);
   const address = account?.address;
 
   // Detect previously authorized connections and force log-in
@@ -88,6 +91,13 @@ const AccountSelect = (): React.ReactElement => {
     if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork())
       setChainIdError('network mismatch');
   }, [chainId, error]);
+
+  useEffect(() => {
+    if (w3rAddress) {
+      // TODO: eventually we'll want to remove the maker-specific properties of the the 'Account' type
+      setCurrentAccount({ address: w3rAddress, name: w3rAddress, type: 'web3-react' });
+    }
+  }, [w3rAddress]);
 
   // FIXME there must be a more direct way to get web3-react & maker to talk to each other
   syncMakerAccount(

@@ -11,9 +11,9 @@ type UseDaiBalanceResponse = {
 };
 
 export const useDaiBalance = (): UseDaiBalanceResponse => {
-  const { account, chainId } = useActiveWeb3React();
+  const { account, chainId, library } = useActiveWeb3React();
 
-  const { dai } = getContract(chainId);
+  const { dai } = getContract(chainId, library);
 
   const { data, error, mutate } = useSWR(`dai-balance-new-${account}`, async () => {
     if (!account) {
