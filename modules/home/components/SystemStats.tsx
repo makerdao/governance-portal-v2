@@ -6,6 +6,7 @@ import getMaker, { DAI } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import BigNumber from 'bignumber.js';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
+import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { formatValue } from 'lib/string';
 
 async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject]> {
@@ -30,9 +31,9 @@ export default function SystemStats(): JSX.Element {
   const [savingsRate, systemSurplus, debtCeiling] = data || [];
 
   const { data: totalDai } = useTotalDai();
+  const { data: daiSavingsRate } = useDaiSavingsRate();
 
-  console.log('total dai', totalDai);
-  console.log('total dai formatted', totalDai && formatValue(totalDai, 'rad', 4));
+  console.log(daiSavingsRate);
 
   const infoUnits = [
     {

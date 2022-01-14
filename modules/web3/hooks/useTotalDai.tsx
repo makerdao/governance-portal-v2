@@ -21,16 +21,3 @@ export const useTotalDai = (): TotalDaiResponse => {
     error
   };
 };
-
-// temp comment: dai.js implementation for reference
-
-// async getTotalDai() {
-//   const totalPie = new BigNumber((await this._pot.Pie())._hex);
-//   const chi = await this.chi();
-//   return DAI(
-//     totalPie
-//       .times(chi)
-//       .div(WAD)
-//       .dp(18)
-//   );
-// }
