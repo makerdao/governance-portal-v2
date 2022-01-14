@@ -11,9 +11,9 @@ import { markdownToHtml } from 'lib/utils';
 
 export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
   const net = network ? network : getNetwork();
-  
-  // Use goerli as a Key for Goerli fork. In order to pick the the current executives 
-  const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI: net;
+
+  // Use goerli as a Key for Goerli fork. In order to pick the the current executives
+  const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
 
   const cacheKey = 'proposals';
   if (config.USE_FS_CACHE) {
@@ -36,7 +36,6 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
     .filter(x => x.type === 'file')
     .map(x => x.download_url)
     .filter(x => !!x);
-
 
   const proposals = await Promise.all(
     proposalUrls.map(async (proposalLink): Promise<CMSProposal | null> => {
