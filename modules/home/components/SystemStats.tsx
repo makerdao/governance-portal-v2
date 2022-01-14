@@ -2,21 +2,17 @@ import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import getMaker, { DAI } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
+import getMaker from 'lib/maker';
 import BigNumber from 'bignumber.js';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 // import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
+import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { formatValue } from 'lib/string';
 
-async function getSystemStats(): Promise<[BigNumber, CurrencyObject]> {
+async function getSystemStats(): Promise<[BigNumber]> {
   const maker = await getMaker();
-  return Promise.all([
-    maker.service('mcd:savings').getYearlyRate(),
-    // @ts-ignore
-    DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
-  ]);
+  return Promise.all([maker.service('mcd:savings').getYearlyRate()]);
 }
 
 // if we are on the browser, trigger a prefetch as soon as possible
@@ -27,12 +23,13 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<[BigNumber, CurrencyObject]>('/system-stats-index', getSystemStats);
-  const [savingsRate, debtCeiling] = data || [];
+  const { data } = useSWR<[BigNumber]>('/system-stats-index', getSystemStats);
+  const [savingsRate] = data || [];
 
   const { data: totalDai } = useTotalDai();
   // const { data: daiSavingsRate } = useDaiSavingsRate();
   const { data: systemSurplus } = useSystemSurplus();
+  const { data: debtCeiling } = useSystemWideDebtCeiling();
 
   const infoUnits = [
     {
@@ -45,7 +42,7 @@ export default function SystemStats(): JSX.Element {
     },
     {
       title: 'Dai Debt Ceiling',
-      value: debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: debtCeiling ? `${formatValue(debtCeiling, 'rad', 0)} DAI` : <Skeleton />
     },
     {
       title: 'System Surplus',

@@ -2,13 +2,13 @@ import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
 
-type TotalDaiResponse = {
+type SystemSurplusResponse = {
   data?: BigNumber | undefined;
   loading: boolean;
   error?: Error;
 };
 
-export const useSystemSurplus = (): TotalDaiResponse => {
+export const useSystemSurplus = (): SystemSurplusResponse => {
   const { vat, vow } = useContracts();
 
   const { data, error } = useSWR('system-surplus', async () => {
