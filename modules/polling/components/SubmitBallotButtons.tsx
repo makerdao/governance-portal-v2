@@ -36,7 +36,9 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             sx={{ width: '100%' }}
           >
             <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-              {!!signedMessage && <Icon name="checkmark" color="primary" sx={{ mr: 3 }} />}
+              {!!signedMessage && (
+                <Icon name="checkmark" color="primary" sx={{ mr: 3 }} data-testid="checkmark" />
+              )}
               <Text>1 - Sign your comments</Text>
             </Flex>
           </Button>

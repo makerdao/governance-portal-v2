@@ -35,14 +35,14 @@ const ChoiceSummary = ({
     <Box {...props}>
       {isSingleSelect ? (
         <Box bg="background" sx={{ p: 3, mb: 2 }}>
-          <Text>{choice === ABSTAIN ? 'Abstain' : poll.options[choice as number]}</Text>
+          <Text data-testid="choice">{choice === ABSTAIN ? 'Abstain' : poll.options[choice as number]}</Text>
         </Box>
       ) : (
         (choice as number[]).map((id, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={id}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
-              <Text>{poll.options[id]}</Text>
+              <Text data-testid="choice">{poll.options[id]}</Text>
             </Flex>
           </Flex>
         ))

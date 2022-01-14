@@ -24,7 +24,7 @@ type Store = {
   rawMessage: string;
 };
 
-const [useBallotStore] = create<Store>((set, get) => ({
+const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   ballot: {},
   txId: null,
   comments: [],
@@ -164,3 +164,4 @@ const [useBallotStore] = create<Store>((set, get) => ({
 }));
 
 export default useBallotStore;
+export { ballotApi };

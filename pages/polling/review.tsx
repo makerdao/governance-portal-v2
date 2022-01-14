@@ -73,6 +73,16 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 </Button>
               </Link>
               <Stack gap={3}>
+                {!account && (
+                  <Text as="p" sx={{ mt: 3 }}>
+                    Connect a wallet to vote
+                  </Text>
+                )}
+                {!!account && votedPolls.length === 0 && (
+                  <Text as="p" sx={{ mt: 3 }}>
+                    Your ballot is empty
+                  </Text>
+                )}
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 {votedPolls.length > 0 && (

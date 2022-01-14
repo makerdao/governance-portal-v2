@@ -1,6 +1,5 @@
-import React from 'react';
-import { render, cleanup, fireEvent, screen } from '@testing-library/react';
-
+import { render, cleanup, screen, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MKRInput, MKRInputProps } from '../MKRInput';
 import BigNumber from 'bignumber.js';
 
@@ -52,8 +51,7 @@ describe('MKRInput', () => {
     const setMaxButton = screen.getByTestId('mkr-input-set-max');
     const input = screen.getByTestId('mkr-input');
 
-    // Click on the button
-    fireEvent.click(setMaxButton);
+    userEvent.click(setMaxButton);
 
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(24.5));
 
@@ -69,7 +67,7 @@ describe('MKRInput', () => {
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
-    fireEvent.change(input, { target: { value: '3.2' } });
+    userEvent.type(input, '3.2');
     expect(props.onChange).toHaveBeenCalledWith(new BigNumber(3.2));
     expect(input).toHaveValue(3.2);
   });
