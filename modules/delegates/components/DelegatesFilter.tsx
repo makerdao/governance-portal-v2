@@ -31,12 +31,14 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
     >
       <Box p={2}>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }} data-testid="delegate-type-filter-show-recognized">
+          <Label
+            sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
+            data-testid="delegate-type-filter-show-recognized"
+          >
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showRecognized}
               onChange={event => setShowRecognizedFilter(event.target.checked)}
-              
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Recognized Delegates</Text>
@@ -47,12 +49,14 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
           </Label>
         </Flex>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }} data-testid="delegate-type-filter-show-shadow">
+          <Label
+            sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
+            data-testid="delegate-type-filter-show-shadow"
+          >
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showShadow}
               onChange={event => setShowShadowFilter(event.target.checked)}
-              
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Shadow Delegates</Text>

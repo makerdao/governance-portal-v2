@@ -3,9 +3,12 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { modalAddressEquals, modalPollingWeightEquals } from 'cypress/support/commons/account.e2e.helpers';
-import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
+
+import { sendETH, sendMKR } from '../support/commons/token.helpers';
+import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
+import { TEST_ACCOUNTS, getTestAccount } from '../support/constants/testaccounts';
 import { elementContainsText, setAccount, visitPage } from '../support/commons';
+import { formatAddress } from '../../lib/utils';
 
 describe('Home Page', () => {
   it('should navigate to the home page page and find the title', () => {
@@ -43,15 +46,20 @@ describe('Home Page', () => {
     // Start from the index page
     visitPage('/');
 
-    setAccount(TEST_ACCOUNTS.normal, () => {
+    const newAccount = getTestAccount();
+
+    sendMKR(newAccount.address, 0.5);
+    sendETH(newAccount.address, 0.5);
+
+    setAccount(newAccount, () => {
       // Should find the connected
-      cy.contains('0x8028e...cf0b').should('be.visible');
+      cy.contains(formatAddress(newAccount.address)).should('be.visible');
 
       // Opens modal connection and finds 5 MKR
       //click on account modal
-      modalAddressEquals('0x8028e...cf0b');
+      modalAddressEquals(formatAddress(newAccount.address));
 
-      modalPollingWeightEquals('100.00 MKR');
+      modalPollingWeightEquals('0.50 MKR');
 
       // Save screenshot
       cy.screenshot('test');

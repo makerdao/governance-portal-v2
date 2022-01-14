@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -19,28 +15,11 @@
     "jsx": "preserve",
     "jsxImportSource": "theme-ui",
     "strictNullChecks": true,
-    "types": [
-      "jest",
-      "cypress"
-    ],
+    "types": ["jest", "cypress"],
     "baseUrl": "./",
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./node_modules/@types"],
     "incremental": true
   },
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-  ],
-  "include": [
-    "next-env.d.ts",
-    "lib",
-    "modules", 
-    "pages",
-    "cypress",
-    "node_modules/cypress",
-
-   ]
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"],
+  "include": ["next-env.d.ts", "lib", "modules", "pages", "cypress", "node_modules/cypress"]
 }

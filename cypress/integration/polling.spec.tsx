@@ -11,7 +11,9 @@ describe('/polling page', async () => {
 
     cy.contains('Active Polls').should('be.visible');
 
-    cy.contains('2 POLLS - ENDING NOV 04 2022 16:00 UTC').should('be.visible');
+    cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
+      matchCase: false
+    }).should('be.visible');
 
     cy.get('[data-testid="poll-overview-card"]').should('have.length', 4);
 

@@ -3,8 +3,8 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
-import { getTestAccount, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
+import { sendETH, sendMKR } from '../support/commons/token.helpers';
+import { getTestAccount, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Executive page', async () => {
@@ -27,7 +27,7 @@ describe('Executive page', async () => {
       cy.get('[data-testid="deposit-approve-button"]').click();
 
       // Wait until transaction completes
-      //
+      cy.contains('/Transaction Pending/').should('be.visible');
 
       // Deposit
       cy.contains(/Deposit into voting contract/).should('be.visible');
