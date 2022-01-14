@@ -1,11 +1,11 @@
 import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import getMaker from 'lib/maker';
 import BigNumber from 'bignumber.js';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
-// import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { formatValue } from 'lib/string';
@@ -23,18 +23,15 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<[BigNumber]>('/system-stats-index', getSystemStats);
-  const [savingsRate] = data || [];
-
   const { data: totalDai } = useTotalDai();
-  // const { data: daiSavingsRate } = useDaiSavingsRate();
+  const { data: daiSavingsRate } = useDaiSavingsRate();
   const { data: systemSurplus } = useSystemSurplus();
   const { data: debtCeiling } = useSystemWideDebtCeiling();
 
   const infoUnits = [
     {
       title: 'Dai Savings Rate',
-      value: savingsRate ? `${savingsRate.multipliedBy(100).toFixed(2)}%` : <Skeleton />
+      value: daiSavingsRate ? `${formatValue(daiSavingsRate, 'ray', 18)}%` : <Skeleton />
     },
     {
       title: 'Total Dai',

@@ -16,10 +16,13 @@ export const useDaiSavingsRate = (): TotalDaiResponse => {
 
   const { data, error } = useSWR('dai-savings-rate', async () => {
     const dsr = await pot.dsr();
-    // this seems to crash the app
-    // const calc = dsr.pow(SECONDS_PER_YEAR).sub(1).div(RAY);
-    // console.log(calc.toNumber());
-    return BigNumber.from(1);
+
+    // this returns 1 when it should be 1000000000003170820659990704
+    // console.log(dsr.toNumber());
+    // console.log(dsr.div(RAY));
+
+    // return dsr.pow(SECONDS_PER_YEAR).sub(1);
+    return dsr;
   });
 
   return {
