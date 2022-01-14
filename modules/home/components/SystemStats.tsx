@@ -6,14 +6,14 @@ import getMaker, { DAI } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import BigNumber from 'bignumber.js';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
-import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+// import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { formatValue } from 'lib/string';
 
-async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject]> {
+async function getSystemStats(): Promise<[BigNumber, CurrencyObject]> {
   const maker = await getMaker();
   return Promise.all([
     maker.service('mcd:savings').getYearlyRate(),
-    maker.service('mcd:systemData').getSystemSurplus(),
     // @ts-ignore
     DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
   ]);
@@ -27,13 +27,12 @@ if (typeof window !== 'undefined') {
 }
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<[BigNumber, CurrencyObject, CurrencyObject]>('/system-stats-index', getSystemStats);
-  const [savingsRate, systemSurplus, debtCeiling] = data || [];
+  const { data } = useSWR<[BigNumber, CurrencyObject]>('/system-stats-index', getSystemStats);
+  const [savingsRate, debtCeiling] = data || [];
 
   const { data: totalDai } = useTotalDai();
-  const { data: daiSavingsRate } = useDaiSavingsRate();
-
-  console.log(daiSavingsRate);
+  // const { data: daiSavingsRate } = useDaiSavingsRate();
+  const { data: systemSurplus } = useSystemSurplus();
 
   const infoUnits = [
     {
@@ -50,7 +49,7 @@ export default function SystemStats(): JSX.Element {
     },
     {
       title: 'System Surplus',
-      value: systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: systemSurplus ? `${formatValue(systemSurplus, 'rad', 0)} DAI` : <Skeleton />
     }
   ];
   return (
