@@ -69,8 +69,8 @@ jobs:
         with:
           # we have already installed all dependencies above
           # use (install: false) if you want to do parallel jobs.
-          # start: TESTNET=true yarn start
-          command: yarn run e2e:ci
+          start: yarn start:ci
+          ## command: yarn run e2e:ci
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome
