@@ -17,7 +17,7 @@ describe('Executive page', async () => {
     cy.wait(1500);
     sendETH(newAccount.address, 0.5);
     cy.wait(1500);
-    
+
     setAccount(newAccount, () => {
       // Sees the "In voting contract" text
       cy.contains(/In voting contract/).should('be.visible');
@@ -42,6 +42,8 @@ describe('Executive page', async () => {
 
       // Wait for tx
       cy.contains('/Transaction Pending/').should('be.visible');
+
+      cy.contains(/Transaction Sent/).should('be.visible');
 
       // Check MKR
       cy.get('[data-testid="locked-mkr"]').should('have.text', '0.010000 MKR');

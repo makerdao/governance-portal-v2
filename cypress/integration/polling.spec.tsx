@@ -20,6 +20,9 @@ describe('/polling page', async () => {
     // Show ended polls
     cy.get('[data-testid="button-view-ended-polls"]').click();
 
+    cy.wait(500);
+
+    // Check that now only shows 2 polls
     cy.get('[data-testid="poll-overview-card"]').should('have.length', 2);
   });
 

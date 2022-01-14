@@ -15,12 +15,11 @@ describe('Account Page', async () => {
 
     const newAccount = getTestAccount();
 
+    cy.wait(1500);
     sendETH(newAccount.address, 0.5);
+
     cy.wait(1500);
-    
     sendMKR(newAccount.address, 0.5);
-    cy.wait(1500);
-    
 
     setAccount(newAccount, async () => {
       cy.contains('No vote delegate contract detected').should('be.visible');
