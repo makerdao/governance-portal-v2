@@ -54,7 +54,9 @@ describe('Delegates Page', () => {
     const newAccount = getTestAccount();
 
     sendMKR(newAccount.address, 0.5);
+    cy.wait(1500);
     sendETH(newAccount.address, 0.5);
+    cy.wait(1500);
 
     setAccount(newAccount, () => {
       // Should find the connected

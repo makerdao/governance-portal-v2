@@ -41,14 +41,16 @@ describe('Home Page', () => {
     cy.contains('Polling Votes').should('be.visible');
   });
 
-  it('Connects wallet', async () => {
+  it('Connects wallet', () => {
     // Start from the index page
     visitPage('/');
 
     const newAccount = getTestAccount();
 
-    await sendMKR(newAccount.address, 0.5);
-    await sendETH(newAccount.address, 0.5);
+    sendMKR(newAccount.address, 0.5);
+    cy.wait(1500);
+    sendETH(newAccount.address, 0.5);
+    cy.wait(1500);
 
     setAccount(newAccount, () => {
       // Should find the connected

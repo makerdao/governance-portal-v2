@@ -14,8 +14,10 @@ describe('Executive page', async () => {
     const newAccount = getTestAccount();
 
     sendMKR(newAccount.address, 0.5);
+    cy.wait(1500);
     sendETH(newAccount.address, 0.5);
-
+    cy.wait(1500);
+    
     setAccount(newAccount, () => {
       // Sees the "In voting contract" text
       cy.contains(/In voting contract/).should('be.visible');

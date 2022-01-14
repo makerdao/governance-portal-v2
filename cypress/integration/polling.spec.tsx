@@ -15,12 +15,12 @@ describe('/polling page', async () => {
       matchCase: false
     }).should('be.visible');
 
-    cy.get('[data-testid="poll-overview-card"]').should('have.length', 4);
+    cy.get('[data-testid="poll-overview-card"]').should('have.length', 18);
 
     // Show ended polls
     cy.get('[data-testid="button-view-ended-polls"]').click();
 
-    cy.get('[data-testid="poll-overview-card"]').should('have.length', 6);
+    cy.get('[data-testid="poll-overview-card"]').should('have.length', 2);
   });
 
   it('Shows ballot when account is connected', () => {
@@ -35,7 +35,7 @@ describe('/polling page', async () => {
 
   it('Does not show ballot when account is not connected', () => {
     visitPage('/polling');
-    cy.contains('Your Ballot').should('not.be.visible');
+    cy.get('[data-testid="your-ballot-title"]').should('not.exist');
   });
 
   // TODO: Should allow to vote on a ranked choice and chose different options in order
