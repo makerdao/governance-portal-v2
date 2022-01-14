@@ -6,7 +6,8 @@ import { TEST_ACCOUNTS } from '../constants/testaccounts';
 export async function sendMKR(accountTo: string, amount: number) {
   const _url = 'http://localhost:8545';
   const provider = ethers.getDefaultProvider(_url);
-
+  
+ 
   // @ts-ignore
   const signer = new ethers.Wallet(TEST_ACCOUNTS.normal.key, provider);
 
@@ -17,7 +18,7 @@ export async function sendMKR(accountTo: string, amount: number) {
 export async function sendETH(accountTo: string, amount: number) {
   const _url = 'http://localhost:8545';
   const provider = ethers.getDefaultProvider(_url);
-  cy.wait(1500);
+  
   // Increase nonce
   const accountNonce =
     '0x' + ((await provider.getTransactionCount(TEST_ACCOUNTS.normal.address)) + 1).toString(16);

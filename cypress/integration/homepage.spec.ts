@@ -3,7 +3,6 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-
 import { sendETH, sendMKR } from '../support/commons/token.helpers';
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
 import { TEST_ACCOUNTS, getTestAccount } from '../support/constants/testaccounts';
@@ -42,14 +41,14 @@ describe('Home Page', () => {
     cy.contains('Polling Votes').should('be.visible');
   });
 
-  it('Connects wallet', () => {
+  it('Connects wallet', async () => {
     // Start from the index page
     visitPage('/');
 
     const newAccount = getTestAccount();
 
-    sendMKR(newAccount.address, 0.5);
-    sendETH(newAccount.address, 0.5);
+    await sendMKR(newAccount.address, 0.5);
+    await sendETH(newAccount.address, 0.5);
 
     setAccount(newAccount, () => {
       // Should find the connected

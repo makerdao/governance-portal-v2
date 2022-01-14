@@ -3,9 +3,8 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
-import { getTestAccount, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { formatAddress } from 'lib/utils';
+import { sendETH, sendMKR } from '../support/commons/token.helpers';
+import { getTestAccount, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { closeModal, setAccount, visitPage } from '../support/commons';
 
 describe('Esmodule Page', async () => {
@@ -13,8 +12,9 @@ describe('Esmodule Page', async () => {
     visitPage('/esmodule');
 
     cy.contains('Emergency Shutdown Module').should('be.visible');
+    cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
 
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.411110 MKR/);
+    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.411110/);
 
     // Checks the info of no account connected appears
     cy.contains('No Account Connected').should('be.visible');
@@ -24,11 +24,13 @@ describe('Esmodule Page', async () => {
     visitPage('/esmodule');
 
     const newAccount = getTestAccount();
-
-    sendMKR(newAccount.address, 0.5);
     sendETH(newAccount.address, 0.5);
 
-    setAccount(newAccount, async () => {
+    cy.wait(1500);
+    sendMKR(newAccount.address, 0.5);
+    cy.wait(1500);
+
+    setAccount(newAccount, () => {
       cy.contains('Burn Your MKR').should('be.visible');
 
       // Click "burn your MKR button"

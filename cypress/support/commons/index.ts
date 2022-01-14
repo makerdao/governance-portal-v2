@@ -5,8 +5,9 @@ export function visitPage(page: string) {
     onBeforeLoad: win => {
       // TODO: We can use this to preload info in the window object
     }
+  }).then(() => {
+    cy.contains('Accept configured cookies').click();
   });
-  cy.contains('Accept configured cookies').click();
 }
 
 export function elementExist(selector: string) {
