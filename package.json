@@ -18,7 +18,7 @@
     "cypress:headless": "cypress run",
     "hardhat": "npx hardhat node --network hardhat",
     "hardhat:detached": "npm run hardhat & TASKHARDHAT_PID=$!",
-    "start:detached": "npm start && kill $TASKHARDHAT_PID",
+    "start:detached": "yarn dev && kill $TASKHARDHAT_PID",
     "start:ci": "npm run --silent hardhat:detached & npm run start:detached",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ cypress/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"

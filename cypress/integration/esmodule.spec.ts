@@ -14,7 +14,7 @@ describe('Esmodule Page', async () => {
 
     cy.contains('Emergency Shutdown Module').should('be.visible');
 
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains('1.411110 MKR');
+    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.411110 MKR/);
 
     // Checks the info of no account connected appears
     cy.contains('No Account Connected').should('be.visible');
