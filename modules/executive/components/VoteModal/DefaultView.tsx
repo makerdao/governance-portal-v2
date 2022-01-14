@@ -21,6 +21,7 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import shallow from 'zustand/shallow';
+import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -73,6 +74,7 @@ export default function DefaultVoteModalView({
 
   const track = useTransactionsStore(state => state.track, shallow);
 
+  const { voteOne, voteMany } = useChiefVote();
   const { data: allSlates } = useAllSlates();
   const { mutate: mutateMkrOnHat } = useMkrOnHat();
 
@@ -99,50 +101,56 @@ export default function DefaultVoteModalView({
     const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
-    const voteTxCreator = voteDelegate
-      ? () => voteDelegate.voteExec(slateOrProposals)
-      : voteProxy
-      ? () => voteProxy.voteExec(slateOrProposals)
-      : () => maker.service('chief').vote(slateOrProposals);
 
-    const txId = await track(voteTxCreator, 'Voting on executive proposal', {
-      pending: txHash => {
-        // if comment included, add to comments db
-        if (comment.length > 0) {
-          const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: account?.address || '',
-            delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
-            comment: comment,
-            voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
-            signedMessage: signedMessage,
-            txHash,
-            voterWeight: votingWeight
-          };
-          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
-            method: 'POST',
-            body: JSON.stringify(requestBody)
-          })
-            .then(() => {
-              // console.log('comment successfully added');
-              mutateComments();
-            })
-            .catch(() => console.error('failed to add comment'));
-        }
+    const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
+    const tx = await voteCall(slateOrProposals);
 
-        onTransactionPending();
-      },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
-        mutateVotedProposals();
-        mutateMkrOnHat();
-        onTransactionMined();
-      },
-      error: () => {
-        onTransactionFailed();
-      }
-    });
+    console.log('tx', tx);
 
-    onTransactionCreated(txId);
+    // const voteTxCreator = voteDelegate
+    //   ? () => voteDelegate.voteExec(slateOrProposals)
+    //   : voteProxy
+    //   ? () => voteProxy.voteExec(slateOrProposals)
+    //   : () => maker.service('chief').vote(slateOrProposals);
+
+    // const txId = await track(voteTxCreator, 'Voting on executive proposal', {
+    //   pending: txHash => {
+    //     // if comment included, add to comments db
+    //     if (comment.length > 0) {
+    //       const requestBody: ExecutiveCommentsRequestBody = {
+    //         voterAddress: account?.address || '',
+    //         delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
+    //         comment: comment,
+    //         voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
+    //         signedMessage: signedMessage,
+    //         txHash,
+    //         voterWeight: votingWeight
+    //       };
+    //       fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
+    //         method: 'POST',
+    //         body: JSON.stringify(requestBody)
+    //       })
+    //         .then(() => {
+    //           // console.log('comment successfully added');
+    //           mutateComments();
+    //         })
+    //         .catch(() => console.error('failed to add comment'));
+    //     }
+
+    //     onTransactionPending();
+    //   },
+    //   mined: txId => {
+    //     transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+    //     mutateVotedProposals();
+    //     mutateMkrOnHat();
+    //     onTransactionMined();
+    //   },
+    //   error: () => {
+    //     onTransactionFailed();
+    //   }
+    // });
+
+    // onTransactionCreated(txId);
   };
 
   const GridBox = ({ bpi, children }) => (
