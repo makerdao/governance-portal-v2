@@ -28,14 +28,14 @@ export const TEST_ACCOUNTS: TestAccounts = {
 const usedAddresses = {};
 
 function getRandomNumber(max: number): number {
- return  Math.floor(Math.random() * max)
+  return Math.floor(Math.random() * max);
 }
 export function getTestAccount(): TestAccount {
   // We only have seeded the first 50 accounts with 0.5 ETH and 0.01 MKR
   const MAX_ACCOUNT = 50;
   let number = getRandomNumber(MAX_ACCOUNT);
 
-  while(usedAddresses[number] === true) {
+  while (usedAddresses[number] === true) {
     number = getRandomNumber(MAX_ACCOUNT);
   }
 
