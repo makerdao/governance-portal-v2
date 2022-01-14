@@ -17,7 +17,7 @@ module.exports = {
       forking: {
         url: 'https://eth-goerli.alchemyapi.io/v2/p7bY4ggxW60weHKPiAP7HXN2RNAAQZ8E',
         blockNumber: 6182224,
-        chainId: 1337
+        chainId: 31337
       },
       timeout: 2000000
     }
