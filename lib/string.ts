@@ -26,7 +26,7 @@ export function formatValue(value: BigNumber, type: string | number, dp = 2, wit
     }
   }
   const formatted = formatUnits(value, type);
-  const fixed = dp ? (+formatted).toFixed(dp) : formatted;
+  const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   const finished = withCommas ? commify(fixed) : fixed;
   return finished;
 }

@@ -41,7 +41,7 @@ export default function SystemStats(): JSX.Element {
     },
     {
       title: 'Total Dai',
-      value: totalDai ? `${new BigNumber(totalDai).toFormat(0)} DAI` : <Skeleton />
+      value: totalDai ? `${formatValue(totalDai, 'rad', 0)} DAI` : <Skeleton />
     },
     {
       title: 'Dai Debt Ceiling',
