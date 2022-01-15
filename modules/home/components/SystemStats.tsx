@@ -31,7 +31,7 @@ export default function SystemStats(): JSX.Element {
   const infoUnits = [
     {
       title: 'Dai Savings Rate',
-      value: daiSavingsRate ? `${formatValue(daiSavingsRate, 'ray', 18)}%` : <Skeleton />
+      value: daiSavingsRate ? `${daiSavingsRate.toFixed(2)}%` : <Skeleton />
     },
     {
       title: 'Total Dai',

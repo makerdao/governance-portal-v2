@@ -1,12 +1,13 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { BigNumber } from 'ethers';
-import { formatValue } from 'lib/string';
+import { BigNumber as BigNumberjs } from 'bignumber.js';
 import { SECONDS_PER_YEAR } from 'lib/datetime';
-import { RAY } from 'modules/web3/web3.constants';
+
+BigNumberjs.config({ POW_PRECISION: 100 });
+const RAY = new BigNumberjs('1e27');
 
 type TotalDaiResponse = {
-  data?: BigNumber | undefined;
+  data?: BigNumberjs | undefined;
   loading: boolean;
   error?: Error;
 };
@@ -16,13 +17,9 @@ export const useDaiSavingsRate = (): TotalDaiResponse => {
 
   const { data, error } = useSWR('dai-savings-rate', async () => {
     const dsr = await pot.dsr();
+    const annualDsr = new BigNumberjs(dsr._hex).div(RAY).pow(SECONDS_PER_YEAR).minus(1).times(100);
 
-    // this returns 1 when it should be 1000000000003170820659990704
-    // console.log(dsr.toNumber());
-    // console.log(dsr.div(RAY));
-
-    // return dsr.pow(SECONDS_PER_YEAR).sub(1);
-    return dsr;
+    return annualDsr;
   });
 
   return {
@@ -31,8 +28,3 @@ export const useDaiSavingsRate = (): TotalDaiResponse => {
     error
   };
 };
-
-// async getYearlyRate() {
-//   const dsr = new BigNumber((await this._pot.dsr())._hex).div(RAY);
-//   return dsr.pow(SECONDS_PER_YEAR).minus(1);
-// }
