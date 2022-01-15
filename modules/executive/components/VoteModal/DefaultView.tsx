@@ -102,55 +102,54 @@ export default function DefaultVoteModalView({
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
 
-    const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
-    const tx = await voteCall(slateOrProposals);
-
-    console.log('tx', tx);
-
+    // TODO need to handle these other account states:
     // const voteTxCreator = voteDelegate
     //   ? () => voteDelegate.voteExec(slateOrProposals)
     //   : voteProxy
     //   ? () => voteProxy.voteExec(slateOrProposals)
     //   : () => maker.service('chief').vote(slateOrProposals);
 
-    // const txId = await track(voteTxCreator, 'Voting on executive proposal', {
-    //   pending: txHash => {
-    //     // if comment included, add to comments db
-    //     if (comment.length > 0) {
-    //       const requestBody: ExecutiveCommentsRequestBody = {
-    //         voterAddress: account?.address || '',
-    //         delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
-    //         comment: comment,
-    //         voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
-    //         signedMessage: signedMessage,
-    //         txHash,
-    //         voterWeight: votingWeight
-    //       };
-    //       fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
-    //         method: 'POST',
-    //         body: JSON.stringify(requestBody)
-    //       })
-    //         .then(() => {
-    //           // console.log('comment successfully added');
-    //           mutateComments();
-    //         })
-    //         .catch(() => console.error('failed to add comment'));
-    //     }
+    const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
+    const voteTxCreator = () => voteCall(slateOrProposals);
 
-    //     onTransactionPending();
-    //   },
-    //   mined: txId => {
-    //     transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
-    //     mutateVotedProposals();
-    //     mutateMkrOnHat();
-    //     onTransactionMined();
-    //   },
-    //   error: () => {
-    //     onTransactionFailed();
-    //   }
-    // });
+    const txId = await track(voteTxCreator, 'Voting on executive proposal', {
+      pending: txHash => {
+        // if comment included, add to comments db
+        if (comment.length > 0) {
+          const requestBody: ExecutiveCommentsRequestBody = {
+            voterAddress: account?.address || '',
+            delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
+            comment: comment,
+            voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
+            signedMessage: signedMessage,
+            txHash,
+            voterWeight: votingWeight
+          };
+          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
+            method: 'POST',
+            body: JSON.stringify(requestBody)
+          })
+            .then(() => {
+              // console.log('comment successfully added');
+              mutateComments();
+            })
+            .catch(() => console.error('failed to add comment'));
+        }
 
-    // onTransactionCreated(txId);
+        onTransactionPending();
+      },
+      mined: txId => {
+        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+        mutateVotedProposals();
+        mutateMkrOnHat();
+        onTransactionMined();
+      },
+      error: () => {
+        onTransactionFailed();
+      }
+    });
+
+    onTransactionCreated(txId);
   };
 
   const GridBox = ({ bpi, children }) => (

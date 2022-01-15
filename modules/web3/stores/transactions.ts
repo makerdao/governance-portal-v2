@@ -1,9 +1,11 @@
 import create from 'zustand';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
-import getMaker from 'lib/maker';
+// import getMaker from 'lib/maker';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
+import { accountsApi } from '../../app/stores/accounts';
+import { ethers } from 'ethers';
 
 type Hooks = {
   pending?: (txHash: string) => void;
@@ -108,33 +110,61 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   },
 
   track: async (txCreator, message = '', hooks) => {
-    const maker = await getMaker();
-    const txPromise = txCreator();
-    // noop catch since we handle tx errors via the manager
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    txPromise.catch(() => {});
+    // TODO: this is just a hack for now, need to figure the best way to get default provider:
+    const network = 5;
+    const provider = ethers.getDefaultProvider(network);
+    const { address: from } = accountsApi.getState().currentAccount;
 
-    const from = maker.currentAddress();
     const txId = uuidv4();
 
     get().initTx(txId, from, message);
-    maker.service('transactionManager').listen(txPromise, {
-      pending: ({ hash }) => {
-        get().setPending(txId, hash);
-        if (typeof hooks?.pending === 'function') hooks.pending(hash);
-      },
-      mined: ({ hash }) => {
-        get().setMined(txId);
-        if (typeof hooks?.mined === 'function') hooks.mined(txId, hash);
-      },
-      error: (_, error) => {
-        get().setError(txId, error);
-        if (typeof hooks?.error === 'function') hooks.error();
-      }
+
+    const txPromise = txCreator();
+    const tx = await txPromise;
+    // console.log('tx', tx);
+
+    //Pending tx
+    get().setPending(txId, tx.hash);
+    if (typeof hooks?.pending === 'function') hooks.pending(tx.hash);
+
+    //Mined tx
+    provider.waitForTransaction(tx.hash).then(txn => {
+      get().setMined(txId);
+      if (typeof hooks?.mined === 'function') hooks.mined(txId, tx.hash);
     });
 
+    // Error tx
+    //TODO...
     return txId;
   }
+  // track: async (txCreator, message = '', hooks) => {
+  //   const maker = await getMaker();
+  //   const txPromise = txCreator();
+  //   // noop catch since we handle tx errors via the manager
+  //   // eslint-disable-next-line @typescript-eslint/no-empty-function
+  //   txPromise.catch(() => {});
+
+  //   const from = maker.currentAddress();
+  //   const txId = uuidv4();
+
+  //   get().initTx(txId, from, message);
+  //   maker.service('transactionManager').listen(txPromise, {
+  //     pending: ({ hash }) => {
+  //       get().setPending(txId, hash);
+  //       if (typeof hooks?.pending === 'function') hooks.pending(hash);
+  //     },
+  //     mined: ({ hash }) => {
+  //       get().setMined(txId);
+  //       if (typeof hooks?.mined === 'function') hooks.mined(txId, hash);
+  //     },
+  //     error: (_, error) => {
+  //       get().setError(txId, error);
+  //       if (typeof hooks?.error === 'function') hooks.error();
+  //     }
+  //   });
+
+  //   return txId;
+  // }
 }));
 
 const transactionsSelectors = {
