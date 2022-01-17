@@ -93,7 +93,6 @@ describe('Esmodule Page', async () => {
 
 // TODO: Initate emergency shutdown by burning 50000 MKR
 
-
 /*
 import { renderWithTheme, UINT256_MAX, WAD } from '../helpers';
 import { waitFor, screen, fireEvent } from '@testing-library/react';

@@ -14,12 +14,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install node packages
+        run: yarn
+
       - name: Cypress install
         uses: cypress-io/github-action@v2
         with:
           # Disable running of tests within install job
           runTests: false
           build: yarn build
+          install: false
 
       - run: yarn lint
 
@@ -67,8 +71,10 @@ jobs:
       - name: 'UI Tests - Chrome'
         uses: cypress-io/github-action@v2
         with:
+
           # we have already installed all dependencies above
           # use (install: false) if you want to do parallel jobs.
+          install: false
           start: yarn start:ci
           ## command: yarn run e2e:ci
           wait-on: 'http://localhost:3000'
