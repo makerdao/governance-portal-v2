@@ -64,7 +64,7 @@ export default function VotingWeight(props): JSX.Element {
         </Tooltip>
       </Flex>
       <Text sx={{ color: 'text' }}>
-        {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(2)} MKR` : '--'}
+        {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(3)} MKR` : '--'}
       </Text>
     </Flex>
   );

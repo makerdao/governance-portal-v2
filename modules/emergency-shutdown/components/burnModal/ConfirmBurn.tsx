@@ -138,7 +138,6 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           active={mkrApproved}
           onClick={giveProxyMkrAllowance}
           disabled={mkrApprovePending}
-          data-testid="allowance-toggle"
         />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
@@ -146,12 +145,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
       </Flex>
       <Flex sx={{ flexDirection: 'row', mt: 3 }}>
         <Label data-testid="tosCheck">
-          <Checkbox
-            checked={termsAccepted}
-            onChange={e => changeTerms(e)}
-            onClick={changeTerms}
-            
-          />
+          <Checkbox checked={termsAccepted} onChange={e => changeTerms(e)} onClick={changeTerms} />
           <Text>
             I have read and accept the{' '}
             <ExternalLink href="/terms" target="_blank">

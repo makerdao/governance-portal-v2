@@ -73,6 +73,8 @@ describe('Delegates Page', () => {
       // Inserts the amount of MKR to delegate
       cy.get('[data-testid="mkr-input"]').type('0.005');
 
+      cy.wait(1000);
+
       // Delegate
       cy.get('button').contains('Delegate MKR').click();
 
@@ -126,7 +128,7 @@ describe('Delegates Page', () => {
       closeModal();
 
       // Checks that the delegated amount has changed
-      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.00');
+      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.000');
       */
     });
   });

@@ -3,7 +3,7 @@ name: Cypress Tests
 on: [push]
 
 jobs:
-  install:
+  unit:
     runs-on: ubuntu-latest
     container: makerdaodux/cypress-dapptools-node-14:latest   
     env:
@@ -35,20 +35,19 @@ jobs:
           ./node_modules/.bin/codecov
           
       # Store built next data
-      - name: Save build folder
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          if-no-files-found: error
-          path: |
-            .next
-            public
+      # - name: Save build folder
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: build
+      #     if-no-files-found: error
+      #     path: |
+      #       .next
+      #       public
 
 
   ui-chrome-tests:
     runs-on: ubuntu-latest
     container: makerdaodux/cypress-dapptools-node-14:latest 
-    needs: install
     strategy:
       fail-fast: false
     env:
@@ -61,11 +60,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install node packages
+        run: yarn
+
       ## Download prebuilt next data
-      - name: Download the build folders
-        uses: actions/download-artifact@v2
-        with:
-          name: build
+      # - name: Download the build folders
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: build
           
 
       - name: 'UI Tests - Chrome'
