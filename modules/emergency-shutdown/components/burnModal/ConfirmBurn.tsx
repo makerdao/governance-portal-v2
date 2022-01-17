@@ -134,11 +134,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         </Box>
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-        <Toggle
-          active={mkrApproved}
-          onClick={giveProxyMkrAllowance}
-          disabled={mkrApprovePending}
-        />
+        <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
         </Flex>
