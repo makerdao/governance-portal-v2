@@ -76,7 +76,7 @@ export default function CategoryFilter({
           </Label>
         </Flex>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}  data-testid="checkbox-show-polls-ended">
+          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }} data-testid="checkbox-show-polls-ended">
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showPollEnded}
