@@ -8,7 +8,7 @@ import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCe
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
-import { useMkrBalance } from 'modules/web3/hooks/useMkrBalance';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useChiefContract';
@@ -36,7 +36,7 @@ export default function SystemStatsSidebar({
   const { data: totalDai } = useTotalDai();
   const { data: daiSavingsRate } = useDaiSavingsRate();
   const chiefAddress = useContractAddress('chief');
-  const { data: chiefBalance } = useMkrBalance(chiefAddress);
+  const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
   const pollingAddress = useContractAddress('polling');
 
   const statsMap = {
@@ -94,7 +94,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {mkrOnHat ? (
-            `${formatValue(mkrOnHat, 'rad', 0)} MKR`
+            `${formatValue(mkrOnHat, 'wad', 0)} MKR`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
