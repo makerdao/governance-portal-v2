@@ -6,6 +6,7 @@ import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../type
 import { parseTxError } from '../helpers/errors';
 import { accountsApi } from '../../app/stores/accounts';
 import { ethers } from 'ethers';
+import { getNetwork } from 'lib/maker';
 
 type Hooks = {
   pending?: (txHash: string) => void;
@@ -110,8 +111,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
   },
 
   track: async (txCreator, message = '', hooks) => {
-    // TODO: this is just a hack for now, need to figure the best way to get default provider:
-    const network = 5;
+    const network = getNetwork();
     const provider = ethers.getDefaultProvider(network);
     const account = accountsApi.getState().currentAccount;
 
