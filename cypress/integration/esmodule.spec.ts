@@ -3,7 +3,7 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount } from '../support/constants/testaccounts';
+import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Esmodule Page', async () => {
@@ -22,8 +22,7 @@ describe('Esmodule Page', async () => {
   it('Should be able to burn mkr', () => {
     visitPage('/esmodule');
 
-    const newAccount = getTestAccount();
-
+    const newAccount = getTestAccountByIndex(2);
 
     setAccount(newAccount, () => {
       cy.contains('Burn Your MKR').should('be.visible');

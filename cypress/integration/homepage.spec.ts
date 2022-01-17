@@ -4,7 +4,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
-import {  getTestAccount } from '../support/constants/testaccounts';
+import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
 import { elementContainsText, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
 
@@ -44,8 +44,7 @@ describe('Home Page', () => {
     // Start from the index page
     visitPage('/');
 
-    const newAccount = getTestAccount();
-
+    const newAccount = getTestAccountByIndex(4);
 
     setAccount(newAccount, () => {
       // Should find the connected

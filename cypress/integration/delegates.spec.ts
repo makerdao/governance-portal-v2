@@ -6,6 +6,7 @@
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
 import { closeModal, setAccount, visitPage } from '../support/commons';
+import { getTestAccountByIndex } from '../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
   it('should navigate to the delegates page and find a list of delegates', () => {
@@ -50,8 +51,7 @@ describe('Delegates Page', () => {
     // Start from the index page
     visitPage('/delegates');
 
-    const newAccount = getTestAccount();
-
+    const newAccount = getTestAccountByIndex(1);
 
     setAccount(newAccount, () => {
       // Should find the connected

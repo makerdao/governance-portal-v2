@@ -3,7 +3,7 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount } from 'cypress/support/constants/testaccounts';
+import { getTestAccountByIndex } from 'cypress/support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Account Page', async () => {
@@ -12,8 +12,7 @@ describe('Account Page', async () => {
 
     cy.contains('Connect your wallet to view information about your account').should('be.visible');
 
-    const newAccount = getTestAccount();
-
+    const newAccount = getTestAccountByIndex(0);
 
     setAccount(newAccount, async () => {
       cy.contains('No vote delegate contract detected').should('be.visible');

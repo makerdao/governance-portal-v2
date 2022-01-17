@@ -30,6 +30,7 @@ const usedAddresses = {};
 function getRandomNumber(max: number): number {
   return Math.floor(Math.random() * max);
 }
+
 export function getTestAccount(): TestAccount {
   // We only have seeded the first 50 accounts with 0.5 ETH and 0.01 MKR
   const MAX_ACCOUNT = 50;
@@ -44,6 +45,14 @@ export function getTestAccount(): TestAccount {
   return {
     address: keypairs.addresses[number],
     key: keypairs.keys[number],
+    name: 'Random test account;'
+  };
+}
+
+export function getTestAccountByIndex(i: number): TestAccount {
+  return {
+    address: keypairs.addresses[i],
+    key: keypairs.keys[i],
     name: 'Random test account;'
   };
 }

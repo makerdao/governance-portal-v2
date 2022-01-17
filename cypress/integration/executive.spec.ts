@@ -3,15 +3,14 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount, TEST_ACCOUNTS } from '../support/constants/testaccounts';
+import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Executive page', async () => {
   it('navigates to executives and can deposit into chief', () => {
     visitPage('/executive');
 
-    const newAccount = getTestAccount();
-
+    const newAccount = getTestAccountByIndex(3);
 
     setAccount(newAccount, () => {
       // Sees the "In voting contract" text
