@@ -1,5 +1,4 @@
 import useSWR from 'swr';
-import { ethers } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 
@@ -10,8 +9,18 @@ type UseDaiBalanceResponse = {
   mutate: () => void;
 };
 
-export const useMkrBalance = (): UseDaiBalanceResponse => {
-  const { account } = useActiveWeb3React();
+// takes optional address argument in case we are fetching a balance
+// other than for a connected account
+// if no address passed, assume we want connected account balance
+export const useMkrBalance = (address?: string): UseDaiBalanceResponse => {
+  let account;
+
+  if (address) {
+    account = address;
+  } else {
+    const activeWeb3 = useActiveWeb3React();
+    account = activeWeb3.account;
+  }
 
   const { mkr } = useContracts();
 
@@ -20,9 +29,7 @@ export const useMkrBalance = (): UseDaiBalanceResponse => {
       return 0;
     }
 
-    const balance = await mkr.balanceOf(account);
-
-    return ethers.utils.formatUnits(balance, 18);
+    return await mkr.balanceOf(account);
   });
 
   return {

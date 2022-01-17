@@ -1,36 +1,17 @@
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR, { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-
 import Stack from './layout/layouts/Stack';
-import getMaker, { DAI, getNetwork } from 'lib/maker';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { bigNumberKFormat, formatAddress, getEtherscanLink } from 'lib/utils';
-import BigNumber from 'bignumber.js';
-import { CurrencyObject } from 'modules/app/types/currency';
-
-async function getSystemStats(): Promise<
-  [CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]
-> {
-  const maker = await getMaker();
-  const hat = await maker.service('chief').getHat();
-  return Promise.all([
-    maker.service('chief').getApprovalCount(hat),
-    maker.service('mcd:savings').getYearlyRate(),
-    maker.service('mcd:systemData').getTotalDai(),
-    // @ts-ignore
-    DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling()),
-    maker.service('mcd:systemData').getSystemSurplus()
-  ]);
-}
-
-// if we are on the browser, trigger a prefetch as soon as possible
-if (typeof window !== 'undefined') {
-  getSystemStats().then(stats => {
-    mutate('/system-stats', stats, false);
-  });
-}
+import { getNetwork } from 'lib/maker';
+import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
+import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
+import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
+import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useMkrBalance } from 'modules/web3/hooks/useMkrBalance';
+import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
+import { formatValue } from 'lib/string';
+import { useContractAddress } from 'modules/web3/hooks/useChiefContract';
 
 type StatField =
   | 'chief contract'
@@ -49,22 +30,14 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const { data } = useSWR<[CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
-    '/system-stats-sidebar',
-    getSystemStats
-  );
-
-  const { data: chiefAddress } = useSWR<string>('/chief-address', () =>
-    getMaker().then(maker => maker.service('smartContract').getContract('MCD_ADM').address)
-  );
-
+  const { data: mkrOnHat } = useMkrOnHat();
+  const { data: debtCeiling } = useSystemWideDebtCeiling();
+  const { data: systemSurplus } = useSystemSurplus();
+  const { data: totalDai } = useTotalDai();
+  const { data: daiSavingsRate } = useDaiSavingsRate();
+  const chiefAddress = useContractAddress('chief');
   const { data: chiefBalance } = useMkrBalance(chiefAddress);
-
-  const { data: pollingAddress } = useSWR<string>('/polling-address', () =>
-    getMaker().then(maker => maker.service('smartContract').getContract('POLLING').address)
-  );
-
-  const [mkrOnHat, savingsRate, totalDai, debtCeiling, systemSurplus] = data || [];
+  const pollingAddress = useContractAddress('polling');
 
   const statsMap = {
     'chief contract': key => (
@@ -89,7 +62,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {chiefBalance ? (
-            `${chiefBalance.toBigNumber().toFormat(2)} MKR`
+            `${formatValue(chiefBalance, 'wad', 0)} MKR`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -121,7 +94,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {mkrOnHat ? (
-            `${mkrOnHat.toBigNumber().toFormat(2)} MKR`
+            `${formatValue(mkrOnHat, 'rad', 0)} MKR`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -135,8 +108,8 @@ export default function SystemStatsSidebar({
       <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
-          {savingsRate ? (
-            `${savingsRate.multipliedBy(100).toFixed(2)}%`
+          {daiSavingsRate ? (
+            `${daiSavingsRate.toFixed(2)}%`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -151,7 +124,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {totalDai ? (
-            `${bigNumberKFormat(totalDai)} DAI`
+            `${formatValue(totalDai, 'rad', 0)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -166,7 +139,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {debtCeiling ? (
-            `${bigNumberKFormat(debtCeiling)} DAI`
+            `${formatValue(debtCeiling, 'rad', 0)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
@@ -181,7 +154,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {systemSurplus ? (
-            `${systemSurplus.toBigNumber().toFormat(0)} DAI`
+            `${formatValue(systemSurplus, 'rad', 0)} DAI`
           ) : (
             <Box sx={{ width: 6 }}>
               <Skeleton />
