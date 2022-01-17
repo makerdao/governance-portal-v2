@@ -11,7 +11,7 @@ type TotalDaiResponse = {
 export const useTotalDai = (): TotalDaiResponse => {
   const { vat } = useContracts();
 
-  const { data, error } = useSWR('total-dai', async () => {
+  const { data, error } = useSWR(`${vat.address}/total-dai`, async () => {
     return await vat.debt();
   });
 

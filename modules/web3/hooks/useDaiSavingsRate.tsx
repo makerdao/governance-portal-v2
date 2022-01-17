@@ -15,7 +15,7 @@ type TotalDaiResponse = {
 export const useDaiSavingsRate = (): TotalDaiResponse => {
   const { pot } = useContracts();
 
-  const { data, error } = useSWR('dai-savings-rate', async () => {
+  const { data, error } = useSWR(`${pot.address}/dai-savings-rate`, async () => {
     const dsr = await pot.dsr();
     const annualDsr = new BigNumberjs(dsr._hex).div(RAY).pow(SECONDS_PER_YEAR).minus(1).times(100);
 

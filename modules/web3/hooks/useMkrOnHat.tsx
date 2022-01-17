@@ -11,7 +11,7 @@ type MkrOnHatResponse = {
 export const useMkrOnHat = (): MkrOnHatResponse => {
   const { chief } = useContracts();
 
-  const { data, error } = useSWR('mkr-on-hat', async () => {
+  const { data, error } = useSWR(`${chief.address}/mkr-on-hat`, async () => {
     const hatAddress = await chief.hat();
     return await chief.approvals(hatAddress);
   });

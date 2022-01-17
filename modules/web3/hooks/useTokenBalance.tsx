@@ -26,7 +26,7 @@ export const useTokenBalance = (token: TokenName, address?: string): UseTokenBal
   const contracts = useContracts();
   const tokenContract = contracts[token];
 
-  const { data, error, mutate } = useSWR(`${token}-balance/${account}`, async () => {
+  const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-balance/${account}`, async () => {
     if (!account) {
       return 0;
     }
