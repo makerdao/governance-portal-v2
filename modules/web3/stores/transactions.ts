@@ -113,7 +113,11 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     // TODO: this is just a hack for now, need to figure the best way to get default provider:
     const network = 5;
     const provider = ethers.getDefaultProvider(network);
-    const { address: from } = accountsApi.getState().currentAccount;
+    const account = accountsApi.getState().currentAccount;
+
+    if (!account) return;
+
+    const from = account.address;
 
     const txId = uuidv4();
 
