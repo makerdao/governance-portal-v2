@@ -3,9 +3,8 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from '../support/commons/token.helpers';
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
-import { TEST_ACCOUNTS, getTestAccount } from '../support/constants/testaccounts';
+import {  getTestAccount } from '../support/constants/testaccounts';
 import { elementContainsText, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
 
@@ -47,10 +46,6 @@ describe('Home Page', () => {
 
     const newAccount = getTestAccount();
 
-    sendMKR(newAccount.address, 0.5);
-    cy.wait(1500);
-    sendETH(newAccount.address, 0.5);
-    cy.wait(1500);
 
     setAccount(newAccount, () => {
       // Should find the connected
@@ -60,7 +55,7 @@ describe('Home Page', () => {
       //click on account modal
       modalAddressEquals(formatAddress(newAccount.address));
 
-      modalPollingWeightEquals('0.50 MKR');
+      modalPollingWeightEquals('0.10 MKR');
 
       // Save screenshot
       cy.screenshot('test');

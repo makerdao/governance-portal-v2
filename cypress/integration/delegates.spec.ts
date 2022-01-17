@@ -3,7 +3,6 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
 import { closeModal, setAccount, visitPage } from '../support/commons';
@@ -53,10 +52,6 @@ describe('Delegates Page', () => {
 
     const newAccount = getTestAccount();
 
-    sendMKR(newAccount.address, 0.5);
-    cy.wait(1500);
-    sendETH(newAccount.address, 0.5);
-    cy.wait(1500);
 
     setAccount(newAccount, () => {
       // Should find the connected
@@ -76,7 +71,7 @@ describe('Delegates Page', () => {
       cy.contains('Deposit into delegate contract').should('be.visible');
 
       // Inserts the amount of MKR to delegate
-      cy.get('[data-testid="mkr-input"]').type('0.5');
+      cy.get('[data-testid="mkr-input"]').type('0.005');
 
       // Delegate
       cy.get('button').contains('Delegate MKR').click();
@@ -100,7 +95,7 @@ describe('Delegates Page', () => {
       closeModal();
 
       // Checks that the delegated amount has appeared
-      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.50');
+      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.005');
 
       // Find the undelegate button
       cy.get('[data-testid="button-undelegate"]').first().click();

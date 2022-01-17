@@ -3,9 +3,8 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from '../support/commons/token.helpers';
-import { getTestAccount, TEST_ACCOUNTS } from '../support/constants/testaccounts';
-import { closeModal, setAccount, visitPage } from '../support/commons';
+import { getTestAccount } from '../support/constants/testaccounts';
+import { setAccount, visitPage } from '../support/commons';
 
 describe('Esmodule Page', async () => {
   it('should navigate to the es module page', () => {
@@ -24,11 +23,7 @@ describe('Esmodule Page', async () => {
     visitPage('/esmodule');
 
     const newAccount = getTestAccount();
-    sendETH(newAccount.address, 0.5);
 
-    cy.wait(1500);
-    sendMKR(newAccount.address, 0.5);
-    cy.wait(1500);
 
     setAccount(newAccount, () => {
       cy.contains('Burn Your MKR').should('be.visible');

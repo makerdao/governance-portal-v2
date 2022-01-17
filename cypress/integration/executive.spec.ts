@@ -3,7 +3,6 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from '../support/commons/token.helpers';
 import { getTestAccount, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
@@ -13,10 +12,6 @@ describe('Executive page', async () => {
 
     const newAccount = getTestAccount();
 
-    sendMKR(newAccount.address, 0.5);
-    cy.wait(1500);
-    sendETH(newAccount.address, 0.5);
-    cy.wait(1500);
 
     setAccount(newAccount, () => {
       // Sees the "In voting contract" text

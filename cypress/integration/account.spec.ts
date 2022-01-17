@@ -3,7 +3,6 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { sendETH, sendMKR } from 'cypress/support/commons/token.helpers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
@@ -15,11 +14,6 @@ describe('Account Page', async () => {
 
     const newAccount = getTestAccount();
 
-    cy.wait(1500);
-    sendETH(newAccount.address, 0.5);
-
-    cy.wait(1500);
-    sendMKR(newAccount.address, 0.5);
 
     setAccount(newAccount, async () => {
       cy.contains('No vote delegate contract detected').should('be.visible');

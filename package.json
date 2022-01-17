@@ -16,7 +16,7 @@
     "e2e:headless": "npm run fund && start-server-and-test dev http://localhost:3000 cypress:headless",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "fund": "npx hardhat run scripts/setup.js --network hardhat",
+    "fund": "npx hardhat run scripts/setup.js --network localhost",
     "hardhat": "npx hardhat node --network hardhat ",
     "hardhat:detached": "npm run hardhat & TASKHARDHAT_PID=$!",
     "start:detached": "yarn dev && kill $TASKHARDHAT_PID",

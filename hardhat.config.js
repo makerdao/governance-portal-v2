@@ -13,7 +13,7 @@ module.exports = {
     localhost: {
       url: 'http://127.0.0.1:8545',
       timeout: 2000000,
-      chainId: 1337
+      chainId: 31337
     },
 
     hardhat: {
