@@ -1,26 +1,11 @@
 import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import getMaker from 'lib/maker';
-import BigNumber from 'bignumber.js';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { formatValue } from 'lib/string';
-
-async function getSystemStats(): Promise<[BigNumber]> {
-  const maker = await getMaker();
-  return Promise.all([maker.service('mcd:savings').getYearlyRate()]);
-}
-
-// if we are on the browser, trigger a prefetch as soon as possible
-if (typeof window !== 'undefined') {
-  getSystemStats().then(stats => {
-    mutate('/system-stats', stats, false);
-  });
-}
 
 export default function SystemStats(): JSX.Element {
   const { data: totalDai } = useTotalDai();
