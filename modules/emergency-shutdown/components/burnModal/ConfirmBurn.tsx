@@ -145,12 +145,12 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-        <Label>
+        <Label data-testid="tosCheck">
           <Checkbox
             checked={termsAccepted}
             onChange={e => changeTerms(e)}
             onClick={changeTerms}
-            data-testid="tosCheck"
+            
           />
           <Text>
             I have read and accept the{' '}

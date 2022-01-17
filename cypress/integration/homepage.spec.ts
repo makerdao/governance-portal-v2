@@ -54,7 +54,7 @@ describe('Home Page', () => {
       //click on account modal
       modalAddressEquals(formatAddress(newAccount.address));
 
-      modalPollingWeightEquals('0.10 MKR');
+      modalPollingWeightEquals('0.01 MKR');
 
       // Save screenshot
       cy.screenshot('test');
