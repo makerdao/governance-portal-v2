@@ -12,7 +12,12 @@ export function cutMiddle(text = '', left = 6, right = 4): string {
 
 const builtInUnits = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'];
 
-export function formatValue(value: BigNumber, type: string | number, dp = 2, withCommas = true): string {
+export function formatValue(
+  value: BigNumber,
+  type: string | number = 'wad',
+  dp = 2,
+  withCommas = true
+): string {
   if (typeof type === 'string') {
     if (!builtInUnits.includes(type)) {
       switch (type) {

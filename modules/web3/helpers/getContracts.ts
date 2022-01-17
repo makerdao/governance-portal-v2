@@ -1,8 +1,8 @@
 import { ethers, Signer } from 'ethers';
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
 import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
+import { Web3Provider } from '@ethersproject/providers';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 
@@ -17,7 +17,11 @@ const sdks: Sdks = {
 };
 
 // this name doesn't feel right, maybe getSdk? or getContractLibrary?
-export const getContracts = (chainId?: number, library?: AbstractConnector): EthSdk => {
+export const getContracts = (
+  chainId?: number,
+  library?: Web3Provider,
+  account?: string | undefined | null
+): EthSdk => {
   const network = chainId ? CHAIN_INFO[chainId].network : SupportedNetworks.MAINNET;
   const provider = ethers.getDefaultProvider(network);
 
@@ -28,7 +32,8 @@ export const getContracts = (chainId?: number, library?: AbstractConnector): Eth
   eth-sdk only accepts a signer for now, but there's an issue for it
   https://github.com/dethcrypto/eth-sdk/issues/63
   */
-  const signer = library ?? new ethers.VoidSigner(ZERO_ADDRESS, provider);
+  const signer =
+    account && library ? library.getSigner(account) : new ethers.VoidSigner(ZERO_ADDRESS, provider);
 
   return sdks[network](signer);
 };

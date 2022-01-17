@@ -2,17 +2,17 @@ import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
 
-type TotalDaiResponse = {
+type SystemWideDebtCeilingResponse = {
   data?: BigNumber | undefined;
   loading: boolean;
   error?: Error;
 };
 
-export const useTotalDai = (): TotalDaiResponse => {
+export const useSystemWideDebtCeiling = (): SystemWideDebtCeilingResponse => {
   const { vat } = useContracts();
 
-  const { data, error } = useSWR(`${vat.address}/total-dai`, async () => {
-    return await vat.debt();
+  const { data, error } = useSWR(`${vat.address}/system-wide-debt-ceiling`, async () => {
+    return await vat.Line();
   });
 
   return {
