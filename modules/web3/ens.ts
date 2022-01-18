@@ -1,23 +1,33 @@
-import ENS from 'ethereum-ens';
-import getMaker from 'lib/maker';
+import { ethers } from 'ethers';
+import { config } from 'lib/config';
+import { SupportedNetworks } from 'lib/constants';
 
-export async function getENS(address: string): Promise<string> {
-  const maker = await getMaker();
+export async function getENS(address: string): Promise<string | null> {
+  const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
+    infura: config.INFURA_KEY,
+    alchemy: config.ALCHEMY_KEY
+  });
 
-  const provider = maker.service('web3')._web3.currentProvider;
-
-  const ens = new ENS(provider);
-
-  const resolver = await ens.reverse(address);
-  return await resolver.name();
+  try {
+    const name = await provider.lookupAddress(address);
+    return name;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }
 
-export async function resolveENS(ensName: string): Promise<string> {
-  const maker = await getMaker();
+export async function resolveENS(ensName: string): Promise<string | null> {
+  const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
+    infura: config.INFURA_KEY,
+    alchemy: config.ALCHEMY_KEY
+  });
 
-  const provider = maker.service('web3')._web3.currentProvider;
-
-  const ens = new ENS(provider);
-
-  return await ens.resolver(ensName).addr();
+  try {
+    const address = await provider.resolveName(ensName);
+    return address;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
 }

@@ -24,8 +24,17 @@ import BigNumber from 'bignumber.js';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
+const ModalContent = ({
+  address,
+  voteProxy,
+  close
+}: {
+  address: string;
+  voteProxy: VoteProxyContract | null;
+  close: () => void;
+}): React.ReactElement => {
   invariant(address);
   const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
@@ -57,7 +66,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   );
 
   return (
-    <BoxWithClose close={close} {...props}>
+    <BoxWithClose close={close}>
       <Box>
         {tx && (
           <Stack sx={{ textAlign: 'center' }}>
@@ -130,7 +139,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           </Stack>
         )}
         {!tx && !hasLargeMkrAllowance && (
-          <Stack gap={3} {...props}>
+          <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" color="onBackgroundAlt">
                 Approve voting contract
@@ -176,7 +185,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   );
 };
 
-const Deposit = (props): JSX.Element => {
+const Deposit = ({ link }: { link?: string }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -216,19 +225,22 @@ const Deposit = (props): JSX.Element => {
                 }
           }
         >
-          <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
+          <ModalContent
+            address={account?.address || ''}
+            voteProxy={voteProxy}
+            close={() => setShowDialog(false)}
+          />
         </DialogContent>
       </DialogOverlay>
-      {props.link ? (
+      {link ? (
         <Link
           onClick={() => {
             trackButtonClick('btn-click');
             open();
           }}
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-          {...props}
         >
-          {props.link}
+          {link}
         </Link>
       ) : (
         <Button
@@ -238,7 +250,6 @@ const Deposit = (props): JSX.Element => {
             open();
           }}
           data-testid="deposit-button"
-          {...props}
         >
           Deposit
         </Button>

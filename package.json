@@ -2,6 +2,9 @@
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
   "version": "0.2.6",
+  "jest": {
+    "testTimeout": 7000
+  },
   "scripts": {
     "prepare": "husky install",
     "dev": "next",
@@ -53,7 +56,6 @@
     "d3-selection": "^3.0.0",
     "date-fns": "^2.24.0",
     "date-fns-tz": "^1.1.6",
-    "ethereum-ens": "^0.8.0",
     "gray-matter": "^4.0.2",
     "hardhat": "^2.8.2",
     "ipfs-only-hash": "^2.0.1",

@@ -23,7 +23,6 @@ describe('Executive page', async () => {
       cy.get('[data-testid="deposit-approve-button"]').click();
 
       // Wait until transaction completes
-      cy.contains('/Confirm Transaction/').should('be.visible');
 
       cy.contains('/Transaction Pending/').should('be.visible');
 
