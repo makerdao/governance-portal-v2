@@ -77,6 +77,8 @@ describe('Esmodule Page', async () => {
       // Close modal
       cy.contains('Close').click();
 
+      cy.wait(1500)
+
       // The total burned increased
       cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.421110/);
     });
