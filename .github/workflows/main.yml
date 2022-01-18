@@ -1,0 +1,37 @@
+name: CI Tests
+
+on: [push]
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    container: makerdaodux/cypress-dapptools-node-14:latest   
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      USE_FS_CACHE: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install node packages
+        run: yarn
+
+      - name: Cypress install
+        uses: cypress-io/github-action@v2
+        with:
+          # Disable running of tests within install job
+          runTests: false
+          build: yarn build
+          install: false
+
+      - run: yarn lint
+
+      - run: yarn test:ci
+
+      - name: Codecov
+        run: |
+          yarn add --dev codecov
+          ./node_modules/.bin/codecov
+          
+    
