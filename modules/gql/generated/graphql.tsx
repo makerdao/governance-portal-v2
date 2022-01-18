@@ -771,7 +771,6 @@ export type Query = Node & {
   voteOptionMkrWeightsCurrently: VoteOptionMkrWeightsCurrentlyConnection;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryActivePollsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -781,7 +780,6 @@ export type QueryActivePollsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryAllCurrentVotesArgs = {
@@ -794,7 +792,6 @@ export type QueryAllCurrentVotesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryAllCurrentVotesArrayArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -806,7 +803,6 @@ export type QueryAllCurrentVotesArrayArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryAllDelegatesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -817,7 +813,6 @@ export type QueryAllDelegatesArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryAllEsmJoinsArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -827,7 +822,6 @@ export type QueryAllEsmJoinsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryBuggyVoteAddressMkrWeightsAtTimeArgs = {
@@ -841,7 +835,6 @@ export type QueryBuggyVoteAddressMkrWeightsAtTimeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryBuggyVoteMkrWeightsAtTimeRankedChoiceArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -854,7 +847,6 @@ export type QueryBuggyVoteMkrWeightsAtTimeRankedChoiceArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryCombinedChiefAndMkrBalancesArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -865,7 +857,6 @@ export type QueryCombinedChiefAndMkrBalancesArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryCombinedChiefAndMkrBalancesAtTimeArgs = {
@@ -878,7 +869,6 @@ export type QueryCombinedChiefAndMkrBalancesAtTimeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryCombinedChiefAndMkrBalancesCurrentlyArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -888,7 +878,6 @@ export type QueryCombinedChiefAndMkrBalancesCurrentlyArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryCurrentVoteArgs = {
@@ -902,7 +891,6 @@ export type QueryCurrentVoteArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryCurrentVoteRankedChoiceArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -915,7 +903,6 @@ export type QueryCurrentVoteRankedChoiceArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryHotOrColdWeightArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -926,7 +913,6 @@ export type QueryHotOrColdWeightArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryHotOrColdWeightAtTimeArgs = {
@@ -939,7 +925,6 @@ export type QueryHotOrColdWeightAtTimeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryHotOrColdWeightCurrentlyArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -950,12 +935,10 @@ export type QueryHotOrColdWeightCurrentlyArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryNodeArgs = {
   nodeId: Scalars['ID'];
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryTimeToBlockNumberArgs = {
@@ -967,7 +950,6 @@ export type QueryTimeToBlockNumberArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryTotalMkrWeightProxyAndNoProxyByAddressArgs = {
@@ -981,7 +963,6 @@ export type QueryTotalMkrWeightProxyAndNoProxyByAddressArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryTotalMkrWeightProxyAndNoProxyByAddressAtTimeArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -994,7 +975,6 @@ export type QueryTotalMkrWeightProxyAndNoProxyByAddressAtTimeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryTotalMkrWeightProxyAndNoProxyByAddressCurrentlyArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1006,7 +986,6 @@ export type QueryTotalMkrWeightProxyAndNoProxyByAddressCurrentlyArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryUniqueVotersArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1016,7 +995,6 @@ export type QueryUniqueVotersArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryVoteAddressMkrWeightsAtTimeArgs = {
@@ -1030,7 +1008,6 @@ export type QueryVoteAddressMkrWeightsAtTimeArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryVoteMkrWeightsAtTimeRankedChoiceArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1042,7 +1019,6 @@ export type QueryVoteMkrWeightsAtTimeRankedChoiceArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryVoteOptionMkrWeightsArgs = {
@@ -1056,7 +1032,6 @@ export type QueryVoteOptionMkrWeightsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
 };
 
-
 /** The root query type which gives access points into the data universe. */
 export type QueryVoteOptionMkrWeightsAtTimeArgs = {
   after?: InputMaybe<Scalars['Cursor']>;
@@ -1068,7 +1043,6 @@ export type QueryVoteOptionMkrWeightsAtTimeArgs = {
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
 };
-
 
 /** The root query type which gives access points into the data universe. */
 export type QueryVoteOptionMkrWeightsCurrentlyArgs = {
@@ -1502,4037 +1476,4037 @@ export type VoteOptionMkrWeightsRecordFilter = {
 
 import { IntrospectionQuery } from 'graphql';
 export default {
-  "__schema": {
-    "queryType": {
-      "name": "Query"
+  __schema: {
+    queryType: {
+      name: 'Query'
     },
-    "mutationType": null,
-    "subscriptionType": null,
-    "types": [
+    mutationType: null,
+    subscriptionType: null,
+    types: [
       {
-        "kind": "OBJECT",
-        "name": "ActivePollEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ActivePollEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ActivePollsRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'ActivePollsRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "ActivePollsConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ActivePollsConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ActivePollEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ActivePollEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ActivePollsRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'ActivePollsRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "ActivePollsRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'ActivePollsRecord',
+        fields: [
           {
-            "name": "blockCreated",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockCreated',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "creator",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'creator',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "endDate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'endDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "multiHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'multiHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "pollId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'pollId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "startDate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'startDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "url",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'url',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVoteEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVoteEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AllCurrentVotesRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllCurrentVotesRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVotesArrayConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVotesArrayConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AllCurrentVotesArrayEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllCurrentVotesArrayEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AllCurrentVotesArrayRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllCurrentVotesArrayRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVotesArrayEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVotesArrayEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AllCurrentVotesArrayRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllCurrentVotesArrayRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVotesArrayRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVotesArrayRecord',
+        fields: [
           {
-            "name": "blockTimestamp",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "pollId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'pollId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "voter",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'voter',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVotesConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVotesConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AllCurrentVoteEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllCurrentVoteEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AllCurrentVotesRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllCurrentVotesRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllCurrentVotesRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllCurrentVotesRecord',
+        fields: [
           {
-            "name": "blockTimestamp",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "pollId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'pollId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllDelegateEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllDelegateEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AllDelegatesRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllDelegatesRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllDelegatesConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllDelegatesConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AllDelegateEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllDelegateEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AllDelegatesRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllDelegatesRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllDelegatesRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllDelegatesRecord',
+        fields: [
           {
-            "name": "blockTimestamp",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "delegate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'delegate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "voteDelegate",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'voteDelegate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllEsmJoinEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllEsmJoinEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AllEsmJoinsRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllEsmJoinsRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllEsmJoinsConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllEsmJoinsConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AllEsmJoinEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllEsmJoinEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AllEsmJoinsRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllEsmJoinsRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "AllEsmJoinsRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'AllEsmJoinsRecord',
+        fields: [
           {
-            "name": "blockTimestamp",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "joinAmount",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'joinAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "txFrom",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'txFrom',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "txHash",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'txHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteAddressMkrWeightsAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteAddressMkrWeightsAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "BuggyVoteAddressMkrWeightsAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'BuggyVoteAddressMkrWeightsAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "BuggyVoteAddressMkrWeightsAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'BuggyVoteAddressMkrWeightsAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteAddressMkrWeightsAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteAddressMkrWeightsAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BuggyVoteAddressMkrWeightsAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'BuggyVoteAddressMkrWeightsAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteAddressMkrWeightsAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteAddressMkrWeightsAtTimeRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "voter",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'voter',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalanceEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalanceEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CombinedChiefAndMkrBalancesRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'CombinedChiefAndMkrBalancesRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CombinedChiefAndMkrBalancesAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'CombinedChiefAndMkrBalancesAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CombinedChiefAndMkrBalancesAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'CombinedChiefAndMkrBalancesAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CombinedChiefAndMkrBalancesAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'CombinedChiefAndMkrBalancesAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesAtTimeRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "mkrAndChiefBalance",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrAndChiefBalance',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CombinedChiefAndMkrBalanceEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'CombinedChiefAndMkrBalanceEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CombinedChiefAndMkrBalancesRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'CombinedChiefAndMkrBalancesRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesCurrentlyConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesCurrentlyConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CombinedChiefAndMkrBalancesCurrentlyEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'CombinedChiefAndMkrBalancesCurrentlyEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CombinedChiefAndMkrBalancesCurrentlyRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'CombinedChiefAndMkrBalancesCurrentlyRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesCurrentlyEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesCurrentlyEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CombinedChiefAndMkrBalancesCurrentlyRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'CombinedChiefAndMkrBalancesCurrentlyRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesCurrentlyRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesCurrentlyRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "mkrAndChiefBalance",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrAndChiefBalance',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CombinedChiefAndMkrBalancesRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CombinedChiefAndMkrBalancesRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "mkrAndChiefBalance",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrAndChiefBalance',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CurrentVoteEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'CurrentVoteEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CurrentVoteRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'CurrentVoteRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CurrentVoteRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'CurrentVoteRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteRankedChoiceConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteRankedChoiceConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "CurrentVoteRankedChoiceEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'CurrentVoteRankedChoiceEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CurrentVoteRankedChoiceRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'CurrentVoteRankedChoiceRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteRankedChoiceEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteRankedChoiceEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "CurrentVoteRankedChoiceRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'CurrentVoteRankedChoiceRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteRankedChoiceRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteRankedChoiceRecord',
+        fields: [
           {
-            "name": "blockId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "CurrentVoteRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'CurrentVoteRecord',
+        fields: [
           {
-            "name": "blockId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HotOrColdWeightAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HotOrColdWeightAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "HotOrColdWeightAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'HotOrColdWeightAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "HotOrColdWeightAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'HotOrColdWeightAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightAtTimeRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "totalWeight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'totalWeight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HotOrColdWeightEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HotOrColdWeightEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "HotOrColdWeightRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'HotOrColdWeightRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightCurrentlyConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightCurrentlyConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HotOrColdWeightCurrentlyEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'HotOrColdWeightCurrentlyEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "HotOrColdWeightCurrentlyRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'HotOrColdWeightCurrentlyRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightCurrentlyEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightCurrentlyEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "HotOrColdWeightCurrentlyRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'HotOrColdWeightCurrentlyRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightCurrentlyRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightCurrentlyRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "totalWeight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'totalWeight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "HotOrColdWeightRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'HotOrColdWeightRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "HotOrColdWeightRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'HotOrColdWeightRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "totalWeight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'totalWeight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "INTERFACE",
-        "name": "Node",
-        "fields": [
+        kind: 'INTERFACE',
+        name: 'Node',
+        fields: [
           {
-            "name": "nodeId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
+            name: 'nodeId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any'
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": [],
-        "possibleTypes": [
+        interfaces: [],
+        possibleTypes: [
           {
-            "kind": "OBJECT",
-            "name": "Query"
+            kind: 'OBJECT',
+            name: 'Query'
           }
         ]
       },
       {
-        "kind": "OBJECT",
-        "name": "Query",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'Query',
+        fields: [
           {
-            "name": "activePolls",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ActivePollsConnection",
-                "ofType": null
+            name: 'activePolls',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ActivePollsConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "allCurrentVotes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AllCurrentVotesConnection",
-                "ofType": null
+            name: 'allCurrentVotes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllCurrentVotesConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "allCurrentVotesArray",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AllCurrentVotesArrayConnection",
-                "ofType": null
+            name: 'allCurrentVotesArray',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllCurrentVotesArrayConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "LIST",
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'LIST',
+                    ofType: {
+                      kind: 'SCALAR',
+                      name: 'Any'
                     }
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              }
-            ]
-          },
-          {
-            "name": "allDelegates",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AllDelegatesConnection",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "allEsmJoins",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "AllEsmJoinsConnection",
-                "ofType": null
+            name: 'allDelegates',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllDelegatesConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "buggyVoteAddressMkrWeightsAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BuggyVoteAddressMkrWeightsAtTimeConnection",
-                "ofType": null
+            name: 'allEsmJoins',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllEsmJoinsConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "buggyVoteMkrWeightsAtTimeRankedChoice",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "BuggyVoteMkrWeightsAtTimeRankedChoiceConnection",
-                "ofType": null
+            name: 'buggyVoteAddressMkrWeightsAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'BuggyVoteAddressMkrWeightsAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "combinedChiefAndMkrBalances",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CombinedChiefAndMkrBalancesConnection",
-                "ofType": null
+            name: 'buggyVoteMkrWeightsAtTimeRankedChoice',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'BuggyVoteMkrWeightsAtTimeRankedChoiceConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argBlockNumber",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "combinedChiefAndMkrBalancesAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CombinedChiefAndMkrBalancesAtTimeConnection",
-                "ofType": null
+            name: 'combinedChiefAndMkrBalances',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CombinedChiefAndMkrBalancesConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argBlockNumber',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "combinedChiefAndMkrBalancesCurrently",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CombinedChiefAndMkrBalancesCurrentlyConnection",
-                "ofType": null
+            name: 'combinedChiefAndMkrBalancesAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CombinedChiefAndMkrBalancesAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "currentVote",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CurrentVoteConnection",
-                "ofType": null
+            name: 'combinedChiefAndMkrBalancesCurrently',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CombinedChiefAndMkrBalancesCurrentlyConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
-                }
-              },
-              {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "currentVoteRankedChoice",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "CurrentVoteRankedChoiceConnection",
-                "ofType": null
+            name: 'currentVote',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CurrentVoteConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "hotOrColdWeight",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "HotOrColdWeightConnection",
-                "ofType": null
+            name: 'currentVoteRankedChoice',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'CurrentVoteRankedChoiceConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argBlockNumber",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "hotOrColdWeightAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "HotOrColdWeightAtTimeConnection",
-                "ofType": null
+            name: 'hotOrColdWeight',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'HotOrColdWeightConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argBlockNumber',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "hotOrColdWeightCurrently",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "HotOrColdWeightCurrentlyConnection",
-                "ofType": null
+            name: 'hotOrColdWeightAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'HotOrColdWeightAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
+            name: 'hotOrColdWeightCurrently',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'HotOrColdWeightCurrentlyConnection',
+                ofType: null
+              }
             },
-            "args": [
+            args: [
               {
-                "name": "nodeId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'INTERFACE',
+              name: 'Node',
+              ofType: null
+            },
+            args: [
+              {
+                name: 'nodeId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               }
             ]
           },
           {
-            "name": "nodeId",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
+            name: 'nodeId',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'SCALAR',
+                name: 'Any'
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "query",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Query",
-                "ofType": null
+            name: 'query',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'Query',
+                ofType: null
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "timeToBlockNumber",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "TimeToBlockNumberConnection",
-                "ofType": null
+            name: 'timeToBlockNumber',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'TimeToBlockNumberConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "totalMkrWeightProxyAndNoProxyByAddress",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "TotalMkrWeightProxyAndNoProxyByAddressConnection",
-                "ofType": null
+            name: 'totalMkrWeightProxyAndNoProxyByAddress',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'TotalMkrWeightProxyAndNoProxyByAddressConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argBlockNumber",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argBlockNumber',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "totalMkrWeightProxyAndNoProxyByAddressAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeConnection",
-                "ofType": null
+            name: 'totalMkrWeightProxyAndNoProxyByAddressAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "totalMkrWeightProxyAndNoProxyByAddressCurrently",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyConnection",
-                "ofType": null
+            name: 'totalMkrWeightProxyAndNoProxyByAddressCurrently',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argAddress",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "uniqueVoters",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "UniqueVotersConnection",
-                "ofType": null
+            name: 'uniqueVoters',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'UniqueVotersConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "voteAddressMkrWeightsAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "VoteAddressMkrWeightsAtTimeConnection",
-                "ofType": null
+            name: 'voteAddressMkrWeightsAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'VoteAddressMkrWeightsAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "voteMkrWeightsAtTimeRankedChoice",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "VoteMkrWeightsAtTimeRankedChoiceConnection",
-                "ofType": null
+            name: 'voteMkrWeightsAtTimeRankedChoice',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'VoteMkrWeightsAtTimeRankedChoiceConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "voteOptionMkrWeights",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "VoteOptionMkrWeightsConnection",
-                "ofType": null
+            name: 'voteOptionMkrWeights',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'VoteOptionMkrWeightsConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argBlockNumber",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argBlockNumber',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "voteOptionMkrWeightsAtTime",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "VoteOptionMkrWeightsAtTimeConnection",
-                "ofType": null
+            name: 'voteOptionMkrWeightsAtTime',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'VoteOptionMkrWeightsAtTimeConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "argUnix",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argUnix',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           },
           {
-            "name": "voteOptionMkrWeightsCurrently",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "VoteOptionMkrWeightsCurrentlyConnection",
-                "ofType": null
+            name: 'voteOptionMkrWeightsCurrently',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'VoteOptionMkrWeightsCurrentlyConnection',
+                ofType: null
               }
             },
-            "args": [
+            args: [
               {
-                "name": "after",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "argPollId",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
                   }
                 }
               },
               {
-                "name": "before",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "filter",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "first",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "last",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               },
               {
-                "name": "offset",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             ]
           }
         ],
-        "interfaces": [
+        interfaces: [
           {
-            "kind": "INTERFACE",
-            "name": "Node"
+            kind: 'INTERFACE',
+            name: 'Node'
           }
         ]
       },
       {
-        "kind": "OBJECT",
-        "name": "TimeToBlockNumberConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TimeToBlockNumberConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "TimeToBlockNumberEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'TimeToBlockNumberEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TimeToBlockNumberEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TimeToBlockNumberEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'node',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressAtTimeRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "weight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'weight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "TotalMkrWeightProxyAndNoProxyByAddressEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'TotalMkrWeightProxyAndNoProxyByAddressEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TotalMkrWeightProxyAndNoProxyByAddressRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'TotalMkrWeightProxyAndNoProxyByAddressRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressCurrentlyRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "weight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'weight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "TotalMkrWeightProxyAndNoProxyByAddressRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'TotalMkrWeightProxyAndNoProxyByAddressRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "TotalMkrWeightProxyAndNoProxyByAddressRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'TotalMkrWeightProxyAndNoProxyByAddressRecord',
+        fields: [
           {
-            "name": "address",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'address',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "weight",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'weight',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "UniqueVoterEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'UniqueVoterEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'node',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "UniqueVotersConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'UniqueVotersConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "UniqueVoterEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'UniqueVoterEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Any"
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'SCALAR',
+                  name: 'Any'
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteAddressMkrWeightsAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteAddressMkrWeightsAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "VoteAddressMkrWeightsAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'VoteAddressMkrWeightsAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "VoteAddressMkrWeightsAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'VoteAddressMkrWeightsAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteAddressMkrWeightsAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteAddressMkrWeightsAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "VoteAddressMkrWeightsAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'VoteAddressMkrWeightsAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteAddressMkrWeightsAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteAddressMkrWeightsAtTimeRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "voter",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'voter',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteMkrWeightsAtTimeRankedChoiceConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteMkrWeightsAtTimeRankedChoiceConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "VoteMkrWeightsAtTimeRankedChoiceEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'VoteMkrWeightsAtTimeRankedChoiceEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "VoteMkrWeightsAtTimeRankedChoiceRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'VoteMkrWeightsAtTimeRankedChoiceRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteMkrWeightsAtTimeRankedChoiceEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteMkrWeightsAtTimeRankedChoiceEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "VoteMkrWeightsAtTimeRankedChoiceRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'VoteMkrWeightsAtTimeRankedChoiceRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteMkrWeightsAtTimeRankedChoiceRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteMkrWeightsAtTimeRankedChoiceRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionIdRaw",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionIdRaw',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "VoteOptionMkrWeightsRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'VoteOptionMkrWeightsRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsAtTimeConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsAtTimeConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "VoteOptionMkrWeightsAtTimeEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'VoteOptionMkrWeightsAtTimeEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "VoteOptionMkrWeightsAtTimeRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'VoteOptionMkrWeightsAtTimeRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsAtTimeEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsAtTimeEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "VoteOptionMkrWeightsAtTimeRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'VoteOptionMkrWeightsAtTimeRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsAtTimeRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsAtTimeRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "VoteOptionMkrWeightEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'VoteOptionMkrWeightEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "VoteOptionMkrWeightsRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'VoteOptionMkrWeightsRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsCurrentlyConnection",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsCurrentlyConnection',
+        fields: [
           {
-            "name": "edges",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "VoteOptionMkrWeightsCurrentlyEdge",
-                    "ofType": null
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'VoteOptionMkrWeightsCurrentlyEdge',
+                    ofType: null
                   }
                 }
               }
             },
-            "args": []
+            args: []
           },
           {
-            "name": "nodes",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "VoteOptionMkrWeightsCurrentlyRecord",
-                  "ofType": null
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'VoteOptionMkrWeightsCurrentlyRecord',
+                  ofType: null
                 }
               }
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsCurrentlyEdge",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsCurrentlyEdge',
+        fields: [
           {
-            "name": "cursor",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "node",
-            "type": {
-              "kind": "OBJECT",
-              "name": "VoteOptionMkrWeightsCurrentlyRecord",
-              "ofType": null
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'VoteOptionMkrWeightsCurrentlyRecord',
+              ofType: null
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsCurrentlyRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsCurrentlyRecord',
+        fields: [
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "OBJECT",
-        "name": "VoteOptionMkrWeightsRecord",
-        "fields": [
+        kind: 'OBJECT',
+        name: 'VoteOptionMkrWeightsRecord',
+        fields: [
           {
-            "name": "blockTimestamp",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "mkrSupport",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'mkrSupport',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           },
           {
-            "name": "optionId",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+            name: 'optionId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
             },
-            "args": []
+            args: []
           }
         ],
-        "interfaces": []
+        interfaces: []
       },
       {
-        "kind": "SCALAR",
-        "name": "Any"
+        kind: 'SCALAR',
+        name: 'Any'
       }
     ],
-    "directives": []
+    directives: []
   }
 } as unknown as IntrospectionQuery;
