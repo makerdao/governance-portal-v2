@@ -2,6 +2,8 @@ import { AppProps } from 'next/app';
 import { SWRConfig } from 'swr';
 import { ThemeProvider, Flex } from 'theme-ui';
 import { Global } from '@emotion/core';
+import { Provider as UrqlProvider } from 'urql';
+import { client, ssrCache } from 'modules/gql/client';
 
 import '@reach/dialog/styles.css';
 import '@reach/listbox/styles.css';
@@ -24,43 +26,50 @@ import { getLibrary } from 'modules/web3/helpers';
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
+  // TODO: come back to this
+  if (pageProps.urqlState) {
+    ssrCache.restoreData(pageProps.urqlState);
+  }
+
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <ThemeProvider theme={theme}>
-        <HeadComponent />
-        <CookiesProvider disabled={false}>
-          <AnalyticsProvider>
-            <SWRConfig
-              value={{
-                // default to 60 second refresh intervals
-                refreshInterval: 60000,
-                revalidateOnMount: true,
-                fetcher: url => fetchJson(url)
-              }}
-            >
-              <Global
-                styles={{
-                  '*': {
-                    WebkitFontSmoothing: 'antialiased',
-                    MozOsxFontSmoothing: 'grayscale'
-                  }
-                }}
-              />
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  variant: 'layout.root',
-                  px: [3, 4]
+      <UrqlProvider value={client}>
+        <ThemeProvider theme={theme}>
+          <HeadComponent />
+          <CookiesProvider disabled={false}>
+            <AnalyticsProvider>
+              <SWRConfig
+                value={{
+                  // default to 60 second refresh intervals
+                  refreshInterval: 60000,
+                  revalidateOnMount: true,
+                  fetcher: url => fetchJson(url)
                 }}
               >
-                <Header />
-                <Component {...pageProps} />
-                <Cookies />
-              </Flex>
-            </SWRConfig>
-          </AnalyticsProvider>
-        </CookiesProvider>
-      </ThemeProvider>
+                <Global
+                  styles={{
+                    '*': {
+                      WebkitFontSmoothing: 'antialiased',
+                      MozOsxFontSmoothing: 'grayscale'
+                    }
+                  }}
+                />
+                <Flex
+                  sx={{
+                    flexDirection: 'column',
+                    variant: 'layout.root',
+                    px: [3, 4]
+                  }}
+                >
+                  <Header />
+                  <Component {...pageProps} />
+                  <Cookies />
+                </Flex>
+              </SWRConfig>
+            </AnalyticsProvider>
+          </CookiesProvider>
+        </ThemeProvider>
+      </UrqlProvider>
     </Web3ReactProvider>
   );
 };

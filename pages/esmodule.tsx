@@ -11,6 +11,7 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -19,8 +20,9 @@ const ESModule = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
-    data || [];
+  const { data: allEsmJoins } = useAllEsmJoins();
+
+  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief] = data || [];
 
   const DesktopView = () => {
     return (
@@ -217,7 +219,7 @@ const ESModule = (): React.ReactElement => {
       <Box mt={5}>
         <Text variant="microHeading">ESM History</Text>
       </Box>
-      <ESMHistory stakingHistory={stakingHistory} />
+      <ESMHistory allEsmJoins={allEsmJoins} />
     </PrimaryLayout>
   );
 };
