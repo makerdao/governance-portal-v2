@@ -1,5 +1,5 @@
 import ERC20_ABI from '../../fixtures/erc20_abi.json';
-import { GOERLI_ADDRESSES } from 'modules/contracts/constract.constants';
+import { GOERLI_ADDRESSES } from 'modules/contracts/contract.constants';
 import { ethers } from 'ethers';
 import { TEST_ACCOUNTS } from '../constants/testaccounts';
 

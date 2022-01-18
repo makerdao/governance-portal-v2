@@ -64,7 +64,6 @@ describe('Delegates Page', () => {
       cy.get('button').contains('Approve Delegate Contract').click();
 
       // Wait for tx confirmed
-      cy.contains('Confirm Transaction').should('be.visible');
 
       cy.contains('Transaction Pending').should('be.visible');
 
