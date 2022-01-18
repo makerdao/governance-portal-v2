@@ -1,17 +1,19 @@
 import { Contract, getDefaultProvider } from 'ethers';
-import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
-import { JsonRpcSigner } from '@ethersproject/providers';
+import { CHAIN_INFO } from '../web3.constants';
+import { Web3Provider } from '@ethersproject/providers';
+import { getNetwork } from 'lib/maker';
 
 export const getEthersContracts = (
   address: string, // deployed contract address
   abi: any,
   chainId?: number,
-  signer?: JsonRpcSigner | null //connected wallet/address signer
+  library?: Web3Provider,
+  account?: string | undefined | null
 ): Contract => {
-  const network = chainId ? CHAIN_INFO[chainId].network : SupportedNetworks.MAINNET;
-  const provider = getDefaultProvider(network);
+  const network = chainId ? CHAIN_INFO[chainId].network : getNetwork();
+  const readOnlyProvider = getDefaultProvider(network);
 
-  const signerOrProvider = signer ?? provider;
+  const signerOrProvider = account && library ? library.getSigner(account) : readOnlyProvider;
 
   return new Contract(address, abi, signerOrProvider);
 };
