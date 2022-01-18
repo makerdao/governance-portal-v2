@@ -1,6 +1,13 @@
 import { Box, Close } from 'theme-ui';
 
-export const BoxWithClose = ({ content, close, ...props }): JSX.Element => (
+export const BoxWithClose = ({
+  children,
+  close,
+  ...props
+}: {
+  children: React.ReactElement;
+  close: () => void;
+}): JSX.Element => (
   <Box sx={{ position: 'relative' }} {...props}>
     <Close
       aria-label="close"
@@ -15,7 +22,7 @@ export const BoxWithClose = ({ content, close, ...props }): JSX.Element => (
       }}
       onClick={close}
     />
-    {content}
+    {children}
   </Box>
 );
 

@@ -33,6 +33,8 @@ _Requires node version >= v11.15.0_
 10. Set `NEXT_PUBLIC_USE_MOCK` to indicate to use mock data.
 11. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
 12. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
+13. Set `ALCHEMY_GOERLI_API_KEY` for the API key 
+
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 
@@ -53,11 +55,15 @@ Jest tests under the folder __tests__ currently execute some integration and uni
 - npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
 ```
 
+#### E2E
+
 e2e tests run on a fork of GOERLI. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork on the localhost:8545 (chain id: 31337), execute:
 
 ```
 npm run hardhat 
 ```
+
+Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable.
 
 ### CI/CD
 
@@ -70,10 +76,10 @@ After each push the system will execute:
 
 
 ```
-npm run e2e:ci
+yarn start:ci
 ```
 
-The command `npm run e2e:ci` launches a detached process with hardhat, executes e2e in a headless mode and kills the hardhat process.
+The command `yarn start:ci` launches a detached process with hardhat, executes e2e in a headless mode and kills the hardhat process.
 
 ### Contributing
 
