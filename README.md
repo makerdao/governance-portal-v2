@@ -46,8 +46,9 @@ If API keys aren't provided, both Alchemy and Infura will default to the public 
 
 The Governance portal includes 2 test suite: Jest and Cypress.
 
-Jest tests under the folder __tests__ currently execute some integration and unit tests of the platform. We are in the process of migrating to Cypress for the integration tests. You can find Cypress tests under the cypress folder.
+Jest tests under the folder __tests__ currently execute unit tests of the platform.  The e2e Cypress tests are under the "cypress" folder.
 
+#### Test Commands
 ```
 - npm run test -> runs Jest tests on livereload mode
 - npm run test:ci -> runs all the Jest tests
@@ -55,15 +56,23 @@ Jest tests under the folder __tests__ currently execute some integration and uni
 - npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
 ```
 
-#### E2E
+#### Goerli Fork 
 
-e2e tests run on a fork of GOERLI. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork on the localhost:8545 (chain id: 31337), execute:
+E2E tests run on a fork of GOERLI. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
 
 ```
 npm run hardhat 
 ```
 
-Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable.
+Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
+
+You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`.
+
+**Writting E2E**:
+
+Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
+
+
 
 ### CI/CD
 
