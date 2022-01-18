@@ -22,6 +22,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
+import { useVoteDelegate } from 'modules/app/hooks/useVoteDelegate';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -45,6 +46,8 @@ export default function DefaultVoteModalView({
   const [voteProxy, voteDelegate] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
+  const vd = useVoteDelegate();
+
   const addressLockedMKR =
     voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
@@ -102,15 +105,38 @@ export default function DefaultVoteModalView({
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
 
+    /**
+     * stake(address): ƒ (...args)
+vote(address[]): ƒ (...args)
+vote(bytes32): ƒ (...args)
+votePoll(uint256,uint256): ƒ (...args)
+votePoll(uint256[],uint256[]): ƒ (...args)
+withdrawPoll(uint256): ƒ (...args)
+withdrawPoll(uint256[]): ƒ (...args
+     */
+
+    // const voteDelegate = useVoteDelegate();
+
     // TODO need to handle these other account states:
     // const voteTxCreator = voteDelegate
     //   ? () => voteDelegate.voteExec(slateOrProposals)
     //   : voteProxy
     //   ? () => voteProxy.voteExec(slateOrProposals)
-    //   : () => maker.service('chief').vote(slateOrProposals);
+    //   : () => maker.service('chief').vote(slateOrProposals); // covered
 
-    const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
-    const voteTxCreator = () => voteCall(slateOrProposals);
+    let voteTxCreator;
+
+    if (vd) {
+      const voteCall = Array.isArray(slateOrProposals) ? vd['vote(address[])'] : vd['vote(bytes32)'];
+      voteTxCreator = () => voteCall(slateOrProposals);
+      console.log('voting as delegate', vd);
+    } else if (voteProxy) {
+      // TODO: refactor this out next:
+      voteTxCreator = () => voteProxy.voteExec(slateOrProposals);
+    } else {
+      const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
+      voteTxCreator = () => voteCall(slateOrProposals);
+    }
 
     const txId = await track(voteTxCreator, 'Voting on executive proposal', {
       pending: txHash => {
