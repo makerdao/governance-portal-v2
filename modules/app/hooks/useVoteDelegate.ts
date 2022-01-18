@@ -2,7 +2,7 @@ import { Contract } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactContextInterface } from '@web3-react/core/dist/types';
 import useSWR from 'swr';
-import abi from '../../../contracts/abis/voteDelegate.json';
+import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useVoteDelegateAddress } from './useVoteDelegateAddress';

@@ -14,7 +14,7 @@ type LockedMkrData = {
 export const useLockedMkr = (
   address?: string,
   voteProxy?: VoteProxyContract | null,
-  voteDelegate?: VoteDelegateContract | null
+  voteDelegate?: VoteDelegateContract | string | null
 ): LockedMkrData => {
   const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
   const { data, error, mutate } = useSWR(

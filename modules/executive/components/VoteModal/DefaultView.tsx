@@ -22,7 +22,8 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
-import { useVoteDelegate } from 'modules/app/hooks/useVoteDelegate';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -43,18 +44,18 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, voteDelegate] = useAccountsStore(state =>
+  const [voteProxy] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
   );
-  const vd = useVoteDelegate();
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-  const addressLockedMKR =
-    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const addressLockedMKR = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
     voteProxy,
-    voteDelegate
+    voteDelegateAddress
   );
+
   const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
 
   // revalidate on mount
@@ -77,7 +78,10 @@ export default function DefaultVoteModalView({
 
   const track = useTransactionsStore(state => state.track, shallow);
 
+  // References to vote methods to be called in "track" function for transaction tracking
   const { voteOne, voteMany } = useChiefVote();
+  const delegateVote = useDelegateVote();
+
   const { data: allSlates } = useAllSlates();
   const { mutate: mutateMkrOnHat } = useMkrOnHat();
 
@@ -105,31 +109,12 @@ export default function DefaultVoteModalView({
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
 
-    /**
-     * stake(address): ƒ (...args)
-vote(address[]): ƒ (...args)
-vote(bytes32): ƒ (...args)
-votePoll(uint256,uint256): ƒ (...args)
-votePoll(uint256[],uint256[]): ƒ (...args)
-withdrawPoll(uint256): ƒ (...args)
-withdrawPoll(uint256[]): ƒ (...args
-     */
-
-    // const voteDelegate = useVoteDelegate();
-
-    // TODO need to handle these other account states:
-    // const voteTxCreator = voteDelegate
-    //   ? () => voteDelegate.voteExec(slateOrProposals)
-    //   : voteProxy
-    //   ? () => voteProxy.voteExec(slateOrProposals)
-    //   : () => maker.service('chief').vote(slateOrProposals); // covered
-
     let voteTxCreator;
 
-    if (vd) {
-      const voteCall = Array.isArray(slateOrProposals) ? vd['vote(address[])'] : vd['vote(bytes32)'];
+    if (delegateVote) {
+      console.log('voting as delegate', delegateVote);
+      const voteCall = Array.isArray(slateOrProposals) ? delegateVote.voteMany : delegateVote.voteOne;
       voteTxCreator = () => voteCall(slateOrProposals);
-      console.log('voting as delegate', vd);
     } else if (voteProxy) {
       // TODO: refactor this out next:
       voteTxCreator = () => voteProxy.voteExec(slateOrProposals);
@@ -144,7 +129,7 @@ withdrawPoll(uint256[]): ƒ (...args
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
             voterAddress: account?.address || '',
-            delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
+            delegateAddress: voteDelegateAddress ?? '',
             comment: comment,
             voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
             signedMessage: signedMessage,

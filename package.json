@@ -6,14 +6,15 @@
     "prepare": "husky install",
     "dev": "next",
     "dev-https": "node server.js",
-    "build": "eth-sdk --path modules/contracts && next build",
+    "build": "yarn build-sdk && next build",
     "start": "next start",
     "export": "next export",
     "test": "yarn testchain --ci jest --config=jest.config.js --runInBand --watch",
     "test:ci": "yarn testchain --ci jest --runInBand --ci --coverage",
     "testchain": "node_modules/@makerdao/testchain/scripts/launch -s default --fast",
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/",
-    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/"
+    "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
+    "build-sdk": "eth-sdk --path modules/contracts"
   },
   "dependencies": {
     "@makerdao/dai": "^0.42.2",
