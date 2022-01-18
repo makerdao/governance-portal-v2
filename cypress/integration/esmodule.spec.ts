@@ -78,7 +78,7 @@ describe('Esmodule Page', async () => {
       cy.contains('Close').click();
 
       // The total burned increased
-      cy.contains('1.431110 MKR').should('be.visible');
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.421110/);
     });
   });
 });
