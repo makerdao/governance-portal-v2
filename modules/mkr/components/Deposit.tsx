@@ -43,7 +43,7 @@ const ModalContent = ({
 
   const { mutate: mutateLocked } = useLockedMkr(address, voteProxy);
 
-  const { data: chiefAllowance } = useSWR<CurrencyObject>(
+  const { data: chiefAllowance, mutate: mutateAllowance } = useSWR<CurrencyObject>(
     ['/user/chief-allowance', address, !!voteProxy],
     (_, address) =>
       getMaker().then(maker =>
@@ -165,6 +165,7 @@ const ModalContent = ({
                 const txId = await track(approveTxCreator, 'Granting MKR approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
+                    mutateAllowance();
                     setTxId(null);
                   },
                   error: () => {
