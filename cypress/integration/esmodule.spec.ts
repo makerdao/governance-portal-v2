@@ -79,9 +79,8 @@ describe('Esmodule Page', async () => {
 
       cy.wait(1500);
 
-
       // Scroll for screenshot
-      cy.scrollTo(0,0);
+      cy.scrollTo(0, 0);
 
       // The total burned increased
       cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.421110/);
