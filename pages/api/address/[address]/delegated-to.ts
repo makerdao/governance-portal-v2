@@ -20,7 +20,7 @@ export default withApiHandler(
 
     const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
-    const delegatedTo = await fetchDelegatedTo(address, network);
+    const delegatedTo = await fetchDelegatedTo(address ?? tempAddress, network);
     const totalDelegated = delegatedTo.reduce((prev, next) => {
       return prev.plus(next.lockAmount);
     }, new BigNumber(0));
