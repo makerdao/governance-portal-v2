@@ -55,7 +55,8 @@ jobs:
       MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+      ALCHEMY_GOERLI_API_KEY: ${{ secrets.ALCHEMY_GOERLI_API_KEY }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2

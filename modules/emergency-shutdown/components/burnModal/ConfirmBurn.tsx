@@ -139,17 +139,17 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           <Text>Unlock MKR to continue</Text>
         </Flex>
       </Flex>
-      <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-        <Label data-testid="tosCheck">
+      <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 3 }}>
+        <Label data-testid="tosCheck" style={{ width: 'auto', marginRight: '5px' }}>
           <Checkbox checked={termsAccepted} onChange={e => changeTerms(e)} onClick={changeTerms} />
-          <Text>
-            I have read and accept the{' '}
-            <ExternalLink href="/terms" target="_blank">
-              Terms of Service
-            </ExternalLink>
-            .
-          </Text>
-        </Label>
+          <Text>I have read and accept the</Text>
+        </Label>{' '}
+        <Text>
+          <ExternalLink href="/terms" target="_blank">
+            Terms of Service
+          </ExternalLink>
+          .
+        </Text>
       </Flex>
       <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
