@@ -21,6 +21,8 @@ import { ConfirmContent } from './Confirm';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
+import { parseUnits } from '@ethersproject/units';
 
 type Props = {
   isOpen: boolean;
@@ -54,6 +56,8 @@ export const DelegateModal = ({
     voteDelegateAddress
   );
 
+  const { data: lock } = useDelegateLock(voteDelegateAddress);
+
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
   const [trackTransaction, tx] = useTransactionStore(
@@ -79,9 +83,9 @@ export const DelegateModal = ({
   };
 
   const lockMkr = async () => {
-    const maker = await getMaker();
-
-    const lockTxCreator = () => maker.service('voteDelegate').lock(voteDelegateAddress, mkrToDeposit);
+    //TODO: update the mkr input to handle ethers bignumber
+    const amt = mkrToDeposit.toString();
+    const lockTxCreator = () => lock(parseUnits(amt, 18));
     const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
       mined: txId => {
         mutateTotalStaked();

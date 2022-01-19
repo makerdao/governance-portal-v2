@@ -20,7 +20,7 @@ export const useVoteDelegateAddress = (addressToCheck?: string): VoteDelegateAdd
     account = activeWeb3.account;
   }
 
-  const { data, error } = useSWR(`${voteDelegateFactory.address}/vote-delegate-address`, async () => {
+  const { data, error } = useSWR(`${account}/vote-delegate-address`, async () => {
     return await voteDelegateFactory.delegates(account);
   });
 

@@ -13,10 +13,10 @@ type VoteDelegateResponse = {
   error: Error;
 };
 
-export const useVoteDelegate = (): VoteDelegateResponse => {
+export const useVoteDelegate = (addressToCheck?: string): VoteDelegateResponse => {
   const { chainId, library, account }: Web3ReactContextInterface<Web3Provider> = useActiveWeb3React();
 
-  const { data: contractAddress } = useVoteDelegateAddress();
+  const { data: contractAddress } = useVoteDelegateAddress(addressToCheck);
 
   const { data, error } = useSWR(contractAddress ? `${contractAddress}/vote-delegate-contract` : null, () => {
     return contractAddress ? getEthersContracts(contractAddress, abi, chainId, library, account) : null;
