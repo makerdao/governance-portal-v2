@@ -36,7 +36,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     chainId: networkNameToChainId(network || 'mainnet'),
     query: allWhitelistedPolls
   });
-  // TODO: move this logic somewhere else?
+
   const pollList = data.activePolls.nodes.map(p => {
     p.startDate = new Date(p.startDate * 1000);
     p.endDate = new Date(p.endDate * 1000);
