@@ -19,7 +19,7 @@ export default function VotingWeight(props): JSX.Element {
         </Text>
       </Flex>
       <Flex>
-        <Text sx={{ fontSize: 5 }}>
+        <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
           {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(2)} MKR` : '--'}
         </Text>
       </Flex>

@@ -5,16 +5,18 @@ type MkrBalanceResponse = {
   data?: ESModuleStats;
   loading?: boolean;
   error?: Error;
+  mutate: () => void;
 };
 
 export const useESModuleStats = (address?: string): MkrBalanceResponse => {
-  const { data, error } = useSWR(['/es-module', address], () => fetchESModuleStats(address), {
+  const { data, error, mutate } = useSWR(['/es-module', address], () => fetchESModuleStats(address), {
     revalidateOnMount: true
   });
 
   return {
     data: data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

@@ -235,7 +235,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                         {tally ? (
-                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(2)} MKR</Text>
+                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(3)} MKR</Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />

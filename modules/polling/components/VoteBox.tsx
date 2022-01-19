@@ -14,7 +14,7 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
   const showQuickVote = canVote && bpi > 0;
 
   return (
-    <Box {...props}>
+    <Box {...props} data-testid="poll-vote-box">
       <Heading mb={2} as="h3" variant="microHeading">
         Your Vote
       </Heading>

@@ -37,7 +37,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
 
   return (
     <Box>
-      <Heading mb={2} mt={4} variant="microHeading">
+      <Heading mb={2} mt={4} variant="microHeading" data-testid="your-ballot-title">
         Your Ballot
       </Heading>
       {transaction?.hash && transaction.status === 'pending' ? (

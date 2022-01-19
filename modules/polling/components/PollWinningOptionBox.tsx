@@ -29,14 +29,14 @@ export default function PollWinningOptionBox({
               new BigNumber(
                 (tally.results as PluralityResult[]).find(({ optionId }) => optionId === tally.winner)
                   ?.mkrSupport || '0'
-              ).toFormat(2) +
+              ).toFormat(3) +
               ' MKR supporting.'}
           {tally.pollVoteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN) &&
             'with ' +
               new BigNumber(
                 (tally.results as RankedChoiceResult[]).find(({ optionId }) => optionId === tally.winner)
                   ?.firstChoice || '0'
-              ).toFormat(2) +
+              ).toFormat(3) +
               ' MKR supporting as first choice.'}
         </Text>
       ) : (

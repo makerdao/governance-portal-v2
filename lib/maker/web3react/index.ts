@@ -22,7 +22,8 @@ const POLLING_INTERVAL = 12000;
 
 export type ConnectorName = 'MetaMask' | 'WalletConnect' | 'Coinbase Wallet' | 'Trezor' | 'Ledger';
 
-export const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 5, 42, 999] });
+// Add 31337 for the localhost:8545 goerli fork
+export const injectedConnector = new InjectedConnector({ supportedChainIds: [1, 5, 42, 999, 1337, 31337] });
 
 export const connectors: Array<[ConnectorName, AbstractConnector]> = [
   ['MetaMask', injectedConnector],

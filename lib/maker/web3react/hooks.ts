@@ -39,7 +39,7 @@ export const syncMakerAccount = (library, account, chainIdError) => {
 
 // from https://github.com/NoahZinsmeister/web3-react/tree/v6/example
 export function useEagerConnect() {
-  const { activate, active } = useWeb3React();
+  const { activate, active, chainId } = useWeb3React();
 
   const [tried, setTried] = useState(false);
 

@@ -25,7 +25,8 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
     case 999:
       return SupportedNetworks.TESTNET;
     case 1337:
-      return SupportedNetworks.TESTNET;
+    case 31337:
+      return SupportedNetworks.GOERLIFORK;
     default:
       throw new Error(`Unsupported chain id ${chainId}`);
   }
@@ -33,7 +34,7 @@ function chainIdToNetworkName(chainId: number): SupportedNetworks {
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
-  if (typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) {
+  if ((typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) || process.env.TESTNET) {
     // if the testhchain global is set, connect to the testchain
     return SupportedNetworks.TESTNET;
   } else if (typeof window === 'undefined') {
@@ -47,6 +48,8 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('kovan')) {
       return SupportedNetworks.KOVAN;
+    } else if (window.location.search.includes('goerlifork')) {
+      return SupportedNetworks.GOERLIFORK;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
@@ -72,19 +75,20 @@ type MakerSingletons = {
   [SupportedNetworks.KOVAN]: null | Promise<MakerClass>;
   [SupportedNetworks.GOERLI]: null | Promise<MakerClass>;
   [SupportedNetworks.TESTNET]: null | Promise<MakerClass>;
+  [SupportedNetworks.GOERLIFORK]: null | Promise<MakerClass>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
   [SupportedNetworks.KOVAN]: null,
   [SupportedNetworks.GOERLI]: null,
-  [SupportedNetworks.TESTNET]: null
+  [SupportedNetworks.TESTNET]: null,
+  [SupportedNetworks.GOERLIFORK]: null
 };
 
 async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
-
   if (!makerSingletons[currentNetwork]) {
     const instance = Maker.create('http', {
       plugins: [
@@ -104,7 +108,6 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
       log: false,
       multicall: true
     });
-
     makerSingletons[currentNetwork] = instance;
   }
 
@@ -119,7 +122,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK || isTestnet();
+  return getNetwork() === DEFAULT_NETWORK;
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

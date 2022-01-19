@@ -97,7 +97,12 @@ const Delegates = ({ delegates, stats }: Props) => {
         </Flex>
 
         <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
-          <Button variant={'outline'} sx={{ mr: 3 }} onClick={resetFilters}>
+          <Button
+            variant={'outline'}
+            sx={{ mr: 3 }}
+            onClick={resetFilters}
+            data-testid="delegate-reset-filters"
+          >
             Clear filters
           </Button>
 

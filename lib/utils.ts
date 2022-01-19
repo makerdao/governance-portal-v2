@@ -7,8 +7,7 @@ import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
-import getMaker from './maker';
-import mockPolls from 'modules/polling/api/mocks/polls.json';
+
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
@@ -113,26 +112,6 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyle
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
   }
-}
-
-export async function initTestchainPolls() {
-  const maker = await getMaker();
-  const pollingService = maker.service('govPolling');
-  const hash = 'dummy hash';
-
-  // This detects whether the mock polls have been deployed yet
-  const testTx = await pollingService.createPoll(now(), now() + 500000, hash, hash);
-  if (testTx !== 0) return;
-
-  console.log('setting up some polls on the testchain...');
-  return mockPolls.map(async poll => {
-    const id = await pollingService.createPoll(now(), now() + 50000, hash, poll.url);
-    console.log(`created poll #${id}`);
-  });
-}
-
-function now() {
-  return Math.floor(new Date().getTime());
 }
 
 export function formatAddress(address: string): string {

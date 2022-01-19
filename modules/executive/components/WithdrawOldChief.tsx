@@ -57,132 +57,129 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     shallow
   );
 
-  let content;
-
-  if (tx) {
-    const txPending = tx.status === 'pending';
-    content = (
-      <Stack sx={{ textAlign: 'center' }}>
-        <Text variant="microHeading" color="onBackgroundAlt">
-          {txPending ? 'Transaction Pending' : 'Confirm Transaction'}
-        </Text>
-
-        <Flex sx={{ justifyContent: 'center' }}>
-          <TxIndicators.Pending sx={{ width: 6 }} />
-        </Flex>
-
-        {!txPending && (
-          <Box>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              Please use your wallet to confirm this transaction.
+  return (
+    <BoxWithClose close={close} {...props}>
+      <Box>
+        {tx && (
+          <Stack sx={{ textAlign: 'center' }}>
+            <Text variant="microHeading" color="onBackgroundAlt">
+              {tx.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
-            <Text
-              sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-              onClick={() => setTxId(null)}
+
+            <Flex sx={{ justifyContent: 'center' }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+
+            {tx.status !== 'pending' && (
+              <Box>
+                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                  Please use your wallet to confirm this transaction.
+                </Text>
+                <Text
+                  sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+                  onClick={() => setTxId(null)}
+                >
+                  Cancel
+                </Text>
+              </Box>
+            )}
+          </Stack>
+        )}
+        {!tx && allowanceOk && (
+          <Stack gap={3}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Text variant="microHeading" color="onBackgroundAlt">
+                Withdraw MKR from Chief
+              </Text>
+              <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
+                You are withdrawing <b>{lockedMkr ? lockedMkr.toBigNumber().toFormat(6) : '---'} MKR</b> from
+                the old Chief contract back to your wallet.
+              </Text>
+            </Box>
+            {voteProxy && voteProxy.role === 'hot' && (
+              <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
+                You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
+              </Alert>
+            )}
+            <Button
+              sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              disabled={!lockedMkr}
+              onClick={async () => {
+                trackButtonClick('withdrawMkrOldChief');
+                const maker = await getMaker();
+
+                const freeTxCreator = voteProxy.address
+                  ? () =>
+                      maker
+                        .service('smartContract')
+                        .getContractByAddressAndAbi(voteProxy.address, oldVoteProxyAbi)
+                        .freeAll()
+                  : () =>
+                      maker
+                        .service('smartContract')
+                        .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+                        .free(lockedMkr.toFixed('wei'));
+
+                const txId = await track(freeTxCreator, 'Withdrawing MKR', {
+                  mined: txId => {
+                    transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
+                    close();
+                  },
+                  error: () => {
+                    transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
+                    close();
+                  }
+                });
+                setTxId(txId);
+              }}
             >
-              Cancel
-            </Text>
-          </Box>
+              Withdraw MKR
+            </Button>
+          </Stack>
         )}
-      </Stack>
-    );
-  } else if (allowanceOk) {
-    content = (
-      <Stack gap={3}>
-        <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt">
-            Withdraw MKR from Chief
-          </Text>
-          <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
-            You are withdrawing <b>{lockedMkr ? lockedMkr.toBigNumber().toFormat(6) : '---'} MKR</b> from the
-            old Chief contract back to your wallet.
-          </Text>
-        </Box>
-        {voteProxy && voteProxy.role === 'hot' && (
-          <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
-            You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
-          </Alert>
-        )}
-        <Button
-          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          disabled={!lockedMkr}
-          onClick={async () => {
-            trackButtonClick('withdrawMkrOldChief');
-            const maker = await getMaker();
+        {!tx && !allowanceOk && (
+          <Stack gap={3} {...props}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
+                Approve voting contract
+              </Text>
+              <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
+              </Text>
+            </Box>
 
-            const freeTxCreator = voteProxy.address
-              ? () =>
+            <Button
+              data-testid="button-approve-voting-contract"
+              sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              onClick={async () => {
+                trackButtonClick('approveWithdrawOldChief');
+                const maker = await getMaker();
+                const approveTxCreator = () =>
                   maker
                     .service('smartContract')
-                    .getContractByAddressAndAbi(voteProxy.address, oldVoteProxyAbi)
-                    .freeAll()
-              : () =>
-                  maker
-                    .service('smartContract')
-                    .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
-                    .free(lockedMkr.toFixed('wei'));
+                    .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
+                    .approve(oldChiefAddress[getNetwork()], -1);
 
-            const txId = await track(freeTxCreator, 'Withdrawing MKR', {
-              mined: txId => {
-                transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
-                close();
-              },
-              error: () => {
-                transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
-                close();
-              }
-            });
-            setTxId(txId);
-          }}
-        >
-          Withdraw MKR
-        </Button>
-      </Stack>
-    );
-  } else {
-    // user hasn't given approvals or initiated an approval tx
-    content = (
-      <Stack gap={3} {...props}>
-        <Box sx={{ textAlign: 'center' }}>
-          <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
-            Approve voting contract
-          </Text>
-          <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-            Approve the transfer of IOU tokens to the voting contract to withdraw your MKR.
-          </Text>
-        </Box>
-
-        <Button
-          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          onClick={async () => {
-            trackButtonClick('approveWithdrawOldChief');
-            const maker = await getMaker();
-            const approveTxCreator = () =>
-              maker
-                .service('smartContract')
-                .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
-                .approve(oldChiefAddress[getNetwork()], -1);
-
-            const txId = await track(approveTxCreator, 'Granting IOU approval', {
-              mined: txId => {
-                transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
-                setTxId(null);
-              },
-              error: () => {
-                transactionsApi.getState().setMessage(txId, 'IOU approval failed');
-                setTxId(null);
-              }
-            });
-            setTxId(txId);
-          }}
-        >
-          Approve
-        </Button>
-      </Stack>
-    );
-  }
-
-  return <BoxWithClose content={content} close={close} {...props} />;
+                const txId = await track(approveTxCreator, 'Granting IOU approval', {
+                  mined: txId => {
+                    transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
+                    setTxId(null);
+                  },
+                  error: () => {
+                    transactionsApi.getState().setMessage(txId, 'IOU approval failed');
+                    setTxId(null);
+                  }
+                });
+                setTxId(txId);
+              }}
+            >
+              Approve
+            </Button>
+          </Stack>
+        )}
+      </Box>
+    </BoxWithClose>
+  );
 };
 
 const WithdrawOldChief = (props): JSX.Element => {

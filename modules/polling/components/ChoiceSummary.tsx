@@ -35,10 +35,10 @@ const ChoiceSummary = ({
     <Box {...props}>
       {isSingleSelect ? (
         <Box bg="background" sx={{ p: 3, mb: 2 }}>
-          <Text data-testid="choice">{choice === ABSTAIN ? 'Abstain' : poll.options[choice]}</Text>
+          <Text data-testid="choice">{choice === ABSTAIN ? 'Abstain' : poll.options[choice as number]}</Text>
         </Box>
       ) : (
-        choice.map((id, index) => (
+        (choice as number[]).map((id, index) => (
           <Flex sx={{ backgroundColor: 'background', py: 2, px: 3, mb: 2 }} key={id}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Text sx={{ variant: 'text.caps', fontSize: 1 }}>{getNumberWithOrdinal(index + 1)} choice</Text>
@@ -49,6 +49,7 @@ const ChoiceSummary = ({
       )}
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Button
+          data-testid="edit-poll-choice"
           onClick={() => {
             trackButtonClick('editChoice');
             edit();
@@ -65,6 +66,7 @@ const ChoiceSummary = ({
         </Button>
         {onBallot && (
           <Button
+            data-testid="remove-ballot-choice"
             onClick={() => {
               removeFromBallot(poll.pollId);
             }}

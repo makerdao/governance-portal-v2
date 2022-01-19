@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import getMaker, { isTestnet } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
@@ -21,7 +21,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
     }
-  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK) {
     return mockPolls.map(p => ({
       ...p,
       voteType: p.voteType as PollVoteType,
@@ -29,7 +29,6 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
       endDate: new Date(p.endDate)
     }));
   }
-
   const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
   const polls = await parsePollsMetadata(pollList);
 

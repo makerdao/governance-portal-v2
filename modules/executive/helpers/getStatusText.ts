@@ -50,7 +50,7 @@ export const getStatusText = ({
     return `${mkrOnHat
       .toBigNumber()
       .minus(new BigNumber(spellData.mkrSupport))
-      .toFormat(2)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
+      .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
       spellData.expiration
     )}.`;
   }

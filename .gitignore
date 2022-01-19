@@ -19,6 +19,10 @@ cache
 # misc
 .DS_Store
 .env*
+!.env.sample
+cache
+
+cypress/screenshots/*
 
 # debug
 npm-debug.log*

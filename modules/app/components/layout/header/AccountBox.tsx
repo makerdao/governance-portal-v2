@@ -36,7 +36,9 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
             <Box sx={{ mr: 2 }}>
               <AddressIcon address={address} width="22px" />
             </Box>
-            <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
+            <Text sx={{ fontFamily: 'body' }} data-testid="current-wallet">
+              {formatAddress(address)}
+            </Text>
           </Flex>
         </Flex>
         <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>

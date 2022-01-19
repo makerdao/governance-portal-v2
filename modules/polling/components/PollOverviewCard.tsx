@@ -47,8 +47,8 @@ export default function PollOverviewCard({
 
   return (
     <Box
+      data-testid="poll-overview-card"
       aria-label="Poll overview"
-      data-testid="poll-overview"
       sx={{ variant: 'cards.primary', p: 0 }}
       {...props}
     >

@@ -31,6 +31,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
               signComments();
             }}
             variant="primaryOutline"
+            data-testid="sign-comments-button"
             disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error') || !!signedMessage}
             sx={{ width: '100%' }}
           >
@@ -43,6 +44,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
           </Button>
           <Button
             mt={2}
+            data-testid="submit-ballot-button"
             onClick={() => {
               submitBallot();
               onSubmit();
@@ -60,6 +62,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             submitBallot();
             onSubmit();
           }}
+          data-testid="submit-ballot-button"
           variant="primaryLarge"
           disabled={!ballotLength || !!(voteTxId && transaction?.status !== 'error')}
           sx={{ width: '100%' }}

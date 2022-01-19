@@ -34,4 +34,61 @@ jobs:
           yarn add --dev codecov
           ./node_modules/.bin/codecov
           
-    
+      # Store built next data
+      # - name: Save build folder
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: build
+      #     if-no-files-found: error
+      #     path: |
+      #       .next
+      #       public
+
+
+  ui-chrome-tests:
+    runs-on: ubuntu-latest
+    container: makerdaodux/cypress-dapptools-node-14:latest 
+    strategy:
+      fail-fast: false
+    env:
+      INFURA_KEY: ${{ secrets.INFURA_KEY }}
+      MONGODB_COMMENTS_DB: ${{ secrets.MONGODB_COMMENTS_DB }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ALCHEMY_GOERLI_API_KEY: ${{ secrets.ALCHEMY_GOERLI_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install node packages
+        run: yarn
+
+      ## Download prebuilt next data
+      # - name: Download the build folders
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: build
+          
+
+      - name: 'UI Tests - Chrome'
+        uses: cypress-io/github-action@v2
+        with:
+
+          # we have already installed all dependencies above
+          # use (install: false) if you want to do parallel jobs.
+          install: false
+          start: yarn start:ci
+          ## command: yarn run e2e:ci
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 120
+          browser: chrome
+          record: true
+          parallel: false
+          group: 'UI - Chrome'
+          spec: cypress/integration/*
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    

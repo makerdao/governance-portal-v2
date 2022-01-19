@@ -10,7 +10,6 @@ import { DelegatesAPIResponse } from 'modules/delegates/types';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-
   const delegates = await fetchDelegates(network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
