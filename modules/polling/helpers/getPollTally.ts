@@ -18,7 +18,8 @@ export async function getPollTally(poll: Poll, network?: SupportedNetworks): Pro
     fetchPollTally(poll.pollId, voteType, false, currentNetwork)
   );
 
-  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, currentNetwork);
+  const endUnix = new Date(poll.endDate).getTime() / 1000;
+  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, endUnix, currentNetwork);
 
   const totalMkrParticipation = tally.totalMkrParticipation;
   const winner: string = tally.winner || '';
