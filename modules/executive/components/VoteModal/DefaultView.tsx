@@ -24,6 +24,7 @@ import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -46,11 +47,12 @@ export default function DefaultVoteModalView({
   const account = useAccountsStore(state => state.currentAccount);
   const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
   const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const { data: vpAddresses } = useVoteProxyAddress();
 
-  const addressLockedMKR = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
+  const addressLockedMKR = voteDelegateAddress || vpAddresses?.voteProxyAddress || account?.address;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
-    voteProxy,
+    vpAddresses?.voteProxyAddress,
     voteDelegateAddress
   );
 

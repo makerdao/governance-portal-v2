@@ -25,6 +25,8 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { VoteProxyAddresses } from 'modules/app/types/voteProxyAddresses';
 
 const ModalContent = ({
   address,
@@ -32,7 +34,7 @@ const ModalContent = ({
   close
 }: {
   address: string;
-  voteProxy: VoteProxyContract | null;
+  voteProxy?: VoteProxyAddresses;
   close: () => void;
 }): React.ReactElement => {
   invariant(address);
@@ -41,18 +43,18 @@ const ModalContent = ({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { data: mkrBalance } = useMkrBalance(address);
 
-  const { mutate: mutateLocked } = useLockedMkr(address, voteProxy);
+  const { mutate: mutateLocked } = useLockedMkr(address, voteProxy?.voteProxyAddress);
 
   const { data: chiefAllowance, mutate: mutateAllowance } = useSWR<CurrencyObject>(
-    ['/user/chief-allowance', address, !!voteProxy],
+    ['/user/chief-allowance', address, !!voteProxy?.voteProxyAddress],
     (_, address) =>
       getMaker().then(maker =>
         maker
           .getToken(MKR)
           .allowance(
             address,
-            address === voteProxy?.getColdAddress()
-              ? voteProxy?.getProxyAddress()
+            address === voteProxy?.coldAddress
+              ? voteProxy?.voteProxyAddress
               : maker.service('smartContract').getContractAddresses().CHIEF
           )
       )
@@ -158,7 +160,7 @@ const ModalContent = ({
                   maker
                     .getToken(MKR)
                     .approveUnlimited(
-                      voteProxy?.getProxyAddress() ||
+                      voteProxy?.voteProxyAddress ||
                         maker.service('smartContract').getContractAddresses().CHIEF
                     );
 
@@ -188,13 +190,13 @@ const ModalContent = ({
 
 const Deposit = ({ link }: { link?: string }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+  const { data: vpAddresses } = useVoteProxyAddress();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
   const open = () => {
-    if (voteProxy && account?.address === voteProxy.getHotAddress()) {
+    if (vpAddresses && account?.address === vpAddresses?.hotAddress) {
       alert(
         'You are using the hot wallet for a voting proxy. ' +
           'You can only deposit from the cold wallet. ' +
@@ -228,7 +230,7 @@ const Deposit = ({ link }: { link?: string }): JSX.Element => {
         >
           <ModalContent
             address={account?.address || ''}
-            voteProxy={voteProxy}
+            voteProxy={vpAddresses}
             close={() => setShowDialog(false)}
           />
         </DialogContent>

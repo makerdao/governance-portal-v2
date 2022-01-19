@@ -73,7 +73,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegators && delegators?.length > 0 ? (
+      {delegators && delegators?.length > 0 && totalStaked ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
             <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />

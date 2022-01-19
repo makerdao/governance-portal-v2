@@ -17,6 +17,7 @@ import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -96,8 +97,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const loader = useRef<HTMLDivElement>(null);
   const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-  const address = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegateAddress);
+  const { data: vpAddresses } = useVoteProxyAddress();
+  const address = voteDelegateAddress || vpAddresses?.voteProxyAddress || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, vpAddresses?.voteProxyAddress, voteDelegateAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
