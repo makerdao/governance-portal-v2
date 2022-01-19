@@ -28,7 +28,7 @@ const ESModule = (): React.ReactElement => {
     return (
       <>
         <Flex sx={{ flexDirection: 'row' }}>
-          <Text>
+          <Text data-testid="total-mkr-esmodule-staked">
             {totalStaked ? (
               `${totalStaked.toString(6)}`
             ) : (

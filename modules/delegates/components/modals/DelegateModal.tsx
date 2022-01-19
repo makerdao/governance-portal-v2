@@ -132,48 +132,45 @@ export const DelegateModal = ({
                 }
           }
         >
-          <BoxWithClose
-            content={
-              <Box>
-                {tx ? (
-                  <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
-                ) : (
-                  <>
-                    {mkrAllowance && hasLargeMkrAllowance ? (
-                      confirmStep ? (
-                        <ConfirmContent
-                          mkrToDeposit={mkrToDeposit}
-                          delegate={delegate}
-                          onClick={lockMkr}
-                          onBack={() => setConfirmStep(false)}
-                        />
-                      ) : (
-                        <InputDelegateMkr
-                          title="Deposit into delegate contract"
-                          description="Input the amount of MKR to deposit into the delegate contract."
-                          onChange={setMkrToDeposit}
-                          balance={mkrBalance?.toBigNumber()}
-                          buttonLabel="Delegate MKR"
-                          onClick={() => setConfirmStep(true)}
-                          showAlert={true}
-                        />
-                      )
-                    ) : (
-                      <ApprovalContent
-                        onClick={approveMkr}
-                        title={'Approve Delegate Contract'}
-                        buttonLabel={'Approve Delegate Contract'}
-                        description={
-                          'Approve the transfer of MKR tokens to the delegate contract to deposit your MKR.'
-                        }
+          <BoxWithClose close={onClose}>
+            <Box>
+              {tx ? (
+                <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
+              ) : (
+                <>
+                  {mkrAllowance && hasLargeMkrAllowance ? (
+                    confirmStep ? (
+                      <ConfirmContent
+                        mkrToDeposit={mkrToDeposit}
+                        delegate={delegate}
+                        onClick={lockMkr}
+                        onBack={() => setConfirmStep(false)}
                       />
-                    )}
-                  </>
-                )}
-              </Box>
-            }
-            close={onClose}
-          />
+                    ) : (
+                      <InputDelegateMkr
+                        title="Deposit into delegate contract"
+                        description="Input the amount of MKR to deposit into the delegate contract."
+                        onChange={setMkrToDeposit}
+                        balance={mkrBalance?.toBigNumber()}
+                        buttonLabel="Delegate MKR"
+                        onClick={() => setConfirmStep(true)}
+                        showAlert={true}
+                      />
+                    )
+                  ) : (
+                    <ApprovalContent
+                      onClick={approveMkr}
+                      title={'Approve Delegate Contract'}
+                      buttonLabel={'Approve Delegate Contract'}
+                      description={
+                        'Approve the transfer of MKR tokens to the delegate contract to deposit your MKR.'
+                      }
+                    />
+                  )}
+                </>
+              )}
+            </Box>
+          </BoxWithClose>
         </DialogContent>
       </DialogOverlay>
     </>

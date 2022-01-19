@@ -1,13 +1,12 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
-
-import { getTrace } from 'lib/api/utils';
-import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'modules/web3/web3.constants';
 import { fetchJson } from 'lib/fetchJson';
-import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
 import getMaker from 'lib/maker';
+import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'modules/web3/constants/networks';
+import { getTrace } from 'modules/web3/helpers/getTrace';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;

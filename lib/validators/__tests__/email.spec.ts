@@ -1,4 +1,3 @@
-import { test } from 'gray-matter';
 import { isValidEmail } from '../email';
 
 describe('Email validator', () => {

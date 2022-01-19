@@ -2,11 +2,11 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { connectToDatabase } from 'lib/api/utils';
-import withApiHandler from 'lib/api/withApiHandler';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
 import { config } from 'lib/config';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -48,19 +48,24 @@ export default withApiHandler(
     invariant(await client.isConnected(), 'Mongo client failed to connect');
 
     const collection = db.collection('pollingComments');
-    body.comments.forEach(async comment => {
-      const commentToInsert: PollComment = {
-        pollId: comment.pollId as number,
-        comment: comment.comment as string,
-        network,
-        date: new Date(),
-        voterAddress: body.voterAddress,
-        voteProxyAddress: body.voteProxyAddress || '',
-        delegateAddress: body.delegateAddress || '',
-        txHash: body.txHash
-      };
-      await collection.insertOne(commentToInsert);
-    });
+    const commentsToInsert: PollComment[] = body.comments.map(comment => ({
+      pollId: comment.pollId as number,
+      comment: comment.comment as string,
+      network,
+      date: new Date(),
+      voterAddress: body.voterAddress,
+      voteProxyAddress: body.voteProxyAddress || '',
+      delegateAddress: body.delegateAddress || '',
+      txHash: body.txHash
+    }));
+
+    try {
+      await collection.insertMany(commentsToInsert);
+    } catch (e) {
+      console.error(
+        `A MongoBulkWriteException occurred, but there are ${e.result.result.nInserted} successfully processed documents.`
+      );
+    }
 
     res.status(200).json({ success: 'Added Successfully' });
   },

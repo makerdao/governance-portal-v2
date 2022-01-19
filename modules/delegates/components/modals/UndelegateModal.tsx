@@ -117,39 +117,36 @@ export const UndelegateModal = ({
                 }
           }
         >
-          <BoxWithClose
-            content={
-              <Box>
-                {tx ? (
-                  <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
-                ) : (
-                  <>
-                    {mkrStaked && hasLargeIouAllowance ? (
-                      <InputDelegateMkr
-                        title="Withdraw from delegate contract"
-                        description="Input the amount of MKR to withdraw from the delegate contract."
-                        onChange={setMkrToWithdraw}
-                        balance={mkrStaked.toBigNumber()}
-                        buttonLabel="Undelegate MKR"
-                        onClick={freeMkr}
-                        showAlert={false}
-                      />
-                    ) : (
-                      <ApprovalContent
-                        onClick={approveIou}
-                        title={'Approve Delegate Contract'}
-                        buttonLabel={'Approve Delegate Contract'}
-                        description={
-                          'Approve the transfer of IOU tokens to the delegate contract to wtihdraw your MKR.'
-                        }
-                      />
-                    )}
-                  </>
-                )}
-              </Box>
-            }
-            close={onClose}
-          />
+          <BoxWithClose close={onClose}>
+            <Box>
+              {tx ? (
+                <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
+              ) : (
+                <>
+                  {mkrStaked && hasLargeIouAllowance ? (
+                    <InputDelegateMkr
+                      title="Withdraw from delegate contract"
+                      description="Input the amount of MKR to withdraw from the delegate contract."
+                      onChange={setMkrToWithdraw}
+                      balance={mkrStaked.toBigNumber()}
+                      buttonLabel="Undelegate MKR"
+                      onClick={freeMkr}
+                      showAlert={false}
+                    />
+                  ) : (
+                    <ApprovalContent
+                      onClick={approveIou}
+                      title={'Approve Delegate Contract'}
+                      buttonLabel={'Approve Delegate Contract'}
+                      description={
+                        'Approve the transfer of IOU tokens to the delegate contract to wtihdraw your MKR.'
+                      }
+                    />
+                  )}
+                </>
+              )}
+            </Box>
+          </BoxWithClose>
         </DialogContent>
       </DialogOverlay>
     </>

@@ -125,6 +125,7 @@ const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): 
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
           )}
           <Button
+            data-testid="button-add-vote-to-ballot"
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={() => {

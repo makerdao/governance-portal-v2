@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
-import { limitString } from 'lib/string';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
-import { DelegatePicture, DelegateModal, UndelegateModal } from 'modules/delegates/components';
+import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
   participationTooltipLabel,
   communicationTooltipLabel
@@ -21,7 +20,6 @@ import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
-import { formatAddress } from 'lib/utils';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
@@ -61,6 +59,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         p: [0, 0],
         borderColor: isOwner ? 'onSecondary' : 'muted'
       }}
+      data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
@@ -178,6 +177,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                     setShowUndelegateModal(true);
                   }}
                   sx={{ width: ['100%', '150px'], height: '45px', maxWidth: '150px', mt: [4, 4, 0, 4, 0] }}
+                  data-testid="button-undelegate"
                 >
                   Undelegate
                 </Button>
@@ -198,15 +198,20 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ fontSize: [3, 5] }}
                   data-testid="total-mkr-delegated"
                 >
-                  {totalStaked ? totalStaked.toBigNumber().toFormat(2) : '0.00'}
+                  {totalStaked ? totalStaked.toBigNumber().toFormat(3) : '0.000'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   Total MKR delegated
                 </Text>
               </Box>
               <Box sx={{ width: ['auto', '200px'] }}>
-                <Text as="p" variant="microHeading" sx={{ fontSize: [3, 5] }}>
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+                <Text
+                  as="p"
+                  variant="microHeading"
+                  sx={{ fontSize: [3, 5] }}
+                  data-testid="mkr-delegated-by-you"
+                >
+                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(3) : '0.000'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   MKR delegated by you
@@ -215,6 +220,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               <Box>
                 <Button
                   variant="primaryLarge"
+                  data-testid="button-delegate"
                   disabled={!account}
                   onClick={() => {
                     trackButtonClick('openDelegateModal');

@@ -21,7 +21,6 @@ import { Poll } from 'modules/polling/types';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 
 // components
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -192,6 +191,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
               tabPanels={[
                 <div key={1}>
                   <div
+                    data-testid="poll-detail"
                     sx={{ variant: 'markdown.default', p: [3, 4] }}
                     dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
                   />
@@ -224,14 +224,18 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Box>
                     ),
                     <Divider key={'divider'} />,
-                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'voting stats'}>
+                    <Flex
+                      data-testid="voting-stats"
+                      sx={{ p: [3, 4], flexDirection: 'column' }}
+                      key={'voting stats'}
+                    >
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting Stats
                       </Text>
                       <Flex sx={{ justifyContent: 'space-between', mb: 3, fontSize: [2, 3] }}>
                         <Text sx={{ color: 'textSecondary' }}>Total Votes</Text>
                         {tally ? (
-                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(2)} MKR</Text>
+                          <Text>{new BigNumber(tally.totalMkrParticipation).toFormat(3)} MKR</Text>
                         ) : (
                           <Box sx={{ width: 4 }}>
                             <Skeleton />
@@ -251,7 +255,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       </Flex>
                     </Flex>,
                     <Divider key={'divider 2'} />,
-                    <Flex sx={{ p: [3, 4], flexDirection: 'column' }} key={'votes by address'}>
+                    <Flex
+                      data-testid="voting-by-address"
+                      sx={{ p: [3, 4], flexDirection: 'column' }}
+                      key={'votes by address'}
+                    >
                       <Text variant="microHeading" sx={{ mb: 3 }}>
                         Voting By Address
                       </Text>

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getNetwork } from 'lib/maker';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';

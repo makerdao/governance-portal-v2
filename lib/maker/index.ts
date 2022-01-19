@@ -3,11 +3,12 @@ import McdPlugin, { DAI } from '@makerdao/dai-plugin-mcd';
 import LedgerPlugin from '@makerdao/dai-plugin-ledger-web';
 import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
-import { Web3ReactPlugin } from '../web3react';
-import { SupportedNetworks, DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import { config } from '../config';
 import { MakerClass } from '@makerdao/dai/dist/Maker';
-import { chainIdToNetworkName, networkToRpc } from 'modules/web3/helpers';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
+import { chainIdToNetworkName, networkNameToChainId } from 'modules/web3/helpers/chain';
+import { Web3ReactPlugin } from './web3react';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 
 export const ETH = Maker.currencies.ETH;
 export const USD = Maker.currencies.USD;
@@ -15,7 +16,7 @@ export { MKR };
 
 // make a snap judgement about which network to use so that we can immediately start loading state
 function determineNetwork(): SupportedNetworks {
-  if (typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) {
+  if ((typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) || process.env.TESTNET) {
     // if the testhchain global is set, connect to the testchain
     return SupportedNetworks.TESTNET;
   } else if (typeof window === 'undefined') {
@@ -27,6 +28,8 @@ function determineNetwork(): SupportedNetworks {
     // 1) check the URL
     if (window.location.search.includes('mainnet')) {
       return SupportedNetworks.MAINNET;
+    } else if (window.location.search.includes('goerlifork')) {
+      return SupportedNetworks.GOERLIFORK;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
@@ -51,18 +54,19 @@ type MakerSingletons = {
   [SupportedNetworks.MAINNET]: null | Promise<MakerClass>;
   [SupportedNetworks.GOERLI]: null | Promise<MakerClass>;
   [SupportedNetworks.TESTNET]: null | Promise<MakerClass>;
+  [SupportedNetworks.GOERLIFORK]: null | Promise<MakerClass>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
   [SupportedNetworks.GOERLI]: null,
-  [SupportedNetworks.TESTNET]: null
+  [SupportedNetworks.TESTNET]: null,
+  [SupportedNetworks.GOERLIFORK]: null
 };
 
 async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
   const currentNetwork = network ? network : getNetwork();
-
   if (!makerSingletons[currentNetwork]) {
     const instance = Maker.create('http', {
       plugins: [
@@ -73,7 +77,7 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
         TrezorPlugin
       ],
       provider: {
-        url: networkToRpc(currentNetwork, 'infura'),
+        url: getRPCFromChainID(networkNameToChainId(currentNetwork)),
         type: 'HTTP'
       },
       web3: {
@@ -82,7 +86,6 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
       log: false,
       multicall: true
     });
-
     makerSingletons[currentNetwork] = instance;
   }
 
@@ -97,7 +100,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK || isTestnet();
+  return getNetwork() === DEFAULT_NETWORK;
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

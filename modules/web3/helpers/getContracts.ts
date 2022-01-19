@@ -1,8 +1,9 @@
 import { ethers, Signer } from 'ethers';
 import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
-import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
-import { CHAIN_INFO, SupportedNetworks } from '../web3.constants';
+
 import { Web3Provider } from '@ethersproject/providers';
+import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 

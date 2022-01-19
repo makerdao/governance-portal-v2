@@ -15,6 +15,7 @@ import BurnFailed from './burnModal/BurnFailed';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
+import { useESModuleStats } from '../hooks/useESModuleStats';
 
 const ModalContent = ({
   setShowDialog,
@@ -29,6 +30,8 @@ const ModalContent = ({
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
   const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
+
+  const { mutate: mutateMKRStaked } = useESModuleStats(account?.address);
 
   const { data: mkrBalance } = useMkrBalance(account?.address);
 
@@ -49,6 +52,7 @@ const ModalContent = ({
       },
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
+        mutateMKRStaked();
         setStep('mined');
       },
       error: () => setStep('failed')

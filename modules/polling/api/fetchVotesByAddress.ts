@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getNetwork } from 'lib/maker';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { networkNameToChainId, toBuffer, paddedArray } from 'modules/web3/helpers';
 import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
+import { networkNameToChainId, paddedArray, toBuffer } from 'modules/web3/helpers/chain';
 
 export async function fetchVotesByAddresForPoll(
   pollId: number,

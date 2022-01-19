@@ -1,8 +1,8 @@
 import { MakerClass } from '@makerdao/dai/dist/Maker';
 import oldVoteProxyFactoryAbi from 'lib/abis/oldVoteProxyFactoryAbi.json';
 import { oldVoteProxyFactoryAddress } from 'lib/constants';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
-import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 export const getOldProxyStatus = async (
   address: string,
@@ -12,7 +12,11 @@ export const getOldProxyStatus = async (
   role: string;
   address: string;
 }> => {
-  if (network === SupportedNetworks.GOERLI) {
+  if (
+    network === SupportedNetworks.GOERLI ||
+    network === SupportedNetworks.GOERLIFORK ||
+    network === SupportedNetworks.TESTNET
+  ) {
     return { role: '', address: '' };
   }
   try {

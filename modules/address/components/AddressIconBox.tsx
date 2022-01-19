@@ -3,7 +3,7 @@ import AddressIcon from './AddressIcon';
 import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { VoteProxyInfo } from '../types/addressApiResponse';

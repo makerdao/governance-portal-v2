@@ -57,11 +57,11 @@ export default function SystemStats(): JSX.Element {
         <Flex sx={{ mx: 0, px: 5, py: 3, backgroundColor: 'background', borderRadius: 'small' }}>
           <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
             {infoUnits.map(unit => (
-              <Box key={unit.title}>
+              <Box key={unit.title} data-testid={unit.title}>
                 <Box>
                   <Text sx={{ fontSize: 3, color: 'textSecondary' }}>{unit.title}</Text>
                 </Box>
-                <Box mt={2}>
+                <Box mt={2} data-testid={`${unit.title}-value`}>
                   <Text sx={{ fontSize: 5 }}>{unit.value}</Text>
                 </Box>
               </Box>

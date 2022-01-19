@@ -6,11 +6,14 @@ import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/utils';
-import { getEtherscanLink } from 'lib/utils';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
-const ExecutiveCreate = (): JSX.Element => {
+/*
+TODO: Add tests for executive create on goerli. Right now it only supports mainnet
+*/
+const ExecutiveCreate = () => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');

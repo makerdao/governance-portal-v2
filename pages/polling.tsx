@@ -236,6 +236,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                       setShowHistorical(true);
                     }}
                     variant="outline"
+                    data-testid="button-view-ended-polls"
                     sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})

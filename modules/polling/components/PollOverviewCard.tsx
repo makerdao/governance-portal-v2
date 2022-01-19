@@ -46,7 +46,12 @@ export default function PollOverviewCard({
   const { tally } = usePollTally(poll.pollId);
 
   return (
-    <Box aria-label="Poll overview" sx={{ variant: 'cards.primary', p: 0 }} {...props}>
+    <Box
+      data-testid="poll-overview-card"
+      aria-label="Poll overview"
+      sx={{ variant: 'cards.primary', p: 0 }}
+      {...props}
+    >
       <Box sx={{ p: [2, 4] }}>
         <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Stack gap={3}>

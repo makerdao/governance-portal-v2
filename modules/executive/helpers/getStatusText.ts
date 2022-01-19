@@ -4,7 +4,7 @@ import { isBefore } from 'date-fns';
 import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 export const getStatusText = ({
   proposalAddress,
@@ -50,7 +50,7 @@ export const getStatusText = ({
     return `${mkrOnHat
       .toBigNumber()
       .minus(new BigNumber(spellData.mkrSupport))
-      .toFormat(2)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
+      .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
       spellData.expiration
     )}.`;
   }

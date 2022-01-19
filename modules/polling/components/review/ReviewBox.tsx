@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { getNetwork } from 'lib/maker';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';

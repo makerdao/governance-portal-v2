@@ -134,32 +134,22 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         </Box>
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-        <Toggle
-          active={mkrApproved}
-          onClick={giveProxyMkrAllowance}
-          disabled={mkrApprovePending}
-          data-testid="allowance-toggle"
-        />
+        <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
         </Flex>
       </Flex>
-      <Flex sx={{ flexDirection: 'row', mt: 3 }}>
-        <Label>
-          <Checkbox
-            checked={termsAccepted}
-            onChange={e => changeTerms(e)}
-            onClick={changeTerms}
-            data-testid="tosCheck"
-          />
-          <Text>
-            I have read and accept the{' '}
-            <ExternalLink href="/terms" target="_blank">
-              Terms of Service
-            </ExternalLink>
-            .
-          </Text>
-        </Label>
+      <Flex sx={{ flexDirection: 'row', alignItems: 'center', mt: 3 }}>
+        <Label data-testid="tosCheck" style={{ width: 'auto', marginRight: '5px' }}>
+          <Checkbox checked={termsAccepted} onChange={e => changeTerms(e)} onClick={changeTerms} />
+          <Text>I have read and accept the</Text>
+        </Label>{' '}
+        <Text>
+          <ExternalLink href="/terms" target="_blank">
+            Terms of Service
+          </ExternalLink>
+          .
+        </Text>
       </Flex>
       <Grid columns={[1, 2]} mt={4} sx={{ width: bpi < 1 ? '100%' : undefined }}>
         <Button
@@ -172,6 +162,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
           Cancel
         </Button>
         <Button
+          data-testid="continue-burn"
           onClick={burn}
           disabled={!mkrApproved || !termsAccepted || passValue !== value || !account?.address}
           variant="outline"

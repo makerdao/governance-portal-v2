@@ -1,7 +1,7 @@
 import { Flex, Text, Spinner, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { getNetwork } from 'lib/maker';
 import { Transaction, TXPending } from 'modules/web3/types/transaction';
 

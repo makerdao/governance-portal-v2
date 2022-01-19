@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import { getNetwork } from 'lib/maker';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const fsCacheCache = {};

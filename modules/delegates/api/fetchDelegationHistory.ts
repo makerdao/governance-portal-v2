@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegationHistory } from '../types/delegate';
 import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
 import getMaker from 'lib/maker';

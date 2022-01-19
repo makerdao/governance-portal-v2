@@ -1,18 +1,17 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';
 import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { networkNameToChainId } from 'modules/web3/helpers';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 // Returns all the polls and caches them in the file system.
 export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
@@ -23,7 +22,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
     }
-  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK) {
     return mockPolls.map(p => ({
       ...p,
       voteType: p.voteType as PollVoteType,
@@ -33,7 +32,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
   }
 
   const data = await gqlRequest({
-    chainId: networkNameToChainId(network || 'mainnet'),
+    chainId: networkNameToChainId(network || DEFAULT_NETWORK),
     query: allWhitelistedPolls
   });
 

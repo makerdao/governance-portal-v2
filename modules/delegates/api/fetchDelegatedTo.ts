@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { DelegationHistory, MKRDelegatedToDAIResponse } from '../types';
 import getMaker from 'lib/maker';
 import BigNumber from 'bignumber.js';

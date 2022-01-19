@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import zipObject from 'lodash/zipObject';
 
-import withApiHandler from 'lib/api/withApiHandler';
 import { analyzeSpell } from './[address]';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import invariant from 'tiny-invariant';
 import getMaker, { isSupportedNetwork } from 'lib/maker';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

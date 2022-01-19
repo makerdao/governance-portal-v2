@@ -3,10 +3,11 @@ import { Flex, Text, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { formatAddress } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { ConnectorName } from 'modules/web3/types/connectors';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
   address: string;
@@ -36,7 +37,9 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
             <Box sx={{ mr: 2 }}>
               <AddressIcon address={address} width="22px" />
             </Box>
-            <Text sx={{ fontFamily: 'body' }}>{formatAddress(address)}</Text>
+            <Text sx={{ fontFamily: 'body' }} data-testid="current-wallet">
+              {formatAddress(address)}
+            </Text>
           </Flex>
         </Flex>
         <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>

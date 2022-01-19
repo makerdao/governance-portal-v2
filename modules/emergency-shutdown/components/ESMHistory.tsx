@@ -2,10 +2,11 @@ import BigNumber from 'bignumber.js';
 import { Card, Text, Link, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink, formatRound } from 'lib/utils';
+import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;

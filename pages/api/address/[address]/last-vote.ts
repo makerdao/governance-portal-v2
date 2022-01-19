@@ -3,11 +3,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import getMaker from 'lib/maker';
 import voteProxyFactoryAbi from 'lib/abis/voteProxyAbi.json';
 import { isSupportedNetwork } from 'lib/maker/index';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
-import withApiHandler from 'lib/api/withApiHandler';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
-import { resolveENS } from 'modules/web3/ens';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { resolveENS } from 'modules/web3/helpers/ens';
 
 /*
   Returns the last vote for a given address

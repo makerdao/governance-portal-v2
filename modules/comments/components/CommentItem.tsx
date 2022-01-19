@@ -9,7 +9,7 @@ import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName'
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 export default function CommentItem({
