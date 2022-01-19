@@ -2,6 +2,7 @@ import { Flex, Box, Button, Text, Card, Link } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { formatValue } from 'lib/string';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import BurnModal from 'modules/emergency-shutdown/components/BurnModal';
 import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
@@ -12,7 +13,9 @@ import { formatDateWithTime } from 'lib/datetime';
 import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
-
+import { useEsmTotalStaked } from 'modules/web3/hooks/useEsmTotalStaked';
+import { useEsmThreshold } from 'modules/web3/hooks/useEsmThreshold';
+import BigNumber from 'bignumber.js';
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
   const account = useAccountsStore(state => state.currentAccount);
@@ -21,8 +24,10 @@ const ESModule = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   const { data: allEsmJoins } = useAllEsmJoins();
+  const { data: totalStaked } = useEsmTotalStaked();
+  const { data: thresholdAmount } = useEsmThreshold();
 
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief] = data || [];
+  const [canFire, mkrInEsm, cageTime, lockedInChief] = data || [];
 
   const DesktopView = () => {
     return (
@@ -30,7 +35,7 @@ const ESModule = (): React.ReactElement => {
         <Flex sx={{ flexDirection: 'row' }}>
           <Text data-testid="total-mkr-esmodule-staked">
             {totalStaked ? (
-              `${totalStaked.toString(6)}`
+              `${formatValue(totalStaked, 'wad', 6)}`
             ) : (
               <Box pl="14px" pr="14px">
                 <div ref={loader} />
@@ -39,7 +44,7 @@ const ESModule = (): React.ReactElement => {
           </Text>
           {thresholdAmount && (
             <Text color="#708390" sx={{ fontWeight: '400' }}>
-              &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
+              &nbsp;of {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)} MKR` : '---'}
             </Text>
           )}
         </Flex>
@@ -66,7 +71,7 @@ const ESModule = (): React.ReactElement => {
                   ? `${
                       totalStaked.gte(thresholdAmount)
                         ? '100'
-                        : totalStaked.mul(100).div(thresholdAmount).toFixed()
+                        : formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)
                     }%`
                   : '0%'
               }}
@@ -85,7 +90,7 @@ const ESModule = (): React.ReactElement => {
             typeof totalStaked !== 'undefined' && thresholdAmount
               ? canFire
                 ? 100
-                : totalStaked.mul(100).div(thresholdAmount).toNumber()
+                : new BigNumber(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
               : 0
           }
           totalStaked={totalStaked}
@@ -164,8 +169,8 @@ const ESModule = (): React.ReactElement => {
       <Box mt={2}>
         <Text variant="text" sx={{ color: 'onSecondary' }}>
           The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
-          {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
-          emergency shutdown can be executed.{' '}
+          {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)}` : '---'} MKR are entered into the
+          ESM, emergency shutdown can be executed.{' '}
           <Link
             href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
             target="_blank"

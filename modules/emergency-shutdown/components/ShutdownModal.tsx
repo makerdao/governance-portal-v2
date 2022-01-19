@@ -2,6 +2,7 @@ import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
 import getMaker, { getNetwork } from 'lib/maker';
+import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useTransactionStore, {
   transactionsApi,
@@ -9,14 +10,14 @@ import useTransactionStore, {
 } from 'modules/web3/stores/transactions';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { BigNumber } from 'ethers';
 
 const ModalContent = ({
   setShowDialog,
   thresholdAmount
 }: {
   setShowDialog: (value: boolean) => void;
-  thresholdAmount?: CurrencyObject;
+  thresholdAmount?: BigNumber;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
@@ -55,9 +56,9 @@ const ModalContent = ({
         Shutting down the Dai Credit System
       </Text>
       <Text variant="text" sx={{ mt: 3 }}>
-        The {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR limit for the emergency
-        shutdown module has been reached. By continuing past this alert, emergency shutdown will be initiated
-        for the Dai Credit System.
+        The {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)}` : '---'} MKR limit for the
+        emergency shutdown module has been reached. By continuing past this alert, emergency shutdown will be
+        initiated for the Dai Credit System.
       </Text>
       <Grid columns={2} mt={4}>
         <Button
