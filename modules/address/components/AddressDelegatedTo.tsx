@@ -9,7 +9,7 @@ import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 

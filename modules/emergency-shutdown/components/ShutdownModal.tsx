@@ -7,7 +7,7 @@ import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
 } from 'modules/web3/stores/transactions';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { CurrencyObject } from 'modules/app/types/currency';
 

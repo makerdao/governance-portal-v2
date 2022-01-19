@@ -1,4 +1,4 @@
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type RepositoryInfo = {
   owner: string;

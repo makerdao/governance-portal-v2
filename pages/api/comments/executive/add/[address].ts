@@ -2,12 +2,11 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { connectToDatabase } from 'lib/api/utils';
-import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

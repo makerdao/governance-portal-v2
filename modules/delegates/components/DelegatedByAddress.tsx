@@ -10,7 +10,7 @@ import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 
 type DelegatedByAddressProps = {
@@ -65,7 +65,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top' }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+          {`${new BigNumber(lockAmount).toFormat(3)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -87,7 +87,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
                     {`${new BigNumber(
                       lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
-                    ).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+                    ).toFormat(3)}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
               );

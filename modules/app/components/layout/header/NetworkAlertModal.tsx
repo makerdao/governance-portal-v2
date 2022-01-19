@@ -3,7 +3,7 @@ import { Flex, Text, NavLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fadeIn, slideUp } from 'lib/keyframes';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
@@ -71,8 +71,7 @@ const NetworkAlertModal = ({
 
             <Text sx={{ mt: 3 }}>
               Your wallet is connected to an unsupported network, please switch it to{' '}
-              {SupportedNetworks.MAINNET}, {SupportedNetworks.KOVAN}, or {SupportedNetworks.GOERLI} to
-              continue.
+              {SupportedNetworks.MAINNET} or {SupportedNetworks.GOERLI} to continue.
             </Text>
           </Flex>
         </DialogContent>

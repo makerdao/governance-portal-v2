@@ -3,9 +3,9 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getMaker, { isSupportedNetwork } from 'lib/maker';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
-import withApiHandler from 'lib/api/withApiHandler';
 import { SpellData } from 'modules/executive/types/spellData';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours

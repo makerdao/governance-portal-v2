@@ -29,7 +29,7 @@ export function DelegateMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={new BigNumber(delegate.mkrDelegated).toFormat(2) ?? 'Untracked'}
+        value={new BigNumber(delegate.mkrDelegated).toFormat(3) ?? 'Untracked'}
         label={'Total MKR Delegated'}
       />
       <StatBox
@@ -37,7 +37,7 @@ export function DelegateMKRDelegatedStats({
         label={'Total Active Delegators'}
       />
       <StatBox
-        value={typeof mkrStaked !== 'undefined' ? mkrStaked.toBigNumber().toFormat(2) : '0.00'}
+        value={typeof mkrStaked !== 'undefined' ? mkrStaked.toBigNumber().toFormat(3) : '0.000'}
         label={'MKR Delegated by you'}
       />
     </Flex>

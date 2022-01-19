@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getNetwork } from 'lib/maker';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -37,7 +37,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
 
   return (
     <Box>
-      <Heading mb={2} mt={4} variant="microHeading">
+      <Heading mb={2} mt={4} variant="microHeading" data-testid="your-ballot-title">
         Your Ballot
       </Heading>
       {transaction?.hash && transaction.status === 'pending' ? (

@@ -23,7 +23,7 @@ export function AddressMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={votingWeight ? votingWeight.total.toBigNumber().toFormat(2) : '0.00'}
+        value={votingWeight ? votingWeight.total.toBigNumber().toFormat(3) : '0.000'}
         label={'Total MKR Balance'}
       />
 
@@ -31,7 +31,7 @@ export function AddressMKRDelegatedStats({
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? new BigNumber(totalMKRDelegated).toFormat(2) : '0.00'}
+        value={totalMKRDelegated ? new BigNumber(totalMKRDelegated).toFormat(3) : '0.000'}
         label={'Total MKR Delegated'}
       />
     </Flex>

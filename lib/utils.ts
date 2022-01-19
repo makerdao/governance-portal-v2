@@ -6,11 +6,8 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
-import getMaker from './maker';
-import mockPolls from 'modules/polling/api/mocks/polls.json';
+
 import round from 'lodash/round';
-import { CHAIN_INFO, SupportedChainId, SupportedNetworks } from 'modules/web3/web3.constants';
-import { networkNameToChainId } from 'modules/web3/helpers';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
   invariant(num && num.symbol && num.toBigNumber, 'bigNumberKFormat must recieve a maker currency object');
@@ -56,25 +53,6 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   );
 }
 
-export function getEtherscanLink(
-  network: SupportedNetworks,
-  data: string,
-  type: 'transaction' | 'address'
-): string {
-  const chainId = networkNameToChainId(network);
-  const prefix = `https://${
-    CHAIN_INFO[chainId].etherscanPrefix || CHAIN_INFO[SupportedChainId.MAINNET].etherscanPrefix
-  }etherscan.io`;
-
-  switch (type) {
-    case 'transaction':
-      return `${prefix}/tx/${data}`;
-    case 'address':
-    default:
-      return `${prefix}/address/${data}`;
-  }
-}
-
 /* eslint-disable no-useless-escape */
 // https://medium.com/@mhagemann/the-ultimate-way-to-slugify-a-url-string-in-javascript-b8e4a0d849e1
 export function slugify(string: string) {
@@ -115,26 +93,6 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyle
       css: theme => [css(sx instanceof Function ? sx(theme) : sx)(theme), css(stylesToMerge)(theme)]
     });
   }
-}
-
-export async function initTestchainPolls() {
-  const maker = await getMaker();
-  const pollingService = maker.service('govPolling');
-  const hash = 'dummy hash';
-
-  // This detects whether the mock polls have been deployed yet
-  const testTx = await pollingService.createPoll(now(), now() + 500000, hash, hash);
-  if (testTx !== 0) return;
-
-  console.log('setting up some polls on the testchain...');
-  return mockPolls.map(async poll => {
-    const id = await pollingService.createPoll(now(), now() + 50000, hash, poll.url);
-    console.log(`created poll #${id}`);
-  });
-}
-
-function now() {
-  return Math.floor(new Date().getTime());
 }
 
 export function formatAddress(address: string): string {

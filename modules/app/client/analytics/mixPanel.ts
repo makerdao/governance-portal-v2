@@ -19,8 +19,12 @@ const analyticsConfig = {
 export const mixpanelTokenConfigured = analyticsConfig?.mixpanel?.token !== '';
 
 export const mixpanelInit = (): void => {
-  console.debug(
-    `[Mixpanel] Tracking initialized for ${config.NODE_ENV} env using ${analyticsConfig.mixpanel.token}`
-  );
-  mixpanel.init(analyticsConfig.mixpanel.token, analyticsConfig.mixpanel.config);
+  if (analyticsConfig.mixpanel.token) {
+    console.debug(
+      `[Mixpanel] Tracking initialized for ${config.NODE_ENV} env using ${analyticsConfig.mixpanel.token}`
+    );
+    mixpanel.init(analyticsConfig.mixpanel.token, analyticsConfig.mixpanel.config);
+  } else {
+    console.debug('Mixpanel not inialized');
+  }
 };

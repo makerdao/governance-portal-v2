@@ -1,7 +1,7 @@
 import { Contract, getDefaultProvider } from 'ethers';
-import { CHAIN_INFO } from '../web3.constants';
 import { Web3Provider } from '@ethersproject/providers';
 import { getNetwork } from 'lib/maker';
+import { CHAIN_INFO } from '../constants/networks';
 
 export const getEthersContracts = (
   address: string, // deployed contract address

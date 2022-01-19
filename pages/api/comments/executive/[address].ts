@@ -2,10 +2,9 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import withApiHandler from 'lib/api/withApiHandler';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getExecutiveComments } from 'modules/comments/api/getExecutiveComments';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 /**
  * @swagger

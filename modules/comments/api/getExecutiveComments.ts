@@ -1,10 +1,10 @@
-import { connectToDatabase } from 'lib/api/utils';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 import uniqBy from 'lodash/uniqBy';
 import { ExecutiveComment, ExecutiveCommentFromDB } from '../types/executiveComment';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
 
 export async function getExecutiveComments(
   spellAddress: string,

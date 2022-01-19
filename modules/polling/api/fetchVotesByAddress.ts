@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import getMaker, { getNetwork } from 'lib/maker';
 import { PollTallyVote } from '../types';
 

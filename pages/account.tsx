@@ -16,7 +16,6 @@ import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { getEtherscanLink } from 'lib/utils';
 import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionStore, {
@@ -37,6 +36,7 @@ import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -100,7 +100,9 @@ const AccountPage = (): JSX.Element => {
                     href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
                     target="_blank"
                   >
-                    <Text as="p">{bpi > 0 ? voteDelegateAddress : cutMiddle(voteDelegateAddress, 8, 8)}</Text>
+                    <Text as="p" data-testid="vote-delegate-address">
+                      {bpi > 0 ? voteDelegateAddress : cutMiddle(voteDelegateAddress, 8, 8)}
+                    </Text>
                   </ExternalLink>
 
                   <ExternalLink
@@ -167,10 +169,13 @@ const AccountPage = (): JSX.Element => {
                     affected in the user interface and not at the contract level. Future updates will address
                     this issue soon.
                   </Alert>
-                  <Label sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}>
+                  <Label
+                    sx={{ mt: 2, fontSize: 2, alignItems: 'center' }}
+                    data-testid="checkbox-create-delegate"
+                  >
                     <Checkbox
                       checked={warningRead}
-                      onClick={event => {
+                      onChange={() => {
                         setWarningRead(!warningRead);
                         trackButtonClick('setWarningRead');
                       }}

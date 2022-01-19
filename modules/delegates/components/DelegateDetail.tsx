@@ -3,7 +3,7 @@ import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { getNetwork } from 'lib/maker';
-import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { formatAddress } from 'lib/utils';
 import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
@@ -25,6 +25,7 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type PropTypes = {
   delegate: Delegate;

@@ -1,6 +1,6 @@
 import { Button, Flex, Text, Link as ExternalLink } from 'theme-ui';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Delegate } from '../../types';
 import BigNumber from 'bignumber.js';
 

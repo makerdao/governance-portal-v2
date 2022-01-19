@@ -1,7 +1,7 @@
-import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
 import { isSupportedNetwork } from 'lib/maker';
+import withApiHandler from 'modules/app/api/withApiHandler';
 import { getPoll } from 'modules/polling/api/fetchPolls';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 

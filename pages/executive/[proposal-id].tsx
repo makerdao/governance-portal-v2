@@ -31,7 +31,7 @@ import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 // stores
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -51,7 +51,7 @@ import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
-import { ZERO_ADDRESS } from 'modules/web3/web3.constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 
@@ -200,7 +200,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 label="Spell Address"
               />
               <StatBox
-                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(2)}
+                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(3)}
                 label="MKR Support"
               />
               <StatBox value={supporters && supporters.length} label="Supporters" />
@@ -345,7 +345,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     >
                       <Box sx={{ width: '55%' }}>
                         <Text color="onSecondary">
-                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(2)} MKR)
+                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(3)} MKR)
                         </Text>
                       </Box>
 

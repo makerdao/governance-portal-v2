@@ -178,6 +178,7 @@ const PollingCreate = (): React.ReactElement => {
                       <Flex>
                         <Button
                           variant="primary"
+                          data-testid="button-create-poll"
                           onClick={() => setCreating(true)}
                           disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
                         >

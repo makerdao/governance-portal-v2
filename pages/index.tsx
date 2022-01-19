@@ -5,8 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
-import { isDefaultNetwork, getNetwork, isTestnet } from 'lib/maker';
-import { initTestchainPolls } from 'lib/utils';
+import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -324,10 +323,6 @@ export default function Index({
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (isTestnet()) {
-      initTestchainPolls(); // this is async but we don't need to await
-    }
-
     if (!isDefaultNetwork() && (!_polls || !_proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
@@ -363,7 +358,6 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
-
   const [proposals, pollsData, blogPosts] = await Promise.all([
     getExecutiveProposals(),
     getPolls(),

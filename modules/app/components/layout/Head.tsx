@@ -42,7 +42,7 @@ export function HeadComponent({
           "default-src 'none';" +
           'frame-src https://connect.trezor.io https://www.youtube-nocookie.com https://player.vimeo.com;' +
           "font-src 'self';" +
-          "connect-src 'self' https: wss:;" +
+          "connect-src http://localhost:8545/ 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
           `script-src 'self' ${
             dev ? "'unsafe-eval'" : ''

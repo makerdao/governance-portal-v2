@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber as BigNumberJs } from 'bignumber.js';
 import { SECONDS_PER_YEAR } from 'lib/datetime';
-import { BigNumberRAY } from 'modules/web3/web3.constants';
+import { BigNumberRAY } from '../constants/numbers';
 
 BigNumberJs.config({ POW_PRECISION: 100 });
 

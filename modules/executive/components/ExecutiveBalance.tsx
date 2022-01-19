@@ -27,7 +27,9 @@ export const ExecutiveBalance = ({ lockedMkr, voteDelegate, voteProxy }: Props) 
     </Flex>
     {!voteDelegate && (
       <Flex sx={{ mt: [3, 0], alignItems: 'center' }}>
-        <Deposit sx={{ ml: [0, 3] }} />
+        <Box sx={{ ml: [0, 3] }}>
+          <Deposit />
+        </Box>
         <Withdraw sx={{ ml: 3 }} />
       </Flex>
     )}

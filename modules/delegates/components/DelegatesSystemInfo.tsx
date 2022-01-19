@@ -2,12 +2,13 @@ import BigNumber from 'bignumber.js';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
-import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { formatAddress } from 'lib/utils';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
 import { useContractAddress } from 'modules/web3/hooks/useChiefContract';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
-import { BigNumberWAD } from 'modules/web3/web3.constants';
+import { BigNumberWAD } from 'modules/web3/constants/numbers';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 export function DelegatesSystemInfo({
   stats,

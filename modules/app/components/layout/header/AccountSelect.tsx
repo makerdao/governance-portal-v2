@@ -19,13 +19,13 @@ import NetworkAlertModal from './NetworkAlertModal';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
-import { chainIdToNetworkName } from 'modules/web3/helpers';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
-import { SUPPORTED_WALLETS } from 'modules/web3/wallets';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -79,7 +79,6 @@ const AccountSelect = (): React.ReactElement => {
     state.setCurrentAccount
   ]);
   const address = account?.address;
-
   // Detect previously authorized connections and force log-in
   useEagerConnect();
 
@@ -235,7 +234,6 @@ const AccountSelect = (): React.ReactElement => {
       });
 
       await activate(connector);
-
       if (chainId) {
         setUserData({ wallet: name });
       }

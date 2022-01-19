@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
   tx: any;

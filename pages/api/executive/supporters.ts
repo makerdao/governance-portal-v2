@@ -2,9 +2,9 @@ import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import getMaker, { isSupportedNetwork } from 'lib/maker';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
-import withApiHandler from 'lib/api/withApiHandler';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK;

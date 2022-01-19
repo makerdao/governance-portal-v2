@@ -1,11 +1,12 @@
 import { Card, Text, Link, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink, formatRound } from 'lib/utils';
+import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { StakingHistoryRow } from 'modules/emergency-shutdown/types/esmodule';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
   stakingHistory: StakingHistoryRow[] | undefined;

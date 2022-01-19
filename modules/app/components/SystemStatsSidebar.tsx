@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
 import { getNetwork } from 'lib/maker';
-import { formatAddress, getEtherscanLink } from 'lib/utils';
+import { formatAddress } from 'lib/utils';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
@@ -12,6 +12,7 @@ import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useChiefContract';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type StatField =
   | 'chief contract'

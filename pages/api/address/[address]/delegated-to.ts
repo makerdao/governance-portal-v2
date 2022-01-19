@@ -1,12 +1,13 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'lib/maker/index';
-import { DEFAULT_NETWORK } from 'modules/web3/web3.constants';
-import withApiHandler from 'lib/api/withApiHandler';
-import { resolveENS } from 'modules/web3/ens';
+
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistory } from 'modules/delegates/types';
 import BigNumber from 'bignumber.js';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { resolveENS } from 'modules/web3/helpers/ens';
 
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistory[];
@@ -20,7 +21,7 @@ export default withApiHandler(
 
     const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
-    const delegatedTo = await fetchDelegatedTo(address, network);
+    const delegatedTo = await fetchDelegatedTo(address ?? tempAddress, network);
     const totalDelegated = delegatedTo.reduce((prev, next) => {
       return prev.plus(next.lockAmount);
     }, new BigNumber(0));

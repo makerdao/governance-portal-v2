@@ -2,7 +2,7 @@ import { Flex, Button, Text, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 
 const BurnTxSuccess = ({ tx, close }) => (

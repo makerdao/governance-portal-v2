@@ -18,7 +18,10 @@ export const useTokenAllowance = (
   const { data, error, mutate } = useSWR(
     userAddress && contractAddress ? ['token-balance', token, userAddress, contractAddress] : null,
     (_, token, userAddress, contractAddress) =>
-      getMaker().then(maker => maker.getToken(token).allowance(userAddress, contractAddress))
+      getMaker().then(maker => {
+        console.log(maker);
+        return maker.getToken(token).allowance(userAddress, contractAddress);
+      })
   );
 
   return {

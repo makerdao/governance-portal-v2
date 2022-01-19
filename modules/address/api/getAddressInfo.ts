@@ -1,4 +1,4 @@
-import { SupportedNetworks } from 'modules/web3/web3.constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import getMaker from 'lib/maker';
 import { fetchDelegate } from 'modules/delegates/api/fetchDelegates';
 import { AddressApiResponse } from '../types/addressApiResponse';

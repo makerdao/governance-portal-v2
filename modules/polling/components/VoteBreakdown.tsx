@@ -17,7 +17,7 @@ export default function VoteBreakdown({
 }): JSX.Element {
   if (poll.voteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN)) {
     return (
-      <Box key={2} sx={{ p: [3, 4] }}>
+      <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
         <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
           Vote Breakdown
         </Text>
@@ -41,11 +41,11 @@ export default function VoteBreakdown({
                   )}
                   {tallyResult ? (
                     <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                      {`${firstChoice.plus(transfer).toFormat(2)} MKR Voting (${new BigNumber(
+                      {`${firstChoice.plus(transfer).toFormat(3)} MKR Voting (${new BigNumber(
                         tallyResult.firstPct
                       )
                         .plus(tallyResult.transferPct)
-                        .toFixed(2)}%)`}
+                        .toFixed(3)}%)`}
                     </Text>
                   ) : (
                     <Delay>
@@ -57,7 +57,7 @@ export default function VoteBreakdown({
                 {tally && tallyResult ? (
                   <Box sx={{ position: 'relative', mb: 4 }}>
                     <Tooltip
-                      label={`First choice ${firstChoice.toFormat(2)}; Transfer ${transfer.toFormat(2)}`}
+                      label={`First choice ${firstChoice.toFormat(3)}; Transfer ${transfer.toFormat(3)}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -124,9 +124,9 @@ export default function VoteBreakdown({
               )}
               {tally && tallyResult ? (
                 <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                  {`${new BigNumber(tallyResult.mkrSupport).toFormat(2)} MKR Voting (${new BigNumber(
+                  {`${new BigNumber(tallyResult.mkrSupport).toFormat(3)} MKR Voting (${new BigNumber(
                     tallyResult.firstPct
-                  ).toFixed(2)}%)`}
+                  ).toFixed(3)}%)`}
                 </Text>
               ) : (
                 <Delay>
@@ -136,7 +136,7 @@ export default function VoteBreakdown({
             </Flex>
 
             {tally && tallyResult ? (
-              <Tooltip label={`First choice ${new BigNumber(tallyResult.mkrSupport).toFormat(2)}`}>
+              <Tooltip label={`First choice ${new BigNumber(tallyResult.mkrSupport).toFormat(3)}`}>
                 <Box my={2}>
                   <Progress
                     sx={{
