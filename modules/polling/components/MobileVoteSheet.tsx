@@ -15,7 +15,7 @@ import useBallotStore from 'modules/polling/stores/ballotStore';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
@@ -55,8 +55,8 @@ export default function MobileVoteSheet({
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const addressToCheck = voteDelegateAddress ?? account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const currentVote = extractCurrentPollVote(poll, allUserVotes);

@@ -5,7 +5,7 @@ import Withdraw from 'modules/mkr/components/Withdraw';
 
 type Props = {
   lockedMkr: any;
-  voteDelegate?: any;
+  voteDelegate?: string;
   voteProxy?: any;
 };
 

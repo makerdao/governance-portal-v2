@@ -18,6 +18,8 @@ import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
+import { parseUnits } from '@ethersproject/units';
 
 type Props = {
   isOpen: boolean;
@@ -45,6 +47,8 @@ export const UndelegateModal = ({
   const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
   const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
 
+  const { data: free } = useDelegateFree(voteDelegateAddress);
+
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 
   const [trackTransaction, tx] = useTransactionStore(
@@ -69,8 +73,10 @@ export const UndelegateModal = ({
   };
 
   const freeMkr = async () => {
-    const maker = await getMaker();
-    const freeTxCreator = () => maker.service('voteDelegate').free(voteDelegateAddress, mkrToWithdraw);
+    //TODO: update the mkr input to handle ethers bignumber
+    const amt = mkrToWithdraw.toString();
+    const freeTxCreator = () => free(parseUnits(amt, 18));
+
     const txId = await trackTransaction(freeTxCreator, 'Withdrawing MKR', {
       mined: txId => {
         mutateTotalStaked();

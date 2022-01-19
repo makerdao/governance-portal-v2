@@ -24,7 +24,7 @@ import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { DelegationHistory } from 'modules/delegates/types/delegate';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type PropTypes = {
   delegate: Delegate;
@@ -49,12 +49,11 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const voteDelegate = useAccountsStore(state => state.voteDelegate);
+  const { data: connectedVDAddress } = useVoteDelegateAddress();
 
   const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
   const delegatorCount = delegators ? activeDelegators?.length : undefined;
-  const isOwner =
-    delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+  const isOwner = delegate.voteDelegateAddress.toLowerCase() === connectedVDAddress?.toLowerCase();
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,

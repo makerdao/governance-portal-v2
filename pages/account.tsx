@@ -36,23 +36,21 @@ import { TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const [voteDelegate, setVoteDelegate, voteProxy] = useAccountsStore(state =>
-    account
-      ? [state.voteDelegate, state.setVoteDelegate, state.proxies[account.address]]
-      : [null, state.setVoteDelegate, null]
+  const [setVoteDelegate, voteProxy] = useAccountsStore(state =>
+    account ? [state.setVoteDelegate, state.proxies[account.address]] : [state.setVoteDelegate, null]
   );
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
   const { data: chiefBalance } = useLockedMkr(address, voteProxy);
-  const { data: delegatedMkr } = useLockedMkr(
-    voteDelegate ? voteDelegate.getVoteDelegateAddress() : undefined
-  );
+  const { data: delegatedMkr } = useLockedMkr(voteDelegateAddress ?? undefined);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -94,19 +92,15 @@ const AccountPage = (): JSX.Element => {
               <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
                 Vote Delegation
               </Text>
-              {voteDelegate && !modalOpen ? (
+              {voteDelegateAddress && !modalOpen ? (
                 <Box>
                   <Text>Your delegate contract address:</Text>
                   <ExternalLink
                     title="View on etherescan"
-                    href={getEtherscanLink(getNetwork(), voteDelegate.getVoteDelegateAddress(), 'address')}
+                    href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
                     target="_blank"
                   >
-                    <Text as="p">
-                      {bpi > 0
-                        ? voteDelegate.getVoteDelegateAddress()
-                        : cutMiddle(voteDelegate.getVoteDelegateAddress(), 8, 8)}
-                    </Text>
+                    <Text as="p">{bpi > 0 ? voteDelegateAddress : cutMiddle(voteDelegateAddress, 8, 8)}</Text>
                   </ExternalLink>
 
                   <ExternalLink
@@ -202,7 +196,7 @@ const AccountPage = (): JSX.Element => {
                     You have a DSChief balance of{' '}
                     <Text sx={{ fontWeight: 'bold' }}>{chiefBalance.toBigNumber().toFormat(6)} MKR.</Text>
                     <Text as="p" sx={{ my: 2 }}>
-                      {voteDelegate
+                      {voteDelegateAddress
                         ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
                         : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}
                     </Text>
