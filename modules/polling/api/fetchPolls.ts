@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import getMaker, { isTestnet } from 'lib/maker';
+import { isTestnet } from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
@@ -10,10 +10,12 @@ import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';
+import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { networkNameToChainId } from 'modules/web3/helpers';
 
 // Returns all the polls and caches them in the file system.
 export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
-  const maker = await getMaker(network);
   const cacheKey = 'polls';
 
   if (config.USE_FS_CACHE) {
@@ -30,7 +32,17 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }));
   }
 
-  const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
+  const data = await gqlRequest({
+    chainId: networkNameToChainId(network || 'mainnet'),
+    query: allWhitelistedPolls
+  });
+  // TODO: move this logic somewhere else?
+  const pollList = data.activePolls.nodes.map(p => {
+    p.startDate = new Date(p.startDate * 1000);
+    p.endDate = new Date(p.endDate * 1000);
+    return p;
+  });
+
   const polls = await parsePollsMetadata(pollList);
 
   if (config.USE_FS_CACHE) {
