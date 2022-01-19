@@ -41,8 +41,8 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
     network: SupportedNetworks.MAINNET,
-    defaultRPC: NodeProviders.INFURA,
-    spockURL: MAINNET_SPOCK_URL,
+    defaultRpc: NodeProviders.INFURA,
+    spockUrl: MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-mainnet.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
@@ -53,8 +53,8 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
     network: SupportedNetworks.GOERLI,
-    defaultRPC: NodeProviders.INFURA,
-    spockURL: GOERLI_SPOCK_URL,
+    defaultRpc: NodeProviders.INFURA,
+    spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
       [NodeProviders.ALCHEMY]: `https://eth-goerli.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
@@ -65,8 +65,8 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
     network: SupportedNetworks.GOERLI,
-    defaultRPC: NodeProviders.LOCAL,
-    spockURL: GOERLI_SPOCK_URL,
+    defaultRpc: NodeProviders.LOCAL,
+    spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
     }
@@ -77,8 +77,8 @@ export const CHAIN_INFO: ChainInfo = {
     label: 'Testnet',
     etherscanPrefix: '',
     network: SupportedNetworks.TESTNET,
-    defaultRPC: NodeProviders.TESTNET,
-    spockURL: LOCAL_SPOCK_URL,
+    defaultRpc: NodeProviders.TESTNET,
+    spockUrl: LOCAL_SPOCK_URL,
 
     rpcs: {
       [NodeProviders.TESTNET]: 'http://localhost:2000'
