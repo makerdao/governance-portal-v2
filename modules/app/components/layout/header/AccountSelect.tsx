@@ -26,6 +26,7 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
+import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -81,6 +82,7 @@ const AccountSelect = (): React.ReactElement => {
   const address = account?.address;
   // Detect previously authorized connections and force log-in
   useEagerConnect();
+  useWindowBindings();
 
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
