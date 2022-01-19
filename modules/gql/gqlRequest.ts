@@ -1,5 +1,6 @@
 import { request } from 'graphql-request';
-import { CHAIN_INFO, SupportedChainId } from 'modules/web3/web3.constants';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { CHAIN_INFO } from 'modules/web3/constants/networks';
 
 export const gqlRequest = async ({
   chainId,

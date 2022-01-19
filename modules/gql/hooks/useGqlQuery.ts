@@ -1,7 +1,5 @@
-import { request } from 'graphql-request';
 import useSWR from 'swr';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { CHAIN_INFO, SupportedChainId } from 'modules/web3/web3.constants';
 import { gqlRequest } from '../gqlRequest';
 
 type GqlQueryResponse = {
