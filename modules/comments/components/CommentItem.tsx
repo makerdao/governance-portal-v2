@@ -10,6 +10,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
 import { getEtherscanLink } from 'lib/utils';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 export default function CommentItem({
   comment,
@@ -25,9 +26,8 @@ export default function CommentItem({
 
   // Used to display the share button in owned comments
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, voteDelegate] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-  );
+  const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
   // isOwner if the delegateAddress registered in the comment is the same one from the current user
   // isOwner also if the address is equal to the current account address
@@ -35,8 +35,7 @@ export default function CommentItem({
     (comment.comment.voteProxyAddress &&
       comment.comment.voteProxyAddress?.toLowerCase() === voteProxy?.getProxyAddress().toLowerCase()) ||
     (comment.comment.delegateAddress &&
-      comment.comment.delegateAddress?.toLowerCase() ===
-        voteDelegate?.getVoteDelegateAddress().toLowerCase()) ||
+      comment.comment.delegateAddress?.toLowerCase() === voteDelegateAddress?.toLowerCase()) ||
     comment.address.address.toLowerCase() === account?.address.toLowerCase();
   return (
     <Box>

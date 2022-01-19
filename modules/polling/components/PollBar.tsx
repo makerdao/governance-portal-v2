@@ -6,14 +6,15 @@ import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useBallotStore from '../stores/ballotStore';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type Props = { polls: Poll[]; activePolls: Poll[] };
 
 export default function PollBar({ polls, activePolls, ...props }: Props): JSX.Element {
   const account = useAccountsStore(state => state.currentAccount);
   const ballot = useBallotStore(state => state.ballot);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const addressToCheck = voteDelegateAddress ?? account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const allUserPolls: Poll[] = allUserVotes

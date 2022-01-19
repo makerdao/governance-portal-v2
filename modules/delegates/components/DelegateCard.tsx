@@ -23,6 +23,7 @@ import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { formatAddress } from 'lib/utils';
 import DelegateAvatarName from './DelegateAvatarName';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,7 +34,8 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const [account, voteDelegate] = useAccountsStore(state => [state.currentAccount, state.voteDelegate]);
+  const [account] = useAccountsStore(state => [state.currentAccount]);
+  const { data: connectedVDAddress } = useVoteDelegateAddress();
   const address = account?.address;
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
@@ -51,8 +53,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     }
   );
 
-  const isOwner =
-    delegate.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+  const isOwner = delegate.voteDelegateAddress.toLowerCase() === connectedVDAddress?.toLowerCase();
 
   return (
     <Card

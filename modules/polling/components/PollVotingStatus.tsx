@@ -8,6 +8,7 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Poll } from 'modules/polling/types';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'textMuted';
@@ -36,8 +37,8 @@ const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, .
 
 const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject }): JSX.Element | null => {
   const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const addressToCheck = voteDelegateAddress ?? account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);

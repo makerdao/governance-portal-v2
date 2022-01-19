@@ -1,13 +1,13 @@
 import { useVoteDelegate } from 'modules/app/hooks/useVoteDelegate';
 
 export const useDelegateVote = () => {
-  const { data: voteDelegate } = useVoteDelegate();
+  const { data: voteDelegateContract } = useVoteDelegate();
 
   let voteOne, voteMany;
 
-  if (voteDelegate) {
-    voteOne = voteDelegate['vote(bytes32)'];
-    voteMany = voteDelegate['vote(address[])'];
+  if (voteDelegateContract) {
+    voteOne = voteDelegateContract['vote(bytes32)'];
+    voteMany = voteDelegateContract['vote(address[])'];
   }
 
   return {

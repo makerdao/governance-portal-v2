@@ -44,9 +44,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-  );
+  const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
   const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
   const addressLockedMKR = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;

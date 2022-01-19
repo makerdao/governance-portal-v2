@@ -34,6 +34,7 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type Props = {
   polls: Poll[];
@@ -123,8 +124,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
   }, [filteredPolls]);
 
   const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const addressToCheck = voteDelegateAddress ?? account?.address;
   const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
 
   // revalidate user votes if connected address changes

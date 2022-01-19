@@ -2,6 +2,7 @@ import getMaker from 'lib/maker';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import useSWR from 'swr';
 import useAccountsStore from 'modules/app/stores/accounts';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type VotedProposalsResponse = {
   data: any;
@@ -19,12 +20,11 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
   } else {
     // if no address, fetch for connected account
     const account = useAccountsStore(state => state.currentAccount);
-    const [voteProxy, voteDelegate] = useAccountsStore(state =>
-      account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-    );
+    const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
+    const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-    addressToUse = voteDelegate
-      ? voteDelegate.getVoteDelegateAddress()
+    addressToUse = voteDelegateAddress
+      ? voteDelegateAddress
       : voteProxy
       ? voteProxy.getProxyAddress()
       : account?.address;

@@ -16,6 +16,7 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -87,17 +88,16 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
-    account
-      ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
-      : [null, null, null]
+  const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
+    account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
   );
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-  const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
+  const address = voteDelegateAddress || voteProxy?.getProxyAddress() || account?.address;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegateAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
@@ -254,7 +254,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           !voteProxy &&
           lockedMkr &&
           lockedMkr.eq(0) &&
-          !voteDelegate && (
+          !voteDelegateAddress && (
             <>
               <ProgressBar step={1} />
               <Flex
@@ -332,7 +332,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           lockedMkrOldChief.eq(0) &&
           voteProxy &&
           lockedMkr &&
-          !voteDelegate && (
+          !voteDelegateAddress && (
             <>
               <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
               <MigrationBadge>
@@ -361,7 +361,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           )}
       </Box>
       <Stack>
-        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegate} />}
+        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegateAddress} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters

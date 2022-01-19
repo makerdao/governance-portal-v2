@@ -10,6 +10,7 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { Poll } from 'modules/polling/types';
 import { Account } from 'modules/app/types/account';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 type Props = {
   account?: Account;
@@ -75,8 +76,8 @@ const PollingIndicatorComponent = ({
 }): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const addressToCheck = voteDelegateAddress ?? account?.address;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const unvotedPolls = allUserVotes

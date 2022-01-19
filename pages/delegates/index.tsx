@@ -17,7 +17,7 @@ import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -65,10 +65,9 @@ const Delegates = ({ delegates, stats }: Props) => {
     }
   };
 
-  const [voteDelegate] = useAccountsStore(state => [state.voteDelegate]);
+  const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-  const isOwner = d =>
-    d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateAddress?.toLowerCase();
 
   const expiredDelegates = sortedDelegates.filter(delegate => delegate.expired === true);
 
@@ -163,7 +162,7 @@ const Delegates = ({ delegates, stats }: Props) => {
             </Heading>
             <Card variant="compact">
               <Text as="p" sx={{ mb: 3 }}>
-                {voteDelegate
+                {voteDelegateAddress
                   ? 'Looking for delegate contract information?'
                   : 'Interested in creating a delegate contract?'}
               </Text>
