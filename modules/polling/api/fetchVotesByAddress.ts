@@ -4,7 +4,8 @@ import { getNetwork } from 'lib/maker';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
-import { networkNameToChainId, paddedArray, toBuffer } from 'modules/web3/helpers/chain';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { paddedArray, toBuffer } from 'lib/utils';
 
 export async function fetchVotesByAddresForPoll(
   pollId: number,
