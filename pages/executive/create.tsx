@@ -10,14 +10,13 @@ import { getEtherscanLink } from 'lib/utils';
 import { SupportedNetworks } from 'modules/web3/web3.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
-const ExecutiveCreate = () => {
+const ExecutiveCreate = (): JSX.Element => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [markdown, setMarkdown] = useState('');
   const [date, setDate] = useState('');
   const [mainnetAddress, setMainnetAddress] = useState('');
-  const [kovanAddress, setKovanAddress] = useState('');
   const [error, setError] = useState(['']);
   const [fetchFinished, setFetchFinished] = useState(false);
   const fields = [
@@ -59,13 +58,6 @@ const ExecutiveCreate = () => {
         setError(e => [...e, 'invalid mainnet address']);
       }
     }
-    if (metadata.kovanAddress) {
-      try {
-        ethers.utils.getAddress(metadata.kovanAddress);
-      } catch (_) {
-        setError(e => [...e, 'invalid kovan address']);
-      }
-    }
 
     //remove `Template - [ ... ] ` from title
     const editTitle = title => {
@@ -81,7 +73,6 @@ const ExecutiveCreate = () => {
     setSummary(metadata.summary);
     setDate(metadata.date ? new Date(metadata.date).toUTCString() : '');
     setMainnetAddress(metadata.address);
-    setKovanAddress(metadata.kovanAddress);
     setMarkdown(await markdownToHtml(execMarkdown));
   };
 
@@ -192,18 +183,6 @@ const ExecutiveCreate = () => {
                           sx={{ p: 0 }}
                         >
                           {mainnetAddress}
-                        </Link>
-                      </TD>
-                    </tr>
-                    <tr key={'Kovan Address'}>
-                      <TD>Kovan Address</TD>
-                      <TD>
-                        <Link
-                          target="_blank"
-                          href={getEtherscanLink(SupportedNetworks.KOVAN, kovanAddress, 'address')}
-                          sx={{ p: 0 }}
-                        >
-                          {kovanAddress}
                         </Link>
                       </TD>
                     </tr>

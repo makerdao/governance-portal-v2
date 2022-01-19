@@ -1,13 +1,18 @@
 import { ethers } from 'ethers';
 import { config } from 'lib/config';
 import { BigNumber as BigNumberJs } from 'bignumber.js';
-
+import {
+  MAINNET_SPOCK_URL,
+  GOERLI_SPOCK_URL,
+  LOCAL_SPOCK_URL,
+  // TODO how to use this?
+  STAGING_MAINNET_SPOCK_URL
+} from 'modules/gql/gql.constants';
 const { BigNumber } = ethers;
 
 export enum SupportedChainId {
   MAINNET = 1,
   GOERLI = 5,
-  KOVAN = 42,
   TESTNET = 999
 }
 
@@ -24,7 +29,6 @@ export enum SupportedConnectors {
 }
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
-  KOVAN = 'kovan',
   GOERLI = 'goerli',
   TESTNET = 'testnet'
 }
@@ -40,25 +44,22 @@ export const CHAIN_INFO = {
     etherscanPrefix: '',
     chainId: 1,
     label: 'Mainnet',
-    network: SupportedNetworks.MAINNET
+    network: SupportedNetworks.MAINNET,
+    spockUrl: MAINNET_SPOCK_URL
   },
   [SupportedChainId.GOERLI]: {
     etherscanPrefix: 'goerli.',
     chainId: 5,
     label: 'Goerli',
-    network: SupportedNetworks.GOERLI
-  },
-  [SupportedChainId.KOVAN]: {
-    etherscanPrefix: 'kovan.',
-    chainId: 42,
-    label: 'Kovan',
-    network: SupportedNetworks.KOVAN
+    network: SupportedNetworks.GOERLI,
+    spockUrl: GOERLI_SPOCK_URL
   },
   [SupportedChainId.TESTNET]: {
     //   etherscanPrefix: '',
     chainId: 999, // This is arbitrary and defined in @makerdao/testchain
     label: 'Testnet',
-    network: SupportedNetworks.TESTNET
+    network: SupportedNetworks.TESTNET,
+    spockUrl: LOCAL_SPOCK_URL
   }
 };
 
@@ -66,10 +67,6 @@ export const NETWORK_URLS = {
   [SupportedNetworks.MAINNET]: {
     [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
     [NodeProviders.ALCHEMY]: `https://eth-mainnet.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
-  },
-  [SupportedNetworks.KOVAN]: {
-    [NodeProviders.INFURA]: `https://kovan.infura.io/v3/${config.INFURA_KEY}`,
-    [NodeProviders.ALCHEMY]: `https://eth-kovan.alchemyapi.io/v2/${config.ALCHEMY_KEY}`
   },
   [SupportedNetworks.GOERLI]: {
     [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,

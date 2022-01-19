@@ -27,8 +27,6 @@ function determineNetwork(): SupportedNetworks {
     // 1) check the URL
     if (window.location.search.includes('mainnet')) {
       return SupportedNetworks.MAINNET;
-    } else if (window.location.search.includes('kovan')) {
-      return SupportedNetworks.KOVAN;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
@@ -51,14 +49,12 @@ function determineNetwork(): SupportedNetworks {
 
 type MakerSingletons = {
   [SupportedNetworks.MAINNET]: null | Promise<MakerClass>;
-  [SupportedNetworks.KOVAN]: null | Promise<MakerClass>;
   [SupportedNetworks.GOERLI]: null | Promise<MakerClass>;
   [SupportedNetworks.TESTNET]: null | Promise<MakerClass>;
 };
 
 const makerSingletons: MakerSingletons = {
   [SupportedNetworks.MAINNET]: null,
-  [SupportedNetworks.KOVAN]: null,
   [SupportedNetworks.GOERLI]: null,
   [SupportedNetworks.TESTNET]: null
 };

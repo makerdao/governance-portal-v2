@@ -1,23 +1,19 @@
 import { allEsmJoins } from 'modules/gql/queries/allEsmJoins';
-import { useQuery, CombinedError } from 'urql';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
+import { useGqlQuery } from 'modules/gql/hooks/useGqlQuery';
 
 type AllEsmJoinsResponse = {
   data: AllEsmJoinsRecord[];
   loading: boolean;
-  error?: CombinedError;
+  error?: any;
 };
 
 export const useAllEsmJoins = (): AllEsmJoinsResponse => {
-  const [result] = useQuery({
-    query: allEsmJoins
-  });
-
-  const { data, fetching, error } = result;
+  const { data, error } = useGqlQuery({ cacheKey: 'allEsmJoins', query: allEsmJoins });
 
   return {
     data: data && data.allEsmJoins.nodes,
-    loading: fetching,
+    loading: !data && !error,
     error
   };
 };
