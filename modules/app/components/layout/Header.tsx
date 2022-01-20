@@ -21,8 +21,6 @@ const Header = (): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
   const { chainId } = useActiveWeb3React();
 
-  console.log({ chainId });
-
   return (
     <Box
       as="header"
