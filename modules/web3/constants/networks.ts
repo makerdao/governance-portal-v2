@@ -2,6 +2,8 @@ import { config } from 'lib/config';
 import { Chain } from '../types/chain';
 import { SupportedChainId } from './chainID';
 
+export const NetworkContextName = 'NETWORK';
+
 import {
   MAINNET_SPOCK_URL,
   GOERLI_SPOCK_URL,
