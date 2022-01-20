@@ -106,6 +106,19 @@ Cypress.Commands.overwrite('visit', (original: any, url: string, options: any) =
       // Only required to make Maker class happy until we remove it...
       // See syncMakerAccount
       win.ethereum = new CustomizedBridge(signer, provider);
+
+      // Testing a mock provider
+      // win.ethereum = {
+      //   enable: () => {
+      //     window.ethereum['sendAsync'] = ({ method }, callback) => {
+      //       if (method === 'eth_accounts') {
+      //         callback(null, {
+      //           result: [TEST_ADDRESS_NEVER_USE]
+      //         });
+      //       }
+      //     };
+      //   }
+      // };
     }
   });
 });
