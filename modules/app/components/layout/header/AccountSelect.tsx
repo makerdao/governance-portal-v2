@@ -86,11 +86,13 @@ const AccountSelect = (): React.ReactElement => {
 
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
-
   useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-    if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork())
+    if (error instanceof UnsupportedChainIdError) {
+      setChainIdError('unsupported network');
+    }
+    if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()) {
       setChainIdError('network mismatch');
+    }
   }, [chainId, error]);
 
   useEffect(() => {
