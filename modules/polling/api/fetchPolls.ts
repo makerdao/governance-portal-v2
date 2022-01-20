@@ -1,19 +1,20 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import getMaker from 'lib/maker';
 import { markdownToHtml } from 'lib/utils';
 import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
 import { parsePollsMetadata } from './parsePollMetadata';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';
+import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
 // Returns all the polls and caches them in the file system.
 export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
-  const maker = await getMaker(network);
   const cacheKey = 'polls';
 
   if (config.USE_FS_CACHE) {
@@ -29,7 +30,18 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
       endDate: new Date(p.endDate)
     }));
   }
-  const pollList = await maker.service('govPolling').getAllWhitelistedPolls();
+
+  const data = await gqlRequest({
+    chainId: networkNameToChainId(network || DEFAULT_NETWORK),
+    query: allWhitelistedPolls
+  });
+
+  const pollList = data.activePolls.nodes.map(p => {
+    p.startDate = new Date(p.startDate * 1000);
+    p.endDate = new Date(p.endDate * 1000);
+    return p;
+  });
+
   const polls = await parsePollsMetadata(pollList);
 
   if (config.USE_FS_CACHE) {

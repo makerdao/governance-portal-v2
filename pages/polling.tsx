@@ -35,6 +35,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type Props = {
   polls: Poll[];
@@ -292,6 +293,7 @@ export default function PollingOverviewPage({
   const [_polls, _setPolls] = useState<Poll[]>();
   const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
+  const { chainId } = useActiveWeb3React();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
@@ -303,7 +305,7 @@ export default function PollingOverviewPage({
         })
         .catch(setError);
     }
-  }, []);
+  }, [chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
