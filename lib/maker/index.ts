@@ -29,9 +29,7 @@ function determineNetwork(): SupportedNetworks {
     if (window.location.search.includes('mainnet')) {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('goerlifork')) {
-      // FIXME: hack to fix wrong network alert
       return SupportedNetworks.GOERLIFORK;
-      // return SupportedNetworks.GOERLIFORK;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;
     } else if (window.location.search.includes('testnet')) {
