@@ -38,7 +38,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
+          <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
               <Address address={address} />
             </ThemeUILink>

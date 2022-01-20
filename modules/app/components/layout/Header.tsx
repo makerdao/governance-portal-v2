@@ -32,13 +32,13 @@ const Header = (): JSX.Element => {
         width: '100%'
       }}
     >
-      <Link href={{ pathname: '/', query: { network } }}>
+      <Link href={{ pathname: '/' }}>
         <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
           <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/polling', query: { network } }} passHref>
+        <Link href={{ pathname: '/polling' }} passHref>
           <NavLink
             title="Polling"
             p={0}
@@ -52,7 +52,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/executive', query: { network } }} passHref>
+        <Link href={{ pathname: '/executive' }} passHref>
           <NavLink
             p={0}
             title="Executive"
@@ -66,7 +66,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/delegates', query: { network } }} passHref>
+        <Link href={{ pathname: '/delegates' }} passHref>
           <NavLink
             title="Delegates"
             p={0}
@@ -80,7 +80,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/esmodule', query: { network } }} passHref>
+        <Link href={{ pathname: '/esmodule' }} passHref>
           <NavLink
             title="ES Module"
             p={0}
@@ -140,23 +140,23 @@ const MobileMenu = ({ hide, network, router }) => {
           }
         }}
       >
-        <Link href={{ pathname: '/', query: { network } }}>
+        <Link href={{ pathname: '/' }}>
           <NavLink>Home</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/polling', query: { network } }}>
+        <Link href={{ pathname: '/polling' }}>
           <NavLink>Polling</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/executive', query: { network } }}>
+        <Link href={{ pathname: '/executive' }}>
           <NavLink>Executive</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/delegates', query: { network } }}>
+        <Link href={{ pathname: '/delegates' }}>
           <NavLink>Delegates</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        <Link href={{ pathname: '/esmodule' }}>
           <NavLink>ES Module</NavLink>
         </Link>
       </Flex>

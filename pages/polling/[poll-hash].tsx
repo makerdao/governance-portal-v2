@@ -73,7 +73,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Link href={{ pathname: '/polling', query: { network } }}>
+            <Link href={{ pathname: '/polling' }}>
               <NavLink p={0}>
                 <Button variant="mutedOutline">
                   <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
@@ -90,8 +90,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               {poll.ctx?.prev?.slug && (
                 <Link
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-                  as={{ pathname: `/polling/${poll.ctx.prev.slug}`, query: { network } }}
+                  href={{ pathname: '/polling/[poll-hash]' }}
+                  as={{ pathname: `/polling/${poll.ctx.prev.slug}` }}
                 >
                   <NavLink p={0}>
                     <Button variant="mutedOutline">
@@ -106,8 +106,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               {poll.ctx?.next?.slug && (
                 <Link
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-                  as={{ pathname: `/polling/${poll.ctx.next.slug}`, query: { network } }}
+                  href={{ pathname: '/polling/[poll-hash]' }}
+                  as={{ pathname: `/polling/${poll.ctx.next.slug}` }}
                 >
                   <NavLink p={0} ml={2}>
                     <Button variant="mutedOutline">

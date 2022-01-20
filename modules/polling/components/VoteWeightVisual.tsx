@@ -29,7 +29,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
 
   const handleVoterClick = event => {
     const address = event.target.__data__.data.voter;
-    router.push({ pathname: `/address/${address}`, query: { network } });
+    router.push({ pathname: `/address/${address}` });
   };
 
   useEffect(() => {

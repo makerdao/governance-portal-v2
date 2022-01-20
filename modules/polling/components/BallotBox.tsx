@@ -32,7 +32,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
   const router = useRouter();
   const startReview = () => {
     clearTx();
-    router.push({ pathname: '/polling/review', query: { network } });
+    router.push({ pathname: '/polling/review' });
   };
 
   return (

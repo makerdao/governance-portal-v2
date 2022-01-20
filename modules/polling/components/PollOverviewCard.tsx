@@ -141,8 +141,8 @@ export default function PollOverviewCard({
             >
               <Link
                 key={poll.slug}
-                href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-                as={{ pathname: `/polling/${poll.slug}`, query: { network } }}
+                href={{ pathname: '/polling/[poll-hash]' }}
+                as={{ pathname: `/polling/${poll.slug}` }}
               >
                 <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
                   <Button

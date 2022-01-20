@@ -158,7 +158,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
       <SidebarLayout>
         <Box>
-          <Link href={{ pathname: '/executive', query: { network } }}>
+          <Link href={{ pathname: '/executive' }}>
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />

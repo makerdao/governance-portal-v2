@@ -47,7 +47,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           {addressInfo.isDelegate && (
             <Flex sx={{ alignItems: 'center' }}>
               <Heading variant="microHeading" mr={3}>
-                <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
+                <Link scroll={false} href={{ pathname: '/delegates' }}>
                   <NavLink p={0}>
                     <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
