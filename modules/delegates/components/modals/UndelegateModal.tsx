@@ -46,7 +46,7 @@ export const UndelegateModal = ({
   const [txId, setTxId] = useState(null);
 
   const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
-  const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
+  const { data: iouAllowance } = useTokenAllowance('iou', address, voteDelegateAddress);
 
   const { data: free } = useDelegateFree(voteDelegateAddress);
   const approveIOU = useApproveUnlimitedToken('iou');

@@ -4,7 +4,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
-import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -52,7 +51,7 @@ export const DelegateModal = ({
   const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(address);
 
   const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    MKR,
+    'mkr',
     address,
     voteDelegateAddress
   );
