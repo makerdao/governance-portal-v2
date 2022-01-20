@@ -4,7 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
-import getMaker, { MKR } from 'lib/maker';
+import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -23,6 +23,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { parseUnits } from '@ethersproject/units';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 
 type Props = {
   isOpen: boolean;
@@ -57,6 +58,7 @@ export const DelegateModal = ({
   );
 
   const { data: lock } = useDelegateLock(voteDelegateAddress);
+  const approveMKR = useApproveUnlimitedToken('mkr');
 
   const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
@@ -66,8 +68,7 @@ export const DelegateModal = ({
   );
 
   const approveMkr = async () => {
-    const maker = await getMaker();
-    const approveTxCreator = () => maker.getToken(MKR).approveUnlimited(voteDelegateAddress);
+    const approveTxCreator = () => approveMKR(voteDelegateAddress);
     const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
