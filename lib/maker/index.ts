@@ -30,7 +30,7 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.MAINNET;
     } else if (window.location.search.includes('goerlifork')) {
       // FIXME: hack to fix wrong network alert
-      return SupportedNetworks.GOERLI;
+      return SupportedNetworks.GOERLIFORK;
       // return SupportedNetworks.GOERLIFORK;
     } else if (window.location.search.includes('goerli')) {
       return SupportedNetworks.GOERLI;

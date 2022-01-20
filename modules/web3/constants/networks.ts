@@ -64,7 +64,7 @@ export const CHAIN_INFO: ChainInfo = {
     etherscanPrefix: 'goerli.',
     chainId: SupportedChainId.GOERLIFORK,
     label: 'GoerliFork',
-    network: SupportedNetworks.GOERLI,
+    network: SupportedNetworks.GOERLIFORK,
     defaultRpc: NodeProviders.LOCAL,
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {

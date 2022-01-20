@@ -3,7 +3,7 @@ import { TestAccount } from '../types/TestAccount';
 export function visitPage(page: string) {
   cy.visit(`http://localhost:3000${page}?network=goerlifork`, {
     onBeforeLoad: win => {
-      // TODO: We can use this to preload info in the window object
+      // If an account is sent, connect with that one
     }
   }).then(() => {
     cy.contains('Accept configured cookies').click();

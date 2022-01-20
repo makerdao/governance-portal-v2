@@ -1,19 +1,18 @@
-import { Contract, getDefaultProvider } from 'ethers';
 import { Web3Provider } from '@ethersproject/providers';
-import { getNetwork } from 'lib/maker';
-import { CHAIN_INFO } from '../constants/networks';
+import { getRPCFromChainID } from './getRPC';
+import { SupportedChainId } from '../constants/chainID';
+import { ethers } from 'ethers';
 
 export const getEthersContracts = (
   address: string, // deployed contract address
   abi: any,
-  chainId?: number,
+  chainId?: SupportedChainId,
   library?: Web3Provider,
   account?: string | undefined | null
-): Contract => {
-  const network = chainId ? CHAIN_INFO[chainId].network : getNetwork();
-  const readOnlyProvider = getDefaultProvider(network);
+): ethers.Contract => {
+  const readOnlyProvider = ethers.getDefaultProvider(getRPCFromChainID(chainId || 1));
 
   const signerOrProvider = account && library ? library.getSigner(account) : readOnlyProvider;
 
-  return new Contract(address, abi, signerOrProvider);
+  return new ethers.Contract(address, abi, signerOrProvider);
 };
