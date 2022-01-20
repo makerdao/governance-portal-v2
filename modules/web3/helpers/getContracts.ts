@@ -27,10 +27,10 @@ export const getContracts = (
   account?: string | undefined | null
 ): EthSdk => {
   const provider = ethers.getDefaultProvider(getRPCFromChainID(chainId || 1));
-  const network = chainId ? chainIdToNetworkName(chainId) : DEFAULT_NETWORK;
+  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK;
 
   // Map goerlifork to goerli contracts
-  const sdkNetwokrKey = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
+  const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
   /* 
   A read-only signer, when an API requires a Signer as a parameter, but it is known only read-only operations will be carried.
   https://docs.ethers.io/v5/api/signer/#VoidSigner 
@@ -41,5 +41,5 @@ export const getContracts = (
   const signer =
     account && library ? library.getSigner(account) : new ethers.VoidSigner(ZERO_ADDRESS, provider);
 
-  return sdks[sdkNetwokrKey](signer);
+  return sdks[sdkNetwork](signer);
 };
