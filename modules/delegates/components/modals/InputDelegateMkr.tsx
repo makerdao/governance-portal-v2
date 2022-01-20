@@ -6,6 +6,7 @@ import { useState } from 'react';
 import useAccountsStore from 'modules/app/stores/accounts';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 
 type Props = {
   title: string;
@@ -28,10 +29,8 @@ export function InputDelegateMkr({
 }: Props): React.ReactElement {
   const [value, setValue] = useState(new BigNumber(0));
   const currentAccount = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state =>
-    currentAccount ? state.proxies[currentAccount.address] : null
-  );
-  const { data: lockedMkr } = useLockedMkr(currentAccount?.address, voteProxy);
+  const { data: vpAddresses } = useVoteProxyAddress();
+  const { data: lockedMkr } = useLockedMkr(currentAccount?.address, vpAddresses?.voteProxyAddress);
   function handleChange(val: BigNumber): void {
     setValue(val);
     onChange(val);

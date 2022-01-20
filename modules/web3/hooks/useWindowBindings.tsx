@@ -1,5 +1,6 @@
-import getMaker from 'lib/maker';
+import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
+import { PrivateKeyConnector } from '../connectors/PrivateKeyConnector';
 
 type PrivateKeyAccount = {
   address: string;
@@ -12,6 +13,7 @@ export function useWindowBindings(): void {
     key: ''
   });
 
+  const context = useWeb3React();
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -27,14 +29,9 @@ export function useWindowBindings(): void {
   useEffect(() => {
     const changeMakerAccount = async () => {
       if (account.address && account.key) {
-        const maker = await getMaker();
+        const connector = new PrivateKeyConnector(account.key, account.address);
 
-        await maker.service('accounts').addAccount(`test-account-${account.address}`, {
-          type: 'privateKey',
-          key: account.key
-        });
-
-        maker.useAccount(`test-account-${account.address}`);
+        context.activate(connector);
       }
     };
 

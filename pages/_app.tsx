@@ -19,13 +19,11 @@ import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { Web3ReactProvider } from '@web3-react/core';
-import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 import { getLibrary } from 'modules/web3/helpers/getLibrary';
 
 export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
-  useWindowBindings();
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <ThemeProvider theme={theme}>

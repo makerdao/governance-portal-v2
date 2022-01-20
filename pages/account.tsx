@@ -37,19 +37,20 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
   const account = useAccountsStore(state => state.currentAccount);
   const address = account?.address;
-  const [setVoteDelegate, voteProxy] = useAccountsStore(state =>
-    account ? [state.setVoteDelegate, state.proxies[account.address]] : [state.setVoteDelegate, null]
-  );
+  const setVoteDelegate = useAccountsStore(state => state.setVoteDelegate);
+
+  const { data: vpAddresses } = useVoteProxyAddress();
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
   const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const { data: chiefBalance } = useLockedMkr(address, voteProxy);
+  const { data: chiefBalance } = useLockedMkr(address, vpAddresses?.voteProxyAddress);
   const { data: delegatedMkr } = useLockedMkr(voteDelegateAddress ?? undefined);
 
   const [track, tx] = useTransactionStore(
