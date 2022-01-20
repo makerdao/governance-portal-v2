@@ -29,6 +29,7 @@
     "build-sdk": "eth-sdk --path modules/contracts"
   },
   "dependencies": {
+    "@ethersproject/experimental": "^5.5.0",
     "@makerdao/dai": "0.42.4-alpha.1",
     "@makerdao/dai-plugin-governance": "0.16.7-alpha.1",
     "@makerdao/dai-plugin-ledger-web": "^0.9.10",
@@ -112,8 +113,8 @@
     "husky": "^6.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
-    "ts-node": "^10.4.0",
     "start-server-and-test": "^1.14.0",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.4",
     "wait-for-expect": "^3.0.2"
   }
