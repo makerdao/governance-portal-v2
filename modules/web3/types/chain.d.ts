@@ -5,7 +5,8 @@ export type Chain = {
   chainId: SupportedChainId;
   label: string;
   network: string;
-  defaultRPC: string;
+  defaultRpc: string;
+  spockUrl: string;
   rpcs: {
     [key: string]: string;
   };

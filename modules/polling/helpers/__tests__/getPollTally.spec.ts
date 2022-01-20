@@ -1,4 +1,4 @@
-import { getPollTally } from '../getPollTaly';
+import { getPollTally } from '../getPollTally';
 import { fetchPollTally } from '../../api/fetchPollTally';
 import { fetchVotesByAddresForPoll } from '../../api/fetchVotesByAddress';
 import { PluralityResult, Poll } from '../../types';

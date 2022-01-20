@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Box, Flex } from 'theme-ui';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { formatValue } from 'lib/string';
+import { BigNumber } from 'ethers';
 
 const ProgressRing = ({
   progress,
@@ -8,8 +9,8 @@ const ProgressRing = ({
   thresholdAmount
 }: {
   progress: number;
-  totalStaked?: CurrencyObject;
-  thresholdAmount?: CurrencyObject;
+  totalStaked?: BigNumber;
+  thresholdAmount?: BigNumber;
 }): React.ReactElement => {
   const radius = 116;
   const stroke = 10;
@@ -42,7 +43,7 @@ const ProgressRing = ({
         ></circle>
         <text x="50%" y="48%" textAnchor="middle" fill="#434358" fontSize="18px" dy=".3em">
           {totalStaked ? (
-            `${totalStaked.toString(6)}     `
+            `${formatValue(totalStaked, 'wad', 6)}      `
           ) : (
             <Box pl="14px" pr="14px">
               <div ref={loader} />
@@ -50,7 +51,7 @@ const ProgressRing = ({
           )}
         </text>
         <text x="50%" y="58%" textAnchor="middle" fill="#708390" fontSize="14px" dy=".3em">
-          {`of ${thresholdAmount ? thresholdAmount.toString() : '---'}`}
+          {`of ${thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)} MKR` : '---'}`}
         </text>
       </svg>
     </Flex>

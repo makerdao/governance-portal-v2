@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { getPollTally } from 'modules/polling/helpers/getPollTaly';
 import { getPollById } from 'modules/polling/api/fetchPolls';
 import withApiHandler from 'modules/app/api/withApiHandler';
+import { getPollTally } from 'modules/polling/helpers/getPollTally';
 
 // Returns a PollTally given a pollID
 

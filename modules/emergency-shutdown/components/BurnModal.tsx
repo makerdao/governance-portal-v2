@@ -16,6 +16,7 @@ import { CurrencyObject } from 'modules/app/types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { useESModuleStats } from '../hooks/useESModuleStats';
+import { BigNumber } from 'ethers';
 
 const ModalContent = ({
   setShowDialog,
@@ -24,7 +25,7 @@ const ModalContent = ({
 }: {
   setShowDialog: (value: boolean) => void;
   lockedInChief: number;
-  totalStaked: CurrencyObject;
+  totalStaked: BigNumber;
 }): React.ReactElement => {
   const account = useAccountsStore(state => state.currentAccount);
   const [step, setStep] = useState('default');
