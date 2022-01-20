@@ -18,15 +18,19 @@ import invariant from 'tiny-invariant';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
-import { oldChiefAddress, oldIouAddress } from 'lib/constants';
+import { oldIouAddress } from 'lib/constants';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
+  const oldChiefAddress = useContractAddress('chiefOld');
+  const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
     ['/user/iou-allowance-old-chief', address, !!voteProxy.address],
@@ -37,7 +41,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
           maker
             .service('smartContract')
             .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
-            .allowance(address, oldChiefAddress[getNetwork()])
+            .allowance(address, oldChiefAddress)
         )
         .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
@@ -46,7 +50,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
     getMaker().then(maker =>
       maker
         .service('smartContract')
-        .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+        .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
         .deposits(lockedMkrKeyOldChief)
         .then(MKR.wei)
     )
@@ -117,7 +121,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
                   : () =>
                       maker
                         .service('smartContract')
-                        .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+                        .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
                         .free(lockedMkr.toFixed('wei'));
 
                 const txId = await track(freeTxCreator, 'Withdrawing MKR', {
@@ -153,12 +157,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveWithdrawOldChief');
-                const maker = await getMaker();
-                const approveTxCreator = () =>
-                  maker
-                    .service('smartContract')
-                    .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
-                    .approve(oldChiefAddress[getNetwork()], -1);
+                const approveTxCreator = () => approveOldIOU(oldChiefAddress);
 
                 const txId = await track(approveTxCreator, 'Granting IOU approval', {
                   mined: txId => {

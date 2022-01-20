@@ -22,6 +22,8 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import BigNumber from 'bignumber.js';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 
 const ModalContent = ({ address, voteProxy, close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -29,6 +31,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
   invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
+  const chiefAddress = useContractAddress('chief');
+  const approveIOU = useApproveUnlimitedToken('iou');
 
   const { data: allowanceOk } = useSWR<CurrencyObject>(
     ['/user/iou-allowance', address, !!voteProxy],
@@ -148,11 +152,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveWithdraw');
-                const maker = await getMaker();
-                const approveTxCreator = () =>
-                  maker
-                    .getToken('IOU')
-                    .approveUnlimited(maker.service('smartContract').getContractAddresses().CHIEF);
+                const approveTxCreator = () => approveIOU(chiefAddress);
 
                 const txId = await track(approveTxCreator, 'Granting IOU approval', {
                   mined: txId => {

@@ -4,9 +4,11 @@ const config: EthSdkConfig = {
   contracts: {
     mainnet: {
       chief: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0',
+      chiefOld: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
       dai: '0x6b175474e89094c44da98b954eedeac495271d0f',
       esm: '0x29CfBd381043D00a98fD9904a431015Fef07af2f',
       iou: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
+      iouOld: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355',
       mkr: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
       polling: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
       pot: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
