@@ -62,7 +62,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
  */
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<PollCommentsAPIResponseItem[]>) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
     const pollId = parseInt(req.query['poll-id'] as string, 10);
 

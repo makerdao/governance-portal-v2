@@ -92,7 +92,6 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
-  const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex();
 
@@ -352,8 +351,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                       <Box sx={{ width: '45%', textAlign: 'right' }}>
                         <Link
                           href={{
-                            pathname: `/address/${supporter.address}`,
-                            query: { network }
+                            pathname: `/address/${supporter.address}`
                           }}
                           passHref
                         >

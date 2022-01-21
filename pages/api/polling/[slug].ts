@@ -90,7 +90,7 @@ import invariant from 'tiny-invariant';
  *               $ref: '#/definitions/Poll'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const slug = req.query.slug as string;
 

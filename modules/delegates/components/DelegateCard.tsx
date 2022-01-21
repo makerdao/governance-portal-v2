@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
@@ -28,8 +28,6 @@ type PropTypes = {
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
-  const network = getNetwork();
-
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [account] = useAccountsStore(state => [state.currentAccount]);
@@ -82,8 +80,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           >
             <Link
               href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`,
-                query: { network }
+                pathname: `/address/${delegate.voteDelegateAddress}`
               }}
               passHref
             >
@@ -97,8 +94,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
               <Link
                 href={{
-                  pathname: `/address/${delegate.voteDelegateAddress}`,
-                  query: { network }
+                  pathname: `/address/${delegate.voteDelegateAddress}`
                 }}
               >
                 <a sx={{ mt: 'auto' }} title="Profile details">

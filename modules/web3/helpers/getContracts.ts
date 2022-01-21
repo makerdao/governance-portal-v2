@@ -27,7 +27,7 @@ export const getContracts = (
   account?: string | undefined | null
 ): EthSdk => {
   const provider = ethers.getDefaultProvider(getRPCFromChainID(chainId || 1));
-  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK;
+  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;

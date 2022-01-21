@@ -22,11 +22,6 @@ const NetworkAlertModal = ({
   const bpi = useBreakpointIndex();
   const context = useActiveWeb3React();
 
-  console.log('network modal');
-  console.log({ context });
-
-  // console.log({ library });
-
   const handleSwitchNetwork = network => {
     switchToNetwork({ library: context.library, chainId: networkNameToChainId(network) });
   };

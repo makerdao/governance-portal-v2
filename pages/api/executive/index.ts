@@ -9,7 +9,7 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<CMSProposal[]>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const response = await getExecutiveProposals(network);

@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import getMaker, { getNetwork } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { CMSProposal } from 'modules/executive/types';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
@@ -14,8 +14,6 @@ type Props = {
 };
 
 export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX.Element {
-  const network = getNetwork();
-
   const { data: mkrSupport } = useSWR<CurrencyObject>(
     ['/executive/mkr-support', proposal.address],
     (_, spellAddress) => getMaker().then(maker => maker.service('chief').getApprovalCount(spellAddress))
@@ -26,12 +24,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
       <div>
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
@@ -68,12 +64,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <Button
@@ -115,12 +109,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
         )}
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">

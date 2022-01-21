@@ -11,7 +11,7 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const { addresses } = JSON.parse(req.body);
 
-    const network = (req.query.network as string) || DEFAULT_NETWORK;
+    const network = (req.query.network as string) || DEFAULT_NETWORK.network;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
     const maker = await getMaker(network);

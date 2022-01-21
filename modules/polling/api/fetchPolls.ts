@@ -32,7 +32,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
   }
 
   const data = await gqlRequest({
-    chainId: networkNameToChainId(network || DEFAULT_NETWORK),
+    chainId: networkNameToChainId(network || DEFAULT_NETWORK.network),
     query: allWhitelistedPolls
   });
 

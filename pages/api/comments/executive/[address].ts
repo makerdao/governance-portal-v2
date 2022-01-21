@@ -69,7 +69,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const spellAddress: string = req.query.address as string;
   invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
   invariant(network && network.length > 0, 'Network not supported');
 
   const response = await getExecutiveComments(spellAddress, network);

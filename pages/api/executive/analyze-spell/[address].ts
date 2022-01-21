@@ -77,7 +77,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const spellAddress: string = req.query.address as string;
   invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const maker = await getMaker(network);

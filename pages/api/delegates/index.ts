@@ -9,7 +9,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const delegates = await fetchDelegates(network);
 

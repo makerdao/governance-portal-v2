@@ -22,7 +22,7 @@ function determineNetwork(): SupportedNetworks {
   } else if (typeof window === 'undefined') {
     // if not on the browser, connect to the default network
     // (eg when generating static pages at build-time)
-    return DEFAULT_NETWORK;
+    return DEFAULT_NETWORK.network;
   } else {
     // otherwise, to determine the network...
     // 1) check the URL
@@ -46,7 +46,7 @@ function determineNetwork(): SupportedNetworks {
       }
     }
     // if it's not clear what network to connect to, use the default
-    return DEFAULT_NETWORK;
+    return DEFAULT_NETWORK.network;
   }
 }
 
@@ -100,7 +100,7 @@ function getNetwork(): SupportedNetworks {
 }
 
 function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK;
+  return getNetwork() === DEFAULT_NETWORK.network;
 }
 
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {

@@ -2,7 +2,7 @@ import { fetchChainDelegates } from './fetchChainDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { add, isBefore } from 'date-fns';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getNetwork } from 'lib/maker';
 import {
   DelegatesAPIResponse,
@@ -63,7 +63,7 @@ export async function fetchDelegate(
 
 // Returns a list of delegates, mixin onchain and repo information
 export async function fetchDelegates(network?: SupportedNetworks): Promise<DelegatesAPIResponse> {
-  const currentNetwork = network ? network : getNetwork();
+  const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
   const { data: gitHubDelegates } = await fetchGithubDelegates(currentNetwork);
 
