@@ -3,18 +3,26 @@ import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useC
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useCurrentUserVoteProxyContract } from './useCurrentUserVoteProxyContract';
+import { useCurrentUserVoteProxyOldContract } from './useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from './useVoteProxyAddress';
+import { useVoteProxyOldAddress } from './useVoteProxyOldAddress';
 
 type UseAccountResponse = {
-  account?: string;
+  account?: string | null;
+
+  voteDelegateContract?: ethers.Contract;
   voteDelegateContractAddress?: string;
+
+  voteProxyContract?: ethers.Contract;
   voteProxyContractAddress?: string;
-  oldVoteProxyContractAddress?: string;
-  oldVoteProxyContract?: ethers.Contract;
   voteProxyHotAddress?: string;
   voteProxyColdAddress?: string;
-  voteProxyContract?: ethers.Contract;
-  voteDelegateContract?: ethers.Contract;
+
+  voteProxyOldContract?: ethers.Contract;
+  voteProxyOldContractAddress?: string;
+  voteProxyOldHotAddress?: string;
+  voteProxyOldColdAddress?: string;
+
   mutate: () => void;
 };
 
@@ -29,21 +37,31 @@ export function useAccount(): UseAccountResponse {
   }
 
   // Address of the vote delegate contract
-  const { data: voteDelegateContractAddress, mutate: muteateVoteDelegate } = useVoteDelegateAddress(account);
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
+  const { data: voteDelegateContractAddress, mutate: muteateVoteDelegate } = useVoteDelegateAddress(account);
+
   const { data: voteProxyResponse } = useVoteProxyAddress(account);
+  const { data: voteProxyOldResponse } = useVoteProxyOldAddress(account);
+
   const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
+  const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
   return {
     account,
+
+    voteDelegateContract,
     voteDelegateContractAddress,
+
+    voteProxyContract,
     voteProxyContractAddress: voteProxyResponse?.voteProxyAddress,
-    oldVoteProxyContractAddress: 'TODO',
-    // TODO: add oldVoteProxyContract and check withdrawOldChief
     voteProxyHotAddress: voteProxyResponse?.hotAddress,
     voteProxyColdAddress: voteProxyResponse?.coldAddress,
-    voteProxyContract,
-    voteDelegateContract,
+
+    voteProxyOldContract,
+    voteProxyOldContractAddress: voteProxyOldResponse?.voteProxyAddress,
+    voteProxyOldHotAddress: voteProxyOldResponse?.hotAddress,
+    voteProxyOldColdAddress: voteProxyOldResponse?.coldAddress,
+
     mutate: () => {
       muteateVoteDelegate();
     }
