@@ -3,7 +3,6 @@ import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { add, isBefore } from 'date-fns';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { getNetwork } from 'lib/maker';
 import {
   DelegatesAPIResponse,
   Delegate,
@@ -44,7 +43,7 @@ export async function fetchDelegate(
   voteDelegateAddress: string,
   network?: SupportedNetworks
 ): Promise<Delegate | undefined> {
-  const currentNetwork = network ? network : getNetwork();
+  const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
 
