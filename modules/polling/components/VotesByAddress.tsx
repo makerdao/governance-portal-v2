@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { Address } from 'modules/address/components/Address';
@@ -15,7 +14,6 @@ type Props = {
 
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
   const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
   const { data: delegateAddresses } = useDelegateAddressMap();

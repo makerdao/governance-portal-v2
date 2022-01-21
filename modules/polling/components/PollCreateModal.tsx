@@ -6,7 +6,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
-import getMaker, { getNetwork } from 'lib/maker';
+import getMaker from 'lib/maker';
 import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
@@ -14,6 +14,8 @@ import useTransactionStore, {
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   close: () => void;
@@ -147,42 +149,47 @@ const Signing = ({ close }) => (
   </Flex>
 );
 
-const Pending = ({ tx, close }) => (
-  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-    <Close
-      aria-label="close"
-      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-      onClick={close}
-    />
+const Pending = ({ tx, close }) => {
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
-    <Text variant="heading" sx={{ fontSize: 6 }}>
-      Transaction Sent!
-    </Text>
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Poll will be created once the transaction has been confirmed.
-      </Text>
-      <ExternalLink
-        target="_blank"
-        href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
-        sx={{ p: 0 }}
-      >
-        <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-          View on Etherscan
-          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-        </Text>
-      </ExternalLink>
-      <Button
+  return (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
         onClick={close}
-        sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
-        variant="outline"
-      >
-        Close
-      </Button>
+      />
+
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Transaction Sent!
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+          Poll will be created once the transaction has been confirmed.
+        </Text>
+        <ExternalLink
+          target="_blank"
+          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
+          sx={{ p: 0 }}
+        >
+          <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+            View on Etherscan
+            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+          </Text>
+        </ExternalLink>
+        <Button
+          onClick={close}
+          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
+          variant="outline"
+        >
+          Close
+        </Button>
+      </Flex>
     </Flex>
-  </Flex>
-);
+  );
+};
 
 const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

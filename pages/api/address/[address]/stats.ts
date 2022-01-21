@@ -73,7 +73,7 @@ import { resolveENS } from 'modules/web3/helpers/ens';
  *
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressAPIStats>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   const tempAddress = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

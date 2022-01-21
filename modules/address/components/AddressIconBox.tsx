@@ -2,11 +2,12 @@ import React from 'react';
 import AddressIcon from './AddressIcon';
 import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getNetwork } from 'lib/maker';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { VoteProxyInfo } from '../types/addressApiResponse';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type PropTypes = {
   address: string;
@@ -21,6 +22,9 @@ export default function AddressIconBox({
   showExternalLink,
   isOwner
 }: PropTypes): React.ReactElement {
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
+
   const tooltipLabel = voteProxyInfo ? (
     <Box sx={{ p: 2 }}>
       <Text as="p">
@@ -54,7 +58,7 @@ export default function AddressIconBox({
           {showExternalLink && (
             <ExternalLink
               title="View on etherscan"
-              href={getEtherscanLink(getNetwork(), address, 'address')}
+              href={getEtherscanLink(network, address, 'address')}
               target="_blank"
             >
               <Text as="p" sx={{ fontSize: [1, 3] }}>

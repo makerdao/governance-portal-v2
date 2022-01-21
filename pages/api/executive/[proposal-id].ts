@@ -10,7 +10,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<CMSProposal | NotFoundResponse>) => {
-    const network = (req.query.network as string) || DEFAULT_NETWORK;
+    const network = (req.query.network as string) || DEFAULT_NETWORK.network;
     const proposalId = req.query['proposal-id'] as string;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

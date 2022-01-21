@@ -3,7 +3,6 @@ import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, 
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getNetwork } from 'lib/maker';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
@@ -53,7 +52,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
             </Text>
             <ExternalLink
               target="_blank"
-              href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
+              href={getEtherscanLink(network, transaction.hash, 'transaction')}
               sx={{ p: 0 }}
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>

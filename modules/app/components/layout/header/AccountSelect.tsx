@@ -82,9 +82,6 @@ const AccountSelect = (): React.ReactElement => {
     activate: activateNetwork
   } = useWeb3React(NetworkContextName);
 
-  console.log({ error });
-  console.log({ networkError });
-
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   const triedEager = useEagerConnect();
 

@@ -4,7 +4,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { formatAddress } from 'lib/utils';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
@@ -18,6 +19,8 @@ type Props = {
 const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copied, setCopied] = useState(false);
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Flex
@@ -83,7 +86,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           {copied ? 'Copied!' : 'Copy Address'}
         </Flex>
         <ExternalLink
-          href={getEtherscanLink(getNetwork(), address, 'address')}
+          href={getEtherscanLink(network, address, 'address')}
           target="_blank"
           sx={{
             whiteSpace: 'nowrap',

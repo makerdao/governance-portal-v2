@@ -9,6 +9,8 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export function DelegatesSystemInfo({
   stats,
@@ -18,6 +20,8 @@ export function DelegatesSystemInfo({
   className?: string;
 }): React.ReactElement {
   const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const { data: totalMkr } = useTotalSupply('mkr');
 
@@ -67,7 +71,7 @@ export function DelegatesSystemInfo({
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
               <ThemeUILink
-                href={getEtherscanLink(getNetwork(), delegateFactoryAddress, 'address')}
+                href={getEtherscanLink(network, delegateFactoryAddress, 'address')}
                 target="_blank"
               >
                 <Text>{formatAddress(delegateFactoryAddress)}</Text>

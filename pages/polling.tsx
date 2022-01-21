@@ -10,7 +10,6 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
 import { Poll, PollCategory } from 'modules/polling/types';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -35,6 +34,8 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   polls: Poll[];
@@ -67,9 +68,10 @@ const PollingOverview = ({ polls, categories }: Props) => {
   );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
@@ -295,8 +297,9 @@ export default function PollingOverviewPage({
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
+    if (!chainId) return;
+    if (!isDefaultNetwork(chainId)) {
+      fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`)
         .then((pollsResponse: PollsResponse) => {
           _setPolls(pollsResponse.polls);
           _setCategories(pollsResponse.categories);
@@ -309,7 +312,7 @@ export default function PollingOverviewPage({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_categories))
+  if (!isDefaultNetwork(chainId) && (!_polls || !_categories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -318,8 +321,8 @@ export default function PollingOverviewPage({
 
   return (
     <PollingOverview
-      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
-      categories={isDefaultNetwork() ? prefetchedCategories : (_categories as PollCategory[])}
+      polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])}
+      categories={isDefaultNetwork(chainId) ? prefetchedCategories : (_categories as PollCategory[])}
     />
   );
 }

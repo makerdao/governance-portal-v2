@@ -22,7 +22,7 @@ const ExecutiveIndicator = forwardRef<HTMLAnchorElement, Props>(
     return (
       <NavLink
         ref={ref}
-        href={`/executive?network=${getNetwork()}`}
+        href={'/executive'}
         sx={{
           fontSize: 2,
           px: '3',
@@ -85,7 +85,7 @@ const ExecutiveIndicatorComponent = ({
       {!spellData ? (
         <Skeleton height="39px" width="240px" />
       ) : (
-        <Link passHref href={{ pathname: '/executive', query: { network: getNetwork() } }}>
+        <Link passHref href={{ pathname: '/executive' }}>
           <ExecutiveIndicator numProposals={newUnvotedProposals.length} />
         </Link>
       )}

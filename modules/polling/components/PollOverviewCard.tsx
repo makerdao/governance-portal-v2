@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider } from 'theme-ui';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { getNetwork } from 'lib/maker';
 import Stack from '../../app/components/layout/layouts/Stack';
 import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
@@ -36,7 +35,6 @@ export default function PollOverviewCard({
   children,
   ...props
 }: Props): JSX.Element {
-  const network = getNetwork();
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
@@ -65,7 +63,7 @@ export default function PollOverviewCard({
                 <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
                   Posted on {formatDateWithTime(poll.startDate)}{' '}
                 </Text>
-                <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
+                <Link href={`/polling/${poll.slug}`} passHref>
                   <InternalLink variant="nostyle">
                     <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
                       {poll.title}
@@ -73,7 +71,7 @@ export default function PollOverviewCard({
                   </InternalLink>
                 </Link>
               </Box>
-              <Link href={`/polling/${poll.slug}?network=${network}`} passHref>
+              <Link href={`/polling/${poll.slug}`} passHref>
                 <InternalLink variant="nostyle">
                   <Text
                     sx={{
@@ -102,7 +100,7 @@ export default function PollOverviewCard({
                 </Box>
 
                 {comments && comments.length > 0 && (
-                  <InternalLink href={`/polling/${poll.slug}?network=${getNetwork()}#comments`}>
+                  <InternalLink href={`/polling/${poll.slug}#comments`}>
                     <CommentCount count={comments.length} />
                   </InternalLink>
                 )}
@@ -111,13 +109,7 @@ export default function PollOverviewCard({
           </Stack>
           {showQuickVote && bpi > 0 && (
             <Box sx={{ ml: 2, minWidth: '265px' }}>
-              <QuickVote
-                poll={poll}
-                showHeader={true}
-                account={account}
-                sx={{ maxWidth: 7 }}
-                showStatus={!reviewPage}
-              />
+              <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
             </Box>
           )}
         </Flex>
@@ -164,7 +156,7 @@ export default function PollOverviewCard({
             {showQuickVote && bpi === 0 && (
               <Box sx={{ mt: 3, width: '100%' }}>
                 <VotingStatus poll={poll} />
-                <QuickVote poll={poll} showHeader={false} account={account} showStatus={!reviewPage} />
+                <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
               </Box>
             )}
 

@@ -22,10 +22,6 @@ const NetworkAlertModal = ({
   const bpi = useBreakpointIndex();
   const context = useActiveWeb3React();
 
-  // console.log({ context });
-
-  // console.log({ library });
-
   const handleSwitchNetwork = network => {
     switchToNetwork({ library: context.library, chainId: networkNameToChainId(network) });
   };
@@ -85,8 +81,8 @@ const NetworkAlertModal = ({
               Your wallet is connected to an unsupported network, please switch it to{' '}
               {SupportedNetworks.MAINNET} or {SupportedNetworks.GOERLI} to continue.
             </Text>
-            <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>
-            <Button onClick={() => handleSwitchNetwork(SupportedNetworks.GOERLI)}>Switch to goerli</Button>
+            {/* <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>
+            <Button onClick={() => handleSwitchNetwork(SupportedNetworks.GOERLI)}>Switch to goerli</Button> */}
           </Flex>
         </DialogContent>
       </DialogOverlay>

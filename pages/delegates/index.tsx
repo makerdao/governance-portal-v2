@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import { isDefaultNetwork } from 'lib/maker';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { shuffleArray } from 'lib/common/shuffleArray';
@@ -13,7 +12,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -26,6 +24,9 @@ import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   delegates: Delegate[];
@@ -33,8 +34,6 @@ type Props = {
 };
 
 const Delegates = ({ delegates, stats }: Props) => {
-  const network = getNetwork();
-
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const [showRecognized, showShadow, sort, resetFilters] = useDelegatesFiltersStore(
     state => [state.filters.showRecognized, state.filters.showShadow, state.sort, state.resetFilters],
@@ -173,8 +172,7 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 <Link
                   href={{
-                    pathname: '/account',
-                    query: { network }
+                    pathname: '/account'
                   }}
                   passHref
                 >
@@ -198,24 +196,26 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [_stats, _setStats] = useState<DelegatesAPIStats>();
   const [error, setError] = useState<string>();
+  const { chainId } = useActiveWeb3React();
 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/delegates?network=${getNetwork()}`)
+    if (!chainId) return;
+    if (!isDefaultNetwork(chainId)) {
+      fetchJson(`/api/delegates?network=${chainIdToNetworkName(chainId)}`)
         .then((response: DelegatesAPIResponse) => {
           _setDelegates(shuffleArray(response.delegates));
           _setStats(response.stats);
         })
         .catch(setError);
     }
-  }, []);
+  }, [chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching delegates" />;
   }
 
-  if (!isDefaultNetwork() && !_delegates) {
+  if (!isDefaultNetwork(chainId) && !_delegates) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -225,8 +225,8 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 
   return (
     <Delegates
-      delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])}
-      stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}
+      delegates={isDefaultNetwork(chainId) ? delegates : (_delegates as Delegate[])}
+      stats={isDefaultNetwork(chainId) ? stats : (_stats as DelegatesAPIStats)}
     />
   );
 }

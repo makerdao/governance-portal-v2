@@ -18,7 +18,6 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
-import { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
@@ -27,6 +26,8 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 enum ViewState {
   START,
@@ -53,6 +54,8 @@ export default function MobileVoteSheet({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
 
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
   const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
@@ -67,11 +70,10 @@ export default function MobileVoteSheet({
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
-  const network = getNetwork();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   const [activePolls, setActivePolls] = useState<Poll[]>([]);
-  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${getNetwork()}`, fetchJson, {
+  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${network}`, fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false,
     revalidateOnMount: true

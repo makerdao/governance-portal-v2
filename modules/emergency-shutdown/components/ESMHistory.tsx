@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { Card, Text, Link, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { formatRound } from 'lib/utils';
 import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
@@ -14,6 +15,8 @@ type Props = {
 
 const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Card mt={3} p={3} pb={4}>
@@ -99,7 +102,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                     </td>
                     <td>
                       <Link
-                        href={getEtherscanLink(getNetwork(), action.txFrom, 'address')}
+                        href={getEtherscanLink(network, action.txFrom, 'address')}
                         target="_blank"
                         variant="caption"
                         color="accentBlue"

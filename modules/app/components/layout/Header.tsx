@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from 'lib/maker';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
@@ -14,12 +13,12 @@ import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 const Header = (): JSX.Element => {
-  const network = getNetwork();
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
   const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Box

@@ -3,7 +3,8 @@ import { Flex, Text, Box, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Link from 'next/link';
 import { formatDateWithTime } from 'lib/datetime';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
@@ -22,6 +23,9 @@ export default function CommentItem({
 }): React.ReactElement {
   // TODO: Remove this once tweeting functionality gets re-enabled
   const twitterEnabled = false;
+
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   // Used to display the share button in owned comments
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
@@ -51,8 +55,7 @@ export default function CommentItem({
                 <Box>
                   <Link
                     href={{
-                      pathname: `/address/${comment.address.delegateInfo.voteDelegateAddress}`,
-                      query: { network: getNetwork() }
+                      pathname: `/address/${comment.address.delegateInfo.voteDelegateAddress}`
                     }}
                     passHref
                   >
@@ -65,8 +68,7 @@ export default function CommentItem({
                 <Box>
                   <Link
                     href={{
-                      pathname: `/address/${comment.address.address}`,
-                      query: { network: getNetwork() }
+                      pathname: `/address/${comment.address.address}`
                     }}
                     passHref
                   >
@@ -104,7 +106,7 @@ export default function CommentItem({
             <Box>
               <ExternalLink
                 target="_blank"
-                href={getEtherscanLink(getNetwork(), comment.comment.txHash, 'transaction')}
+                href={getEtherscanLink(network, comment.comment.txHash, 'transaction')}
                 sx={{ my: 3 }}
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
