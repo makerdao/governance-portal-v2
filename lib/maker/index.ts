@@ -99,10 +99,6 @@ function getNetwork(): SupportedNetworks {
   return determineNetwork();
 }
 
-function isDefaultNetwork(): boolean {
-  return getNetwork() === DEFAULT_NETWORK.network;
-}
-
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {
   return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
 }
@@ -131,4 +127,4 @@ async function personalSign(message: string): Promise<any> {
 }
 
 export default getMaker;
-export { DAI, getNetwork, isDefaultNetwork, isSupportedNetwork, isTestnet, personalSign };
+export { DAI, getNetwork, isSupportedNetwork, isTestnet, personalSign };
