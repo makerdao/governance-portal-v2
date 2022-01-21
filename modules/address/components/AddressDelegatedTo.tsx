@@ -4,7 +4,8 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
@@ -12,10 +13,11 @@ import { useState } from 'react';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
-  network: string;
+  network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
 };
@@ -30,7 +32,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
+          <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
               <Address address={address} />
             </ThemeUILink>
@@ -130,7 +132,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                   }}
                 >
                   <ThemeUILink
-                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    href={getEtherscanLink(network, hash as string, 'transaction')}
                     target="_blank"
                     title="View on Etherscan"
                     sx={{
@@ -156,7 +158,8 @@ type DelegatedByAddressProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Box>

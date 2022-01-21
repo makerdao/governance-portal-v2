@@ -36,7 +36,7 @@ const BallotStatus = (props: any): JSX.Element => {
       }}
       onClick={() => {
         if (transaction || !ballotLength) return;
-        router.push({ pathname: '/polling/review', query: { network } });
+        router.push({ pathname: '/polling/review' });
       }}
       {...props}
       disabled={

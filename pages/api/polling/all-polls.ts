@@ -60,7 +60,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *                   $ref: '#/definitions/PollStats'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const filters = {

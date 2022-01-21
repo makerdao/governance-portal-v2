@@ -54,10 +54,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
   }
 
   return (
-    <Link
-      href={{ pathname: '/executive/[proposal-id]', query: { network } }}
-      as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
-    >
+    <Link href={{ pathname: '/executive/[proposal-id]' }} as={{ pathname: `/executive/${proposal.key}` }}>
       <Card
         sx={{
           p: [0, 0],

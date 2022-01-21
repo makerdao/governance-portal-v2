@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -27,6 +26,9 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   proposals: CMSProposal[];
@@ -254,7 +256,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                   ))}
                 </Stack>
                 {activePolls.length > 4 && (
-                  <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+                  <Link href={{ pathname: '/polling' }}>
                     <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
                       View all polls
                     </Text>
@@ -321,12 +323,14 @@ export default function Index({
   const [_polls, setPolls] = useState<Poll[]>();
   const [_proposals, setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
+  const { chainId } = useActiveWeb3React();
 
   useEffect(() => {
-    if (!isDefaultNetwork() && (!_polls || !_proposals)) {
+    if (!chainId) return;
+    if (!isDefaultNetwork(chainId) && (!_polls || !_proposals)) {
       Promise.all([
-        fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
-        fetchJson(`/api/executive?network=${getNetwork()}`)
+        fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`),
+        fetchJson(`/api/executive?network=${chainIdToNetworkName(chainId)}`)
       ])
         .then(([pollsData, proposals]) => {
           setPolls(pollsData.polls);
@@ -334,13 +338,13 @@ export default function Index({
         })
         .catch(setError);
     }
-  }, []);
+  }, [chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_proposals))
+  if (!isDefaultNetwork(chainId) && (!_polls || !_proposals))
     return (
       <PrimaryLayout>
         <PageLoadingPlaceholder />
@@ -349,8 +353,8 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
-      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
+      proposals={isDefaultNetwork(chainId) ? prefetchedProposals : (_proposals as CMSProposal[])}
+      polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
   );

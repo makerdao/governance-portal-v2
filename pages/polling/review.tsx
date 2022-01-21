@@ -6,7 +6,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -23,6 +22,9 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { fetchJson } from 'lib/fetchJson';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -66,7 +68,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+              <Link href={{ pathname: '/polling' }}>
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
@@ -141,28 +143,30 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
+  const { chainId } = useActiveWeb3React();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
+    if (!chainId) return;
+    if (!isDefaultNetwork(chainId)) {
+      fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`)
         .then(response => _setPolls(response.polls))
         .catch(setError);
     }
-  }, []);
+  }, [chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && !_polls)
+  if (!isDefaultNetwork(chainId) && !_polls)
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
-  return <PollingReview polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])} />;
+  return <PollingReview polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {

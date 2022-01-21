@@ -124,7 +124,7 @@ import { getPollTally } from 'modules/polling/helpers/getPollTally';
  *               $ref: '#/definitions/Tally'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+  const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
   const poll = await getPollById(parseInt(req.query['poll-id'] as string, 10), network);
   const tally = await getPollTally(poll, network);

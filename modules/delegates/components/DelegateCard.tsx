@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
-import { getNetwork } from 'lib/maker';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -22,14 +21,14 @@ import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
-  const network = getNetwork();
-
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
   const [account] = useAccountsStore(state => [state.currentAccount]);
@@ -40,9 +39,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+  const { chainId } = useActiveWeb3React();
 
   const { data: lastVoteData } = useSWR<{ lastVote: PollVoteHistory }>(
-    `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${getNetwork()}`,
+    `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${chainIdToNetworkName(chainId)}`,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -82,8 +82,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           >
             <Link
               href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`,
-                query: { network }
+                pathname: `/address/${delegate.voteDelegateAddress}`
               }}
               passHref
             >
@@ -97,8 +96,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
               <Link
                 href={{
-                  pathname: `/address/${delegate.voteDelegateAddress}`,
-                  query: { network }
+                  pathname: `/address/${delegate.voteDelegateAddress}`
                 }}
               >
                 <a sx={{ mt: 'auto' }} title="Profile details">

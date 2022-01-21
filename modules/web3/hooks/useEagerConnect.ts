@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { injectedConnector } from '../connectors';
 
 // from https://github.com/NoahZinsmeister/web3-react/tree/v6/example
-export function useEagerConnect(): void {
+export function useEagerConnect(): boolean {
   const { activate, active } = useWeb3React();
 
   const [tried, setTried] = useState(false);
@@ -27,4 +27,6 @@ export function useEagerConnect(): void {
       setTried(true);
     }
   }, [tried, active]);
+
+  return tried;
 }

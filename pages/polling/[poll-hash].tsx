@@ -11,9 +11,9 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { fetchJson } from 'lib/fetchJson';
-import { getNetwork, isDefaultNetwork } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
@@ -42,6 +42,8 @@ import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBo
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -49,7 +51,6 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  const network = getNetwork();
   const account = useAccountsStore(state => state.currentAccount);
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
@@ -73,7 +74,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Link href={{ pathname: '/polling', query: { network } }}>
+            <Link href={{ pathname: '/polling' }}>
               <NavLink p={0}>
                 <Button variant="mutedOutline">
                   <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
@@ -90,8 +91,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               {poll.ctx?.prev?.slug && (
                 <Link
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-                  as={{ pathname: `/polling/${poll.ctx.prev.slug}`, query: { network } }}
+                  href={{ pathname: '/polling/[poll-hash]' }}
+                  as={{ pathname: `/polling/${poll.ctx.prev.slug}` }}
                 >
                   <NavLink p={0}>
                     <Button variant="mutedOutline">
@@ -106,8 +107,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               {poll.ctx?.next?.slug && (
                 <Link
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]', query: { network } }}
-                  as={{ pathname: `/polling/${poll.ctx.next.slug}`, query: { network } }}
+                  href={{ pathname: '/polling/[poll-hash]' }}
+                  as={{ pathname: `/polling/${poll.ctx.next.slug}` }}
                 >
                   <NavLink p={0} ml={2}>
                     <Button variant="mutedOutline">
@@ -326,32 +327,34 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
+  const { chainId } = useActiveWeb3React();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if (query['poll-hash'] && (!isDefaultNetwork() || !prefetchedPoll)) {
-      fetchJson(`/api/polling/${query['poll-hash']}?network=${getNetwork()}`)
+    if (!chainId) return;
+    if (query['poll-hash'] && (!isDefaultNetwork(chainId) || !prefetchedPoll)) {
+      fetchJson(`/api/polling/${query['poll-hash']}?network=${chainIdToNetworkName(chainId)}`)
         .then(response => {
           _setPoll(response);
         })
         .catch(setError);
     }
-  }, [query['poll-hash']]);
+  }, [query['poll-hash'], chainId]);
 
-  if (error || (isDefaultNetwork() && !isFallback && !prefetchedPoll?.multiHash)) {
+  if (error || (isDefaultNetwork(chainId) && !isFallback && !prefetchedPoll?.multiHash)) {
     return (
       <ErrorPage statusCode={404} title="Poll either does not exist, or could not be fetched at this time" />
     );
   }
 
-  if (isFallback || (!isDefaultNetwork() && !_poll))
+  if (isFallback || (!isDefaultNetwork(chainId) && !_poll))
     return (
       <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const poll = (isDefaultNetwork() ? prefetchedPoll : _poll) as Poll;
+  const poll = (isDefaultNetwork(chainId) ? prefetchedPoll : _poll) as Poll;
   return <PollView poll={poll} />;
 }
 

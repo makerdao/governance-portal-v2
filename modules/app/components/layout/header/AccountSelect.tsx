@@ -5,10 +5,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { UnsupportedChainIdError } from '@web3-react/core';
 
-import getMaker, { getNetwork } from 'lib/maker';
-import { syncMakerAccount } from 'lib/web3react/hooks';
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -20,6 +18,7 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
+import { useInactiveListener } from 'modules/web3/hooks/useInactiveListener';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -27,6 +26,9 @@ import { ConnectorName } from 'modules/web3/types/connectors';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
+import { useWeb3React } from '@web3-react/core';
+import { networkConnector } from 'modules/web3/connectors';
+import { NetworkContextName } from 'modules/web3/constants/networks';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -74,40 +76,48 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
+  const { active, account: address, chainId, activate, connector, error } = useWeb3React();
+  const {
+    active: networkActive,
+    error: networkError,
+    activate: activateNetwork
+  } = useWeb3React(NetworkContextName);
+
+  // try to eagerly connect to an injected provider, if it exists and has granted access already
+  const triedEager = useEagerConnect();
+
+  // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate it
+  useEffect(() => {
+    if (triedEager && !networkActive && !networkError && !active) {
+      activateNetwork(networkConnector);
+    }
+  }, [triedEager, networkActive, networkError, activateNetwork, active]);
+
+  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
+  useInactiveListener(!triedEager);
+
   const [account, setCurrentAccount] = useAccountsStore(state => [
     state.currentAccount,
     state.setCurrentAccount
   ]);
-  const address = account?.address;
+  // const address = account?.address;
   // Detect previously authorized connections and force log-in
-  useEagerConnect();
   useWindowBindings();
 
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
+
   useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) {
-      setChainIdError('unsupported network');
-    }
-    if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()) {
-      setChainIdError('network mismatch');
-    }
+    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+    if (!error) setChainIdError(null);
   }, [chainId, error]);
 
   useEffect(() => {
-    if (w3rAddress) {
+    if (address) {
       // TODO: eventually we'll want to remove the maker-specific properties of the the 'Account' type
-      setCurrentAccount({ address: w3rAddress, name: w3rAddress, type: 'web3-react' });
+      setCurrentAccount({ address, name: address, type: 'web3-react' });
     }
-  }, [w3rAddress]);
-
-  // FIXME there must be a more direct way to get web3-react & maker to talk to each other
-  syncMakerAccount(
-    library,
-    w3rAddress,
-    chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()
-  );
+  }, [address]);
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -128,24 +138,25 @@ const AccountSelect = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   const addHwAccount = async address => {
-    const maker = await getMaker();
-    const accounts = maker.listAccounts();
-    if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
-      maker.useAccountWithAddress(address);
-      hwSelectCallback && hwSelectCallback(new Error('already added'));
-    } else {
-      hwSelectCallback && hwSelectCallback(null, address);
-      const notFirst = maker.service('accounts').hasAccount();
-      if (notFirst) {
-        // if we're adding an account but it's not the first one, we have to explicitly use it;
-        // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
-        // you can test this by connecting with metamask, and then switching the account in the
-        // metamask extension UI.
-        //
-        // setTimeout is necessary because we need to wait for addAccount to resolve
-        setTimeout(() => maker.useAccountWithAddress(address));
-      }
-    }
+    console.log('add hw account');
+    //   const maker = await getMaker();
+    //   const accounts = maker.listAccounts();
+    //   if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
+    //     maker.useAccountWithAddress(address);
+    //     hwSelectCallback && hwSelectCallback(new Error('already added'));
+    //   } else {
+    //     hwSelectCallback && hwSelectCallback(null, address);
+    //     const notFirst = maker.service('accounts').hasAccount();
+    //     if (notFirst) {
+    //       // if we're adding an account but it's not the first one, we have to explicitly use it;
+    //       // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
+    //       // you can test this by connecting with metamask, and then switching the account in the
+    //       // metamask extension UI.
+    //       //
+    //       // setTimeout is necessary because we need to wait for addAccount to resolve
+    //       setTimeout(() => maker.useAccountWithAddress(address));
+    //     }
+    //   }
   };
 
   const LedgerButton = () => {

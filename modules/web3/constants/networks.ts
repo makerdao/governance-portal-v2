@@ -2,6 +2,8 @@ import { config } from 'lib/config';
 import { Chain } from '../types/chain';
 import { SupportedChainId } from './chainID';
 
+export const NetworkContextName = 'NETWORK';
+
 import {
   MAINNET_SPOCK_URL,
   GOERLI_SPOCK_URL,
@@ -86,7 +88,7 @@ export const CHAIN_INFO: ChainInfo = {
   }
 };
 
-export const DEFAULT_NETWORK = SupportedNetworks.MAINNET;
+export const DEFAULT_NETWORK = CHAIN_INFO[SupportedChainId.MAINNET];
 
 export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =>
   `https://statediff.ethtx.info/api/decode/state-diffs/${network}`;

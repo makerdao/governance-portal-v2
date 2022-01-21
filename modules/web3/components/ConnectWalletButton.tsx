@@ -6,7 +6,7 @@ import { getENS } from '../helpers/ens';
 
 type Props = {
   onClickConnect: () => void;
-  address?: string;
+  address?: string | null;
   pending: boolean;
 };
 

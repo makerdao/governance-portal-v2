@@ -16,7 +16,6 @@ import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionStore, {
   transactionsSelectors,
@@ -38,6 +37,8 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
@@ -52,6 +53,8 @@ const AccountPage = (): JSX.Element => {
   const { data: voteDelegateAddress } = useVoteDelegateAddress();
   const { data: chiefBalance } = useLockedMkr(address, vpAddresses?.voteProxyAddress);
   const { data: delegatedMkr } = useLockedMkr(voteDelegateAddress ?? undefined);
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -98,7 +101,7 @@ const AccountPage = (): JSX.Element => {
                   <Text>Your delegate contract address:</Text>
                   <ExternalLink
                     title="View on etherescan"
-                    href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
+                    href={getEtherscanLink(network, voteDelegateAddress, 'address')}
                     target="_blank"
                   >
                     <Text as="p" data-testid="vote-delegate-address">

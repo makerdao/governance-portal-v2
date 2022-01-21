@@ -1,4 +1,3 @@
-import { getNetwork } from 'lib/maker';
 import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
@@ -10,7 +9,6 @@ import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
-  const network = getNetwork();
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
@@ -38,7 +36,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           Voted {voteDate}
         </Text>
 
-        <Link href={`/polling/${vote.poll.slug}?network=${network}`} passHref>
+        <Link href={`/polling/${vote.poll.slug}`} passHref>
           <ThemeUILink variant="nostyle">
             <Text
               as="p"

@@ -87,7 +87,7 @@ const PollingIndicatorComponent = ({
   const shouldDisplay = unvotedPolls.length === 0 ? 'none' : undefined;
   return (
     <Container sx={{ textAlign: 'center', display: shouldDisplay }} {...props}>
-      <Link passHref href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+      <Link passHref href={{ pathname: '/polling' }}>
         <PollingIndicator account={account} unvotedPolls={unvotedPolls} activePolls={activePolls} />
       </Link>
     </Container>

@@ -9,7 +9,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
+import getMaker, { MKR } from 'lib/maker';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
@@ -18,6 +18,7 @@ import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import { oldChiefAddress } from 'lib/constants';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -44,6 +45,8 @@ import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -88,6 +91,8 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
@@ -115,7 +120,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       getMaker().then(maker =>
         maker
           .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+          .getContractByAddressAndAbi(oldChiefAddress[network], oldChiefAbi)
           .deposits(lockedMkrKeyOldChief)
           .then(MKR.wei)
       )
@@ -123,7 +128,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   // FIXME merge this into the proposal object
   const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    `/api/executive/analyze-spell?network=${network}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
@@ -465,19 +470,23 @@ export default function ExecutiveOverviewPage({
 }): JSX.Element {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
+  const { chainId } = useActiveWeb3React();
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/executive?network=${getNetwork()}`).then(_setProposals).catch(setError);
+    if (!chainId) return;
+    if (!isDefaultNetwork(chainId)) {
+      fetchJson(`/api/executive?network=${chainIdToNetworkName(chainId)}`)
+        .then(_setProposals)
+        .catch(setError);
     }
-  }, []);
+  }, [chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && !_proposals)
+  if (!isDefaultNetwork(chainId) && !_proposals)
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -485,7 +494,9 @@ export default function ExecutiveOverviewPage({
     );
 
   return (
-    <ExecutiveOverview proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])} />
+    <ExecutiveOverview
+      proposals={isDefaultNetwork(chainId) ? prefetchedProposals : (_proposals as Proposal[])}
+    />
   );
 }
 

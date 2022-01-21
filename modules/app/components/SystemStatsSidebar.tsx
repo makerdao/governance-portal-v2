@@ -2,7 +2,6 @@ import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from './layout/layouts/Stack';
-import { getNetwork } from 'lib/maker';
 import { formatAddress } from 'lib/utils';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
@@ -13,6 +12,8 @@ import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type StatField =
   | 'chief contract'
@@ -39,6 +40,8 @@ export default function SystemStatsSidebar({
   const chiefAddress = useContractAddress('chief');
   const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
   const pollingAddress = useContractAddress('polling');
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const statsMap = {
     'chief contract': key => (
@@ -46,7 +49,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {chiefAddress ? (
-            <ExternalLink href={getEtherscanLink(getNetwork(), chiefAddress, 'address')} target="_blank">
+            <ExternalLink href={getEtherscanLink(network, chiefAddress, 'address')} target="_blank">
               <Text>{formatAddress(chiefAddress)}</Text>
             </ExternalLink>
           ) : (
@@ -78,7 +81,7 @@ export default function SystemStatsSidebar({
         <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
         <Text variant="h2" sx={{ fontSize: 3 }}>
           {pollingAddress ? (
-            <ExternalLink href={getEtherscanLink(getNetwork(), pollingAddress, 'address')} target="_blank">
+            <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
               <Text>{formatAddress(pollingAddress)}</Text>
             </ExternalLink>
           ) : (

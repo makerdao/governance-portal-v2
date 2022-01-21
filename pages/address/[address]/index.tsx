@@ -5,7 +5,6 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -21,9 +20,11 @@ import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { DelegateDetail } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
-  const network = getNetwork();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
   const { trackButtonClick } = useAnalytics(
@@ -47,7 +48,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           {addressInfo.isDelegate && (
             <Flex sx={{ alignItems: 'center' }}>
               <Heading variant="microHeading" mr={3}>
-                <Link scroll={false} href={{ pathname: '/delegates', query: { network } }}>
+                <Link scroll={false} href={{ pathname: '/delegates' }}>
                   <NavLink p={0}>
                     <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
                       <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
@@ -88,12 +89,15 @@ export default function AddressPage(): JSX.Element {
   const [error, setError] = useState<string>();
   const router = useRouter();
   const { address } = router.query;
+  const { chainId } = useActiveWeb3React();
+
+  const network = chainId ? chainIdToNetworkName(chainId) : DEFAULT_NETWORK.network;
 
   useEffect(() => {
     if (address) {
-      fetchJson(`/api/address/${address}?network=${getNetwork()}`).then(setAddressInfo).catch(setError);
+      fetchJson(`/api/address/${address}?network=${network}`).then(setAddressInfo).catch(setError);
     }
-  }, [address]);
+  }, [address, chainId]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching address information" />;
