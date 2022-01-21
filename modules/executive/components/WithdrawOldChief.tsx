@@ -6,15 +6,12 @@ import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import getMaker, { MKR, getNetwork } from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
 } from 'modules/web3/stores/transactions';
-import invariant from 'tiny-invariant';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
@@ -24,28 +21,31 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
-  invariant(address);
+const ModalContent = ({ close, ...props }) => {
+  const { account, oldVoteProxyContractAddress } = useAccount();
+
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
   const oldChiefAddress = useContractAddress('chiefOld');
   const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
-  const { data: allowanceOk } = useSWR<CurrencyObject>(
-    ['/user/iou-allowance-old-chief', address, !!voteProxy.address],
+  const { data: allowanceOk } = useSWR<{ data: boolean }>(
+    ['/user/iou-allowance-old-chief', account, !!oldVoteProxyAbi],
     (_, address) =>
-      voteProxy.address || // no need for IOU approval when using vote proxy
-      getMaker()
-        .then(maker =>
-          maker
-            .service('smartContract')
-            .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
-            .allowance(address, oldChiefAddress)
-        )
-        .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
+      oldVoteProxyContractAddress
+        ? Promise.resolve(true) // no need for IOU approval when using vote proxy
+        : getMaker()
+            .then(maker =>
+              maker
+                .service('smartContract')
+                .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
+                .allowance(address, oldChiefAddress)
+            )
+            .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
-  const lockedMkrKeyOldChief = voteProxy.address || address;
+  const lockedMkrKeyOldChief = oldVoteProxyContractAddress || account;
   const { data: lockedMkr } = useSWR(['/user/mkr-locked-old-chief', lockedMkrKeyOldChief], (_, address) =>
     getMaker().then(maker =>
       maker
@@ -100,7 +100,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
                 the old Chief contract back to your wallet.
               </Text>
             </Box>
-            {voteProxy && voteProxy.role === 'hot' && (
+            {oldVoteProxyContract && oldVoteProxyContract.role === 'hot' && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>
@@ -112,11 +112,11 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
                 trackButtonClick('withdrawMkrOldChief');
                 const maker = await getMaker();
 
-                const freeTxCreator = voteProxy.address
+                const freeTxCreator = oldVoteProxyContractAddress
                   ? () =>
                       maker
                         .service('smartContract')
-                        .getContractByAddressAndAbi(voteProxy.address, oldVoteProxyAbi)
+                        .getContractByAddressAndAbi(oldVoteProxyContractAddress, oldVoteProxyAbi)
                         .freeAll()
                   : () =>
                       maker
@@ -182,9 +182,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 };
 
 const WithdrawOldChief = (props): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const oldProxy = useAccountsStore(state => state.oldProxy);
-
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
@@ -209,12 +206,7 @@ const WithdrawOldChief = (props): JSX.Element => {
                 }
           }
         >
-          <ModalContent
-            sx={{ px: [3, null] }}
-            address={account?.address}
-            voteProxy={oldProxy}
-            close={() => setShowDialog(false)}
-          />
+          <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       <Button

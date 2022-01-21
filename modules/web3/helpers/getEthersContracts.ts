@@ -8,7 +8,7 @@ export const getEthersContracts = (
   abi: any,
   chainId?: SupportedChainId,
   library?: Web3Provider,
-  account?: string | undefined | null
+  account?: string
 ): ethers.Contract => {
   const readOnlyProvider = ethers.getDefaultProvider(getRPCFromChainID(chainId || 1));
 

@@ -23,7 +23,6 @@ import CategoryFilter from 'modules/polling/components/CategoryFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
@@ -34,8 +33,8 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   polls: Poll[];
@@ -124,9 +123,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
+  const { account, voteDelegateContractAddress } = useAccount();
+  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
 
   // revalidate user votes if connected address changes

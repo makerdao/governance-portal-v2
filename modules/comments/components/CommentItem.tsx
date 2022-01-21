@@ -4,13 +4,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Link from 'next/link';
 import { formatDateWithTime } from 'lib/datetime';
 import { getNetwork } from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function CommentItem({
   comment,
@@ -25,18 +24,16 @@ export default function CommentItem({
   const twitterEnabled = false;
 
   // Used to display the share button in owned comments
-  const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
 
   // isOwner if the delegateAddress registered in the comment is the same one from the current user
   // isOwner also if the address is equal to the current account address
   const isOwner =
     (comment.comment.voteProxyAddress &&
-      comment.comment.voteProxyAddress?.toLowerCase() === voteProxy?.getProxyAddress().toLowerCase()) ||
+      comment.comment.voteProxyAddress?.toLowerCase() === voteProxyContractAddress?.toLowerCase()) ||
     (comment.comment.delegateAddress &&
-      comment.comment.delegateAddress?.toLowerCase() === voteDelegateAddress?.toLowerCase()) ||
-    comment.address.address.toLowerCase() === account?.address.toLowerCase();
+      comment.comment.delegateAddress?.toLowerCase() === voteDelegateContractAddress?.toLowerCase()) ||
+    comment.address.address.toLowerCase() === account?.toLowerCase();
   return (
     <Box>
       <Flex
@@ -118,7 +115,7 @@ export default function CommentItem({
             </Box>
           )}
         </Flex>
-        {account?.address === comment.comment.voterAddress && twitterEnabled && (
+        {account === comment.comment.voterAddress && twitterEnabled && (
           <ExternalLink href={twitterUrl} target="_blank">
             <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
               Share <Icon name="twitter" size={12} ml={1} />

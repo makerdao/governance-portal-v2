@@ -33,9 +33,6 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
-// stores
-import useAccountsStore from 'modules/app/stores/accounts';
-
 //components
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -54,6 +51,7 @@ import { Address } from 'modules/address/components/Address';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   proposal: Proposal;
@@ -93,7 +91,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { data: spellData } = useSpellData(proposal.address);
 
   const network = getNetwork();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const bpi = useBreakpointIndex();
 
   const { data: allSupporters, error: supportersError } = useSWR(

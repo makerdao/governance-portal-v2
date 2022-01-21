@@ -7,7 +7,6 @@ import shallow from 'zustand/shallow';
 import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { Delegate } from '../../types';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import useTransactionStore, {
   transactionsSelectors,
@@ -21,6 +20,7 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
 import { parseUnits } from '@ethersproject/units';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   isOpen: boolean;
@@ -39,14 +39,13 @@ export const UndelegateModal = ({
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const account = useAccountsStore(state => state.currentAccount);
-  const address = account?.address;
+  const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
   const [txId, setTxId] = useState(null);
 
-  const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
-  const { data: iouAllowance } = useTokenAllowance('iou', address, voteDelegateAddress);
+  const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
+  const { data: iouAllowance } = useTokenAllowance('iou', account, voteDelegateAddress);
 
   const { data: free } = useDelegateFree(voteDelegateAddress);
   const approveIOU = useApproveUnlimitedToken('iou');

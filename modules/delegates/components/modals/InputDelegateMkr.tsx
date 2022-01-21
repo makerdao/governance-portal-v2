@@ -3,10 +3,9 @@ import { Alert } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
 import BigNumber from 'bignumber.js';
 import { useState } from 'react';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
-import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   title: string;
@@ -28,9 +27,8 @@ export function InputDelegateMkr({
   showAlert
 }: Props): React.ReactElement {
   const [value, setValue] = useState(new BigNumber(0));
-  const currentAccount = useAccountsStore(state => state.currentAccount);
-  const { data: vpAddresses } = useVoteProxyAddress();
-  const { data: lockedMkr } = useLockedMkr(currentAccount?.address, vpAddresses?.voteProxyAddress);
+  const { account, voteProxyContractAddress } = useAccount();
+  const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress);
   function handleChange(val: BigNumber): void {
     setValue(val);
     onChange(val);

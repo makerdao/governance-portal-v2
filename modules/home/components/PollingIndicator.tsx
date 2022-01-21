@@ -7,13 +7,11 @@ import invariant from 'tiny-invariant';
 import { getNetwork } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { Poll } from 'modules/polling/types';
-import { Account } from 'modules/app/types/account';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
-  account?: Account;
+  account?: string;
   activePolls: Poll[];
   unvotedPolls?: Poll[];
   href?: string;
@@ -75,10 +73,10 @@ const PollingIndicatorComponent = ({
   sx?: ThemeUIStyleObject;
 }): JSX.Element => {
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
-  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
+  const { account, voteDelegateContractAddress } = useAccount();
+  const { data: allUserVotes } = useAllUserVotes(
+    voteDelegateContractAddress ? voteDelegateContractAddress : account
+  );
 
   const unvotedPolls = allUserVotes
     ? activePolls.filter(poll => !allUserVotes.map(poll => poll.pollId).includes(poll.pollId))

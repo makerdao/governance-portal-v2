@@ -6,7 +6,6 @@ import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionsStore, { transactionsApi } from 'modules/web3/stores/transactions';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
@@ -22,9 +21,8 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
-import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -44,16 +42,13 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
-  const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy] = useAccountsStore(state => (account ? [state.proxies[account.address]] : [null]));
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const { data: vpAddresses } = useVoteProxyAddress();
+ const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
 
-  const addressLockedMKR = voteDelegateAddress || vpAddresses?.voteProxyAddress || account?.address;
+  const addressLockedMKR = voteProxyContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
-    vpAddresses?.voteProxyAddress,
-    voteDelegateAddress
+    voteProxyContractAddress,
+    voteDelegateContractAddress
   );
 
   const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
@@ -115,9 +110,9 @@ export default function DefaultVoteModalView({
       console.log('voting as delegate', delegateVote);
       const voteCall = Array.isArray(slateOrProposals) ? delegateVote.voteMany : delegateVote.voteOne;
       voteTxCreator = () => voteCall(slateOrProposals);
-    } else if (voteProxy) {
+    } else if (voteProxyContract) {
       // TODO: refactor this out next:
-      voteTxCreator = () => voteProxy.voteExec(slateOrProposals);
+      voteTxCreator = () => voteProxyContract.voteExec(slateOrProposals);
     } else {
       const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
       voteTxCreator = () => voteCall(slateOrProposals);
@@ -128,10 +123,10 @@ export default function DefaultVoteModalView({
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: account?.address || '',
-            delegateAddress: voteDelegateAddress ?? '',
+            voterAddress: account || '',
+            delegateAddress: voteDelegateContractAddress ?? '',
             comment: comment,
-            voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
+            voteProxyAddress: voteProxyContractAddress ?? '',
             signedMessage: signedMessage,
             txHash,
             voterWeight: votingWeight

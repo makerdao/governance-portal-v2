@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { getNetwork } from 'lib/maker';
@@ -6,7 +6,6 @@ import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
@@ -21,7 +20,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type PropTypes = {
   delegate: Delegate;
@@ -32,12 +31,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const [account] = useAccountsStore(state => [state.currentAccount]);
-  const { data: connectedVDAddress } = useVoteDelegateAddress();
-  const address = account?.address;
+  const { account, voteDelegateContractAddress } = useAccount();
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
 
@@ -51,7 +48,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     }
   );
 
-  const isOwner = delegate.voteDelegateAddress.toLowerCase() === connectedVDAddress?.toLowerCase();
+  const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   return (
     <Card

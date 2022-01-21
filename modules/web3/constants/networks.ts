@@ -43,7 +43,7 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
     network: SupportedNetworks.MAINNET,
-    defaultRpc: NodeProviders.INFURA,
+    defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
@@ -55,7 +55,7 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
     network: SupportedNetworks.GOERLI,
-    defaultRpc: NodeProviders.INFURA,
+    defaultRpc: NodeProviders.ALCHEMY,
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,

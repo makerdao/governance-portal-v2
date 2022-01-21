@@ -6,7 +6,6 @@ import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/net
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
-import { chainIdToNetworkName } from './chain';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 

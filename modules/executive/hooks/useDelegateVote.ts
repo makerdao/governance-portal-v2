@@ -1,7 +1,7 @@
-import { useVoteDelegate } from 'modules/app/hooks/useVoteDelegate';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export const useDelegateVote = () => {
-  const { data: voteDelegateContract } = useVoteDelegate();
+  const { voteDelegateContract } = useAccount();
 
   let voteOne, voteMany;
 

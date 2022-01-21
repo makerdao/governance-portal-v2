@@ -14,7 +14,6 @@ import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
 import NetworkAlertModal from './NetworkAlertModal';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
@@ -99,28 +98,16 @@ const AccountSelect = (): React.ReactElement => {
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
   useInactiveListener(!triedEager);
 
-  const [account, setCurrentAccount] = useAccountsStore(state => [
-    state.currentAccount,
-    state.setCurrentAccount
-  ]);
   // const address = account?.address;
   // Detect previously authorized connections and force log-in
   useWindowBindings();
 
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
-  const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
 
   useEffect(() => {
     if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
     if (!error) setChainIdError(null);
   }, [chainId, error]);
-
-  useEffect(() => {
-    if (address) {
-      // TODO: eventually we'll want to remove the maker-specific properties of the the 'Account' type
-      setCurrentAccount({ address, name: address, type: 'web3-react' });
-    }
-  }, [address]);
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,

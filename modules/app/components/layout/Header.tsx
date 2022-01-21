@@ -8,17 +8,17 @@ import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from 'modules/app/stores/accounts';
 import ColorModeToggle from './header/ColorModeToggle';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const Header = (): JSX.Element => {
   const network = getNetwork();
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const { chainId } = useActiveWeb3React();
 
   return (

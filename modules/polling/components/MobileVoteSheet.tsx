@@ -9,13 +9,11 @@ import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 
-import { Account } from 'modules/app/types/account';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
@@ -28,6 +26,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 enum ViewState {
   START,
@@ -37,7 +36,6 @@ enum ViewState {
 }
 
 type Props = {
-  account?: Account;
   poll: Poll;
   close?: () => void;
   setPoll?: (poll: Poll) => void;
@@ -46,7 +44,6 @@ type Props = {
   withStart?: boolean;
 };
 export default function MobileVoteSheet({
-  account,
   poll,
   setPoll,
   close,
@@ -54,9 +51,9 @@ export default function MobileVoteSheet({
   withStart
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+  const { account, voteDelegateContractAddress } = useAccount();
 
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
+  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const currentVote = extractCurrentPollVote(poll, allUserVotes);

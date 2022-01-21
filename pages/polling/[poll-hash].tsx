@@ -19,9 +19,6 @@ import { formatDateWithTime } from 'lib/datetime';
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
 import { Poll } from 'modules/polling/types';
 
-// stores
-import useAccountsStore from 'modules/app/stores/accounts';
-
 // components
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
@@ -42,6 +39,7 @@ import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBo
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -50,7 +48,7 @@ const editMarkdown = content => {
 
 const PollView = ({ poll }: { poll: Poll }) => {
   const network = getNetwork();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
 

@@ -8,7 +8,6 @@ import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from 'modules/app/stores/accounts';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
@@ -21,6 +20,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import React from 'react';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   poll: Poll;
@@ -37,7 +37,7 @@ export default function PollOverviewCard({
   ...props
 }: Props): JSX.Element {
   const network = getNetwork();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;

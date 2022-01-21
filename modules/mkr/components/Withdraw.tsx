@@ -8,15 +8,12 @@ import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import getMaker from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
 } from 'modules/web3/stores/transactions';
-import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -24,30 +21,32 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import BigNumber from 'bignumber.js';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
+const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+  const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
-  invariant(address);
   const [mkrToWithdraw, setMkrToWithdraw] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const chiefAddress = useContractAddress('chief');
   const approveIOU = useApproveUnlimitedToken('iou');
 
-  const { data: allowanceOk } = useSWR<CurrencyObject>(
-    ['/user/iou-allowance', address, !!voteProxy],
-    (_, address) =>
-      voteProxy || // no need for IOU approval when using vote proxy
-      getMaker()
-        .then(maker =>
-          maker
-            .getToken('IOU')
-            .allowance(address, maker.service('smartContract').getContractAddresses().CHIEF)
-        )
-        .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
+  const { data: allowanceOk } = useSWR<{ data: boolean }>(
+    ['/user/iou-allowance', account, !!voteProxyContract],
+    (_, account) =>
+      voteProxyContract
+        ? Promise.resolve(true) // no need for IOU approval when using vote proxy
+        : getMaker()
+            .then(maker =>
+              maker
+                .getToken('IOU')
+                .allowance(account, maker.service('smartContract').getContractAddresses().CHIEF)
+            )
+            .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
   );
 
-  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(address, voteProxy);
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
@@ -102,7 +101,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
               />
             </Box>
 
-            {voteProxy && address === voteProxy.getHotAddress() && (
+            {voteProxyContract && account === voteProxyHotAddress && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>
@@ -114,8 +113,8 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
                 trackButtonClick('withdrawMkr');
                 const maker = await getMaker();
 
-                const freeTxCreator = voteProxy
-                  ? () => voteProxy.free(mkrToWithdraw)
+                const freeTxCreator = voteProxyContract
+                  ? () => voteProxyContract.free(mkrToWithdraw)
                   : () => maker.service('chief').free(mkrToWithdraw);
 
                 const txId = await track(freeTxCreator, 'Withdrawing MKR', {
@@ -178,9 +177,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 };
 
 const Withdraw = (props): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
   return (
@@ -204,12 +200,7 @@ const Withdraw = (props): JSX.Element => {
                 }
           }
         >
-          <ModalContent
-            sx={{ px: [3, null] }}
-            address={account?.address}
-            voteProxy={voteProxy}
-            close={() => setShowDialog(false)}
-          />
+          <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       {props.link ? (

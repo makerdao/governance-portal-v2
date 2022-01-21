@@ -5,7 +5,6 @@ import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
 } from 'modules/web3/stores/transactions';
-import useAccountsStore from 'modules/app/stores/accounts';
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
@@ -17,6 +16,7 @@ import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { useESModuleStats } from '../hooks/useESModuleStats';
 import { BigNumber } from 'ethers';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const ModalContent = ({
   setShowDialog,
@@ -27,14 +27,14 @@ const ModalContent = ({
   lockedInChief: number;
   totalStaked: BigNumber;
 }): React.ReactElement => {
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
   const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
 
-  const { mutate: mutateMKRStaked } = useESModuleStats(account?.address);
+  const { mutate: mutateMKRStaked } = useESModuleStats(account);
 
-  const { data: mkrBalance } = useMkrBalance(account?.address);
+  const { data: mkrBalance } = useMkrBalance(account);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

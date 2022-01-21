@@ -10,7 +10,6 @@ import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { Proposal, SpellData } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
@@ -20,6 +19,7 @@ import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   proposal: Proposal;
@@ -29,14 +29,12 @@ type Props = {
 
 export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
   const { data: votedProposals } = useVotedProposals();
-  const network = getNetwork();
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
-  const canVote = !!account;
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
@@ -135,7 +133,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                   </Badge>
                 )}
               </Flex>
-              {canVote && bpi === 0 && (
+              {!!account && bpi === 0 && (
                 <Box sx={{ pt: 2 }}>
                   <Button
                     variant="primaryOutline"
@@ -153,7 +151,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                 </Box>
               )}
             </Stack>
-            {canVote && bpi > 0 && (
+            {!!account && bpi > 0 && (
               <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
                 <Button
                   variant="primaryOutline"

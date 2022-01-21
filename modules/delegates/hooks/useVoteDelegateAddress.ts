@@ -1,27 +1,19 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 type VoteDelegateAddressResponse = {
   data?: string | undefined;
   loading: boolean;
   error: Error;
+  mutate: () => void;
 };
 
-export const useVoteDelegateAddress = (addressToCheck?: string): VoteDelegateAddressResponse => {
-  let account;
-
+// Returns the vote delegate contract address for a account
+export const useVoteDelegateAddress = (account: string): VoteDelegateAddressResponse => {
   const { voteDelegateFactory } = useContracts();
 
-  if (addressToCheck) {
-    account = addressToCheck;
-  } else {
-    const activeWeb3 = useActiveWeb3React();
-    account = activeWeb3.account;
-  }
-
-  const { data, error } = useSWR(`${account}/vote-delegate-address`, async () => {
+  const { data, error, mutate } = useSWR(`${account}/vote-delegate-address`, async () => {
     const vdAddress = await voteDelegateFactory.delegates(account);
     return vdAddress !== ZERO_ADDRESS ? vdAddress : undefined;
   });
@@ -29,6 +21,7 @@ export const useVoteDelegateAddress = (addressToCheck?: string): VoteDelegateAdd
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };
