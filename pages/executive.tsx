@@ -9,7 +9,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import getMaker, { getNetwork, MKR } from 'lib/maker';
+import getMaker, { MKR } from 'lib/maker';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
@@ -91,6 +91,8 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const account = useAccountsStore(state => state.currentAccount);
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
     account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
@@ -118,7 +120,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       getMaker().then(maker =>
         maker
           .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+          .getContractByAddressAndAbi(oldChiefAddress[network], oldChiefAbi)
           .deposits(lockedMkrKeyOldChief)
           .then(MKR.wei)
       )
@@ -126,7 +128,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   // FIXME merge this into the proposal object
   const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    `/api/executive/analyze-spell?network=${network}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),

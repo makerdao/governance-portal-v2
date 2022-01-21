@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getNetwork } from 'lib/maker';
 import { formatAddress } from 'lib/utils';
 import Tabs from 'modules/app/components/Tabs';
 import {
@@ -26,6 +25,8 @@ import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress'
 import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,8 +34,11 @@ type PropTypes = {
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
+
   const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
+    `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -43,7 +47,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: delegators } = useSWR<DelegationHistory[]>(
-    `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${getNetwork()}`,
+    `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`,
     fetchJson,
     {
       revalidateOnMount: true
@@ -133,7 +137,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                   </Flex>
                   <ExternalLink
                     title="View on etherescan"
-                    href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
+                    href={getEtherscanLink(network, voteDelegateAddress, 'address')}
                     target="_blank"
                   >
                     <Text as="p" sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>

@@ -10,7 +10,6 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
 import { Poll, PollCategory } from 'modules/polling/types';
-import { getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -70,9 +69,10 @@ const PollingOverview = ({ polls, categories }: Props) => {
   );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);

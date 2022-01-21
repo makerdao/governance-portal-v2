@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getNetwork } from 'lib/maker';
 import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
@@ -10,12 +9,10 @@ import { paddedArray, toBuffer } from 'lib/utils';
 export async function fetchVotesByAddresForPoll(
   pollId: number,
   endUnix: number,
-  network?: SupportedNetworks
+  network: SupportedNetworks
 ): Promise<PollTallyVote[]> {
-  const currentNetwork = network || getNetwork();
-
   const data = await gqlRequest({
-    chainId: networkNameToChainId(currentNetwork),
+    chainId: networkNameToChainId(network),
     query: voteAddressMkrWeightsAtTime,
     variables: { argPollId: pollId, argUnix: endUnix }
   });

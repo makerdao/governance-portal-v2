@@ -4,7 +4,6 @@ import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -12,6 +11,9 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -20,7 +22,7 @@ type DelegatedByAddressProps = {
 
 type CollapsableRowProps = {
   delegator: DelegationHistory;
-  network: string;
+  network: SupportedNetworks;
   bpi: number;
   totalDelegated: CurrencyObject;
 };
@@ -136,7 +138,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   }}
                 >
                   <ThemeUILink
-                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    href={getEtherscanLink(network, hash as string, 'transaction')}
                     target="_blank"
                     title="View on Etherscan"
                     sx={{
@@ -157,7 +159,8 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   return (
     <Box>

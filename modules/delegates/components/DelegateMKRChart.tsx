@@ -18,12 +18,15 @@ import { useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
-import { getNetwork } from 'lib/maker';
 import { format } from 'date-fns';
 import { isoDateConversion } from 'lib/datetime';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   // Time ranges
   const oneDay = 24 * 60 * 60 * 1000;
@@ -55,11 +58,9 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const { data, isValidating } = useSWR(
+  const { data } = useSWR(
     typeof window !== 'undefined'
-      ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${getNetwork()}&from=${
-          selectedTimeFrame.from
-        }&range=${selectedTimeFrame.range}`
+      ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${network}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`
       : null,
     fetchJson,
     {

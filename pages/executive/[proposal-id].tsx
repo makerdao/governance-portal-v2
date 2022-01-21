@@ -26,7 +26,6 @@ import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { getNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -192,7 +191,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 value={
                   <ThemeUILink
                     title="View on etherescan"
-                    href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                    href={getEtherscanLink(chainIdToNetworkName(chainId), proposal.address, 'address')}
                     target="_blank"
                   >
                     <Text as="p" sx={{ fontSize: [2, 5] }}>

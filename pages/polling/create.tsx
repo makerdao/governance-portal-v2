@@ -3,7 +3,6 @@ import { Heading, Text, Box, Button, Flex, Input, Label, Link as ExternalLink } 
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getNetwork } from 'lib/maker';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -105,7 +104,7 @@ const PollingCreate = (): React.ReactElement => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+              <Link href={{ pathname: '/polling' }}>
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls

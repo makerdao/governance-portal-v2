@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getNetwork } from 'lib/maker';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';
 import { fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
@@ -8,18 +7,17 @@ import { POLL_VOTE_TYPE } from '../polling.constants';
 import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from '../types';
 import { parseRawPollTally } from './parseRawTally';
 
-export async function getPollTally(poll: Poll, network?: SupportedNetworks): Promise<PollTally> {
-  const currentNetwork = network || getNetwork();
+export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   // if poll vote type is unknown, treat as ranked choice
   const voteType: PollVoteType = poll.voteType || POLL_VOTE_TYPE.RANKED_VOTE;
 
   // Builds raw poll tally
   const tally: RawPollTally = await backoffRetry(3, () =>
-    fetchPollTally(poll.pollId, voteType, false, currentNetwork)
+    fetchPollTally(poll.pollId, voteType, false, network)
   );
 
   const endUnix = new Date(poll.endDate).getTime() / 1000;
-  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, endUnix, currentNetwork);
+  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, endUnix, network);
 
   const totalMkrParticipation = tally.totalMkrParticipation;
   const winner: string = tally.winner || '';
