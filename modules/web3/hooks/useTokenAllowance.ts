@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
-import getMaker from 'lib/maker';
 import useSWR from 'swr';
+import { ContractName } from '../types/contracts';
+import { useContracts } from './useContracts';
 
 type TokenAllowanceResponse = {
   data?: BigNumber;
@@ -11,17 +12,18 @@ type TokenAllowanceResponse = {
 
 // Checks if the user allowed the spending of a token and contract address
 export const useTokenAllowance = (
-  token: string,
+  name: ContractName,
   userAddress?: string,
   contractAddress?: string
 ): TokenAllowanceResponse => {
+  const token = useContracts()[name];
+
   const { data, error, mutate } = useSWR(
-    userAddress && contractAddress ? ['token-balance', token, userAddress, contractAddress] : null,
-    (_, token, userAddress, contractAddress) =>
-      getMaker().then(maker => {
-        console.log(maker);
-        return maker.getToken(token).allowance(userAddress, contractAddress);
-      })
+    userAddress && contractAddress ? ['token-balance', token.address, userAddress, contractAddress] : null,
+    async (_, tokenAddress, userAddress, contractAddress) => {
+      const ethersBn = await token.allowance(userAddress, contractAddress);
+      return new BigNumber(ethersBn._hex);
+    }
   );
 
   return {

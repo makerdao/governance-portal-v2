@@ -4,7 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 
-import getMaker, { MKR } from 'lib/maker';
+import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { Delegate } from '../../types';
 import useAccountsStore from 'modules/app/stores/accounts';
@@ -20,6 +20,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
 import { parseUnits } from '@ethersproject/units';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 
 type Props = {
   isOpen: boolean;
@@ -45,9 +46,10 @@ export const UndelegateModal = ({
   const [txId, setTxId] = useState(null);
 
   const { data: mkrStaked } = useMkrDelegated(address, voteDelegateAddress);
-  const { data: iouAllowance } = useTokenAllowance('IOU', address, voteDelegateAddress);
+  const { data: iouAllowance } = useTokenAllowance('iou', address, voteDelegateAddress);
 
   const { data: free } = useDelegateFree(voteDelegateAddress);
+  const approveIOU = useApproveUnlimitedToken('iou');
 
   const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 
@@ -57,15 +59,14 @@ export const UndelegateModal = ({
   );
 
   const approveIou = async () => {
-    const maker = await getMaker();
-    const approveTxCreator = () => maker.getToken('IOU').approveUnlimited(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
+    const approveTxCreator = () => approveIOU(voteDelegateAddress);
+    const txId = await trackTransaction(approveTxCreator, 'Approving IOU', {
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR approved');
+        transactionsApi.getState().setMessage(txId, 'IOU approved');
         setTxId(null);
       },
       error: () => {
-        transactionsApi.getState().setMessage(txId, 'MKR approval failed');
+        transactionsApi.getState().setMessage(txId, 'IOU approval failed');
         setTxId(null);
       }
     });

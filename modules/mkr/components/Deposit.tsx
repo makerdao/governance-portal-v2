@@ -27,6 +27,8 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 import { VoteProxyAddresses } from 'modules/app/types/voteProxyAddresses';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 
 const ModalContent = ({
   address,
@@ -42,8 +44,11 @@ const ModalContent = ({
   const [txId, setTxId] = useState(null);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { data: mkrBalance } = useMkrBalance(address);
+  const chiefAddress = useContractAddress('chief');
 
   const { mutate: mutateLocked } = useLockedMkr(address, voteProxy?.voteProxyAddress);
+
+  const approveMKR = useApproveUnlimitedToken('mkr');
 
   const { data: chiefAllowance, mutate: mutateAllowance } = useSWR<CurrencyObject>(
     ['/user/chief-allowance', address, !!voteProxy?.voteProxyAddress],
@@ -115,26 +120,26 @@ const ModalContent = ({
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
-              onClick={async () => {
-                trackButtonClick('DepositMkr');
-                const maker = await getMaker();
-                const lockTxCreator = voteProxy
-                  ? () => voteProxy.lock(mkrToDeposit)
-                  : () => maker.service('chief').lock(mkrToDeposit);
-                const txId = await track(lockTxCreator, 'Depositing MKR', {
-                  mined: txId => {
-                    // Mutate locked state
-                    mutateLocked();
-                    transactionsApi.getState().setMessage(txId, 'MKR deposited');
-                    close();
-                  },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-                    close();
-                  }
-                });
-                setTxId(txId);
-              }}
+              // onClick={async () => {
+              //   trackButtonClick('DepositMkr');
+              //   const maker = await getMaker();
+              //   const lockTxCreator = voteProxy
+              //     ? () => voteProxy.lock(mkrToDeposit)
+              //     : () => maker.service('chief').lock(mkrToDeposit);
+              //   const txId = await track(lockTxCreator, 'Depositing MKR', {
+              //     mined: txId => {
+              //       // Mutate locked state
+              //       mutateLocked();
+              //       transactionsApi.getState().setMessage(txId, 'MKR deposited');
+              //       close();
+              //     },
+              //     error: () => {
+              //       transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
+              //       close();
+              //     }
+              //   });
+              //   setTxId(txId);
+              // }}
             >
               Deposit MKR
             </Button>
@@ -155,14 +160,8 @@ const ModalContent = ({
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveDeposit');
-                const maker = await getMaker();
-                const approveTxCreator = () =>
-                  maker
-                    .getToken(MKR)
-                    .approveUnlimited(
-                      voteProxy?.voteProxyAddress ||
-                        maker.service('smartContract').getContractAddresses().CHIEF
-                    );
+                const contractToApprove = voteProxy?.voteProxyAddress || chiefAddress;
+                const approveTxCreator = () => approveMKR(contractToApprove);
 
                 const txId = await track(approveTxCreator, 'Granting MKR approval', {
                   mined: txId => {

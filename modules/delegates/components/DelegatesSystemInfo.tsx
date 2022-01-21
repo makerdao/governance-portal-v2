@@ -5,7 +5,7 @@ import { getNetwork } from 'lib/maker';
 import { formatAddress } from 'lib/utils';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
-import { useContractAddress } from 'modules/web3/hooks/useChiefContract';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';

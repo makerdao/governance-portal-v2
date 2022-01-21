@@ -4,8 +4,11 @@ const config: EthSdkConfig = {
   contracts: {
     mainnet: {
       chief: '0x0a3f6849f78076aefaDf113F5BED87720274dDC0',
+      chiefOld: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
       dai: '0x6b175474e89094c44da98b954eedeac495271d0f',
       esm: '0x29CfBd381043D00a98fD9904a431015Fef07af2f',
+      iou: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
+      iouOld: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355',
       mkr: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
       polling: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
       pot: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
@@ -18,6 +21,7 @@ const config: EthSdkConfig = {
       chief: '0x33Ed584fc655b08b2bca45E1C5b5f07c98053bC1',
       dai: '0x11fe4b6ae13d2a6055c8d9cf65c55bac32b5d844',
       esm: '0x105BF37e7D81917b6fEACd6171335B4838e53D5e',
+      iou: '0x651D1B91e4F657392a51Dba7A6A1A1a72eC6aD1c',
       mkr: '0xc5e4eab513a7cd12b2335e8a0d57273e13d499f7',
       polling: '0xdbE5d00b2D8C13a77Fb03Ee50C87317dbC1B15fb',
       pot: '0x50672F0a14B40051B65958818a7AcA3D54Bd81Af',
