@@ -1,7 +1,7 @@
 import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
-import getMaker, { getNetwork } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useTransactionStore, {
@@ -11,6 +11,8 @@ import useTransactionStore, {
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const ModalContent = ({
   setShowDialog,
@@ -21,6 +23,9 @@ const ModalContent = ({
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
+
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -120,7 +125,7 @@ const ModalContent = ({
         </Text>
         <Link
           target="_blank"
-          href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
+          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
           sx={{ p: 0 }}
         >
           <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>

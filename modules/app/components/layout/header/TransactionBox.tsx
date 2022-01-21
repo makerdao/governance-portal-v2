@@ -4,6 +4,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { getNetwork } from 'lib/maker';
 import { Transaction, TXPending } from 'modules/web3/types/transaction';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   tx: Transaction;
@@ -14,6 +16,9 @@ type MainProps = {
   txs: Transaction[];
 };
 const TransactionRow = ({ tx, index }: Props): JSX.Element => {
+  const { chainId } = useActiveWeb3React();
+  const network = chainIdToNetworkName(chainId);
+
   return (
     <Flex
       sx={{
@@ -37,10 +42,7 @@ const TransactionRow = ({ tx, index }: Props): JSX.Element => {
         {tx.status === 'mined' && <Icon name="checkmark" color="primary" />}
         <Text sx={{ ml: 3 }}>{tx.message}</Text>
       </Flex>
-      <ExternalLink
-        href={getEtherscanLink(getNetwork(), (tx as TXPending).hash, 'transaction')}
-        target="_blank"
-      >
+      <ExternalLink href={getEtherscanLink(network, (tx as TXPending).hash, 'transaction')} target="_blank">
         <Button
           variant="smallOutline"
           sx={{
