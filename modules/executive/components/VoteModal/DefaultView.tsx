@@ -42,7 +42,7 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
- const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
 
   const addressLockedMKR = voteProxyContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(

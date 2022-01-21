@@ -1,5 +1,4 @@
 import { config } from 'lib/config';
-import { EXEC_PROPOSAL_INDEX } from 'lib/constants';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
@@ -9,6 +8,7 @@ import mockProposals from './mocks/proposals.json';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
+import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 
 export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
   const net = network ? network : getNetwork();

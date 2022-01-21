@@ -1,16 +1,22 @@
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteProxy.json';
-import { VoteProxyAddresses } from '../types/voteProxyAddresses';
 import { Contract } from '@ethersproject/contracts';
+
+export type VoteProxyAddresses = {
+  hotAddress?: string;
+  coldAddress?: string;
+  voteProxyAddress?: string;
+  hasProxy: boolean;
+};
 
 export const getVoteProxyAddresses = async (
   voteProxyFactory: Contract,
   account: string
 ): Promise<VoteProxyAddresses> => {
-  let hotAddress: string | undefined,
-    coldAddress: string | undefined,
-    voteProxyAddress: string | undefined,
+  let hotAddress,
+    coldAddress,
+    voteProxyAddress,
     hasProxy = false;
 
   const [proxyAddressCold, proxyAddressHot] = await Promise.all([

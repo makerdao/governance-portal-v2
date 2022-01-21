@@ -75,7 +75,7 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { active, account: address, chainId, activate, connector, error } = useWeb3React();
+  const { active, account: address, chainId, activate, connector, error, deactivate } = useWeb3React();
   const {
     active: networkActive,
     error: networkError,
@@ -89,6 +89,7 @@ const AccountSelect = (): React.ReactElement => {
   const triedEager = useEagerConnect();
 
   // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate it
+  // TODO: This should be handled by the eager connect, that's the whole point of having it.
   useEffect(() => {
     if (triedEager && !networkActive && !networkError && !active) {
       activateNetwork(networkConnector);
@@ -98,7 +99,6 @@ const AccountSelect = (): React.ReactElement => {
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
   useInactiveListener(!triedEager);
 
-  // const address = account?.address;
   // Detect previously authorized connections and force log-in
   useWindowBindings();
 
@@ -345,7 +345,7 @@ const AccountSelect = (): React.ReactElement => {
                 <Flex
                   onClick={() => {
                     (connector as WalletConnectConnector).walletConnectProvider.disconnect();
-                    disconnectAccount();
+                    deactivate();
                     setAccountName(undefined);
                     close();
                   }}

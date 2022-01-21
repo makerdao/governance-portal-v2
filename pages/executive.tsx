@@ -15,7 +15,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import { oldChiefAddress } from 'lib/constants';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -42,6 +41,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -87,6 +87,8 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, oldVoteProxyContractAddress } =
     useAccount();
+  const oldChiefAddress = useContractAddress('chiefOld');
+
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
@@ -110,7 +112,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       getMaker().then(maker =>
         maker
           .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
+          .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
           .deposits(lockedMkrKeyOldChief)
           .then(MKR.wei)
       )

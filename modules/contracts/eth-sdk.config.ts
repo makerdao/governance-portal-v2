@@ -15,6 +15,7 @@ const config: EthSdkConfig = {
       vat: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
       voteDelegateFactory: '0xD897F108670903D1d6070fcf818f9db3615AF272',
       voteProxyFactory: '0x6FCD258af181B3221073A96dD90D1f7AE7eEc408',
+      oldVoteProxy: '0xa63E145309cadaa6A903a19993868Ef7E85058BE',
       vow: '0xA950524441892A31ebddF91d3cEEFa04Bf454466'
     },
     goerli: {

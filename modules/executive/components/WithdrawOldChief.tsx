@@ -5,7 +5,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import getMaker, { MKR, getNetwork } from 'lib/maker';
+import getMaker, { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
@@ -15,7 +15,6 @@ import useTransactionStore, {
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
 import oldIouAbi from 'lib/abis/oldIouAbi.json';
-import { oldIouAddress } from 'lib/constants';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -25,7 +24,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 
 const ModalContent = ({ close, ...props }) => {
   const { account, oldVoteProxyContractAddress } = useAccount();
-
+  const { oldIouAddress } = useContractAddress('iouOld');
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
   const oldChiefAddress = useContractAddress('chiefOld');
@@ -40,7 +39,7 @@ const ModalContent = ({ close, ...props }) => {
             .then(maker =>
               maker
                 .service('smartContract')
-                .getContractByAddressAndAbi(oldIouAddress[getNetwork()], oldIouAbi)
+                .getContractByAddressAndAbi(oldIouAddress, oldIouAbi)
                 .allowance(address, oldChiefAddress)
             )
             .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR

@@ -1,6 +1,6 @@
 import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
-import { ABSTAIN } from 'lib/constants';
+import { ABSTAIN } from '../polling.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import isNil from 'lodash/isNil';

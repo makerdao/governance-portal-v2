@@ -1,8 +1,6 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { getVoteProxyAddresses } from '../api/getVoteProxyAddresses';
-import { VoteProxyAddresses } from '../types/voteProxyAddresses';
+import { getVoteProxyAddresses, VoteProxyAddresses } from '../helpers/getVoteProxyAddresses';
 
 type VoteProxyAddressResponse = {
   data?: VoteProxyAddresses;
