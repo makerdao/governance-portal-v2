@@ -18,6 +18,7 @@ import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
+import { useInactiveListener } from 'modules/web3/hooks/useInactiveListener';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -27,7 +28,6 @@ import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 import { useWeb3React } from '@web3-react/core';
 import { networkConnector } from 'modules/web3/connectors';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { NetworkContextName } from 'modules/web3/constants/networks';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
@@ -76,12 +76,15 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { active, account: address, chainId, activate, connector } = useWeb3React();
+  const { active, account: address, chainId, activate, connector, error } = useWeb3React();
   const {
     active: networkActive,
     error: networkError,
     activate: activateNetwork
   } = useWeb3React(NetworkContextName);
+
+  console.log({ error });
+  console.log({ networkError });
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   const triedEager = useEagerConnect();
@@ -93,7 +96,8 @@ const AccountSelect = (): React.ReactElement => {
     }
   }, [triedEager, networkActive, networkError, activateNetwork, active]);
 
-  const { chainId: activeChainId } = useActiveWeb3React();
+  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
+  useInactiveListener(!triedEager);
 
   const [account, setCurrentAccount] = useAccountsStore(state => [
     state.currentAccount,
@@ -105,11 +109,11 @@ const AccountSelect = (): React.ReactElement => {
 
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
   const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
-  // useEffect(() => {
-  //   if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-  //   // if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork())
-  //   //   setChainIdError('network mismatch');
-  // }, [chainId, error]);
+
+  useEffect(() => {
+    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+    if (!error) setChainIdError(null);
+  }, [chainId, error]);
 
   useEffect(() => {
     if (address) {
