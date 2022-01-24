@@ -24,7 +24,7 @@ export function elementContainsText(selector: string, text: string) {
 
 export async function setAccount(account: TestAccount, cb: () => void) {
   cy.window().then(win => {
-    win.setAccount(account.address, account.key);
+    (win as any).setAccount(account.address, account.key);
     cb();
   });
 }

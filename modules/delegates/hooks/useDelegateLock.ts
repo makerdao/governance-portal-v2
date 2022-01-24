@@ -15,7 +15,7 @@ export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
   const { chainId, library, account }: Web3ReactContextInterface<Web3Provider> = useActiveWeb3React();
 
   const { data, error } = useSWR(`${voteDelegateAddress}/vote-delegate-contract/lock`, () => {
-    const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account);
+    const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account || undefined);
     return vdContract.lock;
   });
 

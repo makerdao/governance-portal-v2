@@ -68,7 +68,7 @@ export const DelegateModal = ({
 
   const approveMkr = async () => {
     const approveTxCreator = () => approveMKR(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
+    const txId = await trackTransaction(approveTxCreator, account, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
         mutateTokenAllowance();
@@ -86,7 +86,7 @@ export const DelegateModal = ({
     //TODO: update the mkr input to handle ethers bignumber
     const amt = mkrToDeposit.toString();
     const lockTxCreator = () => lock(parseUnits(amt, 18));
-    const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
+    const txId = await trackTransaction(lockTxCreator, account, 'Depositing MKR', {
       mined: txId => {
         mutateTotalStaked();
         mutateMkrStaked();

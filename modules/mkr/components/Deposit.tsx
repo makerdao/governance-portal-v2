@@ -151,7 +151,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
                 const contractToApprove = voteProxyContractAddress || chiefAddress;
                 const approveTxCreator = () => approveMKR(contractToApprove);
 
-                const txId = await track(approveTxCreator, 'Granting MKR approval', {
+                const txId = await track(approveTxCreator, account, 'Granting MKR approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
                     mutateAllowance();

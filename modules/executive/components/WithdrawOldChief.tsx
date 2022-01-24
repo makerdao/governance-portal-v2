@@ -23,8 +23,8 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 const ModalContent = ({ close, ...props }) => {
-  const { account, oldVoteProxyContractAddress } = useAccount();
-  const { oldIouAddress } = useContractAddress('iouOld');
+  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress } = useAccount();
+  const oldIouAddress = useContractAddress('iouOld');
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
   const oldChiefAddress = useContractAddress('chiefOld');
@@ -33,7 +33,7 @@ const ModalContent = ({ close, ...props }) => {
   const { data: allowanceOk } = useSWR<{ data: boolean }>(
     ['/user/iou-allowance-old-chief', account, !!oldVoteProxyAbi],
     (_, address) =>
-      oldVoteProxyContractAddress
+      voteProxyOldContractAddress
         ? Promise.resolve(true) // no need for IOU approval when using vote proxy
         : getMaker()
             .then(maker =>
@@ -44,7 +44,7 @@ const ModalContent = ({ close, ...props }) => {
             )
             .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
-  const lockedMkrKeyOldChief = oldVoteProxyContractAddress || account;
+  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkr } = useSWR(['/user/mkr-locked-old-chief', lockedMkrKeyOldChief], (_, address) =>
     getMaker().then(maker =>
       maker
@@ -99,7 +99,7 @@ const ModalContent = ({ close, ...props }) => {
                 the old Chief contract back to your wallet.
               </Text>
             </Box>
-            {oldVoteProxyContract && oldVoteProxyContract.role === 'hot' && (
+            {voteProxyOldContractAddress && voteProxyOldHotAddress && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>
@@ -111,11 +111,11 @@ const ModalContent = ({ close, ...props }) => {
                 trackButtonClick('withdrawMkrOldChief');
                 const maker = await getMaker();
 
-                const freeTxCreator = oldVoteProxyContractAddress
+                const freeTxCreator = voteProxyOldContractAddress
                   ? () =>
                       maker
                         .service('smartContract')
-                        .getContractByAddressAndAbi(oldVoteProxyContractAddress, oldVoteProxyAbi)
+                        .getContractByAddressAndAbi(voteProxyOldContractAddress, oldVoteProxyAbi)
                         .freeAll()
                   : () =>
                       maker
@@ -123,7 +123,7 @@ const ModalContent = ({ close, ...props }) => {
                         .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
                         .free(lockedMkr.toFixed('wei'));
 
-                const txId = await track(freeTxCreator, 'Withdrawing MKR', {
+                const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
                     close();
@@ -158,7 +158,7 @@ const ModalContent = ({ close, ...props }) => {
                 trackButtonClick('approveWithdrawOldChief');
                 const approveTxCreator = () => approveOldIOU(oldChiefAddress);
 
-                const txId = await track(approveTxCreator, 'Granting IOU approval', {
+                const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
                     setTxId(null);

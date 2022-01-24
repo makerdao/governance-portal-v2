@@ -59,7 +59,7 @@ export const UndelegateModal = ({
 
   const approveIou = async () => {
     const approveTxCreator = () => approveIOU(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, 'Approving IOU', {
+    const txId = await trackTransaction(approveTxCreator, account, 'Approving IOU', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'IOU approved');
         setTxId(null);
@@ -77,7 +77,7 @@ export const UndelegateModal = ({
     const amt = mkrToWithdraw.toString();
     const freeTxCreator = () => free(parseUnits(amt, 18));
 
-    const txId = await trackTransaction(freeTxCreator, 'Withdrawing MKR', {
+    const txId = await trackTransaction(freeTxCreator, account, 'Withdrawing MKR', {
       mined: txId => {
         mutateTotalStaked();
         mutateMkrStaked();

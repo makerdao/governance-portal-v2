@@ -36,8 +36,8 @@ function determineNetwork(): SupportedNetworks {
       return SupportedNetworks.TESTNET;
     }
     // 2) check the browser provider if there is one
-    if (typeof window.ethereum !== 'undefined') {
-      const chainId = parseInt(window.ethereum.chainId);
+    if (typeof (window as any).ethereum !== 'undefined') {
+      const chainId = parseInt((window as any).ethereum.chainId);
       try {
         const providerNetwork = chainIdToNetworkName(chainId);
         return providerNetwork;

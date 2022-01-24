@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
-import { accountsApi } from '../../app/stores/accounts';
 
 type Hooks = {
   pending?: (txHash: string) => void;
@@ -19,7 +18,12 @@ type Store = {
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
   setError: (txId: string, error?: { message: string }) => void;
-  track: (txCreator: () => Promise<ContractTransaction>, message?: string, hooks?: Hooks) => any;
+  track: (
+    txCreator: () => Promise<ContractTransaction>,
+    account?: string,
+    message?: string,
+    hooks?: Hooks
+  ) => any;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -108,16 +112,14 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (txCreator, message = '', hooks) => {
-    const account = accountsApi.getState().currentAccount;
-
-    if (!account) return;
-
-    const from = account.address;
+  track: async (txCreator, account, message = '', hooks) => {
+    if (!account) {
+      return;
+    }
 
     const txId = uuidv4();
 
-    get().initTx(txId, from, message);
+    get().initTx(txId, account, message);
 
     const txPromise = txCreator();
     const tx = await txPromise;

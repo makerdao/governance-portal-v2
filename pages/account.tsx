@@ -64,7 +64,7 @@ const AccountPage = (): JSX.Element => {
   const onCreateDelegate = async () => {
     const maker = await getMaker();
     const createTxCreator = () => maker.service('voteDelegateFactory').createDelegateContract();
-    const txId = await track(createTxCreator, 'Create delegate contract', {
+    const txId = await track(createTxCreator, account, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
         mutateAccount();

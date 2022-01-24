@@ -4,9 +4,9 @@ import omit from 'lodash/omit';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { Ballot } from '../types/ballot';
 import { transactionsApi } from 'modules/web3/stores/transactions';
-import { accountsApi } from 'modules/app/stores/accounts';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
+import { ethers } from 'ethers';
 
 type Store = {
   ballot: Ballot;
@@ -18,7 +18,12 @@ type Store = {
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
   clearBallot: () => void;
-  submitBallot: () => Promise<void>;
+  submitBallot: (
+    account: string,
+    voteDelegateContract?: ethers.Contract,
+    voteDelegateContractAddress?: string,
+    voteProxyContractAddress?: string
+  ) => Promise<void>;
   signComments: () => Promise<void>;
   signedMessage: string;
   rawMessage: string;
@@ -98,7 +103,12 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     });
   },
 
-  submitBallot: async () => {
+  submitBallot: async (
+    account: string,
+    voteDelegateContract?: ethers.Contract,
+    voteDelegateContractAddress?: string,
+    voteProxyContractAddress?: string
+  ) => {
     const newBallot = {};
     const maker = await getMaker();
     const ballot = get().ballot;
@@ -115,24 +125,21 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     });
 
     const comments = get().comments;
-    const account = accountsApi.getState().currentAccount;
-    const voteDelegate = accountsApi.getState().voteDelegate;
-    const voteProxy = account?.address ? accountsApi.getState().proxies[account?.address] : null;
 
-    const voteTxCreator = voteDelegate
-      ? () => voteDelegate.votePoll(pollIds, pollOptions)
+    const voteTxCreator = voteDelegateContract
+      ? () => voteDelegateContract.votePoll(pollIds, pollOptions)
       : () => maker.service('govPolling').vote(pollIds, pollOptions);
 
     const txId = await transactionsApi
       .getState()
-      .track(voteTxCreator, `Voting on ${Object.keys(ballot).length} polls`, {
+      .track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
         pending: txHash => {
           // if comment included, add to comments db
           if (comments.length > 0) {
             const commentsRequest: PollsCommentsRequestBody = {
-              voterAddress: account?.address || '',
-              delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
-              voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
+              voterAddress: account || '',
+              delegateAddress: voteDelegateContract ? voteDelegateContractAddress : '',
+              voteProxyAddress: voteProxyContractAddress ? voteProxyContractAddress : '',
               comments,
               rawMessage: get().rawMessage,
               signedMessage: get().signedMessage,

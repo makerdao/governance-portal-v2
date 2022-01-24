@@ -118,7 +118,7 @@ export default function DefaultVoteModalView({
       voteTxCreator = () => voteCall(slateOrProposals);
     }
 
-    const txId = await track(voteTxCreator, 'Voting on executive proposal', {
+    const txId = await track(voteTxCreator, account, 'Voting on executive proposal', {
       pending: txHash => {
         // if comment included, add to comments db
         if (comment.length > 0) {

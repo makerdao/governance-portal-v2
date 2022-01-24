@@ -88,7 +88,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
-  const { account, voteDelegateContractAddress, voteProxyContractAddress, oldVoteProxyContractAddress } =
+  const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
   const oldChiefAddress = useContractAddress('chiefOld');
   const { chainId } = useActiveWeb3React();
@@ -100,7 +100,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const loader = useRef<HTMLDivElement>(null);
 
   const address = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
+  const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
@@ -109,7 +109,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     mutateVotedProposals();
   }, [address]);
 
-  const lockedMkrKeyOldChief = oldVoteProxyContractAddress || account;
+  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
     () =>

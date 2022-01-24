@@ -16,6 +16,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   close: () => void;
@@ -23,11 +24,10 @@ type Props = {
   setPoll: (any) => void;
 };
 
-type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
-
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
+  const { account } = useAccount();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -42,7 +42,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
       maker
         .service('govPolling')
         .createPoll(poll.startDate.getTime() / 1000, poll.endDate.getTime() / 1000, poll.multiHash, poll.url);
-    const txId = await track(voteTxCreator, `Creating poll with id ${poll?.pollId}`, {
+    const txId = await track(voteTxCreator, account, `Creating poll with id ${poll?.pollId}`, {
       pending: () => {
         setStep('pending');
       },

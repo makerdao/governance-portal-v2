@@ -47,7 +47,7 @@ const ModalContent = ({
     const maker = await getMaker();
     const esm = await maker.service('esm');
     const burnTxObject = () => esm.stake(burnAmount);
-    const txId = await track(burnTxObject, 'Burning MKR in Emergency Shutdown Module', {
+    const txId = await track(burnTxObject, account, 'Burning MKR in Emergency Shutdown Module', {
       pending: () => {
         setStep('pending');
       },

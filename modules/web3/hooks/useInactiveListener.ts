@@ -6,7 +6,7 @@ export function useInactiveListener(suppress = false) {
   const { active, error, activate } = useWeb3React();
 
   useEffect(() => {
-    const ethereum = window.ethereum;
+    const ethereum = (window as any).ethereum;
 
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleChainChanged = () => {

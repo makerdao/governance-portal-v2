@@ -8,7 +8,7 @@ import { useVoteProxyAddress } from './useVoteProxyAddress';
 import { useVoteProxyOldAddress } from './useVoteProxyOldAddress';
 
 type UseAccountResponse = {
-  account?: string | null;
+  account?: string;
 
   voteDelegateContract?: ethers.Contract;
   voteDelegateContractAddress?: string;
@@ -31,7 +31,6 @@ export function useAccount(): UseAccountResponse {
 
   if (!account) {
     return {
-      account,
       mutate: () => null
     };
   }

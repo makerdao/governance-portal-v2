@@ -20,6 +20,8 @@ describe('Transactions', () => {
   });
 
   test('should call initTx, setPending, and setMined for successful transactions', async () => {
+    const address = TestAccountProvider.nextAccount().address;
+
     const initTxMock = (transactionsApi.getState().initTx = jest.fn(transactionsApi.getState().initTx));
 
     const setPendingMock = (transactionsApi.getState().setPending = jest.fn(
@@ -28,8 +30,8 @@ describe('Transactions', () => {
 
     const setMinedMock = (transactionsApi.getState().setMined = jest.fn(transactionsApi.getState().setMined));
 
-    const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
-    await transactionsApi.getState().track(txCreator);
+    const txCreator = () => maker.getToken(ETH).transfer(address, ETH(0.1));
+    await transactionsApi.getState().track(txCreator, address);
 
     await waitForExpect(() => {
       expect(initTxMock.mock.calls.length).toBe(1);
@@ -39,11 +41,12 @@ describe('Transactions', () => {
   });
 
   test('should initialize a tx properly', async () => {
-    const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
+    const address = TestAccountProvider.nextAccount().address;
+    const txCreator = () => maker.getToken(ETH).transfer(address, ETH(0.1));
     const currentAddress = maker.currentAddress();
 
     const message = 'sending ETH';
-    const txId = await transactionsApi.getState().track(txCreator, message);
+    const txId = await transactionsApi.getState().track(txCreator, address, message);
 
     await waitForExpect(() => {
       expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe(
@@ -57,15 +60,18 @@ describe('Transactions', () => {
   });
 
   test('should set pending properly', async () => {
-    const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
+    const address = TestAccountProvider.nextAccount().address;
+    const txCreator = () => maker.getToken(ETH).transfer(address, ETH(0.1));
     const mockPendingHook = jest.fn();
-    await transactionsApi.getState().track(txCreator, '', { pending: mockPendingHook });
+    await transactionsApi.getState().track(txCreator, address, '', { pending: mockPendingHook });
     await waitForExpect(() => expect(mockPendingHook.mock.calls.length).toBe(1));
   });
 
   test('should set mined properly', async () => {
-    const txCreator = () => maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(0.1));
-    const txId = await transactionsApi.getState().track(txCreator);
+    const address = TestAccountProvider.nextAccount().address;
+
+    const txCreator = () => maker.getToken(ETH).transfer(address, ETH(0.1));
+    const txId = await transactionsApi.getState().track(txCreator, address);
 
     await waitForExpect(() => {
       expect(transactionsSelectors.getTransaction(transactionsApi.getState(), txId).status).toBe('mined');
@@ -73,9 +79,10 @@ describe('Transactions', () => {
   });
 
   test('should set error properly', async () => {
-    const txCreator = () =>
-      maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(10e18));
-    const txId = await transactionsApi.getState().track(txCreator);
+    const address = TestAccountProvider.nextAccount().address;
+
+    const txCreator = () => maker.getToken(ETH).transfer(address, ETH(10e18));
+    const txId = await transactionsApi.getState().track(txCreator, address);
 
     await waitForExpect(() => {
       const txState = transactionsSelectors.getTransaction(transactionsApi.getState(), txId);
@@ -86,13 +93,13 @@ describe('Transactions', () => {
   });
 
   test('should track multiple txs', async () => {
-    const txCreator1 = () =>
-      maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(10e18));
-    const txCreator2 = () =>
-      maker.getToken(ETH).transfer(TestAccountProvider.nextAccount().address, ETH(10e18));
+    const address = TestAccountProvider.nextAccount().address;
 
-    await transactionsApi.getState().track(txCreator1);
-    await transactionsApi.getState().track(txCreator2);
+    const txCreator1 = () => maker.getToken(ETH).transfer(address, ETH(10e18));
+    const txCreator2 = () => maker.getToken(ETH).transfer(address, ETH(10e18));
+
+    await transactionsApi.getState().track(txCreator1, address);
+    await transactionsApi.getState().track(txCreator2, address);
 
     await waitForExpect(() => {
       expect(transactionsApi.getState().transactions.length).toBe(2);

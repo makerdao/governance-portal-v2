@@ -117,7 +117,7 @@ const ModalContent = ({ close, ...props }) => {
                   ? () => voteProxyContract.free(mkrToWithdraw)
                   : () => maker.service('chief').free(mkrToWithdraw);
 
-                const txId = await track(freeTxCreator, 'Withdrawing MKR', {
+                const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
                   mined: txId => {
                     // Mutate locked amount
                     mutateLocked();
@@ -153,7 +153,7 @@ const ModalContent = ({ close, ...props }) => {
                 trackButtonClick('approveWithdraw');
                 const approveTxCreator = () => approveIOU(chiefAddress);
 
-                const txId = await track(approveTxCreator, 'Granting IOU approval', {
+                const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
                     setTxId(null);
