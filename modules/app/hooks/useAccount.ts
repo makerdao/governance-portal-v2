@@ -29,12 +29,6 @@ type UseAccountResponse = {
 export function useAccount(): UseAccountResponse {
   const { account } = useActiveWeb3React();
 
-  if (!account) {
-    return {
-      mutate: () => null
-    };
-  }
-
   // Address of the vote delegate contract
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: muteateVoteDelegate } = useVoteDelegateAddress(account);

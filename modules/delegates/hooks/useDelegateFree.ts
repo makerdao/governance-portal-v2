@@ -15,7 +15,7 @@ export const useDelegateFree = (voteDelegateAddress: string): FreeResponse => {
   const { chainId, library, account }: Web3ReactContextInterface<Web3Provider> = useActiveWeb3React();
 
   const { data, error } = useSWR(`${voteDelegateAddress}/vote-delegate-contract/free`, () => {
-    const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account || undefined);
+    const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account);
     return vdContract.free;
   });
 

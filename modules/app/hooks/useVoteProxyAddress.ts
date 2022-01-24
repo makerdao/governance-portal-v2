@@ -8,11 +8,11 @@ type VoteProxyAddressResponse = {
   error: Error;
 };
 
-export const useVoteProxyAddress = (account: string): VoteProxyAddressResponse => {
+export const useVoteProxyAddress = (account?: string): VoteProxyAddressResponse => {
   const { voteProxyFactory } = useContracts();
 
-  const { data, error } = useSWR(`${account}/vote-proxy-address`, async () => {
-    return await getVoteProxyAddresses(voteProxyFactory, account);
+  const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {
+    return await getVoteProxyAddresses(voteProxyFactory, account as string);
   });
 
   return {

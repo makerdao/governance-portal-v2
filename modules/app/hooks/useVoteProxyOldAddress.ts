@@ -13,7 +13,7 @@ type VoteProxyAddressResponse = {
   error?: Error;
 };
 
-export const useVoteProxyOldAddress = (account: string): VoteProxyAddressResponse => {
+export const useVoteProxyOldAddress = (account?: string): VoteProxyAddressResponse => {
   const { voteProxyFactoryOld } = <MainnetSdk>useContracts();
   const { chainId } = useActiveWeb3React();
 
@@ -33,8 +33,8 @@ export const useVoteProxyOldAddress = (account: string): VoteProxyAddressRespons
     };
   }
 
-  const { data, error } = useSWR(`${account}/vote-proxy-address`, async () => {
-    return await getVoteProxyAddresses(voteProxyFactoryOld, account);
+  const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {
+    return await getVoteProxyAddresses(voteProxyFactoryOld, account as string);
   });
 
   return {
