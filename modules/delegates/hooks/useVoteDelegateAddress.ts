@@ -17,7 +17,6 @@ export const useVoteDelegateAddress = (account?: string): VoteDelegateAddressRes
     const vdAddress = await voteDelegateFactory.delegates(account as string);
     return vdAddress !== ZERO_ADDRESS ? vdAddress : undefined;
   });
-
   return {
     data,
     loading: !error && !data,
