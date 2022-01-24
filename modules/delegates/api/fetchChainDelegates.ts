@@ -1,19 +1,26 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import getMaker from 'lib/maker';
+import { formatValue } from 'lib/string';
 import { DelegateContractInformation } from '../types';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { allDelegates } from 'modules/gql/queries/allDelegates';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getContracts } from 'modules/web3/helpers/getContracts';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
-  const maker = await getMaker(network);
+  const chainId = networkNameToChainId(network);
+  const data = await gqlRequest({ chainId, query: allDelegates });
 
-  const delegates = await maker.service('voteDelegate').getAllDelegates();
+  const delegates = data.allDelegates.nodes;
+
+  const contracts = getContracts(chainId);
 
   const mkrStaked = await Promise.all(
     delegates.map(async delegate => {
       // Get MKR delegated to each contract
-      const mkr = await maker.service('chief').getNumDeposits(delegate.voteDelegate);
-      return mkr.toNumber();
+      const mkr = await contracts.chief.deposits(delegate.voteDelegate);
+      return formatValue(mkr, 'wad', 18, false);
     })
   );
 

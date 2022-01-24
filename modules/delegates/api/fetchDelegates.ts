@@ -2,6 +2,7 @@ import { fetchChainDelegates } from './fetchChainDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
 import { add, isBefore } from 'date-fns';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import {
   DelegatesAPIResponse,
@@ -85,7 +86,12 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
       total: delegates.length,
       shadow: delegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
       recognized: delegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
-      totalMKRDelegated: delegates.reduce((prev, next) => prev + next.mkrDelegated, 0)
+      totalMKRDelegated: new BigNumberJS(
+        delegates.reduce((prev, next) => {
+          const mkrDelegated = new BigNumberJS(next.mkrDelegated);
+          return prev.plus(mkrDelegated);
+        }, new BigNumberJS(0))
+      ).toFormat(2)
     }
   };
 
