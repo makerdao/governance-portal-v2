@@ -2,9 +2,18 @@ import { useState, useEffect, useMemo } from 'react';
 import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
+import Link from 'next/link';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import shallow from 'zustand/shallow';
+import { fetchJson } from 'lib/fetchJson';
+import { shuffleArray } from 'lib/common/shuffleArray';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
+import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/delegates/types';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -12,21 +21,13 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { fetchJson } from 'lib/fetchJson';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import Link from 'next/link';
-import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
-import shallow from 'zustand/shallow';
+import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   delegates: Delegate[];
@@ -49,7 +50,7 @@ const Delegates = ({ delegates, stats }: Props) => {
       if (sort === delegatesSortEnum.creationDate) {
         return prev.expirationDate > next.expirationDate ? -1 : 1;
       } else if (sort === delegatesSortEnum.mkrDelegated) {
-        return prev.mkrDelegated > next.mkrDelegated ? -1 : 1;
+        return new BigNumberJS(prev.mkrDelegated).gt(new BigNumberJS(next.mkrDelegated)) ? -1 : 1;
       } else if (sort === delegatesSortEnum.random) {
         return delegates.indexOf(prev) > delegates.indexOf(next) ? 1 : -1;
       }
@@ -233,6 +234,8 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 
 export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
+
+  console.log({ delegatesAPIResponse: delegatesAPIResponse.delegates });
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
