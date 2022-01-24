@@ -1,16 +1,15 @@
 import { Flex, Text } from 'theme-ui';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function VotingWeight(props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
-  const { data: votingWeight } = useMKRVotingWeight(addressToCheck);
+  const { account, voteDelegateContractAddress } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(
+    voteDelegateContractAddress ? voteDelegateContractAddress : account
+  );
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateAddress);
+  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
   return (
     <>
       <Flex {...props} sx={{ justifyContent: 'space-between' }}>

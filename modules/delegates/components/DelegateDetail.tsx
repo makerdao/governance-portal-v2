@@ -23,8 +23,8 @@ import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
 import { DelegationHistory } from 'modules/delegates/types/delegate';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
@@ -54,11 +54,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     }
   );
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { data: connectedVDAddress } = useVoteDelegateAddress();
-
+  const { voteDelegateContractAddress } = useAccount();
   const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
   const delegatorCount = delegators ? activeDelegators?.length : undefined;
-  const isOwner = delegate.voteDelegateAddress.toLowerCase() === connectedVDAddress?.toLowerCase();
+  const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,

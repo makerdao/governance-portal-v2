@@ -1,8 +1,6 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { getVoteProxyAddresses } from '../api/getVoteProxyAddresses';
-import { VoteProxyAddresses } from '../types/voteProxyAddresses';
+import { getVoteProxyAddresses, VoteProxyAddresses } from '../helpers/getVoteProxyAddresses';
 
 type VoteProxyAddressResponse = {
   data?: VoteProxyAddresses;
@@ -10,20 +8,11 @@ type VoteProxyAddressResponse = {
   error: Error;
 };
 
-export const useVoteProxyAddress = (addressToCheck?: string): VoteProxyAddressResponse => {
-  let account;
-
+export const useVoteProxyAddress = (account?: string): VoteProxyAddressResponse => {
   const { voteProxyFactory } = useContracts();
 
-  if (addressToCheck) {
-    account = addressToCheck;
-  } else {
-    const activeWeb3 = useActiveWeb3React();
-    account = activeWeb3.account;
-  }
-
-  const { data, error } = useSWR(`${account}/vote-proxy-address`, async () => {
-    return await getVoteProxyAddresses(voteProxyFactory, account);
+  const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {
+    return await getVoteProxyAddresses(voteProxyFactory, account as string);
   });
 
   return {

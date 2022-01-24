@@ -16,7 +16,6 @@ import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
@@ -34,25 +33,25 @@ import { TxDisplay } from 'modules/delegates/components';
 import Withdraw from 'modules/mkr/components/Withdraw';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const AccountPage = (): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const account = useAccountsStore(state => state.currentAccount);
-  const address = account?.address;
-  const setVoteDelegate = useAccountsStore(state => state.setVoteDelegate);
+  const {
+    account,
+    mutate: mutateAccount,
+    voteDelegateContractAddress,
+    voteProxyContractAddress
+  } = useAccount();
 
-  const { data: vpAddresses } = useVoteProxyAddress();
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const { data: chiefBalance } = useLockedMkr(address, vpAddresses?.voteProxyAddress);
-  const { data: delegatedMkr } = useLockedMkr(voteDelegateAddress ?? undefined);
+  const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
+  const { data: delegatedMkr } = useLockedMkr(voteDelegateContractAddress ?? undefined);
   const { chainId } = useActiveWeb3React();
   const network = chainIdToNetworkName(chainId);
 
@@ -65,10 +64,10 @@ const AccountPage = (): JSX.Element => {
   const onCreateDelegate = async () => {
     const maker = await getMaker();
     const createTxCreator = () => maker.service('voteDelegateFactory').createDelegateContract();
-    const txId = await track(createTxCreator, 'Create delegate contract', {
+    const txId = await track(createTxCreator, account, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
-        setVoteDelegate(maker.currentAccount().address);
+        mutateAccount();
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
@@ -89,23 +88,23 @@ const AccountPage = (): JSX.Element => {
               Account
             </Heading>
           </Box>
-          {!address ? (
+          {!account ? (
             <Text>Connect your wallet to view information about your account</Text>
           ) : (
             <Card>
               <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
                 Vote Delegation
               </Text>
-              {voteDelegateAddress && !modalOpen ? (
+              {voteDelegateContractAddress && !modalOpen ? (
                 <Box>
                   <Text>Your delegate contract address:</Text>
                   <ExternalLink
                     title="View on etherescan"
-                    href={getEtherscanLink(network, voteDelegateAddress, 'address')}
+                    href={getEtherscanLink(network, voteDelegateContractAddress, 'address')}
                     target="_blank"
                   >
                     <Text as="p" data-testid="vote-delegate-address">
-                      {bpi > 0 ? voteDelegateAddress : cutMiddle(voteDelegateAddress, 8, 8)}
+                      {bpi > 0 ? voteDelegateContractAddress : cutMiddle(voteDelegateContractAddress, 8, 8)}
                     </Text>
                   </ExternalLink>
 
@@ -205,7 +204,7 @@ const AccountPage = (): JSX.Element => {
                     You have a DSChief balance of{' '}
                     <Text sx={{ fontWeight: 'bold' }}>{chiefBalance.toBigNumber().toFormat(6)} MKR.</Text>
                     <Text as="p" sx={{ my: 2 }}>
-                      {voteDelegateAddress
+                      {voteDelegateContractAddress
                         ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
                         : 'If you become a delegate, you will only be able to vote through the portal as a delegate. In this case, it is recommended to withdraw your MKR and delegate it to yourself or create the delegate contract from a different account.'}
                     </Text>

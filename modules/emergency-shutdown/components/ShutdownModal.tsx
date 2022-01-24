@@ -13,6 +13,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const ModalContent = ({
   setShowDialog,
@@ -23,6 +24,7 @@ const ModalContent = ({
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
+  const { account } = useAccount();
 
   const { chainId } = useActiveWeb3React();
   const network = chainIdToNetworkName(chainId);
@@ -38,7 +40,7 @@ const ModalContent = ({
     const maker = await getMaker();
     const esm = await maker.service('esm');
     const shutdownTxObject = esm.triggerEmergencyShutdown();
-    const txId = await track(shutdownTxObject, 'Shutting Down Dai Credit System', {
+    const txId = await track(shutdownTxObject, account, 'Shutting Down Dai Credit System', {
       pending: txHash => {
         setStep('pending');
       },

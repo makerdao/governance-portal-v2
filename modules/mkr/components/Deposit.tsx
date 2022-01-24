@@ -9,7 +9,6 @@ import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import getMaker, { MKR } from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { CurrencyObject } from 'modules/app/types/currency';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { fadeIn } from 'lib/keyframes';
@@ -18,48 +17,37 @@ import useTransactionStore, {
   transactionsApi
 } from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import invariant from 'tiny-invariant';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import BigNumber from 'bignumber.js';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
-import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
-import { VoteProxyAddresses } from 'modules/app/types/voteProxyAddresses';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-const ModalContent = ({
-  address,
-  voteProxy,
-  close
-}: {
-  address: string;
-  voteProxy?: VoteProxyAddresses;
-  close: () => void;
-}): React.ReactElement => {
-  invariant(address);
+const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { data: mkrBalance } = useMkrBalance(address);
+  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const { data: mkrBalance } = useMkrBalance(account);
   const chiefAddress = useContractAddress('chief');
 
-  const { mutate: mutateLocked } = useLockedMkr(address, voteProxy?.voteProxyAddress);
+  const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
 
   const approveMKR = useApproveUnlimitedToken('mkr');
 
   const { data: chiefAllowance, mutate: mutateAllowance } = useSWR<CurrencyObject>(
-    ['/user/chief-allowance', address, !!voteProxy?.voteProxyAddress],
+    ['/user/chief-allowance', account, !!voteProxyContractAddress],
     (_, address) =>
       getMaker().then(maker =>
         maker
           .getToken(MKR)
           .allowance(
             address,
-            address === voteProxy?.coldAddress
-              ? voteProxy?.voteProxyAddress
+            address === voteProxyColdAddress
+              ? voteProxyContractAddress
               : maker.service('smartContract').getContractAddresses().CHIEF
           )
       )
@@ -160,10 +148,10 @@ const ModalContent = ({
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveDeposit');
-                const contractToApprove = voteProxy?.voteProxyAddress || chiefAddress;
+                const contractToApprove = voteProxyContractAddress || chiefAddress;
                 const approveTxCreator = () => approveMKR(contractToApprove);
 
-                const txId = await track(approveTxCreator, 'Granting MKR approval', {
+                const txId = await track(approveTxCreator, account, 'Granting MKR approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
                     mutateAllowance();
@@ -188,14 +176,13 @@ const ModalContent = ({
 };
 
 const Deposit = ({ link }: { link?: string }): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: vpAddresses } = useVoteProxyAddress();
+  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
   const open = () => {
-    if (vpAddresses && account?.address === vpAddresses?.hotAddress) {
+    if (account && voteProxyContractAddress && account === voteProxyHotAddress) {
       alert(
         'You are using the hot wallet for a voting proxy. ' +
           'You can only deposit from the cold wallet. ' +
@@ -227,11 +214,7 @@ const Deposit = ({ link }: { link?: string }): JSX.Element => {
                 }
           }
         >
-          <ModalContent
-            address={account?.address || ''}
-            voteProxy={vpAddresses}
-            close={() => setShowDialog(false)}
-          />
+          <ModalContent close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       {link ? (

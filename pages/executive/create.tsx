@@ -2,13 +2,18 @@ import { Heading, Box, Button, Flex, Input, Label, Card, Text, Link } from 'them
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
-import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/utils';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+
+// Regexp to check if is an URL
+const expr =
+  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+
+export const URL_REGEX = new RegExp(expr);
 
 /*
 TODO: Add tests for executive create on goerli. Right now it only supports mainnet

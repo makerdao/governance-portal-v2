@@ -7,8 +7,8 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { CMSProposal, SpellData } from 'modules/executive/types';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   numProposals: number;
@@ -70,7 +70,7 @@ const ExecutiveIndicatorComponent = ({
   const unscheduledProposals = spellData
     ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
     : activeProposals;
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const { data: votedProposals } = useVotedProposals();
   const newUnvotedProposals =
     votedProposals && account

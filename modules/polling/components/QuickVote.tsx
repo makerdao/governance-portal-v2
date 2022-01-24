@@ -10,7 +10,6 @@ import { Poll } from 'modules/polling/types';
 import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { Account } from 'modules/app/types/account';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
@@ -18,13 +17,12 @@ import ChoiceSummary from './ChoiceSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import VotingStatus from './PollVotingStatus';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   poll: Poll;
   showHeader: boolean;
   showStatus?: boolean;
-  account?: Account;
   sx?: ThemeUIStyleObject;
 };
 
@@ -39,12 +37,12 @@ const rankedChoiceBlurb = (
   </>
 );
 
-const QuickVote = ({ poll, showHeader, account, showStatus, ...props }: Props): JSX.Element => {
+const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
-  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
+  const { account, voteDelegateContractAddress } = useAccount();
+  const { data: allUserVotes } = useAllUserVotes(
+    voteDelegateContractAddress ? voteDelegateContractAddress : account
+  );
 
   const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
     state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],

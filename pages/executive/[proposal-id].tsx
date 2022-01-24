@@ -33,9 +33,6 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 
-// stores
-import useAccountsStore from 'modules/app/stores/accounts';
-
 //components
 import VoteModal from 'modules/executive/components/VoteModal/index';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -54,6 +51,7 @@ import { Address } from 'modules/address/components/Address';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
@@ -94,7 +92,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
+
   const bpi = useBreakpointIndex();
   const { chainId } = useActiveWeb3React();
 

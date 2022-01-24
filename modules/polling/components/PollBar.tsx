@@ -4,18 +4,17 @@ import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useBallotStore from '../stores/ballotStore';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = { polls: Poll[]; activePolls: Poll[] };
 
 export default function PollBar({ polls, activePolls, ...props }: Props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account, voteDelegateContractAddress } = useAccount();
   const ballot = useBallotStore(state => state.ballot);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
-  const { data: allUserVotes } = useAllUserVotes(addressToCheck);
+  const { data: allUserVotes } = useAllUserVotes(
+    voteDelegateContractAddress ? voteDelegateContractAddress : account
+  );
 
   const allUserPolls: Poll[] = allUserVotes
     ? allUserVotes

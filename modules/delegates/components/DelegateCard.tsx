@@ -5,7 +5,6 @@ import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { Delegate } from '../types';
 import { DelegateModal, UndelegateModal } from 'modules/delegates/components';
 import {
@@ -20,7 +19,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
@@ -31,12 +30,10 @@ type PropTypes = {
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const [account] = useAccountsStore(state => [state.currentAccount]);
-  const { data: connectedVDAddress } = useVoteDelegateAddress();
-  const address = account?.address;
+  const { account, voteDelegateContractAddress } = useAccount();
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(address, delegate.voteDelegateAddress);
+  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { chainId } = useActiveWeb3React();
@@ -51,7 +48,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     }
   );
 
-  const isOwner = delegate.voteDelegateAddress.toLowerCase() === connectedVDAddress?.toLowerCase();
+  const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   return (
     <Card

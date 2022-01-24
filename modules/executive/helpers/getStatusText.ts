@@ -1,10 +1,13 @@
 import BigNumber from 'bignumber.js';
 import { formatDateWithTime } from 'lib/datetime';
 import { isBefore } from 'date-fns';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
 import { SpellData } from '../types/spellData';
 import { CurrencyObject } from 'modules/app/types/currency';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+
+const SPELL_SCHEDULED_DATE_OVERRIDES = {
+  '0xB70fB4eE900650DCaE5dD63Fd06E07F0b3a45d13': 'December 7, 2020, 14:00 UTC'
+};
 
 export const getStatusText = ({
   proposalAddress,

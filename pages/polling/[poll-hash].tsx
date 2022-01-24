@@ -19,9 +19,6 @@ import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';
 import { Poll } from 'modules/polling/types';
 
-// stores
-import useAccountsStore from 'modules/app/stores/accounts';
-
 // components
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import CountdownTimer from 'modules/app/components/CountdownTimer';
@@ -42,6 +39,7 @@ import PollWinningOptionBox from 'modules/polling/components/PollWinningOptionBo
 import { usePollTally } from 'modules/polling/hooks/usePollTally';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
@@ -51,7 +49,7 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
 
@@ -67,7 +65,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
-        <MobileVoteSheet account={account} setPoll={setMobileVotingPoll} poll={mobileVotingPoll} withStart />
+        <MobileVoteSheet setPoll={setMobileVotingPoll} poll={mobileVotingPoll} withStart />
       )}
       <SidebarLayout>
         <HeadComponent title={poll.title} description={`${poll.title}. End Date: ${poll.endDate}.`} />

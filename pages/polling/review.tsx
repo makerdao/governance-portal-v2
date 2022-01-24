@@ -15,13 +15,13 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import useBallotStore from 'modules/polling/stores/ballotStore';
-import useAccountsStore from 'modules/app/stores/accounts';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
@@ -35,8 +35,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     shallow
   );
 
-  const account = useAccountsStore(state => state.currentAccount);
-
+  const { account } = useAccount();
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
   const votedPolls = Object.keys(ballot)

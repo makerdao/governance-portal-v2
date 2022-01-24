@@ -3,8 +3,11 @@ import useBallotStore from '../stores/ballotStore';
 import { Box, Flex, Button, Text } from 'theme-ui';
 import useTransactionsStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import shallow from 'zustand/shallow';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
+  const account = useAccount();
+
   const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
     clearTx: state.clearTx,
     voteTxId: state.txId,
@@ -46,7 +49,12 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             mt={2}
             data-testid="submit-ballot-button"
             onClick={() => {
-              submitBallot();
+              submitBallot(
+                account.account as string,
+                account.voteDelegateContract,
+                account.voteDelegateContractAddress,
+                account.voteProxyContractAddress
+              );
               onSubmit();
             }}
             variant="primaryLarge"
@@ -59,7 +67,12 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
       ) : (
         <Button
           onClick={() => {
-            submitBallot();
+            submitBallot(
+              account.account as string,
+              account.voteDelegateContract,
+              account.voteDelegateContractAddress,
+              account.voteProxyContractAddress
+            );
             onSubmit();
           }}
           data-testid="submit-ballot-button"

@@ -11,7 +11,7 @@ export function useWindowBindings(): void {
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.setAccount = (address: string, key: string) => {
+      (window as any).setAccount = (address: string, key: string) => {
         if (address && key) {
           const rpcUrl = 'http://localhost:8545';
           const provider = new JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
@@ -19,7 +19,7 @@ export function useWindowBindings(): void {
 
           const bridge = new CustomizedBridge(signer, provider);
           bridge.setAddress(address);
-          window.ethereum = bridge;
+          (window as any).ethereum = bridge;
 
           context.activate(
             new InjectedConnector({

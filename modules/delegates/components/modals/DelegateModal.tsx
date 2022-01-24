@@ -6,7 +6,6 @@ import shallow from 'zustand/shallow';
 import BigNumber from 'bignumber.js';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
@@ -23,6 +22,7 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { parseUnits } from '@ethersproject/units';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   isOpen: boolean;
@@ -41,18 +41,18 @@ export const DelegateModal = ({
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const account = useAccountsStore(state => state.currentAccount);
-  const address = account?.address;
+  const { account } = useAccount();
+
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
 
-  const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(address);
+  const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(account);
 
   const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     'mkr',
-    address,
+    account,
     voteDelegateAddress
   );
 
@@ -68,7 +68,7 @@ export const DelegateModal = ({
 
   const approveMkr = async () => {
     const approveTxCreator = () => approveMKR(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, 'Approving MKR', {
+    const txId = await trackTransaction(approveTxCreator, account, 'Approving MKR', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'MKR approved');
         mutateTokenAllowance();
@@ -86,7 +86,7 @@ export const DelegateModal = ({
     //TODO: update the mkr input to handle ethers bignumber
     const amt = mkrToDeposit.toString();
     const lockTxCreator = () => lock(parseUnits(amt, 18));
-    const txId = await trackTransaction(lockTxCreator, 'Depositing MKR', {
+    const txId = await trackTransaction(lockTxCreator, account, 'Depositing MKR', {
       mined: txId => {
         mutateTotalStaked();
         mutateMkrStaked();

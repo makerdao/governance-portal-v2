@@ -2,15 +2,13 @@ import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
 import useSWR from 'swr';
-import useAccountsStore from 'modules/app/stores/accounts';
 import getMaker from 'lib/maker';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function VotingWeight(props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-  const addressToCheck = voteDelegateAddress ?? account?.address;
+  const { account, voteDelegateContractAddress } = useAccount();
+  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: votingWeight } = useSWR(
     addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
     (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
@@ -36,7 +34,7 @@ export default function VotingWeight(props): JSX.Element {
   }
   votingWeightDescription = votingWeightDescription.slice(0, -2);
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateAddress);
+  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
 
   const tooltipLabel = (
     <>

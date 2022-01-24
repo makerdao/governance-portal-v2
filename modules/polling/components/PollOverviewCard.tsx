@@ -7,7 +7,6 @@ import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from 'modules/app/stores/accounts';
 import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
@@ -20,6 +19,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import React from 'react';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type Props = {
   poll: Poll;
@@ -35,7 +35,7 @@ export default function PollOverviewCard({
   children,
   ...props
 }: Props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
@@ -109,13 +109,7 @@ export default function PollOverviewCard({
           </Stack>
           {showQuickVote && bpi > 0 && (
             <Box sx={{ ml: 2, minWidth: '265px' }}>
-              <QuickVote
-                poll={poll}
-                showHeader={true}
-                account={account}
-                sx={{ maxWidth: 7 }}
-                showStatus={!reviewPage}
-              />
+              <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
             </Box>
           )}
         </Flex>
@@ -162,7 +156,7 @@ export default function PollOverviewCard({
             {showQuickVote && bpi === 0 && (
               <Box sx={{ mt: 3, width: '100%' }}>
                 <VotingStatus poll={poll} />
-                <QuickVote poll={poll} showHeader={false} account={account} showStatus={!reviewPage} />
+                <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
               </Box>
             )}
 

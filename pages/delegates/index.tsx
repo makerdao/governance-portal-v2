@@ -15,7 +15,6 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
 import Link from 'next/link';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -24,6 +23,7 @@ import shallow from 'zustand/shallow';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
@@ -64,9 +64,8 @@ const Delegates = ({ delegates, stats }: Props) => {
     }
   };
 
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
-
-  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateAddress?.toLowerCase();
+  const { voteDelegateContractAddress } = useAccount();
+  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const expiredDelegates = sortedDelegates.filter(delegate => delegate.expired === true);
 
@@ -166,7 +165,7 @@ const Delegates = ({ delegates, stats }: Props) => {
             </Heading>
             <Card variant="compact">
               <Text as="p" sx={{ mb: 3 }}>
-                {voteDelegateAddress
+                {voteDelegateContractAddress
                   ? 'Looking for delegate contract information?'
                   : 'Interested in creating a delegate contract?'}
               </Text>

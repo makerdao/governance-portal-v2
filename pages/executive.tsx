@@ -15,10 +15,6 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import { oldChiefAddress } from 'lib/constants';
-import { useVoteDelegateAddress } from 'modules/app/hooks/useVoteDelegateAddress';
-import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -37,7 +33,6 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 
 // stores
-import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
@@ -45,8 +40,11 @@ import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -90,21 +88,19 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 );
 
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
+    useAccount();
+  const oldChiefAddress = useContractAddress('chiefOld');
   const { chainId } = useActiveWeb3React();
   const network = chainIdToNetworkName(chainId);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const [voteProxy, oldProxyAddress] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.oldProxy.address] : [null, null]
-  );
+
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
   const loader = useRef<HTMLDivElement>(null);
-  const { data: voteDelegateAddress } = useVoteDelegateAddress();
 
-  const { data: vpAddresses } = useVoteProxyAddress();
-  const address = voteDelegateAddress || vpAddresses?.voteProxyAddress || account?.address;
-  const { data: lockedMkr } = useLockedMkr(address, vpAddresses?.voteProxyAddress, voteDelegateAddress);
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
 
@@ -113,14 +109,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     mutateVotedProposals();
   }, [address]);
 
-  const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
+  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
     () =>
       getMaker().then(maker =>
         maker
           .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress[network], oldChiefAbi)
+          .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
           .deposits(lockedMkrKeyOldChief)
           .then(MKR.wei)
       )
@@ -258,10 +254,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
         )}
         {lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          !voteProxy &&
+          !voteProxyContractAddress &&
           lockedMkr &&
           lockedMkr.eq(0) &&
-          !voteDelegateAddress && (
+          !voteDelegateContractAddress && (
             <>
               <ProgressBar step={1} />
               <Flex
@@ -337,9 +333,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          voteProxy &&
+          voteProxyContractAddress &&
           lockedMkr &&
-          !voteDelegateAddress && (
+          !voteDelegateContractAddress && (
             <>
               <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
               <MigrationBadge>
@@ -358,7 +354,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          !voteProxy &&
+          !voteProxyContractAddress &&
           lockedMkr &&
           lockedMkr.gt(0) && (
             <>
@@ -368,7 +364,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           )}
       </Box>
       <Stack>
-        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegateAddress} />}
+        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegateContractAddress} />}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters
