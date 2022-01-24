@@ -34,7 +34,6 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
       <Web3ReactProviderDefault getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
           <AccountProvider>
-
             <HeadComponent />
             <CookiesProvider disabled={false}>
               <AnalyticsProvider>
