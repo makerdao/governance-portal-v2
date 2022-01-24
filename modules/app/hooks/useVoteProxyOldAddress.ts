@@ -20,22 +20,12 @@ export const useVoteProxyOldAddress = (account?: string): VoteProxyAddressRespon
   // Only works in mainnet
   const network = chainIdToNetworkName(chainId as SupportedChainId);
 
-  if (
-    network === SupportedNetworks.GOERLI ||
-    network === SupportedNetworks.GOERLIFORK ||
-    network === SupportedNetworks.TESTNET
-  ) {
-    return {
-      data: {
-        hasProxy: false
-      },
-      loading: false
-    };
-  }
-
-  const { data, error } = useSWR(account ? `${account}/vote-proxy-address` : null, async () => {
-    return await getVoteProxyAddresses(voteProxyFactoryOld, account as string);
-  });
+  const { data, error } = useSWR(
+    account && network !== SupportedNetworks.MAINNET ? `${account}/vote-proxy-address` : null,
+    async () => {
+      return await getVoteProxyAddresses(voteProxyFactoryOld, account as string);
+    }
+  );
 
   return {
     data,

@@ -51,6 +51,8 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
     );
   }
 
+  const canVote = !!account;
+
   return (
     <Link href={{ pathname: '/executive/[proposal-id]' }} as={{ pathname: `/executive/${proposal.key}` }}>
       <Card
@@ -133,7 +135,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                   </Badge>
                 )}
               </Flex>
-              {!!account && bpi === 0 && (
+              {canVote && bpi === 0 && (
                 <Box sx={{ pt: 2 }}>
                   <Button
                     variant="primaryOutline"
@@ -151,7 +153,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                 </Box>
               )}
             </Stack>
-            {!!account && bpi > 0 && (
+            {canVote && bpi > 0 && (
               <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
                 <Button
                   variant="primaryOutline"

@@ -13,13 +13,6 @@ type VoteDelegateResponse = {
 export const useCurrentUserVoteProxyContract = (): VoteDelegateResponse => {
   const { chainId, library, account } = useActiveWeb3React();
 
-  if (!account) {
-    return {
-      data: undefined,
-      loading: false
-    };
-  }
-
   const { data } = useVoteProxyAddress(account);
 
   try {
