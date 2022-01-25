@@ -27,7 +27,7 @@ type Props = {
   onDismiss: () => void;
   delegate: Delegate;
   mutateTotalStaked: () => void;
-  mutateMkrStaked: () => void;
+  mutateMKRDelegated: () => void;
 };
 
 export const UndelegateModal = ({
@@ -35,7 +35,7 @@ export const UndelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMkrStaked
+  mutateMKRDelegated
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
@@ -80,7 +80,7 @@ export const UndelegateModal = ({
     const txId = await trackTransaction(freeTxCreator, account, 'Withdrawing MKR', {
       mined: txId => {
         mutateTotalStaked();
-        mutateMkrStaked();
+        mutateMKRDelegated();
         transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
       },
       error: () => {
@@ -128,7 +128,7 @@ export const UndelegateModal = ({
                       title="Withdraw from delegate contract"
                       description="Input the amount of MKR to withdraw from the delegate contract."
                       onChange={setMkrToWithdraw}
-                      balance={mkrStaked.toBigNumber()}
+                      balance={mkrStaked}
                       buttonLabel="Undelegate MKR"
                       onClick={freeMkr}
                       showAlert={false}

@@ -18,16 +18,16 @@ import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import BigNumber from 'bignumber.js';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
 
 const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(new BigNumber(0));
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
   const [txId, setTxId] = useState(null);
   const chiefAddress = useContractAddress('chief');
   const approveIOU = useApproveUnlimitedToken('iou');
@@ -95,7 +95,7 @@ const ModalContent = ({ close, ...props }) => {
             <Box>
               <MKRInput
                 onChange={setMkrToWithdraw}
-                balance={lockedMkr?.toBigNumber()}
+                balance={lockedMkr}
                 value={mkrToWithdraw}
                 balanceText="MKR in contract:"
               />
@@ -108,7 +108,7 @@ const ModalContent = ({ close, ...props }) => {
             )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
-              disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr.toBigNumber())}
+              disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               onClick={async () => {
                 trackButtonClick('withdrawMkr');
                 const maker = await getMaker();
