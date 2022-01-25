@@ -9,7 +9,15 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
-export default function ManageDelegation({ delegate }: { delegate: Delegate }): React.ReactElement {
+export default function ManageDelegation({
+  delegate,
+  textDelegate = 'Delegate your MKR to this Delegate',
+  textUndelegate = 'Undelegate your MKR from this Delegate'
+}: {
+  delegate: Delegate;
+  textDelegate?: string;
+  textUndelegate?: string;
+}): React.ReactElement {
   const { account } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATE_DETAIL);
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -34,7 +42,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
             }}
             sx={{ width: '100%', height: 'auto', mb: [3] }}
           >
-            Delegate your MKR to this Delegate
+            {textDelegate}
           </Button>
         </Box>
 
@@ -48,7 +56,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
             }}
             sx={{ width: '100%', height: 'auto' }}
           >
-            Undelegate your MKR from this Delegate
+            {textUndelegate}
           </Button>
         </Box>
       </Card>
