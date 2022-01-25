@@ -3,7 +3,6 @@ import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
-import BigNumber from 'bignumber.js';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import useTransactionStore, {
@@ -23,13 +22,14 @@ import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
 import { parseUnits } from '@ethersproject/units';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
 
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   delegate: Delegate;
   mutateTotalStaked: () => void;
-  mutateMkrStaked: () => void;
+  mutateMKRDelegated: () => void;
 };
 
 export const DelegateModal = ({
@@ -37,14 +37,14 @@ export const DelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMkrStaked
+  mutateMKRDelegated
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(new BigNumber(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(BigNumber.from(0));
   const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
 
@@ -89,7 +89,7 @@ export const DelegateModal = ({
     const txId = await trackTransaction(lockTxCreator, account, 'Depositing MKR', {
       mined: txId => {
         mutateTotalStaked();
-        mutateMkrStaked();
+        mutateMKRDelegated();
         mutateMkrBalance();
         transactionsApi.getState().setMessage(txId, 'MKR deposited');
       },
@@ -151,7 +151,7 @@ export const DelegateModal = ({
                         title="Deposit into delegate contract"
                         description="Input the amount of MKR to deposit into the delegate contract."
                         onChange={setMkrToDeposit}
-                        balance={mkrBalance?.toBigNumber()}
+                        balance={mkrBalance}
                         buttonLabel="Delegate MKR"
                         onClick={() => setConfirmStep(true)}
                         showAlert={true}

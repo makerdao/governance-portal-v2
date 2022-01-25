@@ -22,6 +22,7 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { AccountContext } from 'modules/app/context/AccountContext';
+import { formatValue } from 'lib/string';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,7 +34,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { account, voteDelegateContractAddress } = useContext(AccountContext);
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
+  const {
+    data: mkrDelegated,
+    error: errorMKRDelegated,
+    mutate: mutateMKRDelegated
+  } = useMkrDelegated(account, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { chainId } = useActiveWeb3React();
@@ -193,7 +198,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ fontSize: [3, 5] }}
                   data-testid="total-mkr-delegated"
                 >
-                  {totalStaked ? totalStaked.toBigNumber().toFormat(3) : '0.000'}
+                  {totalStaked ? formatValue(totalStaked) : '0.000'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   Total MKR delegated
@@ -206,7 +211,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ fontSize: [3, 5] }}
                   data-testid="mkr-delegated-by-you"
                 >
-                  {mkrStaked ? mkrStaked.toBigNumber().toFormat(3) : '0.000'}
+                  {mkrDelegated ? formatValue(mkrDelegated) : '0.000'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   MKR delegated by you
@@ -237,14 +242,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         isOpen={showDelegateModal}
         onDismiss={() => setShowDelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMKRDelegated}
       />
       <UndelegateModal
         delegate={delegate}
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMKRDelegated}
       />
     </Card>
   );

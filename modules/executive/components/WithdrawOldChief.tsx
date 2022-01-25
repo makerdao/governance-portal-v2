@@ -20,6 +20,7 @@ import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimited
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
+import { formatValue } from 'lib/string';
 
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
@@ -84,8 +85,8 @@ const ModalContent = ({ close, ...props }) => {
                 Withdraw MKR from Chief
               </Text>
               <Text sx={{ color: '#333333', fontSize: 3, mt: 3 }}>
-                You are withdrawing <b>{lockedMkr ? lockedMkr.toBigNumber().toFormat(6) : '---'} MKR</b> from
-                the old Chief contract back to your wallet.
+                You are withdrawing <b>{lockedMkr ? formatValue(lockedMkr) : '---'} MKR</b> from the old Chief
+                contract back to your wallet.
               </Text>
             </Box>
             {voteProxyOldContractAddress && voteProxyOldHotAddress && (
