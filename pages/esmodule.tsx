@@ -19,6 +19,7 @@ import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
 import { useEsmThreshold } from 'modules/esm/hooks/useEsmThreshold';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
+import { useCageTime } from 'modules/esm/hooks/useCageTime';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -33,10 +34,11 @@ const ESModule = (): React.ReactElement => {
   const { data: thresholdAmount } = useEsmThreshold();
   const { data: esmIsActive } = useEsmIsActive();
   const { data: mkrInEsmByAddress } = useMkrInEsmByAddress(account);
+  const { data: cageTime } = useCageTime();
 
   const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked.gte(thresholdAmount);
 
-  const [cageTime, lockedInChief] = data || [];
+  const [lockedInChief] = data || [];
 
   const DesktopView = () => {
     return (
@@ -163,12 +165,16 @@ const ESModule = (): React.ReactElement => {
             color: '#994126',
             p: 3,
             fontSize: 1,
-            mt: 3
+            my: 3
           }}
         >
           <Text sx={{ textAlign: 'center' }}>
-            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toFixed())}. This dashboard
-            is currently read-only. You can read more information about next steps here NEED LINK
+            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
+            is currently read-only. You can read more information about next steps{' '}
+            <Link href="https://makerdao.world/en/learn/governance/emergency-shutdown" target="_blank">
+              here
+            </Link>
+            .
           </Text>
         </Flex>
       )}
