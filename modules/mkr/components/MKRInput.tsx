@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input, Text, Button, Box, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
 
 export type MKRInputProps = {
   placeholder?: string;
@@ -18,7 +18,7 @@ export function MKRInput({
   placeholder = '0.000 MKR',
   errorMaxMessage = 'MKR balance too low',
   onChange,
-  min = new BigNumber(0),
+  min = BigNumber.from(0),
   max,
   balance,
   balanceText = 'MKR Balance:',
@@ -32,10 +32,10 @@ export function MKRInput({
 
     setCurrentValueStr(newValueStr);
 
-    const newValue = new BigNumber(newValueStr || '0');
+    const newValue = BigNumber.from(newValueStr || '0');
 
     const invalidValue = newValue.lt(min) || (max && newValue.gt(max));
-    if (invalidValue || newValue.isNaN()) {
+    if (invalidValue) {
       setErrorInvalidFormat(true);
       return;
     }
@@ -48,13 +48,13 @@ export function MKRInput({
   const disabledButton = balance === undefined;
 
   const onClickSetMax = () => {
-    const val = balance ? balance : new BigNumber(0);
+    const val = balance ? balance : BigNumber.from(0);
     onChange(val);
     setCurrentValueStr(val.toString());
   };
 
-  const errorMax = value !== undefined && value.isGreaterThan(balance || new BigNumber(0));
-  const errorMin = value !== undefined && value.isLessThan(0);
+  const errorMax = value !== undefined && value.gt(balance || BigNumber.from(0));
+  const errorMin = value !== undefined && value.lt(0);
 
   return (
     <Box data-testid="mkr-input-wrapper">
@@ -102,7 +102,7 @@ export function MKRInput({
             onClick={onClickSetMax}
             data-testid="mkr-input-balance"
           >
-            {balance.toFormat(6)}
+            {balance.toString()}
           </Text>
         ) : (
           <Box sx={{ width: 6 }}>

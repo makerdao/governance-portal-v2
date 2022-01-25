@@ -8,8 +8,6 @@ import useSWR from 'swr';
 import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
-import getMaker, { MKR } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { fadeIn } from 'lib/keyframes';
 import useTransactionStore, {
@@ -18,38 +16,34 @@ import useTransactionStore, {
 } from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import BigNumber from 'bignumber.js';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
-  const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
+  const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
   const [txId, setTxId] = useState(null);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const { account, voteProxyContractAddress, voteProxyColdAddress, voteProxyContract } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
   const chiefAddress = useContractAddress('chief');
 
   const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
-
+  const { mkr, chief } = useContracts();
+  const chiefContractAddress = useContractAddress('chief');
   const approveMKR = useApproveUnlimitedToken('mkr');
 
-  const { data: chiefAllowance, mutate: mutateAllowance } = useSWR<CurrencyObject>(
-    ['/user/chief-allowance', account, !!voteProxyContractAddress],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .getToken(MKR)
-          .allowance(
-            address,
-            address === voteProxyColdAddress
-              ? voteProxyContractAddress
-              : maker.service('smartContract').getContractAddresses().CHIEF
-          )
+  const { data: chiefAllowance, mutate: mutateAllowance } = useSWR(
+    account ? `/user/chief-allowance/${account}` : null,
+    () =>
+      mkr.allowance(
+        account as string,
+        account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefContractAddress
       )
   );
 
@@ -107,27 +101,26 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             <Button
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
-              // onClick={async () => {
-              //   trackButtonClick('DepositMkr');
-              //   const maker = await getMaker();
-              //   const lockTxCreator = voteProxy
-              //     ? () => voteProxy.lock(mkrToDeposit)
-              //     : () => maker.service('chief').lock(mkrToDeposit);
-              //   const txId = await track(lockTxCreator, 'Depositing MKR', {
-              //     mined: txId => {
-              //       // Mutate locked state
-              //       mutateLocked();
-              //       transactionsApi.getState().setMessage(txId, 'MKR deposited');
-              //       close();
-              //     },
-              //     error: () => {
-              //       transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-              //       close();
-              //     }
-              //   });
-              //   setTxId(txId);
-              // }}
+              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || BigNumber.from(0))}
+              onClick={async () => {
+                trackButtonClick('DepositMkr');
+                const lockTxCreator = voteProxyContract
+                  ? () => voteProxyContract.lock(mkrToDeposit)
+                  : () => chief.lock(mkrToDeposit);
+                const txId = await track(lockTxCreator, account, 'Depositing MKR', {
+                  mined: txId => {
+                    // Mutate locked state
+                    mutateLocked();
+                    transactionsApi.getState().setMessage(txId, 'MKR deposited');
+                    close();
+                  },
+                  error: () => {
+                    transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
+                    close();
+                  }
+                });
+                setTxId(txId);
+              }}
             >
               Deposit MKR
             </Button>

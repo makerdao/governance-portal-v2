@@ -9,12 +9,11 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import getMaker, { MKR } from 'lib/maker';
+import { MKR } from 'lib/maker';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
-import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -41,10 +40,10 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -90,7 +89,6 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
-  const oldChiefAddress = useContractAddress('chiefOld');
   const { chainId } = useActiveWeb3React();
   const network = chainIdToNetworkName(chainId);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -103,6 +101,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+  const { chiefOld } = useContracts();
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
@@ -112,14 +111,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    () =>
-      getMaker().then(maker =>
-        maker
-          .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
-          .deposits(lockedMkrKeyOldChief)
-          .then(MKR.wei)
-      )
+    () => chiefOld.deposits(lockedMkrKeyOldChief).then(n => MKR.wei(n))
   );
 
   // FIXME merge this into the proposal object
