@@ -1,5 +1,4 @@
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'bignumber.js';
 import { fetchJson } from 'lib/fetchJson';
 import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { sortBytesArray } from 'lib/utils';
@@ -23,6 +22,8 @@ import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { formatValue } from 'lib/string';
+import { BigNumber } from 'ethers';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -84,15 +85,14 @@ export default function DefaultVoteModalView({
   const isHat = hat && hat === proposal.address;
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
-  const votingWeight = lockedMkr?.toBigNumber().toFormat(3);
-  const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
-  const mkrSupporting = spellData ? new BigNumber(spellData.mkrSupport).toFormat(3) : 0;
+  const hasVotingWeight = lockedMkr?.gt(0);
+  const mkrSupporting = spellData ? BigNumber.from(spellData.mkrSupport) : BigNumber.from(0);
   const afterVote =
     currentSlate && currentSlate.includes(proposal.address)
       ? mkrSupporting
       : lockedMkr && spellData
-      ? lockedMkr.toBigNumber().plus(new BigNumber(spellData.mkrSupport)).toFormat(3)
-      : 0;
+      ? lockedMkr.add(BigNumber.from(spellData.mkrSupport))
+      : BigNumber.from(0);
 
   const vote = async hatChecked => {
     const maker = await getMaker();
@@ -129,7 +129,7 @@ export default function DefaultVoteModalView({
             voteProxyAddress: voteProxyContractAddress ?? '',
             signedMessage: signedMessage,
             txHash,
-            voterWeight: votingWeight
+            voterWeight: formatValue(lockedMkr as BigNumber)
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
             method: 'POST',
@@ -224,7 +224,7 @@ export default function DefaultVoteModalView({
           </Text>
           {lockedMkr ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {votingWeight} MKR
+              {formatValue(lockedMkr)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -238,7 +238,7 @@ export default function DefaultVoteModalView({
           </Text>
           {spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {mkrSupporting} MKR
+              {formatValue(mkrSupporting)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -252,7 +252,7 @@ export default function DefaultVoteModalView({
           </Text>
           {lockedMkr && spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {afterVote} MKR
+              {formatValue(afterVote)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
