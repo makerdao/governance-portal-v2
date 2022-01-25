@@ -13,6 +13,8 @@ import {
   Divider
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
 import getMaker, { MKR } from 'lib/maker';
 import Toggle from '../Toggle';
 
@@ -31,7 +33,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         }}
       >
         <Text>Burn amount</Text>
-        <Text>{burnAmount.toString()}</Text>
+        <Text>{formatValue(burnAmount, 'wad', 6)} MKR</Text>
       </Flex>
       <Divider />
       <Flex
@@ -44,7 +46,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         }}
       >
         <Text>New ESM total</Text>
-        <Text>{burnAmount.add(totalStaked).toString()}</Text>
+        <Text>{formatValue(burnAmount.add(totalStaked), 'wad', 6)} MKR</Text>
       </Flex>
       <Text
         variant="microHeading"
@@ -52,7 +54,7 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
         mt={4}
         sx={{ textAlign: bpi < 1 ? 'left' : undefined, alignSelf: 'flex-start' }}
       >
-        Enter the following phrase to continue.
+        Enter the following phrase to continue:
       </Text>
       <Flex sx={{ flexDirection: 'column', mt: 3, width: '100%' }}>
         <Input defaultValue={passValue} disabled={true} color={'text'} />
@@ -68,23 +70,45 @@ const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }
   );
 };
 
-const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) => {
+type ConfirmBurnProps = {
+  burnAmount: BigNumber;
+  account?: string;
+  setShowDialog: (arg: boolean) => void;
+  burn: () => void;
+  totalStaked: BigNumber;
+};
+
+const ConfirmBurn = ({
+  burnAmount,
+  account,
+  setShowDialog,
+  burn,
+  totalStaked
+}: ConfirmBurnProps): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [mkrApproved, setMkrApproved] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
-  const passValue = `I am burning ${burnAmount}`;
+  const passValue = `I am burning ${formatValue(burnAmount, 'wad', 6)} MKR`;
   const [value, setValue] = useState('');
   const changeTerms = e => {
     setTermsAccepted(e.target.checked);
   };
+
+  console.log({
+    burnAmount,
+    account,
+    setShowDialog,
+    burn,
+    totalStaked
+  });
 
   useEffect(() => {
     (async () => {
       if (account) {
         const maker = await getMaker();
         const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
-        const connectedWalletAllowance = await maker.getToken(MKR).allowance(account?.address, esmAddress);
+        const connectedWalletAllowance = await maker.getToken(MKR).allowance(account, esmAddress);
         const hasMkrAllowance = connectedWalletAllowance.gte(MKR(burnAmount));
         setMkrApproved(hasMkrAllowance);
       }
@@ -164,7 +188,7 @@ const ConfirmBurn = ({ burnAmount, account, setShowDialog, burn, totalStaked }) 
         <Button
           data-testid="continue-burn"
           onClick={burn}
-          disabled={!mkrApproved || !termsAccepted || passValue !== value || !account?.address}
+          disabled={!mkrApproved || !termsAccepted || passValue !== value || !account}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
         >

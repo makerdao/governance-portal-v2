@@ -1,39 +1,34 @@
 import { Alert, Flex, Box, Button, Text, Grid, Close } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { BigNumber } from 'ethers';
 
-import { MKR } from 'lib/maker';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
-import { CurrencyObject } from 'modules/app/types/currency';
 
 type Props = {
-  setBurnAmount: (burnAmount: CurrencyObject) => void;
-  burnAmount: CurrencyObject;
-  mkrBalance: CurrencyObject | undefined;
+  setBurnAmount: (burnAmount: BigNumber) => void;
+  burnAmount: BigNumber;
+  mkrBalance?: BigNumber;
 };
 
 const MKRAmountView = ({ setBurnAmount, burnAmount, mkrBalance }: Props) => {
   const updateInputValue = newVal => {
-    setBurnAmount(MKR(newVal));
+    setBurnAmount(newVal);
   };
 
   return (
     <Box sx={{ mt: 4 }}>
-      <MKRInput
-        onChange={updateInputValue}
-        balance={mkrBalance?.toBigNumber()}
-        value={burnAmount.toBigNumber()}
-      />
+      <MKRInput onChange={updateInputValue} balance={mkrBalance} value={burnAmount} />
     </Box>
   );
 };
 
 type MKRAmountProps = {
   lockedInChief: number;
-  setBurnAmount: (burnAmount: CurrencyObject) => void;
-  burnAmount: CurrencyObject;
+  setBurnAmount: (burnAmount: BigNumber) => void;
+  burnAmount: BigNumber;
   setShowDialog: (bool: boolean) => void;
   setStep: (step: string) => void;
-  mkrBalance?: CurrencyObject;
+  mkrBalance?: BigNumber;
 };
 
 const MKRAmount = ({
@@ -73,7 +68,7 @@ const MKRAmount = ({
         </Button>
         <Button
           onClick={() => setStep('confirm')}
-          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance.toBigNumber()))}
+          disabled={burnAmount.lte(0) || (mkrBalance && burnAmount.gt(mkrBalance))}
           variant="outline"
           sx={{
             color: 'onNotice',

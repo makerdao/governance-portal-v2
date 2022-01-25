@@ -13,13 +13,13 @@ import ProgressRing from 'modules/esm/components/ProgressRing';
 import ESMHistory from 'modules/esm/components/ESMHistory';
 import { useEsmTotalStaked } from 'modules/esm/hooks/useEsmTotalStaked';
 import { useEsmIsActive } from 'modules/esm/hooks/useEsmIsActive';
-import { useESModuleStats } from 'modules/esm/hooks/useESModuleStats';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
 import { useEsmThreshold } from 'modules/esm/hooks/useEsmThreshold';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
 import { useCageTime } from 'modules/esm/hooks/useCageTime';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -27,18 +27,15 @@ const ESModule = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const { data } = useESModuleStats(account);
-
   const { data: allEsmJoins } = useAllEsmJoins();
   const { data: totalStaked } = useEsmTotalStaked();
   const { data: thresholdAmount } = useEsmThreshold();
   const { data: esmIsActive } = useEsmIsActive();
   const { data: mkrInEsmByAddress } = useMkrInEsmByAddress(account);
   const { data: cageTime } = useCageTime();
+  const { data: lockedInChief } = useLockedMkr(account);
 
   const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked.gte(thresholdAmount);
-
-  const [lockedInChief] = data || [];
 
   const DesktopView = () => {
     return (
