@@ -25,6 +25,7 @@ const config: EthSdkConfig = {
       end: '0xDb1d3edb80d3faA1B7257Ab4018A609E327FA50D',
       esm: '0x105BF37e7D81917b6fEACd6171335B4838e53D5e',
       iou: '0x651D1B91e4F657392a51Dba7A6A1A1a72eC6aD1c',
+
       mkr: '0xc5e4eab513a7cd12b2335e8a0d57273e13d499f7',
       polling: '0xdbE5d00b2D8C13a77Fb03Ee50C87317dbC1B15fb',
       pot: '0x50672F0a14B40051B65958818a7AcA3D54Bd81Af',

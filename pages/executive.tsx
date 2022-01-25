@@ -44,6 +44,8 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { useContracts } from 'modules/web3/hooks/useContracts';
+import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { BigNumber } from 'ethers';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -101,7 +103,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-  const { chiefOld } = useContracts();
+  const { chiefOld } = useContracts() as MainnetSdk;
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
@@ -111,7 +113,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    () => chiefOld.deposits(lockedMkrKeyOldChief).then(n => MKR.wei(n))
+    () => chiefOld.deposits(lockedMkrKeyOldChief as string).then(n => MKR.wei(n))
   );
 
   // FIXME merge this into the proposal object
@@ -356,7 +358,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           )}
       </Box>
       <Stack>
-        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegateContractAddress} />}
+        {account && (
+          <ExecutiveBalance
+            lockedMkr={lockedMkr || BigNumber.from(0)}
+            voteDelegate={voteDelegateContractAddress}
+          />
+        )}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters

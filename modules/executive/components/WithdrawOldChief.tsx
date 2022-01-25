@@ -21,28 +21,33 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { formatValue } from 'lib/string';
+import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { BigNumber } from 'ethers';
 
+// Note this only works on mainnet
+// TODO:
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
+
   const oldChiefAddress = useContractAddress('chiefOld');
   const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
-  const { iouOld, chiefOld } = useContracts();
+  const { iouOld, chiefOld } = useContracts() as MainnetSdk;
 
   const { data: allowanceOk } = useSWR<{ data: boolean }>(
     account ? `/user/iou-allowance-old-chief/${account}` : null,
     () =>
       voteProxyOldContractAddress
         ? Promise.resolve(true) // no need for IOU approval when using vote proxy
-        : iouOld.allowance(account, oldChiefAddress).then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
+        : iouOld.allowance(account as string, oldChiefAddress).then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
 
   const { data: lockedMkr } = useSWR(account ? `/user/mkr-locked-old-chief/${account}` : null, () =>
-    chiefOld.deposits(lockedMkrKeyOldChief).then(MKR.wei)
+    chiefOld.deposits(lockedMkrKeyOldChief as string).then(MKR.wei)
   );
 
   const [track, tx] = useTransactionStore(
@@ -102,7 +107,7 @@ const ModalContent = ({ close, ...props }) => {
 
                 const freeTxCreator = voteProxyOldContract
                   ? voteProxyOldContract.freeAll()
-                  : chiefOld.free(lockedMkr.toFixed('wei'));
+                  : chiefOld.free(lockedMkr as BigNumber);
 
                 const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
                   mined: txId => {
