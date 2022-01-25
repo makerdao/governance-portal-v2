@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
-import getMaker, { MKR } from 'lib/maker';
 import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
@@ -11,12 +10,11 @@ import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnSigning from './burnModal/BurnSigning';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
-import { useESModuleStats } from '../hooks/useESModuleStats';
 import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const ModalContent = ({
   setShowDialog,
@@ -30,11 +28,10 @@ const ModalContent = ({
   const { account } = useAccount();
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
-  const [burnAmount, setBurnAmount] = useState<CurrencyObject>(MKR(0));
-
-  const { mutate: mutateMKRStaked } = useESModuleStats(account);
+  const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
 
   const { data: mkrBalance } = useMkrBalance(account);
+  const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -44,16 +41,15 @@ const ModalContent = ({
   const close = () => setShowDialog(false);
 
   const burn = async () => {
-    const maker = await getMaker();
-    const esm = await maker.service('esm');
-    const burnTxObject = () => esm.stake(burnAmount);
+    const burnTxObject = () => esm.join(burnAmount);
     const txId = await track(burnTxObject, account, 'Burning MKR in Emergency Shutdown Module', {
       pending: () => {
         setStep('pending');
       },
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-        mutateMKRStaked();
+        // TODO: replace this
+        // mutateMKRStaked();
         setStep('mined');
       },
       error: () => setStep('failed')
