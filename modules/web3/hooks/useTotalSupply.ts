@@ -1,9 +1,10 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { TokenName } from 'modules/web3/types/tokens';
+import { BigNumber } from 'ethers';
 
 type UseTotalSupplyResponse = {
-  data?: any;
+  data?: BigNumber;
   loading: boolean;
   error?: Error;
   mutate: () => void;

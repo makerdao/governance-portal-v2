@@ -45,7 +45,6 @@ export async function fetchDelegate(
   network?: SupportedNetworks
 ): Promise<Delegate | undefined> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
-
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
 
   const onChainDelegate = onChainDelegates.find(
@@ -91,7 +90,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);
           return prev.plus(mkrDelegated);
         }, new BigNumberJS(0))
-      ).toFormat(2)
+      ).toString()
     }
   };
 

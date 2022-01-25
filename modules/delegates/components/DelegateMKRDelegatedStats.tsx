@@ -4,6 +4,7 @@ import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { formatValue } from 'lib/string';
 
 export function DelegateMKRDelegatedStats({
   delegate,
@@ -36,7 +37,7 @@ export function DelegateMKRDelegatedStats({
         label={'Total Active Delegators'}
       />
       <StatBox
-        value={typeof mkrStaked !== 'undefined' ? mkrStaked.toBigNumber().toFormat(3) : '0.000'}
+        value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0.000'}
         label={'MKR Delegated by you'}
       />
     </Flex>
