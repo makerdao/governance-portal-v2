@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
-import getMaker from 'lib/maker';
 import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
@@ -15,6 +14,7 @@ import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const ModalContent = ({
   setShowDialog,
@@ -31,6 +31,7 @@ const ModalContent = ({
   const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
 
   const { data: mkrBalance } = useMkrBalance(account);
+  const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -40,9 +41,7 @@ const ModalContent = ({
   const close = () => setShowDialog(false);
 
   const burn = async () => {
-    const maker = await getMaker();
-    const esm = await maker.service('esm');
-    const burnTxObject = () => esm.stake(burnAmount);
+    const burnTxObject = () => esm.join(burnAmount);
     const txId = await track(burnTxObject, account, 'Burning MKR in Emergency Shutdown Module', {
       pending: () => {
         setStep('pending');

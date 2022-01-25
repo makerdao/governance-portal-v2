@@ -2,6 +2,8 @@ export type ContractName =
   | 'chief'
   | 'chiefOld'
   | 'dai'
+  | 'end'
+  | 'esm'
   | 'mkr'
   | 'iou'
   | 'iouOld'

@@ -15,8 +15,10 @@ import {
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import getMaker, { MKR } from 'lib/maker';
 import Toggle from '../Toggle';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 
 const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }) => {
   const bpi = useBreakpointIndex();
@@ -95,25 +97,23 @@ const ConfirmBurn = ({
     setTermsAccepted(e.target.checked);
   };
 
+  const esmAddress = useContractAddress('esm');
+  const { data: allowance } = useTokenAllowance('mkr', account, esmAddress);
+  const approveMKR = useApproveUnlimitedToken('mkr');
+
   useEffect(() => {
     (async () => {
       if (account) {
-        const maker = await getMaker();
-        const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
-        const connectedWalletAllowance = await maker.getToken(MKR).allowance(account, esmAddress);
-        const hasMkrAllowance = connectedWalletAllowance.gte(MKR(burnAmount));
+        const hasMkrAllowance = (allowance && BigNumber.from(allowance.toFixed()).gte(burnAmount)) || false;
         setMkrApproved(hasMkrAllowance);
       }
     })();
-  }, [account, burnAmount]);
+  }, [account, burnAmount, esmAddress, allowance]);
 
   const giveProxyMkrAllowance = async () => {
     setMkrApprovePending(true);
-    const maker = await getMaker();
-    const esmAddress = maker.service('smartContract').getContractAddresses().ESM;
-    // setMkrApproved(true);
     try {
-      await maker.getToken(MKR).approve(esmAddress, burnAmount);
+      await approveMKR(esmAddress);
       setMkrApproved(true);
     } catch (err) {
       const message = err.message ? err.message : err;

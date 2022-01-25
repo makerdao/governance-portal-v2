@@ -47,80 +47,84 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
               </td>
             </tr>
           ) : allEsmJoins.length > 0 ? (
-            allEsmJoins.map(
-              (
-                action: {
-                  blockTimestamp: string;
-                  joinAmount: string;
-                  txHash: string;
-                  txFrom: string;
-                },
-                i
-              ) => {
-                const amount = new BigNumber(action.joinAmount);
-                return (
-                  <tr
-                    key={i}
-                    style={{
-                      borderBottom:
-                        allEsmJoins.length > 0 && i < allEsmJoins.length - 1 ? '1px solid #EDEDED' : 'none'
-                    }}
-                  >
-                    <td
-                      css={`
-                        white-space: nowrap;
-                        max-width: 205px;
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                      `}
+            allEsmJoins
+              .sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))
+              .map(
+                (
+                  action: {
+                    blockTimestamp: string;
+                    joinAmount: string;
+                    txHash: string;
+                    txFrom: string;
+                  },
+                  i
+                ) => {
+                  const amount = new BigNumber(action.joinAmount);
+                  return (
+                    <tr
+                      key={i}
+                      style={{
+                        borderBottom:
+                          allEsmJoins.length > 0 && i < allEsmJoins.length - 1 ? '1px solid #EDEDED' : 'none'
+                      }}
                     >
-                      <Text
-                        as="p"
-                        color="text"
-                        variant="caption"
-                        sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
-                      >
-                        {bpi > 0
-                          ? formatDateWithTime(action.blockTimestamp)
-                          : formatDateWithoutTime(action.blockTimestamp)}
-                      </Text>
-                    </td>
-                    <td
-                      css={`
-                        white-space: nowrap;
-                      `}
-                    >
-                      <Text
-                        as="p"
-                        color="text"
-                        variant="caption"
-                        sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
-                      >
-                        {amount.gte(0.1) ? formatRound(amount.toNumber()) : formatRound(amount.toNumber(), 3)}{' '}
-                        MKR
-                      </Text>
-                    </td>
-                    <td>
-                      <Link
-                        href={getEtherscanLink(network, action.txFrom, 'address')}
-                        target="_blank"
-                        variant="caption"
-                        color="accentBlue"
+                      <td
+                        css={`
+                          white-space: nowrap;
+                          max-width: 205px;
+                          text-overflow: ellipsis;
+                          overflow: hidden;
+                        `}
                       >
                         <Text
                           as="p"
-                          color="accentBlue"
+                          color="text"
                           variant="caption"
                           sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
                         >
-                          {cutMiddle(action.txFrom, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
+                          {bpi > 0
+                            ? formatDateWithTime(action.blockTimestamp)
+                            : formatDateWithoutTime(action.blockTimestamp)}
                         </Text>
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              }
-            )
+                      </td>
+                      <td
+                        css={`
+                          white-space: nowrap;
+                        `}
+                      >
+                        <Text
+                          as="p"
+                          color="text"
+                          variant="caption"
+                          sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
+                        >
+                          {amount.gte(0.1)
+                            ? formatRound(amount.toNumber())
+                            : formatRound(amount.toNumber(), 3)}{' '}
+                          MKR
+                        </Text>
+                      </td>
+                      <td>
+                        <Link
+                          href={getEtherscanLink(network, action.txFrom, 'address')}
+                          target="_blank"
+                          variant="caption"
+                          color="accentBlue"
+                        >
+                          <Text
+                            as="p"
+                            color="accentBlue"
+                            variant="caption"
+                            sx={{ paddingY: 3, mr: 2, fontSize: [2, 3] }}
+                          >
+                            {cutMiddle(action.txFrom, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
+                          </Text>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                }
+              )
           ) : (
             <tr key={0}>
               <td colSpan={3}>
