@@ -23,6 +23,7 @@ import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import useSWR from 'swr';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -85,25 +86,19 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 };
 
 export default function AddressPage(): JSX.Element {
-  const [addressInfo, setAddressInfo] = useState<AddressApiResponse>();
-  const [error, setError] = useState<string>();
   const router = useRouter();
   const { address } = router.query;
   const { chainId } = useActiveWeb3React();
 
   const network = chainId ? chainIdToNetworkName(chainId) : DEFAULT_NETWORK.network;
 
-  useEffect(() => {
-    if (address) {
-      fetchJson(`/api/address/${address}?network=${network}`).then(setAddressInfo).catch(setError);
-    }
-  }, [address, chainId]);
+  const { data, error } = useSWR<AddressApiResponse>(`/api/address/${address}?network=${network}`, fetchJson);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching address information" />;
   }
 
-  if (!addressInfo) {
+  if (!data) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -111,5 +106,5 @@ export default function AddressPage(): JSX.Element {
     );
   }
 
-  return <AddressView addressInfo={addressInfo} />;
+  return <AddressView addressInfo={data} />;
 }

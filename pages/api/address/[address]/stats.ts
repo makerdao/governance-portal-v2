@@ -1,13 +1,15 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import getMaker from 'lib/maker';
-import voteProxyFactoryAbi from 'lib/abis/voteProxyAbi.json';
 import { isSupportedNetwork } from 'lib/maker/index';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { resolveENS } from 'modules/web3/helpers/ens';
+import { getContracts } from 'modules/web3/helpers/getContracts';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 /**
  * @swagger
@@ -78,24 +80,15 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
-  const maker = await getMaker(network);
-  const voteProxyContract = maker
-    .service('smartContract')
-    .getContractByAddressAndAbi(address, voteProxyFactoryAbi);
 
-  // TODO: should we check cold for history?
-  let hot;
-  let cold;
-  let voteProxyAddress;
-  try {
-    hot = await voteProxyContract.hot();
-    cold = await voteProxyContract.cold();
-    voteProxyAddress = address;
-  } catch (err) {
-    // console.log(err);
-  }
+  const contracts = getContracts(networkNameToChainId(network));
 
-  const pollVoteHistory = await fetchAddressPollVoteHistory(hot ? hot : address, network);
+  const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address as string);
+
+  const pollVoteHistory = await fetchAddressPollVoteHistory(
+    voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),
+    network
+  );
 
   const response: AddressAPIStats = {
     pollVoteHistory,
