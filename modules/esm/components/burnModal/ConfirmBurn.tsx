@@ -95,14 +95,6 @@ const ConfirmBurn = ({
     setTermsAccepted(e.target.checked);
   };
 
-  console.log({
-    burnAmount,
-    account,
-    setShowDialog,
-    burn,
-    totalStaked
-  });
-
   useEffect(() => {
     (async () => {
       if (account) {
