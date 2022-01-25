@@ -65,14 +65,14 @@ export default function ManageDelegation({
         isOpen={showDelegateModal}
         onDismiss={() => setShowDelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMkrStaked}
       />
       <UndelegateModal
         delegate={delegate}
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMkrStaked}
       />
     </Box>
   );
