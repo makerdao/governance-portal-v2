@@ -47,7 +47,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
       )
   );
 
-  const hasLargeMkrAllowance = chiefAllowance?.gt('10e26'); // greater than 100,000,000 MKR
+  const hasLargeMkrAllowance = chiefAllowance?.gt(100000000); // greater than 100,000,000 MKR
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -95,13 +95,13 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             </Box>
 
             <Box>
-              <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance?.toBigNumber()} />
+              <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
             </Box>
 
             <Button
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || BigNumber.from(0))}
+              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
               onClick={async () => {
                 trackButtonClick('DepositMkr');
                 const lockTxCreator = voteProxyContract
