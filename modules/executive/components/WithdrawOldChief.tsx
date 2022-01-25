@@ -5,54 +5,43 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import getMaker, { MKR } from 'lib/maker';
+import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
   transactionsSelectors,
   transactionsApi
 } from 'modules/web3/stores/transactions';
-import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import oldVoteProxyAbi from 'lib/abis/oldVoteProxyAbi.json';
-import oldIouAbi from 'lib/abis/oldIouAbi.json';
+
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const ModalContent = ({ close, ...props }) => {
-  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress } = useAccount();
-  const oldIouAddress = useContractAddress('iouOld');
+  const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [txId, setTxId] = useState(null);
   const oldChiefAddress = useContractAddress('chiefOld');
   const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
+  const { iouOld, chiefOld } = useContracts();
+
   const { data: allowanceOk } = useSWR<{ data: boolean }>(
-    ['/user/iou-allowance-old-chief', account, !!oldVoteProxyAbi],
-    (_, address) =>
+    account ? `/user/iou-allowance-old-chief/${account}` : null,
+    () =>
       voteProxyOldContractAddress
         ? Promise.resolve(true) // no need for IOU approval when using vote proxy
-        : getMaker()
-            .then(maker =>
-              maker
-                .service('smartContract')
-                .getContractByAddressAndAbi(oldIouAddress, oldIouAbi)
-                .allowance(address, oldChiefAddress)
-            )
-            .then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
+        : iouOld.allowance(account, oldChiefAddress).then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
   );
+
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
-  const { data: lockedMkr } = useSWR(['/user/mkr-locked-old-chief', lockedMkrKeyOldChief], (_, address) =>
-    getMaker().then(maker =>
-      maker
-        .service('smartContract')
-        .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
-        .deposits(lockedMkrKeyOldChief)
-        .then(MKR.wei)
-    )
+
+  const { data: lockedMkr } = useSWR(account ? `/user/mkr-locked-old-chief/${account}` : null, () =>
+    chiefOld.deposits(lockedMkrKeyOldChief).then(MKR.wei)
   );
 
   const [track, tx] = useTransactionStore(
@@ -109,19 +98,10 @@ const ModalContent = ({ close, ...props }) => {
               disabled={!lockedMkr}
               onClick={async () => {
                 trackButtonClick('withdrawMkrOldChief');
-                const maker = await getMaker();
 
-                const freeTxCreator = voteProxyOldContractAddress
-                  ? () =>
-                      maker
-                        .service('smartContract')
-                        .getContractByAddressAndAbi(voteProxyOldContractAddress, oldVoteProxyAbi)
-                        .freeAll()
-                  : () =>
-                      maker
-                        .service('smartContract')
-                        .getContractByAddressAndAbi(oldChiefAddress, oldChiefAbi)
-                        .free(lockedMkr.toFixed('wei'));
+                const freeTxCreator = voteProxyOldContract
+                  ? voteProxyOldContract.freeAll()
+                  : chiefOld.free(lockedMkr.toFixed('wei'));
 
                 const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
                   mined: txId => {

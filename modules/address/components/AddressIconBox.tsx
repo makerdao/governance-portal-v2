@@ -5,13 +5,13 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
-import { VoteProxyInfo } from '../types/addressApiResponse';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
+import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyInfo;
+  voteProxyInfo?: VoteProxyAddresses;
   showExternalLink: boolean;
   isOwner?: boolean;
 };
@@ -31,10 +31,10 @@ export default function AddressIconBox({
         <Text sx={{ fontWeight: 'bold' }}>Contract:</Text> {voteProxyInfo.voteProxyAddress}
       </Text>
       <Text as="p">
-        <Text sx={{ fontWeight: 'bold' }}>Hot:</Text> {voteProxyInfo.hot}
+        <Text sx={{ fontWeight: 'bold' }}>Hot:</Text> {voteProxyInfo.hotAddress}
       </Text>
       <Text as="p">
-        <Text sx={{ fontWeight: 'bold' }}>Cold:</Text> {voteProxyInfo.cold}
+        <Text sx={{ fontWeight: 'bold' }}>Cold:</Text> {voteProxyInfo.coldAddress}
       </Text>
     </Box>
   ) : null;

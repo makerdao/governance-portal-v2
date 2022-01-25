@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Text, Flex, Divider } from 'theme-ui';
 import { getNetwork } from 'lib/maker';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
-import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
+import { AddressAPIStats } from '../types/addressApiResponse';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
@@ -12,10 +12,11 @@ import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
+import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyInfo;
+  voteProxyInfo?: VoteProxyAddresses;
 };
 
 export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
