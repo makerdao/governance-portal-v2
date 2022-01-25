@@ -4,30 +4,36 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { formatValue } from 'lib/string';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
-import BurnModal from 'modules/emergency-shutdown/components/BurnModal';
-import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
-import ProgressRing from 'modules/emergency-shutdown/components/ProgressRing';
-import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
+import BurnModal from 'modules/esm/components/BurnModal';
+import ShutdownModal from 'modules/esm/components/ShutdownModal';
+import ProgressRing from 'modules/esm/components/ProgressRing';
+import ESMHistory from 'modules/esm/components/ESMHistory';
 import { formatDateWithTime } from 'lib/datetime';
-import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
+import { useEsmTotalStaked } from 'modules/esm/hooks/useEsmTotalStaked';
+import { useEsmIsActive } from 'modules/esm/hooks/useEsmIsActive';
+import { useESModuleStats } from 'modules/esm/hooks/useESModuleStats';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
-import { useEsmTotalStaked } from 'modules/web3/hooks/useEsmTotalStaked';
-import { useEsmThreshold } from 'modules/web3/hooks/useEsmThreshold';
+import { useEsmThreshold } from 'modules/esm/hooks/useEsmThreshold';
 import BigNumber from 'bignumber.js';
 import { useAccount } from 'modules/app/hooks/useAccount';
+
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
   const { account } = useAccount();
-  const { data } = useESModuleStats(account);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
+
+  const { data } = useESModuleStats(account);
 
   const { data: allEsmJoins } = useAllEsmJoins();
   const { data: totalStaked } = useEsmTotalStaked();
   const { data: thresholdAmount } = useEsmThreshold();
+  const { data: esmIsActive } = useEsmIsActive();
 
-  const [canFire, mkrInEsm, cageTime, lockedInChief] = data || [];
+  const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked.gte(thresholdAmount);
+
+  const [mkrInEsm, cageTime, lockedInChief] = data || [];
 
   const DesktopView = () => {
     return (
@@ -69,7 +75,7 @@ const ESModule = (): React.ReactElement => {
                 minHeight: '20px',
                 width: totalStaked
                   ? `${
-                      totalStaked.gte(thresholdAmount)
+                      esmThresholdMet
                         ? '100'
                         : formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)
                     }%`
@@ -87,8 +93,8 @@ const ESModule = (): React.ReactElement => {
       <>
         <ProgressRing
           progress={
-            typeof totalStaked !== 'undefined' && thresholdAmount
-              ? canFire
+            esmThresholdMet
+              ? esmIsActive
                 ? 100
                 : new BigNumber(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
               : 0
@@ -125,7 +131,7 @@ const ESModule = (): React.ReactElement => {
           }
         >
           {totalStaked ? (
-            canFire ? (
+            !esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
                 lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
@@ -205,7 +211,7 @@ const ESModule = (): React.ReactElement => {
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
             >
-              {totalStaked.gte(thresholdAmount || 0) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
+              {esmThresholdMet ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
           ) : null}
           <Box p={2}>

@@ -2,7 +2,6 @@ import CurrencyObject from './currency';
 
 type ESModuleObject = {
   totalStaked: () => CurrencyObject;
-  canFire: () => boolean;
   thresholdAmount: () => CurrencyObject;
   fired: () => boolean;
   mkrInEsm: () => CurrencyObject;
