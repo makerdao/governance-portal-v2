@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
@@ -19,9 +19,9 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useAccount } from 'modules/app/hooks/useAccount';
 import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { AccountContext } from 'modules/app/context/AccountContext';
 
 type PropTypes = {
   delegate: Delegate;
@@ -30,7 +30,7 @@ type PropTypes = {
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const { account, voteDelegateContractAddress } = useAccount();
+  const { account, voteDelegateContractAddress } = useContext(AccountContext);
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrStaked, mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
@@ -44,7 +44,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     {
       revalidateOnFocus: false,
       refreshInterval: 0,
-      revalidateOnMount: true
+      revalidateOnMount: false
     }
   );
 
