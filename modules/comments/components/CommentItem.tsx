@@ -7,7 +7,7 @@ import { getNetwork } from 'lib/maker';
 import useAccountsStore from 'modules/app/stores/accounts';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
-import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
+import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
 import { getEtherscanLink } from 'lib/utils';
 
@@ -16,7 +16,7 @@ export default function CommentItem({
   votedOption,
   twitterUrl
 }: {
-  comment: PollCommentsAPIResponseItemWithWeight | ExecutiveCommentsAPIResponseItem;
+  comment: PollCommentsAPIResponseItemWithWeight | ParsedExecutiveComments;
   votedOption?: React.ReactNode;
   twitterUrl: string;
 }): React.ReactElement {
