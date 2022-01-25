@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
+import Link from 'next/link';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { UnsupportedChainIdError } from '@web3-react/core';
@@ -367,7 +368,21 @@ const AccountSelect = (): React.ReactElement => {
                     // This needs to be the change function for the wallet select dropdown
                     change={() => setChangeWallet(true)}
                   />
-                  <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />
+                  <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
+                    <VotingWeight />
+                    <Box>
+                      <Link
+                        href={{
+                          pathname: '/account'
+                        }}
+                        passHref
+                      >
+                        <ExternalLink title="See account" variant="nostyle" sx={{ color: 'accentBlue' }}>
+                          <Text>See my account page</Text>
+                        </ExternalLink>
+                      </Link>
+                    </Box>
+                  </Box>
                   {txs?.length > 0 && <TransactionBox txs={txs} />}
                   <Button
                     variant="primaryOutline"

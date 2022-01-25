@@ -235,8 +235,6 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
 
-  console.log({ delegatesAPIResponse: delegatesAPIResponse.delegates });
-
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {

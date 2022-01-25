@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { getNetwork } from 'lib/maker';
 import { formatAddress } from 'lib/utils';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';

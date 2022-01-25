@@ -1,7 +1,7 @@
 import ERC20_ABI from '../../fixtures/erc20_abi.json';
-import { GOERLI_ADDRESSES } from 'modules/contracts/contract.constants';
 import { ethers } from 'ethers';
 import { TEST_ACCOUNTS } from '../constants/testaccounts';
+import ethSDKConfig from 'modules/contracts/eth-sdk.config';
 
 export async function sendMKR(accountTo: string, amount: number) {
   const _url = 'http://localhost:8545';
@@ -10,7 +10,7 @@ export async function sendMKR(accountTo: string, amount: number) {
   // @ts-ignore
   const signer = new ethers.Wallet(TEST_ACCOUNTS.normal.key, provider);
 
-  const token = new ethers.Contract(GOERLI_ADDRESSES.GOV, ERC20_ABI, signer);
+  const token = new ethers.Contract(ethSDKConfig?.contracts?.goerli?.mkr as string, ERC20_ABI, signer);
   await token.transfer(accountTo, ethers.utils.parseEther(amount.toString()));
 }
 

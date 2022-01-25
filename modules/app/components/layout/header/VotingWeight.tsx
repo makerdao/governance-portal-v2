@@ -3,7 +3,7 @@ import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
-export default function VotingWeight(props): JSX.Element {
+export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
@@ -12,7 +12,7 @@ export default function VotingWeight(props): JSX.Element {
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
   return (
     <>
-      <Flex {...props} sx={{ justifyContent: 'space-between' }}>
+      <Flex sx={{ justifyContent: 'space-between' }}>
         <Text color="textSecondary" variant="caps" sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}>
           polling voting weight
         </Text>

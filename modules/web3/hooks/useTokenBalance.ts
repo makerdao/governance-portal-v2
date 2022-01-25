@@ -1,10 +1,11 @@
 import useSWR from 'swr';
+import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { TokenName } from 'modules/web3/types/tokens';
 
 type UseTokenBalanceResponse = {
-  data?: any;
+  data?: BigNumber | undefined;
   loading: boolean;
   error?: Error;
   mutate: () => void;
@@ -28,7 +29,7 @@ export const useTokenBalance = (token: TokenName, address?: string): UseTokenBal
 
   const { data, error, mutate } = useSWR(`${tokenContract.address}/${token}-balance/${account}`, async () => {
     if (!account) {
-      return 0;
+      return BigNumber.from(0);
     }
 
     return await tokenContract.balanceOf(account);
