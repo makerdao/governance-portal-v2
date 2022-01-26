@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Flex,
   Box,
@@ -88,7 +88,6 @@ const ConfirmBurn = ({
   totalStaked
 }: ConfirmBurnProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [mkrApproved, setMkrApproved] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
   const passValue = `I am burning ${formatValue(burnAmount, 'wad', 6)} MKR`;
@@ -98,23 +97,19 @@ const ConfirmBurn = ({
   };
 
   const esmAddress = useContractAddress('esm');
-  const { data: allowance } = useTokenAllowance('mkr', account, esmAddress);
+  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
+    'mkr',
+    burnAmount,
+    account,
+    esmAddress
+  );
   const approveMKR = useApproveUnlimitedToken('mkr');
-
-  useEffect(() => {
-    (async () => {
-      if (account) {
-        const hasMkrAllowance = (allowance && BigNumber.from(allowance.toFixed()).gte(burnAmount)) || false;
-        setMkrApproved(hasMkrAllowance);
-      }
-    })();
-  }, [account, burnAmount, esmAddress, allowance]);
 
   const giveProxyMkrAllowance = async () => {
     setMkrApprovePending(true);
     try {
       await approveMKR(esmAddress);
-      setMkrApproved(true);
+      mutateAllowance();
     } catch (err) {
       const message = err.message ? err.message : err;
       const errMsg = `unlock mkr tx failed ${message}`;
@@ -150,7 +145,7 @@ const ConfirmBurn = ({
         </Box>
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-        <Toggle active={mkrApproved} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
+        <Toggle active={allowance} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
         </Flex>
@@ -180,7 +175,7 @@ const ConfirmBurn = ({
         <Button
           data-testid="continue-burn"
           onClick={burn}
-          disabled={!mkrApproved || !termsAccepted || passValue !== value || !account}
+          disabled={!allowance || !termsAccepted || passValue !== value || !account}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
         >

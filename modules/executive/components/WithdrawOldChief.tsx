@@ -5,7 +5,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import useSWR from 'swr';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
@@ -23,9 +22,12 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 import { formatValue } from 'lib/string';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 
 // Note this only works on mainnet
-// TODO:
+// TODO: Check that the amounts for allowance are correct
+// TODO: Test with cypress
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -34,20 +36,21 @@ const ModalContent = ({ close, ...props }) => {
   const oldChiefAddress = useContractAddress('chiefOld');
   const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
-  const { iouOld, chiefOld } = useContracts() as MainnetSdk;
+  const { chiefOld } = useContracts() as MainnetSdk;
 
-  const { data: allowanceOk } = useSWR<{ data: boolean }>(
-    account ? `/user/iou-allowance-old-chief/${account}` : null,
-    () =>
-      voteProxyOldContractAddress
-        ? Promise.resolve(true) // no need for IOU approval when using vote proxy
-        : iouOld.allowance(account as string, oldChiefAddress).then(val => MKR(val).gt('10e26')) // greater than 100,000,000 MKR
+  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
+    'iouOld',
+    parseUnits('100000000'),
+    account,
+    voteProxyOldContractAddress ? undefined : oldChiefAddress
   );
+
+  const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
 
   const { data: lockedMkr } = useSWR(account ? `/user/mkr-locked-old-chief/${account}` : null, () =>
-    chiefOld.deposits(lockedMkrKeyOldChief as string).then(MKR.wei)
+    chiefOld.deposits(lockedMkrKeyOldChief as string)
   );
 
   const [track, tx] = useTransactionStore(
@@ -147,6 +150,7 @@ const ModalContent = ({ close, ...props }) => {
                 const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
+                    mutateAllowance();
                     setTxId(null);
                   },
                   error: () => {

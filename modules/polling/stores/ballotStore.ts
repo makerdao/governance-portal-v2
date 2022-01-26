@@ -1,13 +1,15 @@
 import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
-import getMaker, { personalSign } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { Ballot } from '../types/ballot';
 import { transactionsApi } from 'modules/web3/stores/transactions';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
 import { ethers } from 'ethers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { sign } from 'modules/web3/helpers/sign';
+import { Web3Provider } from '@ethersproject/providers';
 
 type Store = {
   ballot: Ballot;
@@ -26,7 +28,7 @@ type Store = {
     voteDelegateContractAddress?: string,
     voteProxyContractAddress?: string
   ) => Promise<void>;
-  signComments: () => Promise<void>;
+  signComments: (account: string, provider: Web3Provider) => Promise<void>;
   signedMessage: string;
   rawMessage: string;
 };
@@ -86,7 +88,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     set({ ballot: {} });
   },
 
-  signComments: async () => {
+  signComments: async (account: string, provider: Web3Provider) => {
     const comments = get().comments;
 
     // Sign message for commenting
@@ -97,7 +99,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     `
         : `${comments[0].comment}`;
 
-    const signedMessage = comments.length > 0 ? await personalSign(rawMessage) : '';
+    const signedMessage = comments.length > 0 ? await sign(account, rawMessage, provider) : '';
 
     set({
       signedMessage,

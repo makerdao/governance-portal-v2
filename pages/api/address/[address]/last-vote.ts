@@ -28,7 +28,11 @@ export default withApiHandler(
 
     const contracts = getContracts(networkNameToChainId(network));
 
-    const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address as string);
+    const voteProxyAddress = await getVoteProxyAddresses(
+      contracts.voteProxyFactory,
+      address as string,
+      network
+    );
 
     const pollVoteHistory = await fetchAddressPollVoteHistory(
       voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),

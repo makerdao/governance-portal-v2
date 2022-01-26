@@ -8,7 +8,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const account = useAccount();
-  const { network } = useActiveWeb3React();
+  const { network, library } = useActiveWeb3React();
 
   const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
     clearTx: state.clearTx,
@@ -33,7 +33,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
         <Box>
           <Button
             onClick={() => {
-              signComments();
+              signComments(account.account as string, library);
             }}
             variant="primaryOutline"
             data-testid="sign-comments-button"

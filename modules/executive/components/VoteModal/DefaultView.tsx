@@ -1,6 +1,6 @@
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
-import getMaker, { personalSign } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -25,6 +25,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { sign } from 'modules/web3/helpers/sign';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -45,7 +46,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
-  const { network } = useActiveWeb3React();
+  const { network, library } = useActiveWeb3React();
   const addressLockedMKR = voteProxyContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
@@ -69,7 +70,7 @@ export default function DefaultVoteModalView({
   const [signedMessage, setSignedMessage] = useState('');
 
   const signComment = async () => {
-    const signed = await personalSign(comment);
+    const signed = await sign(account as string, comment, library);
     setSignedMessage(signed);
   };
 

@@ -3,7 +3,6 @@ import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
-import useSWR from 'swr';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
@@ -22,6 +21,8 @@ import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimited
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { parseUnits } from 'ethers/lib/utils';
 
 const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -32,19 +33,14 @@ const ModalContent = ({ close, ...props }) => {
   const chiefAddress = useContractAddress('chief');
   const approveIOU = useApproveUnlimitedToken('iou');
 
-  const { data: allowanceOk } = useSWR<{ data: boolean }>(
-    ['/user/iou-allowance', account, !!voteProxyContract],
-    (_, account) =>
-      voteProxyContract
-        ? Promise.resolve(true) // no need for IOU approval when using vote proxy
-        : getMaker()
-            .then(maker =>
-              maker
-                .getToken('IOU')
-                .allowance(account, maker.service('smartContract').getContractAddresses().CHIEF)
-            )
-            .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
+  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
+    'iou',
+    parseUnits('100000000'),
+    account,
+    voteProxyContract ? undefined : chiefAddress
   );
+
+  const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
   const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
   const [track, tx] = useTransactionStore(
@@ -156,6 +152,7 @@ const ModalContent = ({ close, ...props }) => {
                 const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
                   mined: txId => {
                     transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
+                    mutateAllowance();
                     setTxId(null);
                   },
                   error: () => {
