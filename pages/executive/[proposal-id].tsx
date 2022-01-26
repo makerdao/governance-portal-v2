@@ -26,7 +26,7 @@ import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { cutMiddle, limitString } from 'lib/string';
+import { cutMiddle, limitString, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -199,10 +199,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 }
                 label="Spell Address"
               />
-              <StatBox
-                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(3)}
-                label="MKR Support"
-              />
+              <StatBox value={spellData && formatValue(spellData.mkrSupport, 'wad', 3)} label="MKR Support" />
               <StatBox value={supporters && supporters.length} label="Supporters" />
             </Flex>
             {'about' in proposal ? (

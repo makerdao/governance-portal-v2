@@ -3,7 +3,6 @@ import zipObject from 'lodash/zipObject';
 
 import { analyzeSpell } from './[address]';
 import invariant from 'tiny-invariant';
-import getMaker from 'lib/maker';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
@@ -14,8 +13,6 @@ export default withApiHandler(
 
     const network = (req.query.network as string) || DEFAULT_NETWORK.network;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-
-    const maker = await getMaker(network);
 
     let sampleError,
       failures = 0;
@@ -28,7 +25,7 @@ export default withApiHandler(
         addresses.map(async address => {
           try {
             // a rare valid use of `return await`
-            return await analyzeSpell(address, maker);
+            return await analyzeSpell(address, network);
           } catch (err) {
             failures++;
             if (!sampleError) sampleError = err;

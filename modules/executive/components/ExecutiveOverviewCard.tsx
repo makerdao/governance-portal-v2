@@ -5,8 +5,8 @@ import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } f
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import Bignumber from 'bignumber.js';
 import { formatDateWithoutTime } from 'lib/datetime';
+import { formatValue } from 'lib/string';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { Proposal, SpellData } from 'modules/executive/types';
@@ -132,7 +132,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                       m: 1
                     }}
                   >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
+                    {formatValue(spellData.mkrSupport, 'wad', 2)} MKR Supporting
                   </Badge>
                 )}
               </Flex>
@@ -184,11 +184,11 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
         {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
         <Divider my={0} />
-        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        {/* <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
           <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
             {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
           </Text>
-        </Flex>
+        </Flex> */}
       </Card>
     </Link>
   );

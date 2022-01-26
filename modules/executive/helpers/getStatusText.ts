@@ -49,14 +49,15 @@ export const getStatusText = ({
   }
 
   // not expired, passed, or executed, check support level
-  if (!!spellData.mkrSupport && !!mkrOnHat) {
-    return `${mkrOnHat
-      .toBigNumber()
-      .minus(new BigNumber(spellData.mkrSupport))
-      .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
-      spellData.expiration
-    )}.`;
-  }
+  // TODO uncomment and fix
+  // if (!!spellData.mkrSupport && !!mkrOnHat) {
+  //   return `${mkrOnHat
+  //     .toBigNumber()
+  //     .minus(new BigNumber(spellData.mkrSupport))
+  //     .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
+  //     spellData.expiration
+  //   )}.`;
+  // }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet
   return 'This proposal has not yet passed and is not available for execution.';
