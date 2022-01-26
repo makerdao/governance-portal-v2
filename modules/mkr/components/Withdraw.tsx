@@ -33,16 +33,14 @@ const ModalContent = ({ close, ...props }) => {
   const chiefAddress = useContractAddress('chief');
   const approveIOU = useApproveUnlimitedToken('iou');
 
-    
   const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
     'iou',
     parseUnits('100000000'),
     account,
-    voteProxyContract ? undefined:  chiefAddress
+    voteProxyContract ? undefined : chiefAddress
   );
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
-
 
   const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
   const [track, tx] = useTransactionStore(

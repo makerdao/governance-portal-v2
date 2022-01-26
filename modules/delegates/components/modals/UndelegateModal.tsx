@@ -45,11 +45,15 @@ export const UndelegateModal = ({
   const [txId, setTxId] = useState(null);
 
   const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
-  const { data: iouAllowance, mutate: mutateAllowance } = useTokenAllowance('iou', parseUnits('100000000'), account, voteDelegateAddress);
+  const { data: iouAllowance, mutate: mutateAllowance } = useTokenAllowance(
+    'iou',
+    parseUnits('100000000'),
+    account,
+    voteDelegateAddress
+  );
 
   const { data: free } = useDelegateFree(voteDelegateAddress);
   const approveIOU = useApproveUnlimitedToken('iou');
-
 
   const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

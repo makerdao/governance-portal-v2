@@ -39,14 +39,12 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const chiefContractAddress = useContractAddress('chief');
   const approveMKR = useApproveUnlimitedToken('mkr');
 
-  
   const { data: chiefAllowance, mutate: mutateAllowance } = useTokenAllowance(
     'mkr',
     parseUnits('100000000'),
     account,
     account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefContractAddress
   );
-
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],

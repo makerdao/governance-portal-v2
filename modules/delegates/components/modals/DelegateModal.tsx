@@ -60,7 +60,6 @@ export const DelegateModal = ({
   const { data: lock } = useDelegateLock(voteDelegateAddress);
   const approveMKR = useApproveUnlimitedToken('mkr');
 
-
   const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow

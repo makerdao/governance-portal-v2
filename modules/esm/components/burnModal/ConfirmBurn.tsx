@@ -97,9 +97,13 @@ const ConfirmBurn = ({
   };
 
   const esmAddress = useContractAddress('esm');
-  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance('mkr', burnAmount, account, esmAddress);
+  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
+    'mkr',
+    burnAmount,
+    account,
+    esmAddress
+  );
   const approveMKR = useApproveUnlimitedToken('mkr');
-
 
   const giveProxyMkrAllowance = async () => {
     setMkrApprovePending(true);

@@ -42,9 +42,9 @@ const ModalContent = ({ close, ...props }) => {
     'iouOld',
     parseUnits('100000000'),
     account,
-    voteProxyOldContractAddress ? undefined : oldChiefAddress 
+    voteProxyOldContractAddress ? undefined : oldChiefAddress
   );
-  
+
   const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;

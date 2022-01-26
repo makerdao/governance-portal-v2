@@ -15,7 +15,7 @@ export const useTokenAllowance = (
   name: ContractName,
   amount: BigNumber,
   userAddress?: string,
-  contractAddress?: string,
+  contractAddress?: string
 ): TokenAllowanceResponse => {
   const token: ethers.Contract = useContracts()[name];
 
