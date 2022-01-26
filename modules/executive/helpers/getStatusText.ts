@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
-import { formatDateWithTime } from 'lib/datetime';
+import { BigNumber } from 'ethers';
 import { isBefore } from 'date-fns';
+import { formatDateWithTime } from 'lib/datetime';
+import { formatValue } from 'lib/string';
 import { SpellData } from '../types/spellData';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
 const SPELL_SCHEDULED_DATE_OVERRIDES = {
@@ -16,8 +16,9 @@ export const getStatusText = ({
 }: {
   proposalAddress: string;
   spellData?: SpellData;
-  mkrOnHat?: CurrencyObject;
+  mkrOnHat?: BigNumber;
 }): string => {
+  console.log({ spellData });
   if (!spellData) return 'Fetching status...';
 
   if (proposalAddress === ZERO_ADDRESS) {
@@ -49,15 +50,13 @@ export const getStatusText = ({
   }
 
   // not expired, passed, or executed, check support level
-  // TODO uncomment and fix
-  // if (!!spellData.mkrSupport && !!mkrOnHat) {
-  //   return `${mkrOnHat
-  //     .toBigNumber()
-  //     .minus(new BigNumber(spellData.mkrSupport))
-  //     .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
-  //     spellData.expiration
-  //   )}.`;
-  // }
+  if (!!spellData.mkrSupport && !!mkrOnHat) {
+    return `${formatValue(
+      mkrOnHat.sub(spellData.mkrSupport),
+      'wad',
+      3
+    )} additional MKR support needed to pass. Expires at ${formatDateWithTime(spellData.expiration)}.`;
+  }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet
   return 'This proposal has not yet passed and is not available for execution.';

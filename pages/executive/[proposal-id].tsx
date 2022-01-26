@@ -16,7 +16,7 @@ import {
   Link as ThemeUILink
 } from 'theme-ui';
 import { ethers } from 'ethers';
-import BigNumber from 'bignumber.js';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -25,7 +25,7 @@ import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/a
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { cutMiddle, limitString, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -46,7 +46,7 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { BigNumber } from 'ethers';
 import { Address } from 'modules/address/components/Address';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
@@ -70,7 +70,7 @@ const ProposalTimingBanner = ({
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
-  mkrOnHat?: CurrencyObject;
+  mkrOnHat?: BigNumber;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
@@ -342,7 +342,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     >
                       <Box sx={{ width: '55%' }}>
                         <Text color="onSecondary">
-                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(3)} MKR)
+                          {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
                         </Text>
                       </Box>
 

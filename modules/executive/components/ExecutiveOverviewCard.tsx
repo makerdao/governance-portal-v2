@@ -14,7 +14,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
@@ -184,11 +184,11 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
         {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
         <Divider my={0} />
-        {/* <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
           <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
             {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
           </Text>
-        </Flex> */}
+        </Flex>
       </Card>
     </Link>
   );

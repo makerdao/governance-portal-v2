@@ -26,18 +26,27 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     officeHours
   ] = await Promise.all([
     spellContract.done().catch(_ => null), // this fails if the spell doesn't have the right ABI,
-    // TODO: conversion
-    // if (!nextCastTime.toNumber()) return undefined;
-    // this.nextCastTime[spellAddress] = new Date(nextCastTime.toNumber() * 1000);
-    spellContract.nextCastTime().catch(_ => null),
-    // TODO: conversion
-    // if (!nextCastTime.toNumber()) return undefined;
-    // this.nextCastTime[spellAddress] = new Date(nextCastTime.toNumber() * 1000);
-    spellContract.eta().catch(_ => null),
-    // TODO: conversion
-    // if (!nextCastTime.toNumber()) return undefined;
-    // this.nextCastTime[spellAddress] = new Date(nextCastTime.toNumber() * 1000);
-    spellContract.expiration().catch(_ => null),
+    spellContract
+      .nextCastTime()
+      .then(nextCastTime => {
+        if (!nextCastTime.toNumber()) return undefined;
+        return new Date(nextCastTime.toNumber() * 1000);
+      })
+      .catch(_ => null),
+    spellContract
+      .eta()
+      .then(eta => {
+        if (!eta.toNumber()) return undefined;
+        return new Date(eta.toNumber() * 1000);
+      })
+      .catch(_ => null),
+    spellContract
+      .expiration()
+      .then(expiration => {
+        if (!expiration.toNumber()) return undefined;
+        return new Date(expiration.toNumber() * 1000);
+      })
+      .catch(_ => null),
     // this is complicated
     // async getScheduledDate(spellAddress) {
     //   if (this.scheduledDate[spellAddress])
@@ -61,7 +70,13 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     //   return this.scheduledDate[spellAddress];
     // }
     // TODO replicate the above, yikes
-    spellContract.eta().catch(_ => null),
+    spellContract
+      .eta()
+      .then(eta => {
+        if (!eta.toNumber()) return undefined;
+        return new Date(eta.toNumber() * 1000);
+      })
+      .catch(_ => null),
     // async getExecutionDate(spellAddress) {
     //   if (this.executionDate[spellAddress])
     //     return this.executionDate[spellAddress];
@@ -84,7 +99,13 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     //   return this.executionDate[spellAddress];
     // }
     // TODO replicate the above, yikes
-    spellContract.eta().catch(_ => null),
+    spellContract
+      .eta()
+      .then(eta => {
+        if (!eta.toNumber()) return undefined;
+        return new Date(eta.toNumber() * 1000);
+      })
+      .catch(_ => null),
     getChiefApprovals(address, network),
     spellContract
       .description()
