@@ -153,7 +153,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       if (sortBy === 'MKR Amount') {
         const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
         const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
-        return bSupport - aSupport;
+        return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });

@@ -5,8 +5,8 @@ import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } f
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import Bignumber from 'bignumber.js';
 import { formatDateWithoutTime } from 'lib/datetime';
+import { formatValue } from 'lib/string';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { Proposal, SpellData } from 'modules/executive/types';
@@ -14,7 +14,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
@@ -132,7 +132,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                       m: 1
                     }}
                   >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
+                    {formatValue(spellData.mkrSupport, 'wad', 2)} MKR Supporting
                   </Badge>
                 )}
               </Flex>
