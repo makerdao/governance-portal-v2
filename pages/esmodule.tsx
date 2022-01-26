@@ -133,7 +133,7 @@ const ESModule = (): React.ReactElement => {
           }
         >
           {totalStaked ? (
-            !esmThresholdMet ? (
+            esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
                 lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
