@@ -1,5 +1,4 @@
 import { fetchJson } from 'lib/fetchJson';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
@@ -14,8 +13,7 @@ export function useExecutiveComments(
   proposalAddress: string,
   refreshInterval = 0
 ): UseExecutiveCommentsResponse {
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const {
     data: commentsDatas,

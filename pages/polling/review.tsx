@@ -24,7 +24,6 @@ import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -142,30 +141,30 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [error, setError] = useState<string>();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId)) {
-      fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`)
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/polling/all-polls?network=${network}`)
         .then(response => _setPolls(response.polls))
         .catch(setError);
     }
-  }, [chainId]);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(chainId) && !_polls)
+  if (!isDefaultNetwork(network) && !_polls)
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
       </PrimaryLayout>
     );
 
-  return <PollingReview polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])} />;
+  return <PollingReview polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {

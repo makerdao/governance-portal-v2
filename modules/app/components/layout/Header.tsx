@@ -9,8 +9,6 @@ import { useState, useEffect, useContext } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ColorModeToggle from './header/ColorModeToggle';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
-import { useAccount } from 'modules/app/hooks/useAccount';
 import { AccountContext } from 'modules/app/context/AccountContext';
 
 const Header = (): JSX.Element => {
@@ -18,8 +16,7 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useContext(AccountContext);
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   return (
     <Box
@@ -103,7 +100,7 @@ const Header = (): JSX.Element => {
         </Flex>
 
         {/* TODO: we can add the dropdown here */}
-        {chainId && <Flex>{chainIdToNetworkName(chainId)}</Flex>}
+        {network && <Flex>{network}</Flex>}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {typeof window !== 'undefined' && <AccountSelect />}

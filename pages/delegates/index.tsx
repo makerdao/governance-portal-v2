@@ -10,7 +10,6 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
@@ -197,26 +196,26 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [_stats, _setStats] = useState<DelegatesAPIStats>();
   const [error, setError] = useState<string>();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId)) {
-      fetchJson(`/api/delegates?network=${chainIdToNetworkName(chainId)}`)
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/delegates?network=${network}`)
         .then((response: DelegatesAPIResponse) => {
           _setDelegates(shuffleArray(response.delegates));
           _setStats(response.stats);
         })
         .catch(setError);
     }
-  }, [chainId]);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching delegates" />;
   }
 
-  if (!isDefaultNetwork(chainId) && !_delegates) {
+  if (!isDefaultNetwork(network) && !_delegates) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -226,8 +225,8 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 
   return (
     <Delegates
-      delegates={isDefaultNetwork(chainId) ? delegates : (_delegates as Delegate[])}
-      stats={isDefaultNetwork(chainId) ? stats : (_stats as DelegatesAPIStats)}
+      delegates={isDefaultNetwork(network) ? delegates : (_delegates as Delegate[])}
+      stats={isDefaultNetwork(network) ? stats : (_stats as DelegatesAPIStats)}
     />
   );
 }

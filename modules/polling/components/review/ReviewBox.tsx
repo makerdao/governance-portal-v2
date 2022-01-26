@@ -7,7 +7,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';
 import useBallotStore from 'modules/polling/stores/ballotStore';
@@ -40,8 +39,7 @@ export default function ReviewBox({
     signedMessage: state.signedMessage,
     comments: state.comments
   }));
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),

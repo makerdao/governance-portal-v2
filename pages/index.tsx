@@ -28,7 +28,6 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   proposals: CMSProposal[];
@@ -323,14 +322,14 @@ export default function Index({
   const [_polls, setPolls] = useState<Poll[]>();
   const [_proposals, setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId) && (!_polls || !_proposals)) {
+    if (!network) return;
+    if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
       Promise.all([
-        fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`),
-        fetchJson(`/api/executive?network=${chainIdToNetworkName(chainId)}`)
+        fetchJson(`/api/polling/all-polls?network=${network}`),
+        fetchJson(`/api/executive?network=${network}`)
       ])
         .then(([pollsData, proposals]) => {
           setPolls(pollsData.polls);
@@ -338,13 +337,13 @@ export default function Index({
         })
         .catch(setError);
     }
-  }, [chainId]);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(chainId) && (!_polls || !_proposals))
+  if (!isDefaultNetwork(network) && (!_polls || !_proposals))
     return (
       <PrimaryLayout>
         <PageLoadingPlaceholder />
@@ -353,8 +352,8 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork(chainId) ? prefetchedProposals : (_proposals as CMSProposal[])}
-      polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])}
+      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as CMSProposal[])}
+      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
   );

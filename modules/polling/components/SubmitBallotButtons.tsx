@@ -4,9 +4,11 @@ import { Box, Flex, Button, Text } from 'theme-ui';
 import useTransactionsStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import shallow from 'zustand/shallow';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const account = useAccount();
+  const { network } = useActiveWeb3React();
 
   const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
     clearTx: state.clearTx,
@@ -51,6 +53,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             onClick={() => {
               submitBallot(
                 account.account as string,
+                network,
                 account.voteDelegateContract,
                 account.voteDelegateContractAddress,
                 account.voteProxyContractAddress
@@ -69,6 +72,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
           onClick={() => {
             submitBallot(
               account.account as string,
+              network,
               account.voteDelegateContract,
               account.voteDelegateContractAddress,
               account.voteProxyContractAddress

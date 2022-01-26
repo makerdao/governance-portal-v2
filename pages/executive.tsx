@@ -41,7 +41,6 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
@@ -91,8 +90,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
 export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
   const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
@@ -465,23 +463,21 @@ export default function ExecutiveOverviewPage({
 }): JSX.Element {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId)) {
-      fetchJson(`/api/executive?network=${chainIdToNetworkName(chainId)}`)
-        .then(_setProposals)
-        .catch(setError);
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/executive?network=${network}`).then(_setProposals).catch(setError);
     }
-  }, [chainId]);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(chainId) && !_proposals)
+  if (!isDefaultNetwork(network) && !_proposals)
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -490,7 +486,7 @@ export default function ExecutiveOverviewPage({
 
   return (
     <ExecutiveOverview
-      proposals={isDefaultNetwork(chainId) ? prefetchedProposals : (_proposals as Proposal[])}
+      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
     />
   );
 }

@@ -5,50 +5,14 @@ import TrezorPlugin from '@makerdao/dai-plugin-trezor-web';
 import GovernancePlugin, { MKR } from '@makerdao/dai-plugin-governance';
 import { config } from '../config';
 import { MakerClass } from '@makerdao/dai/dist/Maker';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { chainIdToNetworkName, networkNameToChainId } from 'modules/web3/helpers/chain';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { Web3ReactPlugin } from './web3react';
 import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 
 export const ETH = Maker.currencies.ETH;
 export const USD = Maker.currencies.USD;
 export { MKR };
-
-// make a snap judgement about which network to use so that we can immediately start loading state
-function determineNetwork(): SupportedNetworks {
-  if ((typeof global.__TESTCHAIN__ !== 'undefined' && global.__TESTCHAIN__) || process.env.TESTNET) {
-    // if the testhchain global is set, connect to the testchain
-    return SupportedNetworks.TESTNET;
-  } else if (typeof window === 'undefined') {
-    // if not on the browser, connect to the default network
-    // (eg when generating static pages at build-time)
-    return DEFAULT_NETWORK.network;
-  } else {
-    // otherwise, to determine the network...
-    // 1) check the URL
-    if (window.location.search.includes('mainnet')) {
-      return SupportedNetworks.MAINNET;
-    } else if (window.location.search.includes('goerlifork')) {
-      return SupportedNetworks.GOERLIFORK;
-    } else if (window.location.search.includes('goerli')) {
-      return SupportedNetworks.GOERLI;
-    } else if (window.location.search.includes('testnet')) {
-      return SupportedNetworks.TESTNET;
-    }
-    // 2) check the browser provider if there is one
-    if (typeof (window as any).ethereum !== 'undefined') {
-      const chainId = parseInt((window as any).ethereum.chainId);
-      try {
-        const providerNetwork = chainIdToNetworkName(chainId);
-        return providerNetwork;
-      } catch (err) {
-        console.log(`Browser provider connected to unsupported network with id ${chainId}`);
-      }
-    }
-    // if it's not clear what network to connect to, use the default
-    return DEFAULT_NETWORK.network;
-  }
-}
 
 type MakerSingletons = {
   [SupportedNetworks.MAINNET]: null | Promise<MakerClass>;
@@ -66,7 +30,7 @@ const makerSingletons: MakerSingletons = {
 
 async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   // Chose the network we are referring to or default to the one set by the system
-  const currentNetwork = network ? network : getNetwork();
+  const currentNetwork = network ? network : 'mainnet';
   if (!makerSingletons[currentNetwork]) {
     const instance = Maker.create('http', {
       plugins: [
@@ -92,19 +56,8 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   return makerSingletons[currentNetwork] as Promise<MakerClass>;
 }
 
-let networkSingleton: SupportedNetworks;
-
-function getNetwork(): SupportedNetworks {
-  if (!networkSingleton) networkSingleton = determineNetwork();
-  return determineNetwork();
-}
-
 function isSupportedNetwork(_network: string): _network is SupportedNetworks {
   return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
-}
-
-function isTestnet(): boolean {
-  return getNetwork() === SupportedNetworks.TESTNET || !!config.TESTNET;
 }
 
 async function personalSign(message: string): Promise<any> {
@@ -127,4 +80,4 @@ async function personalSign(message: string): Promise<any> {
 }
 
 export default getMaker;
-export { DAI, getNetwork, isSupportedNetwork, isTestnet, personalSign };
+export { DAI, isSupportedNetwork, personalSign };

@@ -2,13 +2,11 @@ import { Flex, Button, Text, Close, Link } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 
 const BurnTxSuccess = ({ tx, close }) => {
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   return (
     <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

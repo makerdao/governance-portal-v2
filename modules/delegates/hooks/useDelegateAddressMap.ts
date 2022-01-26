@@ -1,4 +1,3 @@
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 
@@ -9,15 +8,11 @@ type DelegateAddressMapResponse = {
 };
 
 export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
-  const { data: delegatesApiResponse, error } = useSWR(
-    `/api/delegates?network=${chainIdToNetworkName(chainId)}`,
-    null,
-    {
-      refreshInterval: 0
-    }
-  );
+  const { data: delegatesApiResponse, error } = useSWR(`/api/delegates?network=${network}`, null, {
+    refreshInterval: 0
+  });
 
   const data =
     delegatesApiResponse &&

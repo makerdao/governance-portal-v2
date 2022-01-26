@@ -6,7 +6,6 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 type PropTypes = {
@@ -22,8 +21,7 @@ export default function AddressIconBox({
   showExternalLink,
   isOwner
 }: PropTypes): React.ReactElement {
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const tooltipLabel = voteProxyInfo ? (
     <Box sx={{ p: 2 }}>

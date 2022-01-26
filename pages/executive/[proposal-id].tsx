@@ -53,7 +53,6 @@ import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComment
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   proposal: Proposal;
@@ -95,10 +94,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { account } = useAccount();
 
   const bpi = useBreakpointIndex();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   const { data: allSupporters, error: supportersError } = useSWR(
-    `/api/executive/supporters?network=${chainIdToNetworkName(chainId)}`
+    `/api/executive/supporters?network=${network}`
   );
 
   const { data: votedProposals } = useVotedProposals();
@@ -190,7 +189,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 value={
                   <ThemeUILink
                     title="View on etherescan"
-                    href={getEtherscanLink(chainIdToNetworkName(chainId), proposal.address, 'address')}
+                    href={getEtherscanLink(network, proposal.address, 'address')}
                     target="_blank"
                   >
                     <Text as="p" sx={{ fontSize: [2, 5] }}>
@@ -400,12 +399,12 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId) && query['proposal-id']) {
+    if (!network) return;
+    if (!isDefaultNetwork(network) && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
         .then(proposal => {
           if (proposal) {
@@ -416,9 +415,9 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
         })
         .catch(setError);
     }
-  }, [query['proposal-id'], chainId]);
+  }, [query['proposal-id'], network]);
 
-  if (error || (isDefaultNetwork(chainId) && !isFallback && !prefetchedProposal?.key)) {
+  if (error || (isDefaultNetwork(network) && !isFallback && !prefetchedProposal?.key)) {
     return (
       <ErrorPage
         statusCode={404}
@@ -427,14 +426,14 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
   }
 
-  if (isFallback || (!isDefaultNetwork(chainId) && !_proposal))
+  if (isFallback || (!isDefaultNetwork(network) && !_proposal))
     return (
       <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const proposal = isDefaultNetwork(chainId) ? prefetchedProposal : _proposal;
+  const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
   return <ProposalView proposal={proposal as Proposal} />;
 }
 

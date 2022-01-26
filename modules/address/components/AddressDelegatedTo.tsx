@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
@@ -158,8 +157,7 @@ type DelegatedByAddressProps = {
 
 const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   return (
     <Box>

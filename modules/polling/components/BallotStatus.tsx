@@ -6,7 +6,6 @@ import shallow from 'zustand/shallow';
 import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Transaction } from 'modules/web3/types/transaction';
 import useBallotStore from 'modules/polling/stores/ballotStore';
-import { getNetwork } from 'lib/maker';
 
 const BallotStatus = (props: any): JSX.Element => {
   const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
@@ -16,7 +15,6 @@ const BallotStatus = (props: any): JSX.Element => {
   );
   const ballotLength = Object.keys(ballot).length;
   const router = useRouter();
-  const network = getNetwork();
 
   return (
     <Button

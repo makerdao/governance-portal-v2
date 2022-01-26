@@ -1,4 +1,3 @@
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 import { CMSProposal } from '../types';
@@ -10,8 +9,7 @@ type ExecutivesResponse = {
 };
 
 export const useExecutives = (): ExecutivesResponse => {
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const { data, error } = useSWR<CMSProposal[]>(`/api/executive?network=${network}`, {
     refreshInterval: 60000,

@@ -9,7 +9,6 @@ import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export function DelegatesSystemInfo({
   stats,
@@ -19,8 +18,7 @@ export function DelegatesSystemInfo({
   className?: string;
 }): React.ReactElement {
   const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const { data: totalMkr } = useTotalSupply('mkr');
 

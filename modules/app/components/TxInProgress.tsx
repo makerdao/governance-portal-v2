@@ -3,7 +3,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { TXMined } from 'modules/web3/types/transaction';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
@@ -13,8 +12,7 @@ type Props = {
 };
 
 export const TxInProgress = ({ tx, txPending, setTxId }: Props): JSX.Element => {
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
