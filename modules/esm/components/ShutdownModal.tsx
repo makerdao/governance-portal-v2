@@ -1,7 +1,6 @@
 import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import shallow from 'zustand/shallow';
-import getMaker from 'lib/maker';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useTransactionStore, {
@@ -13,6 +12,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const ModalContent = ({
   setShowDialog,
@@ -24,8 +24,8 @@ const ModalContent = ({
   const [step, setStep] = useState('default');
   const [txId, setTxId] = useState(null);
   const { account } = useAccount();
-
   const { network } = useActiveWeb3React();
+  const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -35,9 +35,7 @@ const ModalContent = ({
     setShowDialog(false);
   };
   const shutdown = async () => {
-    const maker = await getMaker();
-    const esm = await maker.service('esm');
-    const shutdownTxObject = esm.triggerEmergencyShutdown();
+    const shutdownTxObject = () => esm.fire();
     const txId = await track(shutdownTxObject, account, 'Shutting Down Dai Credit System', {
       pending: txHash => {
         setStep('pending');
