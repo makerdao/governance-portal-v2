@@ -8,7 +8,7 @@ import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
 import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';

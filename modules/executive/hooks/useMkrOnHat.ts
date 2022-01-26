@@ -1,27 +1,24 @@
 import useSWR from 'swr';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
+import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type MkrOnHatResponse = {
   data?: BigNumber;
   loading: boolean;
-  error: Error;
+  error?: Error;
   mutate: () => void;
 };
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
+  const { network } = useActiveWeb3React();
   const { chief } = useContracts();
 
-  const { data, error, mutate } = useSWR<BigNumber>(
-    '/executive/mkr-on-hat',
-    async () => {
-      const hat = await chief.hat();
-      return chief.approvals(hat);
-    },
-
-    // refresh every 5 mins
-    { refreshInterval: 300000 }
-  );
+  const { data, error, mutate } = useSWR(`${chief.address}/mkr-on-hat`, async () => {
+    const hatAddress = await chief.hat();
+    return await getChiefApprovals(hatAddress, network);
+  });
 
   return {
     data,

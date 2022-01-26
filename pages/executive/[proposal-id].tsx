@@ -25,7 +25,7 @@ import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/a
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
-import { useMkrOnHat } from 'modules/web3/hooks/useMkrOnHat';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { cutMiddle, limitString, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
