@@ -1,18 +1,23 @@
 import { utils } from 'ethers';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { mkrLockedDelegate } from 'modules/gql/queries/mkrLockedDelegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { DelegationHistory } from '../types/delegate';
 import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
-import getMaker from 'lib/maker';
 
 export async function fetchDelegationHistory(
   address: string,
   network: SupportedNetworks
 ): Promise<DelegationHistory[]> {
-  const maker = await getMaker(network);
   try {
-    const addressData: MKRLockedDelegateAPIResponse[] = await maker
-      .service('voteDelegate')
-      .getMkrLockedDelegate(address);
+    const data = await gqlRequest({
+      chainId: networkNameToChainId(network),
+      query: mkrLockedDelegate,
+      variables: { argAddress: address, argUnixTimeStart: 0, argUnixTimeEnd: Math.floor(Date.now() / 1000) }
+    });
+
+    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegate.nodes;
 
     const delegators = addressData.reduce<DelegationHistory[]>(
       (acc, { fromAddress, lockAmount, blockTimestamp, hash }) => {
