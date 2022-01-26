@@ -45,7 +45,6 @@ import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
-import { network } from 'hardhat';
 
 const CircleNumber = ({ children }) => (
   <Box
