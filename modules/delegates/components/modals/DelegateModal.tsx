@@ -19,10 +19,10 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateLock } from 'modules/delegates/hooks/useDelegateLock';
-import { parseUnits } from '@ethersproject/units';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   isOpen: boolean;
@@ -52,6 +52,7 @@ export const DelegateModal = ({
 
   const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     'mkr',
+    parseUnits('100000000'),
     account,
     voteDelegateAddress
   );
@@ -59,7 +60,6 @@ export const DelegateModal = ({
   const { data: lock } = useDelegateLock(voteDelegateAddress);
   const approveMKR = useApproveUnlimitedToken('mkr');
 
-  const hasLargeMkrAllowance = mkrAllowance?.gt('10e26'); // greater than 100,000,000 MKR
 
   const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -138,7 +138,7 @@ export const DelegateModal = ({
                 <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
               ) : (
                 <>
-                  {mkrAllowance && hasLargeMkrAllowance ? (
+                  {mkrAllowance ? (
                     confirmStep ? (
                       <ConfirmContent
                         mkrToDeposit={mkrToDeposit}

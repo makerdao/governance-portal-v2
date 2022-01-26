@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber, ethers } from 'ethers';
 import useSWR from 'swr';
 import { ContractName } from '../types/contracts';
 import { useContracts } from './useContracts';
 
 type TokenAllowanceResponse = {
-  data?: BigNumber;
+  data?: boolean;
   loading: boolean;
   error?: Error;
   mutate: () => void;
@@ -13,16 +13,17 @@ type TokenAllowanceResponse = {
 // Checks if the user allowed the spending of a token and contract address
 export const useTokenAllowance = (
   name: ContractName,
+  amount: BigNumber,
   userAddress?: string,
-  contractAddress?: string
+  contractAddress?: string,
 ): TokenAllowanceResponse => {
-  const token = useContracts()[name];
+  const token: ethers.Contract = useContracts()[name];
 
   const { data, error, mutate } = useSWR(
     userAddress && contractAddress ? ['token-balance', token.address, userAddress, contractAddress] : null,
     async (_, tokenAddress, userAddress, contractAddress) => {
-      const ethersBn = await token.allowance(userAddress, contractAddress);
-      return new BigNumber(ethersBn._hex);
+      const ethersBn: BigNumber = await token.allowance(userAddress, contractAddress);
+      return ethersBn.gt(amount);
     }
   );
 

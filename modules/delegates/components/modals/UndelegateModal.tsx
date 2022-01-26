@@ -4,7 +4,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 
-import { MKR } from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { Delegate } from '../../types';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
@@ -18,9 +17,10 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useDelegateFree } from 'modules/delegates/hooks/useDelegateFree';
-import { parseUnits } from '@ethersproject/units';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   isOpen: boolean;
@@ -41,16 +41,15 @@ export const UndelegateModal = ({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(MKR(0));
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
   const [txId, setTxId] = useState(null);
 
   const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
-  const { data: iouAllowance } = useTokenAllowance('iou', account, voteDelegateAddress);
+  const { data: iouAllowance, mutate: mutateAllowance } = useTokenAllowance('iou', parseUnits('100000000'), account, voteDelegateAddress);
 
   const { data: free } = useDelegateFree(voteDelegateAddress);
   const approveIOU = useApproveUnlimitedToken('iou');
 
-  const hasLargeIouAllowance = iouAllowance?.gt('10e26'); // greater than 100,000,000 IOU
 
   const [trackTransaction, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -63,6 +62,7 @@ export const UndelegateModal = ({
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'IOU approved');
         setTxId(null);
+        mutateAllowance();
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'IOU approval failed');
@@ -123,7 +123,7 @@ export const UndelegateModal = ({
                 <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
               ) : (
                 <>
-                  {mkrStaked && hasLargeIouAllowance ? (
+                  {mkrStaked && iouAllowance ? (
                     <InputDelegateMkr
                       title="Withdraw from delegate contract"
                       description="Input the amount of MKR to withdraw from the delegate contract."

@@ -3,7 +3,6 @@ import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
-import useSWR from 'swr';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -24,6 +23,8 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 
 const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
@@ -34,20 +35,18 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const chiefAddress = useContractAddress('chief');
 
   const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
-  const { mkr, chief } = useContracts();
+  const { chief } = useContracts();
   const chiefContractAddress = useContractAddress('chief');
   const approveMKR = useApproveUnlimitedToken('mkr');
 
-  const { data: chiefAllowance, mutate: mutateAllowance } = useSWR(
-    account ? `/user/chief-allowance/${account}` : null,
-    () =>
-      mkr.allowance(
-        account as string,
-        account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefContractAddress
-      )
+  
+  const { data: chiefAllowance, mutate: mutateAllowance } = useTokenAllowance(
+    'mkr',
+    parseUnits('100000000'),
+    account,
+    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefContractAddress
   );
 
-  const hasLargeMkrAllowance = chiefAllowance?.gt(100000000); // greater than 100,000,000 MKR
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -83,7 +82,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             )}
           </Stack>
         )}
-        {!tx && hasLargeMkrAllowance && (
+        {!tx && chiefAllowance && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" color="onBackgroundAlt">
@@ -126,7 +125,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             </Button>
           </Stack>
         )}
-        {!tx && !hasLargeMkrAllowance && (
+        {!tx && !chiefAllowance && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" color="onBackgroundAlt">
