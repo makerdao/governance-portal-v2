@@ -208,8 +208,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               >
                 <Text sx={{ py: 2 }}>
                   An executive vote has passed to update the Chief to a new version. You have{' '}
-                  <b>{formatValue(lockedMkrOldChief)} MKR</b>{' '}
-                  to withdraw from the old chief.
+                  <b>{formatValue(lockedMkrOldChief)} MKR</b> to withdraw from the old chief.
                 </Text>
                 <Flex>
                   <WithdrawOldChief />

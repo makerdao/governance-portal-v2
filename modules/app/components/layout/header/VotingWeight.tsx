@@ -2,12 +2,11 @@ import { Flex, Text } from 'theme-ui';
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { formatValue } from 'lib/string';
 
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(
-    voteDelegateContractAddress ? voteDelegateContractAddress : account
-  );
+  const { data: votingWeight } = useMKRVotingWeight(account);
 
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
   return (
@@ -19,7 +18,7 @@ export default function VotingWeight(): JSX.Element {
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
-          {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(2)} MKR` : '--'}
+          {votingWeight ? `${formatValue(votingWeight)} MKR` : '--'}
         </Text>
       </Flex>
       <Flex sx={{ py: 1 }}>

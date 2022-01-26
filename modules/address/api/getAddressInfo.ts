@@ -11,7 +11,7 @@ export async function getAddressInfo(
 ): Promise<AddressApiResponse> {
   const contracts = getContracts(networkNameToChainId(network));
 
-  const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address);
+  const voteProxyAddress = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
   const delegate = await fetchDelegate(address, network);
 

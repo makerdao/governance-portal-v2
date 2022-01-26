@@ -19,7 +19,7 @@ export const useVoteProxyOldAddress = (account?: string): VoteProxyAddressRespon
   const { data, error } = useSWR(
     account && network !== SupportedNetworks.MAINNET ? `${account}/vote-proxy-address` : null,
     async () => {
-      return await getVoteProxyAddresses(voteProxyFactoryOld, account as string);
+      return await getVoteProxyAddresses(voteProxyFactoryOld, account as string, network);
     }
   );
 
