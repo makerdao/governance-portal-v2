@@ -1,7 +1,6 @@
 import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
-import getMaker from 'lib/maker';
 import { Ballot } from '../types/ballot';
 import { transactionsApi } from 'modules/web3/stores/transactions';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
@@ -24,6 +23,7 @@ type Store = {
   submitBallot: (
     account: string,
     network: SupportedNetworks,
+    govPollingContract: ethers.Contract,
     voteDelegateContract?: ethers.Contract,
     voteDelegateContractAddress?: string,
     voteProxyContractAddress?: string
@@ -110,12 +110,12 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   submitBallot: async (
     account: string,
     network: SupportedNetworks,
+    govPollingContract: ethers.Contract,
     voteDelegateContract?: ethers.Contract,
     voteDelegateContractAddress?: string,
     voteProxyContractAddress?: string
   ) => {
     const newBallot = {};
-    const maker = await getMaker();
     const ballot = get().ballot;
 
     const pollIds: string[] = [];
@@ -133,7 +133,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
 
     const voteTxCreator = voteDelegateContract
       ? () => voteDelegateContract.votePoll(pollIds, pollOptions)
-      : () => maker.service('govPolling').vote(pollIds, pollOptions);
+      : () => govPollingContract.vote(pollIds, pollOptions);
 
     const txId = await transactionsApi
       .getState()
