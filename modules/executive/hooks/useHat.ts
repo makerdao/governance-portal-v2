@@ -1,5 +1,5 @@
+import { useContracts } from 'modules/web3/hooks/useContracts';
 import useSWR from 'swr';
-import getMaker from 'lib/maker';
 
 type HatResponse = {
   data?: string;
@@ -8,9 +8,9 @@ type HatResponse = {
 };
 
 export const useHat = (): HatResponse => {
-  const { data, error } = useSWR<string>('/executive/hat', () =>
-    getMaker().then(maker => maker.service('chief').getHat())
-  );
+  const { chief } = useContracts();
+
+  const { data, error } = useSWR<string>('/executive/hat', () => chief.hat());
 
   return {
     data,

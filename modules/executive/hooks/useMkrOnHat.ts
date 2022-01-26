@@ -1,22 +1,24 @@
-import getMaker from 'lib/maker';
 import useSWR from 'swr';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 type MkrOnHatResponse = {
-  data?: CurrencyObject;
+  data?: BigNumber;
   loading: boolean;
   error: Error;
   mutate: () => void;
 };
 
 export const useMkrOnHat = (): MkrOnHatResponse => {
-  const { data, error, mutate } = useSWR<CurrencyObject>(
+  const { chief } = useContracts();
+
+  const { data, error, mutate } = useSWR<BigNumber>(
     '/executive/mkr-on-hat',
     async () => {
-      const maker = await getMaker();
-      const hat = await maker.service('chief').getHat();
-      return maker.service('chief').getApprovalCount(hat);
+      const hat = await chief.hat();
+      return chief.approvals(hat);
     },
+
     // refresh every 5 mins
     { refreshInterval: 300000 }
   );
