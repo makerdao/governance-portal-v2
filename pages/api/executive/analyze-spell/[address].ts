@@ -2,10 +2,11 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import getMaker, { isSupportedNetwork } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { SpellData } from 'modules/executive/types/spellData';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours

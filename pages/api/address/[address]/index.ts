@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'lib/maker/index';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import withApiHandler from 'modules/app/api/withApiHandler';

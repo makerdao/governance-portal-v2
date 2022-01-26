@@ -13,7 +13,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 // api
 import { getPolls, getPoll } from 'modules/polling/api/fetchPolls';

@@ -41,7 +41,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';

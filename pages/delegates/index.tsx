@@ -10,7 +10,7 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/delegates/types';

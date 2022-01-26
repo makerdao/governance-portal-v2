@@ -23,7 +23,7 @@ import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotBut
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);

@@ -56,10 +56,6 @@ async function getMaker(network?: SupportedNetworks): Promise<MakerClass> {
   return makerSingletons[currentNetwork] as Promise<MakerClass>;
 }
 
-function isSupportedNetwork(_network: string): _network is SupportedNetworks {
-  return Object.values(SupportedNetworks).some(network => network.toLowerCase() === _network);
-}
-
 async function personalSign(message: string): Promise<any> {
   const maker = await getMaker();
   const provider = maker.service('web3')._web3.currentProvider;
@@ -80,4 +76,4 @@ async function personalSign(message: string): Promise<any> {
 }
 
 export default getMaker;
-export { DAI, isSupportedNetwork, personalSign };
+export { DAI, personalSign };

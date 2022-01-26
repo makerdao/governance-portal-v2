@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import getMaker from 'lib/maker';
-import { isSupportedNetwork } from 'lib/maker/index';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';

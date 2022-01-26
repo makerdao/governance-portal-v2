@@ -3,9 +3,10 @@ import zipObject from 'lodash/zipObject';
 
 import { analyzeSpell } from './[address]';
 import invariant from 'tiny-invariant';
-import getMaker, { isSupportedNetwork } from 'lib/maker';
+import getMaker from 'lib/maker';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {

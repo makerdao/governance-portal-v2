@@ -34,7 +34,7 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 type Props = {
   polls: Poll[];

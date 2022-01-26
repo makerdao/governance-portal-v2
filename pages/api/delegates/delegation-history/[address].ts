@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { isSupportedNetwork } from 'lib/maker/index';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 import { fetchDelegationHistory } from 'modules/delegates/api/fetchDelegationHistory';
 import withApiHandler from 'modules/app/api/withApiHandler';

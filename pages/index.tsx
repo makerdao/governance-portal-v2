@@ -26,7 +26,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
-import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type Props = {

@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { isSupportedNetwork } from 'lib/maker/index';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { getExecutiveProposal } from 'modules/executive/api/fetchExecutives';
 import { CMSProposal } from 'modules/executive/types';
 import { NotFoundResponse } from 'modules/app/types/genericApiResponse';

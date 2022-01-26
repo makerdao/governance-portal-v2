@@ -1,9 +1,9 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'lib/maker';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 /**
  * @swagger
