@@ -98,7 +98,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const loader = useRef<HTMLDivElement>(null);
 
   const address = voteDelegateContractAddress || voteProxyContractAddress || account;
-  const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress, voteDelegateContractAddress);
+  const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { chiefOld } = useContracts() as MainnetSdk;

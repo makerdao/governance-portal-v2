@@ -1,6 +1,5 @@
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
-import getMaker from 'lib/maker';
 import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -23,7 +22,7 @@ import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { sign } from 'modules/web3/helpers/sign';
 
@@ -47,7 +46,7 @@ export default function DefaultVoteModalView({
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
   const { network, library } = useActiveWeb3React();
-  const addressLockedMKR = voteProxyContractAddress || voteProxyContractAddress || account;
+  const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
     voteProxyContractAddress,
@@ -97,12 +96,13 @@ export default function DefaultVoteModalView({
       : BigNumber.from(0);
 
   const vote = async hatChecked => {
-    const maker = await getMaker();
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
 
-    const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
-    const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
+    const encoder = new utils.AbiCoder();
+    const encodedParam = encoder.encode(['address[]'], [proposals]);
+
+    const slate = utils.keccak256('0x' + encodedParam.slice(-64 * proposals.length)) as any;
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
 
