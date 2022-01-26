@@ -9,7 +9,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { MKR } from 'lib/maker';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
@@ -45,6 +44,7 @@ import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -111,7 +111,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    () => chiefOld.deposits(lockedMkrKeyOldChief as string).then(n => MKR.wei(n))
+    () => chiefOld.deposits(lockedMkrKeyOldChief as string)
   );
 
   // FIXME merge this into the proposal object
@@ -208,7 +208,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               >
                 <Text sx={{ py: 2 }}>
                   An executive vote has passed to update the Chief to a new version. You have{' '}
-                  <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
+                  <b>{formatValue(lockedMkrOldChief)} MKR</b>{' '}
                   to withdraw from the old chief.
                 </Text>
                 <Flex>
