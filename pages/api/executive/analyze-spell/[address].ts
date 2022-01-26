@@ -100,10 +100,10 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     // }
     // TODO replicate the above, yikes
     spellContract
-      .eta()
-      .then(eta => {
-        if (!eta.toNumber()) return undefined;
-        return new Date(eta.toNumber() * 1000);
+      .done()
+      .then(done => {
+        // spell not executed
+        if (!done) return null;
       })
       .catch(_ => null),
     getChiefApprovals(address, network),

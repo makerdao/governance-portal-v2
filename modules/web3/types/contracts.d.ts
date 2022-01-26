@@ -7,6 +7,7 @@ export type ContractName =
   | 'mkr'
   | 'iou'
   | 'iouOld'
+  | 'pause'
   | 'polling'
   | 'pot'
   | 'vat'

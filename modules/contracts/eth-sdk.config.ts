@@ -11,6 +11,7 @@ const config: EthSdkConfig = {
       iou: '0xa618e54de493ec29432ebd2ca7f14efbf6ac17f7',
       iouOld: '0x496C67A4CEd9C453A60F3166AB4B329870c8E355',
       mkr: '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+      pause: '0xbe286431454714f511008713973d3b053a2d38f3',
       polling: '0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D',
       pot: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
       vat: '0x35D1b3F3D7966A1DFe207aa4514C12a259A0492B',
@@ -27,6 +28,7 @@ const config: EthSdkConfig = {
       iou: '0x651D1B91e4F657392a51Dba7A6A1A1a72eC6aD1c',
 
       mkr: '0xc5e4eab513a7cd12b2335e8a0d57273e13d499f7',
+      pause: '0xefcd235B1f13e7fC5eab1d05C910d3c390b3439F',
       polling: '0xdbE5d00b2D8C13a77Fb03Ee50C87317dbC1B15fb',
       pot: '0x50672F0a14B40051B65958818a7AcA3D54Bd81Af',
       vat: '0xB966002DDAa2Baf48369f5015329750019736031',
