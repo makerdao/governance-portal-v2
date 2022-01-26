@@ -5,11 +5,12 @@ import useTransactionsStore, { transactionsSelectors } from 'modules/web3/stores
 import shallow from 'zustand/shallow';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const account = useAccount();
   const { network, library } = useActiveWeb3React();
-
+  const { polling } = useContracts();
   const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
     clearTx: state.clearTx,
     voteTxId: state.txId,
@@ -54,6 +55,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
               submitBallot(
                 account.account as string,
                 network,
+                polling,
                 account.voteDelegateContract,
                 account.voteDelegateContractAddress,
                 account.voteProxyContractAddress
@@ -73,6 +75,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             submitBallot(
               account.account as string,
               network,
+              polling,
               account.voteDelegateContract,
               account.voteDelegateContractAddress,
               account.voteProxyContractAddress
