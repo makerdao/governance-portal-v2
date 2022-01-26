@@ -13,7 +13,6 @@ import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type StatField =
   | 'chief contract'
@@ -40,8 +39,7 @@ export default function SystemStatsSidebar({
   const chiefAddress = useContractAddress('chief');
   const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
   const pollingAddress = useContractAddress('polling');
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const statsMap = {
     'chief contract': key => (

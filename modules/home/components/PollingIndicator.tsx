@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 
-import { getNetwork } from 'lib/maker';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { Poll } from 'modules/polling/types';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type Props = {
   account?: string;
@@ -21,6 +21,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
   ({ account, activePolls, unvotedPolls, ...props }, ref): JSX.Element => {
     let message: string | undefined;
     let pollsToBeAwareOf = 0;
+    const { network } = useActiveWeb3React();
 
     if (account) {
       invariant(unvotedPolls, 'unvotedPolls is unexpectedly falsey');
@@ -34,7 +35,7 @@ const PollingIndicator = forwardRef<HTMLAnchorElement, Props>(
     return pollsToBeAwareOf > 0 ? (
       <NavLink
         ref={ref}
-        href={`/polling?network=${getNetwork()}`}
+        href={`/polling?network=${network}`}
         sx={{
           fontSize: 2,
           px: '3',

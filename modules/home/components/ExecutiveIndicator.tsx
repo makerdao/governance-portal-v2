@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { CMSProposal, SpellData } from 'modules/executive/types';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type Props = {
   numProposals: number;
@@ -58,8 +58,9 @@ const ExecutiveIndicatorComponent = ({
   proposals: CMSProposal[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element => {
+  const { network } = useActiveWeb3React();
   const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${getNetwork()}`,
+    `/api/executive/analyze-spell?network=${network}`,
     // needs to be a POST because the list of addresses is too long to be a GET query parameter
     url =>
       fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),

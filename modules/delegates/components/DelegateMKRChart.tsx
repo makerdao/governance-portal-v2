@@ -21,12 +21,10 @@ import useSWR from 'swr';
 import { format } from 'date-fns';
 import { isoDateConversion } from 'lib/datetime';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   // Time ranges
   const oneDay = 24 * 60 * 60 * 1000;

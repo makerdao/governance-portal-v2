@@ -36,14 +36,13 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import useSWR from 'swr';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 
-const AccountPage = (): JSX.Element => {
+const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
   const {
     account,
@@ -52,8 +51,7 @@ const AccountPage = (): JSX.Element => {
     voteProxyContractAddress
   } = useAccount();
 
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const addressToCheck = voteDelegateContractAddress
     ? voteDelegateContractAddress

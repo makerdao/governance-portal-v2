@@ -26,7 +26,6 @@ import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type PropTypes = {
   delegate: Delegate;
@@ -34,8 +33,7 @@ type PropTypes = {
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const { data: statsData } = useSWR<AddressAPIStats>(
     `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`,

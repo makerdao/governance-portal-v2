@@ -38,7 +38,7 @@ export function SpellEffectsTab({
   // useEffect(() => {
   //   (async () => {
   //     try {
-  //       const url = `/api/executive/state-diff/${proposal.address}?network=${getNetwork()}`;
+  //       const url = `/api/executive/state-diff/${proposal.address}?network=${network}`;
   //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
   //       setStateDiff(_stateDiff);
   //     } catch (error) {

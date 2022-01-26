@@ -1,6 +1,6 @@
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fetchJson } from 'lib/fetchJson';
-import getMaker, { getNetwork, personalSign } from 'lib/maker';
+import getMaker, { personalSign } from 'lib/maker';
 import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -24,6 +24,7 @@ import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber } from 'ethers';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -44,7 +45,7 @@ export default function DefaultVoteModalView({
   const bpi = useBreakpointIndex();
 
   const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
-
+  const { network } = useActiveWeb3React();
   const addressLockedMKR = voteProxyContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
@@ -131,7 +132,7 @@ export default function DefaultVoteModalView({
             txHash,
             voterWeight: formatValue(lockedMkr as BigNumber)
           };
-          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
+          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
             body: JSON.stringify(requestBody)
           })

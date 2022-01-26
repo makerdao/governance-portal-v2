@@ -6,7 +6,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Bignumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
@@ -20,6 +19,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type Props = {
   proposal: Proposal;
@@ -30,6 +30,7 @@ type Props = {
 export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account } = useAccount();
+  const { network } = useActiveWeb3React();
   const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
   const { data: votedProposals } = useVotedProposals();
@@ -173,7 +174,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
 
           {comments && comments.length > 0 && (
             <Box sx={{ mt: 2 }}>
-              <InternalLink href={`/executive/${proposal.key}?network=${getNetwork()}#comments`}>
+              <InternalLink href={`/executive/${proposal.key}?network=${network}#comments`}>
                 <CommentCount count={comments.length} />
               </InternalLink>
             </Box>

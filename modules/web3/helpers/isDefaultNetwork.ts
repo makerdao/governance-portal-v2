@@ -1,10 +1,7 @@
-import { SupportedChainId } from '../constants/chainID';
-import { CHAIN_INFO, SupportedNetworks } from '../constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 
-export const isDefaultNetwork = (chainId?: number): boolean => {
-  const defaultNetwork = CHAIN_INFO[SupportedChainId.MAINNET];
-
-  return chainId === defaultNetwork.chainId;
+export const isDefaultNetwork = (network?: SupportedNetworks): boolean => {
+  return network === DEFAULT_NETWORK.network;
 };
 
 export function isSupportedNetwork(_network: string): _network is SupportedNetworks {

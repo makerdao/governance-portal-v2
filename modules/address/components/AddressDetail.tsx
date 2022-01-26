@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Text, Flex, Divider } from 'theme-ui';
-import { getNetwork } from 'lib/maker';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
 import { AddressAPIStats } from '../types/addressApiResponse';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
@@ -13,6 +12,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type PropTypes = {
   address: string;
@@ -20,8 +20,9 @@ type PropTypes = {
 };
 
 export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
+  const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${address}/stats?network=${getNetwork()}`,
+    `/api/address/${address}/stats?network=${network}`,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -31,7 +32,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
   );
 
   const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
-    `/api/address/${address}/delegated-to?network=${getNetwork()}`,
+    `/api/address/${address}/delegated-to?network=${network}`,
     fetchJson,
     {
       revalidateOnFocus: false,

@@ -4,7 +4,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Link from 'next/link';
 import { formatDateWithTime } from 'lib/datetime';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
@@ -24,8 +23,7 @@ export default function CommentItem({
   // TODO: Remove this once tweeting functionality gets re-enabled
   const twitterEnabled = false;
 
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   // Used to display the share button in owned comments
   const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();

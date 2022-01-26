@@ -18,17 +18,14 @@ import NetworkAlertModal from './NetworkAlertModal';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
-import { useInactiveListener } from 'modules/web3/hooks/useInactiveListener';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 import { useWeb3React } from '@web3-react/core';
-import { networkConnector } from 'modules/web3/connectors';
-import { NetworkContextName } from 'modules/web3/constants/networks';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -76,26 +73,10 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { active, account: address, chainId, activate, connector, error, deactivate } = useWeb3React();
-  const {
-    active: networkActive,
-    error: networkError,
-    activate: activateNetwork
-  } = useWeb3React(NetworkContextName);
+  const { network, account: address, chainId, activate, connector, error, deactivate } = useActiveWeb3React();
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
-  const triedEager = useEagerConnect();
-
-  // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate it
-  // TODO: This should be handled by the eager connect, that's the whole point of having it.
-  useEffect(() => {
-    if (triedEager && !networkActive && !networkError && !active) {
-      activateNetwork(networkConnector);
-    }
-  }, [triedEager, networkActive, networkError, activateNetwork, active]);
-
-  // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
-  useInactiveListener(!triedEager);
+  useEagerConnect();
 
   // Detect previously authorized connections and force log-in
   useWindowBindings();
@@ -280,10 +261,7 @@ const AccountSelect = (): React.ReactElement => {
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal
-        chainIdError={chainIdError}
-        walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
-      />
+      <NetworkAlertModal chainIdError={chainIdError} walletChainName={network ? network : null} />
 
       <ConnectWalletButton
         onClickConnect={() => {

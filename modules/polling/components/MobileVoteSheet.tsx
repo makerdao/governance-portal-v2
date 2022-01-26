@@ -27,7 +27,6 @@ import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 enum ViewState {
   START,
@@ -54,8 +53,7 @@ export default function MobileVoteSheet({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
 
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
   const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 

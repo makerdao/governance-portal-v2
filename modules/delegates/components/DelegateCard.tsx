@@ -19,7 +19,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { AccountContext } from 'modules/app/context/AccountContext';
 import { formatValue } from 'lib/string';
@@ -41,10 +40,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   } = useMkrDelegated(account, delegate.voteDelegateAddress);
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   const { data: lastVoteData } = useSWR<{ lastVote: PollVoteHistory }>(
-    `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${chainIdToNetworkName(chainId)}`,
+    `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${network}`,
     fetchJson,
     {
       revalidateOnFocus: false,

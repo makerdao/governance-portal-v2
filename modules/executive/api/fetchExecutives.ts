@@ -1,8 +1,7 @@
 import { config } from 'lib/config';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
-import { getNetwork, isTestnet } from 'lib/maker';
 import { CMSProposal } from 'modules/executive/types';
 import mockProposals from './mocks/proposals.json';
 import { parseExecutive } from './parseExecutive';
@@ -11,7 +10,7 @@ import { markdownToHtml } from 'lib/utils';
 import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 
 export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
-  const net = network ? network : getNetwork();
+  const net = network ? network : DEFAULT_NETWORK.network;
 
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
   const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
@@ -22,7 +21,7 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
     if (cachedProposals) {
       return JSON.parse(cachedProposals);
     }
-  } else if (config.NEXT_PUBLIC_USE_MOCK || isTestnet()) {
+  } else if (config.NEXT_PUBLIC_USE_MOCK) {
     return mockProposals;
   }
 

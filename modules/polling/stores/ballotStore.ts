@@ -1,12 +1,13 @@
 import create from 'zustand';
 import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
-import getMaker, { getNetwork, personalSign } from 'lib/maker';
+import getMaker, { personalSign } from 'lib/maker';
 import { Ballot } from '../types/ballot';
 import { transactionsApi } from 'modules/web3/stores/transactions';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
 import { ethers } from 'ethers';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type Store = {
   ballot: Ballot;
@@ -20,6 +21,7 @@ type Store = {
   clearBallot: () => void;
   submitBallot: (
     account: string,
+    network: SupportedNetworks,
     voteDelegateContract?: ethers.Contract,
     voteDelegateContractAddress?: string,
     voteProxyContractAddress?: string
@@ -105,6 +107,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
 
   submitBallot: async (
     account: string,
+    network: SupportedNetworks,
     voteDelegateContract?: ethers.Contract,
     voteDelegateContractAddress?: string,
     voteProxyContractAddress?: string
@@ -146,7 +149,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
               txHash
             };
 
-            fetchJson(`/api/comments/polling/add?network=${getNetwork()}`, {
+            fetchJson(`/api/comments/polling/add?network=${network}`, {
               method: 'POST',
               body: JSON.stringify(commentsRequest)
             })

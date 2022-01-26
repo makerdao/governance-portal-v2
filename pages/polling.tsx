@@ -35,7 +35,6 @@ import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/isDefaultNetwork';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 type Props = {
   polls: Poll[];
@@ -70,8 +69,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
-  const { chainId } = useActiveWeb3React();
-  const network = chainIdToNetworkName(chainId);
+  const { network } = useActiveWeb3React();
 
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
@@ -293,26 +291,26 @@ export default function PollingOverviewPage({
   const [_polls, _setPolls] = useState<Poll[]>();
   const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (!isDefaultNetwork(chainId)) {
-      fetchJson(`/api/polling/all-polls?network=${chainIdToNetworkName(chainId)}`)
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/polling/all-polls?network=${network}`)
         .then((pollsResponse: PollsResponse) => {
           _setPolls(pollsResponse.polls);
           _setCategories(pollsResponse.categories);
         })
         .catch(setError);
     }
-  }, [chainId]);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(chainId) && (!_polls || !_categories))
+  if (!isDefaultNetwork(network) && (!_polls || !_categories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -321,8 +319,8 @@ export default function PollingOverviewPage({
 
   return (
     <PollingOverview
-      polls={isDefaultNetwork(chainId) ? prefetchedPolls : (_polls as Poll[])}
-      categories={isDefaultNetwork(chainId) ? prefetchedCategories : (_categories as PollCategory[])}
+      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
+      categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
     />
   );
 }

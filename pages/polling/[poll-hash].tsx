@@ -41,7 +41,6 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { chainIdToNetworkName } from 'modules/web3/helpers/chain';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -325,34 +324,34 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   const [_poll, _setPoll] = useState<Poll>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
-  const { chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!chainId) return;
-    if (query['poll-hash'] && (!isDefaultNetwork(chainId) || !prefetchedPoll)) {
-      fetchJson(`/api/polling/${query['poll-hash']}?network=${chainIdToNetworkName(chainId)}`)
+    if (!network) return;
+    if (query['poll-hash'] && (!isDefaultNetwork(network) || !prefetchedPoll)) {
+      fetchJson(`/api/polling/${query['poll-hash']}?network=${network}`)
         .then(response => {
           _setPoll(response);
         })
         .catch(setError);
     }
-  }, [query['poll-hash'], chainId]);
+  }, [query['poll-hash'], network]);
 
-  if (error || (isDefaultNetwork(chainId) && !isFallback && !prefetchedPoll?.multiHash)) {
+  if (error || (isDefaultNetwork(network) && !isFallback && !prefetchedPoll?.multiHash)) {
     return (
       <ErrorPage statusCode={404} title="Poll either does not exist, or could not be fetched at this time" />
     );
   }
 
-  if (isFallback || (!isDefaultNetwork(chainId) && !_poll))
+  if (isFallback || (!isDefaultNetwork(network) && !_poll))
     return (
       <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const poll = (isDefaultNetwork(chainId) ? prefetchedPoll : _poll) as Poll;
+  const poll = (isDefaultNetwork(network) ? prefetchedPoll : _poll) as Poll;
   return <PollView poll={poll} />;
 }
 
