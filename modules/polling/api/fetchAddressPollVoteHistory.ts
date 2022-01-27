@@ -1,19 +1,17 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import getMaker from 'lib/maker';
 import { PollVote } from '../types';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
+import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
   network: SupportedNetworks
 ): Promise<PollVoteHistory[]> {
-  const maker = await getMaker(network);
-
   // TODO: This is an innefective way to cross fetch titles and options. We should improve Spock DB to return the titles in the poll votes
   const pollsData = await getPolls({}, network);
 
-  const voteHistory = await maker.service('govPolling').getAllOptionsVotingFor(address);
+  const voteHistory = await fetchAllCurrentVotes(address, network);
 
   const items = await Promise.all(
     voteHistory.map(async (pollVote: PollVote): Promise<PollVoteHistory | null> => {

@@ -7,7 +7,7 @@ export function CurrentlySupportingExecutive({ address }: { address: string }): 
   const { data: proposals } = useExecutives();
   const { data: votedProposals } = useVotedProposals(address);
 
-  const proposalsSupported: number = votedProposals?.length;
+  const proposalsSupported: number = votedProposals?.length || 0;
 
   const execSupported: CMSProposal | undefined = proposals?.find(proposal =>
     votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
