@@ -5,7 +5,7 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 
 type VotedProposalsResponse = {
-  data: string[] | undefined;
+  data: string[];
   loading: boolean;
   error: Error;
   mutate: any;
@@ -39,7 +39,7 @@ export const useVotedProposals = (passedAddress?: string): VotedProposalsRespons
   );
 
   return {
-    data,
+    data: data || [],
     loading: !error && !data,
     error,
     mutate
