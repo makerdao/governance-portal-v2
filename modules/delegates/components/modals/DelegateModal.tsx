@@ -82,9 +82,7 @@ export const DelegateModal = ({
   };
 
   const lockMkr = async () => {
-    //TODO: update the mkr input to handle ethers bignumber
-    const amt = mkrToDeposit.toString();
-    const lockTxCreator = () => lock(parseUnits(amt, 18));
+    const lockTxCreator = () => lock(mkrToDeposit);
     const txId = await trackTransaction(lockTxCreator, account, 'Depositing MKR', {
       mined: txId => {
         mutateTotalStaked();
