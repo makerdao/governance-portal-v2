@@ -8,6 +8,7 @@ export type ContractName =
   | 'iou'
   | 'iouOld'
   | 'pause'
+  | 'pauseProxy'
   | 'polling'
   | 'pot'
   | 'vat'
