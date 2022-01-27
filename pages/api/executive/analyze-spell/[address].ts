@@ -8,6 +8,7 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
+import { getSpellExecutionDate } from 'modules/web3/api/getSpellExecuationDate';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours
@@ -77,35 +78,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
         return new Date(eta.toNumber() * 1000);
       })
       .catch(_ => null),
-    // async getExecutionDate(spellAddress) {
-    //   if (this.executionDate[spellAddress])
-    //     return this.executionDate[spellAddress];
-    //   const done = await this.getDone(spellAddress);
-    //   assert(done, `spell ${spellAddress} has not been executed`);
-    //   const pauseAddress = this._pauseContract().address;
-    //   const web3Service = this.get('web3');
-    //   const netId = web3Service.network;
-    //   const networkName = netIdToName(netId);
-    //   const paddedSpellAddress =
-    //     '0x' + padStart(spellAddress.replace(/^0x/, ''), 64, '0');
-    //   const [execEvent] = await web3Service.getPastLogs({
-    //     fromBlock: pauseInfo.inception_block[networkName],
-    //     toBlock: 'latest',
-    //     address: pauseAddress,
-    //     topics: [pauseInfo.events.exec, paddedSpellAddress]
-    //   });
-    //   const { timestamp } = await web3Service.getBlock(execEvent.blockNumber);
-    //   this.executionDate[spellAddress] = new Date(timestamp * 1000);
-    //   return this.executionDate[spellAddress];
-    // }
-    // TODO replicate the above, yikes
-    spellContract
-      .done()
-      .then(done => {
-        // spell not executed
-        if (!done) return null;
-      })
-      .catch(_ => null),
+    getSpellExecutionDate(address, network),
     getChiefApprovals(address, network),
     spellContract
       .description()
