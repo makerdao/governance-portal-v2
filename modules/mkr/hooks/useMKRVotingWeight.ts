@@ -1,10 +1,9 @@
-import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
-import { getMKRVotingWeight } from '../helpers/getMKRVotingWeight';
+import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getMKRVotingWeight';
 
 type VotingWeightResponse = {
-  data?: BigNumber;
+  data?: MKRVotingWeightResponse;
   loading?: boolean;
   error?: Error;
   mutate: () => void;

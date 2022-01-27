@@ -23,7 +23,7 @@ export function AddressMKRDelegatedStats({
         marginBottom: 1
       }}
     >
-      <StatBox value={votingWeight ? formatValue(votingWeight) : '0.000'} label={'Total MKR Balance'} />
+      <StatBox value={votingWeight ? formatValue(votingWeight.total) : '0.000'} label={'Total MKR Balance'} />
 
       <StatBox
         styles={{

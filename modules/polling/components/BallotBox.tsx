@@ -67,7 +67,9 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           <PollBar polls={polls} activePolls={activePolls} />
 
           <Divider />
-          <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
+          <Box sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }}>
+            <VotingWeight />
+          </Box>
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button

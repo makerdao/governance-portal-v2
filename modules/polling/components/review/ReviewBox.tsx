@@ -52,7 +52,9 @@ export default function ReviewBox({
     <ReviewBoxCard {...props}>
       <PollBar polls={polls} activePolls={activePolls} />
       <Divider />
-      <VotingWeight sx={{ px: 3, py: [2, 2], mb: 1 }} />
+      <Box sx={{ px: 3, py: [2, 2], mb: 1 }}>
+        <VotingWeight />
+      </Box>
       <Divider m={0} sx={{ display: ['none', 'block'] }} />
       {bpi > 2 && (
         <SubmitBallotsButtons

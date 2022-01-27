@@ -4,8 +4,19 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 
+export type MKRVotingWeightResponse = {
+  mkrBalance: BigNumber;
+  chiefBalance: BigNumber;
+  linkedMkrBalance?: BigNumber;
+  linkedChiefBalance?: BigNumber;
+  proxyChiefBalance?: BigNumber;
+  total: BigNumber;
+};
 // Returns the voting weigth for an address. It checks if it has a delegate contract or a vote proxy
-export async function getMKRVotingWeight(address: string, network: SupportedNetworks): Promise<BigNumber> {
+export async function getMKRVotingWeight(
+  address: string,
+  network: SupportedNetworks
+): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts(networkNameToChainId(network));
 
   const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
@@ -13,7 +24,11 @@ export async function getMKRVotingWeight(address: string, network: SupportedNetw
   if (voteDelegateAddress) {
     const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
     const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
-    return mkrDelegate.add(mkrChiefDelegate);
+    return {
+      mkrBalance: mkrDelegate,
+      chiefBalance: mkrChiefDelegate,
+      total: mkrDelegate.add(mkrChiefDelegate)
+    };
   }
 
   const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
@@ -36,8 +51,19 @@ export async function getMKRVotingWeight(address: string, network: SupportedNetw
     const mkrChiefOtherAddress = await contracts.chief.deposits(otherAddress);
     const mkrProxyAddress = await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress);
     // If vote proxy, return balances in all the wallets
-    return mkrInAddress.add(mkrInChief).add(mkrOtherAddress).add(mkrChiefOtherAddress).add(mkrProxyAddress);
+    return {
+      mkrBalance: mkrInAddress,
+      chiefBalance: mkrInChief,
+      linkedMkrBalance: mkrOtherAddress,
+      linkedChiefBalance: mkrChiefOtherAddress,
+      proxyChiefBalance: mkrProxyAddress,
+      total: mkrInAddress.add(mkrInChief).add(mkrOtherAddress).add(mkrChiefOtherAddress).add(mkrProxyAddress)
+    };
   }
 
-  return mkrInAddress.add(mkrInChief);
+  return {
+    mkrBalance: mkrInAddress,
+    chiefBalance: mkrInChief,
+    total: mkrInAddress.add(mkrInChief)
+  };
 }
