@@ -9,6 +9,7 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
 import { getSpellExecutionDate } from 'modules/web3/api/getSpellExecuationDate';
+import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours
@@ -26,7 +27,10 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     executiveHash,
     officeHours
   ] = await Promise.all([
+    // done
     spellContract.done().catch(_ => null), // this fails if the spell doesn't have the right ABI,
+
+    //nextCastTime
     spellContract
       .nextCastTime()
       .then(nextCastTime => {
@@ -34,6 +38,8 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
         return new Date(nextCastTime.toNumber() * 1000);
       })
       .catch(_ => null),
+
+    // eta
     spellContract
       .eta()
       .then(eta => {
@@ -41,6 +47,8 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
         return new Date(eta.toNumber() * 1000);
       })
       .catch(_ => null),
+
+    // expiration
     spellContract
       .expiration()
       .then(expiration => {
@@ -48,44 +56,25 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
         return new Date(expiration.toNumber() * 1000);
       })
       .catch(_ => null),
-    // this is complicated
-    // async getScheduledDate(spellAddress) {
-    //   if (this.scheduledDate[spellAddress])
-    //     return this.scheduledDate[spellAddress];
-    //   const eta = await this.getEta(spellAddress);
-    //   assert(eta, `spell ${spellAddress} has not been scheduled`);
-    //   const pauseAddress = this._pauseContract().address;
-    //   const web3Service = this.get('web3');
-    //   const netId = web3Service.network;
-    //   const networkName = netIdToName(netId);
-    //   const paddedSpellAddress =
-    //     '0x' + padStart(spellAddress.replace(/^0x/, ''), 64, '0');
-    //   const [plotEvent] = await web3Service.getPastLogs({
-    //     fromBlock: pauseInfo.inception_block[networkName],
-    //     toBlock: 'latest',
-    //     address: pauseAddress,
-    //     topics: [pauseInfo.events.plot, paddedSpellAddress]
-    //   });
-    //   const { timestamp } = await web3Service.getBlock(plotEvent.blockNumber);
-    //   this.scheduledDate[spellAddress] = new Date(timestamp * 1000);
-    //   return this.scheduledDate[spellAddress];
-    // }
-    // TODO replicate the above, yikes
-    spellContract
-      .eta()
-      .then(eta => {
-        if (!eta.toNumber()) return undefined;
-        return new Date(eta.toNumber() * 1000);
-      })
-      .catch(_ => null),
+
+    // datePassed
+    getSpellScheduledDate(address, network),
+
+    // dateExecuted
     getSpellExecutionDate(address, network),
+
+    // mkrSupport
     getChiefApprovals(address, network),
+
+    // executiveHash
     spellContract
       .description()
       .then(description => {
         return description.substr(description.indexOf('0x'), description.length);
       })
       .catch(_ => null),
+
+    // officeHours
     spellContract.officeHours().catch(_ => null)
   ]);
 

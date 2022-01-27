@@ -14,7 +14,6 @@ import {
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import useTransactionStore, {
   transactionsSelectors,
@@ -41,18 +40,18 @@ import useSWR from 'swr';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
+  const { network } = useActiveWeb3React();
   const {
     account,
     mutate: mutateAccount,
     voteDelegateContractAddress,
     voteProxyContractAddress
   } = useAccount();
-
-  const { network } = useActiveWeb3React();
-
+  const { voteDelegateFactory } = useContracts();
   const addressToCheck = voteDelegateContractAddress
     ? voteDelegateContractAddress
     : voteProxyContractAddress
@@ -75,8 +74,7 @@ const AccountPage = (): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.ACCOUNT);
 
   const onCreateDelegate = async () => {
-    const maker = await getMaker();
-    const createTxCreator = () => maker.service('voteDelegateFactory').createDelegateContract();
+    const createTxCreator = () => voteDelegateFactory.create();
     const txId = await track(createTxCreator, account, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
