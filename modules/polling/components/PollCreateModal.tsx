@@ -6,7 +6,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
-import getMaker from 'lib/maker';
 import useTransactionStore, {
   transactionsApi,
   transactionsSelectors
@@ -16,6 +15,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 type Props = {
   close: () => void;
@@ -27,6 +27,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
   const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
+  const { polling } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -36,11 +37,13 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
   const [step, setStep] = useState('confirm');
   const createPoll = async () => {
     if (!poll) return;
-    const maker = await getMaker();
     const voteTxCreator = () =>
-      maker
-        .service('govPolling')
-        .createPoll(poll.startDate.getTime() / 1000, poll.endDate.getTime() / 1000, poll.multiHash, poll.url);
+      polling.createPoll(
+        poll.startDate.getTime() / 1000,
+        poll.endDate.getTime() / 1000,
+        poll.multiHash,
+        poll.url || ''
+      );
     const txId = await track(voteTxCreator, account, `Creating poll with id ${poll?.pollId}`, {
       pending: () => {
         setStep('pending');

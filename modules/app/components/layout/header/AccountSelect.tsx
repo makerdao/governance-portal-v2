@@ -108,7 +108,6 @@ const AccountSelect = (): React.ReactElement => {
 
   const addHwAccount = async address => {
     console.log('add hw account');
-    //   const maker = await getMaker();
     //   const accounts = maker.listAccounts();
     //   if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
     //     maker.useAccountWithAddress(address);
@@ -137,7 +136,6 @@ const AccountSelect = (): React.ReactElement => {
           sx={disabledWalletButtonStyle as any}
           // onClick={async () => {
           //   setLoading(true);
-          //   const maker = await getMaker();
 
           //   try {
           //     await maker.addAccount({
@@ -174,7 +172,6 @@ const AccountSelect = (): React.ReactElement => {
       <Flex
         sx={disabledWalletButtonStyle as any}
         // onClick={async () => {
-        //   const maker = await getMaker();
 
         //   try {
         //     await maker.addAccount({
