@@ -1,10 +1,8 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { markdownToHtml } from 'lib/utils';
-import invariant from 'tiny-invariant';
 import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
 import mockPolls from './mocks/polls.json';
-import { parsePollsMetadata } from './parsePollMetadata';
+import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
@@ -12,6 +10,70 @@ import { PollFilters, PollsResponse } from '../types/pollsResponse';
 import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { PollSpock } from '../types/pollSpock';
+import uniqBy from 'lodash/uniqBy';
+import chunk from 'lodash/chunk';
+import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
+
+export function sortPolls(pollList: Poll[]): Poll[] {
+  return pollList.sort((a, b) => {
+    // closest to expiration shown first, if some have same expiration date, sort by startdate
+    const dateEndDiff = a.endDate.getTime() - b.endDate.getTime();
+
+    // Sort by more recent first if they end at the same time
+    const sortedByStartDate = a.startDate.getTime() < b.startDate.getTime() ? 1 : -1;
+
+    return dateEndDiff < 0 ? 1 : dateEndDiff > 0 ? -1 : sortedByStartDate;
+  });
+}
+
+// Fetches all the polls metadata, sorts and filters results.
+export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll[]> {
+  let numFailedFetches = 0;
+  const failedPollIds: number[] = [];
+  const polls: Poll[] = [];
+
+  //uniqBy keeps the first occurence of a duplicate, so we sort polls so that the most recent poll is kept in case of a duplicate
+  const dedupedPolls = uniqBy(
+    pollList.sort((a, b) => b.pollId - a.pollId),
+    p => p.multiHash
+  );
+
+  for (const pollGroup of chunk(dedupedPolls, 20)) {
+    // fetch polls in batches, don't fetch a new batch until the current one has resolved
+    const pollGroupWithData = await Promise.all(
+      pollGroup.map(async (p: PollSpock) => {
+        try {
+          return await fetchPollMetadata(spockPollToPartialPoll(p));
+        } catch (err) {
+          numFailedFetches += 1;
+          failedPollIds.push(p.pollId);
+          return null;
+        }
+      })
+    ).then((polls: Poll[]) => polls.filter(poll => !!poll));
+
+    polls.push(...pollGroupWithData);
+  }
+
+  console.log(
+    `---
+    Failed to fetch docs for ${numFailedFetches}/${pollList.length} polls.
+    IDs: ${failedPollIds}`
+  );
+
+  return sortPolls(polls);
+}
+
+export async function fetchAllSpockPolls(network: SupportedNetworks): Promise<PollSpock[]> {
+  const data = await gqlRequest({
+    chainId: networkNameToChainId(network),
+    query: allWhitelistedPolls
+  });
+
+  const pollList: PollSpock[] = data.activePolls.nodes;
+  return pollList;
+}
 
 // Returns all the polls and caches them in the file system.
 export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
@@ -22,27 +84,11 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     if (cachedPolls) {
       return JSON.parse(cachedPolls);
     }
-  } else if (config.NEXT_PUBLIC_USE_MOCK) {
-    return mockPolls.map(p => ({
-      ...p,
-      voteType: p.voteType as PollVoteType,
-      startDate: new Date(p.startDate),
-      endDate: new Date(p.endDate)
-    }));
   }
 
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network || DEFAULT_NETWORK.network),
-    query: allWhitelistedPolls
-  });
+  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network);
 
-  const pollList = data.activePolls.nodes.map(p => {
-    p.startDate = new Date(p.startDate * 1000);
-    p.endDate = new Date(p.endDate * 1000);
-    return p;
-  });
-
-  const polls = await parsePollsMetadata(pollList);
+  const polls = await fetchAllPollsMetadata(pollList);
 
   if (config.USE_FS_CACHE) {
     fsCacheSet(cacheKey, JSON.stringify(polls), network);
@@ -81,50 +127,6 @@ export async function getPolls(
       active: allPolls.filter(isActivePoll).length,
       finished: allPolls.filter(p => !isActivePoll(p)).length,
       total: allPolls.length
-    }
-  };
-}
-
-export async function getPoll(slug: string, network?: SupportedNetworks): Promise<Poll | null> {
-  const pollsResponse = await getPolls({}, network);
-
-  const pollIndex = pollsResponse.polls.findIndex(poll => poll.slug === slug);
-
-  if (pollIndex === -1) {
-    return null;
-  }
-
-  const [prev, next] = [
-    pollsResponse.polls?.[pollIndex - 1] || null,
-    pollsResponse.polls?.[pollIndex + 1] || null
-  ];
-
-  return {
-    ...pollsResponse.polls[pollIndex],
-    content: await markdownToHtml(pollsResponse.polls[pollIndex].content),
-    ctx: {
-      prev,
-      next
-    }
-  };
-}
-
-export async function getPollById(pollId: number, network?: SupportedNetworks): Promise<Poll> {
-  const pollsResponse = await getPolls({}, network);
-
-  const pollIndex = pollsResponse.polls.findIndex(poll => poll.pollId === pollId);
-  invariant(pollIndex > -1, `poll not found for poll id ${pollId}`);
-  const [prev, next] = [
-    pollsResponse.polls?.[pollIndex - 1] || null,
-    pollsResponse.polls?.[pollIndex + 1] || null
-  ];
-
-  return {
-    ...pollsResponse.polls[pollIndex],
-    content: await markdownToHtml(pollsResponse.polls[pollIndex].content),
-    ctx: {
-      prev,
-      next
     }
   };
 }

@@ -18,7 +18,6 @@ export const getStatusText = ({
   spellData?: SpellData;
   mkrOnHat?: BigNumber;
 }): string => {
-  console.log({ spellData });
   if (!spellData) return 'Fetching status...';
 
   if (proposalAddress === ZERO_ADDRESS) {

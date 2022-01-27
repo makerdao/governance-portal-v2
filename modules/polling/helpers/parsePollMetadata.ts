@@ -3,6 +3,17 @@ import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import categoryMap from './oldPollCategories';
 import { POLL_VOTE_TYPE } from '../polling.constants';
+import { PollSpock } from '../types/pollSpock';
+
+export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
+  const formatted: PartialPoll = {
+    ...poll,
+    slug: poll.multiHash.slice(0, 8),
+    startDate: new Date(poll.startDate * 1000),
+    endDate: new Date(poll.endDate * 1000)
+  };
+  return formatted;
+}
 
 export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const { data: pollMeta, content } = matter(document);
@@ -33,7 +44,6 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
 
   return {
     ...poll,
-    slug: poll.multiHash.slice(0, 8),
     startDate,
     endDate,
     content,

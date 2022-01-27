@@ -175,9 +175,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           {formatDateWithTime(date)}
                         </Text>
                         <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
-                          {groupedActivePolls[date].map(poll => (
+                          {groupedActivePolls[date].map((poll: Poll) => (
                             <PollOverviewCard
-                              key={poll.multiHash}
+                              key={poll.slug}
                               poll={poll}
                               showVoting={!!account}
                               reviewPage={false}
@@ -213,9 +213,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                             {formatDateWithTime(date)}
                           </Text>
                           <Stack sx={{ mb: 4 }}>
-                            {groupedHistoricalPolls[date].map(poll => (
+                            {groupedHistoricalPolls[date].map((poll: Poll) => (
                               <PollOverviewCard
-                                key={poll.multiHash}
+                                key={poll.slug}
                                 poll={poll}
                                 reviewPage={false}
                                 showVoting={false}

@@ -1,11 +1,12 @@
 import React from 'react';
 import { PluralityResult, Poll, PollTally, RankedChoiceResult } from '../types';
 import { Text, Flex } from 'theme-ui';
-import BigNumber from 'bignumber.js';
 import { isActivePoll } from '../helpers/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { formatValue } from 'lib/string';
+import { parseUnits } from 'ethers/lib/utils';
 
 export default function PollWinningOptionBox({
   tally,
@@ -26,17 +27,23 @@ export default function PollWinningOptionBox({
           </span>{' '}
           {tally.pollVoteType === POLL_VOTE_TYPE.PLURALITY_VOTE &&
             'with ' +
-              new BigNumber(
-                (tally.results as PluralityResult[]).find(({ optionId }) => optionId === tally.winner)
-                  ?.mkrSupport || '0'
-              ).toFormat(3) +
+              formatValue(
+                parseUnits(
+                  (tally.results as PluralityResult[])
+                    .find(({ optionId }) => optionId === tally.winner)
+                    ?.mkrSupport.toString() || '0'
+                )
+              ) +
               ' MKR supporting.'}
           {tally.pollVoteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN) &&
             'with ' +
-              new BigNumber(
-                (tally.results as RankedChoiceResult[]).find(({ optionId }) => optionId === tally.winner)
-                  ?.firstChoice || '0'
-              ).toFormat(3) +
+              formatValue(
+                parseUnits(
+                  (tally.results as RankedChoiceResult[])
+                    .find(({ optionId }) => optionId === tally.winner)
+                    ?.firstChoice.toString() || '0'
+                )
+              ) +
               ' MKR supporting as first choice.'}
         </Text>
       ) : (

@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { getPollById } from 'modules/polling/api/fetchPolls';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getPollTally } from 'modules/polling/helpers/getPollTally';
+import { fetchPollById } from 'modules/polling/api/fetchPollBy';
 
 // Returns a PollTally given a pollID
 
@@ -126,7 +126,16 @@ import { getPollTally } from 'modules/polling/helpers/getPollTally';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
-  const poll = await getPollById(parseInt(req.query['poll-id'] as string, 10), network);
+  const poll = await fetchPollById(parseInt(req.query['poll-id'] as string, 10), network);
+
+  if (!poll) {
+    res.status(404).json({
+      error: 'Not found'
+    });
+
+    return;
+  }
+
   const tally = await getPollTally(poll, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

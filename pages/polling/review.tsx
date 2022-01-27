@@ -89,12 +89,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                     {votedPolls.map(poll => {
                       return (
-                        <PollOverviewCard
-                          key={poll.multiHash}
-                          poll={poll}
-                          reviewPage={true}
-                          showVoting={true}
-                        >
+                        <PollOverviewCard key={poll.slug} poll={poll} reviewPage={true} showVoting={true}>
                           <Box sx={{ pt: 2 }}>
                             <CommentTextBox
                               onChange={(val: string) => {

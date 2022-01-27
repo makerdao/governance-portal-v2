@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';
@@ -30,15 +29,15 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
         ? tally.options
         : {
             '0': {
-              mkrSupport: new BigNumber(0),
+              mkrSupport: 0,
               winner: false
             },
             '1': {
-              mkrSupport: new BigNumber(0),
+              mkrSupport: 0,
               winner: false
             },
             '2': {
-              mkrSupport: new BigNumber(0),
+              mkrSupport: 0,
               winner: false
             }
           },
