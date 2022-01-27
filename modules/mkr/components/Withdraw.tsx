@@ -6,7 +6,6 @@ import shallow from 'zustand/shallow';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
-import getMaker from 'lib/maker';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import useTransactionStore, {
@@ -18,11 +17,11 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { parseUnits } from 'ethers/lib/utils';
+import { useContracts } from 'modules/web3/hooks/useContracts';
 
 const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -30,14 +29,14 @@ const ModalContent = ({ close, ...props }) => {
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
   const [txId, setTxId] = useState(null);
-  const chiefAddress = useContractAddress('chief');
+  const { chief } = useContracts();
   const approveIOU = useApproveUnlimitedToken('iou');
 
   const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
     'iou',
     parseUnits('100000000'),
     account,
-    voteProxyContract ? undefined : chiefAddress
+    voteProxyContract ? undefined : chief.address
   );
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
@@ -107,11 +106,10 @@ const ModalContent = ({ close, ...props }) => {
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               onClick={async () => {
                 trackButtonClick('withdrawMkr');
-                const maker = await getMaker();
 
                 const freeTxCreator = voteProxyContract
                   ? () => voteProxyContract.free(mkrToWithdraw)
-                  : () => maker.service('chief').free(mkrToWithdraw);
+                  : () => chief.free(mkrToWithdraw);
 
                 const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
                   mined: txId => {
@@ -147,7 +145,7 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveWithdraw');
-                const approveTxCreator = () => approveIOU(chiefAddress);
+                const approveTxCreator = () => approveIOU(chief.address);
 
                 const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
                   mined: txId => {
