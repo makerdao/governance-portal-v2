@@ -35,7 +35,7 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { account, network } = useActiveWeb3React();
+  const { account } = useActiveWeb3React();
 
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: mutateVoteDelegate } = useVoteDelegateAddress(account);

@@ -6,18 +6,20 @@ type EsmTotalStakedResponse = {
   data?: BigNumber | undefined;
   loading: boolean;
   error?: Error;
+  mutate: () => void;
 };
 
 export const useEsmTotalStaked = (): EsmTotalStakedResponse => {
   const { esm } = useContracts();
 
-  const { data, error } = useSWR(`${esm.address}/esm-total-staked`, async () => {
+  const { data, error, mutate } = useSWR(`${esm.address}/esm-total-staked`, async () => {
     return await esm.Sum();
   });
 
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

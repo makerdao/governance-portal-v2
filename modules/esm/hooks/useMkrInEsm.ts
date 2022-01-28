@@ -6,12 +6,13 @@ type MkrInEsmByAddressResponse = {
   data?: BigNumber | undefined;
   loading: boolean;
   error?: Error;
+  mutate: () => void;
 };
 
 export const useMkrInEsmByAddress = (address?: string): MkrInEsmByAddressResponse => {
   const { esm } = useContracts();
 
-  const { data, error } = useSWR(`${esm.address}/mkr-in-esm/${address}`, async () => {
+  const { data, error, mutate } = useSWR(`${esm.address}/mkr-in-esm/${address}`, async () => {
     if (!address) {
       return BigNumber.from(0);
     }
@@ -21,6 +22,7 @@ export const useMkrInEsmByAddress = (address?: string): MkrInEsmByAddressRespons
   return {
     data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };

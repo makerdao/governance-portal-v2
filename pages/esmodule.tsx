@@ -28,10 +28,10 @@ const ESModule = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
 
   const { data: allEsmJoins } = useAllEsmJoins();
-  const { data: totalStaked } = useEsmTotalStaked();
+  const { data: totalStaked, mutate: mutateTotalStaked } = useEsmTotalStaked();
   const { data: thresholdAmount } = useEsmThreshold();
   const { data: esmIsActive } = useEsmIsActive();
-  const { data: mkrInEsmByAddress } = useMkrInEsmByAddress(account);
+  const { data: mkrInEsmByAddress, mutate: mutateMkrInEsmByAddress } = useMkrInEsmByAddress(account);
   const { data: cageTime } = useCageTime();
   const { data: lockedInChief } = useLockedMkr(account);
 
@@ -133,11 +133,13 @@ const ESModule = (): React.ReactElement => {
           }
         >
           {totalStaked ? (
-            esmThresholdMet ? (
+            !esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
                 lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
                 totalStaked={totalStaked}
+                mutateTotalStaked={mutateTotalStaked}
+                mutateMkrInEsmByAddress={mutateMkrInEsmByAddress}
               />
             ) : (
               <ShutdownModal setShowDialog={setShowDialog} thresholdAmount={thresholdAmount} />
