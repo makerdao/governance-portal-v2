@@ -1,7 +1,6 @@
 export enum SupportedChainId {
   MAINNET = 1,
   GOERLI = 5,
-  TESTNET = 999,
   GOERLIFORK = 31337
 }
 

@@ -22,14 +22,12 @@ export enum SupportedConnectors {
 export enum SupportedNetworks {
   MAINNET = 'mainnet',
   GOERLI = 'goerli',
-  TESTNET = 'testnet',
   GOERLIFORK = 'goerlifork'
 }
 
 export enum NodeProviders {
   INFURA = 'infura',
   ALCHEMY = 'alchemy',
-  TESTNET = 'testnet',
   LOCAL = 'local'
 }
 
@@ -71,19 +69,6 @@ export const CHAIN_INFO: ChainInfo = {
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.LOCAL]: 'http://localhost:8545'
-    }
-  },
-  [SupportedChainId.TESTNET]: {
-    //   etherscanPrefix: '',
-    chainId: SupportedChainId.TESTNET, // This is arbitrary and defined in @makerdao/testchain
-    label: 'Testnet',
-    etherscanPrefix: '',
-    network: SupportedNetworks.TESTNET,
-    defaultRpc: NodeProviders.TESTNET,
-    spockUrl: LOCAL_SPOCK_URL,
-
-    rpcs: {
-      [NodeProviders.TESTNET]: 'http://localhost:2000'
     }
   }
 };
