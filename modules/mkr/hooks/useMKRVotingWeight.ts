@@ -12,7 +12,7 @@ type VotingWeightResponse = {
 export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
   const { network } = useActiveWeb3React();
   const { data, error, mutate } = useSWR(
-    address ? ['/user/polling-voting-weight', address] : null,
+    address ? ['/user/polling-voting-weight', address, network] : null,
     () => getMKRVotingWeight(address as string, network),
     {
       revalidateOnFocus: true,
