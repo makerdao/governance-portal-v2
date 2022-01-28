@@ -5,7 +5,6 @@ import Delay from 'modules/app/components/Delay';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { BigNumber } from 'ethers';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
