@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 
-describe('Account select', () => {
+xdescribe('Account select', () => {
   test('can connect an account', async () => {
     render(<WrappedAccountSelect />);
     const connectButton = await screen.findByText('Connect wallet');

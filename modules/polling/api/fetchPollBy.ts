@@ -9,7 +9,7 @@ import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { Poll } from '../types';
 import { PollSpock } from '../types/pollSpock';
 import { fetchPollMetadata } from './fetchPollMetadata';
-import { fetchAllSpockPolls, getPolls } from './fetchPolls';
+import { fetchAllSpockPolls } from './fetchPolls';
 
 export async function fetchSpockPollById(pollId: number, network: SupportedNetworks): Promise<PollSpock> {
   const polls = await fetchAllSpockPolls(network);

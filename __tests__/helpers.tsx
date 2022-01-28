@@ -4,7 +4,6 @@ import { ThemeProvider } from 'theme-ui';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
 import theme from 'lib/theme';
 import React from 'react';
-import { accountsApi } from 'modules/app/stores/accounts';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
 
@@ -31,13 +30,14 @@ export function renderWithAccountSelect(component: React.ReactNode): RenderResul
 
 export async function connectAccount(address = DEMO_ACCOUNT_TESTS): Promise<void> {
   try {
-    accountsApi.setState({
-      currentAccount: {
-        address,
-        name: '',
-        type: ''
-      }
-    });
+    // accountsApi.setState({
+    //   currentAccount: {
+    //     address,
+    //     name: '',
+    //     type: ''
+    //   }
+    // });
+    // TODO: Find a way to connect account
 
     await screen.findAllByText(formatAddress(address), { exact: false }, { timeout: 15000 });
   } catch (err) {
