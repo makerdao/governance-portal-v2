@@ -57,15 +57,15 @@ const AccountPage = (): React.ReactElement => {
     : voteProxyContractAddress
     ? voteProxyContractAddress
     : account;
-  const { data: addressInfo, error } = useSWR<AddressApiResponse>(
+  const { data: addressInfo } = useSWR<AddressApiResponse>(
     addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
     fetchJson
   );
+  const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
   const [txId, setTxId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
-  const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -78,7 +78,7 @@ const AccountPage = (): React.ReactElement => {
     const txId = await track(createTxCreator, account, 'Create delegate contract', {
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract created');
-        mutateAccount();
+        mutateAccount && mutateAccount();
       },
       error: () => {
         transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
