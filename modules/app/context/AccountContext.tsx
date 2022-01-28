@@ -65,9 +65,9 @@ const fetchAccountData = (account: string) => {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { account } = useActiveWeb3React();
+  const { account, network } = useActiveWeb3React();
 
-  const { data } = useSWR(`account/${account}`, account => fetchAccountData(account));
+  const { data } = useSWR(`account/${network}/${account}`, account => fetchAccountData(account));
 
   return (
     <AccountContext.Provider
