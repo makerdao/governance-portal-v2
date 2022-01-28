@@ -1,19 +1,22 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import getMaker from 'lib/maker';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { getContracts } from 'modules/web3/helpers/getContracts';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { fetchExecutiveVoteTally } from 'modules/executive/api/fetchExecutiveVoteTally';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const maker = await getMaker(network);
+  const chief = getContracts(networkNameToChainId(network)).chief;
+
   const [allSupporters, delegatesResponse] = await Promise.all([
-    maker.service('chief').getVoteTally(),
+    fetchExecutiveVoteTally(chief),
     fetchDelegates(network)
   ]);
 
