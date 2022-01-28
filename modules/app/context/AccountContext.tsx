@@ -35,6 +35,7 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
+  ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
   const { account } = useActiveWeb3React();
 
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
