@@ -1,12 +1,8 @@
-import { ethers } from 'ethers';
-import { config } from 'lib/config';
 import { SupportedNetworks } from '../constants/networks';
+import { getDefaultProvider } from './getDefaultProvider';
 
 export async function getENS(address: string): Promise<string | null> {
-  const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
-    infura: config.INFURA_KEY,
-    alchemy: config.ALCHEMY_KEY
-  });
+  const provider = getDefaultProvider(SupportedNetworks.MAINNET);
 
   try {
     const name = await provider.lookupAddress(address);
@@ -18,10 +14,7 @@ export async function getENS(address: string): Promise<string | null> {
 }
 
 export async function resolveENS(ensName: string): Promise<string | null> {
-  const provider = ethers.getDefaultProvider(SupportedNetworks.MAINNET, {
-    infura: config.INFURA_KEY,
-    alchemy: config.ALCHEMY_KEY
-  });
+  const provider = getDefaultProvider(SupportedNetworks.MAINNET);
 
   try {
     const address = await provider.resolveName(ensName);

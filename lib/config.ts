@@ -3,6 +3,8 @@ type SystemConfig = {
   USE_PROD_SPOCK: string;
   ALCHEMY_KEY: string;
   INFURA_KEY: string;
+  ETHERSCAN_KEY: string;
+  POCKET_KEY: string;
   TRACING_RPC_NODE: string;
   MONGODB_URI: string;
   MONGODB_COMMENTS_DB: string;
@@ -17,6 +19,8 @@ export const config: SystemConfig = {
   USE_PROD_SPOCK: process.env.USE_PROD_SPOCK || '',
   ALCHEMY_KEY: process.env.ALCHEMY_KEY || '',
   INFURA_KEY: process.env.INFURA_KEY || '',
+  ETHERSCAN_KEY: process.env.ETHERSCAN_KEY || '',
+  POCKET_KEY: process.env.POCKET_KEY || '',
   TRACING_RPC_NODE: process.env.TRACING_RPC_NODE || '',
   MONGODB_URI: process.env.MONGODB_URI || '',
   MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
