@@ -19,7 +19,6 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
@@ -32,18 +31,16 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContractAddress, voteProxyColdAddress, voteProxyContract } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
-  const chiefAddress = useContractAddress('chief');
 
   const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
   const { chief } = useContracts();
-  const chiefContractAddress = useContractAddress('chief');
   const approveMKR = useApproveUnlimitedToken('mkr');
 
   const { data: chiefAllowance, mutate: mutateAllowance } = useTokenAllowance(
     'mkr',
     parseUnits('100000000'),
     account,
-    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chiefContractAddress
+    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chief.address
   );
 
   const [track, tx] = useTransactionStore(
@@ -138,7 +135,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveDeposit');
-                const contractToApprove = voteProxyContractAddress || chiefAddress;
+                const contractToApprove = voteProxyContractAddress || chief.address;
                 const approveTxCreator = () => approveMKR(contractToApprove);
 
                 const txId = await track(approveTxCreator, account, 'Granting MKR approval', {

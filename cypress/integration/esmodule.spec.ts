@@ -99,7 +99,6 @@ import userEvent from '@testing-library/user-event';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
-import getMaker from '../../lib/maker';
 import { accountsApi } from '../../modules/app/stores/accounts';
 import { ethers } from 'ethers';
 import { WAD } from '../../modules/web3/web3.constants';
@@ -119,7 +118,6 @@ let maker;
 describe('/esmodule page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
-    maker = await getMaker();
     accountsApi.getState().addAccountsListener(maker);
 
     expect(accountsApi.getState().currentAccount).toBeUndefined();
@@ -262,7 +260,6 @@ describe('/esmodule page', () => {
 
   describe('can initiate emergency shutdown', () => {
     beforeAll(async () => {
-      maker = await getMaker();
       await maker.service('accounts').useAccount('default');
       const token = maker.service('smartContract').getContract('MCD_GOV');
       await token['mint(uint256)'](WAD.times(50000).toFixed());
