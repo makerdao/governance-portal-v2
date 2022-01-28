@@ -34,7 +34,9 @@ type PropTypes = {
   children: ReactNode;
 };
 
-const fetchAccountData = (account: string) => {
+export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
+  const { account, network } = useActiveWeb3React();
+
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
   const { data: voteDelegateContractAddress, mutate: mutateVoteDelegate } = useVoteDelegateAddress(account);
 
@@ -44,36 +46,27 @@ const fetchAccountData = (account: string) => {
   const { data: voteProxyContract } = useCurrentUserVoteProxyContract();
   const { data: voteProxyOldContract } = useCurrentUserVoteProxyOldContract();
 
-  return {
-    voteDelegateContract,
-    voteDelegateContractAddress,
-
-    voteProxyContract,
-    voteProxyContractAddress: voteProxyResponse?.voteProxyAddress,
-    voteProxyHotAddress: voteProxyResponse?.hotAddress,
-    voteProxyColdAddress: voteProxyResponse?.coldAddress,
-
-    voteProxyOldContract,
-    voteProxyOldContractAddress: voteProxyOldResponse?.voteProxyAddress,
-    voteProxyOldHotAddress: voteProxyOldResponse?.hotAddress,
-    voteProxyOldColdAddress: voteProxyOldResponse?.coldAddress,
-
-    mutate: () => {
-      mutateVoteDelegate();
-    }
-  };
-};
-
-export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  const { account, network } = useActiveWeb3React();
-
-  const { data } = useSWR(`account/${network}/${account}`, account => fetchAccountData(account));
-
   return (
     <AccountContext.Provider
       value={{
         account,
-        ...data
+
+        voteDelegateContract,
+        voteDelegateContractAddress,
+
+        voteProxyContract,
+        voteProxyContractAddress: voteProxyResponse?.voteProxyAddress,
+        voteProxyHotAddress: voteProxyResponse?.hotAddress,
+        voteProxyColdAddress: voteProxyResponse?.coldAddress,
+
+        voteProxyOldContract,
+        voteProxyOldContractAddress: voteProxyOldResponse?.voteProxyAddress,
+        voteProxyOldHotAddress: voteProxyOldResponse?.hotAddress,
+        voteProxyOldColdAddress: voteProxyOldResponse?.coldAddress,
+
+        mutate: () => {
+          mutateVoteDelegate();
+        }
       }}
     >
       {children}
