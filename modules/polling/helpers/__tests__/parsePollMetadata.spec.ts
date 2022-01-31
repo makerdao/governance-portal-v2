@@ -1,15 +1,15 @@
-import { parsePollMetadata } from '../parser';
+import { parsePollMetadata, spockPollToPartialPoll } from '../parsePollMetadata';
 import pollJson327 from './__helpers__/poll-327.js';
 import pollJson431 from './__helpers__/poll-431.js';
 import fs from 'fs';
-import { PartialPoll } from '../../types';
 import matter from 'gray-matter';
+import { PollSpock } from '../../types/pollSpock';
 
 const pollMetadata327 = fs.readFileSync(__dirname + '/__helpers__/poll-327.md').toString();
 const pollMetadata431 = fs.readFileSync(__dirname + '/__helpers__/poll-431.md').toString();
 
 test('return the expected values', () => {
-  const actual = parsePollMetadata(pollJson431 as PartialPoll, pollMetadata431);
+  const actual = parsePollMetadata(spockPollToPartialPoll(pollJson431 as PollSpock), pollMetadata431);
   expect(actual).toEqual(
     expect.objectContaining({
       pollId: 431,
@@ -22,6 +22,7 @@ test('return the expected values', () => {
       options: { '0': 'Abstain', '1': 'Yes', '2': 'No' },
       discussionLink: 'https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963',
       voteType: 'Plurality Voting',
+      content: expect.any(String),
       categories: ['Risk Variable', 'Technical']
     })
   );
@@ -30,7 +31,7 @@ test('return the expected values', () => {
 });
 
 test('return the expected values for an old uncategorized poll', () => {
-  const actual = parsePollMetadata(pollJson327 as PartialPoll, pollMetadata327);
+  const actual = parsePollMetadata(spockPollToPartialPoll(pollJson327 as PollSpock), pollMetadata327);
   expect(actual).toEqual(
     expect.objectContaining({
       pollId: 327,
@@ -41,6 +42,7 @@ test('return the expected values for an old uncategorized poll', () => {
       slug: 'QmXhKW6B',
       title: 'Add an ETH-B Vault Type - October 5, 2020',
       options: { '0': 'Abstain', '1': 'Yes', '2': 'No' },
+      content: expect.any(String),
       discussionLink: 'https://forum.makerdao.com/t/4435',
       voteType: 'Plurality Voting',
       categories: ['Technical']
