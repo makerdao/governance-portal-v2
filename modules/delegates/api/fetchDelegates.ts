@@ -16,6 +16,7 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { CMSProposal } from 'modules/executive/types';
+import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -43,7 +44,8 @@ function mergeDelegateInfo(
     executiveParticipation: githubDelegate?.executiveParticipation,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
-    execSupported: onChainDelegate.execSupported
+    execSupported: onChainDelegate.execSupported,
+    pollVoteHistory: onChainDelegate.pollVoteHistory
   };
 }
 
@@ -98,10 +100,12 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
       const execSupported: CMSProposal | undefined = executives?.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
+      const pollVoteHistory = await fetchAddressPollVoteHistory(delegate.voteDelegateAddress, currentNetwork);
       return {
         ...delegate,
         proposalsSupported,
-        execSupported
+        execSupported,
+        pollVoteHistory
       };
     })
   );

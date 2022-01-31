@@ -19,6 +19,7 @@ export type DelegateContractInformation = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
+  pollVoteHistory: PollVoteHistory;
 };
 
 export type Delegate = {
@@ -40,6 +41,7 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
+  pollVoteHistory: PollVoteHistory;
 };
 
 export type DelegationHistory = {
