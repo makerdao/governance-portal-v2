@@ -6,7 +6,7 @@ import { formatDateWithTime } from 'lib/datetime';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
-import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
+import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -16,7 +16,7 @@ export default function CommentItem({
   votedOption,
   twitterUrl
 }: {
-  comment: PollCommentsAPIResponseItemWithWeight | ExecutiveCommentsAPIResponseItem;
+  comment: PollCommentsAPIResponseItemWithWeight | ParsedExecutiveComments;
   votedOption?: React.ReactNode;
   twitterUrl: string;
 }): React.ReactElement {
