@@ -12,6 +12,7 @@ import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
+import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 type PropTypes = {
   address: string;
@@ -38,6 +39,8 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
       revalidateOnMount: true
     }
   );
+
+  const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
@@ -70,7 +73,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
             fontWeight: 'semiBold'
           }}
         >
-          MKR Delegated per address
+          MKR Delegated by Address
         </Text>
         {!delegatedToData && (
           <Box mb={3}>
@@ -81,6 +84,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           <AddressDelegatedTo
             delegatedTo={delegatedToData?.delegatedTo}
             totalDelegated={delegatedToData?.totalDelegated}
+            delegateAddresses={delegateAddresses}
           />
         )}
         {delegatedToData && delegatedToData.delegatedTo.length === 0 && (
