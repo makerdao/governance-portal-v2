@@ -3,31 +3,33 @@ import mockVote from 'modules/polling/api/mocks/vote.json';
 import { PollVoteHistoryItem } from 'modules/polling/components/PollVoteHistoryItem';
 import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
-import { fetchJson } from 'lib/fetchJson';
-
-jest.mock('lib/fetchJson');
+import { usePollTally } from '../../hooks/usePollTally';
+jest.mock('../../hooks/usePollTally');
 
 describe('Poll vote history item', () => {
   beforeAll(() => {
-    (fetchJson as jest.Mock).mockResolvedValue({
-      rounds: 1,
-      winner: 1,
-      totalMkrParticipation: 70288.579356787892861292,
-      results: [
-        {
-          firstChoice: 2.001309,
-          transfer: 0,
-          winner: false,
-          eliminated: false
-        },
-        {
-          firstChoice: 70286.578047787892861292,
-          transfer: 0,
-          winner: true,
-          eliminated: false
-        }
-      ],
-      numVoters: 13
+    (usePollTally as jest.Mock).mockReturnValue({
+      tally: {
+        rounds: 1,
+        winner: 1,
+        totalMkrParticipation: 70288.579356787892861292,
+        results: [
+          {
+            firstChoice: 2.001309,
+            transfer: 0,
+            winner: false,
+            eliminated: false
+          },
+          {
+            firstChoice: 70286.578047787892861292,
+            transfer: 0,
+            winner: true,
+            eliminated: false
+          }
+        ],
+        numVoters: 13
+      },
+      mutate: () => null
     });
   });
 
@@ -36,6 +38,8 @@ describe('Poll vote history item', () => {
       ...mockVote,
       poll: {
         ...mockVote.poll,
+        endDate: new Date(mockVote.poll.endDate),
+        startDate: new Date(mockVote.poll.startDate),
         voteType: POLL_VOTE_TYPE.PLURALITY_VOTE
       }
     };
