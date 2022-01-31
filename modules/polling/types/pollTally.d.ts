@@ -22,7 +22,7 @@ export type PluralityResult = {
 };
 
 export type PollTallyPluralityOption = {
-  firstChoice: BigNumber;
+  mkrSupport: BigNumber;
   winner: boolean;
 };
 

@@ -36,7 +36,7 @@ describe('MKRInput', () => {
 
     const component = screen.getByTestId('mkr-input-balance');
 
-    expect(component).toHaveTextContent('24.5000');
+    expect(component).toHaveTextContent('24.5');
     expect(component).not.toHaveTextContent('0.0000');
   });
 
@@ -68,7 +68,7 @@ describe('MKRInput', () => {
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
     userEvent.type(input, '3.2');
-    expect(props.onChange).toHaveBeenCalledWith(parseUnits(3.2));
+    expect(props.onChange).toHaveBeenCalledWith(parseUnits('3.2'));
     expect(input).toHaveValue(3.2);
   });
 

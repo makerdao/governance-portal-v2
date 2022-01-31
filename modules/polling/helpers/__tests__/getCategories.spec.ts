@@ -19,10 +19,10 @@ describe('Get categories', () => {
     expect(categories.length).toEqual(5);
   });
 
-  it('Sorts them by occurence', () => {
+  it('Sorts them by alphabetical order', () => {
     const polls = [
       {
-        categories: ['a', 'b', 'c']
+        categories: ['x', 'b', 'c']
       },
       {
         categories: ['b', 'c']
@@ -35,7 +35,7 @@ describe('Get categories', () => {
     const categories = getCategories(polls);
 
     // First categories are the ones with more ocfurences
-    expect(categories[0]).toEqual('c');
-    expect(categories[1]).toEqual('b');
+    expect(categories[0]).toEqual({ count: 2, name: 'b' });
+    expect(categories[1]).toEqual({ count: 3, name: 'c' });
   });
 });

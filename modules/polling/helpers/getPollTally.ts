@@ -5,6 +5,7 @@ import { fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from '../types';
 import { parseRawPollTally } from './parseRawTally';
+import BigNumber from 'bignumber.js';
 
 export async function getPollTally(poll: Poll, network: SupportedNetworks): Promise<PollTally> {
   // if poll vote type is unknown, treat as ranked choice
@@ -29,15 +30,15 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
         ? tally.options
         : {
             '0': {
-              mkrSupport: 0,
+              mkrSupport: new BigNumber('0'),
               winner: false
             },
             '1': {
-              mkrSupport: 0,
+              mkrSupport: new BigNumber('0'),
               winner: false
             },
             '2': {
-              mkrSupport: 0,
+              mkrSupport: new BigNumber('0'),
               winner: false
             }
           },

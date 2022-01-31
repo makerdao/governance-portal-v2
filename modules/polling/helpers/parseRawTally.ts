@@ -14,15 +14,21 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
       return {
         optionId: key,
         optionName: poll.options[key],
-        firstChoice: rawTally.options?.[key]?.firstChoice || 0,
-        transfer: rawTally.options?.[key]?.transfer || 0,
+        firstChoice: rawTally.options?.[key]?.firstChoice?.toNumber() || 0,
+        transfer: rawTally.options?.[key]?.transfer?.toNumber() || 0,
         firstPct:
           rawTally.totalMkrParticipation.gt(0) && rawTally.options?.[key]?.firstChoice
-            ? new BigNumber(rawTally.options[key].firstChoice).div(rawTally.totalMkrParticipation).times(100)
+            ? new BigNumber(rawTally.options[key].firstChoice)
+                .div(rawTally.totalMkrParticipation)
+                .times(100)
+                .toNumber()
             : 0,
         transferPct:
           rawTally.totalMkrParticipation.gt(0) && rawTally.options?.[key]?.transfer
-            ? new BigNumber(rawTally.options[key].transfer).div(rawTally.totalMkrParticipation).times(100)
+            ? new BigNumber(rawTally.options[key].transfer)
+                .div(rawTally.totalMkrParticipation)
+                .times(100)
+                .toNumber()
             : 0,
         eliminated: rawTally.options?.[key]?.eliminated ?? true,
         winner: rawTally.options?.[key]?.winner ?? false
@@ -37,16 +43,21 @@ export function parseRawPollTally(rawTally: RawPollTally, poll: Poll): PollTally
 
   const pluralityResult: PluralityResult[] = Object.keys(poll.options)
     .map(key => {
-      return {
+      const result: PluralityResult = {
         optionId: key,
         optionName: poll.options[key],
-        mkrSupport: rawTally.options?.[key]?.mkrSupport || 0,
+        mkrSupport: rawTally.options?.[key]?.mkrSupport?.toNumber() || 0,
         firstPct:
           rawTally.totalMkrParticipation.gt(0) && rawTally.options?.[key]?.mkrSupport
-            ? new BigNumber(rawTally.options[key].mkrSupport).div(rawTally.totalMkrParticipation).times(100)
+            ? new BigNumber(rawTally.options[key].mkrSupport)
+                .div(rawTally.totalMkrParticipation)
+                .times(100)
+                .toNumber()
             : 0,
         winner: rawTally.options?.[key]?.winner ?? false
-      } as PluralityResult;
+      };
+
+      return result;
     })
     .sort((a, b) => {
       const valueA = new BigNumber(a.mkrSupport);
