@@ -50,8 +50,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
-          {lastVote && <LastVoted expired={delegate.expired} date={lastVote.blockTimestamp} left />}
-          {!lastVote && <SkeletonThemed width={'200px'} height={'15px'} />}
+          {delegate.pollVoteHistory && (
+            <LastVoted expired={delegate.expired} date={lastVote ? lastVote.blockTimestamp : null} left />
+          )}
+          {!delegate.pollVoteHistory && <SkeletonThemed width={'200px'} height={'15px'} />}
         </Box>
         <Flex
           sx={{
