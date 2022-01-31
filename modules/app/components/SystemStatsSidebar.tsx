@@ -31,140 +31,164 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const { data: mkrOnHat } = useMkrOnHat();
-  const { data: debtCeiling } = useSystemWideDebtCeiling();
-  const { data: systemSurplus } = useSystemSurplus();
-  const { data: totalDai } = useTotalDai();
-  const { data: daiSavingsRate } = useDaiSavingsRate();
-  const chiefAddress = useContractAddress('chief');
-  const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
-  const pollingAddress = useContractAddress('polling');
   const { network } = useActiveWeb3React();
 
   const statsMap = {
-    'chief contract': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {chiefAddress ? (
-            <ExternalLink href={getEtherscanLink(network, chiefAddress, 'address')} target="_blank">
-              <Text>{formatAddress(chiefAddress)}</Text>
-            </ExternalLink>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'chief contract': key => {
+      const chiefAddress = useContractAddress('chief');
 
-    'mkr in chief': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {chiefBalance ? (
-            `${formatValue(chiefBalance, 'wad', 0)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {chiefAddress ? (
+              <ExternalLink href={getEtherscanLink(network, chiefAddress, 'address')} target="_blank">
+                <Text>{formatAddress(chiefAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+    'mkr in chief': key => {
+      const chiefAddress = useContractAddress('chief');
+      const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
 
-    'polling contract': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {pollingAddress ? (
-            <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
-              <Text>{formatAddress(pollingAddress)}</Text>
-            </ExternalLink>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {chiefBalance ? (
+              `${formatValue(chiefBalance, 'wad', 0)} MKR`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'mkr needed to pass': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {mkrOnHat ? (
-            `${formatValue(mkrOnHat, 'wad', 0)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'polling contract': key => {
+      const pollingAddress = useContractAddress('polling');
 
-    'savings rate': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {daiSavingsRate ? (
-            `${daiSavingsRate.toFixed(2)}%`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {pollingAddress ? (
+              <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
+                <Text>{formatAddress(pollingAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'total dai': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {totalDai ? (
-            `${formatValue(totalDai, 'rad', 0)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'mkr needed to pass': key => {
+      const { data: mkrOnHat } = useMkrOnHat();
 
-    'debt ceiling': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {debtCeiling ? (
-            `${formatValue(debtCeiling, 'rad', 0)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {mkrOnHat ? (
+              `${formatValue(mkrOnHat, 'wad', 0)} MKR`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'system surplus': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {systemSurplus ? (
-            `${formatValue(systemSurplus, 'rad', 0)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    )
+    'savings rate': key => {
+      const { data: daiSavingsRate } = useDaiSavingsRate();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {daiSavingsRate ? (
+              `${daiSavingsRate.toFixed(2)}%`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'total dai': key => {
+      const { data: totalDai } = useTotalDai();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {totalDai ? (
+              `${formatValue(totalDai, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'debt ceiling': key => {
+      const { data: debtCeiling } = useSystemWideDebtCeiling();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {debtCeiling ? (
+              `${formatValue(debtCeiling, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'system surplus': key => {
+      const { data: systemSurplus } = useSystemSurplus();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {systemSurplus ? (
+              `${formatValue(systemSurplus, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    }
   };
 
   return (

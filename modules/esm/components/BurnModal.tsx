@@ -7,11 +7,10 @@ import useTransactionStore, {
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
-import BurnSigning from './burnModal/BurnSigning';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { TxInProgress } from 'modules/app/components/TxInProgress';
+import { TxDisplay } from 'modules/delegates/components/modals/TxDisplay';
 import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
@@ -19,11 +18,15 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 const ModalContent = ({
   setShowDialog,
   lockedInChief,
-  totalStaked
+  totalStaked,
+  mutateTotalStaked,
+  mutateMkrInEsmByAddress
 }: {
   setShowDialog: (value: boolean) => void;
   lockedInChief: number;
   totalStaked: BigNumber;
+  mutateTotalStaked: () => void;
+  mutateMkrInEsmByAddress: () => void;
 }): React.ReactElement => {
   const { account } = useAccount();
   const [step, setStep] = useState('default');
@@ -48,8 +51,8 @@ const ModalContent = ({
       },
       mined: txId => {
         transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-        // TODO: replace this
-        // mutateMKRStaked();
+        mutateTotalStaked();
+        mutateMkrInEsmByAddress();
         setStep('mined');
       },
       error: () => setStep('failed')
@@ -84,9 +87,9 @@ const ModalContent = ({
         />
       );
     case 'signing':
-      return <BurnSigning close={close} />;
+      return <TxDisplay tx={tx} setTxId={setTxId} onDismiss={close} />;
     case 'pending':
-      return <TxInProgress tx={tx} txPending={true} setTxId={setTxId} />;
+      return <TxDisplay tx={tx} setTxId={setTxId} onDismiss={close} />;
     case 'mined':
       return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':

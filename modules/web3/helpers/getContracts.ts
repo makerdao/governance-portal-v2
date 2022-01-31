@@ -6,6 +6,7 @@ import { CHAIN_INFO, DEFAULT_NETWORK, SupportedNetworks } from '../constants/net
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from './getRPC';
+import { getDefaultProvider } from './getDefaultProvider';
 
 export type EthSdk = MainnetSdk | GoerliSdk;
 
@@ -25,7 +26,7 @@ export const getContracts = (
   library?: Web3Provider,
   account?: string | undefined | null
 ): EthSdk => {
-  const provider = ethers.getDefaultProvider(getRPCFromChainID(chainId || 1));
+  const provider = getDefaultProvider(getRPCFromChainID(chainId || 1));
   const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
 
   // Map goerlifork to goerli contracts

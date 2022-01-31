@@ -10,6 +10,7 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
@@ -24,10 +25,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const pauseAddress = contracts['pause'].address;
   const pauseProxyAddress = contracts['pauseProxy'].address;
 
-  const provider = ethers.getDefaultProvider(network, {
-    infura: config.INFURA_KEY,
-    alchemy: config.ALCHEMY_KEY
-  });
+  const provider = getDefaultProvider(network);
 
   console.log(config.INFURA_KEY, config.ALCHEMY_KEY, 'infura and alchemy keys state diff');
   const encoder = new ethers.utils.Interface([

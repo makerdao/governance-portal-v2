@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
+import { formatValue } from 'lib/string';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -13,15 +14,12 @@ import {
 } from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
-import useSWR from 'swr';
-import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import { PollVoteHistory } from 'modules/polling/types/pollVoteHistory';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { AccountContext } from 'modules/app/context/AccountContext';
-import { formatValue } from 'lib/string';
+import { useLastVote } from 'modules/delegates/hooks/useLastVote';
 
 type PropTypes = {
   delegate: Delegate;
@@ -33,24 +31,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const { account, voteDelegateContractAddress } = useContext(AccountContext);
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const {
-    data: mkrDelegated,
-    error: errorMKRDelegated,
-    mutate: mutateMKRDelegated
-  } = useMkrDelegated(account, delegate.voteDelegateAddress);
+  const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
+    account,
+    delegate.voteDelegateAddress
+  );
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const { network } = useActiveWeb3React();
 
-  const { data: lastVoteData } = useSWR<{ lastVote: PollVoteHistory }>(
-    `/api/address/${delegate.voteDelegateAddress}/last-vote?network=${network}`,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 0,
-      revalidateOnMount: false
-    }
-  );
+  const { data: lastVoteData } = useLastVote(delegate.voteDelegateAddress, network);
 
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 

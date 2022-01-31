@@ -6,6 +6,7 @@ import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
+import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
 
 import round from 'lodash/round';
 
@@ -172,3 +173,6 @@ export const fromBuffer = (buf, opts) => {
 
   return new BigNumber(hex.join(''), 16);
 };
+
+export const paddedBytes32ToAddress = (hex: string): string =>
+  hex.length > 42 ? hexZeroPad(stripZeros(hex), 20) : hex;

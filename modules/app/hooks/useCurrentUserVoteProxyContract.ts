@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Contract } from 'ethers';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
@@ -16,9 +17,13 @@ export const useCurrentUserVoteProxyContract = (): VoteDelegateResponse => {
   const { data } = useVoteProxyAddress(account);
 
   try {
-    const contract = data?.voteProxyAddress
-      ? getEthersContracts(data?.voteProxyAddress, abi, chainId, library, account)
-      : undefined;
+    const contract = useMemo(
+      () =>
+        data?.voteProxyAddress
+          ? getEthersContracts(data?.voteProxyAddress, abi, chainId, library, account)
+          : undefined,
+      [data?.voteProxyAddress]
+    );
 
     return {
       data: contract,

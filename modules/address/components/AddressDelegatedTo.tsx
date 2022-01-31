@@ -19,9 +19,16 @@ type CollapsableRowProps = {
   network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
+  delegateAddresses: Record<string, string>;
 };
 
-const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
+const CollapsableRow = ({
+  delegate,
+  network,
+  bpi,
+  totalDelegated,
+  delegateAddresses
+}: CollapsableRowProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const { address, lockAmount, events } = delegate;
@@ -33,7 +40,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <Address address={address} />
+              {delegateAddresses[address] ? delegateAddresses[address] : <Address address={address} />}
             </ThemeUILink>
           </Link>
         </Heading>
@@ -150,12 +157,17 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
   );
 };
 
-type DelegatedByAddressProps = {
+type AddressDelegatedToProps = {
   delegatedTo: DelegationHistory[];
   totalDelegated: number;
+  delegateAddresses: Record<string, string>;
 };
 
-const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
+const AddressDelegatedTo = ({
+  delegatedTo,
+  totalDelegated,
+  delegateAddresses
+}: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { network } = useActiveWeb3React();
 
@@ -194,6 +206,7 @@ const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: DelegatedByAddressP
                 network={network}
                 bpi={bpi}
                 totalDelegated={totalDelegated}
+                delegateAddresses={delegateAddresses}
               />
             ))
           ) : (

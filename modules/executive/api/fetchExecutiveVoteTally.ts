@@ -1,12 +1,10 @@
 import { Chief } from '.dethcrypto/eth-sdk-client/esm/types';
 import { DEPLOYMENT_BLOCK } from 'modules/contracts/contracts.constants';
 import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
-import { uniq, nth, memoizeWith, identity, takeLast } from 'ramda';
+import { uniq, nth, memoizeWith, identity } from 'ramda';
 import { getSlateAddresses } from '../helpers/getSlateAddresses';
 import { formatValue } from 'lib/string';
-
-// TODO: can this be done easier with an ethers util?
-const paddedBytes32ToAddress = hex => (hex.length > 42 ? '0x' + takeLast(40, hex) : hex);
+import { paddedBytes32ToAddress } from 'lib/utils';
 
 export async function fetchExecutiveVoteTally(chief: Chief): Promise<any | null> {
   // helper for when we might call getSlateAddresses with the same slate several times

@@ -15,12 +15,14 @@ const moduleExports = {
   env: {
     INFURA_KEY: process.env.INFURA_KEY || '84842078b09946638c03157f83405213', // ethers default infura key
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
-    USE_PROD_SPOCK: process.env.USE_PROD_SPOCK, // use production spock instance if true, otherwise use staging
+    POCKET_KEY: process.env.POCKET_KEY,
+    ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
+    USE_PROD_SPOCK: process.env.USE_PROD_SPOCK // use production spock instance if true, otherwise use staging
   },
 
   // Opt-in SWC minification (next 12.0.2)
   // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
-  
+
   // Fix Sentry error https://github.com/getsentry/sentry-javascript/issues/4103
   outputFileTracing: false,
 

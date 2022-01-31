@@ -2,9 +2,8 @@ import { getContracts } from 'modules/web3/helpers/getContracts';
 import { DEFAULT_NETWORK, SupportedNetworks } from '../constants/networks';
 import { networkNameToChainId } from '../helpers/chain';
 import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
-import { ethers } from 'ethers';
-import { config } from 'lib/config';
 import contractInfo from '../helpers/contract-info.json';
+import { getDefaultProvider } from '../helpers/getDefaultProvider';
 const pauseInfo = contractInfo.pause;
 
 export const getSpellExecutionDate = async (
@@ -14,10 +13,7 @@ export const getSpellExecutionDate = async (
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
   const contracts = getContracts(chainId);
 
-  const provider = ethers.getDefaultProvider(network, {
-    infura: config.INFURA_KEY,
-    alchemy: config.ALCHEMY_KEY
-  });
+  const provider = getDefaultProvider(network);
 
   const spellContract = getSpellContract(spellAddress, network || DEFAULT_NETWORK.network);
 
