@@ -223,20 +223,24 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
         execSupported={delegate.execSupported}
       />
 
-      <DelegateModal
-        delegate={delegate}
-        isOpen={showDelegateModal}
-        onDismiss={() => setShowDelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMKRDelegated}
-      />
-      <UndelegateModal
-        delegate={delegate}
-        isOpen={showUndelegateModal}
-        onDismiss={() => setShowUndelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMKRDelegated}
-      />
+      {showDelegateModal && (
+        <DelegateModal
+          delegate={delegate}
+          isOpen={showDelegateModal}
+          onDismiss={() => setShowDelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMKRDelegated}
+        />
+      )}
+      {showUndelegateModal && (
+        <UndelegateModal
+          delegate={delegate}
+          isOpen={showUndelegateModal}
+          onDismiss={() => setShowUndelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMKRDelegated}
+        />
+      )}
     </Card>
   );
 }
