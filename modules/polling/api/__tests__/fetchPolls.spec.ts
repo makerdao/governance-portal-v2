@@ -3,12 +3,20 @@ import fs from 'fs';
 import { config } from '../../../../lib/config';
 import os from 'os';
 import { Poll } from '../../types';
+import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 
-const cacheFile = `/${os.tmpdir()}/gov-portal-testnet-polls-${new Date().toISOString().substring(0, 10)}`;
+jest.mock('modules/gql/gqlRequest');
+
+const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-${new Date().toISOString().substring(0, 10)}`;
 
 describe('Fetch poll', () => {
   beforeAll(() => {
     config.USE_FS_CACHE = '1';
+    (gqlRequest as jest.Mock).mockResolvedValue({
+      activePolls: {
+        nodes: []
+      }
+    });
   });
 
   afterAll(() => {
@@ -18,7 +26,7 @@ describe('Fetch poll', () => {
 
   test('getPolls with filesystem caching', async () => {
     jest.setTimeout(25000);
-    await getPolls({});
+    await getPolls({}, 'mainnet');
     expect(fs.existsSync(cacheFile)).toBeTruthy();
   });
 });
