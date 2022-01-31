@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { formatValue } from 'lib/string';
@@ -18,7 +18,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { AccountContext } from 'modules/app/context/AccountContext';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { useLastVote } from 'modules/delegates/hooks/useLastVote';
 
 type PropTypes = {
@@ -28,7 +28,7 @@ type PropTypes = {
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const { account, voteDelegateContractAddress } = useContext(AccountContext);
+  const { account, voteDelegateContractAddress } = useAccount();
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
@@ -223,7 +223,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Box>
-      <CurrentlySupportingExecutive address={delegate.voteDelegateAddress} />
+      <CurrentlySupportingExecutive
+        proposalsSupported={delegate.proposalsSupported}
+        execSupported={delegate.execSupported}
+      />
 
       <DelegateModal
         delegate={delegate}

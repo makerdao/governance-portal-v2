@@ -17,6 +17,8 @@ export type DelegateContractInformation = {
   voteDelegateAddress: string;
   blockTimestamp: Date;
   mkrDelegated: string;
+  proposalsSupported: number;
+  execSupported: CMSProposal | undefined;
 };
 
 export type Delegate = {
@@ -36,6 +38,8 @@ export type Delegate = {
   executiveParticipation?: string;
   communication?: string;
   mkrDelegated: string;
+  proposalsSupported: number;
+  execSupported: CMSProposal | undefined;
 };
 
 export type DelegationHistory = {
