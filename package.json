@@ -43,7 +43,7 @@
     "@reach/menu-button": "^0.16.2",
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
-    "@sentry/nextjs": "^6.13.1",
+    "@sentry/nextjs": "^6.17.3",
     "@theme-ui/css": "^0.12.0",
     "@theme-ui/match-media": "^0.12.0",
     "@ukstv/jazzicon-react": "^1.0.0",
