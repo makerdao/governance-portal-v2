@@ -5,10 +5,10 @@ import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
 
-type Hooks = {
+type Callbacks = {
   pending?: (txHash: string) => void;
   mined?: (txId: string, txHash: string) => void;
-  error?: () => void;
+  error?: (txId: string) => void;
 };
 
 type Store = {
@@ -22,8 +22,9 @@ type Store = {
     txCreator: () => Promise<ContractTransaction>,
     account?: string,
     message?: string,
-    hooks?: Hooks
-  ) => any;
+    callbacks?: Callbacks
+  ) => Promise<string | null>;
+  listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -112,34 +113,43 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (txCreator, account, message = '', hooks) => {
+  track: async (txCreator, account, message = '', callbacks) => {
     if (!account) {
-      return;
+      return null;
     }
 
-    const txId = uuidv4();
-
+    const txId: string = uuidv4();
     get().initTx(txId, account, message);
 
     const txPromise = txCreator();
-    const tx = await txPromise;
+    get().listen(txPromise, txId, callbacks);
 
+    return txId;
+  },
+
+  listen: async (txPromise, txId, callbacks) => {
+    let tx;
+    try {
+      tx = await txPromise;
+    } catch (e) {
+      get().setError(txId, e);
+      if (typeof callbacks?.error === 'function') callbacks.error(txId);
+      return;
+    }
     // We are in "pending" state because the txn has now been been sent
     get().setPending(txId, tx.hash);
-    if (typeof hooks?.pending === 'function') hooks.pending(tx.hash);
+    if (typeof callbacks?.pending === 'function') callbacks.pending(tx.hash);
 
     // Handle mined or error txns
     tx.wait()
-      .then(txn => {
+      .then(() => {
         get().setMined(txId);
-        if (typeof hooks?.mined === 'function') hooks.mined(txId, tx.hash);
+        if (typeof callbacks?.mined === 'function') callbacks.mined(txId, tx.hash);
       })
       .catch(e => {
         get().setError(txId, e);
-        if (typeof hooks?.error === 'function') hooks.error();
+        if (typeof callbacks?.error === 'function') callbacks.error(txId);
       });
-
-    return txId;
   }
 }));
 

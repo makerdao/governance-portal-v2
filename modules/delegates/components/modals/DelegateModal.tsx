@@ -2,13 +2,8 @@ import { useState, useEffect } from 'react';
 import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import shallow from 'zustand/shallow';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
 import { Delegate } from '../../types';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { InputDelegateMkr } from './InputDelegateMkr';
@@ -45,7 +40,6 @@ export const DelegateModal = ({
 
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToDeposit, setMkrToDeposit] = useState<BigNumber>(BigNumber.from(0));
-  const [txId, setTxId] = useState(null);
   const [confirmStep, setConfirmStep] = useState(false);
 
   const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(account);
@@ -57,49 +51,30 @@ export const DelegateModal = ({
     voteDelegateAddress
   );
 
-  const { data: lock } = useDelegateLock(voteDelegateAddress);
-  const approveMKR = useApproveUnlimitedToken('mkr');
+  const {
+    approve,
+    tx: approveTx,
+    setTxId: resetApprove
+  } = useApproveUnlimitedToken('mkr', voteDelegateAddress, { mined: mutateTokenAllowance });
 
-  const [trackTransaction, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const {
+    lock,
+    tx: lockTx,
+    setTxId: resetLock
+  } = useDelegateLock(voteDelegateAddress, mkrToDeposit, {
+    mined: () => {
+      mutateTotalStaked();
+      mutateMKRDelegated();
+      mutateMkrBalance();
+    }
+  });
 
-  const approveMkr = async () => {
-    const approveTxCreator = () => approveMKR(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, account, 'Approving MKR', {
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR approved');
-        mutateTokenAllowance();
-        setTxId(null);
-      },
-      error: () => {
-        transactionsApi.getState().setMessage(txId, 'MKR approval failed');
-        setTxId(null);
-      }
-    });
-    setTxId(txId);
-  };
-
-  const lockMkr = async () => {
-    const lockTxCreator = () => lock(mkrToDeposit);
-    const txId = await trackTransaction(lockTxCreator, account, 'Depositing MKR', {
-      mined: txId => {
-        mutateTotalStaked();
-        mutateMKRDelegated();
-        mutateMkrBalance();
-        transactionsApi.getState().setMessage(txId, 'MKR deposited');
-      },
-      error: () => {
-        transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-      }
-    });
-    setTxId(txId);
-  };
+  const resetTx = mkrAllowance ? resetApprove : resetLock;
+  const tx = approveTx || lockTx;
 
   const onClose = () => {
     trackButtonClick('closeDelegateModal');
-    setTxId(null);
+    resetTx(null);
     onDismiss();
   };
 
@@ -132,7 +107,7 @@ export const DelegateModal = ({
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (
-                <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
+                <TxDisplay tx={tx} setTxId={resetTx} onDismiss={onClose} />
               ) : (
                 <>
                   {mkrAllowance ? (
@@ -140,7 +115,7 @@ export const DelegateModal = ({
                       <ConfirmContent
                         mkrToDeposit={mkrToDeposit}
                         delegate={delegate}
-                        onClick={lockMkr}
+                        onClick={lock}
                         onBack={() => setConfirmStep(false)}
                       />
                     ) : (
@@ -156,7 +131,7 @@ export const DelegateModal = ({
                     )
                   ) : (
                     <ApprovalContent
-                      onClick={approveMkr}
+                      onClick={approve}
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

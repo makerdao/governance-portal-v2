@@ -192,7 +192,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     href={getEtherscanLink(network, proposal.address, 'address')}
                     target="_blank"
                   >
-                    <Text as="p" sx={{ fontSize: [2, 5] }}>
+                    <Text sx={{ fontSize: [2, 5] }}>
                       {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
                     </Text>
                   </ThemeUILink>
