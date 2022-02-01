@@ -4,49 +4,48 @@ import useTransactionStore, {
   transactionsApi
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
-import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
 
-type FreeResponse = {
+type BurnResponse = {
   txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
-  free: (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => void;
+  setTxId: Dispatch<SetStateAction<string | null>>;
+  burn: (burnAmount: BigNumber, callbacks?: Record<string, (id?: string) => void>) => void;
   tx: Transaction | null;
 };
 
-export const useFree = (): FreeResponse => {
+export const useEsmBurn = (): BurnResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { account, voteProxyContract } = useAccount();
-  const { chief } = useContracts();
+  const { account } = useAccount();
+  const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
-    const freeTxCreator = voteProxyContract
-      ? () => voteProxyContract.free(mkrToWithdraw)
-      : () => chief.free(mkrToWithdraw);
-
-    const transactionId = track(freeTxCreator, account, 'Withdrawing MKR', {
+  const burn = (burnAmount, callbacks) => {
+    const burnTxCreator = () => esm.burn(burnAmount);
+    const txId = track(burnTxCreator, account, 'Burning MKR in Emergency Shutdown Module', {
+      initialized: () => {
+        if (typeof callbacks?.initialized === 'function') callbacks.initialized();
+      },
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();
       },
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
+        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
         if (typeof callbacks?.mined === 'function') callbacks.mined();
       },
-      error: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
+      error: () => {
         if (typeof callbacks?.error === 'function') callbacks.error();
       }
     });
-    setTxId(transactionId);
+    setTxId(txId);
   };
 
-  return { txId, setTxId, free, tx };
+  return { txId, setTxId, burn, tx };
 };

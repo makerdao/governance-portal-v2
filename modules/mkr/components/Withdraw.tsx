@@ -51,18 +51,7 @@ const ModalContent = ({ close, ...props }) => {
 
   const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
 
-  const {
-    free,
-    tx: freeTx,
-    setTxId: resetFree
-  } = useFree(mkrToWithdraw, {
-    mined: () => {
-      // Mutate locked state
-      mutateLocked();
-      close();
-    },
-    error: () => close()
-  });
+  const { free, tx: freeTx, setTxId: resetFree } = useFree();
 
   const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
@@ -125,7 +114,14 @@ const ModalContent = ({ close, ...props }) => {
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               onClick={() => {
                 trackButtonClick('withdrawMkr');
-                free();
+                free(mkrToWithdraw, {
+                  mined: () => {
+                    // Mutate locked state
+                    mutateLocked();
+                    close();
+                  },
+                  error: () => close()
+                });
               }}
             >
               Withdraw MKR
