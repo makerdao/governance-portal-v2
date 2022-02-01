@@ -199,7 +199,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 }
                 label="Spell Address"
               />
-              <StatBox value={spellData && formatValue(spellData.mkrSupport, 'wad', 3)} label="MKR Support" />
+              <StatBox
+                value={spellData && spellData.mkrSupport && formatValue(spellData.mkrSupport, 'wad', 3)}
+                label="MKR Support"
+              />
               <StatBox value={supporters && supporters.length} label="Supporters" />
             </Flex>
             {'about' in proposal ? (
@@ -255,7 +258,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
-            <>
+            <Box>
               <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
                 Your Vote
               </Heading>
@@ -275,7 +278,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   Vote for this proposal
                 </Button>
               </Card>
-            </>
+            </Box>
           )}
           <Box>
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
