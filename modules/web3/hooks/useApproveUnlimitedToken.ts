@@ -19,7 +19,11 @@ type ApproveResponse = {
 export const useApproveUnlimitedToken = (
   name: ContractName,
   addressToApprove: string,
-  callbacks?: Record<string, () => void>
+  callbacks?: {
+    mined?: () => void;
+    pending?: () => void;
+    error?: () => void;
+  }
 ): ApproveResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
@@ -40,10 +44,12 @@ export const useApproveUnlimitedToken = (
       mined: txId => {
         transactionsApi.getState().setMessage(txId, `${name.toUpperCase()} approved`);
         if (typeof callbacks?.mined === 'function') callbacks.mined();
+        setTxId(null);
       },
       error: txId => {
         transactionsApi.getState().setMessage(txId, `${name.toUpperCase()} approval failed`);
         if (typeof callbacks?.error === 'function') callbacks.error();
+        setTxId(null);
       }
     });
     setTxId(txId);

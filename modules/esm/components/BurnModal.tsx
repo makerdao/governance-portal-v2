@@ -30,7 +30,7 @@ const ModalContent = ({
 }): React.ReactElement => {
   const { account } = useAccount();
   const [step, setStep] = useState('default');
-  const [txId, setTxId] = useState(null);
+  const [txId, setTxId] = useState('');
   const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
 
   const { data: mkrBalance } = useMkrBalance(account);
@@ -58,7 +58,7 @@ const ModalContent = ({
       error: () => setStep('failed')
     });
 
-    setTxId(txId);
+    setTxId(txId as string);
     setStep('signing');
   };
 

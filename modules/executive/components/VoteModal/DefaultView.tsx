@@ -157,7 +157,7 @@ export default function DefaultVoteModalView({
       }
     });
 
-    onTransactionCreated(txId);
+    onTransactionCreated(txId as string);
   };
 
   const GridBox = ({ bpi, children }) => (

@@ -57,7 +57,6 @@ export const DelegateModal = ({
     setTxId: resetApprove
   } = useApproveUnlimitedToken('mkr', voteDelegateAddress, {
     mined: () => {
-      resetApprove(null);
       mutateTokenAllowance();
     }
   });

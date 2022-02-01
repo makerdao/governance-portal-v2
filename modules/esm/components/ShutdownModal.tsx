@@ -22,7 +22,7 @@ const ModalContent = ({
   thresholdAmount?: BigNumber;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
-  const [txId, setTxId] = useState(null);
+  const [txId, setTxId] = useState('');
   const { account } = useAccount();
   const { network } = useActiveWeb3React();
   const { esm } = useContracts();
@@ -47,7 +47,7 @@ const ModalContent = ({
       error: () => setStep('failed')
     });
 
-    setTxId(txId);
+    setTxId(txId as string);
     setStep('signing');
   };
 

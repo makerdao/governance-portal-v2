@@ -31,10 +31,9 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 const ModalContent = ({ close, ...props }) => {
   const { account, voteProxyOldContractAddress, voteProxyOldHotAddress, voteProxyOldContract } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const [txId, setTxId] = useState(null);
+  const [txId, setTxId] = useState<null | string>(null);
 
   const oldChiefAddress = useContractAddress('chiefOld');
-  const approveOldIOU = useApproveUnlimitedToken('iouOld');
 
   const { chiefOld } = useContracts() as MainnetSdk;
 
@@ -44,6 +43,10 @@ const ModalContent = ({ close, ...props }) => {
     account,
     voteProxyOldContractAddress ? undefined : oldChiefAddress
   );
+
+  const approveOldIOU = useApproveUnlimitedToken('iouOld', oldChiefAddress, {
+    mined: mutateAllowance
+  });
 
   const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
@@ -58,27 +61,29 @@ const ModalContent = ({ close, ...props }) => {
     shallow
   );
 
+  const [transaction, resetTransaction] = tx ? [tx, setTxId] : [approveOldIOU.tx, approveOldIOU.setTxId];
+
   return (
     <BoxWithClose close={close} {...props}>
       <Box>
-        {tx && (
+        {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text variant="microHeading" color="onBackgroundAlt">
-              {tx.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
+              {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {tx.status !== 'pending' && (
+            {transaction.status !== 'pending' && (
               <Box>
                 <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
                 </Text>
                 <Text
                   sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxId(null)}
+                  onClick={() => resetTransaction(null)}
                 >
                   Cancel
                 </Text>
@@ -86,7 +91,7 @@ const ModalContent = ({ close, ...props }) => {
             )}
           </Stack>
         )}
-        {!tx && allowanceOk && (
+        {!transaction && allowanceOk && (
           <Stack gap={3}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading" color="onBackgroundAlt">
@@ -118,7 +123,7 @@ const ModalContent = ({ close, ...props }) => {
                     close();
                   },
                   error: () => {
-                    transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
+                    transactionsApi.getState().setMessage(txId as string, 'MKR withdraw failed');
                     close();
                   }
                 });
@@ -129,7 +134,7 @@ const ModalContent = ({ close, ...props }) => {
             </Button>
           </Stack>
         )}
-        {!tx && !allowanceOk && (
+        {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
               <Text variant="microHeading" color="onBackgroundAlt" mb={2}>
@@ -145,20 +150,8 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveWithdrawOldChief');
-                const approveTxCreator = () => approveOldIOU(oldChiefAddress);
 
-                const txId = await track(approveTxCreator, account, 'Granting IOU approval', {
-                  mined: txId => {
-                    transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
-                    mutateAllowance();
-                    setTxId(null);
-                  },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId, 'IOU approval failed');
-                    setTxId(null);
-                  }
-                });
-                setTxId(txId);
+                approveOldIOU.approve();
               }}
             >
               Approve

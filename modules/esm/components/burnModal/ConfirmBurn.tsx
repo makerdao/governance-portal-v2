@@ -103,20 +103,15 @@ const ConfirmBurn = ({
     account,
     esmAddress
   );
-  const approveMKR = useApproveUnlimitedToken('mkr');
-
-  const giveProxyMkrAllowance = async () => {
-    setMkrApprovePending(true);
-    try {
-      await approveMKR(esmAddress);
+  const approveMKR = useApproveUnlimitedToken('mkr', esmAddress, {
+    mined: () => {
       mutateAllowance();
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `unlock mkr tx failed ${message}`;
-      console.error(errMsg);
+      setMkrApprovePending(false);
+    },
+    error: () => {
+      setMkrApprovePending(false);
     }
-    setMkrApprovePending(false);
-  };
+  });
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>
@@ -145,7 +140,14 @@ const ConfirmBurn = ({
         </Box>
       )}
       <Flex sx={{ flexDirection: 'row', mt: 3, justifyContent: 'flex-start', alignItems: 'center' }}>
-        <Toggle active={allowance} onClick={giveProxyMkrAllowance} disabled={mkrApprovePending} />
+        <Toggle
+          active={allowance}
+          onClick={() => {
+            setMkrApprovePending(true);
+            approveMKR.approve();
+          }}
+          disabled={mkrApprovePending}
+        />
         <Flex ml={3}>
           <Text>Unlock MKR to continue</Text>
         </Flex>
