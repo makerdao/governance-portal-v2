@@ -258,7 +258,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
-            <>
+            <Box>
               <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
                 Your Vote
               </Heading>
@@ -278,9 +278,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   Vote for this proposal
                 </Button>
               </Card>
-            </>
+            </Box>
           )}
-          {/* <Box>
+          <Box>
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
@@ -385,9 +385,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   ))}
               </Box>
             </Card>
-          </Box> */}
-          {/* <ResourceBox type={'executive'} /> */}
-          {/* <ResourceBox type={'general'} /> */}
+          </Box>
+          <ResourceBox type={'executive'} />
+          <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>
     </PrimaryLayout>
