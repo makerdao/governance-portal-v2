@@ -13,6 +13,7 @@ import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -102,6 +103,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { chiefOld } = useContracts() as MainnetSdk;
+  const { data: mkrOnHat } = useMkrOnHat();
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
@@ -385,6 +387,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       network={network}
                       account={account}
                       votedProposals={votedProposals}
+                      mkrOnHat={mkrOnHat}
                     />
                   ))}
               </Stack>
@@ -418,6 +421,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                           network={network}
                           account={account}
                           votedProposals={votedProposals}
+                          mkrOnHat={mkrOnHat}
                         />
                       ))}
                   </Stack>

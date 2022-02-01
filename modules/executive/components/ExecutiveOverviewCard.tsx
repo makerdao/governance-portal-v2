@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
@@ -13,7 +13,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
@@ -26,6 +25,7 @@ type Props = {
   account?: string;
   network: SupportedNetworks;
   votedProposals: string[];
+  mkrOnHat?: BigNumber;
 };
 
 export default function ExecutiveOverviewCard({
@@ -35,10 +35,10 @@ export default function ExecutiveOverviewCard({
   network,
   account,
   votedProposals,
+  mkrOnHat,
   ...props
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
