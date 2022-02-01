@@ -2,16 +2,11 @@ import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import shallow from 'zustand/shallow';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -22,35 +17,54 @@ import { BigNumber } from 'ethers';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { parseUnits } from 'ethers/lib/utils';
 import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useFree } from '../hooks/useFree';
 
 const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
-  const [txId, setTxId] = useState<null | string>(null);
   const { chief } = useContracts();
 
-  const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
+  const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     'iou',
     parseUnits('100000000'),
     account,
     voteProxyContract ? undefined : chief.address
   );
 
-  const approveIOU = useApproveUnlimitedToken('iou', chief.address, {
-    mined: mutateAllowance
+  const {
+    approve,
+    tx: approveTx,
+    setTxId: resetApprove
+  } = useApproveUnlimitedToken('iou', chief.address, {
+    mined: () => {
+      mutateTokenAllowance();
+      resetApprove(null);
+    },
+    error: () => {
+      resetApprove(null);
+    }
   });
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
   const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
 
-  const [transaction, resetTransaction] = tx ? [tx, setTxId] : [approveIOU.tx, approveIOU.setTxId];
+  const {
+    free,
+    tx: freeTx,
+    setTxId: resetFree
+  } = useFree(mkrToWithdraw, {
+    mined: () => {
+      // Mutate locked state
+      mutateLocked();
+      close();
+    },
+    error: () => close()
+  });
+
+  const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   return (
     <BoxWithClose close={close} {...props}>
@@ -111,24 +125,7 @@ const ModalContent = ({ close, ...props }) => {
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
               onClick={async () => {
                 trackButtonClick('withdrawMkr');
-
-                const freeTxCreator = voteProxyContract
-                  ? () => voteProxyContract.free(mkrToWithdraw)
-                  : () => chief.free(mkrToWithdraw);
-
-                const txId = await track(freeTxCreator, account, 'Withdrawing MKR', {
-                  mined: txId => {
-                    // Mutate locked amount
-                    mutateLocked();
-                    transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
-                    close();
-                  },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId as string, 'MKR withdraw failed');
-                    close();
-                  }
-                });
-                setTxId(txId);
+                free();
               }}
             >
               Withdraw MKR
@@ -150,7 +147,7 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveWithdraw');
-                approveIOU.approve();
+                approve();
               }}
               data-testid="withdraw-approve-button"
             >
