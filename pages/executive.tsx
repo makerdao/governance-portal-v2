@@ -382,7 +382,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                     <ExecutiveOverviewCard
                       key={index}
                       proposal={proposal}
-                      spellData={spellData ? spellData[proposal.address] : undefined}
                       isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                       network={network}
                       account={account}
@@ -416,7 +415,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                         <ExecutiveOverviewCard
                           key={index}
                           proposal={proposal}
-                          spellData={spellData ? spellData[proposal.address] : undefined}
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                           network={network}
                           account={account}
