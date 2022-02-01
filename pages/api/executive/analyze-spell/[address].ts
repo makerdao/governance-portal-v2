@@ -58,13 +58,13 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
       .catch(_ => null),
 
     // datePassed
-    getSpellScheduledDate(address, network),
+    getSpellScheduledDate(address, network).catch(_ => undefined),
 
     // dateExecuted
-    getSpellExecutionDate(address, network),
+    getSpellExecutionDate(address, network).catch(_ => undefined),
 
     // mkrSupport
-    getChiefApprovals(address, network),
+    getChiefApprovals(address, network).catch(_ => undefined),
 
     // executiveHash
     spellContract
