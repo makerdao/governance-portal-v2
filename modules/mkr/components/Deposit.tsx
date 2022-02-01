@@ -110,7 +110,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('DepositMkr');
                 lock();
               }}
@@ -132,7 +132,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('approveDeposit');
                 approve();
               }}

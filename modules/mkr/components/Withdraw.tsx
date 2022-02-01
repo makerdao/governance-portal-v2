@@ -123,7 +123,7 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('withdrawMkr');
                 free();
               }}
@@ -145,7 +145,7 @@ const ModalContent = ({ close, ...props }) => {
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('approveWithdraw');
                 approve();
               }}
