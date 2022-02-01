@@ -7,7 +7,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { Proposal, SpellData } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -18,22 +17,29 @@ import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
   spellData?: SpellData;
+  account?: string;
+  network: SupportedNetworks;
+  votedProposals: string[];
 };
 
-export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
+export default function ExecutiveOverviewCard({
+  proposal,
+  isHat,
+  spellData,
+  network,
+  account,
+  votedProposals,
+  ...props
+}: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { account } = useAccount();
-  const { network } = useActiveWeb3React();
   const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
-  const { data: votedProposals } = useVotedProposals();
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
   const hasVotedFor =
