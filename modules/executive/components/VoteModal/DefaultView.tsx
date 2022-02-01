@@ -4,7 +4,6 @@ import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import useTransactionsStore, { transactionsApi } from 'modules/web3/stores/transactions';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
@@ -17,9 +16,9 @@ import { CMSProposal, Proposal } from 'modules/executive/types';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
-import shallow from 'zustand/shallow';
 import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
 import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { useVoteProxyVote } from 'modules/executive/hooks/useVoteProxyVote';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
@@ -44,7 +43,7 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
-  const { account, voteProxyContractAddress, voteDelegateContractAddress, voteProxyContract } = useAccount();
+  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
   const { network, library } = useActiveWeb3React();
   const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
@@ -73,16 +72,15 @@ export default function DefaultVoteModalView({
     setSignedMessage(signed);
   };
 
-  const track = useTransactionsStore(state => state.track, shallow);
-
-  // References to vote methods to be called in "track" function for transaction tracking
-  const { voteOne, voteMany } = useChiefVote();
-  const delegateVote = useDelegateVote();
-
   const { data: allSlates } = useAllSlates();
   const { mutate: mutateMkrOnHat } = useMkrOnHat();
 
   const { data: hat } = useHat();
+
+  const { vote: delegateVote } = useDelegateVote();
+  const { vote: proxyVote } = useVoteProxyVote();
+  const { vote: chiefVote } = useChiefVote();
+
   const isHat = hat && hat === proposal.address;
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
@@ -95,7 +93,7 @@ export default function DefaultVoteModalView({
       ? lockedMkr.add(BigNumber.from(spellData.mkrSupport))
       : BigNumber.from(0);
 
-  const vote = async hatChecked => {
+  const vote = hatChecked => {
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
 
@@ -106,21 +104,8 @@ export default function DefaultVoteModalView({
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
 
-    let voteTxCreator;
-
-    if (delegateVote) {
-      console.log('voting as delegate', delegateVote);
-      const voteCall = Array.isArray(slateOrProposals) ? delegateVote.voteMany : delegateVote.voteOne;
-      voteTxCreator = () => voteCall(slateOrProposals);
-    } else if (voteProxyContract) {
-      // TODO: refactor this out next:
-      voteTxCreator = () => voteProxyContract.voteExec(slateOrProposals);
-    } else {
-      const voteCall = Array.isArray(slateOrProposals) ? voteMany : voteOne;
-      voteTxCreator = () => voteCall(slateOrProposals);
-    }
-
-    const txId = await track(voteTxCreator, account, 'Voting on executive proposal', {
+    const callbacks = {
+      initialized: txId => onTransactionCreated(txId),
       pending: txHash => {
         // if comment included, add to comments db
         if (comment.length > 0) {
@@ -143,21 +128,23 @@ export default function DefaultVoteModalView({
             })
             .catch(() => console.error('failed to add comment'));
         }
-
         onTransactionPending();
       },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+      mined: () => {
         mutateVotedProposals();
         mutateMkrOnHat();
         onTransactionMined();
       },
-      error: () => {
-        onTransactionFailed();
-      }
-    });
+      error: () => onTransactionFailed()
+    };
 
-    onTransactionCreated(txId as string);
+    if (voteDelegateContractAddress) {
+      delegateVote(slateOrProposals, callbacks);
+    } else if (voteProxyContractAddress) {
+      proxyVote(slateOrProposals, callbacks);
+    } else {
+      chiefVote(slateOrProposals, callbacks);
+    }
   };
 
   const GridBox = ({ bpi, children }) => (
