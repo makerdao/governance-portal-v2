@@ -43,10 +43,8 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
     setTxId: resetApprove
   } = useApproveUnlimitedToken('mkr', voteProxyContractAddress || chief.address, {
     mined: () => {
-      resetApprove(null);
       mutateTokenAllowance();
-    },
-    error: () => resetApprove(null)
+    }
   });
 
   const {

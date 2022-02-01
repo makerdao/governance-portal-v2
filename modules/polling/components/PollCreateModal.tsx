@@ -24,7 +24,7 @@ type Props = {
 };
 
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
-  const [txId, setTxId] = useState(null);
+  const [txId, setTxId] = useState<null | string>(null);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
   const { polling } = useContracts();

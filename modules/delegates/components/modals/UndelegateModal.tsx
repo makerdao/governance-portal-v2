@@ -52,7 +52,6 @@ export const UndelegateModal = ({
     setTxId: resetApprove
   } = useApproveUnlimitedToken('iou', voteDelegateAddress, {
     mined: () => {
-      resetApprove(null);
       mutateTokenAllowance();
     }
   });

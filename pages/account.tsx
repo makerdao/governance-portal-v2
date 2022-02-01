@@ -63,7 +63,7 @@ const AccountPage = (): React.ReactElement => {
   );
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
-  const [txId, setTxId] = useState(null);
+  const [txId, setTxId] = useState<null | string>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
 
@@ -81,7 +81,7 @@ const AccountPage = (): React.ReactElement => {
         mutateAccount && mutateAccount();
       },
       error: () => {
-        transactionsApi.getState().setMessage(txId, 'Delegate contract failed');
+        transactionsApi.getState().setMessage(txId as string, 'Delegate contract failed');
       }
     });
     setTxId(txId);
