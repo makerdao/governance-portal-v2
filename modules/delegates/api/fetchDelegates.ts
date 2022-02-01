@@ -10,6 +10,13 @@ import {
   DelegateContractInformation,
   DelegateRepoInformation
 } from 'modules/delegates/types';
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { getContracts } from 'modules/web3/helpers/getContracts';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
+import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
+import { CMSProposal } from 'modules/executive/types';
+import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -35,7 +42,10 @@ function mergeDelegateInfo(
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
-    mkrDelegated: onChainDelegate.mkrDelegated
+    mkrDelegated: onChainDelegate.mkrDelegated,
+    proposalsSupported: onChainDelegate.proposalsSupported,
+    execSupported: onChainDelegate.execSupported,
+    pollVoteHistory: onChainDelegate.pollVoteHistory
   };
 }
 
@@ -69,7 +79,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
 
   // Map all the raw delegates info and map it to Delegate structure with the github info
-  const delegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
+  const mergedDelegates: Delegate[] = onChainDelegates.map(onChainDelegate => {
     const githubDelegate = gitHubDelegates
       ? gitHubDelegates.find(
           i => i.voteDelegateAddress.toLowerCase() === onChainDelegate.voteDelegateAddress.toLowerCase()
@@ -78,6 +88,27 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
 
     return mergeDelegateInfo(onChainDelegate, githubDelegate);
   });
+
+  const contracts = getContracts(networkNameToChainId(currentNetwork));
+  const executives = await getExecutiveProposals(currentNetwork);
+  const delegates = await Promise.all(
+    mergedDelegates.map(async delegate => {
+      const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
+      const votedProposals =
+        votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];
+      const proposalsSupported: number = votedProposals?.length || 0;
+      const execSupported: CMSProposal | undefined = executives?.find(proposal =>
+        votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
+      );
+      const pollVoteHistory = await fetchAddressPollVoteHistory(delegate.voteDelegateAddress, currentNetwork);
+      return {
+        ...delegate,
+        proposalsSupported,
+        execSupported,
+        pollVoteHistory
+      };
+    })
+  );
 
   const delegatesResponse: DelegatesAPIResponse = {
     delegates,

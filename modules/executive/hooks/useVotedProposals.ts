@@ -2,7 +2,7 @@ import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import useSWR from 'swr';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useContracts } from 'modules/web3/hooks/useContracts';
-import { getSlateAddresses } from '../helpers/getSlateAddresses';
+import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 
 type VotedProposalsResponse = {
   data: string[];

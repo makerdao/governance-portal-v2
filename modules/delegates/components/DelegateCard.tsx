@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import { formatValue } from 'lib/string';
@@ -17,9 +17,7 @@ import { CurrentlySupportingExecutive } from 'modules/executive/components/Curre
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { AccountContext } from 'modules/app/context/AccountContext';
-import { useLastVote } from 'modules/delegates/hooks/useLastVote';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 type PropTypes = {
   delegate: Delegate;
@@ -28,7 +26,7 @@ type PropTypes = {
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const { account, voteDelegateContractAddress } = useContext(AccountContext);
+  const { account, voteDelegateContractAddress } = useAccount();
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
@@ -37,11 +35,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   );
 
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
-  const { network } = useActiveWeb3React();
-
-  const { data: lastVoteData } = useLastVote(delegate.voteDelegateAddress, network);
 
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
+
+  const lastVote = delegate.pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0];
 
   return (
     <Card
@@ -53,10 +50,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
-          {lastVoteData && (
-            <LastVoted expired={delegate.expired} date={lastVoteData.lastVote?.blockTimestamp} left />
+          {delegate.pollVoteHistory && (
+            <LastVoted expired={delegate.expired} date={lastVote ? lastVote.blockTimestamp : null} left />
           )}
-          {!lastVoteData && <SkeletonThemed width={'200px'} height={'15px'} />}
+          {!delegate.pollVoteHistory && <SkeletonThemed width={'200px'} height={'15px'} />}
         </Box>
         <Flex
           sx={{
@@ -223,22 +220,29 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           </Flex>
         </Flex>
       </Box>
-      <CurrentlySupportingExecutive address={delegate.voteDelegateAddress} />
+      <CurrentlySupportingExecutive
+        proposalsSupported={delegate.proposalsSupported}
+        execSupported={delegate.execSupported}
+      />
 
-      <DelegateModal
-        delegate={delegate}
-        isOpen={showDelegateModal}
-        onDismiss={() => setShowDelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMKRDelegated}
-      />
-      <UndelegateModal
-        delegate={delegate}
-        isOpen={showUndelegateModal}
-        onDismiss={() => setShowUndelegateModal(false)}
-        mutateTotalStaked={mutateTotalStaked}
-        mutateMKRDelegated={mutateMKRDelegated}
-      />
+      {showDelegateModal && (
+        <DelegateModal
+          delegate={delegate}
+          isOpen={showDelegateModal}
+          onDismiss={() => setShowDelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMKRDelegated}
+        />
+      )}
+      {showUndelegateModal && (
+        <UndelegateModal
+          delegate={delegate}
+          isOpen={showUndelegateModal}
+          onDismiss={() => setShowUndelegateModal(false)}
+          mutateTotalStaked={mutateTotalStaked}
+          mutateMKRDelegated={mutateMKRDelegated}
+        />
+      )}
     </Card>
   );
 }
