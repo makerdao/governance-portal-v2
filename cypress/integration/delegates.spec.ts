@@ -20,39 +20,37 @@ describe('Delegates Page', () => {
     // Mainnet delegates
     cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 0);
 
-    setAccount(TEST_ACCOUNTS.normal, () => {      
-          // Shoudl find various delegates
-          cy.get('[data-testid="delegate-card"]').should('have.length', 9);
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Shoudl find various delegates
+      cy.get('[data-testid="delegate-card"]').should('have.length', 9);
     });
   });
 
   it('Should find the delegates system info', () => {
     visitPage('/delegates');
-    setAccount(TEST_ACCOUNTS.normal, () => {   
+    setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
       cy.get('[data-testid="total-delegates-system-info"]').contains('9');
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('9');
       cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
-
     });
   });
 
   it('Should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
 
-    setAccount(TEST_ACCOUNTS.normal, () => {  
-
+    setAccount(TEST_ACCOUNTS.normal, () => {
       cy.get('[data-testid="delegate-type-filter"]').click();
-  
+
       cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
-  
+
       // See now 0 delegates
       cy.get('[data-testid="delegate-card"]').should('have.length', 0);
-  
+
       // Reset filters
       cy.get('[data-testid="delegate-reset-filters"]').click();
-  
+
       // Now see al the delegates again
       cy.get('[data-testid="delegate-card"]').should('have.length', 9);
     });
