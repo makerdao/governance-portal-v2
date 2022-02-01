@@ -33,16 +33,16 @@ export const useApproveUnlimitedToken = (
 
   const approve = () => {
     const approveTxCreator = () => token['approve(address)'](addressToApprove);
-    const txId = track(approveTxCreator, account, 'Approving MKR', {
+    const txId = track(approveTxCreator, account, `Approving ${name.toUpperCase()}`, {
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();
       },
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR approved');
+        transactionsApi.getState().setMessage(txId, `${name.toUpperCase()} approved`);
         if (typeof callbacks?.mined === 'function') callbacks.mined();
       },
       error: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR approval failed');
+        transactionsApi.getState().setMessage(txId, `${name.toUpperCase()} approval failed`);
         if (typeof callbacks?.error === 'function') callbacks.error();
       }
     });

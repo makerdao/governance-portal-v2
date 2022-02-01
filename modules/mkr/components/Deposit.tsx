@@ -2,17 +2,12 @@ import { useState } from 'react';
 import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import shallow from 'zustand/shallow';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { fadeIn } from 'lib/keyframes';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -24,29 +19,50 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { useLock } from '../hooks/useLock';
 
 const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
-  const [txId, setTxId] = useState(null);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { account, voteProxyContractAddress, voteProxyColdAddress, voteProxyContract } = useAccount();
+  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
   const { data: mkrBalance } = useMkrBalance(account);
 
   const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
   const { chief } = useContracts();
-  const approveMKR = useApproveUnlimitedToken('mkr');
 
-  const { data: chiefAllowance, mutate: mutateAllowance } = useTokenAllowance(
+  const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     'mkr',
     parseUnits('100000000'),
     account,
     account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chief.address
   );
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const {
+    approve,
+    tx: approveTx,
+    setTxId: resetApprove
+  } = useApproveUnlimitedToken('mkr', voteProxyContractAddress || chief.address, {
+    mined: () => {
+      resetApprove(null);
+      mutateTokenAllowance();
+    },
+    error: () => resetApprove(null)
+  });
+
+  const {
+    lock,
+    tx: lockTx,
+    setTxId: resetLock
+  } = useLock(mkrToDeposit, {
+    mined: () => {
+      // Mutate locked state
+      mutateLocked();
+      close();
+    },
+    error: () => close()
+  });
+
+  const [tx, resetTx] = chiefAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
   return (
     <BoxWithClose close={close}>
@@ -69,7 +85,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
                 <Text
                   as="p"
                   sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxId(null)}
+                  onClick={() => resetTx(null)}
                 >
                   Cancel
                 </Text>
@@ -98,22 +114,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
               onClick={async () => {
                 trackButtonClick('DepositMkr');
-                const lockTxCreator = voteProxyContract
-                  ? () => voteProxyContract.lock(mkrToDeposit)
-                  : () => chief.lock(mkrToDeposit);
-                const txId = await track(lockTxCreator, account, 'Depositing MKR', {
-                  mined: txId => {
-                    // Mutate locked state
-                    mutateLocked();
-                    transactionsApi.getState().setMessage(txId, 'MKR deposited');
-                    close();
-                  },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-                    close();
-                  }
-                });
-                setTxId(txId);
+                lock();
               }}
             >
               Deposit MKR
@@ -135,21 +136,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={async () => {
                 trackButtonClick('approveDeposit');
-                const contractToApprove = voteProxyContractAddress || chief.address;
-                const approveTxCreator = () => approveMKR(contractToApprove);
-
-                const txId = await track(approveTxCreator, account, 'Granting MKR approval', {
-                  mined: txId => {
-                    transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
-                    mutateAllowance();
-                    setTxId(null);
-                  },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId, 'MKR approval failed');
-                    setTxId(null);
-                  }
-                });
-                setTxId(txId);
+                approve();
               }}
               data-testid="deposit-approve-button"
             >
