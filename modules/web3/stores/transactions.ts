@@ -23,7 +23,7 @@ type Store = {
     account?: string,
     message?: string,
     callbacks?: Callbacks
-  ) => Promise<string | null>;
+  ) => string | null;
   listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };
 
@@ -113,7 +113,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (txCreator, account, message = '', callbacks) => {
+  track: (txCreator, account, message = '', callbacks) => {
     if (!account) {
       return null;
     }

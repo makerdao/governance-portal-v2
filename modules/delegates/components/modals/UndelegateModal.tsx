@@ -2,15 +2,10 @@ import { useState } from 'react';
 import { Box } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import shallow from 'zustand/shallow';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { Delegate } from '../../types';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { ApprovalContent, InputDelegateMkr, TxDisplay } from 'modules/delegates/components';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -42,61 +37,42 @@ export const UndelegateModal = ({
   const { account } = useAccount();
   const voteDelegateAddress = delegate.voteDelegateAddress;
   const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
-  const [txId, setTxId] = useState(null);
 
   const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
-  const { data: iouAllowance, mutate: mutateAllowance } = useTokenAllowance(
+  const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
     'iou',
     parseUnits('100000000'),
     account,
     voteDelegateAddress
   );
 
-  const { data: free } = useDelegateFree(voteDelegateAddress);
-  const approveIOU = useApproveUnlimitedToken('iou');
+  const {
+    approve,
+    tx: approveTx,
+    setTxId: resetApprove
+  } = useApproveUnlimitedToken('iou', voteDelegateAddress, {
+    mined: () => {
+      resetApprove(null);
+      mutateTokenAllowance();
+    }
+  });
 
-  const [trackTransaction, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const {
+    free,
+    tx: freeTx,
+    setTxId: resetFree
+  } = useDelegateFree(voteDelegateAddress, mkrToWithdraw, {
+    mined: () => {
+      mutateTotalStaked();
+      mutateMKRDelegated();
+    }
+  });
 
-  const approveIou = async () => {
-    const approveTxCreator = () => approveIOU(voteDelegateAddress);
-    const txId = await trackTransaction(approveTxCreator, account, 'Approving IOU', {
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'IOU approved');
-        setTxId(null);
-        mutateAllowance();
-      },
-      error: () => {
-        transactionsApi.getState().setMessage(txId, 'IOU approval failed');
-        setTxId(null);
-      }
-    });
-    setTxId(txId);
-  };
-
-  const freeMkr = async () => {
-    //TODO: update the mkr input to handle ethers bignumber
-    const amt = mkrToWithdraw.toString();
-    const freeTxCreator = () => free(parseUnits(amt, 18));
-
-    const txId = await trackTransaction(freeTxCreator, account, 'Withdrawing MKR', {
-      mined: txId => {
-        mutateTotalStaked();
-        mutateMKRDelegated();
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
-      },
-      error: () => {
-        transactionsApi.getState().setMessage(txId, 'MKR withdrawal failed');
-      }
-    });
-    setTxId(txId);
-  };
+  const [tx, resetTx] = iouAllowance ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   const onClose = () => {
     trackButtonClick('closeUndelegateModal');
-    setTxId(null);
+    resetTx(null);
     onDismiss();
   };
 
@@ -124,7 +100,7 @@ export const UndelegateModal = ({
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (
-                <TxDisplay tx={tx} setTxId={setTxId} onDismiss={onClose} />
+                <TxDisplay tx={tx} setTxId={resetTx} onDismiss={onClose} />
               ) : (
                 <>
                   {mkrStaked && iouAllowance ? (
@@ -134,12 +110,12 @@ export const UndelegateModal = ({
                       onChange={setMkrToWithdraw}
                       balance={mkrStaked}
                       buttonLabel="Undelegate MKR"
-                      onClick={freeMkr}
+                      onClick={free}
                       showAlert={false}
                     />
                   ) : (
                     <ApprovalContent
-                      onClick={approveIou}
+                      onClick={approve}
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

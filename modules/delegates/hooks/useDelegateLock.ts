@@ -15,7 +15,7 @@ import { Transaction } from 'modules/web3/types/transaction';
 type LockResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  lock: () => Promise<void>;
+  lock: () => void;
   tx: Transaction | null;
 };
 
@@ -35,9 +35,9 @@ export const useDelegateLock = (
 
   const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account);
 
-  const lock = async () => {
+  const lock = () => {
     const lockTxCreator = () => vdContract.lock(mkrToDeposit);
-    const txId = await track(lockTxCreator, account, 'Depositing MKR', {
+    const txId = track(lockTxCreator, account, 'Depositing MKR', {
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();
       },

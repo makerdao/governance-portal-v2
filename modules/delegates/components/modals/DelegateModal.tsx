@@ -55,7 +55,12 @@ export const DelegateModal = ({
     approve,
     tx: approveTx,
     setTxId: resetApprove
-  } = useApproveUnlimitedToken('mkr', voteDelegateAddress, { mined: mutateTokenAllowance });
+  } = useApproveUnlimitedToken('mkr', voteDelegateAddress, {
+    mined: () => {
+      resetApprove(null);
+      mutateTokenAllowance();
+    }
+  });
 
   const {
     lock,
@@ -69,8 +74,7 @@ export const DelegateModal = ({
     }
   });
 
-  const resetTx = mkrAllowance ? resetApprove : resetLock;
-  const tx = approveTx || lockTx;
+  const [tx, resetTx] = mkrAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
   const onClose = () => {
     trackButtonClick('closeDelegateModal');
