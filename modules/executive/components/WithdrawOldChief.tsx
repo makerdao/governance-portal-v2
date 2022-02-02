@@ -19,6 +19,7 @@ import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 // Note this only works on mainnet
 // TODO: Check that the amounts for allowance are correct
@@ -30,19 +31,13 @@ const ModalContent = ({ close, ...props }) => {
   const { chiefOld } = useContracts() as MainnetSdk;
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    'iouOld',
+    Tokens.IOU_OLD,
     parseUnits('100000000'),
     account,
     voteProxyOldContractAddress ? undefined : chiefOld.address
   );
 
-  const {
-    approve,
-    tx: approveTx,
-    setTxId: resetApprove
-  } = useApproveUnlimitedToken('iouOld', chiefOld.address, {
-    mined: () => mutateTokenAllowance()
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU_OLD);
 
   const allowanceOk = voteProxyOldContract ? true : allowance; // no need for IOU approval when using vote proxy
 
@@ -52,14 +47,7 @@ const ModalContent = ({ close, ...props }) => {
     chiefOld.deposits(lockedMkrKeyOldChief as string)
   );
 
-  const {
-    free,
-    tx: freeTx,
-    setTxId: resetFree
-  } = useOldChiefFree(lockedMkr as BigNumber, {
-    mined: () => close(),
-    error: () => close()
-  });
+  const { free, tx: freeTx, setTxId: resetFree } = useOldChiefFree();
 
   const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
@@ -112,7 +100,10 @@ const ModalContent = ({ close, ...props }) => {
               disabled={!lockedMkr}
               onClick={() => {
                 trackButtonClick('withdrawMkrOldChief');
-                free();
+                free(lockedMkr as BigNumber, {
+                  mined: () => close(),
+                  error: () => close()
+                });
               }}
             >
               Withdraw MKR
@@ -135,7 +126,9 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
                 trackButtonClick('approveWithdrawOldChief');
-                approve();
+                approve(chiefOld.address, {
+                  mined: () => mutateTokenAllowance()
+                });
               }}
             >
               Approve

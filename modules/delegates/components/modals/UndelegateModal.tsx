@@ -16,6 +16,7 @@ import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimited
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 type Props = {
   isOpen: boolean;
@@ -40,32 +41,15 @@ export const UndelegateModal = ({
 
   const { data: mkrStaked } = useMkrDelegated(account, voteDelegateAddress);
   const { data: iouAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    'iou',
+    Tokens.IOU,
     parseUnits('100000000'),
     account,
     voteDelegateAddress
   );
 
-  const {
-    approve,
-    tx: approveTx,
-    setTxId: resetApprove
-  } = useApproveUnlimitedToken('iou', voteDelegateAddress, {
-    mined: () => {
-      mutateTokenAllowance();
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
 
-  const {
-    free,
-    tx: freeTx,
-    setTxId: resetFree
-  } = useDelegateFree(voteDelegateAddress, mkrToWithdraw, {
-    mined: () => {
-      mutateTotalStaked();
-      mutateMKRDelegated();
-    }
-  });
+  const { free, tx: freeTx, setTxId: resetFree } = useDelegateFree(voteDelegateAddress);
 
   const [tx, resetTx] = iouAllowance ? [freeTx, resetFree] : [approveTx, resetApprove];
 
@@ -109,12 +93,25 @@ export const UndelegateModal = ({
                       onChange={setMkrToWithdraw}
                       balance={mkrStaked}
                       buttonLabel="Undelegate MKR"
-                      onClick={free}
+                      onClick={() => {
+                        free(mkrToWithdraw, {
+                          mined: () => {
+                            mutateTotalStaked();
+                            mutateMKRDelegated();
+                          }
+                        });
+                      }}
                       showAlert={false}
                     />
                   ) : (
                     <ApprovalContent
-                      onClick={approve}
+                      onClick={() =>
+                        approve(voteDelegateAddress, {
+                          mined: () => {
+                            mutateTokenAllowance();
+                          }
+                        })
+                      }
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

@@ -1,1 +1,1 @@
-export type TokenName = 'dai' | 'mkr';
+export type TokenName = 'dai' | 'mkr' | 'iou' | 'iouOld';

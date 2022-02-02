@@ -18,6 +18,7 @@ import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { parseUnits } from 'ethers/lib/utils';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useFree } from '../hooks/useFree';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
@@ -27,25 +28,13 @@ const ModalContent = ({ close, ...props }) => {
   const { chief } = useContracts();
 
   const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    'iou',
+    Tokens.IOU,
     parseUnits('100000000'),
     account,
     voteProxyContract ? undefined : chief.address
   );
 
-  const {
-    approve,
-    tx: approveTx,
-    setTxId: resetApprove
-  } = useApproveUnlimitedToken('iou', chief.address, {
-    mined: () => {
-      mutateTokenAllowance();
-      resetApprove(null);
-    },
-    error: () => {
-      resetApprove(null);
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
 
   const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
 
@@ -143,7 +132,15 @@ const ModalContent = ({ close, ...props }) => {
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               onClick={() => {
                 trackButtonClick('approveWithdraw');
-                approve();
+                approve(chief.address, {
+                  mined: () => {
+                    mutateTokenAllowance();
+                    resetApprove(null);
+                  },
+                  error: () => {
+                    resetApprove(null);
+                  }
+                });
               }}
               data-testid="withdraw-approve-button"
             >

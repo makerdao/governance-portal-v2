@@ -15,15 +15,11 @@ import { Transaction } from 'modules/web3/types/transaction';
 type LockResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  lock: () => void;
+  lock: (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => void;
   tx: Transaction | null;
 };
 
-export const useDelegateLock = (
-  voteDelegateAddress: string,
-  mkrToDeposit: BigNumber,
-  callbacks?: Record<string, () => void>
-): LockResponse => {
+export const useDelegateLock = (voteDelegateAddress: string): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { chainId, library, account }: Web3ReactContextInterface<Web3Provider> = useActiveWeb3React();
@@ -35,7 +31,7 @@ export const useDelegateLock = (
 
   const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account);
 
-  const lock = () => {
+  const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
     const lockTxCreator = () => vdContract.lock(mkrToDeposit);
     const txId = track(lockTxCreator, account, 'Depositing MKR', {
       pending: () => {

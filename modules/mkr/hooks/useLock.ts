@@ -12,11 +12,11 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 type LockResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  lock: () => void;
+  lock: (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => void;
   tx: Transaction | null;
 };
 
-export const useLock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>): LockResponse => {
+export const useLock = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyContract } = useAccount();
@@ -27,7 +27,7 @@ export const useLock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () =
     shallow
   );
 
-  const lock = () => {
+  const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
     const lockTxCreator = voteProxyContract
       ? () => voteProxyContract.lock(mkrToDeposit)
       : () => chief.lock(mkrToDeposit);

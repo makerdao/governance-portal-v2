@@ -18,6 +18,7 @@ import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimited
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 type Props = {
   isOpen: boolean;
@@ -45,33 +46,15 @@ export const DelegateModal = ({
   const { data: mkrBalance, mutate: mutateMkrBalance } = useMkrBalance(account);
 
   const { data: mkrAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    'mkr',
+    Tokens.MKR,
     parseUnits('100000000'),
     account,
     voteDelegateAddress
   );
 
-  const {
-    approve,
-    tx: approveTx,
-    setTxId: resetApprove
-  } = useApproveUnlimitedToken('mkr', voteDelegateAddress, {
-    mined: () => {
-      mutateTokenAllowance();
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
 
-  const {
-    lock,
-    tx: lockTx,
-    setTxId: resetLock
-  } = useDelegateLock(voteDelegateAddress, mkrToDeposit, {
-    mined: () => {
-      mutateTotalStaked();
-      mutateMKRDelegated();
-      mutateMkrBalance();
-    }
-  });
+  const { lock, tx: lockTx, setTxId: resetLock } = useDelegateLock(voteDelegateAddress);
 
   const [tx, resetTx] = mkrAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
@@ -118,7 +101,15 @@ export const DelegateModal = ({
                       <ConfirmContent
                         mkrToDeposit={mkrToDeposit}
                         delegate={delegate}
-                        onClick={lock}
+                        onClick={() => {
+                          lock(mkrToDeposit, {
+                            mined: () => {
+                              mutateTotalStaked();
+                              mutateMKRDelegated();
+                              mutateMkrBalance();
+                            }
+                          });
+                        }}
                         onBack={() => setConfirmStep(false)}
                       />
                     ) : (
@@ -134,7 +125,13 @@ export const DelegateModal = ({
                     )
                   ) : (
                     <ApprovalContent
-                      onClick={approve}
+                      onClick={() =>
+                        approve(voteDelegateAddress, {
+                          mined: () => {
+                            mutateTokenAllowance();
+                          }
+                        })
+                      }
                       title={'Approve Delegate Contract'}
                       buttonLabel={'Approve Delegate Contract'}
                       description={

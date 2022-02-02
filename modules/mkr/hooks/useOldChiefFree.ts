@@ -13,14 +13,11 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 type FreeResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  free: () => void;
+  free: (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => void;
   tx: Transaction | null;
 };
 
-export const useOldChiefFree = (
-  mkrToWithdraw: BigNumber,
-  callbacks?: Record<string, () => void>
-): FreeResponse => {
+export const useOldChiefFree = (): FreeResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account, voteProxyOldContract } = useAccount();
@@ -31,7 +28,7 @@ export const useOldChiefFree = (
     shallow
   );
 
-  const free = () => {
+  const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
     const freeTxCreator = voteProxyOldContract
       ? () => voteProxyOldContract.freeAll()
       : () => chiefOld.free(mkrToWithdraw);

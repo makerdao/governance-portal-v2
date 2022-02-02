@@ -9,6 +9,7 @@ import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
 import { BigNumberWAD } from 'modules/web3/constants/numbers';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 export function DelegatesSystemInfo({
   stats,
@@ -20,7 +21,7 @@ export function DelegatesSystemInfo({
   const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
   const { network } = useActiveWeb3React();
 
-  const { data: totalMkr } = useTotalSupply('mkr');
+  const { data: totalMkr } = useTotalSupply(Tokens.MKR);
 
   const statsItems = [
     {

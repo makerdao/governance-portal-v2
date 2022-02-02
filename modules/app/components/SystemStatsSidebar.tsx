@@ -13,6 +13,7 @@ import { formatValue } from 'lib/string';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 type StatField =
   | 'chief contract'
@@ -56,7 +57,7 @@ export default function SystemStatsSidebar({
     },
     'mkr in chief': key => {
       const chiefAddress = useContractAddress('chief');
-      const { data: chiefBalance } = useTokenBalance('mkr', chiefAddress);
+      const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
