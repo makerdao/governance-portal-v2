@@ -8,7 +8,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import { Proposal } from 'modules/executive/types';
+import { Proposal, SpellData } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -17,11 +17,11 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { useSpellData } from '../hooks/useSpellData';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
+  spellData?: SpellData;
   account?: string;
   network: SupportedNetworks;
   votedProposals: string[];
@@ -31,6 +31,7 @@ type Props = {
 export default function ExecutiveOverviewCard({
   proposal,
   isHat,
+  spellData,
   network,
   account,
   votedProposals,
@@ -46,8 +47,6 @@ export default function ExecutiveOverviewCard({
     !!votedProposals.find(
       proposalAddress => proposalAddress.toLowerCase() === proposal.address.toLowerCase()
     );
-
-  const { data: spellData } = useSpellData(proposal.address);
 
   if (!('about' in proposal)) {
     return (

@@ -16,6 +16,95 @@ import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 // executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
   const spellContract = getSpellContract(address, network);
+
+  const getDone = async () => {
+    try {
+      const done = await spellContract.done();
+      return done;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getNextCastTime = async () => {
+    try {
+      const result = await spellContract.nextCastTime();
+      if (!result.toNumber()) return undefined;
+      const nextCastTime = new Date(result.toNumber() * 1000);
+      return nextCastTime;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getEta = async () => {
+    try {
+      const result = await spellContract.eta();
+      if (!result.toNumber()) return undefined;
+      const eta = new Date(result.toNumber() * 1000);
+      return eta;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getExpiration = async () => {
+    try {
+      const result = await spellContract.expiration();
+      if (!result.toNumber()) return undefined;
+      const expiration = new Date(result.toNumber() * 1000);
+      return expiration;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getScheduledDate = async () => {
+    try {
+      const spellDate = await getSpellScheduledDate(address, network);
+      return spellDate;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getExecutionDate = async () => {
+    try {
+      const executionDate = await getSpellExecutionDate(address, network);
+      return executionDate;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getApprovals = async () => {
+    try {
+      const approvals = await getChiefApprovals(address, network);
+      return approvals;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getExecutiveHash = async () => {
+    try {
+      const description = await spellContract.description();
+      const hash = description.substr(description.indexOf('0x'), description.length);
+      return hash;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
+  const getOfficeHours = async () => {
+    try {
+      const officeHours = await spellContract.officeHours();
+      return officeHours;
+    } catch (err) {
+      return undefined;
+    }
+  };
+
   const [
     done,
     nextCastTime,
@@ -28,54 +117,31 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
     officeHours
   ] = await Promise.all([
     // done
-    spellContract.done().catch(_ => null), // this fails if the spell doesn't have the right ABI,
+    getDone(),
 
     //nextCastTime
-    spellContract
-      .nextCastTime()
-      .then(nextCastTime => {
-        if (!nextCastTime.toNumber()) return undefined;
-        return new Date(nextCastTime.toNumber() * 1000);
-      })
-      .catch(_ => null),
+    getNextCastTime(),
 
     // eta
-    spellContract
-      .eta()
-      .then(eta => {
-        if (!eta.toNumber()) return undefined;
-        return new Date(eta.toNumber() * 1000);
-      })
-      .catch(_ => null),
+    getEta(),
 
     // expiration
-    spellContract
-      .expiration()
-      .then(expiration => {
-        if (!expiration.toNumber()) return undefined;
-        return new Date(expiration.toNumber() * 1000);
-      })
-      .catch(_ => null),
+    getExpiration(),
 
     // datePassed
-    getSpellScheduledDate(address, network).catch(_ => undefined),
+    getScheduledDate(),
 
     // dateExecuted
-    getSpellExecutionDate(address, network).catch(_ => undefined),
+    getExecutionDate(),
 
     // mkrSupport
-    getChiefApprovals(address, network).catch(_ => undefined),
+    getApprovals(),
 
     // executiveHash
-    spellContract
-      .description()
-      .then(description => {
-        return description.substr(description.indexOf('0x'), description.length);
-      })
-      .catch(_ => null),
+    getExecutiveHash(),
 
     // officeHours
-    spellContract.officeHours().catch(_ => null)
+    getOfficeHours()
   ]);
 
   return {
@@ -99,7 +165,16 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const analysis = await analyzeSpell(spellAddress, network);
+  const results = {};
+
+  let analysis;
+
+  if (results[network][spellAddress]) {
+    analysis = results[network][spellAddress];
+  } else {
+    analysis = await analyzeSpell(spellAddress, network);
+    results[network][spellAddress] = analysis;
+  }
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json(analysis);

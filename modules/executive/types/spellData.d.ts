@@ -5,7 +5,7 @@ export type SpellData = {
   hasBeenScheduled: boolean;
   eta?: Date;
   expiration?: Date;
-  nextCastTime: Date;
+  nextCastTime?: Date;
   datePassed?: Date;
   dateExecuted?: Date;
   mkrSupport?: BigNumber;
