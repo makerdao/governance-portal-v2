@@ -39,7 +39,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
               <AddressIcon address={address} width="22px" />
             </Box>
             <Text sx={{ fontFamily: 'body' }} data-testid="current-wallet">
-              {formatAddress(address)}
+              {formatAddress(address).toLowerCase()}
             </Text>
           </Flex>
         </Flex>

@@ -10,7 +10,7 @@ export function modalAddressEquals(address: string) {
   // Opens modal
   clickConnectAccountButton();
 
-  cy.get('[data-testid="current-wallet"]').contains(address);
+  cy.get('[data-testid="current-wallet"]').contains(address.toLowerCase());
 
   closeModal();
 }

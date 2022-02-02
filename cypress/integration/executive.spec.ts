@@ -24,7 +24,7 @@ describe('Executive page', async () => {
 
       // Wait until transaction completes
       // Removing this check because it does not pass: cy.contains('/Transaction Pending/').should('be.visible');
-
+      cy.contains('/Confirm Transaction/').should('be.visible')
       // Deposit
       cy.contains(/Deposit into voting contract/).should('be.visible');
 
