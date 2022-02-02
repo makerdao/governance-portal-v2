@@ -18,7 +18,7 @@ const ModalContent = ({
   mutateMkrInEsmByAddress
 }: {
   setShowDialog: (value: boolean) => void;
-  lockedInChief: number;
+  lockedInChief: BigNumber;
   totalStaked: BigNumber;
   mutateTotalStaked: () => void;
   mutateMkrInEsmByAddress: () => void;

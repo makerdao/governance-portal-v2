@@ -28,7 +28,7 @@ export const useEsmBurn = (): BurnResponse => {
   );
 
   const burn = (burnAmount, callbacks) => {
-    const burnTxCreator = () => esm.burn(burnAmount);
+    const burnTxCreator = () => esm.join(burnAmount);
     const txId = track(burnTxCreator, account, 'Burning MKR in Emergency Shutdown Module', {
       initialized: () => {
         if (typeof callbacks?.initialized === 'function') callbacks.initialized();

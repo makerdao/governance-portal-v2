@@ -2,7 +2,8 @@ import { Flex, Box, Button, Text, Card, Link } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'bignumber.js';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { formatDateWithTime } from 'lib/datetime';
 
@@ -98,7 +99,7 @@ const ESModule = (): React.ReactElement => {
             esmThresholdMet
               ? esmIsActive
                 ? 100
-                : new BigNumber(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
+                : new BigNumberJS(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
               : 0
           }
           totalStaked={totalStaked}
@@ -136,7 +137,7 @@ const ESModule = (): React.ReactElement => {
             !esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
-                lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+                lockedInChief={lockedInChief || BigNumber.from(0)}
                 totalStaked={totalStaked}
                 mutateTotalStaked={mutateTotalStaked}
                 mutateMkrInEsmByAddress={mutateMkrInEsmByAddress}
