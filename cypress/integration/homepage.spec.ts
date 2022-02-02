@@ -50,11 +50,12 @@ describe('Home Page', () => {
 
     setAccount(newAccount, () => {
       // Should find the connected
-      cy.contains(formatAddress(newAccount.address)).should('be.visible');
+      const regex = new RegExp(formatAddress(newAccount.address), 'i');
+      cy.contains(regex).should('be.visible');
 
       // Opens modal connection and finds 5 MKR
       //click on account modal
-      modalAddressEquals(formatAddress(newAccount.address));
+      modalAddressEquals(regex);
 
       modalPollingWeightEquals('0.01 MKR');
 

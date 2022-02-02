@@ -6,11 +6,11 @@ export function clickConnectAccountButton() {
 }
 
 // Checks that the address on the account modal is equal to this text
-export function modalAddressEquals(address: string) {
+export function modalAddressEquals(address: string | RegExp) {
   // Opens modal
   clickConnectAccountButton();
 
-  cy.get('[data-testid="current-wallet"]').contains(address.toLowerCase());
+  cy.get('[data-testid="current-wallet"]').contains(address);
 
   closeModal();
 }
