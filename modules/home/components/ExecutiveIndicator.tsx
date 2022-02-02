@@ -2,13 +2,12 @@ import { forwardRef, useMemo } from 'react';
 import { Box, NavLink, Badge, Container, ThemeUIStyleObject } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import { fetchJson } from 'lib/fetchJson';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { CMSProposal, SpellData } from 'modules/executive/types';
+import { CMSProposal } from 'modules/executive/types';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useAllSpellData } from 'modules/executive/hooks/useAllSpellData';
 
 type Props = {
   numProposals: number;
@@ -59,14 +58,10 @@ const ExecutiveIndicatorComponent = ({
   sx?: ThemeUIStyleObject;
 }): JSX.Element => {
   const { network } = useActiveWeb3React();
-  const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${network}`,
-    // needs to be a POST because the list of addresses is too long to be a GET query parameter
-    url =>
-      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
-    { refreshInterval: 0 }
+  const { data: spellData } = useAllSpellData(
+    proposals.map(p => p.address),
+    network
   );
-
   const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
   const unscheduledProposals = spellData
     ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)

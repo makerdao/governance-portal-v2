@@ -35,7 +35,7 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
-import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
+import { Proposal, CMSProposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -46,6 +46,7 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
+import { useAllSpellData } from 'modules/executive/hooks/useAllSpellData';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -117,12 +118,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   );
 
   // FIXME merge this into the proposal object
-  const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${network}`,
-    // needs to be a POST because the list of addresses is too long to be a GET query parameter
-    url =>
-      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
-    { refreshInterval: 0, revalidateOnMount: true }
+  const { data: spellData } = useAllSpellData(
+    proposals.map(p => p.address),
+    network
   );
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
