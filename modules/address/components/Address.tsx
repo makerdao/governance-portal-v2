@@ -12,7 +12,7 @@ export function Address({ address }: { address: string }): React.ReactElement {
 
     const ens = await getENS(address);
 
-    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address));
+    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }
   useEffect(() => {
     if (address) {

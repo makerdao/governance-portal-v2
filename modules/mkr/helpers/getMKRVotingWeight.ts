@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 import { getVoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
@@ -21,7 +22,7 @@ export async function getMKRVotingWeight(
 
   const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
 
-  if (voteDelegateAddress) {
+  if (voteDelegateAddress && voteDelegateAddress !== ZERO_ADDRESS) {
     const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
     const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
     return {
@@ -34,7 +35,6 @@ export async function getMKRVotingWeight(
   const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
   const mkrInAddress = await contracts.mkr.balanceOf(address);
-
   const mkrInChief = await contracts.chief.deposits(address);
 
   if (
@@ -51,6 +51,7 @@ export async function getMKRVotingWeight(
     const mkrChiefOtherAddress = await contracts.chief.deposits(otherAddress);
     const mkrProxyAddress = await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress);
     // If vote proxy, return balances in all the wallets
+    console.log(mkrInAddress.toString());
     return {
       mkrBalance: mkrInAddress,
       chiefBalance: mkrInChief,
