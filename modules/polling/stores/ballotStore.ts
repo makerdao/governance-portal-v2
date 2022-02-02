@@ -133,7 +133,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
 
     const voteTxCreator = voteDelegateContract
       ? () => voteDelegateContract.votePoll(pollIds, pollOptions)
-      : () => govPollingContract.vote(pollIds, pollOptions);
+      : () => govPollingContract['vote(uint256[],uint256[])'](pollIds, pollOptions);
 
     const txId = await transactionsApi
       .getState()

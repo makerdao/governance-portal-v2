@@ -7,26 +7,24 @@ import { TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('/polling detail page', async () => {
   it('can see poll detail', () => {
-    visitPage('/polling/QmQfyQyn');
+    visitPage('/polling/QmWReBMh');
 
     // REnders the title
-    cy.contains('Community Greenlight Poll - CurveLP-stETH-ETH (Curve) - October 4, 2021').should(
-      'be.visible'
-    );
+    cy.contains('PPG - Open Market Committee Proposal - January 31, 2022').should('be.visible');
 
     // Renders the date
-    cy.contains('POSTED OCT 06 2021 13:39 UTC').should('be.visible');
+    cy.contains('Jan 31 2022 16:00 UTC').should('be.visible');
 
     // Your vote does not exist
-    cy.get('[data-testid="poll-vote-box""]').should('not.exist');
+    cy.get('[data-testid="poll-vote-box"]').should('not.exist');
   });
 
   it('Sees the vote box if connected', () => {
-    visitPage('/polling/QmQfyQyn');
+    visitPage('/polling/QmWReBMh');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Shows the vote box
-      cy.get('[data-testid="poll-vote-box""]').should('be.visible');
+      cy.get('[data-testid="poll-vote-box"]').should('be.visible');
     });
   });
 

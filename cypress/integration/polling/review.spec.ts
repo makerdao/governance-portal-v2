@@ -6,6 +6,8 @@ import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { visitPage, setAccount } from '../../support/commons';
 
 describe('/polling review page', async () => {
+  const availablePolls = 19;
+
   it('Renders correct information about the missing connection', () => {
     visitPage('/polling/review');
 
@@ -31,7 +33,7 @@ describe('/polling review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains('1 of 18 available polls added to ballot').should('be.visible');
+      cy.contains(`1 of ${availablePolls} available polls added to ballot`).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
@@ -48,7 +50,7 @@ describe('/polling review page', async () => {
       cy.get('[data-testid="single-select-option-Yes"]').click();
 
       // Clicks on update vote
-      cy.contains('Update Vote').click();
+      cy.contains('Update vote').click();
 
       // Submit ballot
       cy.get('[data-testid="submit-ballot-button"]').click();
