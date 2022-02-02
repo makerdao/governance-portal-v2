@@ -3,20 +3,21 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
+import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { setAccount, visitPage } from '../support/commons';
 
 describe('Esmodule Page', async () => {
   it('should navigate to the es module page', () => {
     visitPage('/esmodule');
 
-    cy.contains('Emergency Shutdown Module').should('be.visible');
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
-
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.411110/);
-
     // Checks the info of no account connected appears
     cy.contains('No Account Connected').should('be.visible');
+    cy.contains('Emergency Shutdown Module').should('be.visible');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
+
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.41111/);
+    });
   });
 
   it('Should be able to burn mkr', () => {
