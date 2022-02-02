@@ -15,7 +15,7 @@ const builtInUnits = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether']
 export function formatValue(
   value: BigNumber,
   type: string | number = 'wad',
-  dp = 2,
+  dp = 6,
   withCommas = true
 ): string {
   if (typeof type === 'string') {

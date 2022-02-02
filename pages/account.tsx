@@ -12,13 +12,8 @@ import {
   Link as ExternalLink
 } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import shallow from 'zustand/shallow';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { fadeIn, slideUp } from 'lib/keyframes';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
 import { cutMiddle, formatValue } from 'lib/string';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -40,7 +35,7 @@ import useSWR from 'swr';
 import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -51,7 +46,6 @@ const AccountPage = (): React.ReactElement => {
     voteDelegateContractAddress,
     voteProxyContractAddress
   } = useAccount();
-  const { voteDelegateFactory } = useContracts();
   const addressToCheck = voteDelegateContractAddress
     ? voteDelegateContractAddress
     : voteProxyContractAddress
@@ -63,30 +57,11 @@ const AccountPage = (): React.ReactElement => {
   );
   const { data: chiefBalance } = useLockedMkr(account, voteProxyContractAddress);
 
-  const [txId, setTxId] = useState<null | string>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [warningRead, setWarningRead] = useState(false);
-
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.ACCOUNT);
 
-  const onCreateDelegate = async () => {
-    const createTxCreator = () => voteDelegateFactory.create();
-    const txId = await track(createTxCreator, account, 'Create delegate contract', {
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Delegate contract created');
-        mutateAccount && mutateAccount();
-      },
-      error: () => {
-        transactionsApi.getState().setMessage(txId as string, 'Delegate contract failed');
-      }
-    });
-    setTxId(txId);
-    setModalOpen(true);
-  };
+  const { create, tx, setTxId } = useDelegateCreate();
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
@@ -192,7 +167,10 @@ const AccountPage = (): React.ReactElement => {
                       disabled={!warningRead}
                       onClick={() => {
                         trackButtonClick('createDelegate');
-                        onCreateDelegate();
+                        create({
+                          initialized: () => setModalOpen(true),
+                          mined: () => mutateAccount && mutateAccount()
+                        });
                       }}
                       sx={{ mt: 3, mb: 1 }}
                       data-testid="create-button"

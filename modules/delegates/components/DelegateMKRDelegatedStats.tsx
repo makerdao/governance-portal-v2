@@ -5,6 +5,7 @@ import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
+import { parseUnits } from 'ethers/lib/utils';
 
 export function DelegateMKRDelegatedStats({
   delegate,
@@ -29,7 +30,7 @@ export function DelegateMKRDelegatedStats({
       }}
     >
       <StatBox
-        value={new BigNumber(delegate.mkrDelegated).toFormat(3) ?? 'Untracked'}
+        value={formatValue(parseUnits(delegate.mkrDelegated)) ?? 'Untracked'}
         label={'Total MKR Delegated'}
       />
       <StatBox

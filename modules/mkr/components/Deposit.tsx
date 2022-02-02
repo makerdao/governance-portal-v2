@@ -20,6 +20,7 @@ import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
@@ -31,34 +32,15 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const { chief } = useContracts();
 
   const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
-    'mkr',
+    Tokens.MKR,
     parseUnits('100000000'),
     account,
     account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chief.address
   );
 
-  const {
-    approve,
-    tx: approveTx,
-    setTxId: resetApprove
-  } = useApproveUnlimitedToken('mkr', voteProxyContractAddress || chief.address, {
-    mined: () => {
-      mutateTokenAllowance();
-    }
-  });
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
 
-  const {
-    lock,
-    tx: lockTx,
-    setTxId: resetLock
-  } = useLock(mkrToDeposit, {
-    mined: () => {
-      // Mutate locked state
-      mutateLocked();
-      close();
-    },
-    error: () => close()
-  });
+  const { lock, tx: lockTx, setTxId: resetLock } = useLock();
 
   const [tx, resetTx] = chiefAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
@@ -110,9 +92,16 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               data-testid="button-deposit-mkr"
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
               disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('DepositMkr');
-                lock();
+                lock(mkrToDeposit, {
+                  mined: () => {
+                    // Mutate locked state
+                    mutateLocked();
+                    close();
+                  },
+                  error: () => close()
+                });
               }}
             >
               Deposit MKR
@@ -132,9 +121,13 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('approveDeposit');
-                approve();
+                approve(voteProxyContractAddress || chief.address, {
+                  mined: () => {
+                    mutateTokenAllowance();
+                  }
+                });
               }}
               data-testid="deposit-approve-button"
             >

@@ -1,21 +1,15 @@
 import { useState, useMemo } from 'react';
 import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
-import useTransactionStore, {
-  transactionsApi,
-  transactionsSelectors
-} from 'modules/web3/stores/transactions';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { usePollCreate } from '../hooks/usePollCreate';
 
 type Props = {
   close: () => void;
@@ -24,39 +18,29 @@ type Props = {
 };
 
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
-  const [txId, setTxId] = useState<null | string>(null);
   const bpi = useBreakpointIndex();
-  const { account } = useAccount();
-  const { polling } = useContracts();
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const { createPoll, tx } = usePollCreate();
 
   const [step, setStep] = useState('confirm');
-  const createPoll = async () => {
+  const onPollCreate = () => {
     if (!poll) return;
-    const voteTxCreator = () =>
-      polling.createPoll(
-        poll.startDate.getTime() / 1000,
-        poll.endDate.getTime() / 1000,
-        poll.multiHash,
-        poll.url || ''
-      );
-    const txId = await track(voteTxCreator, account, `Creating poll with id ${poll?.pollId}`, {
-      pending: () => {
-        setStep('pending');
-      },
-      mined: txId => {
-        setPoll(undefined);
-        transactionsApi.getState().setMessage(txId, 'Created poll');
-        close();
-      },
-      error: () => setStep('failed')
-    });
-    setTxId(txId);
-    setStep('signing');
+
+    createPoll(
+      poll.startDate.getTime() / 1000,
+      poll.endDate.getTime() / 1000,
+      poll.multiHash,
+      poll.url || '',
+      {
+        initialized: () => setStep('signing'),
+        pending: () => setStep('pending'),
+        mined: () => {
+          setPoll(undefined);
+          close();
+        },
+        error: () => setStep('failed')
+      }
+    );
   };
 
   const Default = () => {
@@ -88,13 +72,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
           </Box>
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button
-            variant="primaryLarge"
-            sx={{ width: '100%' }}
-            onClick={() => {
-              createPoll();
-            }}
-          >
+          <Button variant="primaryLarge" sx={{ width: '100%' }} onClick={onPollCreate}>
             Create Poll
           </Button>
         </Box>

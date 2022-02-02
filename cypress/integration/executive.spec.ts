@@ -39,7 +39,7 @@ describe('Executive page', async () => {
       // cy.contains(/Transaction Sent/).should('be.visible');
 
       // Check MKR
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '0.010000 MKR');
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '0.01 MKR');
 
       // Can vote
       cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();

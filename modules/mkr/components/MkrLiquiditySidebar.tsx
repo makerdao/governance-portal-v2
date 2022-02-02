@@ -7,6 +7,7 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -38,11 +39,11 @@ async function getBalancerMkr(mkrAddress: string) {
 }
 
 export default function MkrLiquiditySidebar({ className }: { className?: string }): JSX.Element {
-  const mkrAddress = useContractAddress('mkr');
-  const { data: aaveV1 } = useTokenBalance('mkr', aaveLendingPoolCore);
-  const { data: aaveV2 } = useTokenBalance('mkr', aaveV2Amkr);
-  const { data: uniswap } = useTokenBalance('mkr', uniswapV2MkrPool);
-  const { data: sushi } = useTokenBalance('mkr', sushiswapAddress);
+  const mkrAddress = useContractAddress(Tokens.MKR);
+  const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
+  const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
+  const { data: uniswap } = useTokenBalance(Tokens.MKR, uniswapV2MkrPool);
+  const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
   const { data: balancer } = useSWR(
     `${mkrAddress}/mkr-liquidity-balancer`,

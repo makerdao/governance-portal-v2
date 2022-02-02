@@ -1,18 +1,12 @@
 import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
 import { useState } from 'react';
-import shallow from 'zustand/shallow';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useTransactionStore, {
-  transactionsApi,
-  transactionsSelectors
-} from 'modules/web3/stores/transactions';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useEsmShutdown } from '../hooks/useEsmShutdown';
 
 const ModalContent = ({
   setShowDialog,
@@ -22,33 +16,11 @@ const ModalContent = ({
   thresholdAmount?: BigNumber;
 }): React.ReactElement => {
   const [step, setStep] = useState('default');
-  const [txId, setTxId] = useState('');
-  const { account } = useAccount();
   const { network } = useActiveWeb3React();
-  const { esm } = useContracts();
+  const { shutdown, tx } = useEsmShutdown();
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
   const close = () => {
     setShowDialog(false);
-  };
-  const shutdown = async () => {
-    const shutdownTxObject = () => esm.fire();
-    const txId = await track(shutdownTxObject, account, 'Shutting Down Dai Credit System', {
-      pending: txHash => {
-        setStep('pending');
-      },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Dai Credit System has been Shutdown');
-        close(); // TBD maybe show a separate "done" dialog
-      },
-      error: () => setStep('failed')
-    });
-
-    setTxId(txId as string);
-    setStep('signing');
   };
 
   const DefaultScreen = () => (
@@ -72,7 +44,14 @@ const ModalContent = ({
           Cancel
         </Button>
         <Button
-          onClick={shutdown}
+          onClick={() => {
+            shutdown({
+              initialized: () => setStep('signing'),
+              pending: () => setStep('pending'),
+              mined: () => close(), // TBD maybe show a separate "done" dialog,
+              error: () => setStep('failed')
+            });
+          }}
           variant="outline"
           sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
         >

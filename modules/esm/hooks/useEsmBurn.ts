@@ -4,49 +4,48 @@ import useTransactionStore, {
   transactionsApi
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
-import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
 
-type LockResponse = {
+type BurnResponse = {
   txId: string | null;
-  setTxId: Dispatch<SetStateAction<null>>;
-  lock: (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => void;
+  setTxId: Dispatch<SetStateAction<string | null>>;
+  burn: (burnAmount: BigNumber, callbacks?: Record<string, (id?: string) => void>) => void;
   tx: Transaction | null;
 };
 
-export const useLock = (): LockResponse => {
+export const useEsmBurn = (): BurnResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { account, voteProxyContract } = useAccount();
-  const { chief } = useContracts();
+  const { account } = useAccount();
+  const { esm } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
-    const lockTxCreator = voteProxyContract
-      ? () => voteProxyContract.lock(mkrToDeposit)
-      : () => chief.lock(mkrToDeposit);
-
-    const transactionId = track(lockTxCreator, account, 'Depositing MKR', {
+  const burn = (burnAmount, callbacks) => {
+    const burnTxCreator = () => esm.burn(burnAmount);
+    const txId = track(burnTxCreator, account, 'Burning MKR in Emergency Shutdown Module', {
+      initialized: () => {
+        if (typeof callbacks?.initialized === 'function') callbacks.initialized();
+      },
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();
       },
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR deposited');
+        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
         if (typeof callbacks?.mined === 'function') callbacks.mined();
       },
-      error: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
+      error: () => {
         if (typeof callbacks?.error === 'function') callbacks.error();
       }
     });
-    setTxId(transactionId);
+    setTxId(txId);
   };
 
-  return { txId, setTxId, lock, tx };
+  return { txId, setTxId, burn, tx };
 };

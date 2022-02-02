@@ -31,7 +31,7 @@ describe('Account Page', async () => {
       cy.contains('Close').click();
 
       // Find the text of delegated MKR
-      cy.contains('Delegated MKR').should('be.visible');
+      cy.contains('Total MKR Delegated').should('be.visible');
 
       const text = await new Cypress.Promise<string>(resolve => {
         cy.get('[data-testid="vote-delegate-address"]')

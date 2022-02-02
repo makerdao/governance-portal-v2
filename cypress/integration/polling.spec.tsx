@@ -11,17 +11,19 @@ describe('/polling page', async () => {
 
     cy.contains('Active Polls').should('be.visible');
 
-    cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
-      matchCase: false
-    }).should('be.visible');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
+        matchCase: false
+      }).should('be.visible');
 
-    cy.get('[data-testid="poll-overview-card"]').should('have.length', 18);
+      cy.get('[data-testid="poll-overview-card"]').should('have.length', 18);
 
-    // Show ended polls
-    cy.get('[data-testid="button-view-ended-polls"]').click();
+      // Show ended polls
+      cy.get('[data-testid="button-view-ended-polls"]').click();
 
-    // Check that now only shows 2 polls
-    cy.get('[data-testid="poll-overview-card"]').should('have.length', 20);
+      // Check that now only shows 2 polls
+      cy.get('[data-testid="poll-overview-card"]').should('have.length', 20);
+    });
   });
 
   it('Shows ballot when account is connected', () => {

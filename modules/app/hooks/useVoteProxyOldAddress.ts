@@ -13,7 +13,7 @@ type VoteProxyAddressResponse = {
 };
 
 export const useVoteProxyOldAddress = (account?: string): VoteProxyAddressResponse => {
-  const { voteProxyFactoryOld } = <MainnetSdk>useContracts();
+  const { voteProxyFactoryOld } = useContracts() as MainnetSdk;
   const { network } = useActiveWeb3React();
 
   const { data, error } = useSWR(

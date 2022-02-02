@@ -19,6 +19,7 @@ import Toggle from '../Toggle';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 const ConfirmBurnView = ({ passValue, value, setValue, burnAmount, totalStaked }) => {
   const bpi = useBreakpointIndex();
@@ -98,20 +99,12 @@ const ConfirmBurn = ({
 
   const esmAddress = useContractAddress('esm');
   const { data: allowance, mutate: mutateAllowance } = useTokenAllowance(
-    'mkr',
+    Tokens.MKR,
     burnAmount,
     account,
     esmAddress
   );
-  const approveMKR = useApproveUnlimitedToken('mkr', esmAddress, {
-    mined: () => {
-      mutateAllowance();
-      setMkrApprovePending(false);
-    },
-    error: () => {
-      setMkrApprovePending(false);
-    }
-  });
+  const approveMKR = useApproveUnlimitedToken(Tokens.MKR);
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>
@@ -144,7 +137,15 @@ const ConfirmBurn = ({
           active={allowance}
           onClick={() => {
             setMkrApprovePending(true);
-            approveMKR.approve();
+            approveMKR.approve(esmAddress, {
+              mined: () => {
+                mutateAllowance();
+                setMkrApprovePending(false);
+              },
+              error: () => {
+                setMkrApprovePending(false);
+              }
+            });
           }}
           disabled={mkrApprovePending}
         />

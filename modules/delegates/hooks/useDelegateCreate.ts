@@ -4,7 +4,6 @@ import useTransactionStore, {
   transactionsApi
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
-import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -12,41 +11,41 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 type LockResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  lock: (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => void;
+  create: (callbacks?: Record<string, (id?: string) => void>) => void;
   tx: Transaction | null;
 };
 
-export const useLock = (): LockResponse => {
+export const useDelegateCreate = (): LockResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { account, voteProxyContract } = useAccount();
-  const { chief } = useContracts();
+  const { account } = useAccount();
+  const { voteDelegateFactory } = useContracts();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
     shallow
   );
 
-  const lock = (mkrToDeposit: BigNumber, callbacks?: Record<string, () => void>) => {
-    const lockTxCreator = voteProxyContract
-      ? () => voteProxyContract.lock(mkrToDeposit)
-      : () => chief.lock(mkrToDeposit);
-
-    const transactionId = track(lockTxCreator, account, 'Depositing MKR', {
+  const create = callbacks => {
+    const freeTxCreator = () => voteDelegateFactory.create();
+    const txId = track(freeTxCreator, account, 'Create delegate contract', {
+      initialized: () => {
+        if (typeof callbacks?.initialized === 'function') callbacks.initialized();
+      },
       pending: () => {
         if (typeof callbacks?.pending === 'function') callbacks.pending();
       },
       mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR deposited');
+        transactionsApi.getState().setMessage(txId, 'Delegate contract created');
         if (typeof callbacks?.mined === 'function') callbacks.mined();
       },
       error: txId => {
-        transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
+        transactionsApi.getState().setMessage(txId as string, 'Delegate contract failed');
         if (typeof callbacks?.error === 'function') callbacks.error();
       }
     });
-    setTxId(transactionId);
+    setTxId(txId);
   };
 
-  return { txId, setTxId, lock, tx };
+  return { txId, setTxId, create, tx };
 };

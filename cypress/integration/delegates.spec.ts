@@ -6,7 +6,7 @@
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
 import { closeModal, setAccount, visitPage } from '../support/commons';
-import { getTestAccountByIndex } from '../support/constants/testaccounts';
+import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
   it('should navigate to the delegates page and find a list of delegates', () => {
@@ -15,36 +15,45 @@ describe('Delegates Page', () => {
 
     // Find the shadow delegates
     cy.contains('Shadow Delegates').should('be.visible');
+    cy.contains('Recognized Delegates').should('be.visible');
 
-    // Shoudl find various delegates
-    cy.get('[data-testid="delegate-card"]').should('have.length', 9);
+    // Mainnet delegates
+    cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 0);
+
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Shoudl find various delegates
+      cy.get('[data-testid="delegate-card"]').should('have.length', 10);
+    });
   });
 
   it('Should find the delegates system info', () => {
     visitPage('/delegates');
-
-    // Checks the total amount of delegates
-    cy.get('[data-testid="total-delegates-system-info"]').contains('9');
-    cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
-    cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('9');
-    cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Checks the total amount of delegates
+      cy.get('[data-testid="total-delegates-system-info"]').contains('10');
+      cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
+      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('10');
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
+    });
   });
 
   it('Should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
 
-    cy.get('[data-testid="delegate-type-filter"]').click();
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.get('[data-testid="delegate-type-filter"]').click();
 
-    cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
+      cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
 
-    // See now 0 delegates
-    cy.get('[data-testid="delegate-card"]').should('have.length', 0);
+      // See now 0 delegates
+      cy.get('[data-testid="delegate-card"]').should('have.length', 0);
 
-    // Reset filters
-    cy.get('[data-testid="delegate-reset-filters"]').click();
+      // Reset filters
+      cy.get('[data-testid="delegate-reset-filters"]').click();
 
-    // Now see al the delegates again
-    cy.get('[data-testid="delegate-card"]').should('have.length', 9);
+      // Now see al the delegates again
+      cy.get('[data-testid="delegate-card"]').should('have.length', 10);
+    });
   });
 
   it('Connects wallet and clicks on delegate', () => {

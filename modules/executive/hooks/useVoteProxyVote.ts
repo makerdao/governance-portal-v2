@@ -5,7 +5,6 @@ import useTransactionStore, {
 } from 'modules/web3/stores/transactions';
 import { shallow } from 'zustand/shallow';
 import { Transaction } from 'modules/web3/types/transaction';
-import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
 type VoteCall = (slateOrProposals: any | any[], callbacks?: Record<string, (id: string) => void>) => void; //TODO update inputs
@@ -17,11 +16,10 @@ type VoteResponse = {
   tx: Transaction | null;
 };
 
-export const useChiefVote = (): VoteResponse => {
+export const useVoteProxyVote = (): VoteResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
-  const { account } = useAccount();
-  const { chief } = useContracts();
+  const { account, voteProxyContract } = useAccount();
 
   const [track, tx] = useTransactionStore(
     state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
@@ -29,7 +27,12 @@ export const useChiefVote = (): VoteResponse => {
   );
 
   const vote: VoteCall = (slateOrProposals, callbacks?) => {
-    const voteCall = Array.isArray(slateOrProposals) ? chief['vote(address[])'] : chief['vote(bytes32)'];
+    const voteCall = voteProxyContract
+      ? Array.isArray(slateOrProposals)
+        ? voteProxyContract['vote(address[])']
+        : voteProxyContract['vote(bytes32)']
+      : null;
+
     const voteTxCreator = () => voteCall(slateOrProposals);
 
     const transactionId = track(voteTxCreator, account, 'Voting on executive proposal', {

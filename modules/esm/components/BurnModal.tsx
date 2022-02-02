@@ -1,9 +1,4 @@
 import { useState } from 'react';
-import shallow from 'zustand/shallow';
-import useTransactionStore, {
-  transactionsApi,
-  transactionsSelectors
-} from 'modules/web3/stores/transactions';
 import DefaultScreen from './burnModal/Default';
 import MKRAmount from './burnModal/MKRAmount';
 import ConfirmBurn from './burnModal/ConfirmBurn';
@@ -13,7 +8,7 @@ import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
 import { TxDisplay } from 'modules/delegates/components/modals/TxDisplay';
 import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useEsmBurn } from '../hooks/useEsmBurn';
 
 const ModalContent = ({
   setShowDialog,
@@ -30,37 +25,13 @@ const ModalContent = ({
 }): React.ReactElement => {
   const { account } = useAccount();
   const [step, setStep] = useState('default');
-  const [txId, setTxId] = useState('');
   const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
 
   const { data: mkrBalance } = useMkrBalance(account);
-  const { esm } = useContracts();
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const { burn, tx, setTxId } = useEsmBurn();
 
   const close = () => setShowDialog(false);
-
-  const burn = async () => {
-    const burnTxObject = () => esm.join(burnAmount);
-    const txId = await track(burnTxObject, account, 'Burning MKR in Emergency Shutdown Module', {
-      pending: () => {
-        setStep('pending');
-      },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Burned MKR in Emergency Shutdown Module');
-        mutateTotalStaked();
-        mutateMkrInEsmByAddress();
-        setStep('mined');
-      },
-      error: () => setStep('failed')
-    });
-
-    setTxId(txId as string);
-    setStep('signing');
-  };
 
   switch (step) {
     case 'default':
@@ -82,7 +53,18 @@ const ModalContent = ({
           burnAmount={burnAmount}
           account={account}
           setShowDialog={setShowDialog}
-          burn={burn}
+          burn={() => {
+            burn(burnAmount, {
+              initialized: () => setStep('signing'),
+              pending: () => setStep('pending'),
+              mined: () => {
+                mutateTotalStaked();
+                mutateMkrInEsmByAddress();
+                setStep('mined');
+              },
+              error: () => setStep('failed')
+            });
+          }}
           totalStaked={totalStaked}
         />
       );

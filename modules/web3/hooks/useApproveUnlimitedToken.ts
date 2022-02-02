@@ -12,19 +12,18 @@ import { Transaction } from 'modules/web3/types/transaction';
 type ApproveResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<null>>;
-  approve: () => void;
+  approve: (
+    addressToApprove: string,
+    callbacks?: {
+      mined?: () => void;
+      pending?: () => void;
+      error?: () => void;
+    }
+  ) => void;
   tx: Transaction | null;
 };
 
-export const useApproveUnlimitedToken = (
-  name: ContractName,
-  addressToApprove: string,
-  callbacks?: {
-    mined?: () => void;
-    pending?: () => void;
-    error?: () => void;
-  }
-): ApproveResponse => {
+export const useApproveUnlimitedToken = (name: ContractName): ApproveResponse => {
   const [txId, setTxId] = useState<string | null>(null);
 
   const { account } = useAccount();
@@ -35,7 +34,14 @@ export const useApproveUnlimitedToken = (
     shallow
   );
 
-  const approve = () => {
+  const approve = (
+    addressToApprove: string,
+    callbacks?: {
+      mined?: () => void;
+      pending?: () => void;
+      error?: () => void;
+    }
+  ) => {
     const approveTxCreator = () => token['approve(address)'](addressToApprove);
     const txId = track(approveTxCreator, account, `Approving ${name.toUpperCase()}`, {
       pending: () => {

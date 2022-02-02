@@ -6,6 +6,7 @@ import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../type
 import { parseTxError } from '../helpers/errors';
 
 type Callbacks = {
+  initialized?: (txId: string) => void;
   pending?: (txHash: string) => void;
   mined?: (txId: string, txHash: string) => void;
   error?: (txId: string) => void;
@@ -120,6 +121,7 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
 
     const txId: string = uuidv4();
     get().initTx(txId, account, message);
+    if (typeof callbacks?.initialized === 'function') callbacks.initialized(txId);
 
     const txPromise = txCreator();
     get().listen(txPromise, txId, callbacks);

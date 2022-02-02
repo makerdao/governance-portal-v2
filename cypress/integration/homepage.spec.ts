@@ -4,7 +4,7 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
-import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
+import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { elementContainsText, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
 
@@ -24,20 +24,22 @@ describe('Home Page', () => {
     // Start from the index page
     visitPage('/');
 
-    // Find the Dai Savings Rate info
-    cy.contains('Dai Savings Rate').should('be.visible');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Find the Dai Savings Rate info
+      cy.contains('Dai Savings Rate').should('be.visible');
 
-    // Checks that we have a correct dai savings rate and other values
-    elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
+      // Checks that we have a correct dai savings rate and other values
+      elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
 
-    elementContainsText('[data-testid="Total Dai-value"]', '98,965,778 DAI');
+      elementContainsText('[data-testid="Total Dai-value"]', '98,965,778 DAI');
 
-    elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,030,717,023 DAI');
+      elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,030,717,023 DAI');
 
-    elementContainsText('[data-testid="System Surplus-value"]', '278,245 DAI');
+      elementContainsText('[data-testid="System Surplus-value"]', '278,245 DAI');
 
-    // Find the Polling Votes block
-    cy.contains('Polling Votes').should('be.visible');
+      // Find the Polling Votes block
+      cy.contains('Polling Votes').should('be.visible');
+    });
   });
 
   it('Connects wallet', () => {
