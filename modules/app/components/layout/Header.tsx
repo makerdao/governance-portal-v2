@@ -99,8 +99,8 @@ const Header = (): JSX.Element => {
           <ColorModeToggle />
         </Flex>
 
-        {/* TODO: we can add the dropdown here */}
-        {network && <Flex>{network}</Flex>}
+        {/* TODO: we can add the dropdown here . Caution: we use the network name in the e2e tests to determine that the page correctly connected */}
+        {network && <Flex data-testid="active-network-name">{network}</Flex>}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {typeof window !== 'undefined' && <AccountSelect />}
