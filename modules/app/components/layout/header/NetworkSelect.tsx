@@ -43,7 +43,7 @@ const closeButtonStyle: ThemeUICSSObject = {
   ml: 'auto'
 };
 
-const NetworkSelect = ({ network }: { network: string }): React.ReactElement => {
+const NetworkSelect = ({ chainId }: { chainId: number }): React.ReactElement => {
   const { library } = useActiveWeb3React();
 
   // const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
@@ -65,30 +65,26 @@ const NetworkSelect = ({ network }: { network: string }): React.ReactElement => 
     });
   };
 
-  const networkOptions = Object.keys(CHAIN_INFO).map(chainName => (
+  const networkOptions = Object.keys(CHAIN_INFO).map(chainId => (
     <Flex
       sx={walletButtonStyle}
-      key={CHAIN_INFO[chainName].label}
-      onClick={() =>
-        switchNetwork(hexStripZeros(BigNumber.from(CHAIN_INFO[chainName].chainId).toHexString()))
-      }
+      key={CHAIN_INFO[chainId].label}
+      onClick={() => switchNetwork(hexStripZeros(BigNumber.from(CHAIN_INFO[chainId].chainId).toHexString()))}
     >
-      {/* <Icon name={SUPPORTED_WALLETS[connectorName]} /> */}
-      <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainName].label}</Text>
+      <Icon name={CHAIN_INFO[chainId].label} sx={{ width: '22px', height: '22px' }} />
+      <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainId].label}</Text>
     </Flex>
   ));
 
   return (
-    <Box sx={{ ml: ['auto', 3, 0] }}>
+    <Box sx={{ ml: ['auto', 3, 0], mr: 3 }}>
       {/* <NetworkAlertModal chainIdError={chainIdError} walletChainName={network ? network : null} /> */}
 
       <ConnectNetworkButton
         onClickConnect={() => {
           setShowDialog(true);
         }}
-        network={network}
-        // address={address}
-        // pending={pending}
+        activeNetwork={CHAIN_INFO[chainId].label}
       />
 
       <DialogOverlay isOpen={showDialog} onDismiss={close}>
@@ -101,6 +97,9 @@ const NetworkSelect = ({ network }: { network: string }): React.ReactElement => 
           }
         >
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Text variant="microHeading" color="onBackgroundAlt">
+              Switch Network
+            </Text>
             <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
           </Flex>
           {networkOptions}

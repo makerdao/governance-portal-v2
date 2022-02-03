@@ -1,11 +1,12 @@
+import { Icon } from '@makerdao/dai-ui-icons';
 import { Button, Flex, Text } from 'theme-ui';
 
 type Props = {
   onClickConnect: () => void;
-  network?: string;
+  activeNetwork?: string;
 };
 
-export default function ConnectWalletButton({ onClickConnect, network }: Props): React.ReactElement {
+export default function ConnectWalletButton({ onClickConnect, activeNetwork }: Props): React.ReactElement {
   return (
     <Button
       aria-label="Connect network"
@@ -26,10 +27,10 @@ export default function ConnectWalletButton({ onClickConnect, network }: Props):
       onClick={onClickConnect}
     >
       <Flex sx={{ alignItems: 'center' }}>
-        {/* <Box sx={{ mr: 2 }}>
-            <AddressIcon address={address} width="22px" />
-          </Box> */}
-        <Text data-testid="active-network-name">{network}</Text>
+        <Flex sx={{ mr: 2 }}>
+          <Icon name={activeNetwork} sx={{ width: '22px', height: '22px' }} />
+        </Flex>
+        <Text data-testid="active-network-name">{activeNetwork}</Text>
       </Flex>
     </Button>
   );

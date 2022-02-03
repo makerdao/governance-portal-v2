@@ -17,7 +17,7 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useContext(AccountContext);
-  const { network } = useActiveWeb3React();
+  const { network, chainId } = useActiveWeb3React();
 
   return (
     <Box
@@ -101,7 +101,7 @@ const Header = (): JSX.Element => {
         </Flex>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        {network && <NetworkSelect network={network} />}
+        {chainId && <NetworkSelect chainId={chainId} />}
         {typeof window !== 'undefined' && <AccountSelect />}
 
         <IconButton
