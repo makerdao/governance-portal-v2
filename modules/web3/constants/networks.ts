@@ -6,10 +6,9 @@ export const NetworkContextName = 'NETWORK';
 
 import {
   MAINNET_SPOCK_URL,
-  GOERLI_SPOCK_URL,
-  LOCAL_SPOCK_URL,
-  // TODO: where to use this?
-  STAGING_MAINNET_SPOCK_URL
+  STAGING_MAINNET_SPOCK_URL,
+  GOERLI_SPOCK_URL
+  // LOCAL_SPOCK_URL,
 } from 'modules/gql/gql.constants';
 
 export enum SupportedConnectors {
