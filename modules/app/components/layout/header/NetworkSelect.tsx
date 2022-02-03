@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Box, Flex, Text, Close, ThemeUICSSObject, Link as ExternalLink } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
+
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { UnsupportedChainIdError } from '@web3-react/core';
+
+import { fadeIn, slideUp } from 'lib/keyframes';
+
+import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { CHAIN_INFO } from 'modules/web3/constants/networks';
+import { hexStripZeros } from 'ethers/lib/utils';
+import { BigNumber } from 'ethers';
+
+export type ChainIdError = null | 'network mismatch' | 'unsupported network';
+
+const walletButtonStyle: ThemeUICSSObject = {
+  cursor: 'pointer',
+  width: '100%',
+  p: 3,
+  border: '1px solid',
+  borderColor: 'secondaryMuted',
+  borderRadius: 'medium',
+  mb: 2,
+  flexDirection: 'row',
+  alignItems: 'center',
+  '&:hover': {
+    color: 'text',
+    backgroundColor: 'background'
+  }
+};
+
+const closeButtonStyle: ThemeUICSSObject = {
+  height: 4,
+  width: 4,
+  p: 0,
+  position: 'relative',
+  top: '-4px',
+  left: '8px',
+  ml: 'auto'
+};
+
+const NetworkSelect = ({ network }: { network: string }): React.ReactElement => {
+  const { library } = useActiveWeb3React();
+
+  // const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
+
+  // useEffect(() => {
+  //   if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+  //   if (!error) setChainIdError(null);
+  // }, [chainId, error]);
+
+  const [showDialog, setShowDialog] = useState(false);
+
+  const close = () => setShowDialog(false);
+  const bpi = useBreakpointIndex();
+
+  const switchNetwork = async chainId => {
+    await library.provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: chainId }]
+    });
+  };
+
+  const networkOptions = Object.keys(CHAIN_INFO).map(chainName => (
+    <Flex
+      sx={walletButtonStyle}
+      key={CHAIN_INFO[chainName].label}
+      onClick={() =>
+        switchNetwork(hexStripZeros(BigNumber.from(CHAIN_INFO[chainName].chainId).toHexString()))
+      }
+    >
+      {/* <Icon name={SUPPORTED_WALLETS[connectorName]} /> */}
+      <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainName].label}</Text>
+    </Flex>
+  ));
+
+  return (
+    <Box sx={{ ml: ['auto', 3, 0] }}>
+      {/* <NetworkAlertModal chainIdError={chainIdError} walletChainName={network ? network : null} /> */}
+
+      <ConnectNetworkButton
+        onClickConnect={() => {
+          setShowDialog(true);
+        }}
+        network={network}
+        // address={address}
+        // pending={pending}
+      />
+
+      <DialogOverlay isOpen={showDialog} onDismiss={close}>
+        <DialogContent
+          aria-label="Change Network"
+          sx={
+            bpi === 0
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+              : { variant: 'dialog.desktop', animation: `${fadeIn} 350ms ease`, width: '450px' }
+          }
+        >
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
+          </Flex>
+          {networkOptions}
+        </DialogContent>
+      </DialogOverlay>
+    </Box>
+  );
+};
+
+export default NetworkSelect;
