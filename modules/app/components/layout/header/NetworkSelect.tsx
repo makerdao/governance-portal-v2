@@ -12,8 +12,8 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
-import { hexStripZeros } from 'ethers/lib/utils';
-import { BigNumber } from 'ethers';
+import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -58,23 +58,18 @@ const NetworkSelect = ({ chainId }: { chainId: number }): React.ReactElement => 
   const close = () => setShowDialog(false);
   const bpi = useBreakpointIndex();
 
-  const switchNetwork = async chainId => {
-    await library.provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: chainId }]
-    });
-  };
-
-  const networkOptions = Object.keys(CHAIN_INFO).map(chainId => (
-    <Flex
-      sx={walletButtonStyle}
-      key={CHAIN_INFO[chainId].label}
-      onClick={() => switchNetwork(hexStripZeros(BigNumber.from(CHAIN_INFO[chainId].chainId).toHexString()))}
-    >
-      <Icon name={CHAIN_INFO[chainId].label} sx={{ width: '22px', height: '22px' }} />
-      <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainId].label}</Text>
-    </Flex>
-  ));
+  const networkOptions = Object.keys(CHAIN_INFO)
+    .filter(k => ![SupportedChainId.GOERLIFORK].includes(CHAIN_INFO[k].chainId))
+    .map(chainKey => (
+      <Flex
+        sx={walletButtonStyle}
+        key={CHAIN_INFO[chainKey].label}
+        onClick={() => switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library })}
+      >
+        <Icon name={CHAIN_INFO[chainKey].label} sx={{ width: '22px', height: '22px' }} />
+        <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainKey].label}</Text>
+      </Flex>
+    ));
 
   return (
     <Box sx={{ ml: ['auto', 3, 0], mr: 3 }}>
