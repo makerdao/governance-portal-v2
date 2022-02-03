@@ -18,7 +18,7 @@ export type PluralityResult = {
   winner: boolean;
   mkrSupport: number;
   winner: boolean;
-  firstPct: number; // TODO rename to "percent"?
+  firstPct: number;
 };
 
 export type PollTallyPluralityOption = {

@@ -8,12 +8,10 @@ import { Transaction } from 'modules/web3/types/transaction';
 import { useContracts } from 'modules/web3/hooks/useContracts';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
-type VoteCall = (slateOrProposals: any | any[], callbacks?: Record<string, (id: string) => void>) => void; //TODO update inputs
-
 type VoteResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<string | null>>;
-  vote: VoteCall;
+  vote: (slateOrProposals: any, callbacks?: Record<string, (id: string) => void>) => void;
   tx: Transaction | null;
 };
 
@@ -28,7 +26,7 @@ export const useChiefVote = (): VoteResponse => {
     shallow
   );
 
-  const vote: VoteCall = (slateOrProposals, callbacks?) => {
+  const vote = (slateOrProposals: any, callbacks?: Record<string, (id: string) => void>) => {
     const voteCall = Array.isArray(slateOrProposals) ? chief['vote(address[])'] : chief['vote(bytes32)'];
     const voteTxCreator = () => voteCall(slateOrProposals);
 

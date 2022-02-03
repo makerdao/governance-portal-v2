@@ -7,12 +7,10 @@ import { shallow } from 'zustand/shallow';
 import { Transaction } from 'modules/web3/types/transaction';
 import { useAccount } from 'modules/app/hooks/useAccount';
 
-type VoteCall = (slateOrProposals: any | any[], callbacks?: Record<string, (id: string) => void>) => void; //TODO update inputs
-
 type VoteResponse = {
   txId: string | null;
   setTxId: Dispatch<SetStateAction<string | null>>;
-  vote: VoteCall;
+  vote: (slateOrProposals: any | any[], callbacks?: Record<string, (id: string) => void>) => void;
   tx: Transaction | null;
 };
 
@@ -26,7 +24,7 @@ export const useVoteProxyVote = (): VoteResponse => {
     shallow
   );
 
-  const vote: VoteCall = (slateOrProposals, callbacks?) => {
+  const vote = (slateOrProposals: any | any[], callbacks?: Record<string, (id: string) => void>) => {
     const voteCall = voteProxyContract
       ? Array.isArray(slateOrProposals)
         ? voteProxyContract['vote(address[])']
