@@ -101,7 +101,7 @@ const Header = (): JSX.Element => {
         </Flex>
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        {chainId && <NetworkSelect chainId={chainId} />}
+        <NetworkSelect />
         {typeof window !== 'undefined' && <AccountSelect />}
 
         <IconButton
