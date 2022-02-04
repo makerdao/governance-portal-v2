@@ -16,13 +16,13 @@ describe('/polling page', async () => {
         matchCase: false
       }).should('be.visible');
 
-      cy.get('[data-testid="poll-overview-card"]').should('have.length', 19);
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 18).and('be.lte', 19);
 
       // Show ended polls
       cy.get('[data-testid="button-view-ended-polls"]').click();
 
       // Check that now only shows 2 polls
-      cy.get('[data-testid="poll-overview-card"]').should('have.length', 21);
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 20).and('be.lte', 21);
     });
   });
 
