@@ -10,13 +10,14 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ColorModeToggle from './header/ColorModeToggle';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { AccountContext } from 'modules/app/context/AccountContext';
+import NetworkSelect from './header/NetworkSelect';
 
 const Header = (): JSX.Element => {
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useContext(AccountContext);
-  const { network } = useActiveWeb3React();
+  const { network, chainId } = useActiveWeb3React();
 
   return (
     <Box
@@ -99,10 +100,8 @@ const Header = (): JSX.Element => {
           <ColorModeToggle />
         </Flex>
 
-        {/* TODO: we can add the dropdown here . Caution: we use the network name in the e2e tests to determine that the page correctly connected */}
-        {network && <Flex data-testid="active-network-name">{network}</Flex>}
-
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
+        <NetworkSelect />
         {typeof window !== 'undefined' && <AccountSelect />}
 
         <IconButton

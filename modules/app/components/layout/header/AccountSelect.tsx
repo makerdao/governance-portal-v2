@@ -73,20 +73,13 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { network, account: address, chainId, activate, connector, error, deactivate } = useActiveWeb3React();
+  const { account: address, chainId, activate, connector, deactivate } = useActiveWeb3React();
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   useEagerConnect();
 
   // Detect previously authorized connections and force log-in
   useWindowBindings();
-
-  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
-
-  useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-    if (!error) setChainIdError(null);
-  }, [chainId, error]);
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -258,8 +251,6 @@ const AccountSelect = (): React.ReactElement => {
 
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal chainIdError={chainIdError} walletChainName={network ? network : null} />
-
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);
