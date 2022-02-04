@@ -173,7 +173,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     analysis = results[network][spellAddress];
   } else {
     analysis = await analyzeSpell(spellAddress, network);
-    results[network][spellAddress] = analysis;
+    if (analysis.hasBeenCast) {
+      results[network][spellAddress] = analysis;
+    }
   }
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
