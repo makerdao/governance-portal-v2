@@ -47,7 +47,7 @@ describe('/polling page', async () => {
       cy.get('[data-testid="poll-filters-dropdown"]').click();
       cy.get('[data-testid="checkbox-show-polls-ended"]').click();
 
-      cy.get('[data-testid="poll-overview-card"]').should('have.length', 2);
+      cy.get('[data-testid="poll-overview-card"]').should('have.length', 3);
 
       cy.contains('Ended Polls').should('be.visible');
     });
