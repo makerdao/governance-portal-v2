@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Flex, Text, NavLink, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
@@ -11,24 +10,23 @@ import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
+const handleSwitchNetwork = (library, chainId) => {
+  switchToNetwork({ library, chainId });
+};
+
 const NetworkAlertModal = ({
   chainIdError,
-  walletChainName
+  setError
 }: {
   chainIdError: ChainIdError;
-  walletChainName: SupportedNetworks | null;
+  setError: (error: Error) => void;
 }): JSX.Element | null => {
-  const [showDialog, setShowDialog] = useState(true);
   const bpi = useBreakpointIndex();
-  const context = useActiveWeb3React();
-
-  const handleSwitchNetwork = network => {
-    switchToNetwork({ library: context.library, chainId: networkNameToChainId(network) });
-  };
+  const { library, network, chainId } = useActiveWeb3React();
 
   if (chainIdError === 'network mismatch') {
     return (
-      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={() => setError(null)}>
         <DialogContent
           aria-label="Network Mismatch"
           sx={
@@ -47,8 +45,8 @@ const NetworkAlertModal = ({
 
             <Text sx={{ mt: 3 }}>
               Your wallet and this page are connected to different networks. To have the page match your
-              wallet&apos;s network ({walletChainName}),{' '}
-              <NavLink href={`/?network=${walletChainName}`} p={0} sx={{}}>
+              wallet&apos;s network ({network}),{' '}
+              <NavLink href={`/?network=${network}`} p={0} sx={{}}>
                 click here.
               </NavLink>
             </Text>
@@ -60,7 +58,7 @@ const NetworkAlertModal = ({
 
   if (chainIdError === 'unsupported network') {
     return (
-      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={() => setError(null)}>
         <DialogContent
           aria-label="Unsupported Network"
           sx={

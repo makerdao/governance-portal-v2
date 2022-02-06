@@ -8,7 +8,6 @@ import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect, useContext } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ColorModeToggle from './header/ColorModeToggle';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { AccountContext } from 'modules/app/context/AccountContext';
 import NetworkSelect from './header/NetworkSelect';
 
@@ -17,7 +16,6 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useContext(AccountContext);
-  const { network, chainId } = useActiveWeb3React();
 
   return (
     <Box
@@ -112,15 +110,13 @@ const Header = (): JSX.Element => {
         >
           <Icon name="menu" sx={{ width: '18px' }} />
         </IconButton>
-        {showMobileMenu && (
-          <MobileMenu hide={() => setShowMobileMenu(false)} router={router} {...{ network }} />
-        )}
+        {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} router={router} />}
       </Flex>
     </Box>
   );
 };
 
-const MobileMenu = ({ hide, network, router }) => {
+const MobileMenu = ({ hide, router }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
