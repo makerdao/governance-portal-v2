@@ -3,7 +3,6 @@ import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useC
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import React, { ReactNode } from 'react';
-import useSWR from 'swr';
 import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProxyContract';
 import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';

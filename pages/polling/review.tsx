@@ -29,8 +29,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, setComments, updateComment, comments] = useBallotStore(
-    state => [state.ballot, state.setComments, state.updateComment, state.comments],
+  const [ballot, previousVotes, setComments, updateComment, comments] = useBallotStore(
+    state => [state.ballot, state.previousVotes, state.setComments, state.updateComment, state.comments],
     shallow
   );
 
@@ -38,6 +38,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
   const votedPolls = Object.keys(ballot)
+    .map(pollId => {
+      return findPollById(polls, pollId);
+    })
+    .filter(p => !!p) as Poll[];
+
+  const previousVotedPolls = Object.keys(previousVotes)
     .map(pollId => {
       return findPollById(polls, pollId);
     })
@@ -80,9 +86,25 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 )}
                 {!!account && votedPolls.length === 0 && (
                   <Text as="p" sx={{ mt: 3 }}>
-                    Your ballot is empty
+                    There are no polls added to your ballot. Go back to the polls page to vote on new
+                    initiatives.
                   </Text>
                 )}
+                {!!account && votedPolls.length === 0 && previousVotedPolls.length > 0 && (
+                  <Box mt={3}>
+                    <Text mb={3} as="h4">
+                      You just voted on:
+                    </Text>
+                    {previousVotedPolls.map(poll => {
+                      return (
+                        <Box key={`previous-voted-${poll.pollId}`} data-testid="previously-voted-on">
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} />
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                )}
+
                 {bpi <= 2 && <SubmitButton />}
                 {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 {votedPolls.length > 0 && (
@@ -103,11 +125,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     })}
                   </Stack>
                 )}
-                {votedPolls.length === 0 && (
-                  <Box>
-                    <Text>There are no polls added to your ballot.</Text>
-                  </Box>
-                )}
+
                 {bpi <= 2 && <SubmitButton />}
 
                 {!account && (

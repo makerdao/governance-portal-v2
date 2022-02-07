@@ -101,6 +101,7 @@ const ModalContent = ({ close, ...props }) => {
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
               disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
+              data-testid="button-mkr-withdraw"
               onClick={() => {
                 trackButtonClick('withdrawMkr');
                 free(mkrToWithdraw, {
