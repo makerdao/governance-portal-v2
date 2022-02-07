@@ -10,6 +10,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
+import { useWeb3React } from '@web3-react/core';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -41,6 +42,8 @@ const closeButtonStyle: ThemeUICSSObject = {
 
 const NetworkSelect = (): React.ReactElement => {
   const { library, chainId } = useActiveWeb3React();
+  // We can only switch MM network if injected connector is active
+  const { active: accountConnected } = useWeb3React();
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -53,7 +56,10 @@ const NetworkSelect = (): React.ReactElement => {
       <Flex
         sx={walletButtonStyle}
         key={CHAIN_INFO[chainKey].label}
-        onClick={() => switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library })}
+        onClick={() => {
+          switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library });
+          setShowDialog(false);
+        }}
       >
         <Icon name={CHAIN_INFO[chainKey].label} sx={{ width: '22px', height: '22px' }} />
         <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainKey].label}</Text>
@@ -68,6 +74,7 @@ const NetworkSelect = (): React.ReactElement => {
             setShowDialog(true);
           }}
           activeNetwork={CHAIN_INFO[chainId].label}
+          disabled={!accountConnected}
         />
       )}
 
