@@ -4,7 +4,6 @@ import { PollVoteHistory } from '../types/pollVoteHistory';
 import { getPolls } from './fetchPolls';
 import { fetchAllCurrentVotes } from './fetchAllCurrentVotes';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-import { parseRawOptinIdRankedChoiceOption } from '../helpers/parseRawOptionIdRankedChoiceOption';
 
 export async function fetchAddressPollVoteHistory(
   address: string,
@@ -23,9 +22,8 @@ export async function fetchAddressPollVoteHistory(
 
       let optionValue = '';
       if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
-        const rankedChoiceOption = parseRawOptinIdRankedChoiceOption(pollVote.optionIdRaw);
-        if (rankedChoiceOption && rankedChoiceOption.length > 0) {
-          optionValue = poll.options[rankedChoiceOption[0]];
+        if (pollVote.rankedChoiceOption && pollVote.rankedChoiceOption.length > 0) {
+          optionValue = poll.options[pollVote.rankedChoiceOption[0]];
         }
       } else {
         if (typeof pollVote.optionId !== 'undefined') {

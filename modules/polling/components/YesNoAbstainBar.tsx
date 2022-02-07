@@ -47,17 +47,21 @@ export function YesNoAbstainBar({
     yesPercentage: {
       color: 'primary',
       fontSize: 1,
-      fontWeight: 'semiBold'
+      fontWeight: 'semiBold',
+      mr: 1
     },
     noPercentage: {
       color: 'notice',
       fontSize: 1,
-      fontWeight: 'semiBold'
+      fontWeight: 'semiBold',
+      ml: 1
     },
     abstainPercentage: {
       color: 'secondaryEmphasis',
       fontSize: 1,
-      fontWeight: 'semiBold'
+      fontWeight: 'semiBold',
+      mr: 1,
+      ml: 1
     }
   };
   return (
