@@ -65,7 +65,11 @@ export default function PollOverviewCard({
                 </Text>
                 <Link href={`/polling/${poll.slug}`} passHref>
                   <InternalLink variant="nostyle">
-                    <Text variant="microHeading" sx={{ fontSize: [3, 5] }}>
+                    <Text
+                      variant="microHeading"
+                      sx={{ fontSize: [3, 5] }}
+                      data-testid="poll-overview-card-poll-title"
+                    >
                       {poll.title}
                     </Text>
                   </InternalLink>

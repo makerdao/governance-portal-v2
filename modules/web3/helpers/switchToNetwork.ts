@@ -2,10 +2,25 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { hexStripZeros } from '@ethersproject/bytes';
 import { Web3Provider } from '@ethersproject/providers';
 import { SupportedChainId } from '../constants/chainID';
+import { CHAIN_INFO } from '../constants/networks';
+import { Chain } from '../types/chain';
 
 interface SwitchNetworkArguments {
   library: Web3Provider;
   chainId: SupportedChainId;
+}
+
+export function connectToNetwork(chain: Chain, ethereum: any): Promise<any> {
+  const params = {
+    chainId: hexStripZeros(BigNumber.from(chain.chainId).toHexString()), // A 0x-prefixed hexadecimal string
+
+    rpcUrls: [chain.rpcs[chain.defaultRpc]]
+  };
+
+  return ethereum.request({
+    method: 'wallet_addEthereumChain',
+    params: [params]
+  });
 }
 
 // provider.request returns Promise<any>, but wallet_switchEthereumChain must return null or throw
@@ -16,12 +31,13 @@ export async function switchToNetwork({ library, chainId }: SwitchNetworkArgumen
   }
   const formattedChainId = hexStripZeros(BigNumber.from(chainId).toHexString());
   try {
-    await library.provider.request({
+    await (window as any).ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: formattedChainId }]
     });
   } catch (error) {
     console.log(error);
+    connectToNetwork(CHAIN_INFO[chainId], (window as any).ethereum as any);
     // metamask comes with goerli configuration so this is unecessary
     // but will leave it for future chains we may add
     // 4902 is the error code for attempting to switch to an unrecognized chainId

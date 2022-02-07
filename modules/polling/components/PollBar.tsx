@@ -30,7 +30,7 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
     if (existingVote) {
       return existingVote.rankedChoiceOption
         ? !isEqual(existingVote.rankedChoiceOption, ballot[pollId].option)
-        : !isEqual(existingVote.option, ballot[pollId].option);
+        : !isEqual(existingVote.optionId, ballot[pollId].option);
     }
     return false;
   }).length;

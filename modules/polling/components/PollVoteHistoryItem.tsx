@@ -13,6 +13,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
   const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   const { tally } = usePollTally(vote.pollId);
+
   return (
     <Box
       sx={{
@@ -92,7 +93,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: isPluralityVote ? voteColorStyles[vote.option || 0] : 'secondaryAlt',
+              color: isPluralityVote ? voteColorStyles[vote.optionId || 0] : 'secondaryAlt',
               fontWeight: 'semiBold'
             }}
           >

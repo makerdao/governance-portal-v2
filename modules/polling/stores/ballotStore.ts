@@ -12,6 +12,7 @@ import { Web3Provider } from '@ethersproject/providers';
 
 type Store = {
   ballot: Ballot;
+  previousVotes: Ballot;
   comments: Partial<PollComment>[];
   setComments: (newComments: Partial<PollComment>[]) => void;
   updateComment: (comment: string, pollId: number) => void;
@@ -19,6 +20,7 @@ type Store = {
   clearTx: () => void;
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
+  updatePreviousVotes: () => void;
   clearBallot: () => void;
   submitBallot: (
     account: string,
@@ -35,6 +37,7 @@ type Store = {
 
 const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   ballot: {},
+  previousVotes: {},
   txId: null,
   comments: [],
   signedMessage: '',
@@ -84,6 +87,17 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     set(state => ({ ballot: omit(state.ballot, pollId) }));
   },
 
+  updatePreviousVotes: () => {
+    const ballot = get().ballot;
+    const previousVotes = get().previousVotes;
+    set({
+      previousVotes: {
+        ...previousVotes,
+        ...ballot
+      }
+    });
+  },
+
   clearBallot: () => {
     set({ ballot: {} });
   },
@@ -130,9 +144,8 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
     });
 
     const comments = get().comments;
-
     const voteTxCreator = voteDelegateContract
-      ? () => voteDelegateContract.votePoll(pollIds, pollOptions)
+      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, pollOptions)
       : () => govPollingContract['vote(uint256[],uint256[])'](pollIds, pollOptions);
 
     const txId = await transactionsApi
@@ -166,6 +179,7 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
           }
         },
         mined: txId => {
+          get().updatePreviousVotes();
           get().clearBallot();
           transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
         }

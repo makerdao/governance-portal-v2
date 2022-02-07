@@ -1,13 +1,15 @@
 type LegacyPollVote = {
   pollId: number;
-  option: number;
+  optionId: number;
+  optionIdRaw?: string;
   rankedChoiceOption?: number[];
   blockTimestamp: number;
 };
 
 type RankedChoicePollVote = {
   pollId: number;
-  option?: number;
+  optionId?: number;
+  optionIdRaw?: string;
   rankedChoiceOption: number[];
   blockTimestamp: number;
 };

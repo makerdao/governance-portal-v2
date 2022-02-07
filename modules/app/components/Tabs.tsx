@@ -51,6 +51,7 @@ const TabbedLayout = ({
           {tabRoutes.map((tabRoute, index) => (
             <Tab
               key={tabRoute}
+              data-testid={`tab-${tabRoute}`}
               sx={{
                 ...getTabStyles({ isActive: activeTab === tabRoute, isFirst: index === 0 })
               }}

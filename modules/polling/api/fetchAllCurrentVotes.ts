@@ -8,7 +8,7 @@ export async function fetchAllCurrentVotes(address: string, network: SupportedNe
   const data = await gqlRequest({
     chainId: networkNameToChainId(network),
     query: allCurrentVotes,
-    variables: { argAddress: address }
+    variables: { argAddress: address.toLowerCase() }
   });
 
   const res: PollVote[] = data.allCurrentVotes.nodes;

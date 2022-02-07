@@ -87,7 +87,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
     address as string,
     network
   );
-
   const pollVoteHistory = await fetchAddressPollVoteHistory(
     voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),
     network

@@ -80,7 +80,7 @@ export default function AddressIconBox({
             </Flex>
           )}
         </Flex>
-        {voteProxyInfo && (
+        {voteProxyInfo && voteProxyInfo.voteProxyAddress && (
           <Flex>
             <Text sx={{ color: 'textSecondary', fontSize: [1, 2] }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>

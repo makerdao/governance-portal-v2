@@ -19,7 +19,11 @@ export async function fetchDelegatesMKRWeightHistory(
   const data = await gqlRequest({
     chainId: networkNameToChainId(network),
     query: mkrLockedDelegate,
-    variables: { argAddress: address, argUnixTimeStart: 0, argUnixTimeEnd: Math.floor(Date.now() / 1000) }
+    variables: {
+      argAddress: address.toLowerCase(),
+      argUnixTimeStart: 0,
+      argUnixTimeEnd: Math.floor(Date.now() / 1000)
+    }
   });
 
   const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegate.nodes;
