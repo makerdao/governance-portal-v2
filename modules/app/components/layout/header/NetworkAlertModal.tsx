@@ -10,23 +10,22 @@ import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
-const handleSwitchNetwork = (library, chainId) => {
-  switchToNetwork({ library, chainId });
-};
-
 const NetworkAlertModal = ({
   chainIdError,
-  setError
+  deactivate
 }: {
   chainIdError: ChainIdError;
-  setError: (error: Error) => void;
+  deactivate: () => void;
 }): JSX.Element | null => {
   const bpi = useBreakpointIndex();
   const { library, network, chainId } = useActiveWeb3React();
 
+  // const handleSwitchNetwork = network => {
+  //   switchToNetwork({ library: context.library, chainId: networkNameToChainId(network) });
+  // };
   if (chainIdError === 'network mismatch') {
     return (
-      <DialogOverlay isOpen={!!chainIdError} onDismiss={() => setError(null)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
         <DialogContent
           aria-label="Network Mismatch"
           sx={
@@ -58,7 +57,7 @@ const NetworkAlertModal = ({
 
   if (chainIdError === 'unsupported network') {
     return (
-      <DialogOverlay isOpen={!!chainIdError} onDismiss={() => setError(null)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
         <DialogContent
           aria-label="Unsupported Network"
           sx={

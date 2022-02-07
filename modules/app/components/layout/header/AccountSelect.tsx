@@ -255,7 +255,7 @@ const AccountSelect = (): React.ReactElement => {
   );
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal chainIdError={chainIdError} setError={setError} />
+      <NetworkAlertModal chainIdError={chainIdError} deactivate={deactivate} />
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);
