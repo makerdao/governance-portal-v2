@@ -21,7 +21,7 @@ export function extractCurrentPollVote(
   if (poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE) {
     return currentVote?.rankedChoiceOption !== undefined ? currentVote.rankedChoiceOption : null;
   } else if (poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE) {
-    return currentVote?.option !== undefined ? currentVote.option : null;
+    return currentVote?.optionId !== undefined ? currentVote.optionId : null;
   }
 
   return null;
