@@ -13,7 +13,7 @@ export async function fetchDelegatedTo(
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
       query: mkrDelegatedTo,
-      variables: { argAddress: address }
+      variables: { argAddress: address.toLowerCase() }
     });
 
     const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedTo.nodes;

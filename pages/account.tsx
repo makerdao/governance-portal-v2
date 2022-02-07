@@ -36,6 +36,7 @@ import { AddressDetail } from 'modules/address/components/AddressDetail';
 import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -51,7 +52,7 @@ const AccountPage = (): React.ReactElement => {
     : voteProxyContractAddress
     ? voteProxyContractAddress
     : account;
-  const { data: addressInfo } = useSWR<AddressApiResponse>(
+  const { data: addressInfo, error: errorLoadingAddressInfo } = useSWR<AddressApiResponse>(
     addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
     fetchJson
   );
@@ -197,7 +198,7 @@ const AccountPage = (): React.ReactElement => {
               <Box>
                 <Box sx={{ mt: 4, mb: 2 }}>
                   <Heading as="h3" variant="microHeading">
-                    Participation metrics
+                    Account information
                   </Heading>
                 </Box>
                 {addressInfo && (
@@ -215,6 +216,13 @@ const AccountPage = (): React.ReactElement => {
                     )}
                   </Box>
                 )}
+                {!addressInfo && !errorLoadingAddressInfo && (
+                  <Box>
+                    <Text>Loading Account Information...</Text>
+                    <SkeletonThemed height={100} width="100%" />
+                  </Box>
+                )}
+                {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
               </Box>
             </Box>
           )}

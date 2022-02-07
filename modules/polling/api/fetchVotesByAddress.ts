@@ -4,7 +4,7 @@ import { PollTallyVote } from '../types';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrWeightsAtTime';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { paddedArray, toBuffer } from 'lib/utils';
+import { parseRawOptinIdRankedChoiceOption } from '../helpers/parseRawOptionIdRankedChoiceOption';
 
 export async function fetchVotesByAddresForPoll(
   pollId: number,
@@ -22,12 +22,8 @@ export async function fetchVotesByAddresForPoll(
   if (!results) return [];
 
   const votes = results.map(vote => {
-    let rankedChoiceOption: any[] | null = null;
-    if (vote.optionIdRaw) {
-      const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
-      const ballot = paddedArray(32 - ballotBuffer.length, ballotBuffer);
-      rankedChoiceOption = ballot.reverse().filter(choice => choice !== 0);
-    }
+    const rankedChoiceOption = parseRawOptinIdRankedChoiceOption(vote.optionIdRaw);
+
     return {
       ...vote,
       rankedChoiceOption
