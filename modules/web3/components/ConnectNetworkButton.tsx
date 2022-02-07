@@ -4,12 +4,18 @@ import { Button, Flex, Text } from 'theme-ui';
 type Props = {
   onClickConnect: () => void;
   activeNetwork?: string;
+  disabled?: boolean;
 };
 
-export default function ConnectWalletButton({ onClickConnect, activeNetwork }: Props): React.ReactElement {
+export default function ConnectWalletButton({
+  onClickConnect,
+  activeNetwork,
+  disabled
+}: Props): React.ReactElement {
   return (
     <Button
       aria-label="Connect network"
+      disabled={disabled}
       sx={{
         variant: 'buttons.card',
         borderRadius: 'round',
@@ -21,6 +27,11 @@ export default function ConnectWalletButton({ onClickConnect, activeNetwork }: P
         '&:hover': {
           color: 'text',
           borderColor: 'onSecondary',
+          backgroundColor: 'surface'
+        },
+        '&:disabled': {
+          color: 'textMuted',
+          borderColor: 'muted',
           backgroundColor: 'surface'
         }
       }}

@@ -18,8 +18,10 @@ export function useEagerConnect(): boolean {
 
   useEffect(() => {
     injectedConnector.isAuthorized().then((isAuthorized: boolean) => {
+      // isAuthorized checks if window.ethereum exists, not that the account is connected.
       if (isAuthorized) {
-        activate(injectedConnector, undefined, true).catch(() => {
+        activate(injectedConnector, undefined, true).catch(e => {
+          console.debug('Error activating connector:', e);
           setTried(true);
         });
       } else {

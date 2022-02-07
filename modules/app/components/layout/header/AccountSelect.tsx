@@ -6,7 +6,6 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import Link from 'next/link';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { UnsupportedChainIdError } from '@web3-react/core';
 
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
@@ -14,7 +13,6 @@ import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
-import NetworkAlertModal from './NetworkAlertModal';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
@@ -24,10 +22,8 @@ import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
-import { useWeb3React } from '@web3-react/core';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-
-export type ChainIdError = null | 'network mismatch' | 'unsupported network';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -73,7 +69,8 @@ const MAX_PAGES = 5;
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
 
-  const { account: address, chainId, activate, connector, deactivate } = useActiveWeb3React();
+  // important that these are destructed from the account-specific web3-react context
+  const { account: address, chainId, activate, connector, deactivate, error, setError } = useWeb3React();
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   useEagerConnect();
@@ -90,6 +87,7 @@ const AccountSelect = (): React.ReactElement => {
   const [accountName, setAccountName] = useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = useState(false);
   const [addresses, setAddresses] = useState<string[]>([]);
+  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
 
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
   const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
@@ -207,7 +205,7 @@ const AccountSelect = (): React.ReactElement => {
         [name]: true
       });
 
-      await activate(connector);
+      await activate(connector, undefined, true);
       if (chainId) {
         setUserData({ wallet: name });
       }
@@ -218,11 +216,18 @@ const AccountSelect = (): React.ReactElement => {
         [name]: false
       });
     } catch (e) {
+      // Manually set the error in the web-react account context
+      setError(e);
       setLoadingConnectors({
         [name]: false
       });
     }
   };
+
+  useEffect(() => {
+    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+    if (!error) setChainIdError(null);
+  }, [chainId, error]);
 
   const walletOptions = Object.keys(SUPPORTED_WALLETS)
     .map((connectorName: ConnectorName) => (
@@ -248,9 +253,9 @@ const AccountSelect = (): React.ReactElement => {
       <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
-
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
+      <NetworkAlertModal chainIdError={chainIdError} deactivate={deactivate} />
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Box, Flex, Text, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { UnsupportedChainIdError } from '@web3-react/core';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
 import ConnectNetworkButton from 'modules/web3/components/ConnectNetworkButton';
@@ -11,7 +10,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import NetworkAlertModal from './NetworkAlertModal';
+import { useWeb3React } from '@web3-react/core';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -42,14 +41,9 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const NetworkSelect = (): React.ReactElement => {
-  const { library, network, error, chainId } = useActiveWeb3React();
-
-  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
-
-  useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-    if (!error) setChainIdError(null);
-  }, [chainId, error]);
+  const { library, chainId } = useActiveWeb3React();
+  // We can only switch MM network if injected connector is active
+  const { active: accountConnected } = useWeb3React();
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -62,7 +56,10 @@ const NetworkSelect = (): React.ReactElement => {
       <Flex
         sx={walletButtonStyle}
         key={CHAIN_INFO[chainKey].label}
-        onClick={() => switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library })}
+        onClick={() => {
+          switchToNetwork({ chainId: CHAIN_INFO[chainKey].chainId, library });
+          setShowDialog(false);
+        }}
       >
         <Icon name={CHAIN_INFO[chainKey].label} sx={{ width: '22px', height: '22px' }} />
         <Text sx={{ ml: 3 }}>{CHAIN_INFO[chainKey].label}</Text>
@@ -71,14 +68,13 @@ const NetworkSelect = (): React.ReactElement => {
 
   return (
     <Box sx={{ ml: ['auto', 3, 0], mr: 3 }}>
-      <NetworkAlertModal chainIdError={chainIdError} walletChainName={network ? network : null} />
-
       {chainId && (
         <ConnectNetworkButton
           onClickConnect={() => {
             setShowDialog(true);
           }}
           activeNetwork={CHAIN_INFO[chainId].label}
+          disabled={!accountConnected}
         />
       )}
 

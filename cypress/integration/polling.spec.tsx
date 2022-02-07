@@ -22,7 +22,7 @@ describe('/polling page', async () => {
       cy.get('[data-testid="button-view-ended-polls"]').click();
 
       // Check that now only shows 2 polls
-      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 20).and('be.lte', 21);
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 21).and('be.lte', 22);
     });
   });
 
