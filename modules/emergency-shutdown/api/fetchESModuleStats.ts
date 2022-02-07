@@ -24,6 +24,6 @@ export async function fetchESModuleStats(address?: string): Promise<ESModuleStat
     address ? esmService.getTotalStakedByAddress(address) : null,
     maker.service('smartContract').getContract('END').when(),
     address ? maker.service('chief').getNumDeposits(address) : null,
-    esmService.getStakingHistory()
+    esmService.getStakingV2History()
   ]);
 }
