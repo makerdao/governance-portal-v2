@@ -53,6 +53,7 @@ import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComment
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   proposal: Proposal;
@@ -240,7 +241,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   </div>
                 ]}
                 banner={
-                  <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                  <ErrorBoundary componentName="Executive Timing Banner">
+                    <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                  </ErrorBoundary>
                 }
               ></Tabs>
             ) : (
@@ -284,107 +287,109 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            <Card variant="compact" p={3} sx={{ height: '237px' }}>
-              <Box
-                sx={{
-                  overflowY: 'scroll',
-                  height: '100%',
-                  '::-webkit-scrollbar': {
-                    display: 'none'
-                  },
-                  scrollbarWidth: 'none'
-                }}
-              >
-                {!allSupporters && !supportersError && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
-
-                {supportersError && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                )}
-                {allSupporters && (!supporters || supporters.length === 0) && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text>Currently there are no supporters</Text>
-                  </Flex>
-                )}
-
-                {supporters &&
-                  supporters.length > 0 &&
-                  supporters.map(supporter => (
+            <ErrorBoundary componentName="Executive Supporters">
+              <Card variant="compact" p={3} sx={{ height: '237px' }}>
+                <Box
+                  sx={{
+                    overflowY: 'scroll',
+                    height: '100%',
+                    '::-webkit-scrollbar': {
+                      display: 'none'
+                    },
+                    scrollbarWidth: 'none'
+                  }}
+                >
+                  {!allSupporters && !supportersError && (
                     <Flex
                       sx={{
-                        justifyContent: 'space-between',
-                        fontSize: [2, 3],
-                        lineHeight: '34px'
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                       }}
-                      key={supporter.address}
                     >
-                      <Box sx={{ width: '55%' }}>
-                        <Text color="onSecondary">
-                          {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
-                        </Text>
-                      </Box>
-
-                      <Box sx={{ width: '45%', textAlign: 'right' }}>
-                        <Link
-                          href={{
-                            pathname: `/address/${supporter.address}`
-                          }}
-                          passHref
-                        >
-                          <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                            {supporter.name ? (
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 3,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
-                              </Text>
-                            ) : (
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 3,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                <Address address={supporter.address} />
-                              </Text>
-                            )}
-                          </ThemeUILink>
-                        </Link>
-                      </Box>
+                      <Spinner size={32} />
                     </Flex>
-                  ))}
-              </Box>
-            </Card>
+                  )}
+
+                  {supportersError && (
+                    <Flex
+                      sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 4,
+                        color: 'onSecondary'
+                      }}
+                    >
+                      List of supporters currently unavailable
+                    </Flex>
+                  )}
+                  {allSupporters && (!supporters || supporters.length === 0) && (
+                    <Flex
+                      sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Text>Currently there are no supporters</Text>
+                    </Flex>
+                  )}
+
+                  {supporters &&
+                    supporters.length > 0 &&
+                    supporters.map(supporter => (
+                      <Flex
+                        sx={{
+                          justifyContent: 'space-between',
+                          fontSize: [2, 3],
+                          lineHeight: '34px'
+                        }}
+                        key={supporter.address}
+                      >
+                        <Box sx={{ width: '55%' }}>
+                          <Text color="onSecondary">
+                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
+                          </Text>
+                        </Box>
+
+                        <Box sx={{ width: '45%', textAlign: 'right' }}>
+                          <Link
+                            href={{
+                              pathname: `/address/${supporter.address}`
+                            }}
+                            passHref
+                          >
+                            <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                              {supporter.name ? (
+                                <Text
+                                  sx={{
+                                    color: 'accentBlue',
+                                    fontSize: 3,
+                                    ':hover': { color: 'blueLinkHover' }
+                                  }}
+                                >
+                                  {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
+                                </Text>
+                              ) : (
+                                <Text
+                                  sx={{
+                                    color: 'accentBlue',
+                                    fontSize: 3,
+                                    ':hover': { color: 'blueLinkHover' }
+                                  }}
+                                >
+                                  <Address address={supporter.address} />
+                                </Text>
+                              )}
+                            </ThemeUILink>
+                          </Link>
+                        </Box>
+                      </Flex>
+                    ))}
+                </Box>
+              </Card>
+            </ErrorBoundary>
           </Box>
           <ResourceBox type={'executive'} />
           <ResourceBox type={'general'} />
@@ -434,7 +439,11 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
-  return <ProposalView proposal={proposal as Proposal} />;
+  return (
+    <ErrorBoundary componentName="Executive Page">
+      <ProposalView proposal={proposal as Proposal} />
+    </ErrorBoundary>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {

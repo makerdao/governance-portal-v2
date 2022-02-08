@@ -43,6 +43,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -310,10 +311,16 @@ const PollView = ({ poll }: { poll: Poll }) => {
           </Card>
         </div>
         <Stack gap={3}>
-          {!!account && bpi > 0 && <VoteBox poll={poll} />}
-          <SystemStatsSidebar
-            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-          />
+          {!!account && bpi > 0 && (
+            <ErrorBoundary componentName="Poll Voting">
+              <VoteBox poll={poll} />
+            </ErrorBoundary>
+          )}
+          <ErrorBoundary componentName="System Info">
+            <SystemStatsSidebar
+              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+            />
+          </ErrorBoundary>
           <ResourceBox type={'polling'} />
           <ResourceBox type={'general'} />
         </Stack>
@@ -354,9 +361,12 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
     );
 
   const poll = (isDefaultNetwork(network) ? prefetchedPoll : _poll) as Poll;
-  return <PollView poll={poll} />;
+  return (
+    <ErrorBoundary componentName="Poll Page">
+      <PollView poll={poll} />
+    </ErrorBoundary>
+  );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
   console.log(context);

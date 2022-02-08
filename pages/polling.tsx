@@ -35,6 +35,7 @@ import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   polls: Poll[];
@@ -271,10 +272,17 @@ const PollingOverview = ({ polls, categories }: Props) => {
             )}
           </Box>
           <Stack gap={3}>
-            {account && bpi > 0 && <BallotBox polls={polls} activePolls={activePolls} network={network} />}
-            <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-            />
+            {account && bpi > 0 && (
+              <ErrorBoundary componentName="Ballot">
+                <BallotBox polls={polls} activePolls={activePolls} network={network} />
+              </ErrorBoundary>
+            )}
+
+            <ErrorBoundary componentName="System Info">
+              <SystemStatsSidebar
+                fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              />
+            </ErrorBoundary>
             <ResourceBox type={'polling'} />
             <ResourceBox type={'general'} />
           </Stack>
@@ -318,10 +326,12 @@ export default function PollingOverviewPage({
     );
 
   return (
-    <PollingOverview
-      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
-      categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
-    />
+    <ErrorBoundary componentName="Poll List">
+      <PollingOverview
+        polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
+        categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
+      />
+    </ErrorBoundary>
   );
 }
 

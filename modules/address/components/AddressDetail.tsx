@@ -14,6 +14,7 @@ import AddressIconBox from './AddressIconBox';
 import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type PropTypes = {
   address: string;
@@ -117,9 +118,17 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
         )}
       </Box>
 
-      {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Vote History'}>
+          <PollVoteHistoryList votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
 
-      {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Participation Overview'}>
+          <PollingParticipationOverview votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
     </Box>
   );
 }
