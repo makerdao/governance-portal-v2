@@ -7,8 +7,8 @@ import { formatValue } from 'lib/string';
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
-  console.log(votingWeight?.total.toString());
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
+
   return (
     <>
       <Flex sx={{ justifyContent: 'space-between' }}>
