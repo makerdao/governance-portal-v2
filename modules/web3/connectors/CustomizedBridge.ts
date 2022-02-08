@@ -69,6 +69,11 @@ export class CustomizedBridge extends Eip1193Bridge {
         // Send the transaction
         const tx = await this.signer.sendTransaction(req);
         result = tx.hash;
+      } else if (params && params.length && method === 'personal_sign') {
+        // 'eth_sign' is an outdated and unsafe method, replaced by 'personal_sign', but this
+        // mock provider doesn't handle 'personal_sign' properly. Do not use 'eth_sign' in production.
+        // first argument is 'address', second is 'message'
+        return await super.send('eth_sign', [params[1], params[0]]);
       } else {
         // All other transactions the base class works for
         result = await super.send(method, params);

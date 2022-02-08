@@ -7,6 +7,8 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,7 +22,7 @@ export default withApiHandler(
 
     invariant(network && network.length > 0, 'Network not supported');
 
-    const provider = getDefaultProvider(network);
+    const provider = getDefaultProvider(getRPCFromChainID(networkNameToChainId(network)));
 
     // verify tx
     const transaction = await provider.getTransaction(body.txHash);

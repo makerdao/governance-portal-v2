@@ -97,7 +97,7 @@ describe('/polling review page', async () => {
     });
   });
 
-  xit('Adds comments', () => {
+  it('Adds comments', () => {
     visitPage('/polling');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
