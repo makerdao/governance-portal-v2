@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
@@ -357,31 +357,48 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   return <PollView poll={poll} />;
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // fetch poll contents at build-time if on the default network
-  const pollSlug = params?.['poll-hash'] as string;
-  invariant(pollSlug, 'getStaticProps poll hash not found in params');
+// export const getStaticProps: GetStaticProps = async ({ params }) => {
+//   // fetch poll contents at build-time if on the default network
+//   const pollSlug = params?.['poll-hash'] as string;
+//   invariant(pollSlug, 'getStaticProps poll hash not found in params');
 
-  const poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
+//   const poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
 
-  if (!poll) {
-    return { revalidate: 30, props: { poll: null } };
-  }
+//   if (!poll) {
+//     return { revalidate: 30, props: { poll: null } };
+//   }
+
+//   return {
+//     revalidate: 30, // allow revalidation every 30 seconds
+//     props: {
+//       poll
+//     }
+//   };
+// };
+
+
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const pollsResponse = await getPolls();
+//   const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
+
+//   return {
+//     paths,
+//     fallback: true
+//   };
+// };
+
+
+export const getServerSideProps: GetServerSideProps = async(context): Promise<any> => {
+
+  console.log(context);
+
+  const slug = context.query['poll-hash'] as string; 
+
+  const poll = await fetchPollBySlug(slug, DEFAULT_NETWORK.network);
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       poll
     }
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const pollsResponse = await getPolls();
-  const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
-
-  return {
-    paths,
-    fallback: true
-  };
-};
+  }
+}
