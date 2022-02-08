@@ -22,25 +22,49 @@ export const getVoteProxyAddresses = async (
     voteProxyAddress,
     hasProxy = false;
 
-  const [proxyAddressCold, proxyAddressHot] = await Promise.all([
-    voteProxyFactory.coldMap(account),
-    voteProxyFactory.hotMap(account)
-  ]);
+  // first check if account is a proxy contract
+  try {
+    // assume account is a proxy contract
+    const vpContract = getEthersContracts(account, abi, networkNameToChainId(network));
 
-  if (proxyAddressCold !== ZERO_ADDRESS) {
-    voteProxyAddress = proxyAddressCold;
-    coldAddress = account;
-  } else if (proxyAddressHot !== ZERO_ADDRESS) {
-    voteProxyAddress = proxyAddressHot;
-    hotAddress = account;
-  }
+    // this will fail if vpContract is not an instance of vote proxy
+    const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.hot(), vpContract.cold()]);
 
-  if (voteProxyAddress) {
-    const vpContract = getEthersContracts(voteProxyAddress, abi, networkNameToChainId(network));
-    hotAddress = hotAddress ?? (await vpContract.hot());
-    coldAddress = coldAddress ?? (await vpContract.cold());
+    // if the calls above didn't fail, account is a proxy contract, so set values
+    hotAddress = proxyAddressHot;
+    coldAddress = proxyAddressCold;
+    voteProxyAddress = account;
     hasProxy = true;
+  } catch (err) {
+    // if we're here, account is not a proxy contract
+    // but no need to throw an error
   }
 
+  // if account is not a proxy, check if it is a hot or cold address
+  if (!hasProxy) {
+    const [proxyAddressCold, proxyAddressHot] = await Promise.all([
+      voteProxyFactory.coldMap(account),
+      voteProxyFactory.hotMap(account)
+    ]);
+
+    // if account belongs to a hot or cold map, get proxy contract address
+    if (proxyAddressCold !== ZERO_ADDRESS) {
+      voteProxyAddress = proxyAddressCold;
+      coldAddress = account;
+    } else if (proxyAddressHot !== ZERO_ADDRESS) {
+      voteProxyAddress = proxyAddressHot;
+      hotAddress = account;
+    }
+
+    // found proxy contract, now determine hot and cold addresses
+    if (voteProxyAddress) {
+      const vpContract = getEthersContracts(voteProxyAddress, abi, networkNameToChainId(network));
+      hotAddress = hotAddress ?? (await vpContract.hot());
+      coldAddress = coldAddress ?? (await vpContract.cold());
+      hasProxy = true;
+    }
+  }
+
+  // it's been a long journey through the proxy jungles, let's go home
   return { hotAddress, coldAddress, voteProxyAddress, hasProxy };
 };
