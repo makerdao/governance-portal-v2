@@ -1,30 +1,21 @@
 import { Icon } from '@makerdao/dai-ui-icons';
 import useBallotStore from '../stores/ballotStore';
 import { Box, Flex, Button, Text } from 'theme-ui';
-import useTransactionsStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
-import shallow from 'zustand/shallow';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useSubmitBallot } from '../hooks/useSubmitBallot';
 
 export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): React.ReactElement {
   const account = useAccount();
-  const { network, library } = useActiveWeb3React();
-  const { polling } = useContracts();
-  const { voteTxId, ballot, submitBallot, signComments, signedMessage, comments } = useBallotStore(state => ({
-    clearTx: state.clearTx,
-    voteTxId: state.txId,
+  const { library } = useActiveWeb3React();
+  const { ballot, signComments, signedMessage, comments } = useBallotStore(state => ({
     ballot: state.ballot,
-    submitBallot: state.submitBallot,
     signComments: state.signComments,
     signedMessage: state.signedMessage,
     comments: state.comments
   }));
 
-  const transaction = useTransactionsStore(
-    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
-    shallow
-  );
+  const { submitBallot, tx: transaction, txId: voteTxId } = useSubmitBallot();
 
   const ballotLength = Object.keys(ballot).length;
 
@@ -52,14 +43,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             mt={2}
             data-testid="submit-ballot-button"
             onClick={() => {
-              submitBallot(
-                account.account as string,
-                network,
-                polling,
-                account.voteDelegateContract,
-                account.voteDelegateContractAddress,
-                account.voteProxyContractAddress
-              );
+              submitBallot();
               onSubmit();
             }}
             variant="primaryLarge"
@@ -72,14 +56,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
       ) : (
         <Button
           onClick={() => {
-            submitBallot(
-              account.account as string,
-              network,
-              polling,
-              account.voteDelegateContract,
-              account.voteDelegateContractAddress,
-              account.voteProxyContractAddress
-            );
+            submitBallot();
             onSubmit();
           }}
           data-testid="submit-ballot-button"
