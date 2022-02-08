@@ -5,8 +5,6 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -18,11 +16,8 @@ const NetworkAlertModal = ({
   deactivate: () => void;
 }): JSX.Element | null => {
   const bpi = useBreakpointIndex();
-  const { library, network, chainId } = useActiveWeb3React();
+  const { network } = useActiveWeb3React();
 
-  // const handleSwitchNetwork = network => {
-  //   switchToNetwork({ library: context.library, chainId: networkNameToChainId(network) });
-  // };
   if (chainIdError === 'network mismatch') {
     return (
       <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
