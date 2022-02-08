@@ -26,7 +26,8 @@
     "prettier": "prettier --config .prettierrc --write pages/ modules/ lib/ cypress/",
     "lint": "eslint --ext .tsx,.ts pages/ modules/ lib/",
     "gql-generate": "graphql-codegen --config codegen.yml",
-    "build-sdk": "eth-sdk --path modules/contracts"
+    "build-sdk": "eth-sdk --path modules/contracts && yarn contracts:compile:abi",
+    "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
   },
   "dependencies": {
     "@ethersproject/experimental": "^5.5.0",
@@ -97,6 +98,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.5.0",
+    "@typechain/ethers-v5": "^9.0.0",
     "@types/jest": "^26.0.24",
     "@types/react": "^17.0.11",
     "@types/testing-library__jest-dom": "^5.14.0",
@@ -119,6 +121,7 @@
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",
+    "typechain": "^7.0.0",
     "typescript": "^4.3.4",
     "wait-for-expect": "^3.0.2"
   }
