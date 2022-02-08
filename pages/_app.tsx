@@ -22,6 +22,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import { Web3ReactProvider } from '@web3-react/core';
 import { getLibrary } from 'modules/web3/helpers/getLibrary';
 import { AccountProvider } from 'modules/app/context/AccountContext';
+import NextNprogress from 'nextjs-progressbar';
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
   ssr: false
@@ -33,6 +34,13 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ReactProviderDefault getLibrary={getLibrary}>
         <ThemeProvider theme={theme}>
+          <NextNprogress
+            color="#1aab9b"
+            startPosition={0.3}
+            stopDelayMs={200}
+            height={3}
+            showOnShallow={true}
+          />
           <AccountProvider>
             <HeadComponent />
             <CookiesProvider disabled={false}>
