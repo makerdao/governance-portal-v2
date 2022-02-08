@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
-export const allEsmJoins = gql`
+export const allEsmV2Joins = gql`
   {
-    allEsmJoins {
+    allEsmV2Joins {
       nodes {
         txFrom
         txHash

@@ -15,7 +15,7 @@ import ESMHistory from 'modules/esm/components/ESMHistory';
 import { useEsmTotalStaked } from 'modules/esm/hooks/useEsmTotalStaked';
 import { useEsmIsActive } from 'modules/esm/hooks/useEsmIsActive';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { useAllEsmJoins } from 'modules/gql/hooks/useAllEsmJoins';
+import { useAllEsmV2Joins } from 'modules/gql/hooks/useAllEsmV2Joins';
 import { useEsmThreshold } from 'modules/esm/hooks/useEsmThreshold';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
@@ -28,7 +28,7 @@ const ESModule = (): React.ReactElement => {
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const { data: allEsmJoins } = useAllEsmJoins();
+  const { data: allEsmJoins } = useAllEsmV2Joins();
   const { data: totalStaked, mutate: mutateTotalStaked } = useEsmTotalStaked();
   const { data: thresholdAmount } = useEsmThreshold();
   const { data: esmIsActive } = useEsmIsActive();
