@@ -376,7 +376,6 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 //   };
 // };
 
-
 // export const getStaticPaths: GetStaticPaths = async () => {
 //   const pollsResponse = await getPolls();
 //   const paths = pollsResponse.polls.map(p => `/polling/${p.slug}`);
@@ -387,12 +386,10 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 //   };
 // };
 
-
-export const getServerSideProps: GetServerSideProps = async(context): Promise<any> => {
-
+export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
   console.log(context);
 
-  const slug = context.query['poll-hash'] as string; 
+  const slug = context.query['poll-hash'] as string;
 
   const poll = await fetchPollBySlug(slug, DEFAULT_NETWORK.network);
 
@@ -400,5 +397,5 @@ export const getServerSideProps: GetServerSideProps = async(context): Promise<an
     props: {
       poll
     }
-  }
-}
+  };
+};

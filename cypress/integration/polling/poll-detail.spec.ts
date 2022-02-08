@@ -7,6 +7,7 @@ import { TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('/polling detail page', async () => {
   it('can see poll detail', () => {
+    // Mainnet poll
     visitPage('/polling/QmWReBMh');
 
     // REnders the title
@@ -20,6 +21,7 @@ describe('/polling detail page', async () => {
   });
 
   it('Sees the vote box if connected', () => {
+    // Mainnet poll
     visitPage('/polling/QmWReBMh');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
@@ -28,9 +30,36 @@ describe('/polling detail page', async () => {
     });
   });
 
+  it('Can navigate on different tabs', () => {
+    // Goerli-fork Poll
+    visitPage('/polling/QmNSjvej');
+
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Checks that the leading option is visible
+      cy.contains(/Leading option: No with 1,535.66258 MKR supporting./).should('be.visible');
+
+      // Clicks on the vote breakdown tab
+      cy.get('[data-testid="tab-Vote Breakdown"]').click();
+
+      // Should show voting stats
+      cy.contains(/Voting Stats/).should('be.visible');
+
+      // Shows the votes by address
+      cy.contains(/Voting By Address/).should('be.visible');
+
+      // Checks that are different votes by address
+      cy.get('[data-testid="vote-by-address"]').its('length').should('be.greaterThan', 13);
+
+      // Checks that there is a vote with 799.000 MKR
+      cy.contains(/799.000 MKR/).should('be.visible');
+
+      // Checks that the voting weight module is visible
+      cy.contains(/Voting Weight/).should('be.visible');
+
+      // TODO: Check the voting weight circles show correct amount
+      // TODO: Check that the vote breakdown shows correct percentages
+    });
+  });
+
   // TODO: Click tabs
-
-  // TODO: Show breakdown
-
-  // TODO: Show comments
 });
