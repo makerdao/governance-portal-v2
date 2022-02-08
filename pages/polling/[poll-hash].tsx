@@ -357,7 +357,6 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   return <PollView poll={poll} />;
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
   console.log(context);
 
