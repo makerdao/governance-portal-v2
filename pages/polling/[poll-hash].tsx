@@ -13,7 +13,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
-import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { isDefaultNetwork, isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 // api
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -357,13 +357,14 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   return <PollView poll={poll} />;
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
   console.log(context);
 
   const slug = context.query['poll-hash'] as string;
+  const network = context.query['network'] as string;
+  const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
 
-  const poll = await fetchPollBySlug(slug, DEFAULT_NETWORK.network);
+  const poll = await fetchPollBySlug(slug, networkToFetch);
 
   return {
     props: {
