@@ -35,7 +35,12 @@ export async function getMKRVotingWeight(
   // next check if address is part of a proxy set up
   const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
-  if (voteProxyAddresses.hasProxy) {
+  if (
+    voteProxyAddresses.hasProxy &&
+    voteProxyAddresses.hotAddress &&
+    voteProxyAddresses.coldAddress &&
+    voteProxyAddresses.voteProxyAddress
+  ) {
     const [walletBalanceHot, walletBalanceCold, chiefBalanceHot, chiefBalanceCold, chiefBalanceProxy] =
       await Promise.all([
         await contracts.mkr.balanceOf(voteProxyAddresses.hotAddress),
