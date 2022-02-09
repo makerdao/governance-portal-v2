@@ -39,7 +39,7 @@ export async function fetchDelegatedTo(
     }, [] as DelegationHistory[]);
 
     return delegatedTo.sort((prev, next) =>
-      BigNumber.from(prev.lockAmount).gt(BigNumber.from(next.lockAmount)) ? -1 : 1
+      utils.parseEther(prev.lockAmount).gt(utils.parseEther(next.lockAmount)) ? -1 : 1
     );
   } catch (e) {
     console.error('Error fetching MKR delegated to address', e.message);
