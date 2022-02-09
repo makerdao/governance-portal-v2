@@ -5,7 +5,7 @@
   "viewportHeight": 800,
   "defaultCommandTimeout": 40000,
   "pageLoadTimeout": 120000,
-  "video": true,
+  "video": false,
   "retries": {
     "runMode": 1,
     "openMode": 0

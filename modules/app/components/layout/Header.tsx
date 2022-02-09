@@ -10,6 +10,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import ColorModeToggle from './header/ColorModeToggle';
 import { AccountContext } from 'modules/app/context/AccountContext';
 import NetworkSelect from './header/NetworkSelect';
+import { ErrorBoundary } from '../ErrorBoundary';
 
 const Header = (): JSX.Element => {
   const router = useRouter();
@@ -100,7 +101,11 @@ const Header = (): JSX.Element => {
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <NetworkSelect />
-        {typeof window !== 'undefined' && <AccountSelect />}
+        {typeof window !== 'undefined' && (
+          <ErrorBoundary componentName="Account Select">
+            <AccountSelect />
+          </ErrorBoundary>
+        )}
 
         <IconButton
           aria-label="Show menu"

@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { Contract } from 'ethers';
 import abi from 'modules/contracts/ethers/voteDelegate.json';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useVoteProxyAddress } from './useVoteProxyAddress';
+import { VoteProxy } from '../../../types/ethers-contracts';
 
 type VoteDelegateResponse = {
-  data?: Contract | undefined;
+  data?: VoteProxy | undefined;
   loading: boolean;
   error?: Error;
 };
@@ -20,7 +20,7 @@ export const useCurrentUserVoteProxyContract = (): VoteDelegateResponse => {
     const contract = useMemo(
       () =>
         data?.voteProxyAddress
-          ? getEthersContracts(data?.voteProxyAddress, abi, chainId, library, account)
+          ? getEthersContracts<VoteProxy>(data?.voteProxyAddress, abi, chainId, library, account)
           : undefined,
       [data?.voteProxyAddress]
     );

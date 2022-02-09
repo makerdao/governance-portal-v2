@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 
 export type SpellData = {
-  hasBeenCast: boolean;
+  hasBeenCast?: boolean;
   hasBeenScheduled: boolean;
   eta?: Date;
   expiration?: Date;

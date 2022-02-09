@@ -13,7 +13,7 @@ import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type PropTypes = {
   address: string;
@@ -41,8 +41,6 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
       revalidateOnMount: true
     }
   );
-
-  const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
@@ -86,7 +84,6 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           <AddressDelegatedTo
             delegatedTo={delegatedToData?.delegatedTo}
             totalDelegated={delegatedToData?.totalDelegated}
-            delegateAddresses={delegateAddresses}
           />
         )}
         {delegatedToData && delegatedToData.delegatedTo.length === 0 && (
@@ -117,9 +114,17 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
         )}
       </Box>
 
-      {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Vote History'}>
+          <PollVoteHistoryList votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
 
-      {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Participation Overview'}>
+          <PollingParticipationOverview votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
     </Box>
   );
 }

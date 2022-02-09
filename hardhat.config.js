@@ -20,7 +20,7 @@ module.exports = {
     hardhat: {
       forking: {
         url: `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_GOERLI_API_KEY}`,
-        blockNumber: 6182224,
+        blockNumber: 6349521,
         chainId: 31337
       },
       timeout: 2000000

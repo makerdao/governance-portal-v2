@@ -1,16 +1,16 @@
 import { Box } from 'theme-ui';
-import { Jazzicon } from '@ukstv/jazzicon-react';
+import Davatar from '@davatar/react';
 
 export default function AddressIcon({
   address,
-  width = '22px'
+  width = 22
 }: {
   address: string;
-  width?: string;
+  width?: number;
 }): React.ReactElement {
   return (
     <Box sx={{ height: width, width: width }}>
-      <Jazzicon address={address} sx={{ height: width, width: width }} />
+      <Davatar size={width} address={address} generatedAvatarType="jazzicon" />
     </Box>
   );
 }

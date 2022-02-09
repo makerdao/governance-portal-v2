@@ -98,7 +98,7 @@ export default function PollComments({
             fontSize: [2, 4]
           }}
         >
-          Comments ({comments ? comments.length : '-'})
+          Comments ({comments ? comments.length : '0'})
         </Text>
         <Box>
           <FilterButton name={() => `Sort by ${commentSortBy}`} listVariant="menubuttons.default.list">

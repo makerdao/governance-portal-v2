@@ -11,6 +11,7 @@ import useTransactionStore, {
 import { shallow } from 'zustand/shallow';
 import { BigNumber } from 'ethers';
 import { Transaction } from 'modules/web3/types/transaction';
+import { VoteDelegate } from '../../../types/ethers-contracts';
 
 type LockResponse = {
   txId: string | null;
@@ -29,7 +30,7 @@ export const useDelegateFree = (voteDelegateAddress: string): LockResponse => {
     shallow
   );
 
-  const vdContract = getEthersContracts(voteDelegateAddress, abi, chainId, library, account);
+  const vdContract = getEthersContracts<VoteDelegate>(voteDelegateAddress, abi, chainId, library, account);
 
   const free = (mkrToWithdraw: BigNumber, callbacks?: Record<string, () => void>) => {
     const freeTxCreator = () => vdContract.free(mkrToWithdraw);

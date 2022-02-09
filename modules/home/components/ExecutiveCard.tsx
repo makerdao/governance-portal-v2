@@ -14,7 +14,6 @@ type Props = {
 
 export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX.Element {
   const { data: mkrSupport } = useMkrSupport(proposal.address);
-
   return (
     <Stack gap={1} sx={{ variant: 'cards.primary' }} {...props}>
       <div>

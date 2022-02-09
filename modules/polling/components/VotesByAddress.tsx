@@ -4,8 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { Address } from 'modules/address/components/Address';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import AddressIconAndName from 'modules/address/components/AddressIconAndName';
 
 type Props = {
   tally: PollTally;
@@ -16,7 +15,6 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
   const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
-  const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
     <Box>
@@ -50,11 +48,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <Link href={{ pathname: `/address/${v.voter}` }} passHref>
                       <ThemeUILink title="View address detail">
-                        {delegateAddresses[v.voter] ? (
-                          delegateAddresses[v.voter]
-                        ) : (
-                          <Address address={v.voter} />
-                        )}
+                        <AddressIconAndName address={v.voter} width={22} />
                       </ThemeUILink>
                     </Link>
                   </Text>

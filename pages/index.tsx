@@ -28,6 +28,7 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   proposals: CMSProposal[];
@@ -89,12 +90,14 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                  <Flex
-                    sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
-                  >
-                    <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
-                    <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
-                  </Flex>
+                  <ErrorBoundary componentName="Last Polls and Executive">
+                    <Flex
+                      sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
+                    >
+                      <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
+                      <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
+                    </Flex>
+                  </ErrorBoundary>
                   <Box>
                     <Button
                       variant="outline"
@@ -113,7 +116,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <SystemStats />
+            <ErrorBoundary componentName="System Stats">
+              <SystemStats />
+            </ErrorBoundary>
           </section>
 
           <section>
@@ -173,17 +178,19 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </Container>
 
               <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
-                <Stack>
-                  {proposals
-                    .filter(proposal => proposal.active)
-                    .map(proposal => (
-                      <ExecutiveCard
-                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                        key={proposal.key}
-                        proposal={proposal}
-                      />
-                    ))}
-                </Stack>
+                <ErrorBoundary componentName="Executive Votes">
+                  <Stack>
+                    {proposals
+                      .filter(proposal => proposal.active)
+                      .map(proposal => (
+                        <ExecutiveCard
+                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                          key={proposal.key}
+                          proposal={proposal}
+                        />
+                      ))}
+                  </Stack>
+                </ErrorBoundary>
               </Container>
             </Stack>
           </section>
@@ -201,11 +208,13 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </Container>
 
               <Container sx={{ maxWidth: 'column' }}>
-                <Stack>
-                  {recentPolls.map(poll => (
-                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
-                  ))}
-                </Stack>
+                <ErrorBoundary componentName="Recent Polls">
+                  <Stack>
+                    {recentPolls.map(poll => (
+                      <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
+                    ))}
+                  </Stack>
+                </ErrorBoundary>
                 {activePolls.length > 4 && (
                   <Link href={{ pathname: '/polling' }}>
                     <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>

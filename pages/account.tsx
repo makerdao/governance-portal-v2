@@ -37,6 +37,7 @@ import { fetchJson } from 'lib/fetchJson';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useDelegateCreate } from 'modules/delegates/hooks/useDelegateCreate';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const AccountPage = (): React.ReactElement => {
   const bpi = useBreakpointIndex();
@@ -230,16 +231,20 @@ const AccountPage = (): React.ReactElement => {
         <Stack gap={3}>
           {addressInfo && addressInfo.delegateInfo && (
             <Box>
-              <ManageDelegation
-                delegate={addressInfo.delegateInfo}
-                textDelegate="Delegate MKR to myself"
-                textUndelegate="Undelegate MKR from my contract"
-              />
+              <ErrorBoundary componentName="Delegate MKR">
+                <ManageDelegation
+                  delegate={addressInfo.delegateInfo}
+                  textDelegate="Delegate MKR to myself"
+                  textUndelegate="Undelegate MKR from my contract"
+                />
+              </ErrorBoundary>
             </Box>
           )}
-          <SystemStatsSidebar
-            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-          />
+          <ErrorBoundary componentName="System Info">
+            <SystemStatsSidebar
+              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+            />
+          </ErrorBoundary>
           <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>

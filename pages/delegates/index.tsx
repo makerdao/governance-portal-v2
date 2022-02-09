@@ -27,6 +27,7 @@ import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   delegates: Delegate[];
@@ -119,7 +120,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -135,7 +138,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -151,7 +156,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {expiredDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -183,7 +190,11 @@ const Delegates = ({ delegates, stats }: Props) => {
               </Box>
             </Card>
           </Box>
-          {stats && <DelegatesSystemInfo stats={stats} />}
+          {stats && (
+            <ErrorBoundary componentName="Delegates System Info">
+              <DelegatesSystemInfo stats={stats} />
+            </ErrorBoundary>
+          )}
           <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>
@@ -224,10 +235,12 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   }
 
   return (
-    <Delegates
-      delegates={isDefaultNetwork(network) ? delegates : (_delegates as Delegate[])}
-      stats={isDefaultNetwork(network) ? stats : (_stats as DelegatesAPIStats)}
-    />
+    <ErrorBoundary componentName="Delegates List">
+      <Delegates
+        delegates={isDefaultNetwork(network) ? delegates : (_delegates as Delegate[])}
+        stats={isDefaultNetwork(network) ? stats : (_stats as DelegatesAPIStats)}
+      />
+    </ErrorBoundary>
   );
 }
 

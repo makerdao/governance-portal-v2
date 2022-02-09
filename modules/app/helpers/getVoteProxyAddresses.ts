@@ -2,6 +2,7 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { getEthersContracts } from 'modules/web3/helpers/getEthersContracts';
 import abi from 'modules/contracts/ethers/voteProxy.json';
 import { Contract } from '@ethersproject/contracts';
+import { VoteProxy } from '../../../types/ethers-contracts/VoteProxy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 
@@ -25,7 +26,7 @@ export const getVoteProxyAddresses = async (
   // first check if account is a proxy contract
   try {
     // assume account is a proxy contract
-    const vpContract = getEthersContracts(account, abi, networkNameToChainId(network));
+    const vpContract = getEthersContracts<VoteProxy>(account, abi, networkNameToChainId(network));
 
     // this will fail if vpContract is not an instance of vote proxy
     const [proxyAddressCold, proxyAddressHot] = await Promise.all([vpContract.hot(), vpContract.cold()]);

@@ -21,6 +21,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
 import { useCageTime } from 'modules/esm/hooks/useCageTime';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -241,11 +242,17 @@ const ESModule = (): React.ReactElement => {
       <Box mt={5}>
         <Text variant="microHeading">ESM History</Text>
       </Box>
-      <ESMHistory allEsmJoins={allEsmJoins} />
+      <ErrorBoundary componentName="ESM History">
+        <ESMHistory allEsmJoins={allEsmJoins} />
+      </ErrorBoundary>
     </PrimaryLayout>
   );
 };
 
 export default function ESModulePage(): JSX.Element {
-  return <ESModule />;
+  return (
+    <ErrorBoundary componentName="ESM Page">
+      <ESModule />
+    </ErrorBoundary>
+  );
 }
