@@ -13,31 +13,31 @@ export default function VotingWeight(): JSX.Element {
 
   const { data: votingWeight } = useMKRVotingWeight(account);
 
-  let votingWeightDescription = '';
-  if (votingWeight) {
-    votingWeightDescription += votingWeight.proxyChiefBalance?.gte(parseUnits('0.005'))
-      ? 'Vote proxy: ' + formatValue(votingWeight.proxyChiefBalance) + '; '
-      : '';
-    votingWeightDescription += votingWeight.mkrBalance.gte(parseUnits('0.005'))
-      ? 'Connected wallet: ' + formatValue(votingWeight.mkrBalance) + '; '
-      : '';
-    votingWeightDescription += votingWeight.chiefBalance.gte(parseUnits('0.005'))
-      ? 'Connected wallet chief: ' + formatValue(votingWeight.chiefBalance) + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedMkrBalance?.gte(parseUnits('0.005'))
-      ? 'Linked wallet: ' + formatValue(votingWeight.linkedMkrBalance) + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedChiefBalance?.gte(parseUnits('0.005'))
-      ? 'Linked wallet chief: ' + formatValue(votingWeight.linkedChiefBalance) + '; '
-      : '';
-  }
-  votingWeightDescription = votingWeightDescription.slice(0, -2);
+  // let votingWeightDescription = '';
+  // if (votingWeight) {
+  //   votingWeightDescription += votingWeight.proxyChiefBalance?.gte(parseUnits('0.005'))
+  //     ? 'Vote proxy: ' + formatValue(votingWeight.proxyChiefBalance) + '; '
+  //     : '';
+  //   votingWeightDescription += votingWeight.mkrBalance.gte(parseUnits('0.005'))
+  //     ? 'Connected wallet: ' + formatValue(votingWeight.mkrBalance) + '; '
+  //     : '';
+  //   votingWeightDescription += votingWeight.chiefBalance.gte(parseUnits('0.005'))
+  //     ? 'Connected wallet chief: ' + formatValue(votingWeight.chiefBalance) + '; '
+  //     : '';
+  //   votingWeightDescription += votingWeight.linkedMkrBalance?.gte(parseUnits('0.005'))
+  //     ? 'Linked wallet: ' + formatValue(votingWeight.linkedMkrBalance) + '; '
+  //     : '';
+  //   votingWeightDescription += votingWeight.linkedChiefBalance?.gte(parseUnits('0.005'))
+  //     ? 'Linked wallet chief: ' + formatValue(votingWeight.linkedChiefBalance) + '; '
+  //     : '';
+  // }
+  // votingWeightDescription = votingWeightDescription.slice(0, -2);
 
   const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
 
   const tooltipLabel = (
     <>
-      {votingWeightDescription && <Box sx={{ fontWeight: 600, pb: 2 }}>{votingWeightDescription}</Box>}
+      {/* {votingWeightDescription && <Box sx={{ fontWeight: 600, pb: 2 }}>{votingWeightDescription}</Box>} */}
       {votingWeightCopy}
     </>
   );
