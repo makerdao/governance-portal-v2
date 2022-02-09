@@ -38,7 +38,7 @@ export default function AddressIconBox({
   return (
     <Flex>
       <Box sx={{ minWidth: '41px', mr: 2 }}>
-        <AddressIcon address={address} width="41px" />
+        <AddressIcon address={address} width={41} />
       </Box>
       <Flex
         sx={{
