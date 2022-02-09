@@ -50,8 +50,8 @@ export async function getMKRVotingWeight(
     const mkrOtherAddress = await contracts.mkr.balanceOf(otherAddress);
     const mkrChiefOtherAddress = await contracts.chief.deposits(otherAddress);
     const mkrProxyAddress = await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress);
+
     // If vote proxy, return balances in all the wallets
-    console.log(mkrInAddress.toString());
     return {
       mkrBalance: mkrInAddress,
       chiefBalance: mkrInChief,
