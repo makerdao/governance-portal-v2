@@ -33,7 +33,7 @@ function mergeDelegateInfo(
     expired: isExpired,
     expirationDate,
     description: githubDelegate?.description || '',
-    name: githubDelegate?.name || '',
+    name: githubDelegate?.name || 'Shadow Delegate',
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,
@@ -70,8 +70,8 @@ export async function fetchDelegate(
   return mergeDelegateInfo(onChainDelegate, githubDelegate);
 }
 
-// Returns a list of delegates, mixin onchain and repo information
-export async function fetchDelegates(network?: SupportedNetworks): Promise<DelegatesAPIResponse> {
+// Returns the delegate info without the chain data about votes
+export async function fetchDelegatesInformation(network?: SupportedNetworks): Promise<Delegate[]> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
   const { data: gitHubDelegates } = await fetchGithubDelegates(currentNetwork);
@@ -89,10 +89,19 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
     return mergeDelegateInfo(onChainDelegate, githubDelegate);
   });
 
+  return mergedDelegates;
+}
+
+// Returns a list of delegates, mixin onchain and repo information
+export async function fetchDelegates(network?: SupportedNetworks): Promise<DelegatesAPIResponse> {
+  const currentNetwork = network ? network : DEFAULT_NETWORK.network;
+
+  const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
+
   const contracts = getContracts(networkNameToChainId(currentNetwork));
   const executives = await getExecutiveProposals(currentNetwork);
   const delegates = await Promise.all(
-    mergedDelegates.map(async delegate => {
+    delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
       const votedProposals =
         votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(contracts.chief, votedSlate) : [];

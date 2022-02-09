@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
@@ -13,22 +12,16 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import AddressIconAndName from './AddressIconAndName';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
   network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
-  delegateAddresses: Record<string, string>;
 };
 
-const CollapsableRow = ({
-  delegate,
-  network,
-  bpi,
-  totalDelegated,
-  delegateAddresses
-}: CollapsableRowProps) => {
+const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const { address, lockAmount, events } = delegate;
@@ -40,7 +33,7 @@ const CollapsableRow = ({
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              {delegateAddresses[address] ? delegateAddresses[address] : <Address address={address} />}
+              <AddressIconAndName address={address} width={22} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -160,14 +153,9 @@ const CollapsableRow = ({
 type AddressDelegatedToProps = {
   delegatedTo: DelegationHistory[];
   totalDelegated: number;
-  delegateAddresses: Record<string, string>;
 };
 
-const AddressDelegatedTo = ({
-  delegatedTo,
-  totalDelegated,
-  delegateAddresses
-}: AddressDelegatedToProps): JSX.Element => {
+const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { network } = useActiveWeb3React();
 
@@ -206,7 +194,6 @@ const AddressDelegatedTo = ({
                 network={network}
                 bpi={bpi}
                 totalDelegated={totalDelegated}
-                delegateAddresses={delegateAddresses}
               />
             ))
           ) : (

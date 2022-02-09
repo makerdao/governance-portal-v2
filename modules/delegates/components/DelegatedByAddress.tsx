@@ -15,6 +15,7 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
+import AddressIconAndName from 'modules/address/components/AddressIconAndName';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -51,7 +52,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <Address address={address} />
+              <AddressIconAndName address={address} width={22} />
             </ThemeUILink>
           </Link>
         </Heading>

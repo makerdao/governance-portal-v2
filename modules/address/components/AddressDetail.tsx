@@ -13,7 +13,6 @@ import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type PropTypes = {
@@ -42,8 +41,6 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
       revalidateOnMount: true
     }
   );
-
-  const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
     <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
@@ -87,7 +84,6 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           <AddressDelegatedTo
             delegatedTo={delegatedToData?.delegatedTo}
             totalDelegated={delegatedToData?.totalDelegated}
-            delegateAddresses={delegateAddresses}
           />
         )}
         {delegatedToData && delegatedToData.delegatedTo.length === 0 && (
