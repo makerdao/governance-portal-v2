@@ -5,7 +5,6 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -27,6 +26,9 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   proposals: CMSProposal[];
@@ -66,54 +68,6 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       />
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
-        {/* <Flex sx={{ justifyContent: 'center' }}>
-          <Badge
-            variant="primary"
-            sx={{
-              textTransform: 'none',
-              textAlign: 'center',
-              borderColor: '#FDC134',
-              borderRadius: '50px',
-              width: '1020px',
-              whiteSpace: 'normal',
-              fontWeight: 'normal',
-              fontSize: [1, 2],
-              py: 2,
-              px: [3, 4],
-              mt: ['-10px', '-25px']
-            }}
-          > */}
-        {/* <Text sx={{ display: ['block', 'none'] }}>
-              Welcome to the new Vote Portal. The legacy site can still be reached at{' '}
-              <Link href="//v1.vote.makerdao.com">
-                <a>v1.vote.makerdao.com</a>
-              </Link>
-              .
-            </Text> */}
-        {/* <Text>
-              MakerDAO is currently migrating to a new governance chief contract to prevent flashloans from
-              being used in governance activities. Please withdraw from the old Chief, deposit your MKR in the
-              new Chief contract, and vote on the new proposal on the Executive Voting page. For more
-              information please refer to this{' '}
-              <Link href="//blog.makerdao.com/maker-dschief-1-2-governance-security-update-requires-mkr-holder-actions/">
-                <a sx={{ color: 'accentBlue' }}>blog</a>
-              </Link>
-              .
-            </Text> */}
-        {/* <Text sx={{ display: ['none', 'block'] }}>
-              Welcome to the new Vote Portal, featuring easier access to information, batched poll voting,
-              executive voting comments, and on-chain effects. For questions visit{' '}
-              <Link href="//chat.makerdao.com/channel/governance-and-risk">
-                <a>Rocket Chat</a>
-              </Link>
-              . The legacy Vote Portal can still be reached at{' '}
-              <Link href="//v1.vote.makerdao.com">
-                <a>v1.vote.makerdao.com</a>
-              </Link>
-              .
-            </Text> */}
-        {/* </Badge>
-        </Flex> */}
         <Stack gap={[5, 6]}>
           <section>
             <Stack gap={[4, 6]}>
@@ -136,12 +90,14 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     Join a decentralized community protecting the integrity of the Maker Protocol through
                     research, discussion, and on-chain voting.
                   </Text>
-                  <Flex
-                    sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
-                  >
-                    <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
-                    <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
-                  </Flex>
+                  <ErrorBoundary componentName="Last Polls and Executive">
+                    <Flex
+                      sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
+                    >
+                      <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
+                      <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
+                    </Flex>
+                  </ErrorBoundary>
                   <Box>
                     <Button
                       variant="outline"
@@ -160,7 +116,9 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           </section>
 
           <section>
-            <SystemStats />
+            <ErrorBoundary componentName="System Stats">
+              <SystemStats />
+            </ErrorBoundary>
           </section>
 
           <section>
@@ -220,17 +178,19 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </Container>
 
               <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
-                <Stack>
-                  {proposals
-                    .filter(proposal => proposal.active)
-                    .map(proposal => (
-                      <ExecutiveCard
-                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                        key={proposal.key}
-                        proposal={proposal}
-                      />
-                    ))}
-                </Stack>
+                <ErrorBoundary componentName="Executive Votes">
+                  <Stack>
+                    {proposals
+                      .filter(proposal => proposal.active)
+                      .map(proposal => (
+                        <ExecutiveCard
+                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                          key={proposal.key}
+                          proposal={proposal}
+                        />
+                      ))}
+                  </Stack>
+                </ErrorBoundary>
               </Container>
             </Stack>
           </section>
@@ -248,13 +208,15 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               </Container>
 
               <Container sx={{ maxWidth: 'column' }}>
-                <Stack>
-                  {recentPolls.map(poll => (
-                    <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
-                  ))}
-                </Stack>
+                <ErrorBoundary componentName="Recent Polls">
+                  <Stack>
+                    {recentPolls.map(poll => (
+                      <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
+                    ))}
+                  </Stack>
+                </ErrorBoundary>
                 {activePolls.length > 4 && (
-                  <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+                  <Link href={{ pathname: '/polling' }}>
                     <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
                       View all polls
                     </Text>
@@ -321,12 +283,14 @@ export default function Index({
   const [_polls, setPolls] = useState<Poll[]>();
   const [_proposals, setProposals] = useState<CMSProposal[]>();
   const [error, setError] = useState<string>();
+  const { network } = useActiveWeb3React();
 
   useEffect(() => {
-    if (!isDefaultNetwork() && (!_polls || !_proposals)) {
+    if (!network) return;
+    if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
       Promise.all([
-        fetchJson(`/api/polling/all-polls?network=${getNetwork()}`),
-        fetchJson(`/api/executive?network=${getNetwork()}`)
+        fetchJson(`/api/polling/all-polls?network=${network}`),
+        fetchJson(`/api/executive?network=${network}`)
       ])
         .then(([pollsData, proposals]) => {
           setPolls(pollsData.polls);
@@ -334,13 +298,13 @@ export default function Index({
         })
         .catch(setError);
     }
-  }, []);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_proposals))
+  if (!isDefaultNetwork(network) && (!_polls || !_proposals))
     return (
       <PrimaryLayout>
         <PageLoadingPlaceholder />
@@ -349,8 +313,8 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as CMSProposal[])}
-      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
+      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as CMSProposal[])}
+      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />
   );

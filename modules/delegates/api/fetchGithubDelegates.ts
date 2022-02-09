@@ -1,5 +1,5 @@
 import matter from 'gray-matter';
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage, GithubPage } from 'lib/github';
 import { markdownToHtml } from 'lib/utils';

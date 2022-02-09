@@ -1,12 +1,13 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'lib/maker/index';
-import { DEFAULT_NETWORK } from 'lib/constants';
-import withApiHandler from 'lib/api/withApiHandler';
-import { resolveENS } from 'modules/web3/ens';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+
 import { fetchDelegatedTo } from 'modules/delegates/api/fetchDelegatedTo';
 import { DelegationHistory } from 'modules/delegates/types';
 import BigNumber from 'bignumber.js';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { resolveENS } from 'modules/web3/helpers/ens';
 
 export type MKRDelegatedToAPIResponse = {
   delegatedTo: DelegationHistory[];
@@ -14,7 +15,7 @@ export type MKRDelegatedToAPIResponse = {
 };
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<MKRDelegatedToAPIResponse>) => {
-    const network = (req.query.network as string) || DEFAULT_NETWORK;
+    const network = (req.query.network as string) || DEFAULT_NETWORK.network;
     const tempAddress = req.query.address as string;
     invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

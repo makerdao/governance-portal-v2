@@ -2,11 +2,13 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { connectToDatabase } from 'lib/api/utils';
-import withApiHandler from 'lib/api/withApiHandler';
-import { config } from 'lib/config';
-import { SupportedNetworks } from 'lib/constants';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,10 +22,7 @@ export default withApiHandler(
 
     invariant(network && network.length > 0, 'Network not supported');
 
-    const provider = ethers.getDefaultProvider(network, {
-      infura: config.INFURA_KEY,
-      alchemy: config.ALCHEMY_KEY
-    });
+    const provider = getDefaultProvider(getRPCFromChainID(networkNameToChainId(network)));
 
     // verify tx
     const transaction = await provider.getTransaction(body.txHash);

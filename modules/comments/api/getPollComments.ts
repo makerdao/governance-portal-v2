@@ -1,5 +1,5 @@
-import { connectToDatabase } from 'lib/api/utils';
-import { SupportedNetworks } from 'lib/constants';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollCommentsAPIResponseItem } from '../types/comments';

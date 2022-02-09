@@ -4,18 +4,19 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
-  network: string;
+  network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
   delegateAddresses: Record<string, string>;
@@ -37,7 +38,7 @@ const CollapsableRow = ({
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
+          <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
               {delegateAddresses[address] ? delegateAddresses[address] : <Address address={address} />}
             </ThemeUILink>
@@ -137,7 +138,7 @@ const CollapsableRow = ({
                   }}
                 >
                   <ThemeUILink
-                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    href={getEtherscanLink(network, hash as string, 'transaction')}
                     target="_blank"
                     title="View on Etherscan"
                     sx={{
@@ -168,7 +169,7 @@ const AddressDelegatedTo = ({
   delegateAddresses
 }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
+  const { network } = useActiveWeb3React();
 
   return (
     <Box>

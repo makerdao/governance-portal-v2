@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Flex, Text, Box, Button, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { ConnectorName } from 'lib/maker/web3react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { formatAddress, getEtherscanLink } from 'lib/utils';
-import { getNetwork } from 'lib/maker';
+import { formatAddress } from 'lib/utils';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AddressIcon from 'modules/address/components/AddressIcon';
+import { ConnectorName } from 'modules/web3/types/connectors';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 type Props = {
   address: string;
@@ -17,6 +18,7 @@ type Props = {
 const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [copied, setCopied] = useState(false);
+  const { network } = useActiveWeb3React();
 
   return (
     <Flex
@@ -34,10 +36,10 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           </Text>
           <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 1 }}>
             <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} width="22px" />
+              <AddressIcon address={address} width={22} />
             </Box>
             <Text sx={{ fontFamily: 'body' }} data-testid="current-wallet">
-              {formatAddress(address)}
+              {formatAddress(address).toLowerCase()}
             </Text>
           </Flex>
         </Flex>
@@ -82,7 +84,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           {copied ? 'Copied!' : 'Copy Address'}
         </Flex>
         <ExternalLink
-          href={getEtherscanLink(getNetwork(), address, 'address')}
+          href={getEtherscanLink(network, address, 'address')}
           target="_blank"
           sx={{
             whiteSpace: 'nowrap',

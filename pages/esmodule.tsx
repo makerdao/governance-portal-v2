@@ -2,25 +2,42 @@ import { Flex, Box, Button, Text, Card, Link } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
-import BurnModal from 'modules/emergency-shutdown/components/BurnModal';
-import ShutdownModal from 'modules/emergency-shutdown/components/ShutdownModal';
-import ProgressRing from 'modules/emergency-shutdown/components/ProgressRing';
-import ESMHistory from 'modules/emergency-shutdown/components/ESMHistory';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
 import { formatDateWithTime } from 'lib/datetime';
-import { useESModuleStats } from 'modules/emergency-shutdown/hooks/useESModuleStats';
+
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
+import BurnModal from 'modules/esm/components/BurnModal';
+import ShutdownModal from 'modules/esm/components/ShutdownModal';
+import ProgressRing from 'modules/esm/components/ProgressRing';
+import ESMHistory from 'modules/esm/components/ESMHistory';
+import { useEsmTotalStaked } from 'modules/esm/hooks/useEsmTotalStaked';
+import { useEsmIsActive } from 'modules/esm/hooks/useEsmIsActive';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useAllEsmV2Joins } from 'modules/gql/hooks/useAllEsmV2Joins';
+import { useEsmThreshold } from 'modules/esm/hooks/useEsmThreshold';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
+import { useCageTime } from 'modules/esm/hooks/useCageTime';
+import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data } = useESModuleStats(account?.address);
+  const { account } = useAccount();
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
-  const [totalStaked, canFire, thresholdAmount, mkrInEsm, cageTime, lockedInChief, stakingHistory] =
-    data || [];
+  const { data: allEsmJoins } = useAllEsmV2Joins();
+  const { data: totalStaked, mutate: mutateTotalStaked } = useEsmTotalStaked();
+  const { data: thresholdAmount } = useEsmThreshold();
+  const { data: esmIsActive } = useEsmIsActive();
+  const { data: mkrInEsmByAddress, mutate: mutateMkrInEsmByAddress } = useMkrInEsmByAddress(account);
+  const { data: cageTime } = useCageTime();
+  const { data: lockedInChief } = useLockedMkr(account);
+
+  const esmThresholdMet = !!totalStaked && !!thresholdAmount && totalStaked.gte(thresholdAmount);
 
   const DesktopView = () => {
     return (
@@ -28,7 +45,7 @@ const ESModule = (): React.ReactElement => {
         <Flex sx={{ flexDirection: 'row' }}>
           <Text data-testid="total-mkr-esmodule-staked">
             {totalStaked ? (
-              `${totalStaked.toString(6)}`
+              `${formatValue(totalStaked, 'wad', 6)}`
             ) : (
               <Box pl="14px" pr="14px">
                 <div ref={loader} />
@@ -37,7 +54,7 @@ const ESModule = (): React.ReactElement => {
           </Text>
           {thresholdAmount && (
             <Text color="#708390" sx={{ fontWeight: '400' }}>
-              &nbsp;of {thresholdAmount ? thresholdAmount.toString() : '---'}
+              &nbsp;of {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)} MKR` : '---'}
             </Text>
           )}
         </Flex>
@@ -62,9 +79,9 @@ const ESModule = (): React.ReactElement => {
                 minHeight: '20px',
                 width: totalStaked
                   ? `${
-                      totalStaked.gte(thresholdAmount)
+                      esmThresholdMet
                         ? '100'
-                        : totalStaked.mul(100).div(thresholdAmount).toFixed()
+                        : formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)
                     }%`
                   : '0%'
               }}
@@ -80,10 +97,10 @@ const ESModule = (): React.ReactElement => {
       <>
         <ProgressRing
           progress={
-            typeof totalStaked !== 'undefined' && thresholdAmount
-              ? canFire
+            esmThresholdMet
+              ? esmIsActive
                 ? 100
-                : totalStaked.mul(100).div(thresholdAmount).toNumber()
+                : new BigNumberJS(formatValue(totalStaked.mul(100).div(thresholdAmount), 'wad', 0)).toNumber()
               : 0
           }
           totalStaked={totalStaked}
@@ -118,11 +135,13 @@ const ESModule = (): React.ReactElement => {
           }
         >
           {totalStaked ? (
-            canFire ? (
+            !esmThresholdMet ? (
               <BurnModal
                 setShowDialog={setShowDialog}
-                lockedInChief={lockedInChief ? lockedInChief.toNumber() : 0}
+                lockedInChief={lockedInChief || BigNumber.from(0)}
                 totalStaked={totalStaked}
+                mutateTotalStaked={mutateTotalStaked}
+                mutateMkrInEsmByAddress={mutateMkrInEsmByAddress}
               />
             ) : (
               <ShutdownModal setShowDialog={setShowDialog} thresholdAmount={thresholdAmount} />
@@ -147,12 +166,16 @@ const ESModule = (): React.ReactElement => {
             color: '#994126',
             p: 3,
             fontSize: 1,
-            mt: 3
+            my: 3
           }}
         >
           <Text sx={{ textAlign: 'center' }}>
-            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toFixed())}. This dashboard
-            is currently read-only. You can read more information about next steps here NEED LINK
+            Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
+            is currently read-only. You can read more information about next steps{' '}
+            <Link href="https://makerdao.world/en/learn/governance/emergency-shutdown" target="_blank">
+              here
+            </Link>
+            .
           </Text>
         </Flex>
       )}
@@ -162,8 +185,8 @@ const ESModule = (): React.ReactElement => {
       <Box mt={2}>
         <Text variant="text" sx={{ color: 'onSecondary' }}>
           The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
-          {thresholdAmount ? thresholdAmount.toBigNumber().toFormat() : '---'} MKR are entered into the ESM,
-          emergency shutdown can be executed.{' '}
+          {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)}` : '---'} MKR are entered into the
+          ESM, emergency shutdown can be executed.{' '}
           <Link
             href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
             target="_blank"
@@ -198,14 +221,16 @@ const ESModule = (): React.ReactElement => {
               variant="outline"
               sx={{ color: 'onNotice', borderColor: 'notice', borderRadius: 'small' }}
             >
-              {totalStaked.gte(thresholdAmount || 0) ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
+              {esmThresholdMet ? 'Initiate Emergency Shutdown' : 'Burn Your MKR'}
             </Button>
           ) : null}
           <Box p={2}>
             <Text color="#9FAFB9" sx={{ fontWeight: '300', alignSelf: 'center' }}>
-              {mkrInEsm && mkrInEsm.gt(0) ? (
+              {mkrInEsmByAddress && mkrInEsmByAddress.gt(0) ? (
                 <Box>
-                  You burned <strong style={{ fontWeight: 'bold' }}>{mkrInEsm.toString(6)}</strong> in the ESM
+                  You burned{' '}
+                  <strong style={{ fontWeight: 'bold' }}>{formatValue(mkrInEsmByAddress, 'wad', 6)}</strong>{' '}
+                  in the ESM
                 </Box>
               ) : (
                 'You have no MKR in the ESM'
@@ -217,11 +242,17 @@ const ESModule = (): React.ReactElement => {
       <Box mt={5}>
         <Text variant="microHeading">ESM History</Text>
       </Box>
-      <ESMHistory stakingHistory={stakingHistory} />
+      <ErrorBoundary componentName="ESM History">
+        <ESMHistory allEsmJoins={allEsmJoins} />
+      </ErrorBoundary>
     </PrimaryLayout>
   );
 };
 
 export default function ESModulePage(): JSX.Element {
-  return <ESModule />;
+  return (
+    <ErrorBoundary componentName="ESM Page">
+      <ESModule />
+    </ErrorBoundary>
+  );
 }

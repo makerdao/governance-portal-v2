@@ -1,43 +1,36 @@
-import getMaker from 'lib/maker';
-import { useEffect, useState } from 'react';
-
-type PrivateKeyAccount = {
-  address: string;
-  key: string;
-};
+import { useWeb3React } from '@web3-react/core';
+import { Wallet } from 'ethers';
+import { useEffect } from 'react';
+import { SupportedChainId } from '../constants/chainID';
+import { JsonRpcProvider } from '@ethersproject/providers';
+import { InjectedConnector } from '@web3-react/injected-connector';
+import { CustomizedBridge } from '../connectors/CustomizedBridge';
 
 export function useWindowBindings(): void {
-  const [account, setAccount] = useState<PrivateKeyAccount>({
-    address: '',
-    key: ''
-  });
-
+  const context = useWeb3React();
   // Define a window function that changes the account for testing purposes
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.setAccount = (address: string, key: string) => {
-        setAccount({
-          address,
-          key
-        });
+      (window as any).setAccount = (address: string, key: string) => {
+        if (address && key) {
+          const rpcUrl = 'http://localhost:8545';
+          const provider = new JsonRpcProvider(rpcUrl, SupportedChainId.GOERLIFORK);
+          const signer = new Wallet(key, provider);
+
+          const bridge = new CustomizedBridge(signer, provider);
+          bridge.setAddress(address);
+          (window as any).ethereum = bridge;
+
+          context.activate(
+            new InjectedConnector({
+              supportedChainIds: [SupportedChainId.GOERLIFORK]
+            }),
+            err => {
+              console.log('error', err);
+            }
+          );
+        }
       };
     }
   }, []);
-
-  useEffect(() => {
-    const changeMakerAccount = async () => {
-      if (account.address && account.key) {
-        const maker = await getMaker();
-
-        await maker.service('accounts').addAccount(`test-account-${account.address}`, {
-          type: 'privateKey',
-          key: account.key
-        });
-
-        maker.useAccount(`test-account-${account.address}`);
-      }
-    };
-
-    changeMakerAccount();
-  }, [account]);
 }

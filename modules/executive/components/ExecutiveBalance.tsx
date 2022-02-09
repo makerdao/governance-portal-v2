@@ -2,11 +2,13 @@ import { Flex, Box, Text } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Deposit from 'modules/mkr/components/Deposit';
 import Withdraw from 'modules/mkr/components/Withdraw';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
 
 type Props = {
-  lockedMkr: any;
-  voteDelegate?: any;
-  voteProxy?: any;
+  lockedMkr: BigNumber;
+  voteDelegate?: string;
+  voteProxy?: string;
 };
 
 export const ExecutiveBalance = ({ lockedMkr, voteDelegate, voteProxy }: Props) => (
@@ -17,7 +19,7 @@ export const ExecutiveBalance = ({ lockedMkr, voteDelegate, voteProxy }: Props) 
       </Text>
       {lockedMkr ? (
         <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
-          {lockedMkr.toBigNumber().toFormat(6)} MKR
+          {formatValue(lockedMkr)} MKR
         </Text>
       ) : (
         <Box sx={{ width: 6 }}>

@@ -5,7 +5,7 @@ on: [push]
 jobs:
   unit:
     runs-on: ubuntu-latest
-    container: makerdaodux/cypress-dapptools-node-14:latest   
+    container: makerdaodux/cypress-dapptools-node-14:latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
         run: |
           yarn add --dev codecov
           ./node_modules/.bin/codecov
-          
+
       # Store built next data
       # - name: Save build folder
       #   uses: actions/upload-artifact@v2
@@ -44,10 +44,9 @@ jobs:
       #       .next
       #       public
 
-
   ui-chrome-tests:
     runs-on: ubuntu-latest
-    container: makerdaodux/cypress-dapptools-node-14:latest 
+    container: makerdaodux/cypress-dapptools-node-14:latest
     strategy:
       fail-fast: false
     env:
@@ -69,12 +68,10 @@ jobs:
       #   uses: actions/download-artifact@v2
       #   with:
       #     name: build
-          
 
       - name: 'UI Tests - Chrome'
         uses: cypress-io/github-action@v2
         with:
-
           # we have already installed all dependencies above
           # use (install: false) if you want to do parallel jobs.
           install: false
@@ -86,9 +83,9 @@ jobs:
           record: true
           parallel: false
           group: 'UI - Chrome'
-          spec: cypress/integration/*
+          spec: cypress/integration/**
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # Recommended: pass the GitHub token lets this action correctly
           # determine the unique run id necessary to re-run the checks
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

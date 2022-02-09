@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import getMaker, { getNetwork } from 'lib/maker';
-import { formatAddress, getEtherscanLink } from 'lib/utils';
-import useSWR from 'swr';
+import { formatAddress } from 'lib/utils';
 import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
 import { DelegatesAPIStats } from '../types';
-import { useEffect } from 'react';
-import { useTotalMKR } from 'modules/mkr/hooks/useTotalMkr';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
+import { BigNumberWAD } from 'modules/web3/constants/numbers';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 export function DelegatesSystemInfo({
   stats,
@@ -16,18 +18,10 @@ export function DelegatesSystemInfo({
   stats: DelegatesAPIStats;
   className?: string;
 }): React.ReactElement {
-  const { data: delegateFactoryAddress } = useSWR<string>(
-    '/delegate-factory-address',
-    () =>
-      getMaker().then(maker => maker.service('smartContract').getContract('VOTE_DELEGATE_FACTORY').address),
-    {
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      refreshInterval: 0
-    }
-  );
+  const delegateFactoryAddress = useContractAddress('voteDelegateFactory');
+  const { network } = useActiveWeb3React();
 
-  const { data: totalMKR } = useTotalMKR();
+  const { data: totalMkr } = useTotalSupply(Tokens.MKR);
 
   const statsItems = [
     {
@@ -53,9 +47,9 @@ export function DelegatesSystemInfo({
     {
       title: 'Percent of MKR delegated',
       id: 'percent-mkr-system-info',
-      value: totalMKR ? (
+      value: totalMkr ? (
         `${new BigNumber(stats.totalMKRDelegated)
-          .dividedBy(totalMKR.toBigNumber())
+          .dividedBy(new BigNumber(totalMkr._hex).div(BigNumberWAD))
           .multipliedBy(100)
           .toFormat(2)}%`
       ) : (
@@ -75,7 +69,7 @@ export function DelegatesSystemInfo({
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
               <ThemeUILink
-                href={getEtherscanLink(getNetwork(), delegateFactoryAddress, 'address')}
+                href={getEtherscanLink(network, delegateFactoryAddress, 'address')}
                 target="_blank"
               >
                 <Text>{formatAddress(delegateFactoryAddress)}</Text>

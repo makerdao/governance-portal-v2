@@ -1,10 +1,13 @@
-import BigNumber from 'bignumber.js';
-import { formatDateWithTime } from 'lib/datetime';
+import { BigNumber } from 'ethers';
 import { isBefore } from 'date-fns';
-import { SPELL_SCHEDULED_DATE_OVERRIDES } from 'lib/constants';
+import { formatDateWithTime } from 'lib/datetime';
+import { formatValue } from 'lib/string';
 import { SpellData } from '../types/spellData';
-import { CurrencyObject } from 'modules/app/types/currency';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+
+const SPELL_SCHEDULED_DATE_OVERRIDES = {
+  '0xB70fB4eE900650DCaE5dD63Fd06E07F0b3a45d13': 'December 7, 2020, 14:00 UTC'
+};
 
 export const getStatusText = ({
   proposalAddress,
@@ -13,7 +16,7 @@ export const getStatusText = ({
 }: {
   proposalAddress: string;
   spellData?: SpellData;
-  mkrOnHat?: CurrencyObject;
+  mkrOnHat?: BigNumber;
 }): string => {
   if (!spellData) return 'Fetching status...';
 
@@ -47,12 +50,11 @@ export const getStatusText = ({
 
   // not expired, passed, or executed, check support level
   if (!!spellData.mkrSupport && !!mkrOnHat) {
-    return `${mkrOnHat
-      .toBigNumber()
-      .minus(new BigNumber(spellData.mkrSupport))
-      .toFormat(3)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
-      spellData.expiration
-    )}.`;
+    return `${formatValue(
+      mkrOnHat.sub(spellData.mkrSupport),
+      'wad',
+      3
+    )} additional MKR support needed to pass. Expires at ${formatDateWithTime(spellData.expiration)}.`;
   }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet

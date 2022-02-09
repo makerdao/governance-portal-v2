@@ -2,18 +2,18 @@ import invariant from 'tiny-invariant';
 import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { connectToDatabase } from 'lib/api/utils';
-import withApiHandler from 'lib/api/withApiHandler';
-import { config } from 'lib/config';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const spellAddress: string = req.query.address as string;
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
     invariant(network && network.length > 0, 'Network not supported');
 
@@ -27,10 +27,7 @@ export default withApiHandler(
       voteProxyAddress
     }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
-    const provider = ethers.getDefaultProvider(network, {
-      infura: config.INFURA_KEY,
-      alchemy: config.ALCHEMY_KEY
-    });
+    const provider = getDefaultProvider(network);
 
     // verify tx
     const { from } = await provider.getTransaction(txHash);

@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
 import difference from 'lodash/difference';
 import { Poll, PartialPoll } from 'modules/polling/types';
-import { parsePollMetadata } from './parser';
+import { parsePollMetadata } from './parsePollMetadata';
 import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
 
 // find the most up-to-date list here:

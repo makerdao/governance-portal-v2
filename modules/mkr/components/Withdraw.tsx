@@ -2,67 +2,62 @@ import { useState } from 'react';
 import { Button, Flex, Text, Box, Alert, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import shallow from 'zustand/shallow';
-import useSWR from 'swr';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
-import getMaker from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import useTransactionStore, {
-  transactionsSelectors,
-  transactionsApi
-} from 'modules/web3/stores/transactions';
-import invariant from 'tiny-invariant';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import BigNumber from 'bignumber.js';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { BigNumber } from 'ethers';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { parseUnits } from 'ethers/lib/utils';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { useFree } from '../hooks/useFree';
+import { Tokens } from 'modules/web3/constants/tokens';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
+const ModalContent = ({ close, ...props }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
+  const { account, voteProxyContract, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
 
-  invariant(address);
-  const [mkrToWithdraw, setMkrToWithdraw] = useState(new BigNumber(0));
-  const [txId, setTxId] = useState(null);
+  const [mkrToWithdraw, setMkrToWithdraw] = useState(BigNumber.from(0));
+  const { chief } = useContracts();
 
-  const { data: allowanceOk } = useSWR<CurrencyObject>(
-    ['/user/iou-allowance', address, !!voteProxy],
-    (_, address) =>
-      voteProxy || // no need for IOU approval when using vote proxy
-      getMaker()
-        .then(maker =>
-          maker
-            .getToken('IOU')
-            .allowance(address, maker.service('smartContract').getContractAddresses().CHIEF)
-        )
-        .then(val => val?.gt('10e26')) // greater than 100,000,000 MKR
+  const { data: allowance, mutate: mutateTokenAllowance } = useTokenAllowance(
+    Tokens.IOU,
+    parseUnits('100000000'),
+    account,
+    voteProxyContract ? undefined : chief.address
   );
 
-  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(address, voteProxy);
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.IOU);
+
+  const allowanceOk = voteProxyContract ? true : allowance; // no need for IOU approval when using vote proxy
+
+  const { data: lockedMkr, mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
+
+  const { free, tx: freeTx, setTxId: resetFree } = useFree();
+
+  const [transaction, resetTransaction] = allowanceOk ? [freeTx, resetFree] : [approveTx, resetApprove];
 
   return (
     <BoxWithClose close={close} {...props}>
       <Box>
-        {tx && (
+        {transaction && (
           <Stack sx={{ textAlign: 'center' }}>
             <Text as="p" variant="microHeading" color="onBackgroundAlt">
-              {tx.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
+              {transaction.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
 
             <Flex sx={{ justifyContent: 'center' }}>
               <TxIndicators.Pending sx={{ width: 6 }} />
             </Flex>
 
-            {tx.status !== 'pending' && (
+            {transaction.status !== 'pending' && (
               <Box>
                 <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
                   Please use your wallet to confirm this transaction.
@@ -70,7 +65,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
                 <Text
                   as="p"
                   sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-                  onClick={() => setTxId(null)}
+                  onClick={() => resetTransaction(null)}
                 >
                   Cancel
                 </Text>
@@ -78,7 +73,7 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             )}
           </Stack>
         )}
-        {!tx && allowanceOk && (
+        {!transaction && allowanceOk && (
           <Stack gap={2}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
@@ -92,48 +87,38 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
             <Box>
               <MKRInput
                 onChange={setMkrToWithdraw}
-                balance={lockedMkr?.toBigNumber()}
+                balance={lockedMkr}
                 value={mkrToWithdraw}
                 balanceText="MKR in contract:"
               />
             </Box>
 
-            {voteProxy && address === voteProxy.getHotAddress() && (
+            {voteProxyContract && account === voteProxyHotAddress && (
               <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
                 You are using the hot wallet for a voting proxy. MKR will be withdrawn to the cold wallet.
               </Alert>
             )}
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center', mt: 3 }}
-              disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr.toBigNumber())}
-              onClick={async () => {
+              disabled={mkrToWithdraw.eq(0) || !lockedMkr || mkrToWithdraw.gt(lockedMkr)}
+              data-testid="button-mkr-withdraw"
+              onClick={() => {
                 trackButtonClick('withdrawMkr');
-                const maker = await getMaker();
-
-                const freeTxCreator = voteProxy
-                  ? () => voteProxy.free(mkrToWithdraw)
-                  : () => maker.service('chief').free(mkrToWithdraw);
-
-                const txId = await track(freeTxCreator, 'Withdrawing MKR', {
-                  mined: txId => {
-                    // Mutate locked amount
+                free(mkrToWithdraw, {
+                  mined: () => {
+                    // Mutate locked state
                     mutateLocked();
-                    transactionsApi.getState().setMessage(txId, 'MKR withdrawn');
                     close();
                   },
-                  error: () => {
-                    transactionsApi.getState().setMessage(txId, 'MKR withdraw failed');
-                    close();
-                  }
+                  error: () => close()
                 });
-                setTxId(txId);
               }}
             >
               Withdraw MKR
             </Button>
           </Stack>
         )}
-        {!tx && !allowanceOk && (
+        {!transaction && !allowanceOk && (
           <Stack gap={3} {...props}>
             <Box sx={{ textAlign: 'center' }}>
               <Text as="p" variant="microHeading" color="onBackgroundAlt" mb={2}>
@@ -146,25 +131,17 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 
             <Button
               sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-              onClick={async () => {
+              onClick={() => {
                 trackButtonClick('approveWithdraw');
-                const maker = await getMaker();
-                const approveTxCreator = () =>
-                  maker
-                    .getToken('IOU')
-                    .approveUnlimited(maker.service('smartContract').getContractAddresses().CHIEF);
-
-                const txId = await track(approveTxCreator, 'Granting IOU approval', {
-                  mined: txId => {
-                    transactionsApi.getState().setMessage(txId, 'Granted IOU approval');
-                    setTxId(null);
+                approve(chief.address, {
+                  mined: () => {
+                    mutateTokenAllowance();
+                    resetApprove(null);
                   },
                   error: () => {
-                    transactionsApi.getState().setMessage(txId, 'IOU approval failed');
-                    setTxId(null);
+                    resetApprove(null);
                   }
                 });
-                setTxId(txId);
               }}
               data-testid="withdraw-approve-button"
             >
@@ -178,9 +155,6 @@ const ModalContent = ({ address, voteProxy, close, ...props }) => {
 };
 
 const Withdraw = (props): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
-
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
   return (
@@ -204,12 +178,7 @@ const Withdraw = (props): JSX.Element => {
                 }
           }
         >
-          <ModalContent
-            sx={{ px: [3, null] }}
-            address={account?.address}
-            voteProxy={voteProxy}
-            close={() => setShowDialog(false)}
-          />
+          <ModalContent sx={{ px: [3, null] }} close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
       {props.link ? (

@@ -1,17 +1,22 @@
-import { utils } from 'ethers';
-import { SupportedNetworks } from 'lib/constants';
+import { BigNumber, utils } from 'ethers';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { mkrDelegatedTo } from 'modules/gql/queries/mkrDelegatedTo';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { DelegationHistory, MKRDelegatedToDAIResponse } from '../types';
-import getMaker from 'lib/maker';
-import BigNumber from 'bignumber.js';
 
 export async function fetchDelegatedTo(
   address: string,
   network: SupportedNetworks
 ): Promise<DelegationHistory[]> {
-  const maker = await getMaker(network);
-
   try {
-    const res: MKRDelegatedToDAIResponse[] = await maker.service('voteDelegate').getMkrDelegatedTo(address);
+    const data = await gqlRequest({
+      chainId: networkNameToChainId(network),
+      query: mkrDelegatedTo,
+      variables: { argAddress: address.toLowerCase() }
+    });
+
+    const res: MKRDelegatedToDAIResponse[] = data.mkrDelegatedTo.nodes;
 
     const delegatedTo = res.reduce((acc, { immediateCaller, lockAmount, blockTimestamp, hash }) => {
       const existing = acc.find(({ address }) => address === immediateCaller) as
@@ -34,7 +39,7 @@ export async function fetchDelegatedTo(
     }, [] as DelegationHistory[]);
 
     return delegatedTo.sort((prev, next) =>
-      new BigNumber(prev.lockAmount).isGreaterThan(new BigNumber(next.lockAmount)) ? -1 : 1
+      BigNumber.from(prev.lockAmount).gt(BigNumber.from(next.lockAmount)) ? -1 : 1
     );
   } catch (e) {
     console.error('Error fetching MKR delegated to address', e.message);

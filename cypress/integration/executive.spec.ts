@@ -24,6 +24,7 @@ describe('Executive page', async () => {
 
       // Wait until transaction completes
       // Removing this check because it does not pass: cy.contains('/Transaction Pending/').should('be.visible');
+      // cy.contains('/Confirm Transaction/').should('be.visible');
 
       // Deposit
       cy.contains(/Deposit into voting contract/).should('be.visible');
@@ -39,7 +40,7 @@ describe('Executive page', async () => {
       // cy.contains(/Transaction Sent/).should('be.visible');
 
       // Check MKR
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '0.010000 MKR');
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '0.01 MKR');
 
       // Can vote
       cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();

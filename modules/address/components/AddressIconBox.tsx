@@ -2,15 +2,15 @@ import React from 'react';
 import AddressIcon from './AddressIcon';
 import { Box, Text, Link as ExternalLink, Flex } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
-import { VoteProxyInfo } from '../types/addressApiResponse';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyInfo;
+  voteProxyInfo?: VoteProxyAddresses;
   showExternalLink: boolean;
   isOwner?: boolean;
 };
@@ -21,16 +21,18 @@ export default function AddressIconBox({
   showExternalLink,
   isOwner
 }: PropTypes): React.ReactElement {
+  const { network } = useActiveWeb3React();
+
   const tooltipLabel = voteProxyInfo ? (
     <Box sx={{ p: 2 }}>
       <Text as="p">
         <Text sx={{ fontWeight: 'bold' }}>Contract:</Text> {voteProxyInfo.voteProxyAddress}
       </Text>
       <Text as="p">
-        <Text sx={{ fontWeight: 'bold' }}>Hot:</Text> {voteProxyInfo.hot}
+        <Text sx={{ fontWeight: 'bold' }}>Hot:</Text> {voteProxyInfo.hotAddress}
       </Text>
       <Text as="p">
-        <Text sx={{ fontWeight: 'bold' }}>Cold:</Text> {voteProxyInfo.cold}
+        <Text sx={{ fontWeight: 'bold' }}>Cold:</Text> {voteProxyInfo.coldAddress}
       </Text>
     </Box>
   ) : null;
@@ -38,7 +40,7 @@ export default function AddressIconBox({
   return (
     <Flex>
       <Box sx={{ minWidth: '41px', mr: 2 }}>
-        <AddressIcon address={address} width="41px" />
+        <AddressIcon address={address} width={41} />
       </Box>
       <Flex
         sx={{
@@ -54,7 +56,7 @@ export default function AddressIconBox({
           {showExternalLink && (
             <ExternalLink
               title="View on etherscan"
-              href={getEtherscanLink(getNetwork(), address, 'address')}
+              href={getEtherscanLink(network, address, 'address')}
               target="_blank"
             >
               <Text as="p" sx={{ fontSize: [1, 3] }}>
@@ -78,7 +80,7 @@ export default function AddressIconBox({
             </Flex>
           )}
         </Flex>
-        {voteProxyInfo && (
+        {voteProxyInfo && voteProxyInfo.voteProxyAddress && (
           <Flex>
             <Text sx={{ color: 'textSecondary', fontSize: [1, 2] }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>

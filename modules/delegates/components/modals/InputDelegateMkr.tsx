@@ -1,16 +1,17 @@
 import { Button, Box, Flex, Text } from '@theme-ui/components';
 import { Alert } from 'theme-ui';
 import { MKRInput } from 'modules/mkr/components/MKRInput';
-import BigNumber from 'bignumber.js';
 import { useState } from 'react';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import Withdraw from 'modules/mkr/components/Withdraw';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { formatValue } from 'lib/string';
+import { BigNumber } from 'ethers';
 
 type Props = {
   title: string;
   description: string;
-  onChange: any;
+  onChange: (val: BigNumber) => void;
   balance?: BigNumber;
   buttonLabel: string;
   onClick: () => void;
@@ -26,12 +27,9 @@ export function InputDelegateMkr({
   onClick,
   showAlert
 }: Props): React.ReactElement {
-  const [value, setValue] = useState(new BigNumber(0));
-  const currentAccount = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state =>
-    currentAccount ? state.proxies[currentAccount.address] : null
-  );
-  const { data: lockedMkr } = useLockedMkr(currentAccount?.address, voteProxy);
+  const [value, setValue] = useState(BigNumber.from(0));
+  const { account, voteProxyContractAddress } = useAccount();
+  const { data: lockedMkr } = useLockedMkr(account, voteProxyContractAddress);
   function handleChange(val: BigNumber): void {
     setValue(val);
     onChange(val);
@@ -57,7 +55,7 @@ export function InputDelegateMkr({
       {showAlert && lockedMkr && lockedMkr.gt(0) && balance && balance.gt(0) && (
         <Alert variant="notice" sx={{ fontWeight: 'normal' }}>
           <Text>
-            {`You have ${lockedMkr.toBigNumber().toFormat(6)} additional MKR locked in the voting contract. `}
+            {`You have ${formatValue(lockedMkr)} additional MKR locked in the voting contract. `}
             <Withdraw link={'Withdraw MKR'} />
             {' to deposit it into a delegate contract.'}
           </Text>

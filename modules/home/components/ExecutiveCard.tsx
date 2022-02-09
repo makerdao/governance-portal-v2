@@ -1,12 +1,11 @@
 import Link from 'next/link';
-import useSWR from 'swr';
 import { Button, Text, Flex, Badge, Box, Link as InternalLink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import getMaker, { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
 import { CMSProposal } from 'modules/executive/types';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { useMkrSupport } from 'modules/web3/hooks/useMkrSupport';
+import { formatValue } from 'lib/string';
 
 type Props = {
   proposal: CMSProposal;
@@ -14,24 +13,16 @@ type Props = {
 };
 
 export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX.Element {
-  const network = getNetwork();
-
-  const { data: mkrSupport } = useSWR<CurrencyObject>(
-    ['/executive/mkr-support', proposal.address],
-    (_, spellAddress) => getMaker().then(maker => maker.service('chief').getApprovalCount(spellAddress))
-  );
-
+  const { data: mkrSupport } = useMkrSupport(proposal.address);
   return (
     <Stack gap={1} sx={{ variant: 'cards.primary' }} {...props}>
       <div>
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
@@ -68,12 +59,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
       <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <Button
@@ -106,7 +95,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
               textTransform: 'uppercase'
             }}
           >
-            {mkrSupport.toBigNumber().toFormat(2)} MKR Supporting
+            {formatValue(mkrSupport)} MKR Supporting
           </Badge>
         ) : (
           <Box m="auto" sx={{ m: 2, width: '200px' }}>
@@ -115,12 +104,10 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
         )}
         <Link
           href={{
-            pathname: '/executive/[proposal-id]',
-            query: { network }
+            pathname: '/executive/[proposal-id]'
           }}
           as={{
-            pathname: `/executive/${proposal.key}`,
-            query: { network }
+            pathname: `/executive/${proposal.key}`
           }}
         >
           <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">

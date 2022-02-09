@@ -1,31 +1,31 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ethers } from 'ethers';
-
-import { getTrace } from 'lib/api/utils';
-import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'lib/constants';
 import { fetchJson } from 'lib/fetchJson';
-import withApiHandler from 'lib/api/withApiHandler';
 import { config } from 'lib/config';
-import getMaker from 'lib/maker';
+import { ETH_TX_STATE_DIFF_ENDPOINT, SupportedNetworks } from 'modules/web3/constants/networks';
+import { getTrace } from 'modules/web3/helpers/getTrace';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getContracts } from 'modules/web3/helpers/getContracts';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const spellAddress: string = req.query.address as string;
   invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
-  invariant(
-    !req.query.network || req.query.network === SupportedNetworks.MAINNET,
-    `unsupported network ${req.query.network}`
-  );
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+  invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const network = SupportedNetworks.MAINNET;
-  const maker = await getMaker(network);
+  const chainId = networkNameToChainId(network);
+  const contracts = getContracts(chainId);
 
-  const { MCD_PAUSE, MCD_PAUSE_PROXY } = maker.service('smartContract').getContractAddresses();
-  const provider = ethers.getDefaultProvider(network, {
-    infura: config.INFURA_KEY,
-    alchemy: config.ALCHEMY_KEY
-  });
+  const pauseAddress = contracts['pause'].address;
+  const pauseProxyAddress = contracts['pauseProxy'].address;
+
+  const provider = getDefaultProvider(network);
 
   console.log(config.INFURA_KEY, config.ALCHEMY_KEY, 'infura and alchemy keys state diff');
   const encoder = new ethers.utils.Interface([
@@ -70,7 +70,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
       network,
       config.INFURA_KEY
     ).getLogs({
-      address: MCD_PAUSE,
+      address: pauseAddress,
       fromBlock: 0,
       toBlock: 'latest',
       topics: [pauseExecSelector, spellAddressBytes32, usrBytes32]
@@ -83,8 +83,8 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     trace = await getTrace(
       'trace_call',
       {
-        from: MCD_PAUSE,
-        to: MCD_PAUSE_PROXY,
+        from: pauseAddress,
+        to: pauseProxyAddress,
         data: encoder.encodeFunctionData('exec', [usr, encoder.encodeFunctionData('actions')])
       },
       network

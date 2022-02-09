@@ -2,14 +2,22 @@ import { Heading, Box, Button, Flex, Input, Label, Card, Text, Link } from 'them
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
-import { URL_REGEX } from 'lib/constants';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
 import { markdownToHtml } from 'lib/utils';
-import { getEtherscanLink } from 'lib/utils';
-import { SupportedNetworks } from 'lib/constants';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
+// Regexp to check if is an URL
+const expr =
+  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+
+export const URL_REGEX = new RegExp(expr);
+
+/*
+TODO: Add tests for executive create on goerli. Right now it only supports mainnet
+*/
 const ExecutiveCreate = () => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
@@ -17,7 +25,6 @@ const ExecutiveCreate = () => {
   const [markdown, setMarkdown] = useState('');
   const [date, setDate] = useState('');
   const [mainnetAddress, setMainnetAddress] = useState('');
-  const [kovanAddress, setKovanAddress] = useState('');
   const [error, setError] = useState(['']);
   const [fetchFinished, setFetchFinished] = useState(false);
   const fields = [
@@ -59,13 +66,6 @@ const ExecutiveCreate = () => {
         setError(e => [...e, 'invalid mainnet address']);
       }
     }
-    if (metadata.kovanAddress) {
-      try {
-        ethers.utils.getAddress(metadata.kovanAddress);
-      } catch (_) {
-        setError(e => [...e, 'invalid kovan address']);
-      }
-    }
 
     //remove `Template - [ ... ] ` from title
     const editTitle = title => {
@@ -81,7 +81,6 @@ const ExecutiveCreate = () => {
     setSummary(metadata.summary);
     setDate(metadata.date ? new Date(metadata.date).toUTCString() : '');
     setMainnetAddress(metadata.address);
-    setKovanAddress(metadata.kovanAddress);
     setMarkdown(await markdownToHtml(execMarkdown));
   };
 
@@ -192,18 +191,6 @@ const ExecutiveCreate = () => {
                           sx={{ p: 0 }}
                         >
                           {mainnetAddress}
-                        </Link>
-                      </TD>
-                    </tr>
-                    <tr key={'Kovan Address'}>
-                      <TD>Kovan Address</TD>
-                      <TD>
-                        <Link
-                          target="_blank"
-                          href={getEtherscanLink(SupportedNetworks.KOVAN, kovanAddress, 'address')}
-                          sx={{ p: 0 }}
-                        >
-                          {kovanAddress}
                         </Link>
                       </TD>
                     </tr>

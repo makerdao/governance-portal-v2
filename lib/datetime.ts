@@ -1,6 +1,8 @@
 import { formatDistance, format as formatDate } from 'date-fns';
 import { format, utcToZonedTime } from 'date-fns-tz';
 
+export const SECONDS_PER_YEAR = 365 * 24 * 60 * 60;
+
 export const formatDateWithTime = (dateString: Date | undefined | number | string): string => {
   if (!dateString) return '';
 
