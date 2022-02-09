@@ -47,6 +47,7 @@ import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { useAllSpellData } from 'modules/executive/hooks/useAllSpellData';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -443,17 +444,21 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
             </Stack>
           </Box>
           <Stack gap={3}>
-            <SystemStatsSidebar
-              fields={[
-                'chief contract',
-                'mkr in chief',
-                'mkr needed to pass',
-                'savings rate',
-                'total dai',
-                'debt ceiling'
-              ]}
-            />
-            <MkrLiquiditySidebar />
+            <ErrorBoundary componentName="System Info">
+              <SystemStatsSidebar
+                fields={[
+                  'chief contract',
+                  'mkr in chief',
+                  'mkr needed to pass',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling'
+                ]}
+              />
+            </ErrorBoundary>
+            <ErrorBoundary componentName="MKR Liquidity">
+              <MkrLiquiditySidebar />
+            </ErrorBoundary>
             <ResourceBox type={'executive'} />
             <ResourceBox type={'general'} />
           </Stack>
@@ -492,9 +497,11 @@ export default function ExecutiveOverviewPage({
     );
 
   return (
-    <ExecutiveOverview
-      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
-    />
+    <ErrorBoundary componentName="Executive Page">
+      <ExecutiveOverview
+        proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
+      />
+    </ErrorBoundary>
   );
 }
 

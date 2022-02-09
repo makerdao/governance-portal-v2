@@ -22,6 +22,7 @@ import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -62,19 +63,29 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && <DelegateDetail delegate={addressInfo.delegateInfo} />}
+            {addressInfo.delegateInfo && (
+              <ErrorBoundary componentName="Delegate Information">
+                <DelegateDetail delegate={addressInfo.delegateInfo} />
+              </ErrorBoundary>
+            )}
             {!addressInfo.delegateInfo && (
-              <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
+              <ErrorBoundary componentName="Address Information">
+                <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
+              </ErrorBoundary>
             )}
           </Box>
         </Stack>
         <Stack gap={3}>
           {addressInfo.isDelegate && addressInfo.delegateInfo && (
-            <ManageDelegation delegate={addressInfo.delegateInfo} />
+            <ErrorBoundary componentName="Delegate MKR">
+              <ManageDelegation delegate={addressInfo.delegateInfo} />
+            </ErrorBoundary>
           )}
-          <SystemStatsSidebar
-            fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-          />
+          <ErrorBoundary componentName="System Info">
+            <SystemStatsSidebar
+              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+            />
+          </ErrorBoundary>
           {addressInfo.isDelegate && <ResourceBox type={'delegates'} />}
           <ResourceBox type={'general'} />
         </Stack>
@@ -102,5 +113,9 @@ export default function AddressPage(): JSX.Element {
     );
   }
 
-  return <AddressView addressInfo={data} />;
+  return (
+    <ErrorBoundary componentName="Address Page">
+      <AddressView addressInfo={data} />
+    </ErrorBoundary>
+  );
 }

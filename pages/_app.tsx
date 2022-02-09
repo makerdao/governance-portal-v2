@@ -23,6 +23,8 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { getLibrary } from 'modules/web3/helpers/getLibrary';
 import { AccountProvider } from 'modules/app/context/AccountContext';
 import NextNprogress from 'nextjs-progressbar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
   ssr: false
@@ -76,6 +78,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
               </AnalyticsProvider>
             </CookiesProvider>
           </AccountProvider>
+          <ToastContainer position="top-right" theme="light" />
         </ThemeProvider>
       </Web3ReactProviderDefault>
     </Web3ReactProvider>

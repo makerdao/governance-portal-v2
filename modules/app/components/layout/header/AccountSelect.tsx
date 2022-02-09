@@ -24,6 +24,7 @@ import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
+import { ErrorBoundary } from '../../ErrorBoundary';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -334,13 +335,17 @@ const AccountSelect = (): React.ReactElement => {
               </Flex>
               {address ? (
                 <>
-                  <AccountBox
-                    {...{ address, accountName }}
-                    // This needs to be the change function for the wallet select dropdown
-                    change={() => setChangeWallet(true)}
-                  />
+                  <ErrorBoundary componentName="Account Details">
+                    <AccountBox
+                      {...{ address, accountName }}
+                      // This needs to be the change function for the wallet select dropdown
+                      change={() => setChangeWallet(true)}
+                    />
+                  </ErrorBoundary>
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
-                    <VotingWeight />
+                    <ErrorBoundary componentName="Voting Weight">
+                      <VotingWeight />
+                    </ErrorBoundary>
                     <Box>
                       <Link
                         href={{
