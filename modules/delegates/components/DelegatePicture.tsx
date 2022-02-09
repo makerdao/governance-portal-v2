@@ -1,6 +1,6 @@
 import { DelegateStatusEnum } from '../delegates.constants';
 import { Box, Flex, Image } from 'theme-ui';
-import { Jazzicon } from '@ukstv/jazzicon-react';
+import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -8,10 +8,10 @@ import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 export function DelegatePicture({
   delegate,
-  width = '41px'
+  width = 41
 }: {
   delegate: Delegate;
-  width?: string;
+  width?: number;
 }): React.ReactElement {
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
@@ -28,10 +28,7 @@ export function DelegatePicture({
             src={delegate.picture}
           />
         ) : (
-          <Jazzicon
-            address={delegate.address}
-            sx={{ height: ['150px', '200px'], width: ['150px', '200px'] }}
-          />
+          <Davatar size={50} address={delegate.address} generatedAvatarType="jazzicon" />
         )}
         <Box sx={{ marginLeft: 1, flex: 1 }}>
           <DelegateParticipationMetrics delegate={delegate} />
@@ -56,7 +53,7 @@ export function DelegatePicture({
           />
         </Tooltip>
       ) : (
-        <Jazzicon address={delegate.address} sx={{ height: width, width: width }} />
+        <Davatar size={width} address={delegate.address} generatedAvatarType="jazzicon" />
       )}
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon
