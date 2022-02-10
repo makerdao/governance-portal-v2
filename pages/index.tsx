@@ -55,7 +55,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           top: 0,
           left: 0,
           pt: '100%',
-          width: '100vw',
+          width: '100%',
           zIndex: -1,
           position: 'absolute',
           backgroundImage,
