@@ -97,7 +97,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     </Text>
                     {previousVotedPolls.map(poll => {
                       return (
-                        <Box key={`previous-voted-${poll.pollId}`} data-testid="previously-voted-on">
+                        <Box
+                          key={`previous-voted-${poll.pollId}`}
+                          data-testid="previously-voted-on"
+                          sx={{ mb: 2 }}
+                        >
                           <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} />
                         </Box>
                       );
