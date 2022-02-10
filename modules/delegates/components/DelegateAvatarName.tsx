@@ -5,14 +5,12 @@ import { limitString } from 'lib/string';
 import { DelegatePicture } from 'modules/delegates/components';
 
 import { formatAddress } from 'lib/utils';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-export default function DelegateAvatarName({
-  delegate,
-  isOwner
-}: {
-  delegate: Delegate;
-  isOwner: boolean;
-}): React.ReactElement {
+export default function DelegateAvatarName({ delegate }: { delegate: Delegate }): React.ReactElement {
+  const { account } = useAccount();
+  const isOwner = account?.toLowerCase() === delegate.address.toLowerCase();
+
   return (
     <Flex>
       <DelegatePicture delegate={delegate} />

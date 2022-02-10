@@ -26,16 +26,8 @@ export default function CommentItem({
   const { network } = useActiveWeb3React();
 
   // Used to display the share button in owned comments
-  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const { account } = useAccount();
 
-  // isOwner if the delegateAddress registered in the comment is the same one from the current user
-  // isOwner also if the address is equal to the current account address
-  const isOwner =
-    (comment.comment.voteProxyAddress &&
-      comment.comment.voteProxyAddress?.toLowerCase() === voteProxyContractAddress?.toLowerCase()) ||
-    (comment.comment.delegateAddress &&
-      comment.comment.delegateAddress?.toLowerCase() === voteDelegateContractAddress?.toLowerCase()) ||
-    comment.address.address.toLowerCase() === account?.toLowerCase();
   return (
     <Box>
       <Flex
@@ -58,7 +50,7 @@ export default function CommentItem({
                     passHref
                   >
                     <ExternalLink title="Profile details" variant="nostyle">
-                      <DelegateAvatarName delegate={comment.address.delegateInfo} isOwner={isOwner} />
+                      <DelegateAvatarName delegate={comment.address.delegateInfo} />
                     </ExternalLink>
                   </Link>
                 </Box>
@@ -71,12 +63,7 @@ export default function CommentItem({
                     passHref
                   >
                     <ExternalLink title="Profile details" variant="nostyle">
-                      <AddressIconBox
-                        address={comment.address.address}
-                        voteProxyInfo={comment.address.voteProxyInfo}
-                        isOwner={isOwner}
-                        showExternalLink={false}
-                      />
+                      <AddressIconBox address={comment.address.address} showExternalLink={false} />
                     </ExternalLink>
                   </Link>
                 </Box>

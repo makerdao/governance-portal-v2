@@ -8,6 +8,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type Props = {
   address: string;
@@ -34,14 +35,7 @@ const AccountBox = ({ address, accountName, change }: Props): JSX.Element => {
           <Text color="textSecondary" variant="smallText">
             {accountName}
           </Text>
-          <Flex sx={{ alignItems: 'center', flexDirection: 'row', mt: 1 }}>
-            <Box sx={{ mr: 2 }}>
-              <AddressIcon address={address} width={22} />
-            </Box>
-            <Text sx={{ fontFamily: 'body' }} data-testid="current-wallet">
-              {formatAddress(address).toLowerCase()}
-            </Text>
-          </Flex>
+          <AddressIconBox address={address} width={22} />
         </Flex>
         <Button variant="smallOutline" sx={{ mr: 3, borderRadius: 'small' }} onClick={change}>
           <Text variant="text.caps" sx={{ color: 'textSecondary', fontSize: 1, px: 1, pt: '1px' }}>

@@ -75,7 +75,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             >
               <ThemeUILink title="Profile details" variant="nostyle">
                 <Box sx={{ mr: [0, 2] }}>
-                  <DelegateAvatarName delegate={delegate} isOwner={isOwner} />
+                  <DelegateAvatarName delegate={delegate} />
                 </Box>
               </ThemeUILink>
             </Link>

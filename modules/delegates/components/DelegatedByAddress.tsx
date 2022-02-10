@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
@@ -15,7 +14,7 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
-import AddressIconAndName from 'modules/address/components/AddressIconAndName';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
@@ -52,7 +51,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <AddressIconAndName address={address} width={22} />
+              <AddressIconBox address={address} width={41} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -64,7 +63,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   key={blockTimestamp}
                   variant="smallCaps"
                   sx={{
-                    ':first-of-type': { pt: 3 },
+                    ':first-of-type': { pt: 2 },
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
@@ -75,7 +74,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Flex>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
           {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
@@ -107,7 +106,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Box>
-      <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
           <Text>{`${formatTotalDelegated(parseUnits(lockAmount), totalDelegated)}%`}</Text>
         ) : (
@@ -115,8 +114,8 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
             <Skeleton />
           </Box>
         )}
-      </Flex>
-      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+      </Box>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
             sx={{

@@ -6,22 +6,35 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Address } from './Address';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyAddresses;
-  showExternalLink: boolean;
-  isOwner?: boolean;
+  showExternalLink?: boolean;
+  width?: number;
 };
 
 export default function AddressIconBox({
   address,
-  voteProxyInfo,
   showExternalLink,
-  isOwner
+  width = 41
 }: PropTypes): React.ReactElement {
   const { network } = useActiveWeb3React();
+
+  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const { data: delegateAddresses } = useDelegateAddressMap();
+  const { data: voteProxyInfo } = useVoteProxyAddress(address);
+  // isOwner if the delegateAddress registered in the comment is the same one from the current user
+  // isOwner also if the address is equal to the current account address
+  const isOwner =
+    (voteProxyInfo?.voteProxyAddress &&
+      voteProxyInfo?.voteProxyAddress?.toLowerCase() === voteProxyContractAddress?.toLowerCase()) ||
+    (delegateAddresses[address] &&
+      delegateAddresses[address].voteDelegateAddress?.toLowerCase() ===
+        voteDelegateContractAddress?.toLowerCase()) ||
+    address.toLowerCase() === account?.toLowerCase();
 
   const tooltipLabel = voteProxyInfo ? (
     <Box sx={{ p: 2 }}>
@@ -39,8 +52,8 @@ export default function AddressIconBox({
 
   return (
     <Flex>
-      <Box sx={{ minWidth: '41px', mr: 2 }}>
-        <AddressIcon address={address} width={41} />
+      <Box sx={{ minWidth: width, mr: 2 }}>
+        <AddressIcon address={address} width={width} />
       </Box>
       <Flex
         sx={{
@@ -51,7 +64,11 @@ export default function AddressIconBox({
       >
         <Flex>
           <Text>
-            <Address address={address} />
+            {delegateAddresses[address] ? (
+              <Text>{delegateAddresses[address].name}</Text>
+            ) : (
+              <Address address={address} />
+            )}
           </Text>
           {showExternalLink && (
             <ExternalLink
