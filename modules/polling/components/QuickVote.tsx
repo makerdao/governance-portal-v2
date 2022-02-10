@@ -62,6 +62,12 @@ const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.Rea
     setChoice(null);
   }, [account]);
 
+  useEffect(() => {
+    if (addedChoice) {
+      setChoice(addedChoice?.option);
+    }
+  }, [addedChoice]);
+
   const submit = () => {
     invariant(isChoiceValid);
     if (currentVote && isEqual(currentVote, choice)) {
@@ -123,7 +129,7 @@ const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.Rea
             <SingleSelect {...{ poll, setChoice }} choice={choice as number | null} />
           )}
           <Button
-            data-testid="button-add-vote-to-ballot"
+            data-testid="button-add-vote-to-ballot-desktop"
             variant={showHeader ? 'primaryOutline' : 'primary'}
             sx={{ width: '100%' }}
             onClick={() => {
