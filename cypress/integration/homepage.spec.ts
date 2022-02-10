@@ -31,11 +31,11 @@ describe('Home Page', () => {
       // Checks that we have a correct dai savings rate and other values
       elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
 
-      elementContainsText('[data-testid="Total Dai-value"]', '98,965,778 DAI');
+      elementContainsText('[data-testid="Total Dai-value"]', '99,596,116 DAI');
 
-      elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,030,717,023 DAI');
+      elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,015,717,023 DAI');
 
-      elementContainsText('[data-testid="System Surplus-value"]', '278,245 DAI');
+      elementContainsText('[data-testid="System Surplus-value"]', '473,459 DAI');
 
       // Find the Polling Votes block
       cy.contains('Polling Votes').should('be.visible');

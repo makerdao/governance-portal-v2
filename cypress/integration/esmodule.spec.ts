@@ -16,7 +16,7 @@ describe('Esmodule Page', async () => {
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
 
-      cy.contains(/1.41111/).should('be.visible');
+      cy.contains(/0.013/).should('be.visible');
     });
   });
 
@@ -84,7 +84,7 @@ describe('Esmodule Page', async () => {
       cy.scrollTo(0, 0);
 
       // The total burned increased
-      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.42111/);
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/0.023/);
     });
   });
 });
