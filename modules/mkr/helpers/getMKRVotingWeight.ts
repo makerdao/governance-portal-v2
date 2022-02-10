@@ -6,65 +6,71 @@ import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 
 export type MKRVotingWeightResponse = {
-  mkrBalance: BigNumber;
-  chiefBalance: BigNumber;
-  linkedMkrBalance?: BigNumber;
-  linkedChiefBalance?: BigNumber;
-  proxyChiefBalance?: BigNumber;
+  walletBalanceHot: BigNumber;
+  walletBalanceCold?: BigNumber;
+  chiefBalanceHot: BigNumber;
+  chiefBalanceCold?: BigNumber;
+  chiefBalanceProxy?: BigNumber;
   total: BigNumber;
 };
-// Returns the voting weigth for an address. It checks if it has a delegate contract or a vote proxy
+// returns the voting weight for an address
 export async function getMKRVotingWeight(
   address: string,
   network: SupportedNetworks
 ): Promise<MKRVotingWeightResponse> {
   const contracts = getContracts(networkNameToChainId(network));
 
+  // first check if contract is a delegate and if so return that balance
   const voteDelegateAddress = await contracts.voteDelegateFactory.delegates(address);
-
   if (voteDelegateAddress && voteDelegateAddress !== ZERO_ADDRESS) {
     const mkrDelegate = await contracts.mkr.balanceOf(voteDelegateAddress);
     const mkrChiefDelegate = await contracts.chief.deposits(voteDelegateAddress);
     return {
-      mkrBalance: mkrDelegate,
-      chiefBalance: mkrChiefDelegate,
+      walletBalanceHot: mkrDelegate,
+      chiefBalanceHot: mkrChiefDelegate,
       total: mkrDelegate.add(mkrChiefDelegate)
     };
   }
 
+  // next check if address is part of a proxy set up
   const voteProxyAddresses = await getVoteProxyAddresses(contracts.voteProxyFactory, address, network);
 
-  const mkrInAddress = await contracts.mkr.balanceOf(address);
-  const mkrInChief = await contracts.chief.deposits(address);
-
   if (
-    voteProxyAddresses.voteProxyAddress &&
+    voteProxyAddresses.hasProxy &&
+    voteProxyAddresses.hotAddress &&
     voteProxyAddresses.coldAddress &&
-    voteProxyAddresses.hotAddress
+    voteProxyAddresses.voteProxyAddress
   ) {
-    const otherAddress =
-      address.toLowerCase() === voteProxyAddresses.hotAddress?.toLowerCase()
-        ? voteProxyAddresses.coldAddress
-        : voteProxyAddresses.hotAddress;
+    const [walletBalanceHot, walletBalanceCold, chiefBalanceHot, chiefBalanceCold, chiefBalanceProxy] =
+      await Promise.all([
+        await contracts.mkr.balanceOf(voteProxyAddresses.hotAddress),
+        await contracts.mkr.balanceOf(voteProxyAddresses.coldAddress),
+        await contracts.chief.deposits(voteProxyAddresses.hotAddress),
+        await contracts.chief.deposits(voteProxyAddresses.coldAddress),
+        await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress)
+      ]);
 
-    const mkrOtherAddress = await contracts.mkr.balanceOf(otherAddress);
-    const mkrChiefOtherAddress = await contracts.chief.deposits(otherAddress);
-    const mkrProxyAddress = await contracts.chief.deposits(voteProxyAddresses.voteProxyAddress);
-    // If vote proxy, return balances in all the wallets
-    console.log(mkrInAddress.toString());
     return {
-      mkrBalance: mkrInAddress,
-      chiefBalance: mkrInChief,
-      linkedMkrBalance: mkrOtherAddress,
-      linkedChiefBalance: mkrChiefOtherAddress,
-      proxyChiefBalance: mkrProxyAddress,
-      total: mkrInAddress.add(mkrInChief).add(mkrOtherAddress).add(mkrChiefOtherAddress).add(mkrProxyAddress)
+      walletBalanceHot,
+      walletBalanceCold,
+      chiefBalanceHot,
+      chiefBalanceCold,
+      chiefBalanceProxy,
+      total: walletBalanceHot
+        .add(walletBalanceCold)
+        .add(chiefBalanceHot)
+        .add(chiefBalanceCold)
+        .add(chiefBalanceProxy)
     };
   }
 
+  // otherwise, not proxy or delegate, get connected wallet balances
+  const walletBalanceHot = await contracts.mkr.balanceOf(address);
+  const chiefBalanceHot = await contracts.chief.deposits(address);
+
   return {
-    mkrBalance: mkrInAddress,
-    chiefBalance: mkrInChief,
-    total: mkrInAddress.add(mkrInChief)
+    walletBalanceHot,
+    chiefBalanceHot,
+    total: walletBalanceHot.add(chiefBalanceHot)
   };
 }
