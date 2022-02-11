@@ -30,8 +30,8 @@
     "contracts:compile:abi": "typechain --target ethers-v5 \"./modules/contracts/ethers/**/*.json\""
   },
   "dependencies": {
-    "@ethersproject/experimental": "^5.5.0",
     "@davatar/react": "^1.8.1",
+    "@ethersproject/experimental": "^5.5.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
     "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
@@ -96,7 +96,7 @@
     "@graphql-codegen/urql-introspection": "2.1.1",
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@testing-library/dom": "^8.11.1",
-    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.5.0",
     "@typechain/ethers-v5": "^9.0.0",
@@ -119,6 +119,7 @@
     "graphql": "^16.2.0",
     "husky": "^6.0.0",
     "jest": "^26.0.1",
+    "jest-canvas-mock": "^2.3.1",
     "prettier": "^2.0.5",
     "start-server-and-test": "^1.14.0",
     "ts-node": "^10.4.0",

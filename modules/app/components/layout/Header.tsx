@@ -5,18 +5,18 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ColorModeToggle from './header/ColorModeToggle';
-import { AccountContext } from 'modules/app/context/AccountContext';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const Header = (): JSX.Element => {
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
-  const { account } = useContext(AccountContext);
+  const { account } = useAccount();
 
   return (
     <Box
