@@ -97,7 +97,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const poll = await fetchPollBySlug(slug, network);
 
   if (!poll) {
-    return res.status(404).json('Not found');
+    return res.status(404).json({
+      error: 'Not found'
+    });
   }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

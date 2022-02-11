@@ -33,7 +33,7 @@ describe('Delegates Page', () => {
       cy.get('[data-testid="total-delegates-system-info"]').contains(/10|11/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/10|11/);
-      cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
     });
   });
 

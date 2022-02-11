@@ -4,7 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import AddressIconAndName from 'modules/address/components/AddressIconAndName';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type Props = {
   tally: PollTally;
@@ -48,7 +48,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <Link href={{ pathname: `/address/${v.voter}` }} passHref>
                       <ThemeUILink title="View address detail">
-                        <AddressIconAndName address={v.voter} width={22} />
+                        <AddressIconBox address={v.voter} width={41} />
                       </ThemeUILink>
                     </Link>
                   </Text>

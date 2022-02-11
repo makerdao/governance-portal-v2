@@ -8,7 +8,7 @@ require('dotenv').config({ path: './.env' });
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const { withSentryConfig } = require('@sentry/nextjs');
 
-// Main Next.js config
+//// Main Next.js config
 const moduleExports = {
   // everything in here gets exposed to the frontend.
   // prefer NEXT_PUBLIC_* instead, which makes this behavior more explicit

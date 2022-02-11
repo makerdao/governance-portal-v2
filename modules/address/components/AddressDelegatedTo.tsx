@@ -12,7 +12,7 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import AddressIconAndName from './AddressIconAndName';
+import AddressIconBox from './AddressIconBox';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -33,7 +33,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <AddressIconAndName address={address} width={22} />
+              <AddressIconBox address={address} width={41} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -45,7 +45,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                   key={blockTimestamp}
                   variant="smallCaps"
                   sx={{
-                    ':first-of-type': { pt: 3 },
+                    ':first-of-type': { pt: 2 },
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
@@ -56,7 +56,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           </Flex>
         )}
       </Flex>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
           {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
@@ -88,7 +88,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           </Flex>
         )}
       </Box>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Flex sx={{ alignSelf: 'flex-start' }}>
           {totalDelegated ? (
             <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
@@ -99,7 +99,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
           )}
         </Flex>
       </Box>
-      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
             sx={{

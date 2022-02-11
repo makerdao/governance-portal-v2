@@ -347,7 +347,9 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
     }
   }, [query['poll-hash'], network]);
 
-  if (error || (isDefaultNetwork(network) && !isFallback && !prefetchedPoll?.multiHash)) {
+  const poll = (isDefaultNetwork(network) ? prefetchedPoll : _poll) as Poll;
+
+  if (!poll && (error || (isDefaultNetwork(network) && !isFallback && !prefetchedPoll?.multiHash))) {
     return (
       <ErrorPage statusCode={404} title="Poll either does not exist, or could not be fetched at this time" />
     );
@@ -360,7 +362,6 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
       </PrimaryLayout>
     );
 
-  const poll = (isDefaultNetwork(network) ? prefetchedPoll : _poll) as Poll;
   return (
     <ErrorBoundary componentName="Poll Page">
       <PollView poll={poll} />

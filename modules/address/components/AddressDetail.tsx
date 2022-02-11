@@ -52,7 +52,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           p: [3, 4]
         }}
       >
-        <AddressIconBox address={address} voteProxyInfo={voteProxyInfo} showExternalLink />
+        <AddressIconBox address={address} showExternalLink />
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
