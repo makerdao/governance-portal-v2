@@ -61,7 +61,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
-  const { tally } = usePollTally(poll.pollId, 10000);
+  const { tally } = usePollTally(poll.pollId, 60000);
   const { comments } = usePollComments(poll.pollId);
 
   return (
@@ -338,7 +338,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   // fetch poll contents at run-time if on any network other than the default
   useEffect(() => {
     if (!network) return;
-    if (query['poll-hash'] && (!isDefaultNetwork(network) || !prefetchedPoll)) {
+    if (query['poll-hash'] && !isDefaultNetwork(network)) {
       fetchJson(`/api/polling/${query['poll-hash']}?network=${network}`)
         .then(response => {
           _setPoll(response);
