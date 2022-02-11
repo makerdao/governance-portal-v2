@@ -8,7 +8,6 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AddressIcon from 'modules/address/components/AddressIcon';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type Props = {
   address: string;
