@@ -72,7 +72,7 @@
     "recharts": "^2.1.2",
     "remark": "^12.0.0",
     "remark-html": "^13.0.2",
-    "superjson": "^1.7.4",
+    "superjson": "^1.8.1",
     "swagger-ui-react": "^4.1.0",
     "swr": "^1.0.1",
     "theme-ui": "^0.12.0",
