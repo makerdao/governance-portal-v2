@@ -3,10 +3,14 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
-import { setAccount, visitPage } from '../support/commons';
+import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
+import { setAccount, visitPage, forkNetwork } from '../support/commons';
 
 describe('Esmodule Page', async () => {
+  before(() => {
+    forkNetwork(6349521);
+  });
+
   it('should navigate to the es module page', () => {
     visitPage('/esmodule');
 

@@ -35,3 +35,8 @@ export async function setAccount(account: TestAccount, cb: () => void) {
 export function closeModal() {
   cy.get('[aria-label="close"]').click();
 }
+// Fork to a new block
+export function forkNetwork(block) {
+  // Must refund accounts after forking
+  cy.exec(`npx hardhat fork --network localhost --block ${block}`).exec('yarn fund');
+}
