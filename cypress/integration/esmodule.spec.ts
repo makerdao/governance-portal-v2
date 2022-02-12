@@ -7,7 +7,7 @@ import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testa
 import { setAccount, visitPage, forkNetwork } from '../support/commons';
 
 describe('Esmodule Page', async () => {
-  before(() => {
+  after(() => {
     forkNetwork(6349521);
   });
 
@@ -91,11 +91,81 @@ describe('Esmodule Page', async () => {
       cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/0.013/);
     });
   });
+
+  it('Should be able to initiate emergency shutdown', () => {
+    visitPage('/esmodule');
+
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.contains('Burn Your MKR').should('be.visible');
+
+      //Click "burn your MKR button"
+      cy.contains('Burn Your MKR').click();
+
+      // Checks the modal is open
+      cy.contains('Are you sure you want to burn MKR?').should('be.visible');
+
+      // Closes modal
+      cy.contains('Cancel').click();
+
+      // Click "burn your MKR button"
+      cy.contains('Burn Your MKR').click();
+
+      // Click continue
+      cy.contains('Continue').click();
+
+      // Enter 100K MKR to pass the threshhold
+      cy.get('[data-testid="mkr-input"]').type('100000');
+
+      // Continue with the burn
+      cy.contains('Continue').click();
+
+      // Type the passphrase
+      cy.get('[data-testid="confirm-input"]').type('I am burning 100,000.0 MKR');
+
+      // Unlock mkr
+      cy.get('[data-testid="allowance-toggle"]').click();
+
+      // click on checkbox of accepted terms
+      cy.get('[data-testid="tosCheck"]').click();
+
+      // The continue button should be enabled
+      cy.get('[data-testid="continue-burn"]').should('not.be.disabled');
+
+      // Click continue
+      cy.get('[data-testid="continue-burn"]').click();
+
+      // See confirmation
+      cy.contains('MKR successfully burned in ESM').should('be.visible');
+
+      // Close modal
+      cy.contains('Close').click();
+
+      // Click "burn your MKR button"
+      cy.contains('Initiate Emergency Shutdown').click();
+
+      // See that the limit has been reached
+      cy.contains('The 100,000 MKR limit for the emergency shutdown module has been reached.').should(
+        'be.visible'
+      );
+
+      // Continue and send the shutdown tx
+      cy.contains('Continue').click();
+
+      // Pending state
+      cy.contains('Shutdown will update once the transaction has been confirmed.');
+
+      cy.wait(1500);
+      // Scroll for screenshot
+      cy.scrollTo(0, 0);
+
+      // Shows banner after shutdown
+      // TODO fix cageTime showing incorrect date
+      cy.contains('Emergency shutdown has been initiated on');
+    });
+  });
 });
 
 // TODO: Enter an incorrect passphrase
-
-// TODO: Initate emergency shutdown by burning 50000 MKR
 
 /*
 import { renderWithTheme, UINT256_MAX, WAD } from '../helpers';
