@@ -33,16 +33,16 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
     shallow
   );
 
-  const { ballot, clearBallot, signedMessage, comments, setComments, rawMessage, updatePreviousVotes } =
-    useBallotStore(state => ({
+  const { ballot, clearBallot, signedMessage, comments, setComments, updatePreviousVotes } = useBallotStore(
+    state => ({
       ballot: state.ballot,
       clearBallot: state.clearBallot,
       signedMessage: state.signedMessage,
       comments: state.comments,
       setComments: state.setComments,
-      rawMessage: state.rawMessage,
       updatePreviousVotes: state.updatePreviousVotes
-    }));
+    })
+  );
 
   const newBallot = {};
 
@@ -76,10 +76,10 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
             delegateAddress: voteDelegateContract ? voteDelegateContractAddress : '',
             voteProxyAddress: voteProxyContractAddress ? voteProxyContractAddress : '',
             comments,
-            rawMessage,
             signedMessage,
             txHash
           };
+
           fetchJson(`/api/comments/polling/add?network=${network}`, {
             method: 'POST',
             body: JSON.stringify(commentsRequest)

@@ -7,6 +7,26 @@ require('dotenv').config({ path: './.env' });
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const { withSentryConfig } = require('@sentry/nextjs');
+const securityHeaders = [
+  // Adds x-xss-protection
+  {
+    key: 'X-XSS-Protection',
+    value: '1; mode=block'
+  },
+
+  // adds x-frame-options
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN'
+  },
+
+  // adds x-content-type
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff'
+  }
+];
+
 
 //// Main Next.js config
 const moduleExports = {
@@ -50,7 +70,17 @@ const moduleExports = {
         destination: '/address/:address'
       }
     ];
-  }
+  },
+
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes in your application.
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ]
+  },
 };
 
 const SentryWebpackPluginOptions = {

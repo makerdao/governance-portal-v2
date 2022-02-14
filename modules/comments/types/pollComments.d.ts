@@ -20,7 +20,6 @@ export type PollsCommentsRequestBody = {
   delegateAddress?: string;
   comments: Partial<PollComment>[];
   voteProxyAddress?: string;
-  rawMessage: string;
   signedMessage: string;
   txHash: string;
 };

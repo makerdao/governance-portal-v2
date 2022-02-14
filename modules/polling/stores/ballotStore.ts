@@ -4,6 +4,7 @@ import { Ballot } from '../types/ballot';
 import { PollComment } from 'modules/comments/types/pollComments';
 import { sign } from 'modules/web3/helpers/sign';
 import { Web3Provider } from '@ethersproject/providers';
+import { fetchJson } from 'lib/fetchJson';
 
 type Store = {
   ballot: Ballot;
@@ -19,7 +20,6 @@ type Store = {
   clearBallot: () => void;
   signComments: (account: string, provider: Web3Provider) => Promise<void>;
   signedMessage: string;
-  rawMessage: string;
 };
 
 const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
@@ -28,10 +28,9 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   txId: null,
   comments: [],
   signedMessage: '',
-  rawMessage: '',
 
   setComments: (newComments: Partial<PollComment>[]) => {
-    set({ comments: newComments, signedMessage: '', rawMessage: '' });
+    set({ comments: newComments, signedMessage: '' });
   },
 
   updateComment: (text: string, pollId: number) => {
@@ -40,7 +39,6 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
 
     set(state => ({
       signedMessage: '',
-      rawMessage: '',
       comments: exist
         ? state.comments.map(comment => {
             if (comment.pollId === pollId) {
@@ -92,19 +90,19 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   signComments: async (account: string, provider: Web3Provider) => {
     const comments = get().comments;
 
-    // Sign message for commenting
-    const rawMessage =
-      comments.length > 1
-        ? `I am leaving ${comments.length} comments for my votes.
-  ${comments.map(comment => `- Poll ${comment.pollId}: ${comment.comment}.  `).join('\n')}
-    `
-        : `${comments[0].comment}`;
+    const data = await fetchJson('/api/comments/nonce', {
+      method: 'POST',
+      body: JSON.stringify({
+        voterAddress: account
+      })
+    });
 
-    const signedMessage = comments.length > 0 ? await sign(account, rawMessage, provider) : '';
+    console.log('NONCE', data);
+
+    const signedMessage = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
 
     set({
-      signedMessage,
-      rawMessage
+      signedMessage
     });
   }
 }));

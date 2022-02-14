@@ -22,6 +22,5 @@ export type ExecutiveCommentsRequestBody = {
   voteProxyAddress?: string;
   comment: string;
   signedMessage: string;
-  voterWeight: string;
   txHash: string;
 };
