@@ -8,7 +8,6 @@ import Link from 'next/link';
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
-  console.log(router.query);
   return Object.keys(router.query).length > 0 ? (
     <Box>
       <h2>Invaid Route</h2>
