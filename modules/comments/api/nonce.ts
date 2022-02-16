@@ -10,8 +10,6 @@ export async function generateNonce(address: string): Promise<string> {
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('comment-nonces');
-  const uid = uuidv4();
-  const nonce = `/${address}/${uid}`;
 
   // If we have a previous nonce, use that.
   const previousNonces = await collection.find({
@@ -21,6 +19,10 @@ export async function generateNonce(address: string): Promise<string> {
   if (previousNonces.length > 0) {
     return previousNonces[0].nonce;
   }
+
+  // Create a new nonce structure for the DB
+  const uid = uuidv4();
+  const nonce = `/${address}/${uid}`; // The nonce identifier that the user will sign
 
   // Insert new nonce
   await collection.insertOne({
