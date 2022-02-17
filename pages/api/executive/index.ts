@@ -8,6 +8,43 @@ import { CMSProposal } from 'modules/executive/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
+/**
+ * @swagger
+ * definitions:
+ *   ArrayOfExecutives:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/Executive'
+ *
+ * /api/executive:
+ *   get:
+ *     tags:
+ *     - "executive"
+ *     description: Returns all executive proposals
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *     - name: "network"
+ *       in: "query"
+ *       description: "Network"
+ *       required: false
+ *       type: "array"
+ *       items:
+ *         type: "string"
+ *         enum:
+ *         - "goerli"
+ *         - "mainnet"
+ *         default: ""
+ *       collectionFormat: "multi"
+ *     responses:
+ *       '200':
+ *         description: "List of executives"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 $ref: '#/definitions/ArrayOfExecutives'
+ */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<CMSProposal[]>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
