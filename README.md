@@ -55,6 +55,7 @@ Jest tests under the folder __tests__ currently execute unit tests of the platfo
 - npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
 ```
 
+
 #### Goerli Fork 
 
 E2E tests run on a fork of GOERLI. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
