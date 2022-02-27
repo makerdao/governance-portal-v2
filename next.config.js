@@ -50,7 +50,9 @@ const moduleExports = {
         destination: '/address/:address'
       }
     ];
-  }
+  },
+
+  
 };
 
 const SentryWebpackPluginOptions = {
