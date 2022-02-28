@@ -112,19 +112,21 @@ export default function PollOverviewCard({
                       <CommentCount count={comments.length} />
                     </InternalLink>
                   )}
-                  {errorComments && <Badge
-                    variant="warning"
-                    sx={{
-                      color: 'warning',
-                      borderColor: 'warning',
-                      textTransform: 'uppercase',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      m: 1
-                    }}
-                  >
-                    Error loading comments
-                  </Badge>}
+                  {errorComments && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading comments
+                    </Badge>
+                  )}
                 </Flex>
               )}
             </Stack>
