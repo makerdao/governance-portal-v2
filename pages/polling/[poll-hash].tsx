@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Link as ExternalLink } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Link as ExternalLink, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import invariant from 'tiny-invariant';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
@@ -16,7 +15,6 @@ import { formatDateWithTime } from 'lib/datetime';
 import { isDefaultNetwork, isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 // api
-import { getPolls } from 'modules/polling/api/fetchPolls';
 import { Poll } from 'modules/polling/types';
 
 // components
@@ -62,7 +60,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const [mobileVotingPoll, setMobileVotingPoll] = useState<Poll>(poll);
 
   const { tally } = usePollTally(poll.pollId, 60000);
-  const { comments } = usePollComments(poll.pollId);
+  const { comments, error: errorComments} = usePollComments(poll.pollId);
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
@@ -295,7 +293,20 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   ]
                 ),
                 <div key={3}>
-                  <PollComments comments={comments} tally={tally} poll={poll} />
+                  {!errorComments && <PollComments comments={comments} tally={tally} poll={poll} />}
+                  {errorComments && <Badge
+                    variant="warning"
+                    sx={{
+                      color: 'warning',
+                      borderColor: 'warning',
+                      textTransform: 'uppercase',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      m: 3
+                    }}
+                  >
+                    Error loading comments
+                  </Badge>}
                 </div>
               ]}
               banner={

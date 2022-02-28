@@ -27,12 +27,11 @@ _Requires node version >= v11.15.0_
 4. Set `TRACING_RPC_NODE` to an ethereum RPC parity node with tracing enabled
 5. Set `MONGODB_URI` to a full mongodb uri (ex: `mongodb+srv://...`)
 6. Set `MONGODB_COMMENTS_DB` the mongodb db name to be used for vote comments
-7. Set `USE_PROD_SPOCK` to true to use the production spock instance
-8. Set `USE_FS_CACHE` to true if you want to use file system cache
-9. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
-10. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
-11. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
-12. Set `ALCHEMY_GOERLI_API_KEY` for the API key 
+7. Set `USE_FS_CACHE` to true if you want to use file system cache
+8. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
+9. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
+10. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
+11. Set `ALCHEMY_GOERLI_API_KEY` for the API key 
 
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.

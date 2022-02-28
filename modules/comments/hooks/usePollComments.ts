@@ -6,12 +6,13 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 type UsePollCommentsResponse = {
   comments: PollCommentsAPIResponseItem[] | undefined;
   mutate: () => void;
+  error?: Error
 };
 
 export function usePollComments(pollId: number, refreshInterval = 0): UsePollCommentsResponse {
   const { network } = useActiveWeb3React();
 
-  const { data: commentsDatas, mutate } = useSWR<PollCommentsAPIResponseItem[]>(
+  const { data: commentsDatas, error, mutate } = useSWR<PollCommentsAPIResponseItem[]>(
     `/api/comments/polling/${pollId}?network=${network}`,
     fetchJson,
     {
@@ -23,6 +24,7 @@ export function usePollComments(pollId: number, refreshInterval = 0): UsePollCom
 
   return {
     comments: commentsDatas,
-    mutate
+    mutate,
+    error
   };
 }

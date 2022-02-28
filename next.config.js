@@ -17,7 +17,6 @@ const moduleExports = {
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
     POCKET_KEY: process.env.POCKET_KEY,
     ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
-    USE_PROD_SPOCK: process.env.USE_PROD_SPOCK // use production spock instance if true, otherwise use staging
   },
 
   // Opt-in SWC minification (next 12.0.2)
