@@ -2,10 +2,15 @@
 // Disable ESLint to prevent failing linting inside the Next.js repo.
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
-import { setAccount, visitPage } from '../../support/commons';
+import { forkNetwork, setAccount, visitPage } from '../../support/commons';
 import { TEST_ACCOUNTS } from '../../support/constants/testaccounts';
+import { INIT_BLOCK } from '../../support/constants/blockNumbers';
 
 describe('/polling detail page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
+
   it('can see poll detail', () => {
     // Mainnet poll
     visitPage('/polling/QmWReBMh');
@@ -36,7 +41,7 @@ describe('/polling detail page', async () => {
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks that the leading option is visible
-      cy.contains(/Leading option: No with 1,591.02558 MKR supporting./).should('be.visible');
+      cy.contains(/Leading option: Yes with 987.65258 MKR supporting./).should('be.visible');
 
       // Clicks on the vote breakdown tab
       cy.get('[data-testid="tab-Vote Breakdown"]').click();

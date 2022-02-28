@@ -169,7 +169,7 @@ const ESModule = (): React.ReactElement => {
             my: 3
           }}
         >
-          <Text sx={{ textAlign: 'center' }}>
+          <Text data-testid="es-initiated" sx={{ textAlign: 'center' }}>
             Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
             is currently read-only. You can read more information about next steps{' '}
             <Link href="https://makerdao.world/en/learn/governance/emergency-shutdown" target="_blank">
