@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button, Text, Flex, Badge, Box, Link as InternalLink } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, Link as ThemeUILink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { CMSProposal } from 'modules/executive/types';
@@ -25,7 +25,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             pathname: `/executive/${proposal.key}`
           }}
         >
-          <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
+          <ThemeUILink href={`/executive/${proposal.key}`} variant="nostyle">
             <Text
               variant="microHeading"
               sx={{
@@ -35,7 +35,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             >
               {proposal.title}
             </Text>
-          </InternalLink>
+          </ThemeUILink>
         </Link>
       </div>
       <Box>
@@ -110,14 +110,14 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             pathname: `/executive/${proposal.key}`
           }}
         >
-          <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
+          <ThemeUILink href={`/executive/${proposal.key}`} variant="nostyle">
             <Button
               variant="primaryOutline"
               sx={{ borderRadius: 'small', px: 4, mt: 2, width: '100%', display: ['block', 'none'] }}
             >
               View proposal
             </Button>
-          </InternalLink>
+          </ThemeUILink>
         </Link>
       </Flex>
     </Stack>

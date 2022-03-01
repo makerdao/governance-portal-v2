@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
+import { Text, Flex, Box, Button, Badge, Divider, Card, Link as ThemeUILink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
@@ -66,7 +66,7 @@ export default function ExecutiveOverviewCard({
       as={{ pathname: `/executive/${proposal.key}` }}
       passHref
     >
-      <InternalLink variant="nostyle">
+      <ThemeUILink variant="nostyle">
         <Card
           sx={{
             p: [0, 0],
@@ -185,9 +185,9 @@ export default function ExecutiveOverviewCard({
 
             {comments && comments.length > 0 && (
               <Box sx={{ mt: 2 }}>
-                <InternalLink href={`/executive/${proposal.key}?network=${network}#comments`}>
+                <ThemeUILink href={`/executive/${proposal.key}?network=${network}#comments`}>
                   <CommentCount count={comments.length} />
-                </InternalLink>
+                </ThemeUILink>
               </Box>
             )}
           </Box>
@@ -201,7 +201,7 @@ export default function ExecutiveOverviewCard({
             </Text>
           </Flex>
         </Card>
-      </InternalLink>
+      </ThemeUILink>
     </Link>
   );
 }
