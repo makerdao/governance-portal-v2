@@ -2,10 +2,15 @@
 // Disable ESLint to prevent failing linting inside the Next.js repo.
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { visitPage, setAccount } from '../../support/commons';
+import { visitPage, setAccount, forkNetwork } from '../../support/commons';
 
 describe('/polling review page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
+
   it('Renders correct information about the missing connection', () => {
     visitPage('/polling/review');
 
