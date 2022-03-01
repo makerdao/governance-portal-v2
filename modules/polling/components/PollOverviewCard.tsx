@@ -66,7 +66,7 @@ export default function PollOverviewCard({
                     Posted on {formatDateWithTime(poll.startDate)}{' '}
                   </Text>
                   <Link href={`/polling/${poll.slug}`} passHref>
-                    <ThemeUILink variant="nostyle">
+                    <ThemeUILink variant="nostyle" title="View Poll Details">
                       <Text
                         variant="microHeading"
                         sx={{ fontSize: [3, 5] }}
@@ -78,7 +78,7 @@ export default function PollOverviewCard({
                   </Link>
                 </Box>
                 <Link href={`/polling/${poll.slug}`} passHref>
-                  <ThemeUILink variant="nostyle">
+                  <ThemeUILink variant="nostyle" title="View Poll Details">
                     <Text
                       sx={{
                         fontSize: [2, 3],
@@ -108,7 +108,7 @@ export default function PollOverviewCard({
                   </Box>
 
                   {comments && comments.length > 0 && (
-                    <ThemeUILink href={`/polling/${poll.slug}#comments`}>
+                    <ThemeUILink href={`/polling/${poll.slug}#comments`} title="View Comments">
                       <CommentCount count={comments.length} />
                     </ThemeUILink>
                   )}
@@ -161,7 +161,7 @@ export default function PollOverviewCard({
                   href={{ pathname: '/polling/[poll-hash]' }}
                   as={{ pathname: `/polling/${poll.slug}` }}
                 >
-                  <ThemeUILink href={`/polling/${poll.slug}`} variant="nostyle">
+                  <ThemeUILink href={`/polling/${poll.slug}`} variant="nostyle" title="View Poll Details">
                     <Button
                       variant="outline"
                       sx={{

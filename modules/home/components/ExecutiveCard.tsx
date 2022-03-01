@@ -25,7 +25,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             pathname: `/executive/${proposal.key}`
           }}
         >
-          <ThemeUILink href={`/executive/${proposal.key}`} variant="nostyle">
+          <ThemeUILink href={`/executive/${proposal.key}`} variant="nostyle" title="View Executive Details">
             <Text
               variant="microHeading"
               sx={{
@@ -114,6 +114,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
             <Button
               variant="primaryOutline"
               sx={{ borderRadius: 'small', px: 4, mt: 2, width: '100%', display: ['block', 'none'] }}
+              title="View Executive Details"
             >
               View proposal
             </Button>

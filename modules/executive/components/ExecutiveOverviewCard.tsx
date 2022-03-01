@@ -66,7 +66,7 @@ export default function ExecutiveOverviewCard({
       as={{ pathname: `/executive/${proposal.key}` }}
       passHref
     >
-      <ThemeUILink variant="nostyle">
+      <ThemeUILink variant="nostyle" title="View Executive Details">
         <Card
           sx={{
             p: [0, 0],
@@ -185,7 +185,10 @@ export default function ExecutiveOverviewCard({
 
             {comments && comments.length > 0 && (
               <Box sx={{ mt: 2 }}>
-                <ThemeUILink href={`/executive/${proposal.key}?network=${network}#comments`}>
+                <ThemeUILink
+                  href={`/executive/${proposal.key}?network=${network}#comments`}
+                  title="View Comments"
+                >
                   <CommentCount count={comments.length} />
                 </ThemeUILink>
               </Box>
