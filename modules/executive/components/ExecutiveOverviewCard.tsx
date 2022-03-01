@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -61,7 +60,7 @@ export default function ExecutiveOverviewCard({
   const canVote = !!account;
 
   return (
-    <Link href={{ pathname: '/executive/[proposal-id]' }} as={{ pathname: `/executive/${proposal.key}` }}>
+    <InternalLink href={`/executive/${proposal.key}`} variant="nostyle">
       <Card
         sx={{
           p: [0, 0],
@@ -196,6 +195,6 @@ export default function ExecutiveOverviewCard({
           </Text>
         </Flex>
       </Card>
-    </Link>
+    </InternalLink>
   );
 }
