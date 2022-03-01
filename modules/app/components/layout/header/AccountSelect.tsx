@@ -15,13 +15,11 @@ import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
-import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
 import { ConnectorName } from 'modules/web3/types/connectors';
 import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
-import { useWindowBindings } from 'modules/web3/hooks/useWindowBindings';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 import { ErrorBoundary } from '../../ErrorBoundary';
@@ -72,12 +70,6 @@ const AccountSelect = (): React.ReactElement => {
 
   // important that these are destructed from the account-specific web3-react context
   const { account: address, chainId, activate, connector, deactivate, error, setError } = useWeb3React();
-
-  // try to eagerly connect to an injected provider, if it exists and has granted access already
-  useEagerConnect();
-
-  // Detect previously authorized connections and force log-in
-  useWindowBindings();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,

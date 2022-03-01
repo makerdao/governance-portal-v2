@@ -120,7 +120,6 @@ export async function fetchGithubDelegate(
   const delegatesCacheKey = `delegate-${address}`;
   const cacheTime = 1000 * 60 * 60;
   const existingDelegate = fsCacheGet(delegatesCacheKey, network, cacheTime);
-
   if (existingDelegate) {
     return Promise.resolve({
       error: false,
@@ -142,7 +141,9 @@ export async function fetchGithubDelegate(
       : undefined;
 
     // Store in cache
-    fsCacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
+    if (userInfo) {
+      fsCacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
+    }
 
     return {
       error: false,
