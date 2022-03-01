@@ -166,9 +166,8 @@ export default function PollOverviewCard({
                       variant="outline"
                       sx={{
                         display: reviewPage ? 'none' : undefined,
-                        borderColor: 'onSecondary',
-                        color: 'secondaryAlt',
-                        borderRadius: 'small',
+                        borderColor: 'text',
+                        color: 'text',
                         ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
                       }}
                     >
