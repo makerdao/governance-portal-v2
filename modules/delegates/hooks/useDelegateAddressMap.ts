@@ -1,5 +1,5 @@
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { Delegate } from '../types';
 
 type DelegateAddressMapResponse = {
@@ -10,9 +10,14 @@ type DelegateAddressMapResponse = {
 
 export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
   const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+  const dataKey = `/api/delegates/names?network=${network}`;
 
-  const { data: delegates, error } = useSWR<Delegate[]>(`/api/delegates/names?network=${network}`, null, {
-    refreshInterval: 0
+  const { data: delegates, error } = useSWR<Delegate[]>(dataKey, null, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKey),
+    revalidateOnReconnect: false
   });
 
   const data =

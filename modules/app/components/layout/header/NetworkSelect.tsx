@@ -10,7 +10,6 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 import { switchToNetwork } from 'modules/web3/helpers/switchToNetwork';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
-import { useWeb3React } from '@web3-react/core';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
@@ -43,7 +42,7 @@ const closeButtonStyle: ThemeUICSSObject = {
 const NetworkSelect = (): React.ReactElement => {
   const { library, chainId } = useActiveWeb3React();
   // We can only switch MM network if injected connector is active
-  const { active: accountConnected } = useWeb3React();
+  const { active: accountConnected } = useActiveWeb3React();
 
   const [showDialog, setShowDialog] = useState(false);
 

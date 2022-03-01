@@ -42,7 +42,7 @@ export default function PollOverviewCard({
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
 
   return (
     <Box
@@ -198,7 +198,24 @@ export default function PollOverviewCard({
                       </ErrorBoundary>
                     </Box>
                   )}
-                  {!tally && <SkeletonThemed width={'265px'} height={'30px'} />}
+                  {!tally && isValidating && !errorTally && (
+                    <SkeletonThemed width={'265px'} height={'30px'} />
+                  )}
+                  {errorTally && !isValidating && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading votes
+                    </Badge>
+                  )}
                 </Box>
               )}
             </Flex>
