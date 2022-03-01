@@ -3,6 +3,7 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
 import { closeModal, forkNetwork, setAccount, visitPage } from '../support/commons';
@@ -10,7 +11,7 @@ import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testa
 
 describe('Delegates Page', () => {
   before(() => {
-    forkNetwork(6182224);
+    forkNetwork(INIT_BLOCK);
   });
   it('should navigate to the delegates page and find a list of delegates', () => {
     // Start from the index page
@@ -36,7 +37,7 @@ describe('Delegates Page', () => {
       cy.get('[data-testid="total-delegates-system-info"]').contains(/13/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/13/);
-      cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
     });
   });
 
