@@ -30,7 +30,7 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Should find the delegates system info', () => {
+  it('should find the delegates system info', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
@@ -41,7 +41,7 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Should hide shadow delegates when unchecking the filter', () => {
+  it('should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
@@ -60,7 +60,7 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Connects wallet and clicks on delegate', { defaultCommandTimeout: 60000 }, () => {
+  it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
     // Start from the index page
     visitPage('/delegates');
 
