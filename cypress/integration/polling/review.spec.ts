@@ -6,7 +6,7 @@ import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
 import { visitPage, setAccount, forkNetwork } from '../../support/commons';
 
-describe('/polling review page', async () => {
+describe('/polling/review page', async () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
   });
@@ -189,6 +189,8 @@ describe('/polling review page', async () => {
       // Goes to the review page
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
+
+      cy.wait(3000);
 
       cy.location('pathname').should('eq', '/polling/review');
 
