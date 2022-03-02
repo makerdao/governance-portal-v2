@@ -60,11 +60,14 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Connects wallet and clicks on delegate', () => {
+  it('Connects wallet and clicks on delegate', { defaultCommandTimeout: 60000 }, () => {
     // Start from the index page
     visitPage('/delegates');
 
     const newAccount = getTestAccountByIndex(1);
+
+    // Wait a few seconds to prevent rate limiting
+    cy.wait(5000);
 
     setAccount(newAccount, () => {
       // Should find the connected
