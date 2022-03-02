@@ -3779,14 +3779,14 @@
     "@web3-react/types" "^6.0.7"
     tiny-invariant "^1.0.6"
 
-"@web3-react/walletlink-connector@^6.2.8":
-  version "6.2.8"
-  resolved "https://registry.yarnpkg.com/@web3-react/walletlink-connector/-/walletlink-connector-6.2.8.tgz#aaf7f413229f58d8087a15e0d049bbcbe5e0bd49"
-  integrity sha512-pSGufPz5JntSUvy88XcOrn5VN3qmX+ZVQ2lXAeWWb7YS2wTlAStPghZbln8t1li7jr1NUJ0w/gMDVpAwjwq4ZA==
+"@web3-react/walletlink-connector@^6.2.13":
+  version "6.2.13"
+  resolved "https://registry.yarnpkg.com/@web3-react/walletlink-connector/-/walletlink-connector-6.2.13.tgz#7de4c0a02a8372fed9282ee56a0abeb76b8e811d"
+  integrity sha512-rMjppw8167pNKphOYQcodIvuUgv3z/N1vLbGqmy1P70alhn4ZXCr/Ft7TR8zT6LUtkrqCSbWXbUt/lZSssE+xA==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
-    walletlink "^2.2.6"
+    walletlink "^2.5.0"
 
 "@xstate/fsm@1.4.0":
   version "1.4.0"
@@ -11625,9 +11625,9 @@ preact@10.4.1:
   integrity sha512-WKrRpCSwL2t3tpOOGhf2WfTpcmbpxaWtDbdJdKdjd0aEiTkvOmS4NBkG6kzlaAHI9AkQ3iVqbFWM3Ei7mZ4o1Q==
 
 preact@^10.5.9:
-  version "10.6.4"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.6.4.tgz#ad12c409ff1b4316158486e0a7b8d43636f7ced8"
-  integrity sha512-WyosM7pxGcndU8hY0OQlLd54tOU+qmG45QXj2dAYrL11HoyU/EzOSTlpJsirbBr1QW7lICxSsVJJmcmUglovHQ==
+  version "10.6.6"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.6.6.tgz#f1899bc8dab7c0788b858481532cb3b5d764a520"
+  integrity sha512-dgxpTFV2vs4vizwKohYKkk7g7rmp1wOOcfd4Tz3IB3Wi+ivZzsn/SpeKJhRENSE+n8sUfsAl4S3HiCVT923ABw==
 
 precond@0.2:
   version "0.2.3"
@@ -14367,10 +14367,10 @@ walker@^1.0.7, walker@~1.0.5:
   dependencies:
     makeerror "1.0.12"
 
-walletlink@^2.2.6:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/walletlink/-/walletlink-2.4.2.tgz#c218d1e0906537eac2a2e0bb24ee8ad19ecc23a6"
-  integrity sha512-NCDSrfPwm51dSMIygkvaO0t4yQMMDHMEPXcDWS53spMsPXrxF5Xmg07l5XZFoUuS5D3ibeQFRi1illX7ppA24g==
+walletlink@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/walletlink/-/walletlink-2.5.0.tgz#b8db10f4d9f124084feb16d1e2b2d08ba8c20d21"
+  integrity sha512-PBJmK5tZmonwKPABBI2/optaZ11O4kKmkmnU5eLKhk4XRlal5qJ1igZ4U5j3w6w8wxxdhCWpLMHzGWt3n/p7mw==
   dependencies:
     "@metamask/safe-event-emitter" "2.0.0"
     bind-decorator "^1.0.11"
