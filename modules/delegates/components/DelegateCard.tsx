@@ -87,7 +87,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 }}
                 passHref
               >
-                <ThemeUILink variant="nostyle" title={`View ${isOwner ? 'Your' : 'Profile'} Details`}>
+                <ThemeUILink
+                  sx={{ mt: 'auto' }}
+                  variant="nostyle"
+                  title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                >
                   <Button
                     variant="outline"
                     onClick={() => trackButtonClick('openDelegateProfile')}
