@@ -93,9 +93,9 @@ describe('Esmodule Page', async () => {
     });
   });
 
-  it('Should be able to initiate emergency shutdown', () => {
+  it('Should be able to initiate emergency shutdown', { defaultCommandTimeout: 60000 }, () => {
     visitPage('/esmodule');
-
+    cy.wait(2000);
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.contains('Burn Your MKR').should('be.visible');
 
