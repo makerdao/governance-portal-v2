@@ -31,8 +31,9 @@ _Requires node version >= v11.15.0_
 8. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
 9. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
 10. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
-11. Set `ALCHEMY_GOERLI_API_KEY` for the API key 
-
+11. Set `ALCHEMY_GOERLI_API_KEY` for the API key
+12. Set `ETHERSCAN_KEY` for ethers provider to use
+13. Set `POCKET_KEY` for ethers provider to use
 
 If API keys aren't provided, both Alchemy and Infura will default to the public keys from [ethers.js](https://github.com/ethers-io/ethers.js/). This is probably fine in most cases, performance could just be a bit less consistent as many people are using these.
 
@@ -42,25 +43,32 @@ If API keys aren't provided, both Alchemy and Infura will default to the public 
 
 ### Tests
 
-The Governance portal includes 2 test suite: Jest and Cypress.
+The Governance portal includes two test suites: Jest and Cypress
 
-Jest tests under the folder __tests__ currently execute unit tests of the platform.  The e2e Cypress tests are under the "cypress" folder.
+Jest tests under the folder `__tests__` currently execute unit tests of the platform. The e2e Cypress tests are under the `cypress` folder.
 
 #### Test Commands
+
+Jest:
+
 ```
 - npm run test -> runs Jest tests on livereload mode
 - npm run test:ci -> runs all the Jest tests
+```
+
+Cypress:
+
+```
 - npm run e2e -> opens a Cypress browser for the e2e
 - npm run e2e:headless -> runs e2e tests in a headless manner, for CI systems
 ```
 
+#### Goerli Fork
 
-#### Goerli Fork 
-
-E2E tests run on a fork of GOERLI. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
+By default, e2e tests run on a fork of Goerli. We do this because the governance contracts are deployed in Goerli for testing purposes. To run the fork of Goerli on the localhost:8545 (chain id: 31337), execute:
 
 ```
-npm run hardhat 
+npm run hardhat
 ```
 
 Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
@@ -71,17 +79,15 @@ You can use this local network from MetaMask, by switching to the "localhost:854
 
 Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
 
-
-
 ### CI/CD
 
 The CI/CD system is integrated with Github Actions.
 
 After each push the system will execute:
+
 - Lint, verify type consistency
 - Unit test, execute Jest test suite
 - E2E, executy cypress test suite and record results at https://dashboard.cypress.io/projects/uckcr1/runs
-
 
 ```
 yarn start:ci
