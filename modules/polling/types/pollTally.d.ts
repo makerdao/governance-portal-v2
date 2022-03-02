@@ -4,25 +4,25 @@ import { PollVoteType } from './pollVoteType';
 export type RankedChoiceResult = {
   optionId: string;
   optionName: string;
-  firstChoice: BigNumber;
-  transfer: BigNumber;
+  firstChoice: number;
+  transfer: number;
   winner: boolean;
   eliminated: boolean;
-  firstPct: BigNumber;
-  transferPct: BigNumber;
+  firstPct: number;
+  transferPct: number;
 };
 
 export type PluralityResult = {
   optionId: string;
   optionName: string;
   winner: boolean;
-  mkrSupport: BigNumber;
+  mkrSupport: number;
   winner: boolean;
-  firstPct: BigNumber; // TODO rename to "percent"?
+  firstPct: number;
 };
 
 export type PollTallyPluralityOption = {
-  firstChoice: BigNumber;
+  mkrSupport: BigNumber;
   winner: boolean;
 };
 
@@ -38,7 +38,6 @@ export type PollTallyVote = {
   optionId: number;
   mkrSupport: number;
   rankedChoiceOption?: number[];
-  options: Record<number, PollTallyOption>;
 };
 
 export type RawPollTallyRankedChoice = {
@@ -47,7 +46,7 @@ export type RawPollTallyRankedChoice = {
   rounds: number;
   numVoters: number;
   options: Record<number, PollTallyRankedChoiceOption>;
-  totalMkrParticipation: number;
+  totalMkrParticipation: BigNumber;
   votesByAddress?: PollTallyVote[];
 };
 
@@ -56,7 +55,7 @@ export type RawPollTallyPlurality = {
   winner: string | null;
   numVoters: number;
   options: Record<number, PollTallyPluralityOption>;
-  totalMkrParticipation: number;
+  totalMkrParticipation: BigNumber;
   votesByAddress?: PollTallyVote[];
 };
 

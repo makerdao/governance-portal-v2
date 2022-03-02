@@ -1,9 +1,9 @@
 import { formatAddress } from 'lib/utils';
-import { getENS } from 'modules/web3/ens';
+import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
 
 export function Address({ address }: { address: string }): React.ReactElement {
-  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
+  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
   async function fetchENSName(address: string) {
     if (!address) {
@@ -12,7 +12,7 @@ export function Address({ address }: { address: string }): React.ReactElement {
 
     const ens = await getENS(address);
 
-    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address));
+    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address).toLowerCase());
   }
   useEffect(() => {
     if (address) {

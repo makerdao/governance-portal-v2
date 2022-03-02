@@ -2,11 +2,9 @@ import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { PollTally, Poll } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { Address } from 'modules/address/components/Address';
-import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type Props = {
   tally: PollTally;
@@ -15,10 +13,8 @@ type Props = {
 
 const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
   const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
-  const { data: delegateAddresses } = useDelegateAddressMap();
 
   return (
     <Box>
@@ -48,15 +44,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           {votes ? (
             <>
               {votes.map((v, i) => (
-                <tr key={i}>
+                <tr key={i} data-testid="vote-by-address">
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
-                    <Link href={{ pathname: `/address/${v.voter}`, query: { network } }} passHref>
+                    <Link href={{ pathname: `/address/${v.voter}` }} passHref>
                       <ThemeUILink title="View address detail">
-                        {delegateAddresses[v.voter] ? (
-                          delegateAddresses[v.voter]
-                        ) : (
-                          <Address address={v.voter} />
-                        )}
+                        <AddressIconBox address={v.voter} width={41} />
                       </ThemeUILink>
                     </Link>
                   </Text>

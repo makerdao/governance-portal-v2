@@ -1,52 +1,34 @@
 import { Flex, Link as ExternalLink, Text, Box, Grid } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR, { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import getMaker, { DAI } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
-import BigNumber from 'bignumber.js';
-
-async function getSystemStats(): Promise<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]> {
-  const maker = await getMaker();
-  return Promise.all([
-    maker.service('mcd:savings').getYearlyRate(),
-    maker.service('mcd:systemData').getSystemSurplus(),
-    maker.service('mcd:systemData').getTotalDai(),
-    // @ts-ignore
-    DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling())
-  ]);
-}
-
-// if we are on the browser, trigger a prefetch as soon as possible
-if (typeof window !== 'undefined') {
-  getSystemStats().then(stats => {
-    mutate('/system-stats', stats, false);
-  });
-}
+import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
+import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
+import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
+import { formatValue } from 'lib/string';
 
 export default function SystemStats(): JSX.Element {
-  const { data } = useSWR<[BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
-    '/system-stats-index',
-    getSystemStats
-  );
-  const [savingsRate, systemSurplus, totalDai, debtCeiling] = data || [];
+  const { data: totalDai } = useTotalDai();
+  const { data: daiSavingsRate } = useDaiSavingsRate();
+  const { data: systemSurplus } = useSystemSurplus();
+  const { data: debtCeiling } = useSystemWideDebtCeiling();
 
   const infoUnits = [
     {
       title: 'Dai Savings Rate',
-      value: savingsRate ? `${savingsRate.multipliedBy(100).toFixed(2)}%` : <Skeleton />
+      value: daiSavingsRate ? `${daiSavingsRate.toFixed(2)}%` : <Skeleton />
     },
     {
       title: 'Total Dai',
-      value: totalDai ? `${totalDai.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: totalDai ? `${formatValue(totalDai, 'rad', 0)} DAI` : <Skeleton />
     },
     {
       title: 'Dai Debt Ceiling',
-      value: debtCeiling ? `${debtCeiling.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: debtCeiling ? `${formatValue(debtCeiling, 'rad', 0)} DAI` : <Skeleton />
     },
     {
       title: 'System Surplus',
-      value: systemSurplus ? `${systemSurplus.toBigNumber().toFormat(0)} DAI` : <Skeleton />
+      value: systemSurplus ? `${formatValue(systemSurplus, 'rad', 0)} DAI` : <Skeleton />
     }
   ];
   return (

@@ -1,10 +1,11 @@
-import getMaker from 'lib/maker';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import useSWR from 'swr';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 
 type VotedProposalsResponse = {
-  data: any;
+  data: string[];
   loading: boolean;
   error: Error;
   mutate: any;
@@ -12,38 +13,33 @@ type VotedProposalsResponse = {
 
 export const useVotedProposals = (passedAddress?: string): VotedProposalsResponse => {
   let addressToUse;
+  const { chief } = useContracts();
 
   // if address is passed, fetch for that
   if (passedAddress) {
     addressToUse = passedAddress;
   } else {
     // if no address, fetch for connected account
-    const account = useAccountsStore(state => state.currentAccount);
-    const [voteProxy, voteDelegate] = useAccountsStore(state =>
-      account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-    );
+    const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
 
-    addressToUse = voteDelegate
-      ? voteDelegate.getVoteDelegateAddress()
-      : voteProxy
-      ? voteProxy.getProxyAddress()
-      : account?.address;
+    addressToUse = voteDelegateContractAddress
+      ? voteDelegateContractAddress
+      : voteProxyContractAddress
+      ? voteProxyContractAddress
+      : account;
   }
 
   const { data, error, mutate } = useSWR<string[]>(
-    addressToUse ? ['/executive/voted-proposals', addressToUse] : null,
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .service('chief')
-          .getVotedSlate(address)
-          .then(slate => (slate !== ZERO_SLATE_HASH ? maker.service('chief').getSlateAddresses(slate) : []))
-      ),
+    addressToUse ? `${addressToUse}/executive/voted-proposals` : null,
+    async () => {
+      const votedSlate = await chief.votes(addressToUse);
+      return votedSlate !== ZERO_SLATE_HASH ? await getSlateAddresses(chief, votedSlate) : [];
+    },
     { revalidateOnMount: true, refreshInterval: 60000, revalidateOnFocus: false }
   );
 
   return {
-    data,
+    data: data || [],
     loading: !error && !data,
     error,
     mutate

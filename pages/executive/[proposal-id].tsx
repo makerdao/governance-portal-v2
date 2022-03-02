@@ -16,7 +16,7 @@ import {
   Link as ThemeUILink
 } from 'theme-ui';
 import { ethers } from 'ethers';
-import BigNumber from 'bignumber.js';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -26,15 +26,12 @@ import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { getNetwork, isDefaultNetwork } from 'lib/maker';
-import { cutMiddle, limitString } from 'lib/string';
+import { cutMiddle, limitString, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getEtherscanLink } from 'lib/utils';
-
-// stores
-import useAccountsStore from 'modules/app/stores/accounts';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 //components
 import VoteModal from 'modules/executive/components/VoteModal/index';
@@ -49,11 +46,14 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 //types
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { BigNumber } from 'ethers';
 import { Address } from 'modules/address/components/Address';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   proposal: Proposal;
@@ -71,7 +71,7 @@ const ProposalTimingBanner = ({
 }: {
   proposal: CMSProposal;
   spellData?: SpellData;
-  mkrOnHat?: CurrencyObject;
+  mkrOnHat?: BigNumber;
 }): JSX.Element => {
   if (spellData || proposal.address === ZERO_ADDRESS)
     return (
@@ -92,12 +92,13 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
-  const network = getNetwork();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
+
   const bpi = useBreakpointIndex();
+  const { network } = useActiveWeb3React();
 
   const { data: allSupporters, error: supportersError } = useSWR(
-    `/api/executive/supporters?network=${getNetwork()}`
+    `/api/executive/supporters?network=${network}`
   );
 
   const { data: votedProposals } = useVotedProposals();
@@ -158,7 +159,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
       <SidebarLayout>
         <Box>
-          <Link href={{ pathname: '/executive', query: { network } }}>
+          <Link href={{ pathname: '/executive' }}>
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />
@@ -189,10 +190,10 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 value={
                   <ThemeUILink
                     title="View on etherescan"
-                    href={getEtherscanLink(getNetwork(), proposal.address, 'address')}
+                    href={getEtherscanLink(network, proposal.address, 'address')}
                     target="_blank"
                   >
-                    <Text as="p" sx={{ fontSize: [2, 5] }}>
+                    <Text sx={{ fontSize: [2, 5] }}>
                       {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
                     </Text>
                   </ThemeUILink>
@@ -200,7 +201,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 label="Spell Address"
               />
               <StatBox
-                value={spellData && new BigNumber(spellData.mkrSupport).toFormat(3)}
+                value={spellData && spellData.mkrSupport && formatValue(spellData.mkrSupport, 'wad', 3)}
                 label="MKR Support"
               />
               <StatBox value={supporters && supporters.length} label="Supporters" />
@@ -240,7 +241,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   </div>
                 ]}
                 banner={
-                  <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                  <ErrorBoundary componentName="Executive Timing Banner">
+                    <ProposalTimingBanner proposal={proposal} spellData={spellData} mkrOnHat={mkrOnHat} />
+                  </ErrorBoundary>
                 }
               ></Tabs>
             ) : (
@@ -258,7 +261,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
         </Box>
         <Stack gap={3} sx={{ mb: [5, 0] }}>
           {account && bpi !== 0 && (
-            <>
+            <Box>
               <Heading my={2} mb={'14px'} as="h3" variant="microHeading">
                 Your Vote
               </Heading>
@@ -278,114 +281,115 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                   Vote for this proposal
                 </Button>
               </Card>
-            </>
+            </Box>
           )}
           <Box>
             <Heading mt={3} mb={2} as="h3" variant="microHeading">
               Supporters
             </Heading>
-            <Card variant="compact" p={3} sx={{ height: '237px' }}>
-              <Box
-                sx={{
-                  overflowY: 'scroll',
-                  height: '100%',
-                  '::-webkit-scrollbar': {
-                    display: 'none'
-                  },
-                  scrollbarWidth: 'none'
-                }}
-              >
-                {!allSupporters && !supportersError && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Spinner size={32} />
-                  </Flex>
-                )}
-
-                {supportersError && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: 4,
-                      color: 'onSecondary'
-                    }}
-                  >
-                    List of supporters currently unavailable
-                  </Flex>
-                )}
-                {allSupporters && (!supporters || supporters.length === 0) && (
-                  <Flex
-                    sx={{
-                      height: '100%',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text>Currently there are no supporters</Text>
-                  </Flex>
-                )}
-
-                {supporters &&
-                  supporters.length > 0 &&
-                  supporters.map(supporter => (
+            <ErrorBoundary componentName="Executive Supporters">
+              <Card variant="compact" p={3} sx={{ height: '237px' }}>
+                <Box
+                  sx={{
+                    overflowY: 'scroll',
+                    height: '100%',
+                    '::-webkit-scrollbar': {
+                      display: 'none'
+                    },
+                    scrollbarWidth: 'none'
+                  }}
+                >
+                  {!allSupporters && !supportersError && (
                     <Flex
                       sx={{
-                        justifyContent: 'space-between',
-                        fontSize: [2, 3],
-                        lineHeight: '34px'
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                       }}
-                      key={supporter.address}
                     >
-                      <Box sx={{ width: '55%' }}>
-                        <Text color="onSecondary">
-                          {supporter.percent}% ({new BigNumber(supporter.deposits).toFormat(3)} MKR)
-                        </Text>
-                      </Box>
-
-                      <Box sx={{ width: '45%', textAlign: 'right' }}>
-                        <Link
-                          href={{
-                            pathname: `/address/${supporter.address}`,
-                            query: { network }
-                          }}
-                          passHref
-                        >
-                          <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                            {supporter.name ? (
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 3,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
-                              </Text>
-                            ) : (
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 3,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                <Address address={supporter.address} />
-                              </Text>
-                            )}
-                          </ThemeUILink>
-                        </Link>
-                      </Box>
+                      <Spinner size={32} />
                     </Flex>
-                  ))}
-              </Box>
-            </Card>
+                  )}
+
+                  {supportersError && (
+                    <Flex
+                      sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 4,
+                        color: 'onSecondary'
+                      }}
+                    >
+                      List of supporters currently unavailable
+                    </Flex>
+                  )}
+                  {allSupporters && (!supporters || supporters.length === 0) && (
+                    <Flex
+                      sx={{
+                        height: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Text>Currently there are no supporters</Text>
+                    </Flex>
+                  )}
+
+                  {supporters &&
+                    supporters.length > 0 &&
+                    supporters.map(supporter => (
+                      <Flex
+                        sx={{
+                          justifyContent: 'space-between',
+                          fontSize: [2, 3],
+                          lineHeight: '34px'
+                        }}
+                        key={supporter.address}
+                      >
+                        <Box sx={{ width: '55%' }}>
+                          <Text color="onSecondary">
+                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
+                          </Text>
+                        </Box>
+
+                        <Box sx={{ width: '45%', textAlign: 'right' }}>
+                          <Link
+                            href={{
+                              pathname: `/address/${supporter.address}`
+                            }}
+                            passHref
+                          >
+                            <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
+                              {supporter.name ? (
+                                <Text
+                                  sx={{
+                                    color: 'accentBlue',
+                                    fontSize: 3,
+                                    ':hover': { color: 'blueLinkHover' }
+                                  }}
+                                >
+                                  {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
+                                </Text>
+                              ) : (
+                                <Text
+                                  sx={{
+                                    color: 'accentBlue',
+                                    fontSize: 3,
+                                    ':hover': { color: 'blueLinkHover' }
+                                  }}
+                                >
+                                  <Address address={supporter.address} />
+                                </Text>
+                              )}
+                            </ThemeUILink>
+                          </Link>
+                        </Box>
+                      </Flex>
+                    ))}
+                </Box>
+              </Card>
+            </ErrorBoundary>
           </Box>
           <ResourceBox type={'executive'} />
           <ResourceBox type={'general'} />
@@ -400,10 +404,12 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query, isFallback } = useRouter();
+  const { network } = useActiveWeb3React();
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork() && query['proposal-id']) {
+    if (!network) return;
+    if (!isDefaultNetwork(network) && query['proposal-id']) {
       getExecutiveProposal(query['proposal-id'] as string)
         .then(proposal => {
           if (proposal) {
@@ -414,9 +420,9 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
         })
         .catch(setError);
     }
-  }, [query['proposal-id']]);
+  }, [query['proposal-id'], network]);
 
-  if (error || (isDefaultNetwork() && !isFallback && !prefetchedProposal?.key)) {
+  if (error || (isDefaultNetwork(network) && !isFallback && !prefetchedProposal?.key)) {
     return (
       <ErrorPage
         statusCode={404}
@@ -425,15 +431,19 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
   }
 
-  if (isFallback || (!isDefaultNetwork() && !_proposal))
+  if (isFallback || (!isDefaultNetwork(network) && !_proposal))
     return (
       <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
       </PrimaryLayout>
     );
 
-  const proposal = isDefaultNetwork() ? prefetchedProposal : _proposal;
-  return <ProposalView proposal={proposal as Proposal} />;
+  const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
+  return (
+    <ErrorBoundary componentName="Executive Page">
+      <ProposalView proposal={proposal as Proposal} />
+    </ErrorBoundary>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {

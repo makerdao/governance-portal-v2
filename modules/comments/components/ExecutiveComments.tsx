@@ -45,7 +45,7 @@ export default function ExecutiveComments({
           alignItems: 'center'
         }}
       >
-        <Text variant="microHeading">Comments ({comments ? comments.length : '-'})</Text>
+        <Text variant="microHeading">Comments ({comments ? comments.length : '0'})</Text>
         <Box>
           <FilterButton
             name={() => `Sort by ${commentSortBy !== 'Latest' ? commentSortBy : 'latest'}`}

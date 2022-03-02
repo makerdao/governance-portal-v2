@@ -1,12 +1,14 @@
 import { TestAccount } from '../types/TestAccount';
 
-export function visitPage(page: string) {
-  cy.visit(`http://localhost:3000${page}?network=goerlifork`, {
+export function visitPage(page: string, ignoreCookies?: boolean) {
+  cy.visit(`${page}?network=goerlifork`, {
     onBeforeLoad: win => {
-      // TODO: We can use this to preload info in the window object
+      // If an account is sent, connect with that one
     }
   }).then(() => {
-    cy.contains('Accept configured cookies').click();
+    if (!ignoreCookies) {
+      cy.contains('Accept configured cookies').click();
+    }
   });
 }
 
@@ -24,11 +26,17 @@ export function elementContainsText(selector: string, text: string) {
 
 export async function setAccount(account: TestAccount, cb: () => void) {
   cy.window().then(win => {
-    win.setAccount(account.address, account.key);
+    (win as any).setAccount(account.address, account.key);
+    cy.get('[data-testid="active-network-name"]').contains(/goerlifork/i);
     cb();
   });
 }
 
 export function closeModal() {
   cy.get('[aria-label="close"]').click();
+}
+// Fork to a new block
+export function forkNetwork(block) {
+  // Must refund accounts after forking
+  cy.exec(`npx hardhat fork --network localhost --block ${block}`).exec('yarn fund');
 }

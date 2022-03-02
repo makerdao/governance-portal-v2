@@ -1,4 +1,4 @@
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type ExecutiveComment = {
   voterAddress: string;

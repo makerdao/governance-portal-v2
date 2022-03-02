@@ -4,30 +4,24 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
-import { Address } from 'modules/address/components/Address';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import AddressIconBox from './AddressIconBox';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
-  network: string;
+  network: SupportedNetworks;
   bpi: number;
   totalDelegated: number;
-  delegateAddresses: Record<string, string>;
 };
 
-const CollapsableRow = ({
-  delegate,
-  network,
-  bpi,
-  totalDelegated,
-  delegateAddresses
-}: CollapsableRowProps) => {
+const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableRowProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const { address, lockAmount, events } = delegate;
@@ -37,9 +31,9 @@ const CollapsableRow = ({
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
+          <Link href={{ pathname: `/address/${address}` }} passHref>
             <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              {delegateAddresses[address] ? delegateAddresses[address] : <Address address={address} />}
+              <AddressIconBox address={address} width={41} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -51,7 +45,7 @@ const CollapsableRow = ({
                   key={blockTimestamp}
                   variant="smallCaps"
                   sx={{
-                    ':first-of-type': { pt: 3 },
+                    ':first-of-type': { pt: 2 },
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
@@ -62,7 +56,7 @@ const CollapsableRow = ({
           </Flex>
         )}
       </Flex>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
           {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
@@ -94,7 +88,7 @@ const CollapsableRow = ({
           </Flex>
         )}
       </Box>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Flex sx={{ alignSelf: 'flex-start' }}>
           {totalDelegated ? (
             <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
@@ -105,7 +99,7 @@ const CollapsableRow = ({
           )}
         </Flex>
       </Box>
-      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
             sx={{
@@ -137,7 +131,7 @@ const CollapsableRow = ({
                   }}
                 >
                   <ThemeUILink
-                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    href={getEtherscanLink(network, hash as string, 'transaction')}
                     target="_blank"
                     title="View on Etherscan"
                     sx={{
@@ -159,16 +153,11 @@ const CollapsableRow = ({
 type AddressDelegatedToProps = {
   delegatedTo: DelegationHistory[];
   totalDelegated: number;
-  delegateAddresses: Record<string, string>;
 };
 
-const AddressDelegatedTo = ({
-  delegatedTo,
-  totalDelegated,
-  delegateAddresses
-}: AddressDelegatedToProps): JSX.Element => {
+const AddressDelegatedTo = ({ delegatedTo, totalDelegated }: AddressDelegatedToProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
+  const { network } = useActiveWeb3React();
 
   return (
     <Box>
@@ -205,7 +194,6 @@ const AddressDelegatedTo = ({
                 network={network}
                 bpi={bpi}
                 totalDelegated={totalDelegated}
-                delegateAddresses={delegateAddresses}
               />
             ))
           ) : (

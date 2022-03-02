@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { fetchJson } from 'lib/fetchJson';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 import { ExecutiveCommentsAPIResponseItem, ParsedExecutiveComments } from '../types/comments';
 
@@ -14,12 +14,14 @@ export function useExecutiveComments(
   proposalAddress: string,
   refreshInterval = 0
 ): UseExecutiveCommentsResponse {
+  const { network } = useActiveWeb3React();
+
   const {
     data: commentsDatas,
     mutate,
     error
   } = useSWR<ExecutiveCommentsAPIResponseItem[]>(
-    `/api/comments/executive/${proposalAddress}?network=${getNetwork()}`,
+    `/api/comments/executive/${proposalAddress}?network=${network}`,
     fetchJson,
     {
       revalidateOnFocus: false,

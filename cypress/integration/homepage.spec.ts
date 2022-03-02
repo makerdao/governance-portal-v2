@@ -4,11 +4,15 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
-import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
-import { elementContainsText, setAccount, visitPage } from '../support/commons';
+import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
+import { elementContainsText, forkNetwork, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
 describe('Home Page', () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
   it('should navigate to the home page page and find the title', () => {
     // Start from the index page
     visitPage('/');
@@ -24,20 +28,22 @@ describe('Home Page', () => {
     // Start from the index page
     visitPage('/');
 
-    // Find the Dai Savings Rate info
-    cy.contains('Dai Savings Rate').should('be.visible');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Find the Dai Savings Rate info
+      cy.contains('Dai Savings Rate').should('be.visible');
 
-    // Checks that we have a correct dai savings rate and other values
-    elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
+      // Checks that we have a correct dai savings rate and other values
+      elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
 
-    elementContainsText('[data-testid="Total Dai-value"]', '98,965,778 DAI');
+      elementContainsText('[data-testid="Total Dai-value"]', '99,596,116 DAI');
 
-    elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,030,717,023 DAI');
+      elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,015,717,023 DAI');
 
-    elementContainsText('[data-testid="System Surplus-value"]', '278,245 DAI');
+      elementContainsText('[data-testid="System Surplus-value"]', '473,459 DAI');
 
-    // Find the Polling Votes block
-    cy.contains('Polling Votes').should('be.visible');
+      // Find the Polling Votes block
+      cy.contains('Polling Votes').should('be.visible');
+    });
   });
 
   it('Connects wallet', () => {
@@ -48,11 +54,12 @@ describe('Home Page', () => {
 
     setAccount(newAccount, () => {
       // Should find the connected
-      cy.contains(formatAddress(newAccount.address)).should('be.visible');
+      const regex = new RegExp(formatAddress(newAccount.address), 'i');
+      cy.contains(regex).should('be.visible');
 
       // Opens modal connection and finds 5 MKR
       //click on account modal
-      modalAddressEquals(formatAddress(newAccount.address));
+      modalAddressEquals(regex);
 
       modalPollingWeightEquals('0.01 MKR');
 

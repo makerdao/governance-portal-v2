@@ -3,13 +3,15 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import { Box, Divider, Text } from 'theme-ui';
 import { Delegate } from '../types';
 import useSWR from 'swr';
-import { getNetwork } from 'lib/maker';
 import { fetchJson } from 'lib/fetchJson';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React.ReactElement {
+  const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${delegate.voteDelegateAddress}/stats?network=${getNetwork()}`,
+    `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`,
     fetchJson,
     {
       revalidateOnMount: true
@@ -32,7 +34,12 @@ export function DelegateVoteHistory({ delegate }: { delegate: Delegate }): React
           <Divider mt={3} mb={3} />
         </Box>
 
-        {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
+        {statsData && (
+          <ErrorBoundary componentName="Poll Vote History">
+            <PollVoteHistoryList votes={statsData.pollVoteHistory} />
+          </ErrorBoundary>
+        )}
+
         {!statsData &&
           [1, 2, 3, 4, 5].map(i => (
             <Box sx={{ p: 4 }} key={`loading-${i}`}>

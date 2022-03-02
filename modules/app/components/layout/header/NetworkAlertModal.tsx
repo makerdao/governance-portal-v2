@@ -1,27 +1,26 @@
-import { useState } from 'react';
-import { Flex, Text, NavLink } from 'theme-ui';
+import { Flex, Text, NavLink, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fadeIn, slideUp } from 'lib/keyframes';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export type ChainIdError = null | 'network mismatch' | 'unsupported network';
 
 const NetworkAlertModal = ({
   chainIdError,
-  walletChainName
+  deactivate
 }: {
   chainIdError: ChainIdError;
-  walletChainName: SupportedNetworks | null;
-}) => {
-  const [showDialog, setShowDialog] = useState(true);
+  deactivate: () => void;
+}): JSX.Element | null => {
   const bpi = useBreakpointIndex();
+  const { network } = useActiveWeb3React();
 
   if (chainIdError === 'network mismatch') {
     return (
-      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
         <DialogContent
           aria-label="Network Mismatch"
           sx={
@@ -40,8 +39,8 @@ const NetworkAlertModal = ({
 
             <Text sx={{ mt: 3 }}>
               Your wallet and this page are connected to different networks. To have the page match your
-              wallet&apos;s network ({walletChainName}),{' '}
-              <NavLink href={`/?network=${walletChainName}`} p={0} sx={{}}>
+              wallet&apos;s network ({network}),{' '}
+              <NavLink href={`/?network=${network}`} p={0} sx={{}}>
                 click here.
               </NavLink>
             </Text>
@@ -53,7 +52,7 @@ const NetworkAlertModal = ({
 
   if (chainIdError === 'unsupported network') {
     return (
-      <DialogOverlay isOpen={showDialog} onDismiss={() => setShowDialog(false)}>
+      <DialogOverlay isOpen={!!chainIdError} onDismiss={deactivate}>
         <DialogContent
           aria-label="Unsupported Network"
           sx={
@@ -72,9 +71,10 @@ const NetworkAlertModal = ({
 
             <Text sx={{ mt: 3 }}>
               Your wallet is connected to an unsupported network, please switch it to{' '}
-              {SupportedNetworks.MAINNET}, {SupportedNetworks.KOVAN}, or {SupportedNetworks.GOERLI} to
-              continue.
+              {SupportedNetworks.MAINNET} or {SupportedNetworks.GOERLI} to continue.
             </Text>
+            {/* <Button onClick={() => handleSwitchNetwork(SupportedNetworks.MAINNET)}>Switch to mainnet</Button>
+            <Button onClick={() => handleSwitchNetwork(SupportedNetworks.GOERLI)}>Switch to goerli</Button> */}
           </Flex>
         </DialogContent>
       </DialogOverlay>

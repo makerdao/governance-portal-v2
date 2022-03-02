@@ -3,20 +3,26 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
-import { getTestAccount, getTestAccountByIndex } from '../support/constants/testaccounts';
-import { setAccount, visitPage } from '../support/commons';
+import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
+import { setAccount, visitPage, forkNetwork } from '../support/commons';
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
 describe('Esmodule Page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
+
   it('should navigate to the es module page', () => {
     visitPage('/esmodule');
 
-    cy.contains('Emergency Shutdown Module').should('be.visible');
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
-
-    cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.411110/);
-
     // Checks the info of no account connected appears
     cy.contains('No Account Connected').should('be.visible');
+    cy.contains('Emergency Shutdown Module').should('be.visible');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').should('be.visible');
+
+      cy.contains(/0.003/).should('be.visible');
+    });
   });
 
   it('Should be able to burn mkr', () => {
@@ -68,8 +74,8 @@ describe('Esmodule Page', async () => {
       cy.get('[data-testid="continue-burn"]').click();
 
       // Should see the transaction
-      cy.contains('Sign Transaction').should('be.visible');
-      cy.contains('Transaction Pending').should('be.visible');
+      //cy.contains('Sign Transaction').should('be.visible');
+      //cy.contains('Transaction Pending').should('be.visible');
 
       // See confirmation
       cy.contains('MKR successfully burned in ESM').should('be.visible');
@@ -83,14 +89,85 @@ describe('Esmodule Page', async () => {
       cy.scrollTo(0, 0);
 
       // The total burned increased
-      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/1.421110/);
+      cy.get('[data-testid="total-mkr-esmodule-staked"]').contains(/0.013/);
+    });
+  });
+
+  it('Should be able to initiate emergency shutdown', { defaultCommandTimeout: 60000 }, () => {
+    visitPage('/esmodule');
+    cy.wait(2000);
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.contains('Burn Your MKR').should('be.visible');
+
+      //Click "burn your MKR button"
+      cy.contains('Burn Your MKR').click();
+
+      // Checks the modal is open
+      cy.contains('Are you sure you want to burn MKR?').should('be.visible');
+
+      // Closes modal
+      cy.contains('Cancel').click();
+
+      // Click "burn your MKR button"
+      cy.contains('Burn Your MKR').click();
+
+      // Click continue
+      cy.contains('Continue').click();
+
+      // Enter 100K MKR to pass the threshhold
+      cy.get('[data-testid="mkr-input"]').type('100000');
+
+      // Continue with the burn
+      cy.contains('Continue').click();
+
+      // Type the passphrase
+      cy.get('[data-testid="confirm-input"]').type('I am burning 100,000.0 MKR');
+
+      // Unlock mkr
+      cy.get('[data-testid="allowance-toggle"]').click();
+
+      // click on checkbox of accepted terms
+      cy.get('[data-testid="tosCheck"]').click();
+
+      // The continue button should be enabled
+      cy.get('[data-testid="continue-burn"]').should('not.be.disabled');
+
+      // Click continue
+      cy.get('[data-testid="continue-burn"]').click();
+
+      // See confirmation
+      cy.contains('MKR successfully burned in ESM').should('be.visible');
+
+      // Close modal
+      cy.contains('Close').click();
+
+      // Click "burn your MKR button"
+      cy.contains('Initiate Emergency Shutdown').click();
+
+      // See that the limit has been reached
+      cy.contains('The 100,000 MKR limit for the emergency shutdown module has been reached.').should(
+        'be.visible'
+      );
+
+      // Continue and send the shutdown tx
+      cy.contains('Continue').click();
+
+      // Pending state
+      cy.contains('Shutdown will update once the transaction has been confirmed.');
+
+      // cy.wait(3500);
+      // Scroll for screenshot
+      cy.scrollTo(0, 0);
+
+      // Shows banner after shutdown
+      // TODO fix cageTime showing incorrect date
+      // cy.contains('Emergency shutdown has been initiated on');
+      cy.get('[data-testid="es-initiated"]').contains('Emergency shutdown has been initiated on');
     });
   });
 });
 
 // TODO: Enter an incorrect passphrase
-
-// TODO: Initate emergency shutdown by burning 50000 MKR
 
 /*
 import { renderWithTheme, UINT256_MAX, WAD } from '../helpers';
@@ -99,15 +176,25 @@ import userEvent from '@testing-library/user-event';
 import waitForExpect from 'wait-for-expect';
 import { TestAccountProvider } from '@makerdao/test-helpers';
 import ESModule from '../../pages/esmodule';
-import getMaker from '../../lib/maker';
 import { accountsApi } from '../../modules/app/stores/accounts';
 import { ethers } from 'ethers';
+import { WAD } from '../../modules/web3/web3.constants';
+
+export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+configure({
+  getElementError: (message, container) => {
+    const error = new Error(message);
+    error.name = 'TestingLibraryElementError';
+    error.stack = null;
+    return error;
+  }
+});
 
 let maker;
 describe('/esmodule page', () => {
   beforeAll(async () => {
     jest.setTimeout(30000);
-    maker = await getMaker();
     accountsApi.getState().addAccountsListener(maker);
 
     expect(accountsApi.getState().currentAccount).toBeUndefined();
@@ -250,7 +337,6 @@ describe('/esmodule page', () => {
 
   describe('can initiate emergency shutdown', () => {
     beforeAll(async () => {
-      maker = await getMaker();
       await maker.service('accounts').useAccount('default');
       const token = maker.service('smartContract').getContract('MCD_GOV');
       await token['mint(uint256)'](WAD.times(50000).toFixed());

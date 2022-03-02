@@ -1,12 +1,12 @@
 import { render, cleanup, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { parseUnits } from 'ethers/lib/utils';
 import { MKRInput, MKRInputProps } from '../MKRInput';
-import BigNumber from 'bignumber.js';
 
 function renderMKRInput(props: Partial<MKRInputProps> = {}) {
   const defaultProps: MKRInputProps = {
     onChange: jest.fn(),
-    value: new BigNumber(0)
+    value: parseUnits('0')
   };
 
   return render(<MKRInput {...defaultProps} {...props} />);
@@ -29,21 +29,21 @@ describe('MKRInput', () => {
 
   test('Should reflect the balance of MKR', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: new BigNumber(24.5)
+      balance: parseUnits('24.5')
     };
 
     renderMKRInput(props);
 
     const component = screen.getByTestId('mkr-input-balance');
 
-    expect(component).toHaveTextContent('24.5000');
+    expect(component).toHaveTextContent('24.5');
     expect(component).not.toHaveTextContent('0.0000');
   });
 
   test('Should set balance to max when clicking setMax', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: new BigNumber(24.5),
-      value: new BigNumber(0.1),
+      balance: parseUnits('24.5'),
+      value: parseUnits('0.1'),
       onChange: jest.fn()
     };
 
@@ -53,29 +53,29 @@ describe('MKRInput', () => {
 
     userEvent.click(setMaxButton);
 
-    expect(props.onChange).toHaveBeenCalledWith(new BigNumber(24.5));
+    expect(props.onChange).toHaveBeenCalledWith(parseUnits('24.5'));
 
     expect(input).toHaveValue(24.5);
   });
 
   test('Should trigger on change if the user inputs amount', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: new BigNumber(24.5),
-      value: new BigNumber(0),
+      balance: parseUnits('24.5'),
+      value: parseUnits('0'),
       onChange: jest.fn()
     };
 
     renderMKRInput(props);
     const input = screen.getByTestId('mkr-input');
     userEvent.type(input, '3.2');
-    expect(props.onChange).toHaveBeenCalledWith(new BigNumber(3.2));
+    expect(props.onChange).toHaveBeenCalledWith(parseUnits('3.2'));
     expect(input).toHaveValue(3.2);
   });
 
   test('Should show error if default value is negative amount', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: new BigNumber(24.5),
-      value: new BigNumber(-0.1),
+      balance: parseUnits('24.5'),
+      value: parseUnits('-0.1'),
       onChange: jest.fn()
     };
 
@@ -88,8 +88,8 @@ describe('MKRInput', () => {
 
   test('Should show error if value is greater than balance', async () => {
     const props: Partial<MKRInputProps> = {
-      balance: new BigNumber(24.5),
-      value: new BigNumber(34),
+      balance: parseUnits('24.5'),
+      value: parseUnits('34'),
       onChange: jest.fn()
     };
 

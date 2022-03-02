@@ -1,24 +1,15 @@
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { Divider, Box, Text, Flex } from 'theme-ui';
 import { CMSProposal } from 'modules/executive/types';
-import { useExecutives } from '../hooks/useExecutives';
 
-export function CurrentlySupportingExecutive({ address }: { address: string }): React.ReactElement | null {
-  const { data: proposals } = useExecutives();
-  const { data: votedProposals } = useVotedProposals(address);
-
-  const proposalsSupported: number = votedProposals?.length;
-
-  const execSupported: CMSProposal | undefined = proposals?.find(proposal =>
-    votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
-  );
-
+export function CurrentlySupportingExecutive({
+  proposalsSupported,
+  execSupported
+}: {
+  proposalsSupported: number;
+  execSupported: CMSProposal | undefined;
+}): React.ReactElement | null {
   const getSupportText = (): string | null => {
-    if (!proposals || !votedProposals) {
-      return 'Fetching executive data';
-    }
-
-    if (proposals && votedProposals && !execSupported) {
+    if (proposalsSupported === 0) {
       return 'Currently no executive supported';
     }
 

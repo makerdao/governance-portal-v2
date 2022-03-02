@@ -13,9 +13,9 @@ export function PollingParticipationOverview({
   const total = filteredVotes.length;
   const showHistory = total > 0;
 
-  const votedYes = new BigNumber(filteredVotes.filter(vote => vote.option === 1).length);
-  const votedNo = new BigNumber(filteredVotes.filter(vote => vote.option === 2).length);
-  const votedAbstain = new BigNumber(filteredVotes.filter(vote => vote.option === 0).length);
+  const votedYes = new BigNumber(filteredVotes.filter(vote => vote.optionId === 1).length);
+  const votedNo = new BigNumber(filteredVotes.filter(vote => vote.optionId === 2).length);
+  const votedAbstain = new BigNumber(filteredVotes.filter(vote => vote.optionId === 0).length);
 
   const yesPercent = votedYes.isGreaterThan(0) ? votedYes.dividedBy(total).multipliedBy(100).toFixed(0) : 0;
   const abstainPercent = votedAbstain.isGreaterThan(0)

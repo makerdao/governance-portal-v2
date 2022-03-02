@@ -1,11 +1,18 @@
 import '@testing-library/jest-dom';
 import '@testing-library/jest-dom/extend-expect';
-import { takeSnapshot, restoreSnapshot } from '@makerdao/test-helpers';
 import { mockIntersectionObserver } from '../__tests__/helpers';
+import { getENS } from 'modules/web3/helpers/ens';
+import { useWeb3React } from '@web3-react/core';
 
-let snapshotData;
+jest.mock('@web3-react/core');
+jest.mock('modules/web3/helpers/ens');
+
 beforeAll(async () => {
-  snapshotData = await takeSnapshot();
+  (useWeb3React as jest.Mock).mockReturnValue({
+    account: '',
+    activate: () => null
+  });
+
   // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -21,8 +28,8 @@ beforeAll(async () => {
     }))
   });
   global.IntersectionObserver = mockIntersectionObserver;
+  
+  // Mock ens calls
+  (getENS as jest.Mock).mockReturnValue('');
 });
 
-afterAll(() => {
-  restoreSnapshot(snapshotData);
-});

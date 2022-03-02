@@ -1,33 +1,14 @@
 import AddressIcon from 'modules/address/components/AddressIcon';
-import { formatAddress } from 'lib/utils';
-import { useEffect, useState } from 'react';
 import { Button, Box, Flex, Text, Spinner } from 'theme-ui';
-import { getENS } from 'modules/web3/ens';
+import { Address } from 'modules/address/components/Address';
 
 type Props = {
   onClickConnect: () => void;
-  address?: string;
+  address?: string | null;
   pending: boolean;
 };
 
 export default function ConnectWalletButton({ onClickConnect, address, pending }: Props): React.ReactElement {
-  const [addressFormated, setAddressFormatted] = useState(formatAddress(address || ''));
-
-  async function fetchENSName(address: string) {
-    if (!address) {
-      return;
-    }
-
-    const ens = await getENS(address);
-    ens ? setAddressFormatted(ens) : setAddressFormatted(formatAddress(address));
-  }
-
-  useEffect(() => {
-    if (address) {
-      fetchENSName(address);
-    }
-  }, [address]);
-
   return (
     <Button
       aria-label="Connect wallet"
@@ -65,7 +46,9 @@ export default function ConnectWalletButton({ onClickConnect, address, pending }
             <Box sx={{ mr: 2 }}>
               <AddressIcon address={address} width={22} />
             </Box>
-            <Text sx={{ fontFamily: 'body' }}>{addressFormated}</Text>
+            <Text sx={{ fontFamily: 'body' }} data-testid="connected-address">
+              <Address address={address} />
+            </Text>
           </Flex>
         )
       ) : (

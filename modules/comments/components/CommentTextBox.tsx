@@ -21,6 +21,7 @@ export default function CommentTextBox({
         Why are you voting for this proposal?
       </Label>
       <Textarea
+        data-testid="poll-comment-box"
         sx={{
           color: 'text',
           height: '96px',

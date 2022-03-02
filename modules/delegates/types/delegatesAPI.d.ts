@@ -4,7 +4,7 @@ export type DelegatesAPIStats = {
   total: number;
   shadow: number;
   recognized: number;
-  totalMKRDelegated: number;
+  totalMKRDelegated: string;
 };
 
 export type DelegatesAPIResponse = {

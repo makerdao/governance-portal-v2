@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -17,9 +17,22 @@
     "strictNullChecks": true,
     "types": ["jest", "cypress"],
     "baseUrl": "./",
-    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "lib/*": ["lib/*"],
+      "modules/*": ["modules/*"]
+    },
+    "typeRoots": ["modules/app/types", "./node_modules/@types"],
     "incremental": true
   },
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"],
-  "include": ["next-env.d.ts", "lib", "modules", "pages", "cypress", "node_modules/cypress"]
+  "exclude": ["node_modules"],
+  "include": [
+    "next-env.d.ts",
+    "lib",
+    "modules",
+    "pages",
+    "__tests__",
+    "cypress",
+    "node_modules/cypress",
+    "@testing-library/jest-dom"
+  ]
 }

@@ -1,23 +1,17 @@
-import { SupportedNetworks } from 'lib/constants';
-import getMaker from 'lib/maker';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import {
-  PollVoteType,
-  RawPollTally,
-  RawPollTallyPlurality,
-  RawPollTallyRankedChoice
-} from 'modules/polling/types';
+import { PollVoteType, RawPollTally } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { fetchTallyPlurality } from './fetchTallyPlurality';
+import { fetchTallyRankedChoice } from './fetchTallyRankedChoice';
 
 export async function fetchPollTally(
   pollId: number,
   voteType: PollVoteType,
   useCache: boolean,
-  network?: SupportedNetworks
+  network: SupportedNetworks
 ): Promise<RawPollTally> {
-  const maker = await getMaker(network);
-
   const cacheKey = `tally-${pollId}`;
   if (config.USE_FS_CACHE && useCache) {
     const cachedTally = fsCacheGet(cacheKey, network);
@@ -28,9 +22,9 @@ export async function fetchPollTally(
 
   let tally;
   if (voteType === POLL_VOTE_TYPE.PLURALITY_VOTE) {
-    tally = (await maker.service('govPolling').getTallyPlurality(pollId)) as RawPollTallyPlurality;
+    tally = await fetchTallyPlurality(pollId, network);
   } else {
-    tally = (await maker.service('govPolling').getTallyRankedChoiceIrv(pollId)) as RawPollTallyRankedChoice;
+    tally = await fetchTallyRankedChoice(pollId, network);
   }
 
   if (config.USE_FS_CACHE && useCache) {

@@ -1,4 +1,6 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+import { formatValue } from 'lib/string';
 import { Box } from 'theme-ui';
 import { PollTally, PluralityResult } from '../types';
 import { YesNoAbstainBar } from './YesNoAbstainBar';
@@ -19,9 +21,9 @@ export function PollVotePluralityResultsCompact({
   return (
     <Box>
       <YesNoAbstainBar
-        yesPercent={new BigNumber(yesPercent).toFixed(0)}
-        noPercent={new BigNumber(noPercent).toFixed(0)}
-        abstainPercent={new BigNumber(abstainPercent).toFixed(0)}
+        yesPercent={formatValue(parseUnits(yesPercent.toString()), undefined, 0)}
+        noPercent={formatValue(parseUnits(noPercent.toString()), undefined, 0)}
+        abstainPercent={formatValue(parseUnits(abstainPercent.toString()), undefined, 0)}
         showTitles={showTitles}
       />
     </Box>

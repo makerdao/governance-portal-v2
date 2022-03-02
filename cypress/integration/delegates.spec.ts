@@ -3,55 +3,71 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
-import { closeModal, setAccount, visitPage } from '../support/commons';
-import { getTestAccountByIndex } from '../support/constants/testaccounts';
+import { closeModal, forkNetwork, setAccount, visitPage } from '../support/commons';
+import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
   it('should navigate to the delegates page and find a list of delegates', () => {
     // Start from the index page
     visitPage('/delegates');
 
     // Find the shadow delegates
     cy.contains('Shadow Delegates').should('be.visible');
+    cy.contains('Recognized Delegates').should('be.visible');
 
-    // Shoudl find various delegates
-    cy.get('[data-testid="delegate-card"]').should('have.length', 9);
+    // Mainnet delegates
+    cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 0);
+
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Shoudl find various delegates
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 15);
+    });
   });
 
-  it('Should find the delegates system info', () => {
+  it('should find the delegates system info', () => {
+    visitPage('/delegates');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      // Checks the total amount of delegates
+      cy.get('[data-testid="total-delegates-system-info"]').contains(/13/);
+      cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
+      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/13/);
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
+    });
+  });
+
+  it('should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
 
-    // Checks the total amount of delegates
-    cy.get('[data-testid="total-delegates-system-info"]').contains('9');
-    cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
-    cy.get('[data-testid="total-shadow-delegates-system-info"]').contains('9');
-    cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+    setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.get('[data-testid="delegate-type-filter"]').click();
+
+      cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
+
+      // See now 0 delegates
+      cy.get('[data-testid="delegate-card"]').should('have.length', 0);
+
+      // Reset filters
+      cy.get('[data-testid="delegate-reset-filters"]').click();
+
+      // Now see al the delegates again
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 15);
+    });
   });
 
-  it('Should hide shadow delegates when unchecking the filter', () => {
-    visitPage('/delegates');
-
-    cy.get('[data-testid="delegate-type-filter"]').click();
-
-    cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
-
-    // See now 0 delegates
-    cy.get('[data-testid="delegate-card"]').should('have.length', 0);
-
-    // Reset filters
-    cy.get('[data-testid="delegate-reset-filters"]').click();
-
-    // Now see al the delegates again
-    cy.get('[data-testid="delegate-card"]').should('have.length', 9);
-  });
-
-  it('Connects wallet and clicks on delegate', () => {
+  it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
     // Start from the index page
     visitPage('/delegates');
 
     const newAccount = getTestAccountByIndex(1);
+
+    // Wait a few seconds to prevent rate limiting
+    cy.wait(5000);
 
     setAccount(newAccount, () => {
       // Should find the connected
@@ -65,12 +81,11 @@ describe('Delegates Page', () => {
 
       // Wait for tx confirmed
 
-      cy.contains('Transaction Pending').should('be.visible');
-
-      cy.contains('Deposit into delegate contract').should('be.visible');
+      cy.contains('Confirm Transaction', { timeout: 7500 }).should('be.visible');
 
       // Inserts the amount of MKR to delegate
       cy.get('[data-testid="mkr-input"]').type('0.005');
+      cy.contains('Deposit into delegate contract', { timeout: 7500 }).should('be.visible');
 
       cy.wait(1000);
 
@@ -88,7 +103,7 @@ describe('Delegates Page', () => {
       // Wait for tx confirmed
       cy.contains('Confirm Transaction').should('be.visible');
 
-      cy.contains('Transaction Pending').should('be.visible');
+      // cy.contains('Transaction Pending').should('be.visible');
 
       cy.contains('Transaction Sent').should('be.visible');
 

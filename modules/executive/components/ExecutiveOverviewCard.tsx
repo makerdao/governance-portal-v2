@@ -3,40 +3,45 @@ import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import Bignumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/datetime';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { Proposal, SpellData } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
   spellData?: SpellData;
+  account?: string;
+  network: SupportedNetworks;
+  votedProposals: string[];
+  mkrOnHat?: BigNumber;
 };
 
-export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
+export default function ExecutiveOverviewCard({
+  proposal,
+  isHat,
+  spellData,
+  network,
+  account,
+  votedProposals,
+  mkrOnHat,
+  ...props
+}: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
-  const { data: votedProposals } = useVotedProposals();
-  const network = getNetwork();
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
-  const canVote = !!account;
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
@@ -53,11 +58,10 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
     );
   }
 
+  const canVote = !!account;
+
   return (
-    <Link
-      href={{ pathname: '/executive/[proposal-id]', query: { network } }}
-      as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
-    >
+    <Link href={{ pathname: '/executive/[proposal-id]' }} as={{ pathname: `/executive/${proposal.key}` }}>
       <Card
         sx={{
           p: [0, 0],
@@ -134,7 +138,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                       m: 1
                     }}
                   >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
+                    {formatValue(spellData.mkrSupport, 'wad', 2)} MKR Supporting
                   </Badge>
                 )}
               </Flex>
@@ -176,7 +180,7 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
 
           {comments && comments.length > 0 && (
             <Box sx={{ mt: 2 }}>
-              <InternalLink href={`/executive/${proposal.key}?network=${getNetwork()}#comments`}>
+              <InternalLink href={`/executive/${proposal.key}?network=${network}#comments`}>
                 <CommentCount count={comments.length} />
               </InternalLink>
             </Box>

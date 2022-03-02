@@ -1,22 +1,29 @@
-import useSWR from 'swr';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSWR, { useSWRConfig } from 'swr';
+import { Delegate } from '../types';
 
 type DelegateAddressMapResponse = {
-  data: Record<string, string>;
+  data: Record<string, Delegate>;
   loading: boolean;
   error?: Error;
 };
 
 export const useDelegateAddressMap = (): DelegateAddressMapResponse => {
-  const { data: delegatesApiResponse, error } = useSWR(`/api/delegates?network=${getNetwork()}`, null, {
-    refreshInterval: 0
+  const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+  const dataKey = `/api/delegates/names?network=${network}`;
+
+  const { data: delegates, error } = useSWR<Delegate[]>(dataKey, null, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKey),
+    revalidateOnReconnect: false
   });
 
   const data =
-    delegatesApiResponse &&
-    delegatesApiResponse.delegates.reduce((acc, cur) => {
-      const formattedName = !cur.name || cur.name === '' ? 'Shadow Delegate' : cur.name;
-      acc[cur.voteDelegateAddress] = formattedName;
+    delegates &&
+    delegates.reduce((acc, cur) => {
+      acc[cur.voteDelegateAddress] = cur;
       return acc;
     }, {});
 

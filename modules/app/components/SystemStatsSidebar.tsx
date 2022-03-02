@@ -1,36 +1,19 @@
 import { Card, Flex, Link as ExternalLink, Text, Box, Heading } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import useSWR, { mutate } from 'swr';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-
 import Stack from './layout/layouts/Stack';
-import getMaker, { DAI, getNetwork } from 'lib/maker';
-import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { bigNumberKFormat, formatAddress, getEtherscanLink } from 'lib/utils';
-import BigNumber from 'bignumber.js';
-import { CurrencyObject } from 'modules/app/types/currency';
-
-async function getSystemStats(): Promise<
-  [CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]
-> {
-  const maker = await getMaker();
-  const hat = await maker.service('chief').getHat();
-  return Promise.all([
-    maker.service('chief').getApprovalCount(hat),
-    maker.service('mcd:savings').getYearlyRate(),
-    maker.service('mcd:systemData').getTotalDai(),
-    // @ts-ignore
-    DAI(await maker.service('mcd:systemData').getSystemWideDebtCeiling()),
-    maker.service('mcd:systemData').getSystemSurplus()
-  ]);
-}
-
-// if we are on the browser, trigger a prefetch as soon as possible
-if (typeof window !== 'undefined') {
-  getSystemStats().then(stats => {
-    mutate('/system-stats', stats, false);
-  });
-}
+import { formatAddress } from 'lib/utils';
+import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
+import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
+import { useTotalDai } from 'modules/web3/hooks/useTotalDai';
+import { useDaiSavingsRate } from 'modules/web3/hooks/useDaiSavingsRate';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { formatValue } from 'lib/string';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { Tokens } from 'modules/web3/constants/tokens';
 
 type StatField =
   | 'chief contract'
@@ -49,147 +32,164 @@ export default function SystemStatsSidebar({
   fields: StatField[];
   className?: string;
 }): JSX.Element {
-  const { data } = useSWR<[CurrencyObject, BigNumber, CurrencyObject, CurrencyObject, CurrencyObject]>(
-    '/system-stats-sidebar',
-    getSystemStats
-  );
-
-  const { data: chiefAddress } = useSWR<string>('/chief-address', () =>
-    getMaker().then(maker => maker.service('smartContract').getContract('MCD_ADM').address)
-  );
-
-  const { data: chiefBalance } = useMkrBalance(chiefAddress);
-
-  const { data: pollingAddress } = useSWR<string>('/polling-address', () =>
-    getMaker().then(maker => maker.service('smartContract').getContract('POLLING').address)
-  );
-
-  const [mkrOnHat, savingsRate, totalDai, debtCeiling, systemSurplus] = data || [];
+  const { network } = useActiveWeb3React();
 
   const statsMap = {
-    'chief contract': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {chiefAddress ? (
-            <ExternalLink href={getEtherscanLink(getNetwork(), chiefAddress, 'address')} target="_blank">
-              <Text>{formatAddress(chiefAddress)}</Text>
-            </ExternalLink>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'chief contract': key => {
+      const chiefAddress = useContractAddress('chief');
 
-    'mkr in chief': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {chiefBalance ? (
-            `${chiefBalance.toBigNumber().toFormat(2)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Chief Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {chiefAddress ? (
+              <ExternalLink href={getEtherscanLink(network, chiefAddress, 'address')} target="_blank">
+                <Text>{formatAddress(chiefAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+    'mkr in chief': key => {
+      const chiefAddress = useContractAddress('chief');
+      const { data: chiefBalance } = useTokenBalance(Tokens.MKR, chiefAddress);
 
-    'polling contract': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {pollingAddress ? (
-            <ExternalLink href={getEtherscanLink(getNetwork(), pollingAddress, 'address')} target="_blank">
-              <Text>{formatAddress(pollingAddress)}</Text>
-            </ExternalLink>
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {chiefBalance ? (
+              `${formatValue(chiefBalance, 'wad', 0)} MKR`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'mkr needed to pass': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {mkrOnHat ? (
-            `${mkrOnHat.toBigNumber().toFormat(2)} MKR`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'polling contract': key => {
+      const pollingAddress = useContractAddress('polling');
 
-    'savings rate': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {savingsRate ? (
-            `${savingsRate.multipliedBy(100).toFixed(2)}%`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Polling Contract</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {pollingAddress ? (
+              <ExternalLink href={getEtherscanLink(network, pollingAddress, 'address')} target="_blank">
+                <Text>{formatAddress(pollingAddress)}</Text>
+              </ExternalLink>
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'total dai': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {totalDai ? (
-            `${bigNumberKFormat(totalDai)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+    'mkr needed to pass': key => {
+      const { data: mkrOnHat } = useMkrOnHat();
 
-    'debt ceiling': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {debtCeiling ? (
-            `${bigNumberKFormat(debtCeiling)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    ),
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {mkrOnHat ? (
+              `${formatValue(mkrOnHat, 'wad', 0)} MKR`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
 
-    'system surplus': key => (
-      <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
-        <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
-        <Text variant="h2" sx={{ fontSize: 3 }}>
-          {systemSurplus ? (
-            `${systemSurplus.toBigNumber().toFormat(0)} DAI`
-          ) : (
-            <Box sx={{ width: 6 }}>
-              <Skeleton />
-            </Box>
-          )}
-        </Text>
-      </Flex>
-    )
+    'savings rate': key => {
+      const { data: daiSavingsRate } = useDaiSavingsRate();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Savings Rate</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {daiSavingsRate ? (
+              `${daiSavingsRate.toFixed(2)}%`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'total dai': key => {
+      const { data: totalDai } = useTotalDai();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {totalDai ? (
+              `${formatValue(totalDai, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'debt ceiling': key => {
+      const { data: debtCeiling } = useSystemWideDebtCeiling();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {debtCeiling ? (
+              `${formatValue(debtCeiling, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    },
+
+    'system surplus': key => {
+      const { data: systemSurplus } = useSystemSurplus();
+
+      return (
+        <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row', mt: 2 }}>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
+          <Text variant="h2" sx={{ fontSize: 3 }}>
+            {systemSurplus ? (
+              `${formatValue(systemSurplus, 'rad', 0)} DAI`
+            ) : (
+              <Box sx={{ width: 6 }}>
+                <Skeleton />
+              </Box>
+            )}
+          </Text>
+        </Flex>
+      );
+    }
   };
 
   return (

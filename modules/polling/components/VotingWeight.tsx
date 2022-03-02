@@ -1,54 +1,68 @@
 import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
-import useSWR from 'swr';
-import useAccountsStore from 'modules/app/stores/accounts';
-import getMaker from 'lib/maker';
+
 import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { formatValue } from 'lib/string';
 
-export default function VotingWeight(props): JSX.Element {
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
-  const { data: votingWeight } = useSWR(
-    addressToCheck ? ['/user/polling-voting-weight', addressToCheck] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address))
-  );
-
-  let votingWeightDescription = '';
+const getDescription = votingWeight => {
   if (votingWeight) {
-    votingWeightDescription += votingWeight.proxyChiefBalance?.gte(0.005)
-      ? 'Vote proxy: ' + votingWeight.proxyChiefBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.mkrBalance.gte(0.005)
-      ? 'Connected wallet: ' + votingWeight.mkrBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.chiefBalance.gte(0.005)
-      ? 'Connected wallet chief: ' + votingWeight.chiefBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedMkrBalance?.gte(0.005)
-      ? 'Linked wallet: ' + votingWeight.linkedMkrBalance.toString() + '; '
-      : '';
-    votingWeightDescription += votingWeight.linkedChiefBalance?.gte(0.005)
-      ? 'Linked wallet chief: ' + votingWeight.linkedChiefBalance.toString() + '; '
-      : '';
+    if (votingWeight.chiefBalanceProxy && votingWeight.chiefBalanceCold && votingWeight.walletBalanceCold) {
+      return (
+        <>
+          <Text as="p">
+            {'Proxy balance in chief: ' + formatValue(votingWeight.chiefBalanceProxy, 'wad', 18) + ' MKR'}
+          </Text>
+          <Text as="p">
+            {'Hot balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
+          </Text>
+          <Text as="p">
+            {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
+          </Text>
+          <Text as="p">
+            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
+          </Text>
+          <Text as="p">
+            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
+          </Text>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Text as="p">
+            {'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
+          </Text>
+          <Text as="p">
+            {'Balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
+          </Text>
+        </>
+      );
+    }
   }
-  votingWeightDescription = votingWeightDescription.slice(0, -2);
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegate);
+  return null;
+};
+
+export default function VotingWeight(): JSX.Element {
+  const { account, voteDelegateContractAddress } = useAccount();
+
+  const { data: votingWeight } = useMKRVotingWeight(account);
+
+  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
 
   const tooltipLabel = (
-    <>
-      {votingWeightDescription && <Box sx={{ fontWeight: 600, pb: 2 }}>{votingWeightDescription}</Box>}
-      {votingWeightCopy}
-    </>
+    <Box>
+      <Text as="p">{votingWeightCopy}</Text>
+      {getDescription(votingWeight)}
+    </Box>
   );
 
   return (
     <Flex
-      {...props}
       sx={{
-        ...props.sx,
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row',
@@ -63,9 +77,7 @@ export default function VotingWeight(props): JSX.Element {
           </Box>
         </Tooltip>
       </Flex>
-      <Text sx={{ color: 'text' }}>
-        {votingWeight ? `${votingWeight.total.toBigNumber().toFormat(3)} MKR` : '--'}
-      </Text>
+      <Text sx={{ color: 'text' }}>{votingWeight ? `${formatValue(votingWeight.total)} MKR` : '--'}</Text>
     </Flex>
   );
 }

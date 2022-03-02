@@ -5,8 +5,8 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-import { getEtherscanLink } from 'lib/utils';
-import { getNetwork } from 'lib/maker';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';
 import useBallotStore from 'modules/polling/stores/ballotStore';
@@ -39,6 +39,7 @@ export default function ReviewBox({
     signedMessage: state.signedMessage,
     comments: state.comments
   }));
+  const { network } = useActiveWeb3React();
 
   const transaction = useTransactionStore(
     state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
@@ -51,7 +52,9 @@ export default function ReviewBox({
     <ReviewBoxCard {...props}>
       <PollBar polls={polls} activePolls={activePolls} />
       <Divider />
-      <VotingWeight sx={{ px: 3, py: [2, 2], mb: 1 }} />
+      <Box sx={{ px: 3, py: [2, 2], mb: 1 }}>
+        <VotingWeight />
+      </Box>
       <Divider m={0} sx={{ display: ['none', 'block'] }} />
       {bpi > 2 && (
         <SubmitBallotsButtons
@@ -101,7 +104,7 @@ export default function ReviewBox({
 
       <ExternalLink
         target="_blank"
-        href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
+        href={getEtherscanLink(network, (transaction as TXMined).hash, 'transaction')}
         sx={{ p: 0, mt: 3 }}
       >
         <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
@@ -125,7 +128,7 @@ export default function ReviewBox({
       </Text>
       <ExternalLink
         target="_blank"
-        href={getEtherscanLink(getNetwork(), (transaction as TXMined).hash, 'transaction')}
+        href={getEtherscanLink(network, (transaction as TXMined).hash, 'transaction')}
         sx={{ p: 0 }}
       >
         <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
@@ -133,7 +136,7 @@ export default function ReviewBox({
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
       </ExternalLink>
-      <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+      <Link href={{ pathname: '/polling' }}>
         <Button mt={3} variant="outline" sx={{ borderColor: 'primary', color: 'primary' }} onClick={clearTx}>
           Back To All Polls
         </Button>
@@ -163,7 +166,7 @@ export default function ReviewBox({
           }}
         />
       </Flex>
-      <Link href={{ pathname: '/polling/review', query: { network: getNetwork() } }}>
+      <Link href={{ pathname: '/polling/review' }}>
         <Button
           pb={3}
           variant="textual"

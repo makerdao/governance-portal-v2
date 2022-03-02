@@ -6,7 +6,7 @@ export function clickConnectAccountButton() {
 }
 
 // Checks that the address on the account modal is equal to this text
-export function modalAddressEquals(address: string) {
+export function modalAddressEquals(address: string | RegExp) {
   // Opens modal
   clickConnectAccountButton();
 

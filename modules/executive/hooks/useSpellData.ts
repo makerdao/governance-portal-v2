@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { getNetwork } from 'lib/maker';
 import { SpellData } from 'modules/executive/types/spellData';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 type SpellDataResponse = {
   data?: SpellData;
@@ -10,8 +10,10 @@ type SpellDataResponse = {
 };
 
 export const useSpellData = (proposalAddress: string): SpellDataResponse => {
+  const { network } = useActiveWeb3React();
+
   const { data, error, mutate } = useSWR<SpellData>(
-    `/api/executive/analyze-spell/${proposalAddress}?network=${getNetwork()}`
+    `/api/executive/analyze-spell/${proposalAddress}?network=${network}`
   );
 
   return {

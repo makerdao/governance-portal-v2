@@ -1,14 +1,15 @@
 import create from 'zustand';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
-import getMaker from 'lib/maker';
+import { ContractTransaction } from 'ethers';
 import { Transaction, TXMined, TXPending, TXInitialized, TXError } from '../types/transaction';
 import { parseTxError } from '../helpers/errors';
 
-type Hooks = {
+type Callbacks = {
+  initialized?: (txId: string) => void;
   pending?: (txHash: string) => void;
   mined?: (txId: string, txHash: string) => void;
-  error?: () => void;
+  error?: (txId: string) => void;
 };
 
 type Store = {
@@ -18,7 +19,13 @@ type Store = {
   setPending: (txId: string, hash: string) => void;
   setMined: (txId: string) => void;
   setError: (txId: string, error?: { message: string }) => void;
-  track: (txCreator: () => Promise<any>, message?: string, hooks?: Hooks) => any;
+  track: (
+    txCreator: () => Promise<ContractTransaction>,
+    account?: string,
+    message?: string,
+    callbacks?: Callbacks
+  ) => string | null;
+  listen: (promise: Promise<ContractTransaction>, txId: string, callbacks?: Callbacks) => void;
 };
 
 const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
@@ -107,33 +114,44 @@ const [useTransactionsStore, transactionsApi] = create<Store>((set, get) => ({
     });
   },
 
-  track: async (txCreator, message = '', hooks) => {
-    const maker = await getMaker();
+  track: (txCreator, account, message = '', callbacks) => {
+    if (!account) {
+      return null;
+    }
+
+    const txId: string = uuidv4();
+    get().initTx(txId, account, message);
+    if (typeof callbacks?.initialized === 'function') callbacks.initialized(txId);
+
     const txPromise = txCreator();
-    // noop catch since we handle tx errors via the manager
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    txPromise.catch(() => {});
-
-    const from = maker.currentAddress();
-    const txId = uuidv4();
-
-    get().initTx(txId, from, message);
-    maker.service('transactionManager').listen(txPromise, {
-      pending: ({ hash }) => {
-        get().setPending(txId, hash);
-        if (typeof hooks?.pending === 'function') hooks.pending(hash);
-      },
-      mined: ({ hash }) => {
-        get().setMined(txId);
-        if (typeof hooks?.mined === 'function') hooks.mined(txId, hash);
-      },
-      error: (_, error) => {
-        get().setError(txId, error);
-        if (typeof hooks?.error === 'function') hooks.error();
-      }
-    });
+    get().listen(txPromise, txId, callbacks);
 
     return txId;
+  },
+
+  listen: async (txPromise, txId, callbacks) => {
+    let tx;
+    try {
+      tx = await txPromise;
+    } catch (e) {
+      get().setError(txId, e);
+      if (typeof callbacks?.error === 'function') callbacks.error(txId);
+      return;
+    }
+    // We are in "pending" state because the txn has now been been sent
+    get().setPending(txId, tx.hash);
+    if (typeof callbacks?.pending === 'function') callbacks.pending(tx.hash);
+
+    // Handle mined or error txns
+    tx.wait()
+      .then(() => {
+        get().setMined(txId);
+        if (typeof callbacks?.mined === 'function') callbacks.mined(txId, tx.hash);
+      })
+      .catch(e => {
+        get().setError(txId, e);
+        if (typeof callbacks?.error === 'function') callbacks.error(txId);
+      });
   }
 }));
 
