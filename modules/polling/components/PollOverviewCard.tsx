@@ -160,8 +160,9 @@ export default function PollOverviewCard({
                   key={poll.slug}
                   href={{ pathname: '/polling/[poll-hash]' }}
                   as={{ pathname: `/polling/${poll.slug}` }}
+                  passHref
                 >
-                  <ThemeUILink href={`/polling/${poll.slug}`} variant="nostyle" title="View Poll Details">
+                  <ThemeUILink variant="nostyle" title="View Poll Details">
                     <Button
                       variant="outline"
                       sx={{
