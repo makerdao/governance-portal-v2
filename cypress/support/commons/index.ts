@@ -1,7 +1,7 @@
 import { TestAccount } from '../types/TestAccount';
 
 export function visitPage(page: string, ignoreCookies?: boolean) {
-  cy.visit(`http://localhost:3000${page}?network=goerlifork`, {
+  cy.visit(`${page}?network=goerlifork`, {
     onBeforeLoad: win => {
       // If an account is sent, connect with that one
     }

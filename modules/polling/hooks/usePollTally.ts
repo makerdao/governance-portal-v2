@@ -6,22 +6,27 @@ import { PollTally } from '../types';
 type UsePollTallyResponse = {
   tally: PollTally | undefined;
   mutate: () => void;
+  error: Error;
+  isValidating: boolean;
 };
 
 export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyResponse {
   const { network } = useActiveWeb3React();
-  const { data: tallyData, mutate } = useSWR<PollTally>(
-    `/api/polling/tally/${pollId}?network=${network}`,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval,
-      revalidateOnMount: true
-    }
-  );
+  const {
+    data: tallyData,
+    mutate,
+    error,
+    isValidating
+  } = useSWR<PollTally>(`/api/polling/tally/${pollId}?network=${network}`, fetchJson, {
+    revalidateOnFocus: false,
+    refreshInterval,
+    revalidateOnMount: true
+  });
 
   return {
     tally: tallyData,
+    error,
+    isValidating,
     mutate
   };
 }

@@ -3,10 +3,15 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex } from 'cypress/support/constants/testaccounts';
-import { setAccount, visitPage } from '../support/commons';
+import { forkNetwork, setAccount, visitPage } from '../support/commons';
 
 describe('Account Page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
+
   it('should navigate to the account page and be able to create a delegate contract', () => {
     visitPage('/account');
 
@@ -43,7 +48,7 @@ describe('Account Page', async () => {
     });
   });
 
-  it('Should show locked balance in chief and allow to withdraw', () => {
+  it('should show locked balance in chief and allow to withdraw', () => {
     // Deposits in chief
     visitPage('/executive');
 

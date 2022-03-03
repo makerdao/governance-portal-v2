@@ -21,9 +21,9 @@ export function PollVotePluralityResultsCompact({
   return (
     <Box>
       <YesNoAbstainBar
-        yesPercent={formatValue(parseUnits(yesPercent.toString()), undefined, 2)}
-        noPercent={formatValue(parseUnits(noPercent.toString()), undefined, 2)}
-        abstainPercent={formatValue(parseUnits(abstainPercent.toString()), undefined, 2)}
+        yesPercent={formatValue(parseUnits(yesPercent.toString()), undefined, 0)}
+        noPercent={formatValue(parseUnits(noPercent.toString()), undefined, 0)}
+        abstainPercent={formatValue(parseUnits(abstainPercent.toString()), undefined, 0)}
         showTitles={showTitles}
       />
     </Box>

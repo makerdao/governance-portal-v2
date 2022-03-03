@@ -4,9 +4,13 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
-import { setAccount, visitPage } from '../support/commons';
+import { forkNetwork, setAccount, visitPage } from '../support/commons';
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
 describe('Executive page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
   it('navigates to executives and can deposit into chief', () => {
     visitPage('/executive');
 

@@ -2,10 +2,14 @@
 // Disable ESLint to prevent failing linting inside the Next.js repo.
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { setAccount, visitPage } from '../support/commons';
+import { forkNetwork, setAccount, visitPage } from '../support/commons';
 
 describe('/polling page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
   it('renders active polls', () => {
     visitPage('/polling');
 

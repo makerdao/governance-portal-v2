@@ -6,7 +6,7 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { CustomizedBridge } from '../connectors/CustomizedBridge';
 
-export function useWindowBindings(): void {
+export function useGoerliForkWindowBindings(): void {
   const context = useWeb3React();
   // Define a window function that changes the account for testing purposes
   useEffect(() => {

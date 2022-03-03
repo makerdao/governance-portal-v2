@@ -5,10 +5,14 @@
 
 import { modalAddressEquals, modalPollingWeightEquals } from '../support/commons/account.e2e.helpers';
 import { getTestAccount, getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
-import { elementContainsText, setAccount, visitPage } from '../support/commons';
+import { elementContainsText, forkNetwork, setAccount, visitPage } from '../support/commons';
 import { formatAddress } from '../../lib/utils';
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
 describe('Home Page', () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
   it('should navigate to the home page page and find the title', () => {
     // Start from the index page
     visitPage('/');

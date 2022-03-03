@@ -6,8 +6,11 @@
   "defaultCommandTimeout": 40000,
   "pageLoadTimeout": 120000,
   "video": false,
+  "baseUrl": "http://localhost:3000",
   "retries": {
     "runMode": 1,
     "openMode": 0
-  }
+  },
+  "experimentalStudio": false,
+  "chromeWebSecurity": false
 }
