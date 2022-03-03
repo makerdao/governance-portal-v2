@@ -12,12 +12,12 @@ export async function generateNonce(address: string): Promise<string> {
   const collection = db.collection('comment-nonces');
 
   // If we have a previous nonce, use that.
-  const previousNonces = await collection.find({
+  const previousNonce = await collection.findOne({
     address
   });
 
-  if (previousNonces.length > 0) {
-    return previousNonces[0].nonce;
+  if (previousNonce) {
+    return previousNonce.nonce;
   }
 
   // Create a new nonce structure for the DB

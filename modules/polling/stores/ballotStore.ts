@@ -97,8 +97,6 @@ const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
       })
     });
 
-    console.log('NONCE', data);
-
     const signedMessage = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
 
     set({

@@ -12,6 +12,7 @@ import useBallotStore, { ballotApi } from '../stores/ballotStore';
 import { PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { toast } from 'react-toastify';
 
 type SubmitBallotResponse = {
   txId: string | null;
@@ -86,17 +87,18 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
           })
             .then(() => {
               // console.log('comment successfully added');
-              setComments([]);
             })
             .catch(() => {
               console.error('failed to add comment');
-              setComments([]);
+              toast.error('Unable to store comments');
             });
         }
       },
       mined: txId => {
         if (typeof callbacks?.mined === 'function') callbacks.mined();
+        // Set votes
         updatePreviousVotes();
+        setComments([]);
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
       },
