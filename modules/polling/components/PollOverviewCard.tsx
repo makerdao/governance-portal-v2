@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from '../../app/components/layout/layouts/Stack';
@@ -40,9 +40,9 @@ export default function PollOverviewCard({
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
-  const { comments } = usePollComments(poll.pollId);
+  const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
 
   return (
     <Box
@@ -100,7 +100,7 @@ export default function PollOverviewCard({
                 ))}
               </Flex>
               {bpi > 0 && (
-                <Flex mb={1}>
+                <Flex mb={1} sx={{ alignItems: 'center' }}>
                   <Box mr={2}>
                     <ErrorBoundary componentName="Countdown Timer">
                       <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
@@ -111,6 +111,21 @@ export default function PollOverviewCard({
                     <InternalLink href={`/polling/${poll.slug}#comments`}>
                       <CommentCount count={comments.length} />
                     </InternalLink>
+                  )}
+                  {errorComments && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading comments
+                    </Badge>
                   )}
                 </Flex>
               )}
@@ -183,7 +198,24 @@ export default function PollOverviewCard({
                       </ErrorBoundary>
                     </Box>
                   )}
-                  {!tally && <SkeletonThemed width={'265px'} height={'30px'} />}
+                  {!tally && isValidating && !errorTally && (
+                    <SkeletonThemed width={'265px'} height={'30px'} />
+                  )}
+                  {errorTally && !isValidating && (
+                    <Badge
+                      variant="warning"
+                      sx={{
+                        color: 'warning',
+                        borderColor: 'warning',
+                        textTransform: 'uppercase',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        m: 1
+                      }}
+                    >
+                      Error loading votes
+                    </Badge>
+                  )}
                 </Box>
               )}
             </Flex>

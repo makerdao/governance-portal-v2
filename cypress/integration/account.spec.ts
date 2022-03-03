@@ -43,7 +43,7 @@ describe('Account Page', async () => {
     });
   });
 
-  it('Should show locked balance in chief and allow to withdraw', () => {
+  it('should show locked balance in chief and allow to withdraw', () => {
     // Deposits in chief
     visitPage('/executive');
 

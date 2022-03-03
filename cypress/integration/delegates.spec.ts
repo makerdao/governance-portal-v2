@@ -3,6 +3,7 @@
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
 
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccount } from 'cypress/support/constants/testaccounts';
 import { formatAddress } from 'lib/utils';
 import { closeModal, forkNetwork, setAccount, visitPage } from '../support/commons';
@@ -10,7 +11,7 @@ import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testa
 
 describe('Delegates Page', () => {
   before(() => {
-    forkNetwork(6182224);
+    forkNetwork(INIT_BLOCK);
   });
   it('should navigate to the delegates page and find a list of delegates', () => {
     // Start from the index page
@@ -29,18 +30,18 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Should find the delegates system info', () => {
+  it('should find the delegates system info', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
       cy.get('[data-testid="total-delegates-system-info"]').contains(/13/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/13/);
-      cy.get('[data-testid="total-mkr-system-info"]').contains('821.18');
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
     });
   });
 
-  it('Should hide shadow delegates when unchecking the filter', () => {
+  it('should hide shadow delegates when unchecking the filter', () => {
     visitPage('/delegates');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
@@ -59,11 +60,14 @@ describe('Delegates Page', () => {
     });
   });
 
-  it('Connects wallet and clicks on delegate', () => {
+  it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
     // Start from the index page
     visitPage('/delegates');
 
     const newAccount = getTestAccountByIndex(1);
+
+    // Wait a few seconds to prevent rate limiting
+    cy.wait(5000);
 
     setAccount(newAccount, () => {
       // Should find the connected

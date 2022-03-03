@@ -2,10 +2,15 @@
 // Disable ESLint to prevent failing linting inside the Next.js repo.
 // If you're using ESLint on your project, we recommend installing the ESLint Cypress plugin instead:
 // https://github.com/cypress-io/eslint-plugin-cypress
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 import { getTestAccountByIndex, TEST_ACCOUNTS } from 'cypress/support/constants/testaccounts';
-import { visitPage, setAccount } from '../../support/commons';
+import { visitPage, setAccount, forkNetwork } from '../../support/commons';
 
-describe('/polling review page', async () => {
+describe('/polling/review page', async () => {
+  before(() => {
+    forkNetwork(INIT_BLOCK);
+  });
+
   it('Renders correct information about the missing connection', () => {
     visitPage('/polling/review');
 
@@ -101,15 +106,16 @@ describe('/polling review page', async () => {
     setAccount(TEST_ACCOUNTS.normal, () => {
       const selectChoice = cy.get('[data-testid="single-select"]');
 
-      selectChoice.first().click();
+      // Use 2nd element because the first is unreliable due to a hash/slug clash with another poll
+      selectChoice.eq(1).click();
 
       // click on option
-      cy.get('[data-testid="single-select-option-Yes"]').first().click();
+      cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
 
       const buttonsVote = cy.get('[data-testid="button-add-vote-to-ballot-desktop"]');
 
       // Click the button
-      buttonsVote.first().should('not.be.disabled');
+      buttonsVote.eq(1).should('not.be.disabled');
 
       buttonsVote.first().click();
 
@@ -161,42 +167,36 @@ describe('/polling review page', async () => {
     visitPage('/polling');
 
     setAccount(getTestAccountByIndex(1), () => {
-      // Vote on first
-
-      cy.get('[data-testid="single-select"]').eq(0).click();
-      cy.get('[data-testid="single-select-option-No"]').eq(0).click();
-
-      // Vote on second
+      // Vote on first (use 2nd element because the first is unreliable due to a hash/slug clash with another poll)
       cy.get('[data-testid="single-select"]').eq(1).click();
       cy.get('[data-testid="single-select-option-Yes"]').eq(1).click();
 
-      // Vote on third
+      // Vote on second (use 3rd element)
       cy.get('[data-testid="single-select"]').eq(2).click();
       cy.get('[data-testid="single-select-option-No"]').eq(2).click();
 
       cy.wait(500);
 
       // Add votes to ballot
-      // Each time we click one, it dissapears, so we need to click the first again
-      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').first().click();
+      // Each time we click one, it dissapears, so we need to click the second element again
+      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').eq(1).click();
 
-      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').first().click();
-
-      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').first().click();
+      cy.get('[data-testid="button-add-vote-to-ballot-desktop"]').eq(1).click();
 
       // Check ballot votes added to ballot
-      cy.contains(/3 of \d\d available polls added to ballot/).should('be.visible');
+      cy.contains(/2 of \d\d available polls added to ballot/).should('be.visible');
 
       // Goes to the review page
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
+
+      cy.wait(3000);
 
       cy.location('pathname').should('eq', '/polling/review');
 
       // Comment on each box
       cy.get('[data-testid="poll-comment-box"]').eq(0).type(comment1Text);
       cy.get('[data-testid="poll-comment-box"]').eq(1).type(comment2Text);
-      cy.get('[data-testid="poll-comment-box"]').eq(2).type(comment3Text);
 
       // The sign comments button should be visible
       cy.get('[data-testid="sign-comments-button"]').should('be.enabled');
@@ -229,40 +229,24 @@ describe('/polling review page', async () => {
             .first()
             .invoke('attr', 'href')
             .then(hrefComment2 => {
-              cy.get('[data-testid="previously-voted-on"]')
-                .eq(2)
-                .find('a')
-                .first()
-                .invoke('attr', 'href')
-                .then(hrefComment3 => {
-                  visitPage(hrefComment1 as string, true);
+              visitPage(hrefComment1 as string, true);
 
-                  setAccount(TEST_ACCOUNTS.normal, () => {
-                    // Opens the comment tab
-                    cy.get('[data-testid="tab-Comments"]').click();
+              setAccount(TEST_ACCOUNTS.normal, () => {
+                // Opens the comment tab
+                cy.get('[data-testid="tab-Comments"]').click();
 
-                    // Checks the comment exists
-                    cy.contains(comment1Text).should('be.visible');
+                // Checks the comment exists
+                cy.contains(comment1Text).should('be.visible');
 
-                    visitPage(hrefComment2 as string, true);
+                visitPage(hrefComment2 as string, true);
 
-                    setAccount(TEST_ACCOUNTS.normal, () => {
-                      cy.get('[data-testid="tab-Comments"]').click();
+                setAccount(TEST_ACCOUNTS.normal, () => {
+                  cy.get('[data-testid="tab-Comments"]').click();
 
-                      // Checks the comment exists
-                      cy.contains(comment2Text).should('be.visible');
-
-                      visitPage(hrefComment3 as string, true);
-
-                      setAccount(TEST_ACCOUNTS.normal, () => {
-                        cy.get('[data-testid="tab-Comments"]').click();
-
-                        // Checks the comment exists
-                        cy.contains(comment3Text).should('be.visible');
-                      });
-                    });
-                  });
+                  // Checks the comment exists
+                  cy.contains(comment2Text).should('be.visible');
                 });
+              });
             });
         });
     });

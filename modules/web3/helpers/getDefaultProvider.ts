@@ -12,7 +12,7 @@ export const getDefaultProvider = (
     alchemy: config.ALCHEMY_KEY,
     pocket: config.POCKET_KEY,
     etherscan: config.ETHERSCAN_KEY,
-    ...optionsOverrides
+    ...(optionsOverrides || {})
   };
 
   return ethers.getDefaultProvider(network, options);

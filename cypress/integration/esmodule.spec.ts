@@ -5,10 +5,11 @@
 
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../support/constants/testaccounts';
 import { setAccount, visitPage, forkNetwork } from '../support/commons';
+import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
 
 describe('Esmodule Page', async () => {
-  after(() => {
-    forkNetwork(6349521);
+  before(() => {
+    forkNetwork(INIT_BLOCK);
   });
 
   it('should navigate to the es module page', () => {
@@ -92,9 +93,9 @@ describe('Esmodule Page', async () => {
     });
   });
 
-  it('Should be able to initiate emergency shutdown', () => {
+  it('Should be able to initiate emergency shutdown', { defaultCommandTimeout: 60000 }, () => {
     visitPage('/esmodule');
-
+    cy.wait(2000);
     setAccount(TEST_ACCOUNTS.normal, () => {
       cy.contains('Burn Your MKR').should('be.visible');
 
@@ -154,13 +155,14 @@ describe('Esmodule Page', async () => {
       // Pending state
       cy.contains('Shutdown will update once the transaction has been confirmed.');
 
-      cy.wait(1500);
+      // cy.wait(3500);
       // Scroll for screenshot
       cy.scrollTo(0, 0);
 
       // Shows banner after shutdown
       // TODO fix cageTime showing incorrect date
-      cy.contains('Emergency shutdown has been initiated on');
+      // cy.contains('Emergency shutdown has been initiated on');
+      cy.get('[data-testid="es-initiated"]').contains('Emergency shutdown has been initiated on');
     });
   });
 });

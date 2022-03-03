@@ -66,7 +66,7 @@ export async function fetchGithubDelegates(
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
   const delegatesCacheKey = 'delegates';
-  const cacheTime = 30000;
+  const cacheTime = 1000 * 60 * 60;
   const existingDelegates = fsCacheGet(delegatesCacheKey, network, cacheTime);
 
   if (existingDelegates) {
@@ -117,6 +117,16 @@ export async function fetchGithubDelegate(
 ): Promise<{ error: boolean; data?: DelegateRepoInformation }> {
   const delegatesRepositoryInfo = getDelegatesRepositoryInformation(network);
 
+  const delegatesCacheKey = `delegate-${address}`;
+  const cacheTime = 1000 * 60 * 60;
+  const existingDelegate = fsCacheGet(delegatesCacheKey, network, cacheTime);
+  if (existingDelegate) {
+    return Promise.resolve({
+      error: false,
+      data: JSON.parse(existingDelegate)
+    });
+  }
+
   try {
     // Fetch all folders inside the delegates folder
     const folders = await fetchGitHubPage(
@@ -129,6 +139,11 @@ export async function fetchGithubDelegate(
     const userInfo = folder
       ? await extractGithubInformation(delegatesRepositoryInfo.owner, delegatesRepositoryInfo.repo, folder)
       : undefined;
+
+    // Store in cache
+    if (userInfo) {
+      fsCacheSet(delegatesCacheKey, JSON.stringify(userInfo), network, cacheTime);
+    }
 
     return {
       error: false,
