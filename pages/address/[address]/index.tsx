@@ -97,7 +97,10 @@ export default function AddressPage(): JSX.Element {
   const { address } = router.query;
   const { network } = useActiveWeb3React();
 
-  const { data, error } = useSWR<AddressApiResponse>(`/api/address/${address}?network=${network}`, fetchJson);
+  const { data, error } = useSWR<AddressApiResponse>(
+    address ? `/api/address/${address}?network=${network}` : null,
+    fetchJson
+  );
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching address information" />;
