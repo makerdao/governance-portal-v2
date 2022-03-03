@@ -40,8 +40,9 @@ export default function RankedChoiceSelect({
       omitBy(
         poll.options,
         (_, optionId) =>
-          choice.findIndex(_choice => _choice === parseInt(optionId)) > -1 &&
-          parseInt(optionId) !== choice[numConfirmed]
+          (choice.findIndex(_choice => _choice === parseInt(optionId)) > -1 &&
+            parseInt(optionId) !== choice[numConfirmed]) ||
+          (numConfirmed > 0 && parseInt(optionId) === 0)
       ),
     [numConfirmed]
   );
@@ -85,7 +86,8 @@ export default function RankedChoiceSelect({
               if (canAddOption || Object.keys(availableChoices).length === 1)
                 setNumConfirmed(numConfirmed + 1);
               setShowListboxInput(false);
-              if (canAddOption) setShowAddButton(true);
+              const abstaining = newChoice[0] === 0;
+              if (canAddOption && !abstaining) setShowAddButton(true);
             }}
           >
             <ListboxButton
