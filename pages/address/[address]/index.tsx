@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
 import { Heading, Box, Flex, NavLink, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import { fetchJson } from 'lib/fetchJson';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';

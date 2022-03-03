@@ -18,7 +18,7 @@ export const URL_REGEX = new RegExp(expr);
 /*
 TODO: Add tests for executive create on goerli. Right now it only supports mainnet
 */
-const ExecutiveCreate = () => {
+const ExecutiveCreate = (): JSX.Element => {
   const [url, setUrl] = useState('');
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
