@@ -74,8 +74,6 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
         if (comments.length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
             voterAddress: account || '',
-            delegateAddress: voteDelegateContract ? voteDelegateContractAddress : '',
-            voteProxyAddress: voteProxyContractAddress ? voteProxyContractAddress : '',
             comments,
             signedMessage,
             txHash

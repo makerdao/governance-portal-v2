@@ -27,8 +27,6 @@ export default withApiHandler(
       network,
       date: new Date(),
       voterAddress: body.voterAddress,
-      voteProxyAddress: body.voteProxyAddress || '',
-      delegateAddress: body.delegateAddress || '',
       txHash: body.txHash
     }));
 

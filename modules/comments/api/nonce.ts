@@ -13,7 +13,7 @@ export async function generateNonce(address: string): Promise<string> {
 
   // If we have a previous nonce, use that.
   const previousNonce = await collection.findOne({
-    address
+    address: address.toLowerCase()
   });
 
   if (previousNonce) {
@@ -28,7 +28,7 @@ export async function generateNonce(address: string): Promise<string> {
   await collection.insertOne({
     uid,
     nonce,
-    address,
+    address: address.toLowerCase(),
     createdAt: Date.now()
   });
   return nonce;
@@ -42,7 +42,7 @@ export async function removeNonces(address: string): Promise<void> {
   const collection = db.collection('comment-nonces');
 
   await collection.remove({
-    address
+    address: address.toLowerCase()
   });
 }
 
@@ -57,6 +57,6 @@ export async function getNonce(address: string): Promise<{
   const collection = db.collection('comment-nonces');
 
   return await collection.findOne({
-    address
+    address: address.toLowerCase()
   });
 }

@@ -25,13 +25,14 @@ export async function verifyCommentParameters(
   // verify tx ownership
   const { from } = await provider.getTransaction(txHash);
   invariant(
-    ethers.utils.getAddress(from) === ethers.utils.getAddress(voterAddress),
+    ethers.utils.getAddress(from).toLowerCase() === ethers.utils.getAddress(voterAddress).toLowerCase(),
     "invalid 'from' address"
   );
 
   // verify signature ownership and check that the signed nonce corresponds to the one in db
   invariant(
-    ethers.utils.verifyMessage(nonceDB.nonce, signedMessage) === ethers.utils.getAddress(voterAddress),
+    ethers.utils.verifyMessage(nonceDB.nonce, signedMessage).toLowerCase() ===
+      ethers.utils.getAddress(voterAddress).toLowerCase(),
     'invalid message signature'
   );
 

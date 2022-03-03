@@ -124,9 +124,7 @@ export default function DefaultVoteModalView({
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
             voterAddress: account || '',
-            delegateAddress: voteDelegateContractAddress ?? '',
             comment: comment,
-            voteProxyAddress: voteProxyContractAddress ?? '',
             signedMessage: signedMessage,
             txHash
           };

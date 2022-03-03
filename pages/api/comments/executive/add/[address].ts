@@ -19,14 +19,9 @@ export default withApiHandler(
 
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
-    const {
-      voterAddress,
-      comment,
-      signedMessage,
-      txHash,
-      delegateAddress,
-      voteProxyAddress
-    }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
+    const { voterAddress, comment, signedMessage, txHash }: ExecutiveCommentsRequestBody = JSON.parse(
+      req.body
+    );
 
     // Verifies the data
     await verifyCommentParameters(voterAddress, signedMessage, txHash, network);
@@ -38,10 +33,8 @@ export default withApiHandler(
     const newComment: ExecutiveComment = {
       spellAddress,
       voterAddress,
-      delegateAddress,
       comment,
       voterWeight: formatValue(voterWeigth),
-      voteProxyAddress: voteProxyAddress || '',
       date: new Date(),
       network,
       txHash
