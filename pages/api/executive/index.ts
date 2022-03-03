@@ -15,7 +15,6 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *     type: array
  *     items:
  *       $ref: '#/definitions/Executive'
- *
  * /api/executive:
  *   get:
  *     tags:
@@ -35,6 +34,11 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         - "goerli"
  *         - "mainnet"
  *         default: ""
+ *     - name: "active"
+ *       in: "query"
+ *       description: "Filter by active"
+ *       required: false
+ *       type: "boolean"
  *       collectionFormat: "multi"
  *     responses:
  *       '200':
@@ -42,14 +46,19 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         content:
  *           application/json:
  *             schema:
- *               properties:
- *                 $ref: '#/definitions/ArrayOfExecutives'
+ *               $ref: '#/definitions/ArrayOfExecutives'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<CMSProposal[]>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
   const response = await getExecutiveProposals(network);
+
+  const active = req.query.active ? req.query.active === 'true' : false;
+
+  if (active) {
+    return res.status(200).json(response.filter(i => i.active));
+  }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);

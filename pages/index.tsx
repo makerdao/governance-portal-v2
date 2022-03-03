@@ -180,15 +180,13 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
               <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
                 <ErrorBoundary componentName="Executive Votes">
                   <Stack>
-                    {proposals
-                      .filter(proposal => proposal.active)
-                      .map(proposal => (
-                        <ExecutiveCard
-                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                          key={proposal.key}
-                          proposal={proposal}
-                        />
-                      ))}
+                    {proposals.map(proposal => (
+                      <ExecutiveCard
+                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                        key={proposal.key}
+                        proposal={proposal}
+                      />
+                    ))}
                   </Stack>
                 </ErrorBoundary>
               </Container>
@@ -290,7 +288,7 @@ export default function Index({
     if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${network}`),
-        fetchJson(`/api/executive?network=${network}`)
+        fetchJson(`/api/executive?network=${network}&active=true`)
       ])
         .then(([pollsData, proposals]) => {
           setPolls(pollsData.polls);
@@ -331,7 +329,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
-      proposals,
+      proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
       blogPosts
     }

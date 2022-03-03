@@ -63,6 +63,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         content:
  *           application/json:
  *             schema:
+ *               type: object
  *               $ref: '#/definitions/Executive'
  */
 export default withApiHandler(
