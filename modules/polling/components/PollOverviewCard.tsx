@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Text, Flex, Box, Button, Link as InternalLink, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
+import { Text, Flex, Box, Button, Link as ThemeUILink, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from '../../app/components/layout/layouts/Stack';
@@ -66,7 +66,7 @@ export default function PollOverviewCard({
                     Posted on {formatDateWithTime(poll.startDate)}{' '}
                   </Text>
                   <Link href={`/polling/${poll.slug}`} passHref>
-                    <InternalLink variant="nostyle">
+                    <ThemeUILink variant="nostyle" title="View Poll Details">
                       <Text
                         variant="microHeading"
                         sx={{ fontSize: [3, 5] }}
@@ -74,11 +74,11 @@ export default function PollOverviewCard({
                       >
                         {poll.title}
                       </Text>
-                    </InternalLink>
+                    </ThemeUILink>
                   </Link>
                 </Box>
                 <Link href={`/polling/${poll.slug}`} passHref>
-                  <InternalLink variant="nostyle">
+                  <ThemeUILink variant="nostyle" title="View Poll Details">
                     <Text
                       sx={{
                         fontSize: [2, 3],
@@ -88,7 +88,7 @@ export default function PollOverviewCard({
                     >
                       {poll.summary}
                     </Text>
-                  </InternalLink>
+                  </ThemeUILink>
                 </Link>
               </Box>
 
@@ -108,9 +108,9 @@ export default function PollOverviewCard({
                   </Box>
 
                   {comments && comments.length > 0 && (
-                    <InternalLink href={`/polling/${poll.slug}#comments`}>
+                    <ThemeUILink href={`/polling/${poll.slug}#comments`} title="View Comments">
                       <CommentCount count={comments.length} />
-                    </InternalLink>
+                    </ThemeUILink>
                   )}
                   {errorComments && (
                     <Badge
@@ -160,21 +160,21 @@ export default function PollOverviewCard({
                   key={poll.slug}
                   href={{ pathname: '/polling/[poll-hash]' }}
                   as={{ pathname: `/polling/${poll.slug}` }}
+                  passHref
                 >
-                  <InternalLink href={`/polling/${poll.slug}`} variant="nostyle">
+                  <ThemeUILink variant="nostyle" title="View Poll Details">
                     <Button
                       variant="outline"
                       sx={{
                         display: reviewPage ? 'none' : undefined,
-                        borderColor: 'onSecondary',
-                        color: 'secondaryAlt',
-                        borderRadius: 'small',
+                        borderColor: 'text',
+                        color: 'text',
                         ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
                       }}
                     >
                       View Details
                     </Button>
-                  </InternalLink>
+                  </ThemeUILink>
                 </Link>
               </Flex>
 
