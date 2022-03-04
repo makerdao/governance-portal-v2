@@ -306,7 +306,7 @@ const AccountSelect = (): React.ReactElement => {
               {accountName === 'WalletConnect' && (
                 <Flex
                   onClick={() => {
-                    (connector as WalletConnectConnector).walletConnectProvider.disconnect();
+                    (connector as WalletConnectConnector).walletConnectProvider?.disconnect();
                     deactivate();
                     setAccountName(undefined);
                     close();

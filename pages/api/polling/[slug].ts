@@ -83,7 +83,7 @@ import invariant from 'tiny-invariant';
  *         description: Slug of the poll
  *     responses:
  *       '200':
- *         description: "Detail of a Pols"
+ *         description: "Poll Detail"
  *         content:
  *           application/json:
  *             schema:

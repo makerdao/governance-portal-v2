@@ -62,10 +62,9 @@ const ExecutiveIndicatorComponent = ({
     proposals.map(p => p.address),
     network
   );
-  const activeProposals = useMemo(() => proposals.filter(proposal => proposal.active), [proposals]);
   const unscheduledProposals = spellData
-    ? activeProposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
-    : activeProposals;
+    ? proposals.filter(proposal => !spellData[proposal.address]?.hasBeenScheduled)
+    : proposals;
   const { account } = useAccount();
   const { data: votedProposals } = useVotedProposals();
   const newUnvotedProposals =

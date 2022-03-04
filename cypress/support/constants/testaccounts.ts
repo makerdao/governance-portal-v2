@@ -4,7 +4,8 @@ import keypairs from './keypairs.json';
 enum TestAccountsEnum {
   normal = 'normal',
   delegate = 'delegate',
-  normalVoteProxy = 'normalVoteProxy'
+  voteProxyHot = 'voteProxyHot',
+  voteProxyCold = 'voteProxyCold'
 }
 
 interface TestAccounts {
@@ -22,6 +23,16 @@ export const TEST_ACCOUNTS: TestAccounts = {
     name: 'MakerDAO address delegate owner',
     address: '0x81431b69b1e0e334d4161a13c2955e0f3599381e',
     key: 'b3ae65f191aac33f3e3f662b8411cabf14f91f2b48cf338151d6021ea1c08541'
+  },
+  [TestAccountsEnum.voteProxyHot]: {
+    name: 'Hot address for vote proxy',
+    address: '0xBc05439E41914a0aF8cea663aC09DEc037bE0196',
+    key: 'c8297c395531b74d8ae6785661648c11effaf91b9b200ca131d5f63c6613fc71'
+  },
+  [TestAccountsEnum.voteProxyCold]: {
+    name: 'Cold address for vote proxy',
+    address: '0x7E8e41CB87EEe353b3eF4eE5C8b770459EE11F0b',
+    key: '20bc6ff8d800c8c024a7397796f1f3da45c55146a5306dcd6511cf41dbc99b04'
   }
 };
 

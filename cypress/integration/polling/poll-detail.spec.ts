@@ -41,7 +41,7 @@ describe('/polling detail page', async () => {
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks that the leading option is visible
-      cy.contains(/Leading option: Yes with 987.65258 MKR supporting./).should('be.visible');
+      cy.contains(/Leading option: Yes with/).should('be.visible');
 
       // Clicks on the vote breakdown tab
       cy.get('[data-testid="tab-Vote Breakdown"]').click();
