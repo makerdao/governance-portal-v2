@@ -14,6 +14,6 @@ export const getDefaultProvider = (
     etherscan: config.ETHERSCAN_KEY,
     ...(optionsOverrides || {})
   };
-  
+
   return ethers.getDefaultProvider(network, options);
 };

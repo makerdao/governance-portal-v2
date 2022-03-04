@@ -25,7 +25,7 @@ export async function verifyCommentParameters(
 
   // verify tx ownership
   const { from } = await provider.getTransaction(txHash);
-  console.log(ethers.utils.getAddress(from).toLowerCase(), nonceDB.address, nonceDB.nonce,ethers.utils.getAddress(voterAddress) )
+  
   invariant(
     ethers.utils.getAddress(from).toLowerCase() === ethers.utils.getAddress(voterAddress).toLowerCase(),
     "invalid 'from' address"
