@@ -1,7 +1,8 @@
-import { ethers, getDefaultProvider } from 'ethers';
+import { ethers } from 'ethers';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 import { getNonce, removeNonces } from './nonce';
+import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 
 export async function verifyCommentParameters(
   voterAddress: string,
@@ -24,6 +25,7 @@ export async function verifyCommentParameters(
 
   // verify tx ownership
   const { from } = await provider.getTransaction(txHash);
+  console.log(ethers.utils.getAddress(from).toLowerCase(), nonceDB.address, nonceDB.nonce,ethers.utils.getAddress(voterAddress) )
   invariant(
     ethers.utils.getAddress(from).toLowerCase() === ethers.utils.getAddress(voterAddress).toLowerCase(),
     "invalid 'from' address"

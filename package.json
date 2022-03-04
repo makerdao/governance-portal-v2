@@ -61,7 +61,7 @@
     "ethers": "^5.5.2",
     "graphql-request": "^4.0.0",
     "gray-matter": "^4.0.2",
-    "hardhat": "^2.8.2",
+    "hardhat": "2.8.2",
     "ipfs-only-hash": "^4.0.0",
     "lodash": "^4.17.21",
     "lottie-web": "^5.7.1",
