@@ -54,6 +54,7 @@ import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type Props = {
   proposal: Proposal;
@@ -343,17 +344,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         sx={{
                           justifyContent: 'space-between',
                           fontSize: [2, 3],
-                          lineHeight: '34px'
+                          mb: 1
                         }}
                         key={supporter.address}
                       >
-                        <Box sx={{ width: '55%' }}>
-                          <Text color="onSecondary">
-                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
-                          </Text>
-                        </Box>
-
-                        <Box sx={{ width: '45%', textAlign: 'right' }}>
+                        <Box sx={{ width: '45%' }}>
                           <Link
                             href={{
                               pathname: `/address/${supporter.address}`
@@ -361,29 +356,27 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                             passHref
                           >
                             <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                              {supporter.name ? (
-                                <Text
-                                  sx={{
-                                    color: 'accentBlue',
-                                    fontSize: 3,
-                                    ':hover': { color: 'blueLinkHover' }
-                                  }}
-                                >
-                                  {limitString(supporter.name, bpi === 0 ? 14 : 22, '...')}
-                                </Text>
-                              ) : (
-                                <Text
-                                  sx={{
-                                    color: 'accentBlue',
-                                    fontSize: 3,
-                                    ':hover': { color: 'blueLinkHover' }
-                                  }}
-                                >
-                                  <Address address={supporter.address} />
-                                </Text>
-                              )}
+                              <Text
+                                sx={{
+                                  color: 'accentBlue',
+                                  fontSize: 2,
+                                  ':hover': { color: 'blueLinkHover' }
+                                }}
+                              >
+                                <AddressIconBox
+                                  address={supporter.address}
+                                  width={30}
+                                  limitTextLength={bpi === 0 ? 12 : 14}
+                                />
+                              </Text>
                             </ThemeUILink>
                           </Link>
+                        </Box>
+
+                        <Box sx={{ width: '55%', textAlign: 'right' }}>
+                          <Text color="onSecondary">
+                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
+                          </Text>
                         </Box>
                       </Flex>
                     ))}

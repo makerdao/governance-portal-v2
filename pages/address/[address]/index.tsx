@@ -19,7 +19,7 @@ import { DelegateDetail } from 'modules/delegates/components';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import ManageDelegation from 'modules/delegates/components/ManageDelegation';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
@@ -96,8 +96,15 @@ export default function AddressPage(): JSX.Element {
   const router = useRouter();
   const { address } = router.query;
   const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
 
-  const { data, error } = useSWR<AddressApiResponse>(`/api/address/${address}?network=${network}`, fetchJson);
+  const dataKeyAccount = `/api/address/${address}?network=${network}`;
+  const { data, error } = useSWR<AddressApiResponse>(address ? dataKeyAccount : null, fetchJson, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKeyAccount),
+    revalidateOnReconnect: false
+  });
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching address information" />;
