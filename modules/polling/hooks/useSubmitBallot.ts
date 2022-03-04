@@ -12,6 +12,7 @@ import useBallotStore, { ballotApi } from '../stores/ballotStore';
 import { PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
 import { fetchJson } from 'lib/fetchJson';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { toast } from 'react-toastify';
 
 type SubmitBallotResponse = {
   txId: string | null;
@@ -33,16 +34,16 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
     shallow
   );
 
-  const { ballot, clearBallot, signedMessage, comments, setComments, rawMessage, updatePreviousVotes } =
-    useBallotStore(state => ({
+  const { ballot, clearBallot, signedMessage, comments, setComments, updatePreviousVotes } = useBallotStore(
+    state => ({
       ballot: state.ballot,
       clearBallot: state.clearBallot,
       signedMessage: state.signedMessage,
       comments: state.comments,
       setComments: state.setComments,
-      rawMessage: state.rawMessage,
       updatePreviousVotes: state.updatePreviousVotes
-    }));
+    })
+  );
 
   const newBallot = {};
 
@@ -73,30 +74,29 @@ export const useSubmitBallot = (): SubmitBallotResponse => {
         if (comments.length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
             voterAddress: account || '',
-            delegateAddress: voteDelegateContract ? voteDelegateContractAddress : '',
-            voteProxyAddress: voteProxyContractAddress ? voteProxyContractAddress : '',
             comments,
-            rawMessage,
             signedMessage,
             txHash
           };
+
           fetchJson(`/api/comments/polling/add?network=${network}`, {
             method: 'POST',
             body: JSON.stringify(commentsRequest)
           })
             .then(() => {
               // console.log('comment successfully added');
-              setComments([]);
             })
             .catch(() => {
               console.error('failed to add comment');
-              setComments([]);
+              toast.error('Unable to store comments');
             });
         }
       },
       mined: txId => {
         if (typeof callbacks?.mined === 'function') callbacks.mined();
+        // Set votes
         updatePreviousVotes();
+        setComments([]);
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
       },

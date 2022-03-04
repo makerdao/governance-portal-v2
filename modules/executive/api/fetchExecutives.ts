@@ -65,7 +65,7 @@ export async function getExecutiveProposal(
   network?: SupportedNetworks
 ): Promise<CMSProposal | null> {
   const proposals = await getExecutiveProposals(network);
-  const proposal = proposals.find(proposal => proposal.key === proposalId);
+  const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
   const content = await markdownToHtml(proposal.about || '');

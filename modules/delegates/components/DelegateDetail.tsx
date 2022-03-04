@@ -26,6 +26,7 @@ import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import AccountComments from 'modules/comments/components/AccountComments';
 
 type PropTypes = {
   delegate: Delegate;
@@ -61,7 +62,8 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const tabTitles = [
     delegate.status === DelegateStatusEnum.recognized ? 'Delegate Credentials' : null,
     'Metrics',
-    'Voting History'
+    'Voting History',
+    'Comments'
   ].filter(i => !!i) as string[];
 
   const tabPanels = [
@@ -96,6 +98,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     </Box>,
     <Box key="delegate-vote-history">
       <DelegateVoteHistory delegate={delegate} />
+    </Box>,
+    <Box key="account-comments" sx={{ p: [3, 4] }}>
+      <AccountComments address={delegate.address} />
     </Box>
   ].filter(i => !!i);
 
