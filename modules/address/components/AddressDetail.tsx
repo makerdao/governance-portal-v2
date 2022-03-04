@@ -23,7 +23,7 @@ type PropTypes = {
 export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
   const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${address}/stats?network=${network}`,
+    address ? `/api/address/${address}/stats?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -33,7 +33,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
   );
 
   const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
-    `/api/address/${address}/delegated-to?network=${network}`,
+    address ? `/api/address/${address}/delegated-to?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,

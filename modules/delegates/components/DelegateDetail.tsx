@@ -15,7 +15,7 @@ import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { DelegateMKRDelegatedStats } from './DelegateMKRDelegatedStats';
 import { DelegateMKRChart } from './DelegateMKRChart';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
@@ -34,23 +34,24 @@ type PropTypes = {
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
 
-  const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval: 0,
-      revalidateOnMount: true
-    }
-  );
-  const { data: delegators } = useSWR<DelegationHistory[]>(
-    `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`,
-    fetchJson,
-    {
-      revalidateOnMount: true
-    }
-  );
+  const dataKeyDelegateStats = `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`;
+  const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKeyDelegateStats),
+    revalidateOnReconnect: false
+  });
+
+  const dataKeyDelegators = `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`;
+  const { data: delegators } = useSWR<DelegationHistory[]>(delegate ? dataKeyDelegators : null, fetchJson, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKeyDelegators),
+    revalidateOnReconnect: false
+  });
+
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
   const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
