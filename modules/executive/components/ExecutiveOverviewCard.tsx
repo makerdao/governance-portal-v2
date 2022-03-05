@@ -134,6 +134,7 @@ export default function ExecutiveOverviewCard({
                 </Box>
               ) : (
                 <Badge
+                  data-testid="mkr-supporting"
                   variant="primary"
                   sx={{
                     borderColor: 'text',
@@ -249,7 +250,11 @@ export default function ExecutiveOverviewCard({
 
       <Divider my={0} />
       <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-        <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
+        <Text
+          data-testid="proposal-status"
+          as="p"
+          sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}
+        >
           {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
         </Text>
       </Flex>
