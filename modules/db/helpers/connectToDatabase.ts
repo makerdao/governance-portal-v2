@@ -21,7 +21,7 @@ export async function connectToDatabase() {
     useNewUrlParser: true
   });
 
-  const db = await client.db(config.MONGODB_COMMENTS_DB);
+  const db = client.db(config.MONGODB_COMMENTS_DB);
 
   cachedClient = client;
   cachedDb = db;

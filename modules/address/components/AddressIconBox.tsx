@@ -9,17 +9,20 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { useVoteProxyAddress } from 'modules/app/hooks/useVoteProxyAddress';
+import { limitString } from 'lib/string';
 
 type PropTypes = {
   address: string;
   showExternalLink?: boolean;
   width?: number;
+  limitTextLength?: number;
 };
 
 export default function AddressIconBox({
   address,
   showExternalLink,
-  width = 41
+  width = 41,
+  limitTextLength = 0
 }: PropTypes): React.ReactElement {
   const { network } = useActiveWeb3React();
 
@@ -65,7 +68,11 @@ export default function AddressIconBox({
         <Flex>
           <Text>
             {delegateAddresses[address] ? (
-              <Text>{delegateAddresses[address].name}</Text>
+              <Text>
+                {limitTextLength
+                  ? limitString(delegateAddresses[address].name, limitTextLength, '...')
+                  : delegateAddresses[address].name}
+              </Text>
             ) : (
               <Address address={address} />
             )}

@@ -85,16 +85,21 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                 href={{
                   pathname: `/address/${delegate.voteDelegateAddress}`
                 }}
+                passHref
               >
-                <a sx={{ mt: 'auto' }} title="Profile details">
+                <ThemeUILink
+                  sx={{ mt: 'auto' }}
+                  variant="nostyle"
+                  title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                >
                   <Button
-                    onClick={() => trackButtonClick('openDelegateProfile')}
-                    sx={{ borderColor: 'text', color: 'text' }}
                     variant="outline"
+                    onClick={() => trackButtonClick('openDelegateProfile')}
+                    sx={{ borderColor: 'text', color: 'text', mt: [0, 0, 3, 0, 3] }}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}
                   </Button>
-                </a>
+                </ThemeUILink>
               </Link>
             </Flex>
           </Flex>

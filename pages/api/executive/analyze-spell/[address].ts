@@ -169,6 +169,10 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   let analysis;
 
+  if (!results[network]) {
+    results[network] = {};
+  }
+
   if (results[network][spellAddress]) {
     analysis = results[network][spellAddress];
   } else {

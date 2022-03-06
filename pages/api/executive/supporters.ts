@@ -1,7 +1,6 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
@@ -15,23 +14,12 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const chief = getContracts(networkNameToChainId(network)).chief;
 
-  const [allSupporters, delegatesResponse] = await Promise.all([
-    fetchExecutiveVoteTally(chief),
-    fetchDelegates(network)
-  ]);
+  const allSupporters = await fetchExecutiveVoteTally(chief);
 
-  // map delegate addresses to name
-  const delegates = delegatesResponse.delegates.reduce((acc, cur) => {
-    const formattedName = !cur.name || cur.name === '' ? 'Shadow Delegate' : cur.name;
-    acc[cur.voteDelegateAddress] = formattedName;
-    return acc;
-  }, {});
-
-  // handle percent and check address for delegate name
+  // handle percent and check address
   Object.keys(allSupporters).forEach(spell => {
     allSupporters[spell].forEach(supporter => {
       if (supporter.percent === 'NaN') supporter.percent = '0.00';
-      if (delegates[supporter.address]) supporter.name = delegates[supporter.address];
     });
   });
 

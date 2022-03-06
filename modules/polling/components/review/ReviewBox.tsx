@@ -188,10 +188,6 @@ export default function ReviewBox({
   const [transactionStatus, setTransactionStatus] = useState('default');
 
   useEffect(() => {
-    setTransactionStatus('default');
-  }, [comments]);
-
-  useEffect(() => {
     setTransactionStatus(transaction?.status || 'default');
   }, [transaction]);
 
@@ -203,6 +199,5 @@ export default function ReviewBox({
     if (transactionStatus === 'error') return <Error />;
     return <Default />;
   }, [transactionStatus, bpi, signedMessage, comments]);
-
   return <Box {...props}>{view}</Box>;
 }

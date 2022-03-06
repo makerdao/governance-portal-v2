@@ -66,10 +66,23 @@ export default function DefaultVoteModalView({
 
   const [comment, setComment] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
+  const [isFetchingNonce, setIsFetcingNonce] = useState(false);
 
   const signComment = async () => {
-    const signed = await sign(account as string, comment, library);
-    setSignedMessage(signed);
+    try {
+      setIsFetcingNonce(true);
+      const data = await fetchJson('/api/comments/nonce', {
+        method: 'POST',
+        body: JSON.stringify({
+          voterAddress: account
+        })
+      });
+      setIsFetcingNonce(false);
+      const signed = await sign(account as string, data.nonce, library);
+      setSignedMessage(signed);
+    } catch (e) {
+      setIsFetcingNonce(false);
+    }
   };
 
   const { data: allSlates } = useAllSlates();
@@ -106,17 +119,14 @@ export default function DefaultVoteModalView({
 
     const callbacks = {
       initialized: txId => onTransactionCreated(txId),
-      pending: txHash => {
+      pending: async txHash => {
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
             voterAddress: account || '',
-            delegateAddress: voteDelegateContractAddress ?? '',
             comment: comment,
-            voteProxyAddress: voteProxyContractAddress ?? '',
             signedMessage: signedMessage,
-            txHash,
-            voterWeight: formatValue(lockedMkr as BigNumber)
+            txHash
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
@@ -268,10 +278,12 @@ export default function DefaultVoteModalView({
                 signComment();
               }}
               variant="primaryOutline"
-              disabled={comment.length > 250 || !hasVotingWeight || signedMessage.length > 0}
+              disabled={
+                comment.length > 250 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
+              }
               sx={{ width: '100%' }}
             >
-              1 - Sign your comment
+              {!isFetchingNonce ? '1 - Sign your comment' : 'Loading...'}
             </Button>
             <Button
               mt={2}

@@ -32,14 +32,7 @@ export async function getExecutiveComments(
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
     return {
       comment,
-      address: await getAddressInfo(
-        comment.delegateAddress
-          ? comment.delegateAddress
-          : comment.voteProxyAddress
-          ? comment.voteProxyAddress
-          : comment.voterAddress,
-        network
-      )
+      address: await getAddressInfo(comment.voterAddress, network)
     };
   });
 

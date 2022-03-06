@@ -70,6 +70,6 @@ export default withApiHandler(
 
     res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
     // only return the latest comment from each address
-    res.status(200).json(response);
+    return res.status(200).json(response);
   }
 );
