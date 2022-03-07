@@ -289,17 +289,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               Supporters
             </Heading>
             <ErrorBoundary componentName="Executive Supporters">
-              <Card variant="compact" p={3} sx={{ height: '237px' }}>
-                <Box
-                  sx={{
-                    overflowY: 'scroll',
-                    height: '100%',
-                    '::-webkit-scrollbar': {
-                      display: 'none'
-                    },
-                    scrollbarWidth: 'none'
-                  }}
-                >
+              <Card variant="compact" p={3}>
+                <Box>
                   {!allSupporters && !supportersError && (
                     <Flex
                       sx={{
@@ -344,7 +335,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         sx={{
                           justifyContent: 'space-between',
                           fontSize: [2, 3],
-                          mb: 1
+                          ':not(:last-child)': {
+                            mb: 2
+                          }
                         }}
                         key={supporter.address}
                       >
