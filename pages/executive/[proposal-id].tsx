@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { isDefaultNetwork, isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 //components
 import VoteModal from 'modules/executive/components/VoteModal/index';
@@ -55,6 +55,8 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { fetchJson } from 'lib/fetchJson';
 
 type Props = {
   proposal: Proposal;
@@ -170,7 +172,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
           </Link>
           <Card sx={{ p: [0, 0] }}>
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
-              {'title' in proposal ? proposal.title : proposal.address}
+              {proposal.title ? proposal.title : proposal.address}
             </Heading>
             {isHat && proposal.address !== ZERO_ADDRESS ? (
               <Badge
@@ -268,7 +270,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
               </Heading>
               <Card variant="compact">
                 <Text sx={{ fontSize: 5 }}>
-                  {'title' in proposal ? proposal.title : cutMiddle(proposal.address)}
+                  {proposal.title ? proposal.title : cutMiddle(proposal.address)}
                 </Text>
                 <Button
                   variant="primaryLarge"
@@ -396,26 +398,22 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
-  const { query, isFallback } = useRouter();
+  const { query } = useRouter();
   const { network } = useActiveWeb3React();
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
     if (!network) return;
     if (!isDefaultNetwork(network) && query['proposal-id']) {
-      getExecutiveProposal(query['proposal-id'] as string)
-        .then(proposal => {
-          if (proposal) {
-            _setProposal(proposal);
-          } else {
-            setError('No proposal found');
-          }
+      fetchJson(`/api/executive/${query['proposal-id']}?network=${network}`)
+        .then(response => {
+          _setProposal(response);
         })
         .catch(setError);
     }
   }, [query['proposal-id'], network]);
 
-  if (error || (isDefaultNetwork(network) && !isFallback && !prefetchedProposal?.key)) {
+  if (error || (isDefaultNetwork(network) && !prefetchedProposal?.key)) {
     return (
       <ErrorPage
         statusCode={404}
@@ -424,7 +422,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
   }
 
-  if (isFallback || (!isDefaultNetwork(network) && !_proposal))
+  if (!isDefaultNetwork(network) && !_proposal)
     return (
       <PrimaryLayout shortenFooter={true}>
         <p>Loading…</p>
@@ -432,6 +430,7 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
+
   return (
     <ErrorBoundary componentName="Executive Page">
       <ProposalView proposal={proposal as Proposal} />
@@ -439,28 +438,16 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // fetch proposal contents at build-time if on the default network
-  invariant(params?.['proposal-id'], 'getStaticProps proposal id not found in params');
-  const proposalId = params['proposal-id'] as string;
+export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
+  const proposalId = context.query['proposal-id'] as string;
+  const network = context.query['network'] as string;
+  const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
 
-  const proposal: Proposal | null = ethers.utils.isAddress(proposalId)
-    ? { address: proposalId, key: proposalId }
-    : await getExecutiveProposal(proposalId);
+  const proposal: Proposal | null = await getExecutiveProposal(proposalId, networkToFetch);
 
   return {
     props: {
       proposal
     }
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const proposals = await getExecutiveProposals();
-  const paths = proposals.map(proposal => `/executive/${proposal.key}`);
-
-  return {
-    paths,
-    fallback: true
   };
 };

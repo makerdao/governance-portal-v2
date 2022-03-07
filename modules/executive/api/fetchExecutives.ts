@@ -2,13 +2,15 @@ import { config } from 'lib/config';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
-import { CMSProposal } from 'modules/executive/types';
+import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
 import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
+import { analyzeSpell } from './analyzeSpell';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
-export async function getExecutiveProposals(network?: SupportedNetworks): Promise<CMSProposal[]> {
+export async function getExecutiveProposals(network?: SupportedNetworks): Promise<Proposal[]> {
   const net = network ? network : DEFAULT_NETWORK.network;
 
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
@@ -48,9 +50,23 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
     })
   );
 
-  const filteredProposals: CMSProposal[] = proposals.filter(x => !!x) as CMSProposal[];
+  const filteredProposals: CMSProposal[] = proposals
+    .filter(x => !!x)
+    .filter(x => x?.address !== ZERO_ADDRESS) as CMSProposal[];
 
-  const sortedProposals = filteredProposals
+  const analyzedProposals = await Promise.all(
+    filteredProposals.map(async p => {
+      console.log('Analyze spell', p.address);
+      const spellData = await analyzeSpell(p.address, currentNetwork);
+      console.log('Analyized', p.address);
+      return {
+        ...p,
+        spellData
+      };
+    })
+  );
+
+  const sortedProposals = analyzedProposals
     .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
     .slice(0, 100);
 
@@ -63,7 +79,7 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
 export async function getExecutiveProposal(
   proposalId: string,
   network?: SupportedNetworks
-): Promise<CMSProposal | null> {
+): Promise<Proposal | null> {
   const proposals = await getExecutiveProposals(network);
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;

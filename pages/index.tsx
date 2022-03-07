@@ -17,7 +17,7 @@ import IntroCard from 'modules/home/components/IntroCard';
 import PollingIndicator from 'modules/home/components/PollingIndicator';
 import ExecutiveIndicator from 'modules/home/components/ExecutiveIndicator';
 import BlogPostCard from 'modules/home/components/BlogPostCard';
-import { CMSProposal } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
@@ -31,7 +31,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
-  proposals: CMSProposal[];
+  proposals: Proposal[];
   polls: Poll[];
   blogPosts: BlogPost[];
 };
@@ -279,7 +279,7 @@ export default function Index({
 }: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, setPolls] = useState<Poll[]>();
-  const [_proposals, setProposals] = useState<CMSProposal[]>();
+  const [_proposals, setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
   const { network } = useActiveWeb3React();
 
@@ -311,7 +311,7 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as CMSProposal[])}
+      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
       polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
     />

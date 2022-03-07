@@ -35,7 +35,7 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
-import { Proposal, CMSProposal } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -46,7 +46,6 @@ import { useContracts } from 'modules/web3/hooks/useContracts';
 import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { useAllSpellData } from 'modules/executive/hooks/useAllSpellData';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const CircleNumber = ({ children }) => (
@@ -118,12 +117,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     () => chiefOld.deposits(lockedMkrKeyOldChief as string)
   );
 
-  // FIXME merge this into the proposal object
-  const { data: spellData } = useAllSpellData(
-    proposals.map(p => p.address),
-    network
-  );
-
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
   const [startDate, endDate, sortBy] = useUiFiltersStore(
@@ -146,14 +139,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
       proposals.filter(proposal => {
         // filter out non-cms proposals for now
         if (!('about' in proposal) || !('date' in proposal)) return false;
-        if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
-        if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
+        if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
+        if (end && new Date(proposal.date).getTime() > end.getTime()) return false;
         return true;
-      }) as CMSProposal[]
+      }) as Proposal[]
     ).sort((a, b) => {
       if (sortBy === 'MKR Amount') {
-        const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
-        const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
+        const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
+        const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
         return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -383,7 +376,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                       proposal={proposal}
                       isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                       network={network}
-                      spellData={spellData ? spellData[proposal.address] : undefined}
                       account={account}
                       votedProposals={votedProposals}
                       mkrOnHat={mkrOnHat}
@@ -417,7 +409,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                           proposal={proposal}
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
                           network={network}
-                          spellData={spellData ? spellData[proposal.address] : undefined}
                           account={account}
                           votedProposals={votedProposals}
                           mkrOnHat={mkrOnHat}

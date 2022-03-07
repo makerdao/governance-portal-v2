@@ -8,7 +8,7 @@ import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import { Proposal, SpellData } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -17,11 +17,11 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { useSpellData } from '../hooks/useSpellData';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
-  spellData?: SpellData;
   account?: string;
   network: SupportedNetworks;
   votedProposals: string[];
@@ -31,7 +31,6 @@ type Props = {
 export default function ExecutiveOverviewCard({
   proposal,
   isHat,
-  spellData,
   network,
   account,
   votedProposals,
@@ -42,6 +41,8 @@ export default function ExecutiveOverviewCard({
   const [voting, setVoting] = useState(false);
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
+  const { data: spellData } = useSpellData(proposal.address);
+
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
@@ -67,7 +68,7 @@ export default function ExecutiveOverviewCard({
       }}
       {...props}
     >
-      <Box px={[3, 4]} py={[3, spellData?.hasBeenScheduled ? 3 : 4]}>
+      <Box px={[3, 4]} py={[3, proposal.spellData?.hasBeenScheduled ? 3 : 4]}>
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Stack gap={2}>
             <Link
@@ -141,7 +142,7 @@ export default function ExecutiveOverviewCard({
                     m: 1
                   }}
                 >
-                  {formatValue(spellData.mkrSupport, 'wad', 2)} MKR Supporting
+                  {formatValue(spellData?.mkrSupport, 'wad', 2)} MKR Supporting
                 </Badge>
               )}
             </Flex>
@@ -250,7 +251,7 @@ export default function ExecutiveOverviewCard({
       <Divider my={0} />
       <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
         <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
-          {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+          {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, mkrOnHat })}
         </Text>
       </Flex>
     </Card>
