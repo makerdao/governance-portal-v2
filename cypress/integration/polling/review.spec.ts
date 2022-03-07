@@ -36,12 +36,16 @@ describe('/polling/review page', async () => {
       buttonsVote.first().click();
 
       // Check the ballot count has increased
-      cy.contains(/(1 of (18|19) available polls added to ballot)/).should('be.visible');
+      cy.contains(/(1 of (21) available polls added to ballot)/).should('be.visible');
 
       // Click on the navigate
       cy.contains('Review & Submit Your Ballot').click();
 
       cy.location('pathname').should('eq', '/polling/review');
+
+      // Poll card should display poll IDs
+      cy.contains('Poll ID 3').should('be.visible');
+      cy.contains('Poll ID 4').should('be.visible');
 
       // It can edit a choice
       cy.get('[data-testid="edit-poll-choice"]').click();

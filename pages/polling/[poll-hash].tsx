@@ -142,7 +142,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                       color: 'textSecondary'
                     }}
                   >
-                    Posted {formatDateWithTime(poll.startDate)}
+                    Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                   </Text>
 
                   <CountdownTimer
