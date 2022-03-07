@@ -60,7 +60,6 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  console.log(poll);
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
