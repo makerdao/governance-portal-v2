@@ -11,6 +11,11 @@ describe('/polling page', async () => {
     forkNetwork(INIT_BLOCK);
   });
   it('renders active polls', () => {
+    // Polls keep growing and the num polls check keeps failing
+    // We should have an API method that returns number of active polls we can compare here
+    // Or we just mock the polls since the DB calls should be tested elsewhere anyway.
+    const activePolls = 21;
+    const endedPolls = 24;
     visitPage('/polling');
 
     cy.contains('Active Polls').should('be.visible');
@@ -20,17 +25,16 @@ describe('/polling page', async () => {
         matchCase: false
       }).should('be.visible');
 
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', activePolls);
+
       // Poll card should display poll ID
       cy.contains('Poll ID 4').should('be.visible');
 
       // Show ended polls
       cy.get('[data-testid="button-view-ended-polls"]').click();
 
-      // Commenting out bc polls keep growing and this keeps failing
-      // We should have an API method that returns number of active polls we can compare here
-      // Or we just mock the polls since the DB calls should be tested elsewhere anyway.
-      // // Check that now only shows 2 polls
-      // cy.get('[data-testid="poll-overview-card"]').its('length').should('be.gte', 21).and('be.lte', 22);
+      // Check that now only shows 2 polls
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', endedPolls);
     });
   });
 
