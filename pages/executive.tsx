@@ -2,7 +2,7 @@ import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -496,7 +496,7 @@ export default function ExecutiveOverviewPage({
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // fetch proposals at build-time if on the default network
   const proposals = await getExecutiveProposals();
 
