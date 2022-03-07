@@ -56,9 +56,7 @@ export async function getExecutiveProposals(network?: SupportedNetworks): Promis
 
   const analyzedProposals = await Promise.all(
     filteredProposals.map(async p => {
-      console.log('Analyze spell', p.address);
       const spellData = await analyzeSpell(p.address, currentNetwork);
-      console.log('Analyized', p.address);
       return {
         ...p,
         spellData

@@ -2,7 +2,7 @@ import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
-import { GetServerSideProps, GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';

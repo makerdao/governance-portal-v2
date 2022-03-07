@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -15,18 +15,16 @@ import {
   Divider,
   Link as ThemeUILink
 } from 'theme-ui';
-import { ethers } from 'ethers';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import invariant from 'tiny-invariant';
-import { getExecutiveProposal, getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { getExecutiveProposal } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { cutMiddle, limitString, formatValue } from 'lib/string';
+import { cutMiddle, formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
