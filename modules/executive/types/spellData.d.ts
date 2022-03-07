@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 
 export type SpellData = {
   hasBeenCast?: boolean;
@@ -8,7 +7,7 @@ export type SpellData = {
   nextCastTime?: Date;
   datePassed?: Date;
   dateExecuted?: Date;
-  mkrSupport?: BigNumber;
+  mkrSupport?: string;
   executiveHash?: string;
   officeHours?: boolean;
 };

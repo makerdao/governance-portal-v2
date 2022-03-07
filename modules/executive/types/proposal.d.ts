@@ -15,3 +15,9 @@ export type CMSProposal = {
 export type Proposal = CMSProposal & {
   spellData: SpellData;
 };
+
+
+export type ProposalsAPIResponse = {
+  total: number,
+  proposals: Proposal[]
+}

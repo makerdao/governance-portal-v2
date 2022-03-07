@@ -2,7 +2,7 @@ import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -35,7 +35,7 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
-import { Proposal } from 'modules/executive/types';
+import { Proposal, ProposalsAPIResponse } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -89,7 +89,7 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
+export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIResponse }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
   const { network } = useActiveWeb3React();
@@ -105,6 +105,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
   const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
+
+  
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
@@ -136,7 +138,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
     return (
-      proposals.filter(proposal => {
+      proposals.proposals.filter(proposal => {
         // filter out non-cms proposals for now
         if (!('about' in proposal) || !('date' in proposal)) return false;
         if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
@@ -496,9 +498,9 @@ export default function ExecutiveOverviewPage({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals();
+  const proposals = await getExecutiveProposals(0, 20);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds

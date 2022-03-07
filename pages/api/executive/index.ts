@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { CMSProposal } from 'modules/executive/types';
+import { CMSProposal, ProposalsAPIResponse } from 'modules/executive/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
@@ -34,6 +34,18 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         - "goerli"
  *         - "mainnet"
  *         default: ""
+ *     - name: "start"
+ *       in: "query"
+ *       description: "start index"
+ *       required: false
+ *       type: "number"
+ *       default: 0
+ *     - name: "limit"
+ *       in: "query"
+ *       description: "limit index"
+ *       required: false
+ *       type: "number"
+ *       default: 10
  *     - name: "active"
  *       in: "query"
  *       description: "Filter by active"
@@ -45,20 +57,21 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         description: "List of executives"
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/definitions/ArrayOfExecutives'
+ *             type: object
+ *               properties:
+ *                 total:
+ *                   type: "number"
+ *                 proposals:
+ *                   schema:
+ *                     $ref: '#/definitions/ArrayOfExecutives'
  */
-export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<CMSProposal[]>) => {
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<ProposalsAPIResponse>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
+  const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
 
-  const response = await getExecutiveProposals(network);
-
-  const active = req.query.active ? req.query.active === 'true' : false;
-
-  if (active) {
-    return res.status(200).json(response.filter(i => i.active));
-  }
+  const response = await getExecutiveProposals(start, limit, network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);
