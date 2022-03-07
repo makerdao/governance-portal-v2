@@ -29,7 +29,9 @@ export default function RankedChoiceSelect({
   const [showListboxInput, setShowListboxInput] = useState(true);
   const [showAddButton, setShowAddButton] = useState(false);
   const totalNumOptions = Object.keys(poll.options).length;
-  const canAddOption = totalNumOptions > numConfirmed + 1;
+  const abstainOption = Object.values(poll.options).indexOf('Abstain');
+  const optionsToShow = abstainOption > -1 ? totalNumOptions - 1 : totalNumOptions;
+  const canAddOption = optionsToShow > numConfirmed + 1;
 
   useEffect(() => {
     setNumConfirmed(choice.length);
@@ -40,8 +42,9 @@ export default function RankedChoiceSelect({
       omitBy(
         poll.options,
         (_, optionId) =>
-          choice.findIndex(_choice => _choice === parseInt(optionId)) > -1 &&
-          parseInt(optionId) !== choice[numConfirmed]
+          (choice.findIndex(_choice => _choice === parseInt(optionId)) > -1 &&
+            parseInt(optionId) !== choice[numConfirmed]) ||
+          (numConfirmed > 0 && parseInt(optionId) === abstainOption)
       ),
     [numConfirmed]
   );
@@ -85,7 +88,8 @@ export default function RankedChoiceSelect({
               if (canAddOption || Object.keys(availableChoices).length === 1)
                 setNumConfirmed(numConfirmed + 1);
               setShowListboxInput(false);
-              if (canAddOption) setShowAddButton(true);
+              const abstaining = newChoice[0] === abstainOption;
+              if (canAddOption && !abstaining) setShowAddButton(true);
             }}
           >
             <ListboxButton
