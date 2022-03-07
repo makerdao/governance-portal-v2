@@ -67,6 +67,18 @@ export function DelegatePicture({
           }}
         />
       )}
+      {delegate.status === DelegateStatusEnum.shadow && (
+        <Icon
+          name={'shadowQuestion'}
+          color="voterYellow"
+          sx={{
+            position: 'absolute',
+            bottom: '-2px',
+            right: '-5px',
+            width: '12px'
+          }}
+        />
+      )}
     </Box>
   );
 }
