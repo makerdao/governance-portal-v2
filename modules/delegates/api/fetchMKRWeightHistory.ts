@@ -46,8 +46,13 @@ export async function fetchDelegatesMKRWeightHistory(
 
   for (let i = start; i <= end; i++) {
     const existingItem = addressData.filter(item => {
-      const day = formatIsoDateConversion(item.blockTimestamp);
-      if (day === i) {
+      const years = differenceInCalendarYears(
+        new Date(item.blockTimestamp),
+        new Date(addressData[0].blockTimestamp)
+      );
+      const dayOfYear = formatIsoDateConversion(item.blockTimestamp);
+      const dayNumber = dayOfYear + years * 365;
+      if (dayNumber === i) {
         return item;
       }
     });
