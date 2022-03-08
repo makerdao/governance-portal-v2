@@ -51,6 +51,7 @@ async function getGithubExecutives(network: SupportedNetworks): Promise<CMSPropo
 
   const sortedProposals = filteredProposals
     .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
+    .sort((a) => a.active ? -1 : 1) // Sort by active first
     .slice(0, 100);
 
   if (config.USE_FS_CACHE) {
