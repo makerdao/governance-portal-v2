@@ -17,8 +17,7 @@ describe('Vote Proxy', () => {
     forkNetwork(VOTE_PROXY_BLOCK);
   });
 
-  xit('should navigate to the address page and see the correct address', () => {
-    // TODO: use a function fetch the balance if it ever changes
+  it('should navigate to the address page and see the correct address', () => {
     const expectedBalance = '40.0';
 
     // Start from the hot address page and check the balance
@@ -26,10 +25,7 @@ describe('Vote Proxy', () => {
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
       cy.contains(hotAddress.substring(0, 7).toLowerCase()).should('be.visible');
-      /* ==== Generated with Cypress Studio ==== */
-      cy.get('[data-testid="Total MKR Balance-stat-box"]').click();
       cy.get('[data-testid="Total MKR Balance-stat-box"]').should('have.text', expectedBalance);
-      /* ==== End Cypress Studio ==== */
     });
 
     // Navigate to cold address page and make sure it's the same
@@ -37,10 +33,8 @@ describe('Vote Proxy', () => {
 
     setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
       cy.contains(coldAddress.substring(0, 7).toLowerCase()).should('be.visible');
-      /* ==== Generated with Cypress Studio ==== */
       cy.get('[data-testid="Total MKR Balance-stat-box"]').click();
       cy.get('[data-testid="Total MKR Balance-stat-box"]').should('have.text', expectedBalance);
-      /* ==== End Cypress Studio ==== */
     });
   });
 
@@ -115,3 +109,6 @@ describe('Vote Proxy', () => {
     });
   });
 });
+
+
+//TODO same checks but for polling page
