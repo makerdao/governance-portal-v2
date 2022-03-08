@@ -4,6 +4,7 @@ import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
+import { formatAddress } from 'lib/utils';
 
 export function DelegatePicture({
   delegate,
@@ -12,16 +13,65 @@ export function DelegatePicture({
   delegate: Delegate;
   width?: number;
 }): React.ReactElement {
+  const tooltipAvatarWidth = 68;
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
       <Flex sx={{ p: 3 }}>
-        <DelegatePicture delegate={delegate} key={delegate.id} width={68} />
+        <Box
+          sx={{
+            width: tooltipAvatarWidth,
+            height: tooltipAvatarWidth,
+            position: 'relative',
+            minWidth: tooltipAvatarWidth
+          }}
+        >
+          {delegate.picture ? (
+            <Image
+              src={delegate.picture}
+              key={delegate.id}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                borderRadius: '100%',
+                maxHeight: tooltipAvatarWidth
+              }}
+            />
+          ) : (
+            <Box>
+              <Davatar size={tooltipAvatarWidth} address={delegate.address} generatedAvatarType="jazzicon" />
+            </Box>
+          )}
+          {delegate.status === DelegateStatusEnum.recognized && (
+            <Icon
+              name={'verified'}
+              sx={{
+                position: 'absolute',
+                bottom: tooltipAvatarWidth / -12,
+                right: tooltipAvatarWidth / -7,
+                size: tooltipAvatarWidth / 2.5,
+                color: 'primary'
+              }}
+            />
+          )}
+          {delegate.status === DelegateStatusEnum.shadow && (
+            <Icon
+              name={'shadowQuestion'}
+              color="voterYellow"
+              sx={{
+                position: 'absolute',
+                bottom: tooltipAvatarWidth / -12,
+                right: tooltipAvatarWidth / -7,
+                size: tooltipAvatarWidth / 2.5
+              }}
+            />
+          )}
+        </Box>
         <Flex sx={{ ml: 3, flexDirection: 'column' }}>
           <Text as="p" variant="microHeading">
             {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
-            {delegate.voteDelegateAddress}
+            {formatAddress(delegate.voteDelegateAddress)}
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
             {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
@@ -61,10 +111,6 @@ export function DelegatePicture({
       </Flex>
     </Box>
   );
-
-  console.log(width / 8.3);
-  console.log(width / 9);
-  console.log(width / 10);
 
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
