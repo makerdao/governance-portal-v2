@@ -75,7 +75,8 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
   const getApprovals = async () => {
     try {
       const approvals = await getChiefApprovals(address, network);
-      return approvals;
+
+      return approvals.toString();
     } catch (err) {
       return undefined;
     }

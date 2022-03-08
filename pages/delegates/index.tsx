@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
@@ -244,7 +244,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
 
   return {
