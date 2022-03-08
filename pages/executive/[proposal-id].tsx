@@ -16,7 +16,7 @@ import {
   Link as ThemeUILink
 } from 'theme-ui';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getExecutiveProposal } from 'modules/executive/api/fetchExecutives';
@@ -45,7 +45,6 @@ import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
-import { Address } from 'modules/address/components/Address';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import ExecutiveComments from 'modules/comments/components/ExecutiveComments';
@@ -97,10 +96,15 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
   const bpi = useBreakpointIndex();
   const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
 
-  const { data: allSupporters, error: supportersError } = useSWR(
-    `/api/executive/supporters?network=${network}`
-  );
+  const dataKey = `/api/executive/supporters?network=${network}`;
+  const { data: allSupporters, error: supportersError } = useSWR(dataKey, fetchJson, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: !cache.get(dataKey),
+    revalidateOnReconnect: false
+  });
 
   const { data: votedProposals } = useVotedProposals();
   const { data: mkrOnHat } = useMkrOnHat();

@@ -4,6 +4,7 @@ import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 export function DelegatePicture({
   delegate,
@@ -12,6 +13,8 @@ export function DelegatePicture({
   delegate: Delegate;
   width?: number;
 }): React.ReactElement {
+  const { library } = useActiveWeb3React();
+
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
       <Flex sx={{ p: 3 }}>
@@ -82,7 +85,12 @@ export function DelegatePicture({
           />
         ) : (
           <Box>
-            <Davatar size={width} address={delegate.address} generatedAvatarType="jazzicon" />
+            <Davatar
+              size={width}
+              address={delegate.address}
+              generatedAvatarType="jazzicon"
+              provider={library}
+            />
           </Box>
         )}
       </Tooltip>
