@@ -4,7 +4,6 @@ import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
-import { DelegateParticipationMetrics } from './DelegateParticipationMetrics';
 
 export function DelegatePicture({
   delegate,
@@ -27,13 +26,45 @@ export function DelegatePicture({
           <Text as="p" sx={{ fontSize: 2 }}>
             {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
           </Text>
-          <Box sx={{ marginLeft: 1, flex: 1 }}>
-            <DelegateParticipationMetrics delegate={delegate} />
-          </Box>
+        </Flex>
+      </Flex>
+      <Flex sx={{ flexDirection: 'column', p: 3 }}>
+        <Text as="p" variant="secondary">
+          Participation Breakdown
+        </Text>
+        <Flex sx={{ justifyContent: 'space-between', mt: 2 }}>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Text as="p" sx={{ fontWeight: 'semiBold' }}>
+              {delegate.pollParticipation || 'Untracked'}
+            </Text>
+            <Text as="p" sx={{ fontSize: 2 }}>
+              Poll Participation
+            </Text>
+          </Flex>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Text as="p" sx={{ fontWeight: 'semiBold' }}>
+              {delegate.executiveParticipation || 'Untracked'}
+            </Text>
+            <Text as="p" sx={{ fontSize: 2 }}>
+              Executive Participation
+            </Text>
+          </Flex>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Text as="p" sx={{ fontWeight: 'semiBold' }}>
+              {delegate.communication || 'Untracked'}
+            </Text>
+            <Text as="p" sx={{ fontSize: 2 }}>
+              Communication
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
     </Box>
   );
+
+  console.log(width / 8.3);
+  console.log(width / 9);
+  console.log(width / 10);
 
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
@@ -73,9 +104,9 @@ export function DelegatePicture({
           color="voterYellow"
           sx={{
             position: 'absolute',
-            bottom: '-2px',
-            right: '-5px',
-            width: '12px'
+            bottom: '-3px',
+            right: '-6px',
+            width: '13px'
           }}
         />
       )}
