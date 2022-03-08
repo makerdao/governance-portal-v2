@@ -422,14 +422,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   </Stack>
                   {isLoadingMore && (
                     <Box>
-                      <Box m={3}>
-                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
                       </Box>
-                      <Box m={3}>
-                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
                       </Box>
-                      <Box m={3}>
-                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
                       </Box>
                     </Box>
                   )}

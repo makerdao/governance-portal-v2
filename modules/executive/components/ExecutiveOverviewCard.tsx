@@ -18,7 +18,6 @@ import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComment
 import CommentCount from 'modules/comments/components/CommentCount';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { useSpellData } from '../hooks/useSpellData';
-import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   proposal: Proposal;
