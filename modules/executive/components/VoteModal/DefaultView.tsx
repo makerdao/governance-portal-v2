@@ -292,6 +292,7 @@ export default function DefaultVoteModalView({
                 vote(hatChecked);
               }}
               variant="primaryLarge"
+              data-testid="vote-modal-vote-btn"
               disabled={comment.length > 250 || !hasVotingWeight || !signedMessage}
               sx={{ width: '100%' }}
             >
@@ -306,6 +307,7 @@ export default function DefaultVoteModalView({
               trackButtonClick('vote');
               vote(hatChecked);
             }}
+            data-testid="vote-modal-vote-btn"
             disabled={!hasVotingWeight}
           >
             {votingMessage}

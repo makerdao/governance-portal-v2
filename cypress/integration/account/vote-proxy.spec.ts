@@ -49,93 +49,80 @@ describe('Vote Proxy', () => {
     const initialChiefBalance = '5.0';
     const initialHatSupport = '225.22';
 
-    // Start from the hot address page and check the balance
     visitPage(`executive`);
 
+    // Start with the cold address page
     setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
-      // cy.contains(coldAddress.substring(0, 7).toLowerCase()).should('be.visible');
-      /* ==== Generated with Cypress Studio ==== */
-      // cy.get('[data-testid="locked-mkr"]').click();
+      // Check balance locked in chief by the vote proxy
       cy.get('[data-testid="locked-mkr"]').should('have.text', '5.0 MKR');
-      /* ==== End Cypress Studio ==== */
 
-      // Also check here votes for exec so it can be used after withdraw
-      //TODO add data-testid here
-      /* ==== Generated with Cypress Studio ==== */
-      // cy.get(
-      //   '.css-1y1c6xw-ExecutiveOverviewCard > .css-2aebet > .css-p40j8a-ExecutiveOverviewCard > .css-17yi0lh > .css-fqvj5z-ExecutiveOverviewCard > .css-9k4top-ExecutiveOverviewCard'
-      // ).click();
+      // Cold wallet can deposit into chief
+      cy.get('[data-testid="deposit-button"]').click();
+      cy.get('[data-testid="mkr-input"]').clear();
+      cy.get('[data-testid="mkr-input"]').type('1');
+      cy.get('[data-testid="button-deposit-mkr"]').click(); //fix naming
+
+      //?? Also check here votes for exec so it can be used after withdraw
 
       cy.get('[data-testid="mkr-supporting"]')
         .first()
         .should('have.text', `${initialHatSupport} MKR Supporting`);
-
-      // cy.get(
-      //   '.css-1y1c6xw-ExecutiveOverviewCard > .css-2aebet > .css-p40j8a-ExecutiveOverviewCard > .css-17yi0lh > .css-fqvj5z-ExecutiveOverviewCard > .css-9k4top-ExecutiveOverviewCard'
-      // ).should('have.text', `${initialHatSupport} MKR Supporting`);
-      /* ==== End Cypress Studio ==== */
     });
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
-      /* ==== Generated with Cypress Studio ==== */
-      cy.get('[data-testid="locked-mkr"]').click();
-      cy.get('[data-testid="locked-mkr"]').should('have.text', `${initialChiefBalance} MKR`);
-      cy.get('[data-testid="withdraw-button"]').click();
-      cy.get('[data-testid="mkr-input"]').clear();
-      cy.get('[data-testid="mkr-input"]').type('1');
-      cy.get('[data-testid="button-mkr-withdraw"]').click();
-      cy.get('[data-testid="locked-mkr"]').click();
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
-      /* ==== End Cypress Studio ==== */
+      // Hot account should have the new MKR balance in chief displayed "+ 1"
+      cy.get('[data-testid="locked-mkr"]').should('have.text', `6.0 MKR`);
 
-      // cy.get('[data-testid="proposal-status"]').eq(1)
-
-      // Check the new votes for poll has gone down by X (not working right now, badge not mutating??)
-      // cy.get(
-      //   '.css-1y1c6xw-ExecutiveOverviewCard > .css-2aebet > .css-p40j8a-ExecutiveOverviewCard > .css-17yi0lh > .css-fqvj5z-ExecutiveOverviewCard > .css-9k4top-ExecutiveOverviewCard'
-      // ).should('have.text', `${parseFloat(initialHatSupport) - 1} MKR Supporting`);
-
-      // Check the new poll votes before voting
-      cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', '1,132.03 MKR Supporting');
-
-      cy.get('[data-testid="proposal-status"]')
-        .eq(1)
-        .should('have.text', '98,867.974 additional MKR support needed to pass. Expires at .');
-
-      cy.get('[data-testid="proposal-status"]')
-        .eq(0)
-        .should('have.text', '99,774.775 additional MKR support needed to pass. Expires at .');
-
-      //vote on it
-      // cy.get('.css-1176iuf-DefaultVoteModalView').click();
-      // cy.get('.css-1nmooyx-TxFinal').click();
-
-      // check that it also changed
-      cy.get('[data-testid="proposal-status"]')
-        .eq(1)
-        .should('have.text', '98,867.974 additional MKR support needed to pass. Expires at .');
-
-      cy.get('[data-testid="proposal-status"]')
-        .eq(0)
-        .should('have.text', '99,774.775 additional MKR support needed to pass. Expires at .');
-
-      // click deposit
-      // notice alert pops up
+      // Hot wallet cannot deposit funds into chief
       cy.on('window:alert', txt => {
         assert.equal(
           txt,
-          'You are using the hot wallet for a voting proxy. You can only deposit from the cold wallet. Switch to that wallet to continue. to equal'
+          'You are using the hot wallet for a voting proxy. You can only deposit from the cold wallet. Switch to that wallet to continue.'
         );
       });
       cy.get('[data-testid="deposit-button"]').click();
+
+      // But it can withdraw from chief into the cold wallet
+      cy.get('[data-testid="withdraw-button"]').click();
+      cy.get('[data-testid="mkr-input"]').clear();
+      cy.get('[data-testid="mkr-input"]').type('2');
+      cy.get('[data-testid="button-mkr-withdraw"]').click();
+
+      // Check the UI shows the amount withdrawn from chief correctly
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
+
+      // Check the value of the MKR supporting on the exec we're not yet voting for
+      cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', '1,132.03 MKR Supporting');
+      cy.get('[data-testid="proposal-status"]')
+        .eq(1)
+        .should('have.text', '98,867.974 additional MKR support needed to pass. Expires at .');
+
+      // Check the value of the MKR supporting on the exec we are currently voting for
+      cy.get('[data-testid="mkr-supporting"]').eq(0).should('have.text', '1,132.03 MKR Supporting');
+      cy.get('[data-testid="proposal-status"]')
+        .eq(0)
+        .should('have.text', '99,774.775 additional MKR support needed to pass. Expires at .');
+
+      // Vote on the new exec
+      cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();
+      cy.get('[data-testid="vote-modal-vote-btn"]').click();
+      cy.get('[data-testid="txfinal-btn"]').click();
+
+      // Check that all the data changed by the correct amount after voting
+      // Old vote
+      cy.get('[data-testid="mkr-supporting"]', { timeout: 60000 })
+        .eq(1)
+        .should('have.text', `1,127.03 MKR Supporting`);
+      cy.get('[data-testid="proposal-status"]')
+        .eq(1)
+        .should('have.text', '98,872.974 additional MKR support needed to pass. Expires at .');
+
+      // New vote
+      cy.get('[data-testid="mkr-supporting"]').eq(0).should('have.text', `229.22 MKR Supporting`);
+
+      cy.get('[data-testid="proposal-status"]')
+        .eq(0)
+        .should('have.text', '99,770.775 additional MKR support needed to pass. Expires at .');
     });
-
-    // setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
-    //   cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
-    //   // deposit more into chief and verify
-
-    // });
   });
 });
-
-//TODO for the exec test, voting is not workign so the numbers are off, fix vote & the numbers

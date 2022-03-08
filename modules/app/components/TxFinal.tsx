@@ -33,7 +33,7 @@ export const TxFinal = ({ title, description, buttonLabel, onClick, tx, success 
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
       </Link>
-      <Button onClick={onClick} sx={{ width: '100%', mt: 3 }}>
+      <Button data-testid="txfinal-btn" onClick={onClick} sx={{ width: '100%', mt: 3 }}>
         {buttonLabel}
       </Button>
     </Flex>
