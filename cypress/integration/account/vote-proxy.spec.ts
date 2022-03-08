@@ -45,32 +45,22 @@ describe('Vote Proxy', () => {
   });
 
   it('should verify executive page displays same data for proxies', () => {
-    // TODO: use a function fetch the balance if it ever changes
-    const initialChiefBalance = '5.0';
-    const initialHatSupport = '225.22';
-
     visitPage(`executive`);
 
     // Start with the cold address page
     setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
-      // Check balance locked in chief by the vote proxy
+      // Check balance locked in chief of the vote proxy
       cy.get('[data-testid="locked-mkr"]').should('have.text', '5.0 MKR');
 
       // Cold wallet can deposit into chief
       cy.get('[data-testid="deposit-button"]').click();
       cy.get('[data-testid="mkr-input"]').clear();
       cy.get('[data-testid="mkr-input"]').type('1');
-      cy.get('[data-testid="button-deposit-mkr"]').click(); //fix naming
-
-      //?? Also check here votes for exec so it can be used after withdraw
-
-      cy.get('[data-testid="mkr-supporting"]')
-        .first()
-        .should('have.text', `${initialHatSupport} MKR Supporting`);
+      cy.get('[data-testid="button-deposit-mkr"]').click();
     });
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
-      // Hot account should have the new MKR balance in chief displayed "+ 1"
+      // Hot account should have the new MKR balance in chief displayed
       cy.get('[data-testid="locked-mkr"]').should('have.text', `6.0 MKR`);
 
       // Hot wallet cannot deposit funds into chief
@@ -86,7 +76,7 @@ describe('Vote Proxy', () => {
       cy.get('[data-testid="withdraw-button"]').click();
       cy.get('[data-testid="mkr-input"]').clear();
       cy.get('[data-testid="mkr-input"]').type('2');
-      cy.get('[data-testid="button-mkr-withdraw"]').click();
+      cy.get('[data-testid="button-withdraw-mkr"]').click();
 
       // Check the UI shows the amount withdrawn from chief correctly
       cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
@@ -98,9 +88,9 @@ describe('Vote Proxy', () => {
         .should('have.text', '98,867.974 additional MKR support needed to pass. Expires at .');
 
       // Check the value of the MKR supporting on the exec we are currently voting for
-      cy.get('[data-testid="mkr-supporting"]').eq(0).should('have.text', '1,132.03 MKR Supporting');
+      cy.get('[data-testid="mkr-supporting"]').first().should('have.text', '225.22 MKR Supporting');
       cy.get('[data-testid="proposal-status"]')
-        .eq(0)
+        .first()
         .should('have.text', '99,774.775 additional MKR support needed to pass. Expires at .');
 
       // Vote on the new exec
@@ -118,10 +108,9 @@ describe('Vote Proxy', () => {
         .should('have.text', '98,872.974 additional MKR support needed to pass. Expires at .');
 
       // New vote
-      cy.get('[data-testid="mkr-supporting"]').eq(0).should('have.text', `229.22 MKR Supporting`);
-
+      cy.get('[data-testid="mkr-supporting"]').first().should('have.text', `229.22 MKR Supporting`);
       cy.get('[data-testid="proposal-status"]')
-        .eq(0)
+        .first()
         .should('have.text', '99,770.775 additional MKR support needed to pass. Expires at .');
     });
   });
