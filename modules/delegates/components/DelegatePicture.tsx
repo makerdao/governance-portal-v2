@@ -91,9 +91,9 @@ export function DelegatePicture({
           name={'verified'}
           sx={{
             position: 'absolute',
-            bottom: '-2px',
-            right: '-5px',
-            width: '12px',
+            bottom: width / -12,
+            right: width / -7,
+            size: width / 2.5,
             color: 'primary'
           }}
         />
@@ -104,9 +104,9 @@ export function DelegatePicture({
           color="voterYellow"
           sx={{
             position: 'absolute',
-            bottom: '-3px',
-            right: '-6px',
-            width: '13px'
+            bottom: width / -12,
+            right: width / -7,
+            size: width / 2.5
           }}
         />
       )}
