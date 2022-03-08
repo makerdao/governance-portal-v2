@@ -1,4 +1,3 @@
-
 export type SpellData = {
   hasBeenCast?: boolean;
   hasBeenScheduled: boolean;

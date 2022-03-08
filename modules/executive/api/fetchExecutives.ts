@@ -2,7 +2,7 @@ import { config } from 'lib/config';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { fetchGitHubPage } from 'lib/github';
-import { CMSProposal, Proposal, ProposalsAPIResponse } from 'modules/executive/types';
+import { CMSProposal, Proposal } from 'modules/executive/types';
 import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
@@ -64,7 +64,7 @@ export async function getExecutiveProposals(
   start: number,
   limit: number,
   network?: SupportedNetworks
-): Promise<ProposalsAPIResponse> {
+): Promise<Proposal[]> {
   const net = network ? network : DEFAULT_NETWORK.network;
 
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
@@ -97,10 +97,7 @@ export async function getExecutiveProposals(
     fsCacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
   }
 
-  return {
-    total: proposals.length,
-    proposals: analyzedProposals
-  };
+  return analyzedProposals;
 }
 
 export async function getExecutiveProposal(

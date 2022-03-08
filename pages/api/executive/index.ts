@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import { CMSProposal, ProposalsAPIResponse } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
@@ -65,7 +65,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *                   schema:
  *                     $ref: '#/definitions/ArrayOfExecutives'
  */
-export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<ProposalsAPIResponse>) => {
+export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<Proposal[]>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;

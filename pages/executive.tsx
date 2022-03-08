@@ -2,7 +2,7 @@ import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
-import { GetServerSideProps, GetStaticProps } from 'next';
+import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -35,7 +35,7 @@ import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance'
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
-import { Proposal, ProposalsAPIResponse } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
@@ -47,6 +47,8 @@ import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import useSWRInfinite from 'swr/infinite';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -89,15 +91,13 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIResponse }): JSX.Element => {
+export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
   const { network } = useActiveWeb3React();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
 
-  const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
   const [showHistorical, setShowHistorical] = React.useState(false);
-  const loader = useRef<HTMLDivElement>(null);
 
   const address = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
@@ -106,7 +106,37 @@ export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIRespon
   const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
-  
+  // Use SWRInfinite to do a loaded pagination of the proposals
+  // Preload with the server side data as "fallback"
+  const getKey = (pageIndex, previousPageData) => {
+    if (previousPageData && !previousPageData.length) return null; // reached the end
+    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10`; // SWR key
+  };
+
+  const {
+    data: paginatedProposals,
+    error,
+    size,
+    setSize,
+    isValidating
+  } = useSWRInfinite(getKey, fetchJson, {
+    refreshInterval: 0,
+    revalidateOnFocus: false,
+    initialSize: 1,
+    revalidateFirstPage: false,
+    fallback: {
+      [`/api/executive?network=${network}&start=0&limit=10`]: proposals
+    }
+  });
+
+  const isLoadingInitialData = !paginatedProposals && !error;
+  const isLoadingMore =
+    isLoadingInitialData ||
+    (size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating);
+
+  const loadMore = () => {
+    setSize(size + 1);
+  };
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
@@ -138,7 +168,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIRespon
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
     return (
-      proposals.proposals.filter(proposal => {
+      (paginatedProposals?.flat() || []).filter(proposal => {
         // filter out non-cms proposals for now
         if (!('about' in proposal) || !('date' in proposal)) return false;
         if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
@@ -153,35 +183,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIRespon
       }
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
-  }, [proposals, startDate, endDate, sortBy]);
-
-  const loadMore = entries => {
-    const target = entries.pop();
-    if (target.isIntersecting) {
-      setNumHistoricalProposalsLoaded(
-        numHistoricalProposalsLoaded < filteredProposals.filter(proposal => !proposal.active).length
-          ? numHistoricalProposalsLoaded + 5
-          : numHistoricalProposalsLoaded
-      );
-    }
-  };
-
-  useEffect(() => {
-    let observer;
-    if (loader?.current) {
-      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
-      observer.observe(loader.current);
-    }
-    return () => {
-      if (loader?.current) {
-        observer?.unobserve(loader.current);
-      }
-    };
-  }, [loader, loadMore]);
-
-  useEffect(() => {
-    setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
-  }, [filteredProposals]);
+  }, [paginatedProposals, startDate, endDate, sortBy]);
 
   const { data: hat } = useHat();
 
@@ -373,15 +375,16 @@ export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIRespon
                 {filteredProposals
                   .filter(proposal => proposal.active)
                   .map((proposal, index) => (
-                    <ExecutiveOverviewCard
-                      key={index}
-                      proposal={proposal}
-                      isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                      network={network}
-                      account={account}
-                      votedProposals={votedProposals}
-                      mkrOnHat={mkrOnHat}
-                    />
+                    <Box key={`proposal-${proposal.address}-${index}`}>
+                      <ExecutiveOverviewCard
+                        proposal={proposal}
+                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                        network={network}
+                        account={account}
+                        votedProposals={votedProposals}
+                        mkrOnHat={mkrOnHat}
+                      />
+                    </Box>
                   ))}
               </Stack>
 
@@ -404,20 +407,40 @@ export const ExecutiveOverview = ({ proposals }: { proposals: ProposalsAPIRespon
                   <Stack gap={4}>
                     {filteredProposals
                       .filter(proposal => !proposal.active)
-                      .slice(0, numHistoricalProposalsLoaded)
                       .map((proposal, index) => (
-                        <ExecutiveOverviewCard
-                          key={index}
-                          proposal={proposal}
-                          isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                          network={network}
-                          account={account}
-                          votedProposals={votedProposals}
-                          mkrOnHat={mkrOnHat}
-                        />
+                        <Box key={`proposal-${proposal.address}-${index}`}>
+                          <ExecutiveOverviewCard
+                            proposal={proposal}
+                            isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                            network={network}
+                            account={account}
+                            votedProposals={votedProposals}
+                            mkrOnHat={mkrOnHat}
+                          />
+                        </Box>
                       ))}
                   </Stack>
-                  <div ref={loader} />
+                  {isLoadingMore && (
+                    <Box>
+                      <Box m={3}>
+                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      </Box>
+                      <Box m={3}>
+                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      </Box>
+                      <Box m={3}>
+                        <SkeletonThemed width={'100%'} height={'100px'} />
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Grid mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                    <Divider />
+                    <Button variant="mutedOutline" onClick={loadMore}>
+                      Load more
+                    </Button>
+                    <Divider />
+                  </Grid>
                 </div>
               ) : (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
@@ -474,7 +497,7 @@ export default function ExecutiveOverviewPage({
   useEffect(() => {
     if (!network) return;
     if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/executive?network=${network}`).then(_setProposals).catch(setError);
+      fetchJson(`/api/executive?network=${network}&start=0&limit=10`).then(_setProposals).catch(setError);
     }
   }, [network]);
 
@@ -491,16 +514,14 @@ export default function ExecutiveOverviewPage({
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ExecutiveOverview
-        proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
-      />
+      <ExecutiveOverview proposals={isDefaultNetwork(network) ? prefetchedProposals : _proposals} />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals(0, 20);
+  const proposals = await getExecutiveProposals(0, 10);
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
