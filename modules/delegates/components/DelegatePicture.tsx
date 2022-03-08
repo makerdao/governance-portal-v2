@@ -1,5 +1,5 @@
 import { DelegateStatusEnum } from '../delegates.constants';
-import { Box, Flex, Image } from 'theme-ui';
+import { Box, Flex, Image, Text } from 'theme-ui';
 import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
@@ -15,32 +15,30 @@ export function DelegatePicture({
 }): React.ReactElement {
   const delegateMetrics = (
     <Box sx={{ maxWidth: ['auto', '530px'], width: ['auto', '530px'], display: 'block' }}>
-      <Flex
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: ['column', 'row']
-        }}
-      >
-        {delegate.picture ? (
-          <img
-            sx={{ borderRadius: '100%', width: ['150px', '200px'], height: ['150px', '200px'] }}
-            src={delegate.picture}
-          />
-        ) : (
-          <Davatar size={50} address={delegate.address} generatedAvatarType="jazzicon" />
-        )}
-        <Box sx={{ marginLeft: 1, flex: 1 }}>
-          <DelegateParticipationMetrics delegate={delegate} />
-        </Box>
+      <Flex sx={{ p: 3 }}>
+        <DelegatePicture delegate={delegate} key={delegate.id} width={68} />
+        <Flex sx={{ ml: 3, flexDirection: 'column' }}>
+          <Text as="p" variant="microHeading">
+            {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
+          </Text>
+          <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
+            {delegate.voteDelegateAddress}
+          </Text>
+          <Text as="p" sx={{ fontSize: 2 }}>
+            {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
+          </Text>
+          <Box sx={{ marginLeft: 1, flex: 1 }}>
+            <DelegateParticipationMetrics delegate={delegate} />
+          </Box>
+        </Flex>
       </Flex>
     </Box>
   );
 
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
-      {delegate.picture ? (
-        <Tooltip label={delegateMetrics}>
+      <Tooltip label={delegateMetrics}>
+        {delegate.picture ? (
           <Image
             src={delegate.picture}
             key={delegate.id}
@@ -51,10 +49,12 @@ export function DelegatePicture({
               maxHeight: width
             }}
           />
-        </Tooltip>
-      ) : (
-        <Davatar size={width} address={delegate.address} generatedAvatarType="jazzicon" />
-      )}
+        ) : (
+          <Box>
+            <Davatar size={width} address={delegate.address} generatedAvatarType="jazzicon" />
+          </Box>
+        )}
+      </Tooltip>
       {delegate.status === DelegateStatusEnum.recognized && (
         <Icon
           name={'verified'}

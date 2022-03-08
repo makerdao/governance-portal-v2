@@ -501,7 +501,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const proposals = await getExecutiveProposals();
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    // revalidate: 30, // allow revalidation every 30 seconds
     props: {
       proposals
     }
