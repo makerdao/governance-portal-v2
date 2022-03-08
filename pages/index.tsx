@@ -288,11 +288,11 @@ export default function Index({
     if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
       Promise.all([
         fetchJson(`/api/polling/all-polls?network=${network}`),
-        fetchJson(`/api/executive?network=${network}&active=true`)
+        fetchJson(`/api/executive?network=${network}`)
       ])
-        .then(([pollsData, proposals]) => {
+        .then(([pollsData, proposalsResponse]) => {
           setPolls(pollsData.polls);
-          setProposals(proposals);
+          setProposals(proposalsResponse.proposals.filter(p => p.active));
         })
         .catch(setError);
     }
@@ -321,7 +321,7 @@ export default function Index({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
   const [proposals, pollsData, blogPosts] = await Promise.all([
-    getExecutiveProposals(),
+    getExecutiveProposals(0, 10),
     getPolls(),
     fetchBlogPosts()
   ]);

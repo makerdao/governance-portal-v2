@@ -202,7 +202,11 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 label="Spell Address"
               />
               <StatBox
-                value={spellData && spellData.mkrSupport && formatValue(spellData.mkrSupport, 'wad', 3)}
+                value={
+                  spellData &&
+                  spellData.mkrSupport &&
+                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 3)
+                }
                 label="MKR Support"
               />
               <StatBox value={supporters && supporters.length} label="Supporters" />
