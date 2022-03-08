@@ -45,7 +45,6 @@ describe('/polling/review page', async () => {
 
       // Poll card should display poll IDs
       cy.contains('Poll ID 3').should('be.visible');
-      cy.contains('Poll ID 4').should('be.visible');
 
       // It can edit a choice
       cy.get('[data-testid="edit-poll-choice"]').click();
