@@ -58,7 +58,7 @@ const ExecutiveIndicatorComponent = ({
 
   const { account } = useAccount();
   const { data: votedProposals } = useVotedProposals();
-  
+
   const newUnvotedProposals =
     votedProposals && account
       ? unscheduledProposals.filter(
