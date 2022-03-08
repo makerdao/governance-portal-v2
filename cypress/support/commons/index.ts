@@ -35,6 +35,7 @@ export async function setAccount(account: TestAccount, cb: () => void) {
 export function closeModal() {
   cy.get('[aria-label="close"]').click();
 }
+
 // Fork to a new block
 export function forkNetwork(block) {
   // Must refund accounts after forking
