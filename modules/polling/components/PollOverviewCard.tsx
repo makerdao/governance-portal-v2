@@ -63,7 +63,7 @@ export default function PollOverviewCard({
               <Box sx={{ cursor: 'pointer' }}>
                 <Box>
                   <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
-                    Posted on {formatDateWithTime(poll.startDate)}{' '}
+                    Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                   </Text>
                   <Link href={`/polling/${poll.slug}`} passHref>
                     <ThemeUILink variant="nostyle" title="View Poll Details">
