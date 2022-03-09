@@ -94,9 +94,7 @@ describe('Vote Proxy', () => {
 
       // Check that all the data changed by the correct amount after voting
       // Old vote
-      cy.get('[data-testid="mkr-supporting"]')
-        .eq(1)
-        .should('have.text', `1,127.03 MKR Supporting`);
+      cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', `1,127.03 MKR Supporting`);
       cy.get('[data-testid="proposal-status"]')
         .eq(1)
         .should('have.text', '98,872.974 additional MKR support needed to pass. Expires at .');
