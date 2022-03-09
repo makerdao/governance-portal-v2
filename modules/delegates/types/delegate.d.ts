@@ -10,6 +10,7 @@ export type DelegateRepoInformation = {
   pollParticipation?: string;
   executiveParticipation?: string;
   communication?: string;
+  disclosures?: string;
 };
 
 export type DelegateContractInformation = {
@@ -38,6 +39,7 @@ export type Delegate = {
   pollParticipation?: string;
   executiveParticipation?: string;
   communication?: string;
+  disclosures?: string;
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;

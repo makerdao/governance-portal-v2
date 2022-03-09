@@ -19,6 +19,8 @@ async function extractGithubInformation(
 
     const metricsMd = folderContents.find(item => item.name === 'metrics.md');
 
+    const disclosuresMd = folderContents.find(item => item.name === 'disclosures.md');
+
     // No profile found
     if (!profileMd) {
       return undefined;
@@ -31,6 +33,11 @@ async function extractGithubInformation(
       metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
     }
 
+    let disclosuresMdDoc;
+    if (disclosuresMd) {
+      disclosuresMdDoc = await (await fetch(disclosuresMd?.download_url)).text();
+    }
+
     const {
       content,
       data: { name, external_profile_url }
@@ -39,6 +46,10 @@ async function extractGithubInformation(
     const {
       data: { combined_participation, communication, poll_participation, exec_participation }
     } = matter(metricsMdDoc);
+
+    const {
+      data: { text }
+    } = matter(disclosuresMdDoc);
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
@@ -52,7 +63,8 @@ async function extractGithubInformation(
       combinedParticipation: combined_participation,
       pollParticipation: poll_participation,
       executiveParticipation: exec_participation,
-      communication
+      communication,
+      disclosures: text
     };
   } catch (e) {
     console.error('Error parsing folder from github delegate', e.message);

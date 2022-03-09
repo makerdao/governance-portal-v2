@@ -41,7 +41,12 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar size={tooltipAvatarWidth} address={delegate.address} generatedAvatarType="jazzicon" provider={library} />
+              <Davatar
+                size={tooltipAvatarWidth}
+                address={delegate.address}
+                generatedAvatarType="jazzicon"
+                provider={library}
+              />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
@@ -82,6 +87,18 @@ export function DelegatePicture({
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'column', p: 3 }}>
+        {delegate.disclosures && (
+          <Flex sx={{ alignItems: 'center', mb: 3 }}>
+            <Icon
+              name={'info'}
+              color="voterYellow"
+              sx={{
+                size: 18
+              }}
+            />
+            <Text sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold' }}>{delegate.disclosures}</Text>
+          </Flex>
+        )}
         <Text as="p" variant="secondary">
           Participation Breakdown
         </Text>
@@ -163,6 +180,22 @@ export function DelegatePicture({
             size: width / 2.5
           }}
         />
+      )}
+      {delegate.disclosures && (
+        <Tooltip label={delegate.disclosures}>
+          <Box>
+            <Icon
+              name={'info'}
+              color="voterYellow"
+              sx={{
+                position: 'absolute',
+                bottom: width * 0.65,
+                right: width / -7,
+                size: width / 2.5
+              }}
+            />
+          </Box>
+        </Tooltip>
       )}
     </Box>
   );
