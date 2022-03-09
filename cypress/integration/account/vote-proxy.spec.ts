@@ -38,7 +38,7 @@ describe('Vote Proxy', () => {
     });
   });
 
-  it('should verify executive page displays same data for proxies', () => {
+  it('should verify executive page displays same data for proxies', { defaultCommandTimeout: 60000 }, () => {
     visitPage(`executive`);
 
     // Start with the cold address page
@@ -94,7 +94,7 @@ describe('Vote Proxy', () => {
 
       // Check that all the data changed by the correct amount after voting
       // Old vote
-      cy.get('[data-testid="mkr-supporting"]', { timeout: 60000 })
+      cy.get('[data-testid="mkr-supporting"]')
         .eq(1)
         .should('have.text', `1,127.03 MKR Supporting`);
       cy.get('[data-testid="proposal-status"]')
@@ -109,6 +109,5 @@ describe('Vote Proxy', () => {
     });
   });
 });
-
 
 //TODO same checks but for polling page
