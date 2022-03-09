@@ -31,7 +31,6 @@ export class CustomizedBridge extends Eip1193Bridge {
       method = args[0];
       params = args[1];
     }
-    const txFrom = params[0].from;
     if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
       if (isCallbackForm) {
         callback({ result: [this.address] });
@@ -86,7 +85,7 @@ export class CustomizedBridge extends Eip1193Bridge {
         return result;
       }
     } catch (error) {
-      console.log('error resolving result. from:', txFrom, method, params, error);
+      console.log('error resolving result', method, params, error);
       if (isCallbackForm) {
         callback(error, null);
       } else {
