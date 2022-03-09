@@ -38,7 +38,7 @@ describe('Vote Proxy', () => {
     });
   });
 
-  it('should verify executive page displays same data for proxies', { defaultCommandTimeout: 60000 }, () => {
+  it('should verify executive page displays same data for proxies', { defaultCommandTimeout: 90000 }, () => {
     visitPage(`executive`);
 
     // Start with the cold address page
