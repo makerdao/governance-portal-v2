@@ -94,7 +94,7 @@ describe('Account Page', async () => {
 
         cy.get('[data-testid="mkr-input"]').type('0.005');
 
-        cy.get('[data-testid="button-mkr-withdraw"]').click();
+        cy.get('[data-testid="button-withdraw-mkr"]').click();
 
         cy.contains(/You have a DSChief balance of 0.005 MKR./).should('be.visible');
       });
