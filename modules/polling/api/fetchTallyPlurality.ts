@@ -46,10 +46,14 @@ export async function fetchTallyPlurality(
 
   const sorted = summedSupport.sort((prev, next) => (prev.mkrSupport.gt(next.mkrSupport) ? -1 : 1));
 
-  // The winner is the first option, unless the first option is "0" which is abstain
-  // in that case we pick the next option
   const winner =
-    sorted.length > 0
+    // first check if abstain is only option in sorted
+    // if so, then no winner, return null
+    sorted.length === 1 && sorted[0].optionId === '0'
+      ? null
+      : // otherwise the winner is the first option, unless the first option is "0" which is abstain
+      // in that case we pick the next option
+      sorted.length > 0
       ? sorted[0].optionId !== '0'
         ? sorted[0].optionId.toString()
         : sorted[1].optionId.toString()
