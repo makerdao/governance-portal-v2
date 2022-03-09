@@ -41,7 +41,12 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar size={tooltipAvatarWidth} address={delegate.address} generatedAvatarType="jazzicon" provider={library} />
+              <Davatar
+                size={tooltipAvatarWidth}
+                address={delegate.address}
+                generatedAvatarType="jazzicon"
+                provider={library}
+              />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
