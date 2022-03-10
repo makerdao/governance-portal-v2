@@ -40,9 +40,9 @@ const closeButtonStyle: ThemeUICSSObject = {
 };
 
 const NetworkSelect = (): React.ReactElement => {
-  const { library, chainId } = useActiveWeb3React();
+  const { library, chainId, account } = useActiveWeb3React();
   // We can only switch MM network if injected connector is active
-  const { active: accountConnected } = useActiveWeb3React();
+  const disabled = !account;
 
   const [showDialog, setShowDialog] = useState(false);
 
@@ -73,7 +73,7 @@ const NetworkSelect = (): React.ReactElement => {
             setShowDialog(true);
           }}
           activeNetwork={CHAIN_INFO[chainId].label}
-          disabled={!accountConnected}
+          disabled={disabled}
         />
       )}
 
