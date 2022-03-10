@@ -1,5 +1,6 @@
 import { Card, Flex, Text, Box, Heading } from 'theme-ui';
 import useSWR from 'swr';
+import { request } from 'graphql-request';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
@@ -8,6 +9,8 @@ import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { uniswapV3MkrSupply } from 'modules/gql/queries/uniswapV3MkrSupply';
+import { WAD } from 'modules/web3/constants/numbers';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -38,11 +41,20 @@ async function getBalancerMkr(mkrAddress: string) {
   return parseUnits(parseInt(balancerNum).toString());
 }
 
+async function getUniswapV3Mkr(mkrAddress: string) {
+  const resp = await request(
+    'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
+    uniswapV3MkrSupply,
+    { argMkrAddress: mkrAddress }
+  );
+  return BigNumber.from(resp.token.totalSupply).mul(WAD);
+}
+
 export default function MkrLiquiditySidebar({ className }: { className?: string }): JSX.Element {
   const mkrAddress = useContractAddress(Tokens.MKR);
   const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
   const { data: aaveV2 } = useTokenBalance(Tokens.MKR, aaveV2Amkr);
-  const { data: uniswap } = useTokenBalance(Tokens.MKR, uniswapV2MkrPool);
+  const { data: uniswapV2 } = useTokenBalance(Tokens.MKR, uniswapV2MkrPool);
   const { data: sushi } = useTokenBalance(Tokens.MKR, sushiswapAddress);
 
   const { data: balancer } = useSWR(
@@ -51,10 +63,18 @@ export default function MkrLiquiditySidebar({ className }: { className?: string 
     { refreshInterval: 60000 }
   );
 
+  const { data: uniswapV3 } = useSWR(
+    `${mkrAddress}/mkr-liquidity-uniswapV3`,
+    () => getUniswapV3Mkr(mkrAddress),
+    { refreshInterval: 60000 }
+  );
+
   const mkrPools = [
     ['Balancer', balancer],
-    ['Aave', aaveV1 && aaveV2 && aaveV1?.add(aaveV2)],
-    ['Uniswap V2', uniswap],
+    ['Aave V1', aaveV1],
+    ['Aave V2', aaveV2],
+    ['Uniswap V2', uniswapV2],
+    ['Uniswap V3', uniswapV3],
     ['Sushi', sushi]
   ].sort((a, b) => (a[1] && b[1] ? ((a[1] as BigNumber).gt(b[1]) ? -1 : 1) : 0));
 
