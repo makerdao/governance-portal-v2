@@ -460,9 +460,14 @@ export const getServerSideProps: GetServerSideProps = async (context): Promise<a
   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, networkToFetch);
-  const { hasBeenCast } = await analyzeSpell(proposal?.address, network);
+
   // Only fetch at build time if spell has been cast, otherwise we do it client side
-  const spellDiffs: SpellDiff[] = hasBeenCast ? await fetchHistoricalSpellDiff(proposal?.address) : [];
+  const { hasBeenCast } = proposal
+    ? await analyzeSpell(proposal.address, networkToFetch)
+    : { hasBeenCast: false };
+
+  const spellDiffs: SpellDiff[] =
+    proposal && hasBeenCast ? await fetchHistoricalSpellDiff(proposal.address) : [];
 
   return {
     props: {
