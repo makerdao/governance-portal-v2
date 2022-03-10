@@ -77,7 +77,7 @@ async function getGithubExecutives(network: SupportedNetworks): Promise<CMSPropo
 export async function getExecutiveProposals(
   start: number,
   limit: number,
-  sortBy: 'date' | 'mkr',
+  sortBy: 'date' | 'mkr' | 'active',
   network?: SupportedNetworks,
   startDate = 0,
   endDate = 0
@@ -103,8 +103,11 @@ export async function getExecutiveProposals(
       const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
       const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
       return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
+    } else if (sortBy === 'date') {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    } else {
+      return a.active ? -1 : 1; // Sort by active first
     }
-    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
   // Filter by dates

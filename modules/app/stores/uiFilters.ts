@@ -20,8 +20,8 @@ type Store = {
   setShowPollActive: (showActive: boolean) => void;
   setShowPollEnded: (ended: boolean) => void;
   resetPollFilters: () => void;
-  executiveSortBy: 'date' | 'mkr';
-  setExecutiveSortBy: (method: 'date' | 'mkr') => void;
+  executiveSortBy: 'active' | 'date' | 'mkr';
+  setExecutiveSortBy: (method: 'active' | 'date' | 'mkr') => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
@@ -78,7 +78,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     });
   },
 
-  executiveSortBy: 'date',
+  executiveSortBy: 'active',
 
   setExecutiveSortBy: sortMethod => {
     set({ executiveSortBy: sortMethod });

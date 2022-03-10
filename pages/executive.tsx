@@ -520,7 +520,7 @@ export default function ExecutiveOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals(0, 10, 'date');
+  const proposals = await getExecutiveProposals(0, 10, 'active');
 
   return {
     // revalidate: 30, // allow revalidation every 30 seconds
