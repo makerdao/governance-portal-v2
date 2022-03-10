@@ -78,14 +78,16 @@ export async function getExecutiveProposals(
   start: number,
   limit: number,
   sortBy: 'date' | 'mkr',
-  network?: SupportedNetworks
+  network?: SupportedNetworks,
+  startDate = 0,
+  endDate = 0
 ): Promise<Proposal[]> {
   const net = network ? network : DEFAULT_NETWORK.network;
 
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
   const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
 
-  const cacheKey = `proposals-${start}-${limit}-${sortBy}`;
+  const cacheKey = `proposals-${start}-${limit}-${sortBy}-${startDate}-${endDate}`;
 
   if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet(cacheKey, currentNetwork);
@@ -105,7 +107,14 @@ export async function getExecutiveProposals(
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
-  const subset = sorted.slice(start, start + limit);
+  // Filter by dates
+  const filtered = sorted.filter(proposal => {
+    if (startDate && new Date(proposal.date).getTime() < startDate) return false;
+    if (endDate && new Date(proposal.date).getTime() > endDate) return false;
+    return true;
+  });
+
+  const subset = filtered.slice(start, start + limit);
 
   const analyzedProposals = await Promise.all(
     subset.map(async p => {

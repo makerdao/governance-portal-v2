@@ -114,7 +114,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   // Preload with the server side data as "fallback"
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
-    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10&sortBy=${sortBy}`; // SWR key
+    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10&sortBy=${sortBy}${
+      startDate ? `&startDate=${new Date(startDate).getTime()}` : ''
+    }${endDate ? `&endDate=${new Date(endDate).getTime()}` : ''}`; // SWR key
   };
 
   const {
@@ -163,17 +165,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     }
   }, [sortBy]);
 
-  const filteredProposals = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
-    return (paginatedProposals?.flat() || []).filter(proposal => {
-      // filter out non-cms proposals for now
-      if (!('about' in proposal) || !('date' in proposal)) return false;
-      if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
-      if (end && new Date(proposal.date).getTime() > end.getTime()) return false;
-      return true;
-    }) as Proposal[];
-  }, [paginatedProposals, startDate, endDate, sortBy]);
+  const flattenedProposals = useMemo(() => {
+    return paginatedProposals?.flat() || [];
+  }, [paginatedProposals]);
 
   const { data: hat } = useHat();
 
@@ -363,7 +357,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               <Heading as="h1">Executive Proposals</Heading>
               {!isLoadingInitialData && (
                 <Stack gap={4} sx={{ mb: 4 }}>
-                  {filteredProposals
+                  {flattenedProposals
                     .filter(proposal => proposal.active)
                     .map((proposal, index) => (
                       <Box key={`proposal-${proposal.address}-${index}`}>
@@ -390,25 +384,41 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   </Box>
                 </Box>
               )}
-
-              {showHistorical ? (
+              {!showHistorical && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
+                <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                  <Divider />
+                  <Button
+                    variant="mutedOutline"
+                    onClick={() => {
+                      trackButtonClick('showHistoricalExecs');
+                      setShowHistorical(true);
+                    }}
+                  >
+                    View more proposals
+                  </Button>
+                  <Divider />
+                </Grid>
+              )}
+              {(showHistorical || flattenedProposals.filter(proposal => proposal.active).length == 0) && (
                 <div>
-                  <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
-                    <Divider />
-                    <Button
-                      variant="mutedOutline"
-                      onClick={() => {
-                        trackButtonClick('hideHistoricalExecs');
-                        setShowHistorical(false);
-                      }}
-                    >
-                      View fewer proposals
-                    </Button>
-                    <Divider />
-                  </Grid>
+                  {flattenedProposals.filter(proposal => proposal.active).length > 0 && (
+                    <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                      <Divider />
+                      <Button
+                        variant="mutedOutline"
+                        onClick={() => {
+                          trackButtonClick('hideHistoricalExecs');
+                          setShowHistorical(false);
+                        }}
+                      >
+                        View fewer proposals
+                      </Button>
+                      <Divider />
+                    </Grid>
+                  )}
 
                   <Stack gap={4}>
-                    {filteredProposals
+                    {flattenedProposals
                       .filter(proposal => !proposal.active)
                       .map((proposal, index) => (
                         <Box key={`proposal-${proposal.address}-${index}`}>
@@ -445,20 +455,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                     <Divider />
                   </Grid>
                 </div>
-              ) : (
-                <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
-                  <Divider />
-                  <Button
-                    variant="mutedOutline"
-                    onClick={() => {
-                      trackButtonClick('showHistoricalExecs');
-                      setShowHistorical(true);
-                    }}
-                  >
-                    View more proposals
-                  </Button>
-                  <Divider />
-                </Grid>
               )}
             </Stack>
           </Box>

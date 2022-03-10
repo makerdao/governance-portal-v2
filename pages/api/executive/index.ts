@@ -71,8 +71,17 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;
   const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
   const sortBy = req.query.sortBy || 'date';
+  const startDate = req.query.startDate ? parseInt(req.query.startDate as string, 10) : 0;
+  const endDate = req.query.endDate ? parseInt(req.query.endDate as string, 10) : 0;
 
-  const response = await getExecutiveProposals(start, limit, sortBy as 'date' | 'mkr', network);
+  const response = await getExecutiveProposals(
+    start,
+    limit,
+    sortBy as 'date' | 'mkr',
+    network,
+    startDate,
+    endDate
+  );
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);

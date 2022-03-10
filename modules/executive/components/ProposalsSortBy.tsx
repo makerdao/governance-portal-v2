@@ -12,7 +12,7 @@ export default function ProposalsSortBy(props): JSX.Element {
 
   return (
     <FilterButton
-      name={() => `Sort by ${executiveSortBy !== 'date' ? executiveSortBy : 'date'}`}
+      name={() => `Sort by ${executiveSortBy !== 'date' ? 'MKR Amount' : 'Date Posted'}`}
       listVariant="menubuttons.default.list"
       {...props}
     >
