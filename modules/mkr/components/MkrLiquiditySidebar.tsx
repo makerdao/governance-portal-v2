@@ -50,6 +50,14 @@ async function getUniswapV3Mkr(mkrAddress: string) {
   return BigNumber.from(resp.token.totalSupply).mul(WAD);
 }
 
+async function getCompoundMkr() {
+  const resp = await fetch('https://api.compound.finance/api/v2/ctoken');
+  const json = await resp.json();
+
+  const mkr = json.cToken?.find(token => token.underlying_symbol === 'MKR')?.cash?.value;
+  return BigNumber.from(Math.round(mkr)).mul(WAD);
+}
+
 export default function MkrLiquiditySidebar({ className }: { className?: string }): JSX.Element {
   const mkrAddress = useContractAddress(Tokens.MKR);
   const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
@@ -69,13 +77,18 @@ export default function MkrLiquiditySidebar({ className }: { className?: string 
     { refreshInterval: 60000 }
   );
 
+  const { data: compound } = useSWR(`${mkrAddress}/mkr-liquidity-compound`, getCompoundMkr, {
+    refreshInterval: 60000
+  });
+
   const mkrPools = [
     ['Balancer', balancer],
     ['Aave V1', aaveV1],
     ['Aave V2', aaveV2],
     ['Uniswap V2', uniswapV2],
     ['Uniswap V3', uniswapV3],
-    ['Sushi', sushi]
+    ['Sushi', sushi],
+    ['Compound', compound]
   ].sort((a, b) => (a[1] && b[1] ? ((a[1] as BigNumber).gt(b[1]) ? -1 : 1) : 0));
 
   const PoolComponent = pool => {
