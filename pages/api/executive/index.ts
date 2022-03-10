@@ -70,8 +70,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;
   const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+  const sortBy = req.query.sortBy || 'date';
 
-  const response = await getExecutiveProposals(start, limit, network);
+  const response = await getExecutiveProposals(start, limit, sortBy as 'date' | 'mkr', network);
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(response);

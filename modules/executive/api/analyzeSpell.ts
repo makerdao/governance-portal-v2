@@ -8,6 +8,15 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import { SpellData } from '../types';
 
+export const getExecutiveMKRSupport = async (
+  address: string,
+  network: SupportedNetworks
+): Promise<string> => {
+  const approvals = await getChiefApprovals(address, network);
+
+  return approvals.toString();
+};
+
 // executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
   const spellContract = getSpellContract(address, network);
@@ -78,7 +87,7 @@ export const analyzeSpell = async (address: string, network: SupportedNetworks):
 
       return approvals.toString();
     } catch (err) {
-      return undefined;
+      return '0';
     }
   };
 

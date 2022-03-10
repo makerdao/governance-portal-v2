@@ -106,11 +106,15 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
+  const [startDate, endDate, sortBy] = useUiFiltersStore(
+    state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
+    shallow
+  );
   // Use SWRInfinite to do a loaded pagination of the proposals
   // Preload with the server side data as "fallback"
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
-    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10`; // SWR key
+    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10&sortBy=${sortBy}`; // SWR key
   };
 
   const {
@@ -125,7 +129,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     initialSize: 1,
     revalidateFirstPage: false,
     fallback: {
-      [`/api/executive?network=${network}&start=0&limit=10`]: proposals
+      [`/api/executive?network=${network}&start=0&limit=10&sortBy=${sortBy}`]: proposals
     }
   });
 
@@ -151,11 +155,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
-  const [startDate, endDate, sortBy] = useUiFiltersStore(
-    state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
-    shallow
-  );
-
   const prevSortByRef = useRef<string>(sortBy);
   useEffect(() => {
     if (sortBy !== prevSortByRef.current) {
@@ -167,22 +166,13 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const filteredProposals = useMemo(() => {
     const start = startDate && new Date(startDate);
     const end = endDate && new Date(endDate);
-    return (
-      (paginatedProposals?.flat() || []).filter(proposal => {
-        // filter out non-cms proposals for now
-        if (!('about' in proposal) || !('date' in proposal)) return false;
-        if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
-        if (end && new Date(proposal.date).getTime() > end.getTime()) return false;
-        return true;
-      }) as Proposal[]
-    ).sort((a, b) => {
-      if (sortBy === 'MKR Amount') {
-        const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
-        const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
-        return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
-      }
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
+    return (paginatedProposals?.flat() || []).filter(proposal => {
+      // filter out non-cms proposals for now
+      if (!('about' in proposal) || !('date' in proposal)) return false;
+      if (start && new Date(proposal.date).getTime() < start.getTime()) return false;
+      if (end && new Date(proposal.date).getTime() > end.getTime()) return false;
+      return true;
+    }) as Proposal[];
   }, [paginatedProposals, startDate, endDate, sortBy]);
 
   const { data: hat } = useHat();
@@ -534,7 +524,7 @@ export default function ExecutiveOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals(0, 10);
+  const proposals = await getExecutiveProposals(0, 10, 'date');
 
   return {
     // revalidate: 30, // allow revalidation every 30 seconds

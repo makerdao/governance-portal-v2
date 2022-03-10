@@ -321,7 +321,7 @@ export default function Index({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals, blog posts at build-time
   const [proposals, pollsData, blogPosts] = await Promise.all([
-    getExecutiveProposals(0, 10),
+    getExecutiveProposals(0, 10, 'date'),
     getPolls(),
     fetchBlogPosts()
   ]);
