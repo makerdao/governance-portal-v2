@@ -10,7 +10,7 @@ export type CMSProposal = {
   title: string;
   date: string;
   proposalLink: string;
-  spellData: {
+  spellData?: {
     mkrSupport: string;
   };
 };
