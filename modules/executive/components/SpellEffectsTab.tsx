@@ -1,11 +1,15 @@
-import { Box, Flex, Text, Link as ThemeUILink } from 'theme-ui';
-import { Proposal, SpellData } from '../types';
-import { useState } from 'react';
+import { Box, Flex, Text, Link as ThemeUILink, Heading } from 'theme-ui';
+import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
+import { useEffect, useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
+import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
+// import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
+
+// import { SpellDiff as SpellDiffType } from '../../../pages/executive/[proposal-id]';
 
 const CircleIcon = ({ name }) => (
   <Flex
@@ -24,12 +28,57 @@ const CircleIcon = ({ name }) => (
   </Flex>
 );
 
+const SpellDiff = ({ diffs }) => {
+  return diffs.map((diff, i) => {
+    const { contract, location, fromVal, toVal } = diff;
+    return (
+      <Flex
+        key={JSON.stringify(diff[i]) + i}
+        sx={{ flexDirection: 'column', p: 3, m: 3, bg: 'background', borderRadius: 'small' }}
+      >
+        <Heading variant="smallHeading">{`${contract}`}</Heading>
+        <Heading variant="microHeading">{formatLocation(location)}</Heading>
+        <Flex sx={{ justifyContent: 'space-between', mt: 3 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column'
+            }}
+          >
+            <Text variant="caps">Old Value</Text>
+            <Text>{fromVal}</Text>
+          </Flex>
+          <Flex
+            sx={{
+              flexDirection: 'column'
+            }}
+          >
+            <Text variant="caps" sx={{ alignSelf: 'flex-end' }}>
+              New Value
+            </Text>
+            <Text>{toVal}</Text>
+            {formatValue(toVal).interpreted && (
+              <>
+                <Text variant="caps" sx={{ mt: 3, alignSelf: 'flex-end' }}>
+                  Interpreted New Value
+                </Text>
+                <Text>{formatValue(toVal).interpreted}</Text>
+              </>
+            )}
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+  });
+};
+
 export function SpellEffectsTab({
   proposal,
-  spellData
+  spellData,
+  spellDiffs
 }: {
   proposal: Proposal;
   spellData?: SpellData;
+  spellDiffs?: SpellDiffType[];
 }): React.ReactElement {
   // ch401: hide until API is fixed
   // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
@@ -62,6 +111,7 @@ export function SpellEffectsTab({
 
   return spellData ? (
     <Box>
+      {spellDiffs && <SpellDiff diffs={spellDiffs} />}
       <Text
         as="p"
         variant="microHeading"

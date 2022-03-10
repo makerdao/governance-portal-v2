@@ -42,7 +42,7 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
 
 //types
-import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
@@ -54,9 +54,12 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
+import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
+import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
 
 type Props = {
   proposal: Proposal;
+  spellDiffs: SpellDiff[];
 };
 
 const editMarkdown = content => {
@@ -88,7 +91,7 @@ const ProposalTimingBanner = ({
   return <></>;
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
@@ -231,7 +234,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
                   <div key={'spell'} sx={{ p: [3, 4] }}>
-                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
                   </div>,
                   <div key={'comments'} sx={{ p: [3, 4] }}>
                     {comments ? (
@@ -394,11 +397,24 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
+export default function ProposalPage({
+  proposal: prefetchedProposal,
+  spellDiffs: prefetchedSpellDiffs
+}: {
+  proposal?: Proposal;
+  spellDiffs: SpellDiff[];
+}): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
   const { network } = useActiveWeb3React();
+
+  const spellAddress = prefetchedProposal?.address;
+  // const spellAddress = '0xad92310c5e1b3622ab6987917d6a074bca428e61';
+
+  const { data: simulatedDiffs } = useSWR(
+    prefetchedSpellDiffs.length === 0 ? `/api/executive/state-diff/${spellAddress}?network=${network}` : null
+  );
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
@@ -429,10 +445,11 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
+  const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : simulatedDiffs;
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ProposalView proposal={proposal as Proposal} />
+      <ProposalView proposal={proposal as Proposal} spellDiffs={spellDiffs} />
     </ErrorBoundary>
   );
 }
@@ -443,10 +460,15 @@ export const getServerSideProps: GetServerSideProps = async (context): Promise<a
   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, networkToFetch);
+  const { hasBeenCast } = await analyzeSpell(proposal?.address, network);
+  // Only fetch at build time if spell has been cast, otherwise we do it client side
+  const spellDiffs: SpellDiff[] = hasBeenCast ? await fetchHistoricalSpellDiff(proposal?.address) : [];
 
   return {
     props: {
-      proposal
+      proposal,
+      spellDiffs,
+      revalidate: 30 // Ensures that after a spell is cast, we regenerate the static page with fetchHistoricalSpellDiff
     }
   };
 };
