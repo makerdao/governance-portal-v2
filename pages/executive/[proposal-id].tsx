@@ -349,7 +349,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         }}
                         key={supporter.address}
                       >
-                        <Box sx={{ width: '45%' }}>
+                        <Box>
                           <Link
                             href={{
                               pathname: `/address/${supporter.address}`
@@ -374,7 +374,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                           </Link>
                         </Box>
 
-                        <Box sx={{ width: '55%', textAlign: 'right' }}>
+                        <Box sx={{ textAlign: 'right' }}>
                           <Text color="onSecondary">
                             {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
                           </Text>
