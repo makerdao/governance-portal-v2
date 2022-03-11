@@ -84,7 +84,7 @@ export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =
 // const url = 'http://18.157.179.179'; //old
 const url = 'http://3.127.236.127';
 
-export const SIMULATE_TX_ENDPOINT = `${url}/api/v1/transactions/simulation`;
+export const SIMULATE_TX_ENDPOINT = `${url}/api/v1/transactions/simulation/`;
 
 export const SIMULATE_TX_GAS = '0x1c6b9e'; // 1862558 wei
 

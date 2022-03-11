@@ -33,35 +33,43 @@ const SpellDiff = ({ diffs }) => {
   return diffs.map((diff, i) => {
     const { contract, location, fromVal, toVal } = diff;
     return (
-      <Flex key={JSON.stringify(diff[i])} sx={{ flexDirection: 'column', p: 3, m: 3 }}>
+      <Flex key={JSON.stringify(diff[i])} sx={{ flexDirection: 'column' }}>
         {/* <Flex key={JSON.stringify(diff[i]) + i} sx={{ flexDirection: 'column', p: 3, m: 3 }}> */}
-        <Divider sx={{ mb: 3 }} />
-        <Flex sx={{ justifyContent: 'space-between' }}>
-          <Flex sx={{ flexDirection: 'column' }}>
-            <Heading variant="smallHeading">{`${contract}`}</Heading>
+        <Divider sx={{ m: 0 }} />
+        <Flex sx={{ justifyContent: 'space-between', my: 0, py: 4 }}>
+          <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+            <Text sx={{ fontWeight: 'semiBold' }}>{`${contract}`}</Text>
             <Tooltip label={location}>
-              <Heading variant="microHeading">{formatLocation(location)}</Heading>
+              <Text sx={{ pl: 2 }}>{formatLocation(location)}</Text>
             </Tooltip>
           </Flex>
-          <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+
+          <Flex sx={{ flexDirection: 'column', mt: 0, gap: 3 }}>
             <Flex
               sx={{
                 flexDirection: 'column',
-                alignItems: 'flex-end'
+                alignItems: 'flex-end',
+                gap: 1
               }}
             >
-              <Text variant="caps">Old Value</Text>
+              <Text variant="caps" color="onSecondary">
+                Old Value
+              </Text>
               <Tooltip label={fromVal}>
                 <Text>{formatDiffValue(fromVal)}</Text>
               </Tooltip>
             </Flex>
+
             <Flex
               sx={{
                 flexDirection: 'column',
-                alignItems: 'flex-end'
+                alignItems: 'flex-end',
+                gap: 1
               }}
             >
-              <Text variant="caps">New Value</Text>
+              <Text variant="caps" color="onSecondary">
+                New Value
+              </Text>
               <Tooltip label={toVal}>
                 <Text>{formatDiffValue(toVal)}</Text>
               </Tooltip>
@@ -154,7 +162,7 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 4 }}>
         {'proposalLink' in proposal && (
           <Box sx={{ width: ['100%', '50%'] }}>
             <Text

@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import { fetchJson } from 'lib/fetchJson';
-import { DECODED_SPELL_ENDPOINT, SIGNATURE_CAST } from 'modules/web3/constants/networks';
+import { DECODED_SPELL_ENDPOINT, SIGNATURE_CAST, SupportedNetworks } from 'modules/web3/constants/networks';
 import { validateDiff } from '../helpers/spellDiffParsers';
 import { DecodedDiffAPIResponse, SpellDiff } from '../types';
+import { config } from 'lib/config';
 // import { validateDiff } from '../helpers/spellDiffParsers';
 // import { DecodedDiffAPIResponse, SpellDiff } from '../types';
 
@@ -10,8 +11,7 @@ export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise
   if (!proposalAddress) return [];
 
   // Need to find the tx of the cast spell
-  // TODO: is there a backup procedure we could use to get the hash?
-  const provider = new ethers.providers.EtherscanProvider();
+  const provider = new ethers.providers.EtherscanProvider(SupportedNetworks.MAINNET, config.ETHERSCAN_KEY);
   const history = await provider.getHistory(proposalAddress);
   const castTx = history.filter(h => h.data === SIGNATURE_CAST);
 
@@ -20,11 +20,7 @@ export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise
     console.warn('multiple matching txs', castTx);
   }
   const [{ hash }] = castTx;
-  console.log('transaction hash for decoding spell', hash);
 
-  // TODO: currently the endpoint is hardcoded to only allow the following hash:
-  // const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
-  // const url = DECODED_SPELL_ENDPOINT(hcHash);
   const url = DECODED_SPELL_ENDPOINT(hash);
 
   const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);

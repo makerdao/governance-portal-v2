@@ -14,18 +14,13 @@ import { SimulationDiffAPIResponse, SpellDiff } from '../types';
 
 type Response = Record<'diffs', SimulationDiffAPIResponse[]>;
 
-export async function fetchSimulationSpellDiffs(
-  proposalAddress: string,
-  blockNumber: string
-): Promise<SpellDiff[]> {
+export async function fetchSimulationSpellDiffs(proposalAddress: string): Promise<SpellDiff[]> {
   // proposalAddress = '0x82b24156f0223879aaac2dd0996a25fe1ff74e1a'; // the demo spell address
   proposalAddress = '0x068F8fb8318506bFbaD57B494A0c7b31399f4Ed6'; // spell address 3/11
 
   // TODO: this probably needs to be the block number where it's eligible to be executed
   // If no executeOnTopOfBlockNumber is provided - transaction will be simulated on top of the head block
-  // May not need blocknumber once the API is fixed
-  // const execute_on_top_of_block_number = 13624481; // from example. could be current block, eh?
-  blockNumber = '14366830'; // 3/11 block executed
+  const blockNumber = '14366830'; // 3/11 block executed
 
   const paramsData = {
     from_address: SIMULATE_TX_FROM,

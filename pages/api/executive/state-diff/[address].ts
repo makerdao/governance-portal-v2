@@ -14,17 +14,16 @@ import { getDefaultProvider } from 'modules/web3/helpers/getDefaultProvider';
 import { fetchSimulationSpellDiffs } from 'modules/executive/api/fetchSimulationSpellDiff';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  // TODO rename this simulate-transaction and it should only be used for that
-  const spellAddress2: string = req.query.address as string;
+  const spellAddress: string = req.query.address as string;
 
-  invariant(spellAddress2 && ethers.utils.isAddress(spellAddress2), 'valid spell address required');
+  invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
   invariant(
     !req.query.network || req.query.network === SupportedNetworks.MAINNET,
     `unsupported network ${req.query.network}`
   );
 
-  const diffs = await fetchSimulationSpellDiffs(spellAddress2);
+  const diffs = await fetchSimulationSpellDiffs(spellAddress);
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json(diffs);

@@ -411,8 +411,8 @@ export default function ProposalPage({
   const { network } = useActiveWeb3React();
 
   const spellAddress = prefetchedProposal?.address;
-  // const spellAddress = '0xad92310c5e1b3622ab6987917d6a074bca428e61';
 
+  // If we didn't prefetch spell diffs, it means it hasn't been cast yet.
   const { data: simulatedDiffs } = useSWR(
     prefetchedSpellDiffs.length === 0 ? `/api/executive/state-diff/${spellAddress}?network=${network}` : null
   );
