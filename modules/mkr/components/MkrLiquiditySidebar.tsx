@@ -125,8 +125,8 @@ export default function MkrLiquiditySidebar({
   const PoolComponent = pool => {
     const [poolName, poolLiquidity, subpools] = pool;
     return (
-      <Flex sx={{ flexDirection: 'column' }}>
-        <Flex key={poolName} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
+      <Flex key={poolName} sx={{ flexDirection: 'column' }}>
+        <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in {poolName}</Text>
             {subpools && (
