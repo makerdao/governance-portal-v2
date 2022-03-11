@@ -209,7 +209,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 value={
                   spellData &&
                   spellData.mkrSupport &&
-                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 3)
+                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 0)
                 }
                 label="MKR Support"
               />
