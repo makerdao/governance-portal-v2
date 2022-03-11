@@ -81,7 +81,8 @@ export const ETH_TX_STATE_DIFF_ENDPOINT = (network: SupportedNetworks): string =
  * Hardcoded values for the simulate tx endpoint. We don't need to generate them
  * dynamically because we're only interested in the results of a successful tx.
  */
-const url = 'http://18.157.179.179';
+// const url = 'http://18.157.179.179'; //old
+const url = 'http://3.127.236.127';
 
 export const SIMULATE_TX_ENDPOINT = `${url}/api/v1/transactions/simulation`;
 
@@ -91,7 +92,7 @@ export const SIMULATE_TX_GAS_PRICE = '0x23bd501f00'; // 153500000000 wei or 153.
 
 export const SIGNATURE_CAST = '0x96d373e5'; // Signature for 'cast()'
 
-export const SIMULATE_TX_VALUE = 0;
+export const SIMULATE_TX_VALUE = '0';
 
 export const SIMULATE_TX_FROM = '0x5cab1e5286529370880776461c53a0e47d74fb63'; // The chief-keeper EOA, owned by TO, used to cast spells
 

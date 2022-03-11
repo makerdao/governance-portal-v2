@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Link as ThemeUILink, Heading } from 'theme-ui';
+import { Box, Flex, Text, Link as ThemeUILink, Heading, Divider } from 'theme-ui';
 import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
 import { useEffect, useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
@@ -6,7 +6,8 @@ import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
-import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
+import { formatLocation, formatDiffValue } from '../helpers/spellDiffParsers';
+import Tooltip from 'modules/app/components/Tooltip';
 // import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
 
 // import { SpellDiff as SpellDiffType } from '../../../pages/executive/[proposal-id]';
@@ -32,38 +33,39 @@ const SpellDiff = ({ diffs }) => {
   return diffs.map((diff, i) => {
     const { contract, location, fromVal, toVal } = diff;
     return (
-      <Flex
-        key={JSON.stringify(diff[i]) + i}
-        sx={{ flexDirection: 'column', p: 3, m: 3, bg: 'background', borderRadius: 'small' }}
-      >
-        <Heading variant="smallHeading">{`${contract}`}</Heading>
-        <Heading variant="microHeading">{formatLocation(location)}</Heading>
-        <Flex sx={{ justifyContent: 'space-between', mt: 3 }}>
-          <Flex
-            sx={{
-              flexDirection: 'column'
-            }}
-          >
-            <Text variant="caps">Old Value</Text>
-            <Text>{fromVal}</Text>
+      <Flex key={JSON.stringify(diff[i])} sx={{ flexDirection: 'column', p: 3, m: 3 }}>
+        {/* <Flex key={JSON.stringify(diff[i]) + i} sx={{ flexDirection: 'column', p: 3, m: 3 }}> */}
+        <Divider sx={{ mb: 3 }} />
+        <Flex sx={{ justifyContent: 'space-between' }}>
+          <Flex sx={{ flexDirection: 'column' }}>
+            <Heading variant="smallHeading">{`${contract}`}</Heading>
+            <Tooltip label={location}>
+              <Heading variant="microHeading">{formatLocation(location)}</Heading>
+            </Tooltip>
           </Flex>
-          <Flex
-            sx={{
-              flexDirection: 'column'
-            }}
-          >
-            <Text variant="caps" sx={{ alignSelf: 'flex-end' }}>
-              New Value
-            </Text>
-            <Text>{toVal}</Text>
-            {formatValue(toVal).interpreted && (
-              <>
-                <Text variant="caps" sx={{ mt: 3, alignSelf: 'flex-end' }}>
-                  Interpreted New Value
-                </Text>
-                <Text>{formatValue(toVal).interpreted}</Text>
-              </>
-            )}
+          <Flex sx={{ flexDirection: 'column', mt: 3 }}>
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'flex-end'
+              }}
+            >
+              <Text variant="caps">Old Value</Text>
+              <Tooltip label={fromVal}>
+                <Text>{formatDiffValue(fromVal)}</Text>
+              </Tooltip>
+            </Flex>
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'flex-end'
+              }}
+            >
+              <Text variant="caps">New Value</Text>
+              <Tooltip label={toVal}>
+                <Text>{formatDiffValue(toVal)}</Text>
+              </Tooltip>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -80,38 +82,10 @@ export function SpellEffectsTab({
   spellData?: SpellData;
   spellDiffs?: SpellDiffType[];
 }): React.ReactElement {
-  // ch401: hide until API is fixed
-  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  // const [stateDiffError, setStateDiffError] = useState();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const url = `/api/executive/state-diff/${proposal.address}?network=${network}`;
-  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-  //       setStateDiff(_stateDiff);
-  //     } catch (error) {
-  //       setStateDiffError(error);
-  //     }
-  //   })();
-  // }, []);
-
-  /*
-{stateDiff ? (
-        <OnChainFx stateDiff={stateDiff} />
-      ) : stateDiffError ? (
-        <Flex>Unable to fetch on-chain effects at this time</Flex>
-      ) : (
-        <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
-        </Flex>
-      )}
-  */
   const [expanded, setExpanded] = useState(false);
 
   return spellData ? (
     <Box>
-      {spellDiffs && <SpellDiff diffs={spellDiffs} />}
       <Text
         as="p"
         variant="microHeading"
@@ -240,6 +214,7 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
+      {spellDiffs && <SpellDiff diffs={spellDiffs} />}
     </Box>
   ) : (
     <Stack gap={3}>

@@ -23,8 +23,9 @@ export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise
   console.log('transaction hash for decoding spell', hash);
 
   // TODO: currently the endpoint is hardcoded to only allow the following hash:
-  const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
-  const url = DECODED_SPELL_ENDPOINT(hcHash);
+  // const hcHash = '0xf91cdba571422ba3da9e7b79cbc0d51e8208244c2679e4294eec4ab5807acf7f';
+  // const url = DECODED_SPELL_ENDPOINT(hcHash);
+  const url = DECODED_SPELL_ENDPOINT(hash);
 
   const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
   const validated = diffs.map(diff => validateDiff(diff));
