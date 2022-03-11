@@ -13,6 +13,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { uniswapV3MkrSupply } from 'modules/gql/queries/uniswapV3MkrSupply';
 import { WAD } from 'modules/web3/constants/numbers';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 const aaveLendingPoolCore = '0x3dfd23A6c5E8BbcFc9581d2E864a68feb6a076d3';
 const aaveV2Amkr = '0xc713e5E149D5D0715DcD1c156a020976e7E56B88';
@@ -49,10 +50,12 @@ async function getUniswapV3Mkr(mkrAddress: string) {
     uniswapV3MkrSupply,
     { argMkrAddress: mkrAddress }
   );
-  return BigNumber.from(resp.token.totalSupply).mul(WAD);
+  return resp?.token?.totalSupply ? BigNumber.from(resp.token.totalSupply).mul(WAD) : BigNumber.from(0);
 }
 
-async function getCompoundMkr() {
+async function getCompoundMkr(network) {
+  if (network !== SupportedNetworks.MAINNET) return BigNumber.from(0);
+
   const resp = await fetch('https://api.compound.finance/api/v2/ctoken');
   const json = await resp.json();
 
@@ -60,7 +63,13 @@ async function getCompoundMkr() {
   return BigNumber.from(Math.round(mkr)).mul(WAD);
 }
 
-export default function MkrLiquiditySidebar({ className }: { className?: string }): JSX.Element {
+export default function MkrLiquiditySidebar({
+  network,
+  className
+}: {
+  network: SupportedNetworks;
+  className?: string;
+}): JSX.Element {
   const [expanded, setExpanded] = useState(false);
 
   const mkrAddress = useContractAddress(Tokens.MKR);
@@ -81,7 +90,7 @@ export default function MkrLiquiditySidebar({ className }: { className?: string 
     { refreshInterval: 60000 }
   );
 
-  const { data: compound } = useSWR(`${mkrAddress}/mkr-liquidity-compound`, getCompoundMkr, {
+  const { data: compound } = useSWR(`${mkrAddress}/mkr-liquidity-compound`, () => getCompoundMkr(network), {
     refreshInterval: 60000
   });
 
