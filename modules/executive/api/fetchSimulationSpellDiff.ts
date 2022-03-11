@@ -36,8 +36,13 @@ export async function fetchSimulationSpellDiffs(proposalAddress: string): Promis
   const url = new URL(SIMULATE_TX_ENDPOINT);
   url.search = searchParams.toString();
 
-  const { diffs } = (await fetchJson(url.toString())) as Response;
-  const validated = diffs.map(diff => validateDiff(diff));
+  try {
+    const { diffs } = (await fetchJson(url.toString())) as Response;
+    const validated = diffs.map(diff => validateDiff(diff));
 
-  return validated;
+    return validated;
+  } catch (e) {
+    console.error('Error fetching simulated spell diffs:', e.message);
+    return [];
+  }
 }

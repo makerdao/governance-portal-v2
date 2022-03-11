@@ -23,8 +23,12 @@ export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise
 
   const url = DECODED_SPELL_ENDPOINT(hash);
 
-  const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
-  const validated = diffs.map(diff => validateDiff(diff));
-
-  return validated;
+  try {
+    const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
+    const validated = diffs.map(diff => validateDiff(diff));
+    return validated;
+  } catch (e) {
+    console.error('Error fetching historical spell diffs:', e.message);
+    return [];
+  }
 }

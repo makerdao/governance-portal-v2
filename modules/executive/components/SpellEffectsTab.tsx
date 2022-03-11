@@ -8,6 +8,7 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatLocation, formatDiffValue } from '../helpers/spellDiffParsers';
 import Tooltip from 'modules/app/components/Tooltip';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 // import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
 
 // import { SpellDiff as SpellDiffType } from '../../../pages/executive/[proposal-id]';
@@ -222,7 +223,15 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
-      {spellDiffs && <SpellDiff diffs={spellDiffs} />}
+      {spellDiffs ? (
+        spellDiffs.length > 0 ? (
+          <ErrorBoundary componentName={'Spell Effects'}>
+            <SpellDiff diffs={spellDiffs} />
+          </ErrorBoundary>
+        ) : null
+      ) : (
+        <SkeletonThemed />
+      )}
     </Box>
   ) : (
     <Stack gap={3}>
