@@ -146,7 +146,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             borderTopRightRadius: 'roundish',
             px: 3,
             py: 4,
-            border: '1px solid #D4D9E1'
+            border: '1px solid #D4D9E1',
+            zIndex: 10
           }}
         >
           <Button
