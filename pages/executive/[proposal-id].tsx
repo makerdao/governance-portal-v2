@@ -149,7 +149,8 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             borderTopRightRadius: 'roundish',
             px: 3,
             py: 4,
-            border: '1px solid #D4D9E1'
+            border: '1px solid #D4D9E1',
+            zIndex: 10
           }}
         >
           <Button
@@ -212,7 +213,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                 value={
                   spellData &&
                   spellData.mkrSupport &&
-                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 3)
+                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 0)
                 }
                 label="MKR Support"
               />
@@ -352,7 +353,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         }}
                         key={supporter.address}
                       >
-                        <Box sx={{ width: '45%' }}>
+                        <Box>
                           <Link
                             href={{
                               pathname: `/address/${supporter.address}`
@@ -377,7 +378,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                           </Link>
                         </Box>
 
-                        <Box sx={{ width: '55%', textAlign: 'right' }}>
+                        <Box sx={{ textAlign: 'right' }}>
                           <Text color="onSecondary">
                             {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
                           </Text>

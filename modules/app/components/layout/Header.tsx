@@ -95,9 +95,11 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Flex sx={{ pr: 2 }}>
-          <ColorModeToggle />
-        </Flex>
+        {bpi > 1 && (
+          <Flex sx={{ pr: 2 }}>
+            <ColorModeToggle />
+          </Flex>
+        )}
 
         {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <NetworkSelect />
@@ -130,7 +132,11 @@ const MobileMenu = ({ hide, router }) => {
 
   return (
     <Container variant="modal">
-      <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      <Flex sx={{ alignItems: 'center' }}>
+        <ColorModeToggle />
+        <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      </Flex>
+
       <Flex
         sx={{
           flexDirection: 'column',

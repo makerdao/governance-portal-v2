@@ -86,8 +86,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 )}
                 {!!account && votedPolls.length === 0 && (
                   <Text as="p" sx={{ mt: 3 }}>
-                    There are no polls added to your ballot. Go back to the polls page to vote on new
-                    initiatives.
+                    Your ballot is empty. Go back to the polling page to add votes to your ballot.
                   </Text>
                 )}
                 {!!account && votedPolls.length === 0 && previousVotedPolls.length > 0 && (

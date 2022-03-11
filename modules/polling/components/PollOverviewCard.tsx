@@ -1,6 +1,6 @@
 import Link from 'next/link';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Flex, Box, Button, Link as ThemeUILink, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
-
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from '../../app/components/layout/layouts/Stack';
 import CountdownTimer from '../../app/components/CountdownTimer';
@@ -11,7 +11,6 @@ import QuickVote from './QuickVote';
 import { PollCategoryTag } from './PollCategoryTag';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { POLL_VOTE_TYPE } from '../polling.constants';
-
 import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
@@ -62,9 +61,17 @@ export default function PollOverviewCard({
               )}
               <Box sx={{ cursor: 'pointer' }}>
                 <Box>
-                  <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
-                    Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
-                  </Text>
+                  <Flex sx={{ justifyContent: 'space-between' }}>
+                    <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
+                      Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
+                    </Text>
+                    {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                      <Flex sx={{ alignItems: 'center', mb: 3 }}>
+                        <Text variant="caps">Ranked-choice poll</Text>
+                        <Icon name="stackedVotes" size={3} ml={2} />
+                      </Flex>
+                    )}
+                  </Flex>
                   <Link href={`/polling/${poll.slug}`} passHref>
                     <ThemeUILink variant="nostyle" title="View Poll Details">
                       <Text

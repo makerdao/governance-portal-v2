@@ -9,7 +9,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import PollCreateModal from 'modules/polling/components/PollCreateModal';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
@@ -209,7 +208,6 @@ const PollingCreate = (): React.ReactElement => {
                   'debt ceiling'
                 ]}
               />
-              <MkrLiquiditySidebar />
               <ResourceBox type={'general'} />
             </Stack>
           )}
