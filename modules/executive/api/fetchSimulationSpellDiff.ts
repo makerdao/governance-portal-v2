@@ -1,36 +1,57 @@
 import { fetchJson } from 'lib/fetchJson';
 import {
+  AVG_BLOCKS_PER_DAY,
   SIGNATURE_CAST,
   SIMULATE_TX_ENDPOINT,
   SIMULATE_TX_FROM,
   SIMULATE_TX_GAS,
   SIMULATE_TX_GAS_PRICE,
-  SIMULATE_TX_VALUE
+  SIMULATE_TX_VALUE,
+  SupportedNetworks
 } from 'modules/web3/constants/networks';
 import { validateDiff } from '../helpers/spellDiffParsers';
 import { SimulationDiffAPIResponse, SpellDiff } from '../types';
+import { differenceInDays } from 'date-fns';
+import { getDefaultProvider } from 'ethers';
 // import { validateDiff } from '../helpers/spellDiffParsers';
 // import { SimulationDiffAPIResponse, SpellDiff } from '../types';
 
 type Response = Record<'diffs', SimulationDiffAPIResponse[]>;
 
-export async function fetchSimulationSpellDiffs(proposalAddress: string): Promise<SpellDiff[]> {
-  // proposalAddress = '0x82b24156f0223879aaac2dd0996a25fe1ff74e1a'; // the demo spell address
-  proposalAddress = '0x068F8fb8318506bFbaD57B494A0c7b31399f4Ed6'; // spell address 3/11
+type ParamsData = {
+  from_address: string;
+  to_address: string;
+  data: string;
+  gas: string;
+  gas_price: string;
+  value: string;
+  execute_on_top_of_block_number?: string;
+};
 
-  // TODO: this probably needs to be the block number where it's eligible to be executed
-  // If no executeOnTopOfBlockNumber is provided - transaction will be simulated on top of the head block
-  const blockNumber = '14366830'; // 3/11 block executed
-
-  const paramsData = {
+export async function fetchSimulationSpellDiffs(
+  proposalAddress: string,
+  nextCastTime: string,
+  network: SupportedNetworks
+): Promise<SpellDiff[]> {
+  const paramsData: ParamsData = {
     from_address: SIMULATE_TX_FROM,
     to_address: proposalAddress,
     data: SIGNATURE_CAST,
     gas: SIMULATE_TX_GAS,
     gas_price: SIMULATE_TX_GAS_PRICE,
-    execute_on_top_of_block_number: blockNumber,
     value: SIMULATE_TX_VALUE
   };
+
+  // Estimate the block number when the spell can be cast
+  if (nextCastTime) {
+    const provider = getDefaultProvider(network);
+    const currentBlock = await provider.getBlockNumber();
+    const daysUntilCast = differenceInDays(new Date(nextCastTime), Date.now());
+    const blocksToAdd = AVG_BLOCKS_PER_DAY * daysUntilCast;
+    const blockNumber = currentBlock + blocksToAdd;
+
+    paramsData.execute_on_top_of_block_number = blockNumber.toString();
+  }
 
   const searchParams = new URLSearchParams(paramsData);
   const url = new URL(SIMULATE_TX_ENDPOINT);

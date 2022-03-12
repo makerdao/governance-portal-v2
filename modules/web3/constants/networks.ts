@@ -98,3 +98,5 @@ export const SIMULATE_TX_FROM = '0x5cab1e5286529370880776461c53a0e47d74fb63'; //
 
 export const DECODED_SPELL_ENDPOINT = (hash: string): string =>
   `${url}/api/v1/transactions/${hash}/diffs/decoded`;
+
+export const AVG_BLOCKS_PER_DAY = 6500;

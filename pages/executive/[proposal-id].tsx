@@ -411,10 +411,13 @@ export default function ProposalPage({
   const { network } = useActiveWeb3React();
 
   const spellAddress = prefetchedProposal?.address;
+  const nextCastTime = prefetchedProposal?.spellData.nextCastTime;
 
   // If we didn't prefetch spell diffs, it means it hasn't been cast yet.
   const { data: simulatedDiffs } = useSWR(
-    prefetchedSpellDiffs.length === 0 ? `/api/executive/state-diff/${spellAddress}?network=${network}` : null
+    prefetchedSpellDiffs.length === 0
+      ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&network=${network}`
+      : null
   );
 
   // fetch proposal contents at run-time if on any network other than the default
