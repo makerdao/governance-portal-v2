@@ -141,7 +141,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
       />
 
       <Stack gap={3}>
-        {bpi <= 1 && account && <BallotStatus />}
+        {bpi <= 3 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
@@ -340,7 +340,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const pollsResponse = await getPolls();
 
   return {
-    revalidate: 60 * 15, // allow revalidation every 15 minutes
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls: pollsResponse.polls,
       categories: pollsResponse.categories
