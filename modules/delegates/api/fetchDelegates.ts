@@ -99,7 +99,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
   const contracts = getContracts(networkNameToChainId(currentNetwork));
-  const executives = await getGithubExecutives( currentNetwork);
+  const executives = await getGithubExecutives(currentNetwork);
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
