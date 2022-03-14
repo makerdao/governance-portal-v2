@@ -70,7 +70,7 @@ export default function MkrLiquiditySidebar({
   network: SupportedNetworks;
   className?: string;
 }): JSX.Element {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState({});
 
   const mkrAddress = useContractAddress(Tokens.MKR);
   const { data: aaveV1 } = useTokenBalance(Tokens.MKR, aaveLendingPoolCore);
@@ -130,13 +130,31 @@ export default function MkrLiquiditySidebar({
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in {poolName}</Text>
             {subpools && (
-              <IconButton
-                aria-label={`${poolName} pools expand`}
-                onClick={() => setExpanded(!expanded)}
-                sx={{ py: 0, height: 3 }}
-              >
-                <Icon size={2} name={expanded ? 'minus' : 'plus'} color="textSecondary" />
-              </IconButton>
+              <Box sx={{ ml: 1 }}>
+                <Flex
+                  sx={{
+                    bg: 'background',
+                    size: 'auto',
+                    width: '17px',
+                    height: '17px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 'round'
+                  }}
+                >
+                  <IconButton
+                    aria-label={`${poolName} pools expand`}
+                    onClick={() =>
+                      setExpanded({
+                        ...expanded,
+                        [poolName]: !expanded[poolName]
+                      })
+                    }
+                  >
+                    <Icon size={2} name={expanded[poolName] ? 'minus' : 'plus'} color="textSecondary" />
+                  </IconButton>
+                </Flex>
+              </Box>
             )}
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
@@ -149,7 +167,7 @@ export default function MkrLiquiditySidebar({
             )}
           </Text>
         </Flex>
-        {subpools && expanded && (
+        {subpools && expanded[poolName] && (
           <Flex sx={{ flexDirection: 'column' }}>
             {subpools.map(subpool => {
               const [subpoolName, subpoolLiquidity] = subpool;
