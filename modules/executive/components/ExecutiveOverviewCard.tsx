@@ -143,7 +143,7 @@ export default function ExecutiveOverviewCard({
                     m: 1
                   }}
                 >
-                  {formatValue(BigNumber.from(spellData?.mkrSupport), 'wad', 2)} MKR Supporting
+                  {formatValue(BigNumber.from(spellData?.mkrSupport))} MKR Supporting
                 </Badge>
               )}
             </Flex>

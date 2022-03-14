@@ -51,9 +51,7 @@ export const getStatusText = ({
   // not expired, passed, or executed, check support level
   if (!!spellData.mkrSupport && !!mkrOnHat) {
     return `${formatValue(
-      mkrOnHat.sub(spellData.mkrSupport),
-      'wad',
-      3
+      mkrOnHat.sub(spellData.mkrSupport)
     )} additional MKR support needed to pass. Expires at ${formatDateWithTime(spellData.expiration)}.`;
   }
 
