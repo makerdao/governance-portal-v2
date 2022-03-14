@@ -23,6 +23,7 @@ import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 import { ErrorBoundary } from '../../ErrorBoundary';
+import { useRouter } from 'next/router';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -67,6 +68,7 @@ const MAX_PAGES = 5;
 
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
+  const router = useRouter();
 
   // important that these are destructed from the account-specific web3-react context
   const { account: address, chainId, activate, connector, deactivate, error, setError } = useWeb3React();
@@ -88,6 +90,11 @@ const AccountSelect = (): React.ReactElement => {
   const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
+
+  useEffect(() => {
+    setShowDialog(false);
+  }, [router.pathname]);
+
   const bpi = useBreakpointIndex();
 
   const addHwAccount = async address => {
