@@ -54,7 +54,6 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
-import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
 
 type Props = {
@@ -466,12 +465,8 @@ export const getServerSideProps: GetServerSideProps = async (context): Promise<a
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, networkToFetch);
 
   // Only fetch at build time if spell has been cast, otherwise we do it client side
-  const { hasBeenCast } = proposal
-    ? await analyzeSpell(proposal.address, networkToFetch)
-    : { hasBeenCast: false };
-
   const spellDiffs: SpellDiff[] =
-    proposal && hasBeenCast ? await fetchHistoricalSpellDiff(proposal.address) : [];
+    proposal && proposal.spellData?.hasBeenCast ? await fetchHistoricalSpellDiff(proposal.address) : [];
 
   return {
     props: {
