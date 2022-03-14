@@ -11,7 +11,7 @@ import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 
-async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
+export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cacheKey = 'github-proposals';
   if (config.USE_FS_CACHE) {
     const cachedProposals = fsCacheGet(cacheKey, network);

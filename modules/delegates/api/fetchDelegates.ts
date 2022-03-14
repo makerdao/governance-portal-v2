@@ -10,7 +10,7 @@ import {
   DelegateContractInformation,
   DelegateRepoInformation
 } from 'modules/delegates/types';
-import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
+import { getExecutiveProposals, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
@@ -99,7 +99,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
   const contracts = getContracts(networkNameToChainId(currentNetwork));
-  const executives = await getExecutiveProposals(0, 10, 'date', currentNetwork);
+  const executives = await getGithubExecutives(currentNetwork);
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
