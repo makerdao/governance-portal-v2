@@ -23,8 +23,7 @@ describe('Header component', () => {
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
     });
-    (useRouter as jest.Mock).mockReturnValue({ pathname : '' });
-
+    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
   });
 
   test('finds icons and an empty connect button', async () => {
