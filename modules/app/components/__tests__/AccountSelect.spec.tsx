@@ -7,7 +7,7 @@ jest.mock('next/router');
 
 describe('Account select', () => {
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ pathname : '' });
+    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
   });
   test('can connect an account', async () => {
     render(<WrappedAccountSelect />);
