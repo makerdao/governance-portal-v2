@@ -101,7 +101,7 @@ const Header = (): JSX.Element => {
           </Flex>
         )}
 
-        {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
+        {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         <NetworkSelect />
         {typeof window !== 'undefined' && (
           <ErrorBoundary componentName="Account Select">

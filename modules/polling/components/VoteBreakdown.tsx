@@ -56,7 +56,9 @@ export default function VoteBreakdown({
                       )} MKR Voting (${formatValue(
                         parseUnits(
                           new BigNumberJS(tallyResult.firstPct).plus(tallyResult.transferPct).toString()
-                        )
+                        ),
+                        'wad',
+                        2
                       )}%)`}
                     </Text>
                   ) : (
@@ -71,7 +73,7 @@ export default function VoteBreakdown({
                     <Tooltip
                       label={`First choice ${formatValue(
                         parseUnits(firstChoice.toString())
-                      )}; Transfer ${formatValue(parseUnits(transfer.toString()))}`}
+                      )}; Transfer ${formatValue(parseUnits(transfer.toString()), 'wad', 2)}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -146,7 +148,9 @@ export default function VoteBreakdown({
                   }}
                 >
                   {`${formatValue(parseUnits(tallyResult.mkrSupport.toString()))} MKR Voting (${formatValue(
-                    parseUnits(tallyResult.firstPct.toString())
+                    parseUnits(tallyResult.firstPct.toString()),
+                    'wad',
+                    2
                   )}%)`}
                 </Text>
               ) : (

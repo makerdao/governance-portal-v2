@@ -141,7 +141,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
       />
 
       <Stack gap={3}>
-        {bpi <= 1 && account && <BallotStatus />}
+        {bpi <= 3 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>

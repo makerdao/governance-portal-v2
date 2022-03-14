@@ -7,6 +7,16 @@ import { useWeb3React } from '@web3-react/core';
 jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
 
+jest.mock("modules/address/components/AddressIcon", () => {
+  return {
+    __esModule: true,
+    A: true,
+    default: () => {
+      return (<div />);
+    },
+  };
+});
+
 beforeAll(async () => {
   (useWeb3React as jest.Mock).mockReturnValue({
     account: '',
