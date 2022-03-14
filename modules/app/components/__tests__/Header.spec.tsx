@@ -6,10 +6,12 @@ import { formatAddress } from 'lib/utils';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useRouter } from 'next/router';
 
 jest.mock('modules/delegates/hooks/useDelegateAddressMap');
 jest.mock('@web3-react/core');
 jest.mock('modules/app/hooks/useAccount');
+jest.mock('next/router');
 
 describe('Header component', () => {
   beforeEach(() => {
@@ -21,6 +23,8 @@ describe('Header component', () => {
     (useAccount as jest.Mock).mockReturnValue({
       account: ''
     });
+    (useRouter as jest.Mock).mockReturnValue({ pathname : '' });
+
   });
 
   test('finds icons and an empty connect button', async () => {
@@ -45,7 +49,6 @@ describe('Header component', () => {
 
     // TODO, figure out what code is making this trigger an act error. Probably some hook trying to do an async call
     render(<Header />);
-
     const accountConnection = screen.queryByText(/Connect wallet/);
     expect(accountConnection).not.toBeInTheDocument();
 
