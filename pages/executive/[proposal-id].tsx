@@ -214,7 +214,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 }
                 label="MKR Support"
               />
-              <StatBox value={supporters && supporters.length} label="Supporters" />
+              <StatBox
+                value={
+                  allSupporters && (!supporters || supporters.length === 0)
+                    ? '0'
+                    : supporters && supporters.length
+                }
+                label="Supporters"
+              />
             </Flex>
             {'about' in proposal ? (
               <Tabs
