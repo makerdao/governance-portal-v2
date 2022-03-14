@@ -1,58 +1,14 @@
 [
   {
-    "constant": false,
-    "inputs": [{ "name": "pollId", "type": "uint256" }],
-    "name": "withdrawPoll",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      { "name": "pollId", "type": "uint256" },
-      { "name": "optionId", "type": "uint256" }
-    ],
-    "name": "vote",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "npoll",
-    "outputs": [{ "name": "", "type": "uint256" }],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      { "name": "startDate", "type": "uint256" },
-      { "name": "endDate", "type": "uint256" },
-      { "name": "multiHash", "type": "string" },
-      { "name": "url", "type": "string" }
-    ],
-    "name": "createPoll",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "name": "creator", "type": "address" },
-      { "indexed": false, "name": "blockCreated", "type": "uint256" },
-      { "indexed": true, "name": "pollId", "type": "uint256" },
-      { "indexed": false, "name": "startDate", "type": "uint256" },
-      { "indexed": false, "name": "endDate", "type": "uint256" },
-      { "indexed": false, "name": "multiHash", "type": "string" },
-      { "indexed": false, "name": "url", "type": "string" }
+      { "indexed": true, "internalType": "address", "name": "creator", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "blockCreated", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "pollId", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "startDate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "endDate", "type": "uint256" },
+      { "indexed": false, "internalType": "string", "name": "multiHash", "type": "string" },
+      { "indexed": false, "internalType": "string", "name": "url", "type": "string" }
     ],
     "name": "PollCreated",
     "type": "event"
@@ -60,9 +16,9 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "name": "creator", "type": "address" },
-      { "indexed": false, "name": "blockWithdrawn", "type": "uint256" },
-      { "indexed": false, "name": "pollId", "type": "uint256" }
+      { "indexed": true, "internalType": "address", "name": "creator", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "blockWithdrawn", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "pollId", "type": "uint256" }
     ],
     "name": "PollWithdrawn",
     "type": "event"
@@ -70,11 +26,64 @@
   {
     "anonymous": false,
     "inputs": [
-      { "indexed": true, "name": "voter", "type": "address" },
-      { "indexed": true, "name": "pollId", "type": "uint256" },
-      { "indexed": true, "name": "optionId", "type": "uint256" }
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": true, "internalType": "uint256", "name": "pollId", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "optionId", "type": "uint256" }
     ],
     "name": "Voted",
     "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "startDate", "type": "uint256" },
+      { "internalType": "uint256", "name": "endDate", "type": "uint256" },
+      { "internalType": "string", "name": "multiHash", "type": "string" },
+      { "internalType": "string", "name": "url", "type": "string" }
+    ],
+    "name": "createPoll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "npoll",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256[]", "name": "pollIds", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "optionIds", "type": "uint256[]" }
+    ],
+    "name": "vote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "pollId", "type": "uint256" },
+      { "internalType": "uint256", "name": "optionId", "type": "uint256" }
+    ],
+    "name": "vote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "pollId", "type": "uint256" }],
+    "name": "withdrawPoll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256[]", "name": "pollIds", "type": "uint256[]" }],
+    "name": "withdrawPoll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ]
