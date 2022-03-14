@@ -123,52 +123,54 @@ export function DelegatePicture({
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
       <Tooltip label={delegateMetrics}>
-        {delegate.picture ? (
-          <Image
-            src={delegate.picture}
-            key={delegate.id}
-            sx={{
-              objectFit: 'cover',
-              width: '100%',
-              borderRadius: '100%',
-              maxHeight: width
-            }}
-          />
-        ) : (
-          <Box>
-            <Davatar
-              size={width}
-              address={delegate.address}
-              generatedAvatarType="jazzicon"
-              provider={library}
+        <Box>
+          {delegate.picture ? (
+            <Image
+              src={delegate.picture}
+              key={delegate.id}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                borderRadius: '100%',
+                maxHeight: width
+              }}
             />
-          </Box>
-        )}
+          ) : (
+            <Box>
+              <Davatar
+                size={width}
+                address={delegate.address}
+                generatedAvatarType="jazzicon"
+                provider={library}
+              />
+            </Box>
+          )}
+          {delegate.status === DelegateStatusEnum.recognized && (
+            <Icon
+              name={'verified'}
+              sx={{
+                position: 'absolute',
+                bottom: width / -12,
+                right: width / -7,
+                size: width / 2.5,
+                color: 'primary'
+              }}
+            />
+          )}
+          {delegate.status === DelegateStatusEnum.shadow && (
+            <Icon
+              name={'shadowQuestion'}
+              color="voterYellow"
+              sx={{
+                position: 'absolute',
+                bottom: width / -12,
+                right: width / -7,
+                size: width / 2.5
+              }}
+            />
+          )}
+        </Box>
       </Tooltip>
-      {delegate.status === DelegateStatusEnum.recognized && (
-        <Icon
-          name={'verified'}
-          sx={{
-            position: 'absolute',
-            bottom: width / -12,
-            right: width / -7,
-            size: width / 2.5,
-            color: 'primary'
-          }}
-        />
-      )}
-      {delegate.status === DelegateStatusEnum.shadow && (
-        <Icon
-          name={'shadowQuestion'}
-          color="voterYellow"
-          sx={{
-            position: 'absolute',
-            bottom: width / -12,
-            right: width / -7,
-            size: width / 2.5
-          }}
-        />
-      )}
     </Box>
   );
 }
