@@ -53,6 +53,7 @@ const AccountPage = (): React.ReactElement => {
     : voteProxyContractAddress
     ? voteProxyContractAddress
     : account;
+
   const { data: addressInfo, error: errorLoadingAddressInfo } = useSWR<AddressApiResponse>(
     addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
     fetchJson
@@ -185,7 +186,7 @@ const AccountPage = (): React.ReactElement => {
                   <Flex sx={{ alignItems: 'flex-start', flexDirection: 'column', mt: 5 }}>
                     <Text as="p">
                       You have a DSChief balance of{' '}
-                      <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance)} MKR.</Text>
+                      <Text sx={{ fontWeight: 'bold' }}>{formatValue(chiefBalance, 'wad', 6)} MKR.</Text>
                       <Text as="p" sx={{ my: 2 }}>
                         {voteDelegateContractAddress
                           ? 'As a delegate you can only vote with your delegate contract through the portal. You can withdraw your MKR and delegate it to yourself to vote with it.'
@@ -209,12 +210,7 @@ const AccountPage = (): React.ReactElement => {
                         <DelegateDetail delegate={addressInfo.delegateInfo} />
                       </Box>
                     )}
-                    {!addressInfo.delegateInfo && (
-                      <AddressDetail
-                        address={addressInfo.address}
-                        voteProxyInfo={addressInfo.voteProxyInfo}
-                      />
-                    )}
+                    {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
                   </Box>
                 )}
                 {!addressInfo && !errorLoadingAddressInfo && (

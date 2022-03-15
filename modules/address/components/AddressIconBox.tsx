@@ -117,7 +117,9 @@ export default function AddressIconBox({
           <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'textSecondary', fontSize: 1 }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>
-              <Icon name="question" ml={2} />
+              <Flex>
+                <Icon name="question" ml={2} />
+              </Flex>
             </Tooltip>
           </Flex>
         )}

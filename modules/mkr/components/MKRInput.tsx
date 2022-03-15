@@ -18,7 +18,7 @@ export type MKRInputProps = {
 };
 
 export function MKRInput({
-  placeholder = '0.000 MKR',
+  placeholder = '0.000000 MKR',
   errorMaxMessage = 'MKR balance too low',
   onChange,
   min = BigNumber.from(0),
@@ -61,7 +61,7 @@ export function MKRInput({
   const onClickSetMax = () => {
     const val = balance ? balance : BigNumber.from(0);
     onChange(val);
-    setCurrentValueStr(formatValue(val));
+    setCurrentValueStr(formatValue(val, 'wad', 6));
   };
 
   const errorMax = value !== undefined && value.gt(balance || BigNumber.from(0));
@@ -113,7 +113,7 @@ export function MKRInput({
             onClick={onClickSetMax}
             data-testid="mkr-input-balance"
           >
-            {formatValue(balance)}
+            {formatValue(balance, 'wad', 6)}
           </Text>
         ) : (
           <Box sx={{ width: 6 }}>

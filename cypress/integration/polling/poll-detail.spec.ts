@@ -19,7 +19,7 @@ describe('/polling detail page', async () => {
     cy.contains('PPG - Open Market Committee Proposal - January 31, 2022').should('be.visible');
 
     // Renders the date
-    cy.contains('Feb 01 2022 22:49 UTC').should('be.visible');
+    cy.contains(/POSTED FEB 15 2022 21:36 UTC/i).should('be.visible');
 
     // Your vote does not exist
     cy.get('[data-testid="poll-vote-box"]').should('not.exist');
@@ -55,8 +55,8 @@ describe('/polling detail page', async () => {
       // Checks that are different votes by address
       cy.get('[data-testid="vote-by-address"]').its('length').should('be.greaterThan', 13);
 
-      // Checks that there is a vote with 799.000 MKR
-      cy.contains(/799.000 MKR/).should('be.visible');
+      // Checks that there is a vote with 799.00 MKR
+      cy.contains(/799.00 MKR/).should('be.visible');
 
       // Checks that the voting weight module is visible
       cy.contains(/Voting Weight/).should('be.visible');

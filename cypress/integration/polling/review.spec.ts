@@ -68,7 +68,9 @@ describe('/polling/review page', async () => {
       cy.contains('Transaction Sent!').should('be.visible');
 
       // After finishing voting, there should be no polls
-      cy.contains('There are no polls added to your ballot.').should('be.visible');
+      cy.contains('Your ballot is empty. Go back to the polling page to add votes to your ballot.').should(
+        'be.visible'
+      );
     });
   });
 
@@ -99,7 +101,9 @@ describe('/polling/review page', async () => {
       cy.get('[data-testid="remove-ballot-choice"]').click();
 
       // After finishing voting, there should be no polls
-      cy.contains('There are no polls added to your ballot.').should('be.visible');
+      cy.contains('Your ballot is empty. Go back to the polling page to add votes to your ballot.').should(
+        'be.visible'
+      );
     });
   });
 

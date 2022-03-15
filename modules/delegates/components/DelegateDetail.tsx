@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { formatAddress } from 'lib/utils';
 import Tabs from 'modules/app/components/Tabs';
 import {
   DelegatePicture,
@@ -27,6 +26,7 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountComments from 'modules/comments/components/AccountComments';
+import { Address } from 'modules/address/components/Address';
 
 type PropTypes = {
   delegate: Delegate;
@@ -150,7 +150,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                   <Link href={`/address/${delegate.address}`} passHref>
                     <ExternalLink>
                       <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
-                        Deployed by: {formatAddress(delegate.address)}
+                        Deployed by: <Address address={delegate.address} />
                       </Text>
                     </ExternalLink>
                   </Link>

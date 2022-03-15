@@ -11,16 +11,14 @@ import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
-import { VoteProxyAddresses } from 'modules/app/helpers/getVoteProxyAddresses';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyAddresses;
 };
 
-export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
+export function AddressDetail({ address }: PropTypes): React.ReactElement {
   const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
     address ? `/api/address/${address}/stats?network=${network}` : null,

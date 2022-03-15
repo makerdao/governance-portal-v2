@@ -117,9 +117,7 @@ export default function MkrLiquiditySidebar({
   ].sort((a, b) => (a[1] && b[1] ? ((a[1] as BigNumber).gt(b[1] as BigNumber) ? -1 : 1) : 0));
 
   const totalLiquidity = `${formatValue(
-    mkrPools.reduce((acc, cur) => acc.add((cur[1] as BigNumber) || 0), BigNumber.from(0)),
-    'wad',
-    0
+    mkrPools.reduce((acc, cur) => acc.add((cur[1] as BigNumber) || 0), BigNumber.from(0))
   )} MKR`;
 
   const PoolComponent = pool => {
@@ -159,7 +157,7 @@ export default function MkrLiquiditySidebar({
           </Flex>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {poolLiquidity ? (
-              `${formatValue(poolLiquidity, 'wad', 0)} MKR`
+              `${formatValue(poolLiquidity)} MKR`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -186,7 +184,7 @@ export default function MkrLiquiditySidebar({
                   </Flex>
                   <Text variant="h2" sx={{ fontSize: 2, color: 'textSecondary' }}>
                     {subpoolLiquidity ? (
-                      `${formatValue(subpoolLiquidity, 'wad', 0)} MKR`
+                      `${formatValue(subpoolLiquidity)} MKR`
                     ) : (
                       <Box sx={{ width: 6 }}>
                         <Skeleton />

@@ -81,7 +81,7 @@ const baseTabStyles: ThemeUIStyleObject = {
   p: 0,
   mb: 2,
   color: 'textSecondary',
-  fontSize: [2, 3],
+  fontSize: [1, 3],
   fontWeight: 400,
   border: 'none !important',
   bg: 'inherit',

@@ -91,20 +91,19 @@ const Delegates = ({ delegates, stats }: Props) => {
           <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters
           </Heading>
-          <DelegatesFilter delegates={delegates} />
+          <DelegatesSort />
         </Flex>
 
         <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
+          <DelegatesFilter delegates={delegates} />
           <Button
             variant={'outline'}
-            sx={{ mr: 3 }}
+            sx={{ ml: 3 }}
             onClick={resetFilters}
             data-testid="delegate-reset-filters"
           >
             Clear filters
           </Button>
-
-          <DelegatesSort />
         </Flex>
       </Flex>
 

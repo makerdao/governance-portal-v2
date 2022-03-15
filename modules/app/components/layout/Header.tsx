@@ -102,7 +102,11 @@ const Header = (): JSX.Element => {
         )}
 
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <NetworkSelect />
+        {bpi > 1 && (
+          <Flex mr={3}>
+            <NetworkSelect />
+          </Flex>
+        )}
         {typeof window !== 'undefined' && (
           <ErrorBoundary componentName="Account Select">
             <AccountSelect />
@@ -132,9 +136,18 @@ const MobileMenu = ({ hide, router }) => {
 
   return (
     <Container variant="modal">
-      <Flex sx={{ alignItems: 'center' }}>
+      <Flex
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: 2
+        }}
+      >
         <ColorModeToggle />
-        <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+        <Flex>
+          <NetworkSelect />
+        </Flex>
+        <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
       </Flex>
 
       <Flex

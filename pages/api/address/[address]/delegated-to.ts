@@ -45,13 +45,24 @@ export default withApiHandler(
       delegatedTo = await fetchDelegatedTo(address ?? tempAddress, network);
     }
 
-    const totalDelegated = delegatedTo.reduce((prev, next) => {
+    // filter out duplicate txs
+    const txHashes = {};
+    const filtered = delegatedTo.filter(historyItem => {
+      let duplicateFound = false;
+      historyItem.events.forEach(event => {
+        if (txHashes[event.hash]) duplicateFound = true;
+        txHashes[event.hash] = true;
+      });
+      return !duplicateFound;
+    });
+
+    const totalDelegated = filtered.reduce((prev, next) => {
       return prev.plus(next.lockAmount);
     }, new BigNumber(0));
 
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
     res.status(200).json({
-      delegatedTo,
+      delegatedTo: filtered,
       totalDelegated: totalDelegated.toNumber()
     });
   }

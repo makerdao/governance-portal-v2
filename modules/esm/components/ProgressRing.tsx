@@ -51,7 +51,7 @@ const ProgressRing = ({
           )}
         </text>
         <text x="50%" y="58%" textAnchor="middle" fill="#708390" fontSize="14px" dy=".3em">
-          {`of ${thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)} MKR` : '---'}`}
+          {`of ${thresholdAmount ? `${formatValue(thresholdAmount)} MKR` : '---'}`}
         </text>
       </svg>
     </Flex>

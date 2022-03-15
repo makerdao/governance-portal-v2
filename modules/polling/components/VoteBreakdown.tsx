@@ -56,9 +56,7 @@ export default function VoteBreakdown({
                       )} MKR Voting (${formatValue(
                         parseUnits(
                           new BigNumberJS(tallyResult.firstPct).plus(tallyResult.transferPct).toString()
-                        ),
-                        'wad',
-                        2
+                        )
                       )}%)`}
                     </Text>
                   ) : (
@@ -73,7 +71,7 @@ export default function VoteBreakdown({
                     <Tooltip
                       label={`First choice ${formatValue(
                         parseUnits(firstChoice.toString())
-                      )}; Transfer ${formatValue(parseUnits(transfer.toString()), 'wad', 2)}`}
+                      )}; Transfer ${formatValue(parseUnits(transfer.toString()))}`}
                     >
                       <Box my={2}>
                         <Box>
@@ -126,6 +124,8 @@ export default function VoteBreakdown({
       </Text>
       {Object.keys(poll.options).map((_, i) => {
         const tallyResult = tally?.results[i] as PluralityResult;
+        const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+
         return (
           <div key={i}>
             <Flex sx={{ justifyContent: 'space-between' }}>
@@ -147,10 +147,8 @@ export default function VoteBreakdown({
                     textAlign: 'right'
                   }}
                 >
-                  {`${formatValue(parseUnits(tallyResult.mkrSupport.toString()))} MKR Voting (${formatValue(
-                    parseUnits(tallyResult.firstPct.toString()),
-                    'wad',
-                    2
+                  {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
+                    parseUnits(tallyResult.firstPct.toString())
                   )}%)`}
                 </Text>
               ) : (
@@ -161,7 +159,7 @@ export default function VoteBreakdown({
             </Flex>
 
             {tally && tallyResult ? (
-              <Tooltip label={`First choice ${formatValue(parseUnits(tallyResult.mkrSupport.toString()))}`}>
+              <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
                 <Box my={2}>
                   <Progress
                     sx={{
@@ -171,7 +169,7 @@ export default function VoteBreakdown({
                       color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
                     }}
                     max={tally.totalMkrParticipation}
-                    value={tallyResult.mkrSupport}
+                    value={mkrSupport}
                   />
                 </Box>
               </Tooltip>

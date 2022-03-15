@@ -68,7 +68,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
             )}
             {!addressInfo.delegateInfo && (
               <ErrorBoundary componentName="Address Information">
-                <AddressDetail address={addressInfo.address} voteProxyInfo={addressInfo.voteProxyInfo} />
+                <AddressDetail address={addressInfo.address} />
               </ErrorBoundary>
             )}
           </Box>
