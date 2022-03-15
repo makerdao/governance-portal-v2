@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { formatAddress } from 'lib/utils';
+import { Address } from 'modules/address/components/Address';
 
 export function DelegatePicture({
   delegate,
@@ -79,7 +79,7 @@ export function DelegatePicture({
             {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
-            {formatAddress(delegate.voteDelegateAddress)}
+            <Address address={delegate.voteDelegateAddress} />
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
             {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
