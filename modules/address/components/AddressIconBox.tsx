@@ -114,12 +114,10 @@ export default function AddressIconBox({
           )}
         </Flex>
         {voteProxyInfo && voteProxyInfo.voteProxyAddress && (
-          <Flex>
+          <Flex sx={{ alignItems: 'center' }}>
             <Text sx={{ color: 'textSecondary', fontSize: 1 }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>
-              <Box>
-                <Icon name="question" ml={2} mt={['2px', '4px']} />
-              </Box>
+              <Icon name="question" ml={2} />
             </Tooltip>
           </Flex>
         )}

@@ -66,7 +66,7 @@ const NetworkSelect = (): React.ReactElement => {
     ));
 
   return (
-    <Box sx={{ ml: ['auto', 3, 0], mr: 3 }}>
+    <Box sx={{ ml: ['auto', 3, 0] }}>
       {chainId && (
         <ConnectNetworkButton
           onClickConnect={() => {
@@ -77,7 +77,7 @@ const NetworkSelect = (): React.ReactElement => {
         />
       )}
 
-      <DialogOverlay isOpen={showDialog} onDismiss={close}>
+      <DialogOverlay isOpen={showDialog} onDismiss={close} sx={{ zIndex: 1001 }}>
         <DialogContent
           aria-label="Change Network"
           sx={

@@ -327,7 +327,7 @@ export const getStaticProps: GetStaticProps = async () => {
   ]);
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 30 * 60, // allow revalidation every 30 minutes
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,

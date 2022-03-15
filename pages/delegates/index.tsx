@@ -248,7 +248,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates: shuffleArray(delegatesAPIResponse.delegates),

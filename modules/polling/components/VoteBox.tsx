@@ -22,8 +22,10 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
         <Heading as="h3" variant="microHeading">
           {poll.title}
         </Heading>
-        <Text sx={{ fontSize: 3, color: 'textSecondary', my: 1 }}>{poll.summary}</Text>
-        <VotingStatus sx={{ my: 2, mx: 3, textAlign: 'center' }} poll={poll} />
+        <Text as="p" sx={{ fontSize: 3, color: 'textSecondary', my: 2 }}>
+          {poll.summary}
+        </Text>
+        <VotingStatus sx={{ my: 2, textAlign: 'center' }} poll={poll} />
         {showQuickVote && <QuickVote poll={poll} showHeader={false} />}
       </Card>
     </Box>

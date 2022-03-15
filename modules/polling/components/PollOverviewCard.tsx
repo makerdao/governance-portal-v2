@@ -65,7 +65,7 @@ export default function PollOverviewCard({
                     <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
                       Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                     </Text>
-                    {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                    {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
                       <Flex sx={{ alignItems: 'center', mb: 3 }}>
                         <Text variant="caps">Ranked-choice poll</Text>
                         <Icon name="stackedVotes" size={3} ml={2} />
