@@ -7,20 +7,41 @@ require('dotenv').config({ path: './.env' });
 // https://nextjs.org/docs/api-reference/next.config.js/introduction
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 const { withSentryConfig } = require('@sentry/nextjs');
+const securityHeaders = [
+  // Adds x-xss-protection
+  {
+    key: 'X-XSS-Protection',
+    value: '1; mode=block'
+  },
 
-// Main Next.js config
+  // adds x-frame-options
+  {
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN'
+  },
+
+  // adds x-content-type
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff'
+  }
+];
+
+
+//// Main Next.js config
 const moduleExports = {
   // everything in here gets exposed to the frontend.
   // prefer NEXT_PUBLIC_* instead, which makes this behavior more explicit
   env: {
     INFURA_KEY: process.env.INFURA_KEY || '84842078b09946638c03157f83405213', // ethers default infura key
     ALCHEMY_KEY: process.env.ALCHEMY_KEY || '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC', // ethers default alchemy key
-    USE_PROD_SPOCK: process.env.USE_PROD_SPOCK // use production spock instance if true, otherwise use staging
+    POCKET_KEY: process.env.POCKET_KEY,
+    ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
   },
 
   // Opt-in SWC minification (next 12.0.2)
   // swcMinify: true, // fatal runtime error: failed to initiate panic, error 5
-  
+
   // Fix Sentry error https://github.com/getsentry/sentry-javascript/issues/4103
   outputFileTracing: false,
 
@@ -48,7 +69,17 @@ const moduleExports = {
         destination: '/address/:address'
       }
     ];
-  }
+  },
+
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes in your application.
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+    ]
+  },
 };
 
 const SentryWebpackPluginOptions = {

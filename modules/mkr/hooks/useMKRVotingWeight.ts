@@ -1,23 +1,28 @@
-import getMaker from 'lib/maker';
-import useSWR from 'swr';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSWR, { useSWRConfig } from 'swr';
+import { getMKRVotingWeight, MKRVotingWeightResponse } from '../helpers/getMKRVotingWeight';
 
 type VotingWeightResponse = {
-  data?: {
-    total: CurrencyObject;
-  };
+  data?: MKRVotingWeightResponse;
   loading?: boolean;
   error?: Error;
   mutate: () => void;
 };
 
 export const useMKRVotingWeight = (address?: string): VotingWeightResponse => {
+  const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+
+  const dataKey = `/user/polling-voting-weight/${address}/${network}`;
+
+  // Only revalidate every 60 seconds, do not revalidate on mount if it's already fetched
   const { data, error, mutate } = useSWR(
-    address ? ['/user/polling-voting-weight', address] : null,
-    (_, address) => getMaker().then(maker => maker.service('govPolling').getMkrWeightFromChain(address)),
+    address ? dataKey : null,
+    () => getMKRVotingWeight(address as string, network),
     {
-      revalidateOnFocus: true,
-      refreshInterval: 30000
+      revalidateOnFocus: false,
+      revalidateOnMount: !cache.get(dataKey),
+      refreshInterval: 60000
     }
   );
 

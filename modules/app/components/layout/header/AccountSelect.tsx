@@ -1,32 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Text, Button, Close } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
+import Link from 'next/link';
 
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { useWeb3React, Web3ReactProvider, UnsupportedChainIdError } from '@web3-react/core';
 
-import getMaker, { getNetwork, chainIdToNetworkName } from 'lib/maker';
-import { getLibrary, connectors, ConnectorName } from 'lib/maker/web3react';
-import { syncMakerAccount, useEagerConnect } from 'lib/maker/web3react/hooks';
 import { formatAddress } from 'lib/utils';
-import useTransactionStore from 'modules/app/stores/transactions';
+import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
-import NetworkAlertModal from './NetworkAlertModal';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
 import Tooltip from 'modules/app/components/Tooltip';
+import { ConnectorName } from 'modules/web3/types/connectors';
+import { SUPPORTED_WALLETS } from 'modules/web3/constants/wallets';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
+import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
+import { ErrorBoundary } from '../../ErrorBoundary';
+import { useRouter } from 'next/router';
 
-export type ChainIdError = null | 'network mismatch' | 'unsupported network';
-
-const walletButtonStyle = {
+const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
   width: '100%',
   p: 3,
@@ -42,13 +41,13 @@ const walletButtonStyle = {
   }
 };
 
-const disabledWalletButtonStyle = {
+const disabledWalletButtonStyle: ThemeUICSSObject = {
   ...walletButtonStyle,
   cursor: 'not-allowed',
   '&:hover': null
 };
 
-const closeButtonStyle = {
+const closeButtonStyle: ThemeUICSSObject = {
   height: 4,
   width: 4,
   p: 0,
@@ -64,40 +63,15 @@ const disabledHardwareBlurb = (
   </>
 );
 
-const WrappedAccountSelect = (): JSX.Element => (
-  <Web3ReactProvider getLibrary={getLibrary}>
-    <AccountSelect />
-  </Web3ReactProvider>
-);
-
 const ADDRESSES_PER_PAGE = 5;
 const MAX_PAGES = 5;
 
 const AccountSelect = (): React.ReactElement => {
   const { setUserData } = useContext(AnalyticsContext);
+  const router = useRouter();
 
-  const { library, account: w3rAddress, activate, connector, error, chainId } = useWeb3React();
-  const account = useAccountsStore(state => state.currentAccount);
-  const address = account?.address;
-
-  // Detect previously authorized connections and force log-in
-  useEagerConnect();
-
-  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
-  const [disconnectAccount] = useAccountsStore(state => [state.disconnectAccount]);
-
-  useEffect(() => {
-    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
-    if (chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork())
-      setChainIdError('network mismatch');
-  }, [chainId, error]);
-
-  // FIXME there must be a more direct way to get web3-react & maker to talk to each other
-  syncMakerAccount(
-    library,
-    w3rAddress,
-    chainId !== undefined && chainIdToNetworkName(chainId) !== getNetwork()
-  );
+  // important that these are destructed from the account-specific web3-react context
+  const { account: address, chainId, activate, connector, deactivate, error, setError } = useWeb3React();
 
   const [pending, txs] = useTransactionStore(state => [
     state.transactions.findIndex(tx => tx.status === 'pending') > -1,
@@ -108,6 +82,7 @@ const AccountSelect = (): React.ReactElement => {
   const [accountName, setAccountName] = useState<ConnectorName>();
   const [changeWallet, setChangeWallet] = useState(false);
   const [addresses, setAddresses] = useState<string[]>([]);
+  const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
 
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
   const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
@@ -115,27 +90,32 @@ const AccountSelect = (): React.ReactElement => {
   const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
+
+  useEffect(() => {
+    setShowDialog(false);
+  }, [router.pathname]);
+
   const bpi = useBreakpointIndex();
 
   const addHwAccount = async address => {
-    const maker = await getMaker();
-    const accounts = maker.listAccounts();
-    if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
-      maker.useAccountWithAddress(address);
-      hwSelectCallback && hwSelectCallback(new Error('already added'));
-    } else {
-      hwSelectCallback && hwSelectCallback(null, address);
-      const notFirst = maker.service('accounts').hasAccount();
-      if (notFirst) {
-        // if we're adding an account but it's not the first one, we have to explicitly use it;
-        // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
-        // you can test this by connecting with metamask, and then switching the account in the
-        // metamask extension UI.
-        //
-        // setTimeout is necessary because we need to wait for addAccount to resolve
-        setTimeout(() => maker.useAccountWithAddress(address));
-      }
-    }
+    console.log('add hw account');
+    //   const accounts = maker.listAccounts();
+    //   if (accounts.some(a => a.address.toLowerCase() === address.toLowerCase())) {
+    //     maker.useAccountWithAddress(address);
+    //     hwSelectCallback && hwSelectCallback(new Error('already added'));
+    //   } else {
+    //     hwSelectCallback && hwSelectCallback(null, address);
+    //     const notFirst = maker.service('accounts').hasAccount();
+    //     if (notFirst) {
+    //       // if we're adding an account but it's not the first one, we have to explicitly use it;
+    //       // otherwise "accounts/CHANGE" event listeners won't fire (e.g. looking up proxy status).
+    //       // you can test this by connecting with metamask, and then switching the account in the
+    //       // metamask extension UI.
+    //       //
+    //       // setTimeout is necessary because we need to wait for addAccount to resolve
+    //       setTimeout(() => maker.useAccountWithAddress(address));
+    //     }
+    //   }
   };
 
   const LedgerButton = () => {
@@ -147,7 +127,6 @@ const AccountSelect = (): React.ReactElement => {
           sx={disabledWalletButtonStyle as any}
           // onClick={async () => {
           //   setLoading(true);
-          //   const maker = await getMaker();
 
           //   try {
           //     await maker.addAccount({
@@ -184,7 +163,6 @@ const AccountSelect = (): React.ReactElement => {
       <Flex
         sx={disabledWalletButtonStyle as any}
         // onClick={async () => {
-        //   const maker = await getMaker();
 
         //   try {
         //     await maker.addAccount({
@@ -227,8 +205,7 @@ const AccountSelect = (): React.ReactElement => {
         [name]: true
       });
 
-      await activate(connector);
-
+      await activate(connector, undefined, true);
       if (chainId) {
         setUserData({ wallet: name });
       }
@@ -239,17 +216,30 @@ const AccountSelect = (): React.ReactElement => {
         [name]: false
       });
     } catch (e) {
+      // Manually set the error in the web-react account context
+      setError(e);
       setLoadingConnectors({
         [name]: false
       });
     }
   };
 
-  const walletOptions = connectors
-    .map(([name, connector]) => (
-      <Flex sx={walletButtonStyle as any} key={name} onClick={() => onClickConnector(connector, name)}>
-        <Icon name={name} />
-        <Text sx={{ ml: 3 }}>{loadingConnectors[name] ? 'Loading...' : name}</Text>
+  useEffect(() => {
+    if (error instanceof UnsupportedChainIdError) setChainIdError('unsupported network');
+    if (!error) setChainIdError(null);
+  }, [chainId, error]);
+
+  const walletOptions = Object.keys(SUPPORTED_WALLETS)
+    .map((connectorName: ConnectorName) => (
+      <Flex
+        sx={walletButtonStyle}
+        key={connectorName}
+        onClick={() => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)}
+      >
+        <Icon name={SUPPORTED_WALLETS[connectorName].name} />
+        <Text sx={{ ml: 3 }}>
+          {loadingConnectors[connectorName] ? 'Loading...' : SUPPORTED_WALLETS[connectorName].name}
+        </Text>
       </Flex>
     ))
     .concat([<TrezorButton key="trezor" />, <LedgerButton key="ledger" />]);
@@ -260,17 +250,12 @@ const AccountSelect = (): React.ReactElement => {
         <Icon name="chevron_left" color="primary" size="10px" mr="2" />
         Back
       </Button>
-      <Close sx={closeButtonStyle as any} aria-label="close" onClick={close} />
+      <Close sx={closeButtonStyle} aria-label="close" onClick={close} />
     </Flex>
   );
-
   return (
     <Box sx={{ ml: ['auto', 3, 0] }}>
-      <NetworkAlertModal
-        chainIdError={chainIdError}
-        walletChainName={chainId ? chainIdToNetworkName(chainId) : null}
-      />
-
+      <NetworkAlertModal chainIdError={chainIdError} deactivate={deactivate} />
       <ConnectWalletButton
         onClickConnect={() => {
           setShowDialog(true);
@@ -316,7 +301,7 @@ const AccountSelect = (): React.ReactElement => {
               {addresses
                 .slice(hwPageNum * ADDRESSES_PER_PAGE, (hwPageNum + 1) * ADDRESSES_PER_PAGE)
                 .map(address => (
-                  <Flex sx={walletButtonStyle as any} key={address} onClick={() => addHwAccount(address)}>
+                  <Flex sx={walletButtonStyle} key={address} onClick={() => addHwAccount(address)}>
                     <Text sx={{ ml: 3 }}>{formatAddress(address)}</Text>
                   </Flex>
                 ))}
@@ -328,12 +313,12 @@ const AccountSelect = (): React.ReactElement => {
               {accountName === 'WalletConnect' && (
                 <Flex
                   onClick={() => {
-                    (connector as WalletConnectConnector).walletConnectProvider.disconnect();
-                    disconnectAccount();
+                    (connector as WalletConnectConnector).walletConnectProvider?.disconnect();
+                    deactivate();
                     setAccountName(undefined);
                     close();
                   }}
-                  sx={walletButtonStyle as any}
+                  sx={walletButtonStyle}
                 >
                   Disconnect
                 </Flex>
@@ -345,16 +330,34 @@ const AccountSelect = (): React.ReactElement => {
                 <Text variant="microHeading" color="onBackgroundAlt">
                   {address ? 'Account' : 'Select a Wallet'}
                 </Text>
-                <Close aria-label="close" sx={closeButtonStyle as any} onClick={close} />
+                <Close aria-label="close" sx={closeButtonStyle} onClick={close} />
               </Flex>
               {address ? (
                 <>
-                  <AccountBox
-                    {...{ address, accountName }}
-                    // This needs to be the change function for the wallet select dropdown
-                    change={() => setChangeWallet(true)}
-                  />
-                  <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }} />
+                  <ErrorBoundary componentName="Account Details">
+                    <AccountBox
+                      {...{ address, accountName }}
+                      // This needs to be the change function for the wallet select dropdown
+                      change={() => setChangeWallet(true)}
+                    />
+                  </ErrorBoundary>
+                  <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
+                    <ErrorBoundary componentName="Voting Weight">
+                      <VotingWeight />
+                    </ErrorBoundary>
+                    <Box>
+                      <Link
+                        href={{
+                          pathname: '/account'
+                        }}
+                        passHref
+                      >
+                        <ExternalLink title="See account" variant="nostyle" sx={{ color: 'accentBlue' }}>
+                          <Text>See my account page</Text>
+                        </ExternalLink>
+                      </Link>
+                    </Box>
+                  </Box>
                   {txs?.length > 0 && <TransactionBox txs={txs} />}
                   <Button
                     variant="primaryOutline"
@@ -375,4 +378,4 @@ const AccountSelect = (): React.ReactElement => {
   );
 };
 
-export default WrappedAccountSelect;
+export default AccountSelect;

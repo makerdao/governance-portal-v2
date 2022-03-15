@@ -1,33 +1,22 @@
-import { renderWithTheme as render, connectAccount } from '../../../../__tests__/helpers';
-import { act, fireEvent, screen } from '@testing-library/react';
+import { renderWithTheme as render } from '../../../../__tests__/helpers';
+import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 import WrappedAccountSelect from 'modules/app/components/layout/header/AccountSelect';
-
-const { click } = fireEvent;
+import { useRouter } from 'next/router';
+jest.mock('next/router');
 
 describe('Account select', () => {
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({ pathname: '' });
+  });
   test('can connect an account', async () => {
-    const view = render(<WrappedAccountSelect />);
+    render(<WrappedAccountSelect />);
     const connectButton = await screen.findByText('Connect wallet');
     expect(connectButton).toBeInTheDocument();
 
-    click(connectButton);
+    userEvent.click(connectButton);
 
     const metamaskButton = await screen.findByText('MetaMask');
-
-    click(metamaskButton);
-
-    await act(async () => {
-      await connectAccount();
-    });
-
-    const copyButton = await screen.findByTestId('copy-address');
-    expect(copyButton).toBeInTheDocument();
-    const etherscanButton = await screen.findByText('etherscan', { exact: false });
-    expect(etherscanButton).toBeInTheDocument();
-    const displayedAddress = await screen.findAllByText('0x16F', { exact: false });
-    expect(displayedAddress.length).toBe(1);
-
-    // Wait for MKR balance to load
-    await screen.findByText(/400.00 MKR/i);
+    expect(metamaskButton).toBeInTheDocument();
   });
 });

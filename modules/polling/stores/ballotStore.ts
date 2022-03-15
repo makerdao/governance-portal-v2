@@ -1,15 +1,14 @@
 import create from 'zustand';
-import isNil from 'lodash/isNil';
 import omit from 'lodash/omit';
-import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { Ballot } from '../types/ballot';
-import { transactionsApi } from 'modules/app/stores/transactions';
-import { accountsApi } from 'modules/app/stores/accounts';
-import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
+import { PollComment } from 'modules/comments/types/pollComments';
+import { sign } from 'modules/web3/helpers/sign';
+import { Web3Provider } from '@ethersproject/providers';
 import { fetchJson } from 'lib/fetchJson';
 
 type Store = {
   ballot: Ballot;
+  previousVotes: Ballot;
   comments: Partial<PollComment>[];
   setComments: (newComments: Partial<PollComment>[]) => void;
   updateComment: (comment: string, pollId: number) => void;
@@ -17,22 +16,21 @@ type Store = {
   clearTx: () => void;
   addToBallot: (pollId: number, option: number | number[]) => void;
   removeFromBallot: (pollId: number) => void;
+  updatePreviousVotes: () => void;
   clearBallot: () => void;
-  submitBallot: () => Promise<void>;
-  signComments: () => Promise<void>;
+  signComments: (account: string, provider: Web3Provider) => Promise<void>;
   signedMessage: string;
-  rawMessage: string;
 };
 
-const [useBallotStore] = create<Store>((set, get) => ({
+const [useBallotStore, ballotApi] = create<Store>((set, get) => ({
   ballot: {},
+  previousVotes: {},
   txId: null,
   comments: [],
   signedMessage: '',
-  rawMessage: '',
 
   setComments: (newComments: Partial<PollComment>[]) => {
-    set({ comments: newComments, signedMessage: '', rawMessage: '' });
+    set({ comments: newComments, signedMessage: '' });
   },
 
   updateComment: (text: string, pollId: number) => {
@@ -41,7 +39,6 @@ const [useBallotStore] = create<Store>((set, get) => ({
 
     set(state => ({
       signedMessage: '',
-      rawMessage: '',
       comments: exist
         ? state.comments.map(comment => {
             if (comment.pollId === pollId) {
@@ -75,92 +72,38 @@ const [useBallotStore] = create<Store>((set, get) => ({
     set(state => ({ ballot: omit(state.ballot, pollId) }));
   },
 
+  updatePreviousVotes: () => {
+    const ballot = get().ballot;
+    const previousVotes = get().previousVotes;
+    set({
+      previousVotes: {
+        ...previousVotes,
+        ...ballot
+      }
+    });
+  },
+
   clearBallot: () => {
     set({ ballot: {} });
   },
 
-  signComments: async () => {
+  signComments: async (account: string, provider: Web3Provider) => {
     const comments = get().comments;
 
-    // Sign message for commenting
-    const rawMessage =
-      comments.length > 1
-        ? `I am leaving ${comments.length} comments for my votes.
-  ${comments.map(comment => `- Poll ${comment.pollId}: ${comment.comment}.  `).join('\n')}
-    `
-        : `${comments[0].comment}`;
+    const data = await fetchJson('/api/comments/nonce', {
+      method: 'POST',
+      body: JSON.stringify({
+        voterAddress: account
+      })
+    });
 
-    const signedMessage = comments.length > 0 ? await personalSign(rawMessage) : '';
+    const signedMessage = comments.length > 0 ? await sign(account, data.nonce, provider) : '';
 
     set({
-      signedMessage,
-      rawMessage
+      signedMessage
     });
-  },
-
-  submitBallot: async () => {
-    const newBallot = {};
-    const maker = await getMaker();
-    const ballot = get().ballot;
-
-    const pollIds: string[] = [];
-    const pollOptions: string[] = [];
-
-    Object.keys(ballot).forEach((key: string) => {
-      if (!isNil(ballot[key].option)) {
-        newBallot[key] = { ...ballot[key], submittedOption: ballot[key].option };
-        pollIds.push(key);
-        pollOptions.push(ballot[key].option);
-      }
-    });
-
-    const comments = get().comments;
-    const account = accountsApi.getState().currentAccount;
-    const voteDelegate = accountsApi.getState().voteDelegate;
-    const voteProxy = account?.address ? accountsApi.getState().proxies[account?.address] : null;
-
-    const voteTxCreator = voteDelegate
-      ? () => voteDelegate.votePoll(pollIds, pollOptions)
-      : () => maker.service('govPolling').vote(pollIds, pollOptions);
-
-    const txId = await transactionsApi
-      .getState()
-      .track(voteTxCreator, `Voting on ${Object.keys(ballot).length} polls`, {
-        pending: txHash => {
-          // if comment included, add to comments db
-          if (comments.length > 0) {
-            const commentsRequest: PollsCommentsRequestBody = {
-              voterAddress: account?.address || '',
-              delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
-              voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
-              comments,
-              rawMessage: get().rawMessage,
-              signedMessage: get().signedMessage,
-              txHash
-            };
-
-            fetchJson(`/api/comments/polling/add?network=${getNetwork()}`, {
-              method: 'POST',
-              body: JSON.stringify(commentsRequest)
-            })
-              .then(() => {
-                // console.log('comment successfully added');
-                get().setComments([]);
-              })
-              .catch(() => {
-                console.error('failed to add comment');
-                get().setComments([]);
-              });
-          }
-        },
-        mined: txId => {
-          get().clearBallot();
-          transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);
-        }
-      });
-
-    set({ ballot: newBallot, txId });
   }
 }));
 
 export default useBallotStore;
+export { ballotApi };

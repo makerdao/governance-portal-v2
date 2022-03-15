@@ -19,6 +19,7 @@ export const StatBox = ({ value, label, styles }: Props): JSX.Element => {
       <Box sx={{ height: '30px' }}>
         {value ? (
           <Text
+            data-testid={`${label}-stat-box`}
             as="p"
             sx={{
               color: 'secondaryAlt',

@@ -1,11 +1,11 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { isSupportedNetwork } from 'lib/maker/index';
-import { DEFAULT_NETWORK } from 'lib/constants';
-import withApiHandler from 'lib/api/withApiHandler';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import { resolveENS } from 'modules/web3/ens';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { resolveENS } from 'modules/web3/helpers/ens';
 
 /**
  * @swagger
@@ -58,7 +58,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
  *               $ref: '#/definitions/Address'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<AddressApiResponse>) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   const tempAddress = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

@@ -70,12 +70,12 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Documentation')
         },
         {
-          url: 'https://docs.makerdao.com/dai.js',
-          title: 'Dai.js'
-        },
-        {
           url: 'https://github.com/makerdao/developerguides',
           title: 'Developer Guides'
+        },
+        {
+          url: '/api-docs',
+          title: 'API Docs'
         }
       ]
     },
@@ -170,26 +170,49 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <ThemeUILink sx={{ color: 'text' }} href="https://twitter.com/MakerDAO" title="Twitter">
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://twitter.com/MakerDAO"
+              title="Twitter"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Icon name="twitter" />
             </ThemeUILink>
-            <ThemeUILink sx={{ color: 'text' }} href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://www.reddit.com/r/MakerDAO/"
+              title="Reddit"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Icon name="reddit" />
             </ThemeUILink>
-            <ThemeUILink sx={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://t.me/makerdaoOfficial"
+              title="Telegram"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Icon name="telegram" />
             </ThemeUILink>
             <ThemeUILink
               sx={{ color: 'text' }}
-              href="https://chat.makerdao.com/"
-              title="MakerDAO official chat"
+              href="https://www.youtube.com/MakerDAO"
+              title="Youtube"
+              target="_blank"
+              rel="noreferrer"
             >
-              <Icon name="rocket_chat" />
-            </ThemeUILink>
-            <ThemeUILink sx={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
             </ThemeUILink>
-            <ThemeUILink sx={{ color: 'text' }} href="https://discord.gg/GHcFMdKden" title="Discord">
+            <ThemeUILink
+              sx={{ color: 'text' }}
+              href="https://discord.gg/tQ5wnN6Ms4"
+              title="Discord"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Icon name="discord" />
             </ThemeUILink>
           </Flex>

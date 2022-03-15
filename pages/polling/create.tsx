@@ -3,22 +3,20 @@ import { Heading, Text, Box, Button, Flex, Input, Label, Link as ExternalLink } 
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getNetwork } from 'lib/maker';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import Tabs from 'modules/app/components/Tabs';
 import PollCreateModal from 'modules/polling/components/PollCreateModal';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import MkrLiquiditySidebar from 'modules/mkr/components/MkrLiquiditySidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { formatDateWithTime } from 'lib/datetime';
 import { markdownToHtml } from 'lib/utils';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -57,7 +55,7 @@ const PollingCreate = (): React.ReactElement => {
   const [pollErrors, setPollErrors] = useState<string[]>([]);
   const [contentHtml, setContentHtml] = useState<string>('');
   const [creating, setCreating] = useState(false);
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
 
   const resetForm = () => {
     setPoll(undefined);
@@ -71,6 +69,7 @@ const PollingCreate = (): React.ReactElement => {
       const result = await validateUrl(url, {
         pollId: 0,
         multiHash: '',
+        slug: '',
         startDate: new Date(0),
         endDate: new Date(0),
         url: pollUrl
@@ -105,7 +104,7 @@ const PollingCreate = (): React.ReactElement => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling', query: { network: getNetwork() } }}>
+              <Link href={{ pathname: '/polling' }}>
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
@@ -178,6 +177,7 @@ const PollingCreate = (): React.ReactElement => {
                       <Flex>
                         <Button
                           variant="primary"
+                          data-testid="button-create-poll"
                           onClick={() => setCreating(true)}
                           disabled={typeof poll === 'undefined' || pollErrors.length > 0 || !account}
                         >
@@ -208,7 +208,6 @@ const PollingCreate = (): React.ReactElement => {
                   'debt ceiling'
                 ]}
               />
-              <MkrLiquiditySidebar />
               <ResourceBox type={'general'} />
             </Stack>
           )}

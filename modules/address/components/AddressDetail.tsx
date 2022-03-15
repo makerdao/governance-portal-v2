@@ -1,8 +1,7 @@
 import React from 'react';
 import { Box, Text, Flex, Divider } from 'theme-ui';
-import { getNetwork } from 'lib/maker';
 import { PollVoteHistoryList } from 'modules/polling/components/PollVoteHistoryList';
-import { AddressAPIStats, VoteProxyInfo } from '../types/addressApiResponse';
+import { AddressAPIStats } from '../types/addressApiResponse';
 import { PollingParticipationOverview } from 'modules/polling/components/PollingParticipationOverview';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
@@ -12,15 +11,17 @@ import { MKRDelegatedToAPIResponse } from 'pages/api/address/[address]/delegated
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type PropTypes = {
   address: string;
-  voteProxyInfo?: VoteProxyInfo;
 };
 
-export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.ReactElement {
+export function AddressDetail({ address }: PropTypes): React.ReactElement {
+  const { network } = useActiveWeb3React();
   const { data: statsData } = useSWR<AddressAPIStats>(
-    `/api/address/${address}/stats?network=${getNetwork()}`,
+    address ? `/api/address/${address}/stats?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -30,7 +31,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
   );
 
   const { data: delegatedToData } = useSWR<MKRDelegatedToAPIResponse>(
-    `/api/address/${address}/delegated-to?network=${getNetwork()}`,
+    address ? `/api/address/${address}/delegated-to?network=${network}` : null,
     fetchJson,
     {
       revalidateOnFocus: false,
@@ -49,7 +50,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
           p: [3, 4]
         }}
       >
-        <AddressIconBox address={address} voteProxyInfo={voteProxyInfo} showExternalLink />
+        <AddressIconBox address={address} showExternalLink />
 
         <Box sx={{ pt: [2, 0] }}>
           <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
@@ -70,7 +71,7 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
             fontWeight: 'semiBold'
           }}
         >
-          MKR Delegated per address
+          MKR Delegated by Address
         </Text>
         {!delegatedToData && (
           <Box mb={3}>
@@ -111,9 +112,17 @@ export function AddressDetail({ address, voteProxyInfo }: PropTypes): React.Reac
         )}
       </Box>
 
-      {statsData && <PollVoteHistoryList votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Vote History'}>
+          <PollVoteHistoryList votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
 
-      {statsData && <PollingParticipationOverview votes={statsData.pollVoteHistory} />}
+      {statsData && (
+        <ErrorBoundary componentName={'Poll Participation Overview'}>
+          <PollingParticipationOverview votes={statsData.pollVoteHistory} />
+        </ErrorBoundary>
+      )}
     </Box>
   );
 }

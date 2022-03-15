@@ -1,5 +1,5 @@
-import { connectToDatabase } from 'lib/api/utils';
-import { SupportedNetworks } from 'lib/constants';
+import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollCommentsAPIResponseItem } from '../types/comments';
@@ -32,14 +32,7 @@ export async function getPollComments(
   const promises = uniqueComments.map(async (comment: PollComment) => {
     return {
       comment,
-      address: await getAddressInfo(
-        comment.delegateAddress
-          ? comment.delegateAddress
-          : comment.voteProxyAddress
-          ? comment.voteProxyAddress
-          : comment.voterAddress,
-        network
-      )
+      address: await getAddressInfo(comment.voterAddress, network)
     };
   });
 

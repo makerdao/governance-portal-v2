@@ -3,12 +3,10 @@ import { Box } from 'theme-ui';
 import { select } from 'd3-selection';
 import { pack, hierarchy } from 'd3-hierarchy';
 import { useRouter } from 'next/router';
-import { getNetwork } from 'lib/maker';
 import { cutMiddle, limitString } from 'lib/string';
-import { useDelegateAddressMap } from 'lib/hooks';
 import { Poll, PollTally } from 'modules/polling/types';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
-import { Address } from 'modules/address/components/Address';
+import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 
 type CircleProps = {
   poll: Poll;
@@ -20,7 +18,6 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
   if (!poll || !tally || !diameter) return <Box>Loading</Box>;
   const ref = useRef<SVGSVGElement>(null);
   const router = useRouter();
-  const network = getNetwork();
   const { data: delegateAddresses } = useDelegateAddressMap();
 
   const data = {
@@ -30,7 +27,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
 
   const handleVoterClick = event => {
     const address = event.target.__data__.data.voter;
-    router.push({ pathname: `/address/${address}`, query: { network } });
+    router.push({ pathname: `/address/${address}` });
   };
 
   useEffect(() => {
@@ -86,7 +83,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       .style('text-anchor', 'middle')
       .text(function (d) {
         return delegateAddresses[d.data.voter]
-          ? limitString(delegateAddresses[d.data.voter], 18, '...')
+          ? limitString(delegateAddresses[d.data.voter].name, 18, '...')
           : cutMiddle(d.data.voter);
       })
       .attr('font-size', function (d) {

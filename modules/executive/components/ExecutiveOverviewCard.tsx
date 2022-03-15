@@ -1,42 +1,48 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text, Flex, Box, Button, Badge, Divider, Card, Link as InternalLink } from 'theme-ui';
+import { Text, Flex, Box, Button, Badge, Divider, Card, Link as ThemeUILink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
+import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
-import Bignumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
 import { formatDateWithoutTime } from 'lib/datetime';
-import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
-import useAccountsStore from 'modules/app/stores/accounts';
-import { Proposal, SpellData } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { ZERO_ADDRESS } from 'modules/app/constants';
+import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { useSpellData } from '../hooks/useSpellData';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
-  spellData?: SpellData;
+  account?: string;
+  network: SupportedNetworks;
+  votedProposals: string[];
+  mkrOnHat?: BigNumber;
 };
 
-export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...props }: Props): JSX.Element {
+export default function ExecutiveOverviewCard({
+  proposal,
+  isHat,
+  network,
+  account,
+  votedProposals,
+  mkrOnHat,
+  ...props
+}: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const account = useAccountsStore(state => state.currentAccount);
-  const { data: mkrOnHat } = useMkrOnHat();
   const [voting, setVoting] = useState(false);
-  const { data: votedProposals } = useVotedProposals();
-  const network = getNetwork();
   const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
-  const canVote = !!account;
+  const { data: spellData } = useSpellData(proposal.address);
+
   const hasVotedFor =
     votedProposals &&
     !!votedProposals.find(
@@ -53,96 +59,100 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
     );
   }
 
+  const canVote = !!account;
+
   return (
-    <Link
-      href={{ pathname: '/executive/[proposal-id]', query: { network } }}
-      as={{ pathname: `/executive/${proposal.key}`, query: { network } }}
+    <Card
+      sx={{
+        p: [0, 0]
+      }}
+      {...props}
     >
-      <Card
-        sx={{
-          p: [0, 0],
-          cursor: 'pointer',
-          '&:hover': {
-            borderColor: 'onSecondary'
-          }
-        }}
-        {...props}
-      >
-        <Box px={[3, 4]} py={[3, spellData?.hasBeenScheduled ? 3 : 4]}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <Stack gap={2}>
-              <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                  posted {formatDateWithoutTime(proposal.date)}
+      <Box px={[3, 4]} py={[3, proposal.spellData?.hasBeenScheduled ? 3 : 4]}>
+        <Flex sx={{ justifyContent: 'space-between' }}>
+          <Stack gap={2}>
+            <Link
+              href={{ pathname: '/executive/[proposal-id]' }}
+              as={{ pathname: `/executive/${proposal.key}` }}
+              passHref
+            >
+              <ThemeUILink variant="nostyle" title="View Executive Details">
+                <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                  <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                    posted {formatDateWithoutTime(proposal.date)}
+                  </Text>
+                </Flex>
+                <Box>
+                  <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
+                    {proposal.title}
+                  </Text>
+                </Box>
+                <Text
+                  sx={{
+                    fontSize: [2, 3],
+                    color: 'onSecondary'
+                  }}
+                >
+                  {proposal.proposalBlurb}
                 </Text>
-              </Flex>
-              <Box>
-                <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
-                  {proposal.title}
-                </Text>
-              </Box>
-              <Text
-                sx={{
-                  fontSize: [2, 3],
-                  color: 'onSecondary'
-                }}
-              >
-                {proposal.proposalBlurb}
-              </Text>
-              <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                {hasVotedFor && (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      color: 'primary',
-                      borderColor: 'primary',
-                      textTransform: 'uppercase',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      m: 1
-                    }}
-                  >
-                    <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                      <Icon name="verified" size={3} />
-                    </Flex>
-                    Your Vote
-                  </Badge>
-                )}
-                {isHat && proposal.address !== ZERO_ADDRESS ? (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      m: 1,
-                      borderColor: 'primaryAlt',
-                      color: 'primaryAlt',
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    Governing proposal
-                  </Badge>
-                ) : null}
-                {spellData?.mkrSupport === undefined ? (
-                  <Box sx={{ width: 6, m: 1 }}>
-                    <Skeleton />
-                  </Box>
-                ) : (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      borderColor: 'text',
-                      textTransform: 'uppercase',
-                      m: 1
-                    }}
-                  >
-                    {new Bignumber(spellData.mkrSupport).toFormat(2)} MKR Supporting
-                  </Badge>
-                )}
-              </Flex>
-              {canVote && bpi === 0 && (
-                <Box sx={{ pt: 2 }}>
+              </ThemeUILink>
+            </Link>
+            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    m: 1
+                  }}
+                >
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
+              )}
+              {isHat && proposal.address !== ZERO_ADDRESS ? (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    m: 1,
+                    borderColor: 'primaryAlt',
+                    color: 'primaryAlt',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  Governing proposal
+                </Badge>
+              ) : null}
+              {spellData?.mkrSupport === undefined ? (
+                <Box sx={{ width: 6, m: 1 }}>
+                  <Skeleton />
+                </Box>
+              ) : (
+                <Badge
+                  data-testid="mkr-supporting"
+                  variant="primary"
+                  sx={{
+                    borderColor: 'text',
+                    textTransform: 'uppercase',
+                    m: 1
+                  }}
+                >
+                  {formatValue(BigNumber.from(spellData?.mkrSupport))} MKR Supporting
+                </Badge>
+              )}
+            </Flex>
+            {bpi === 0 && (
+              <Box sx={{ pt: 2 }}>
+                {canVote && (
                   <Button
                     variant="primaryOutline"
-                    sx={{ width: '100%' }}
+                    sx={{ width: '100%', py: 2 }}
                     disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                     onClick={ev => {
                       trackButtonClick('openExecVoteModal');
@@ -153,14 +163,44 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                   >
                     Vote
                   </Button>
-                </Box>
-              )}
-            </Stack>
-            {canVote && bpi > 0 && (
-              <Flex sx={{ mx: 4, alignItems: 'center', justifyContent: 'center', width: 7 }}>
+                )}
+                <Link
+                  href={{ pathname: '/executive/[proposal-id]' }}
+                  as={{ pathname: `/executive/${proposal.key}` }}
+                  passHref
+                >
+                  <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
+                    <Button
+                      variant="outline"
+                      sx={{
+                        width: '100%',
+                        my: canVote ? 3 : 0,
+                        borderColor: 'text',
+                        color: 'text',
+                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </ThemeUILink>
+                </Link>
+              </Box>
+            )}
+          </Stack>
+          {bpi > 0 && (
+            <Flex
+              sx={{
+                mx: 4,
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 7,
+                flexDirection: 'column'
+              }}
+            >
+              {canVote && (
                 <Button
                   variant="primaryOutline"
-                  sx={{ width: '100%' }}
+                  sx={{ width: '100%', py: 2 }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
                     setVoting(true);
@@ -170,28 +210,55 @@ export default function ExecutiveOverviewCard({ proposal, isHat, spellData, ...p
                 >
                   Vote
                 </Button>
-              </Flex>
-            )}
-          </Flex>
-
-          {comments && comments.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <InternalLink href={`/executive/${proposal.key}?network=${getNetwork()}#comments`}>
-                <CommentCount count={comments.length} />
-              </InternalLink>
-            </Box>
+              )}
+              <Link
+                href={{ pathname: '/executive/[proposal-id]' }}
+                as={{ pathname: `/executive/${proposal.key}` }}
+                passHref
+              >
+                <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
+                  <Button
+                    variant="outline"
+                    sx={{
+                      width: '100%',
+                      mt: canVote ? 3 : 0,
+                      borderColor: 'text',
+                      color: 'text',
+                      ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                    }}
+                  >
+                    View Details
+                  </Button>
+                </ThemeUILink>
+              </Link>
+            </Flex>
           )}
-        </Box>
-
-        {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
-
-        <Divider my={0} />
-        <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-          <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
-            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
-          </Text>
         </Flex>
-      </Card>
-    </Link>
+
+        {comments && comments.length > 0 && (
+          <Box sx={{ mt: 2 }}>
+            <ThemeUILink
+              href={`/executive/${proposal.key}?network=${network}#comments`}
+              title="View Comments"
+            >
+              <CommentCount count={comments.length} />
+            </ThemeUILink>
+          </Box>
+        )}
+      </Box>
+
+      {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
+
+      <Divider my={0} />
+      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+        <Text
+          data-testid="proposal-status"
+          as="p"
+          sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}
+        >
+          {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+        </Text>
+      </Flex>
+    </Card>
   );
 }

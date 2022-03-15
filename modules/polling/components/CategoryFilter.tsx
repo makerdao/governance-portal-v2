@@ -56,11 +56,12 @@ export default function CategoryFilter({
     <FilterButton
       name={() => `Poll Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
+      data-testid="poll-filters-dropdown"
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
+          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }} data-testid="checkbox-show-polls-active">
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showPollActive}
@@ -75,7 +76,7 @@ export default function CategoryFilter({
           </Label>
         </Flex>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
+          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }} data-testid="checkbox-show-polls-ended">
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showPollEnded}

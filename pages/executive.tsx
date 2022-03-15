@@ -9,13 +9,11 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import getMaker, { isDefaultNetwork, getNetwork, MKR } from 'lib/maker';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
-import oldChiefAbi from 'lib/abis/oldChiefAbi.json';
-import { oldChiefAddress } from 'lib/constants';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -34,14 +32,23 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 
 // stores
-import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 // types
-import { Proposal, CMSProposal, SpellData } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { MainnetSdk } from '@dethcrypto/eth-sdk-client';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import useSWRInfinite from 'swr/infinite';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
 const CircleNumber = ({ children }) => (
   <Box
@@ -84,56 +91,71 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
+export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
+  const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
+    useAccount();
+  const { network } = useActiveWeb3React();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const [voteProxy, oldProxyAddress, voteDelegate] = useAccountsStore(state =>
-    account
-      ? [state.proxies[account.address], state.oldProxy.address, state.voteDelegate]
-      : [null, null, null]
-  );
-  const [numHistoricalProposalsLoaded, setNumHistoricalProposalsLoaded] = useState(5);
-  const [showHistorical, setShowHistorical] = React.useState(false);
-  const loader = useRef<HTMLDivElement>(null);
 
-  const address = voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
-  const { data: lockedMkr } = useLockedMkr(address, voteProxy, voteDelegate);
+  const [showHistorical, setShowHistorical] = React.useState(false);
+
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+  const { data: lockedMkr } = useLockedMkr(address, voteProxyContractAddress, voteDelegateContractAddress);
 
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+  const { chiefOld } = useContracts() as MainnetSdk;
+  const { data: mkrOnHat } = useMkrOnHat();
+
+  const [startDate, endDate, sortBy] = useUiFiltersStore(
+    state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
+    shallow
+  );
+  // Use SWRInfinite to do a loaded pagination of the proposals
+  // Preload with the server side data as "fallback"
+  const getKey = (pageIndex, previousPageData) => {
+    if (previousPageData && !previousPageData.length) return null; // reached the end
+    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10&sortBy=${sortBy}${
+      startDate ? `&startDate=${new Date(startDate).getTime()}` : ''
+    }${endDate ? `&endDate=${new Date(endDate).getTime()}` : ''}`; // SWR key
+  };
+
+  const {
+    data: paginatedProposals,
+    error,
+    size,
+    setSize,
+    isValidating
+  } = useSWRInfinite(getKey, fetchJson, {
+    refreshInterval: 0,
+    revalidateOnFocus: false,
+    initialSize: 1,
+    revalidateFirstPage: false,
+    fallback: {
+      [`/api/executive?network=${network}&start=0&limit=10&sortBy=${sortBy}`]: proposals
+    }
+  });
+
+  const isLoadingInitialData = !paginatedProposals && !error;
+  const isLoadingMore =
+    isLoadingInitialData ||
+    (size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating);
+
+  const loadMore = () => {
+    setSize(size + 1);
+  };
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
   }, [address]);
 
-  const lockedMkrKeyOldChief = oldProxyAddress || account?.address;
+  const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
-    () =>
-      getMaker().then(maker =>
-        maker
-          .service('smartContract')
-          .getContractByAddressAndAbi(oldChiefAddress[getNetwork()], oldChiefAbi)
-          .deposits(lockedMkrKeyOldChief)
-          .then(MKR.wei)
-      )
-  );
-
-  // FIXME merge this into the proposal object
-  const { data: spellData } = useSWR<Record<string, SpellData>>(
-    `/api/executive/analyze-spell?network=${getNetwork()}`,
-    // needs to be a POST because the list of addresses is too long to be a GET query parameter
-    url =>
-      fetchJson(url, { method: 'POST', body: JSON.stringify({ addresses: proposals.map(p => p.address) }) }),
-    { refreshInterval: 0, revalidateOnMount: true }
+    () => chiefOld.deposits(lockedMkrKeyOldChief as string)
   );
 
   const votingForSomething = votedProposals && votedProposals.length > 0;
-
-  const [startDate, endDate, sortBy] = useUiFiltersStore(
-    state => [state.executiveFilters.startDate, state.executiveFilters.endDate, state.executiveSortBy],
-    shallow
-  );
 
   const prevSortByRef = useRef<string>(sortBy);
   useEffect(() => {
@@ -143,54 +165,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
     }
   }, [sortBy]);
 
-  const filteredProposals = useMemo(() => {
-    const start = startDate && new Date(startDate);
-    const end = endDate && new Date(endDate);
-    return (
-      proposals.filter(proposal => {
-        // filter out non-cms proposals for now
-        if (!('about' in proposal) || !('date' in proposal)) return false;
-        if (start && new Date((proposal as CMSProposal).date).getTime() < start.getTime()) return false;
-        if (end && new Date((proposal as CMSProposal).date).getTime() > end.getTime()) return false;
-        return true;
-      }) as CMSProposal[]
-    ).sort((a, b) => {
-      if (sortBy === 'MKR Amount') {
-        const bSupport = spellData ? spellData[b.address]?.mkrSupport || 0 : 0;
-        const aSupport = spellData ? spellData[a.address]?.mkrSupport || 0 : 0;
-        return bSupport - aSupport;
-      }
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
-  }, [proposals, startDate, endDate, sortBy]);
-
-  const loadMore = entries => {
-    const target = entries.pop();
-    if (target.isIntersecting) {
-      setNumHistoricalProposalsLoaded(
-        numHistoricalProposalsLoaded < filteredProposals.filter(proposal => !proposal.active).length
-          ? numHistoricalProposalsLoaded + 5
-          : numHistoricalProposalsLoaded
-      );
-    }
-  };
-
-  useEffect(() => {
-    let observer;
-    if (loader?.current) {
-      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
-      observer.observe(loader.current);
-    }
-    return () => {
-      if (loader?.current) {
-        observer?.unobserve(loader.current);
-      }
-    };
-  }, [loader, loadMore]);
-
-  useEffect(() => {
-    setNumHistoricalProposalsLoaded(5); // reset infinite scroll if a new filter is applied
-  }, [filteredProposals]);
+  const flattenedProposals = useMemo(() => {
+    return paginatedProposals?.flat() || [];
+  }, [paginatedProposals]);
 
   const { data: hat } = useHat();
 
@@ -213,8 +190,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
               >
                 <Text sx={{ py: 2 }}>
                   An executive vote has passed to update the Chief to a new version. You have{' '}
-                  <b>{lockedMkrOldChief.toBigNumber().toFormat(lockedMkrOldChief.gte(0.01) ? 2 : 6)} MKR</b>{' '}
-                  to withdraw from the old chief.
+                  <b>{formatValue(lockedMkrOldChief)} MKR</b> to withdraw from the old chief.
                 </Text>
                 <Flex>
                   <WithdrawOldChief />
@@ -251,10 +227,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
         )}
         {lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          !voteProxy &&
+          !voteProxyContractAddress &&
           lockedMkr &&
           lockedMkr.eq(0) &&
-          !voteDelegate && (
+          !voteDelegateContractAddress && (
             <>
               <ProgressBar step={1} />
               <Flex
@@ -330,9 +306,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          voteProxy &&
+          voteProxyContractAddress &&
           lockedMkr &&
-          !voteDelegate && (
+          !voteDelegateContractAddress && (
             <>
               <ProgressBar step={lockedMkr.eq(0) ? 1 : 2} />
               <MigrationBadge>
@@ -351,7 +327,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           !votingForSomething &&
           lockedMkrOldChief &&
           lockedMkrOldChief.eq(0) &&
-          !voteProxy &&
+          !voteProxyContractAddress &&
           lockedMkr &&
           lockedMkr.gt(0) && (
             <>
@@ -361,7 +337,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           )}
       </Box>
       <Stack>
-        {account && <ExecutiveBalance lockedMkr={lockedMkr} voteDelegate={voteDelegate} />}
+        {account && (
+          <ExecutiveBalance
+            lockedMkr={lockedMkr || BigNumber.from(0)}
+            voteDelegate={voteDelegateContractAddress}
+          />
+        )}
         <Flex sx={{ alignItems: 'center' }}>
           <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
             Filters
@@ -374,51 +355,36 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
           <Box>
             <Stack gap={3}>
               <Heading as="h1">Executive Proposals</Heading>
-              <Stack gap={4} sx={{ mb: 4 }}>
-                {filteredProposals
-                  .filter(proposal => proposal.active)
-                  .map((proposal, index) => (
-                    <ExecutiveOverviewCard
-                      key={index}
-                      proposal={proposal}
-                      spellData={spellData ? spellData[proposal.address] : undefined}
-                      isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                    />
-                  ))}
-              </Stack>
-
-              {showHistorical ? (
-                <div>
-                  <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
-                    <Divider />
-                    <Button
-                      variant="mutedOutline"
-                      onClick={() => {
-                        trackButtonClick('hideHistoricalExecs');
-                        setShowHistorical(false);
-                      }}
-                    >
-                      View fewer proposals
-                    </Button>
-                    <Divider />
-                  </Grid>
-
-                  <Stack gap={4}>
-                    {filteredProposals
-                      .filter(proposal => !proposal.active)
-                      .slice(0, numHistoricalProposalsLoaded)
-                      .map((proposal, index) => (
+              {!isLoadingInitialData && (
+                <Stack gap={4} sx={{ mb: 4 }}>
+                  {flattenedProposals
+                    .filter(proposal => proposal.active)
+                    .map((proposal, index) => (
+                      <Box key={`proposal-${proposal.address}-${index}`}>
                         <ExecutiveOverviewCard
-                          key={index}
                           proposal={proposal}
-                          spellData={spellData ? spellData[proposal.address] : undefined}
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                          network={network}
+                          account={account}
+                          votedProposals={votedProposals}
+                          mkrOnHat={mkrOnHat}
                         />
-                      ))}
-                  </Stack>
-                  <div ref={loader} />
-                </div>
-              ) : (
+                      </Box>
+                    ))}
+                </Stack>
+              )}
+
+              {isLoadingInitialData && (
+                <Box>
+                  <Box my={3}>
+                    <SkeletonThemed width={'100%'} height={'200px'} />
+                  </Box>
+                  <Box my={3}>
+                    <SkeletonThemed width={'100%'} height={'200px'} />
+                  </Box>
+                </Box>
+              )}
+              {!showHistorical && flattenedProposals.filter(proposal => proposal.active).length > 0 && (
                 <Grid columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                   <Divider />
                   <Button
@@ -433,20 +399,81 @@ export const ExecutiveOverview = ({ proposals }: { proposals: Proposal[] }): JSX
                   <Divider />
                 </Grid>
               )}
+              {(showHistorical || flattenedProposals.filter(proposal => proposal.active).length == 0) && (
+                <div>
+                  {flattenedProposals.filter(proposal => proposal.active).length > 0 && (
+                    <Grid mb={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                      <Divider />
+                      <Button
+                        variant="mutedOutline"
+                        onClick={() => {
+                          trackButtonClick('hideHistoricalExecs');
+                          setShowHistorical(false);
+                        }}
+                      >
+                        View fewer proposals
+                      </Button>
+                      <Divider />
+                    </Grid>
+                  )}
+
+                  <Stack gap={4}>
+                    {flattenedProposals
+                      .filter(proposal => !proposal.active)
+                      .map((proposal, index) => (
+                        <Box key={`proposal-${proposal.address}-${index}`}>
+                          <ExecutiveOverviewCard
+                            proposal={proposal}
+                            isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                            network={network}
+                            account={account}
+                            votedProposals={votedProposals}
+                            mkrOnHat={mkrOnHat}
+                          />
+                        </Box>
+                      ))}
+                  </Stack>
+                  {isLoadingMore && (
+                    <Box>
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
+                      </Box>
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
+                      </Box>
+                      <Box my={3}>
+                        <SkeletonThemed width={'100%'} height={'200px'} />
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Grid mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                    <Divider />
+                    <Button variant="mutedOutline" onClick={loadMore}>
+                      Load more
+                    </Button>
+                    <Divider />
+                  </Grid>
+                </div>
+              )}
             </Stack>
           </Box>
           <Stack gap={3}>
-            <SystemStatsSidebar
-              fields={[
-                'chief contract',
-                'mkr in chief',
-                'mkr needed to pass',
-                'savings rate',
-                'total dai',
-                'debt ceiling'
-              ]}
-            />
-            <MkrLiquiditySidebar />
+            <ErrorBoundary componentName="System Info">
+              <SystemStatsSidebar
+                fields={[
+                  'chief contract',
+                  'mkr in chief',
+                  'mkr needed to pass',
+                  'savings rate',
+                  'total dai',
+                  'debt ceiling'
+                ]}
+              />
+            </ErrorBoundary>
+            <ErrorBoundary componentName="MKR Liquidity">
+              <MkrLiquiditySidebar network={network} />
+            </ErrorBoundary>
             <ResourceBox type={'executive'} />
             <ResourceBox type={'general'} />
           </Stack>
@@ -463,19 +490,21 @@ export default function ExecutiveOverviewPage({
 }): JSX.Element {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
+  const { network } = useActiveWeb3React();
 
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/executive?network=${getNetwork()}`).then(_setProposals).catch(setError);
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/executive?network=${network}&start=0&limit=10`).then(_setProposals).catch(setError);
     }
-  }, []);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && !_proposals)
+  if (!isDefaultNetwork(network) && !_proposals)
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -483,16 +512,18 @@ export default function ExecutiveOverviewPage({
     );
 
   return (
-    <ExecutiveOverview proposals={isDefaultNetwork() ? prefetchedProposals : (_proposals as Proposal[])} />
+    <ErrorBoundary componentName="Executive Page">
+      <ExecutiveOverview proposals={isDefaultNetwork(network) ? prefetchedProposals : _proposals} />
+    </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals();
+  const proposals = await getExecutiveProposals(0, 10, 'active');
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60 * 30, // allow revalidation every half an hour in seconds
     props: {
       proposals
     }

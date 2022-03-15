@@ -10,7 +10,6 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 
 import { Poll, PollCategory } from 'modules/polling/types';
-import { isDefaultNetwork, getNetwork } from 'lib/maker';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -23,7 +22,6 @@ import CategoryFilter from 'modules/polling/components/CategoryFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useAccountsStore from 'modules/app/stores/accounts';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
@@ -34,6 +32,10 @@ import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   polls: Poll[];
@@ -66,9 +68,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
   );
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
-  const network = getNetwork();
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
+  const { network } = useActiveWeb3React();
 
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
@@ -122,9 +124,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
   }, [filteredPolls]);
 
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { account, voteDelegateContractAddress } = useAccount();
+  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { mutate: mutateAllUserVotes } = useAllUserVotes(addressToCheck);
 
   // revalidate user votes if connected address changes
@@ -140,7 +141,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
       />
 
       <Stack gap={3}>
-        {bpi <= 1 && account && <BallotStatus />}
+        {bpi <= 3 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
@@ -175,9 +176,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           {formatDateWithTime(date)}
                         </Text>
                         <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
-                          {groupedActivePolls[date].map(poll => (
+                          {groupedActivePolls[date].map((poll: Poll) => (
                             <PollOverviewCard
-                              key={poll.multiHash}
+                              key={poll.slug}
                               poll={poll}
                               showVoting={!!account}
                               reviewPage={false}
@@ -213,9 +214,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                             {formatDateWithTime(date)}
                           </Text>
                           <Stack sx={{ mb: 4 }}>
-                            {groupedHistoricalPolls[date].map(poll => (
+                            {groupedHistoricalPolls[date].map((poll: Poll) => (
                               <PollOverviewCard
-                                key={poll.multiHash}
+                                key={poll.slug}
                                 poll={poll}
                                 reviewPage={false}
                                 showVoting={false}
@@ -234,6 +235,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                       setShowHistorical(true);
                     }}
                     variant="outline"
+                    data-testid="button-view-ended-polls"
                     sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
@@ -270,10 +272,17 @@ const PollingOverview = ({ polls, categories }: Props) => {
             )}
           </Box>
           <Stack gap={3}>
-            {account && bpi > 0 && <BallotBox polls={polls} activePolls={activePolls} network={network} />}
-            <SystemStatsSidebar
-              fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
-            />
+            {account && bpi > 0 && (
+              <ErrorBoundary componentName="Ballot">
+                <BallotBox polls={polls} activePolls={activePolls} network={network} />
+              </ErrorBoundary>
+            )}
+
+            <ErrorBoundary componentName="System Info">
+              <SystemStatsSidebar
+                fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
+              />
+            </ErrorBoundary>
             <ResourceBox type={'polling'} />
             <ResourceBox type={'general'} />
           </Stack>
@@ -290,24 +299,26 @@ export default function PollingOverviewPage({
   const [_polls, _setPolls] = useState<Poll[]>();
   const [_categories, _setCategories] = useState<PollCategory[]>();
   const [error, setError] = useState<string>();
+  const { network } = useActiveWeb3React();
 
   // fetch polls at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/polling/all-polls?network=${getNetwork()}`)
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/polling/all-polls?network=${network}`)
         .then((pollsResponse: PollsResponse) => {
           _setPolls(pollsResponse.polls);
           _setCategories(pollsResponse.categories);
         })
         .catch(setError);
     }
-  }, []);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork() && (!_polls || !_categories))
+  if (!isDefaultNetwork(network) && (!_polls || !_categories))
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -315,10 +326,12 @@ export default function PollingOverviewPage({
     );
 
   return (
-    <PollingOverview
-      polls={isDefaultNetwork() ? prefetchedPolls : (_polls as Poll[])}
-      categories={isDefaultNetwork() ? prefetchedCategories : (_categories as PollCategory[])}
-    />
+    <ErrorBoundary componentName="Poll List">
+      <PollingOverview
+        polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
+        categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
+      />
+    </ErrorBoundary>
   );
 }
 

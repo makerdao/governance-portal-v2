@@ -6,7 +6,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { Proposal } from '../../executive/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import { MenuItem } from '@reach/menu-button';
-import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
+import { ParsedExecutiveComments } from '../types/comments';
 import CommentItem from './CommentItem';
 
 export default function ExecutiveComments({
@@ -15,7 +15,7 @@ export default function ExecutiveComments({
   ...props
 }: {
   proposal: Proposal;
-  comments: ExecutiveCommentsAPIResponseItem[] | undefined;
+  comments: ParsedExecutiveComments[] | undefined;
 }): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useState('latest');
   const sortedComments = useMemo(() => {
@@ -45,7 +45,7 @@ export default function ExecutiveComments({
           alignItems: 'center'
         }}
       >
-        <Text variant="microHeading">Comments ({comments ? comments.length : '-'})</Text>
+        <Text variant="microHeading">Comments ({comments ? comments.length : '0'})</Text>
         <Box>
           <FilterButton
             name={() => `Sort by ${commentSortBy !== 'Latest' ? commentSortBy : 'latest'}`}

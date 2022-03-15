@@ -27,10 +27,14 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
     <FilterButton
       name={() => `Delegate Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
+      data-testid="delegate-type-filter"
     >
       <Box p={2}>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
+          <Label
+            sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
+            data-testid="delegate-type-filter-show-recognized"
+          >
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showRecognized}
@@ -45,7 +49,10 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
           </Label>
         </Flex>
         <Flex>
-          <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
+          <Label
+            sx={{ py: 1, fontSize: 2, alignItems: 'center' }}
+            data-testid="delegate-type-filter-show-shadow"
+          >
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showShadow}

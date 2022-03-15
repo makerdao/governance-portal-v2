@@ -1,12 +1,14 @@
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { MKRWeightHisory } from '../types/mkrWeight';
-import getMaker from 'lib/maker';
 import { format } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { MKRLockedDelegateAPIResponse } from '../types';
 import { differenceInCalendarYears, subDays } from 'date-fns';
+import { gqlRequest } from 'modules/gql/gqlRequest';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { mkrLockedDelegate } from 'modules/gql/queries/mkrLockedDelegate';
 
 export async function fetchDelegatesMKRWeightHistory(
   address: string,
@@ -14,10 +16,17 @@ export async function fetchDelegatesMKRWeightHistory(
   range: MKRWeightTimeRanges,
   network: SupportedNetworks
 ): Promise<MKRWeightHisory[]> {
-  const maker = await getMaker(network);
-  const addressData: MKRLockedDelegateAPIResponse[] = await maker
-    .service('voteDelegate')
-    .getMkrLockedDelegate(address);
+  const data = await gqlRequest({
+    chainId: networkNameToChainId(network),
+    query: mkrLockedDelegate,
+    variables: {
+      argAddress: address.toLowerCase(),
+      argUnixTimeStart: 0,
+      argUnixTimeEnd: Math.floor(Date.now() / 1000)
+    }
+  });
+
+  const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegate.nodes;
 
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
@@ -37,8 +46,13 @@ export async function fetchDelegatesMKRWeightHistory(
 
   for (let i = start; i <= end; i++) {
     const existingItem = addressData.filter(item => {
-      const day = formatIsoDateConversion(item.blockTimestamp);
-      if (day === i) {
+      const years = differenceInCalendarYears(
+        new Date(item.blockTimestamp),
+        new Date(addressData[0].blockTimestamp)
+      );
+      const dayOfYear = formatIsoDateConversion(item.blockTimestamp);
+      const dayNumber = dayOfYear + years * 365;
+      if (dayNumber === i) {
         return item;
       }
     });

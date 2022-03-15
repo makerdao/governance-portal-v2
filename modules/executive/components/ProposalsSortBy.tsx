@@ -12,24 +12,37 @@ export default function ProposalsSortBy(props): JSX.Element {
 
   return (
     <FilterButton
-      name={() => `Sort by ${executiveSortBy !== 'Date Posted' ? executiveSortBy : 'date'}`}
+      name={() =>
+        `Sort by ${
+          executiveSortBy === 'date' ? 'Date Posted' : executiveSortBy === 'mkr' ? 'MKR Amount' : 'Active'
+        }`
+      }
       listVariant="menubuttons.default.list"
       {...props}
     >
       <MenuItem
-        onSelect={() => setExecutiveSortBy('Date Posted')}
+        onSelect={() => setExecutiveSortBy('date')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: executiveSortBy === 'Date Posted' ? 'bold' : undefined
+          fontWeight: executiveSortBy === 'date' ? 'bold' : undefined
         }}
       >
         Date Posted
       </MenuItem>
       <MenuItem
-        onSelect={() => setExecutiveSortBy('MKR Amount')}
+        onSelect={() => setExecutiveSortBy('active')}
         sx={{
           variant: 'menubuttons.default.item',
-          fontWeight: executiveSortBy === 'MKR Amount' ? 'bold' : undefined
+          fontWeight: executiveSortBy === 'active' ? 'bold' : undefined
+        }}
+      >
+        Active
+      </MenuItem>
+      <MenuItem
+        onSelect={() => setExecutiveSortBy('mkr')}
+        sx={{
+          variant: 'menubuttons.default.item',
+          fontWeight: executiveSortBy === 'mkr' ? 'bold' : undefined
         }}
       >
         MKR Amount

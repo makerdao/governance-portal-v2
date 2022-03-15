@@ -3,18 +3,18 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import VotingStatus from './PollVotingStatus';
 import QuickVote from './QuickVote';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { Poll } from 'modules/polling/types';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element {
   const bpi = useBreakpointIndex();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && bpi > 0;
 
   return (
-    <Box {...props}>
+    <Box {...props} data-testid="poll-vote-box">
       <Heading mb={2} as="h3" variant="microHeading">
         Your Vote
       </Heading>
@@ -22,9 +22,11 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
         <Heading as="h3" variant="microHeading">
           {poll.title}
         </Heading>
-        <Text sx={{ fontSize: 3, color: 'textSecondary', my: 1 }}>{poll.summary}</Text>
-        <VotingStatus sx={{ my: 2, mx: 3, textAlign: 'center' }} poll={poll} />
-        {showQuickVote && <QuickVote poll={poll} showHeader={false} account={account} />}
+        <Text as="p" sx={{ fontSize: 3, color: 'textSecondary', my: 2 }}>
+          {poll.summary}
+        </Text>
+        <VotingStatus sx={{ my: 2, textAlign: 'center' }} poll={poll} />
+        {showQuickVote && <QuickVote poll={poll} showHeader={false} />}
       </Card>
     </Box>
   );

@@ -1,9 +1,7 @@
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type PollComment = {
   voterAddress: string;
-  delegateAddress?: string;
-  voteProxyAddress?: string;
   comment: string;
   date: Date;
   pollId: number;
@@ -17,10 +15,7 @@ export type PollCommentFromDB = PollComment & {
 
 export type PollsCommentsRequestBody = {
   voterAddress: string;
-  delegateAddress?: string;
   comments: Partial<PollComment>[];
-  voteProxyAddress?: string;
-  rawMessage: string;
   signedMessage: string;
   txHash: string;
 };

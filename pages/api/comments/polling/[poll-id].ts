@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK, SupportedNetworks } from 'lib/constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { PollCommentsAPIResponseItem } from 'modules/comments/types/comments';
 import { getPollComments } from 'modules/comments/api/getPollComments';
+import withApiHandler from 'modules/app/api/withApiHandler';
 
 /**
  * @swagger
@@ -62,7 +62,7 @@ import { getPollComments } from 'modules/comments/api/getPollComments';
  */
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse<PollCommentsAPIResponseItem[]>) => {
-    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK;
+    const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
     const pollId = parseInt(req.query['poll-id'] as string, 10);
 
@@ -70,6 +70,6 @@ export default withApiHandler(
 
     res.setHeader('Cache-Control', 's-maxage=1, stale-while-revalidate');
     // only return the latest comment from each address
-    res.status(200).json(response);
+    return res.status(200).json(response);
   }
 );

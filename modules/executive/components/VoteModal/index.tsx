@@ -7,12 +7,12 @@ import { Icon } from '@makerdao/dai-ui-icons';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
 
-import { transactionsSelectors } from 'modules/app/stores/transactions';
+import { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Proposal } from 'modules/executive/types';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 import DefaultVoteModalView from './DefaultView';
-import useTransactionsStore from 'modules/app/stores/transactions';
+import useTransactionsStore from 'modules/web3/stores/transactions';
 
 type Props = {
   close: () => void;

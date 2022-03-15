@@ -1,11 +1,10 @@
 import useSWR from 'swr';
-import getMaker from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
-import { VoteDelegateContract } from 'modules/delegates/types/voteDelegateContract';
-import { VoteProxyContract } from 'modules/app/types/voteProxyContract';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
+import { BigNumber } from 'ethers';
 
 type LockedMkrData = {
-  data: CurrencyObject;
+  data?: BigNumber;
   loading: boolean;
   error: Error;
   mutate: () => void;
@@ -13,18 +12,18 @@ type LockedMkrData = {
 
 export const useLockedMkr = (
   address?: string,
-  voteProxy?: VoteProxyContract | null,
-  voteDelegate?: VoteDelegateContract | null
+  voteProxyAddress?: string | null,
+  voteDelegateAddress?: string | null
 ): LockedMkrData => {
-  const addressToCache = voteProxy && !voteDelegate ? voteProxy.getProxyAddress() : address;
+  const { chief } = useContracts();
+
+  const addressToCache = voteProxyAddress && !voteDelegateAddress ? voteProxyAddress : address;
+
   const { data, error, mutate } = useSWR(
-    address ? ['/user/mkr-locked', addressToCache] : null,
-    () =>
-      getMaker().then(maker =>
-        voteProxy && !voteDelegate
-          ? voteProxy.getNumDeposits()
-          : maker.service('chief').getNumDeposits(address)
-      ),
+    addressToCache ? `${chief.address}/user/mkr-locked${addressToCache}` : null,
+    async () => {
+      return addressToCache ? await getChiefDeposits(addressToCache, chief) : undefined;
+    },
     {
       revalidateOnFocus: false,
       revalidateOnMount: true

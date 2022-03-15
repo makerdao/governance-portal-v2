@@ -1,7 +1,7 @@
-import withApiHandler from 'lib/api/withApiHandler';
-import { DEFAULT_NETWORK } from 'lib/constants';
-import { isSupportedNetwork } from 'lib/maker';
-import { getPoll } from 'modules/polling/api/fetchPolls';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
 import invariant from 'tiny-invariant';
 
@@ -83,21 +83,23 @@ import invariant from 'tiny-invariant';
  *         description: Slug of the poll
  *     responses:
  *       '200':
- *         description: "Detail of a Pols"
+ *         description: "Poll Detail"
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/definitions/Poll'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const slug = req.query.slug as string;
 
-  const poll = await getPoll(slug, network);
+  const poll = await fetchPollBySlug(slug, network);
 
   if (!poll) {
-    return res.status(404).json('Not found');
+    return res.status(404).json({
+      error: 'Not found'
+    });
   }
 
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');

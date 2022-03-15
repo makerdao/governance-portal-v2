@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
 import { Flex } from 'theme-ui';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { formatValue } from 'lib/string';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
@@ -17,21 +17,18 @@ export function AddressMKRDelegatedStats({
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
-        flexDirection: ['column', 'row'],
+        flexDirection: 'row',
         marginTop: 1,
         marginBottom: 1
       }}
     >
-      <StatBox
-        value={votingWeight ? votingWeight.total.toBigNumber().toFormat(2) : '0.00'}
-        label={'Total MKR Balance'}
-      />
+      <StatBox value={votingWeight ? formatValue(votingWeight.total) : '0.000'} label={'Total MKR Balance'} />
 
       <StatBox
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? new BigNumber(totalMKRDelegated).toFormat(2) : '0.00'}
+        value={totalMKRDelegated ? totalMKRDelegated.toFixed(2) : '0.00'}
         label={'Total MKR Delegated'}
       />
     </Flex>

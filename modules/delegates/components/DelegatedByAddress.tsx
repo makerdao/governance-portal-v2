@@ -3,31 +3,42 @@ import Link from 'next/link';
 import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-import BigNumber from 'bignumber.js';
-import { getNetwork } from 'lib/maker';
-import { CurrencyObject } from 'modules/app/types/currency';
-import { Address } from 'modules/address/components/Address';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { formatDateWithTime } from 'lib/datetime';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
+import { parseUnits } from 'ethers/lib/utils';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import AddressIconBox from 'modules/address/components/AddressIconBox';
 
 type DelegatedByAddressProps = {
   delegators: DelegationHistory[];
-  totalDelegated: CurrencyObject;
+  totalDelegated: BigNumber;
 };
 
 type CollapsableRowProps = {
   delegator: DelegationHistory;
-  network: string;
+  network: SupportedNetworks;
   bpi: number;
-  totalDelegated: CurrencyObject;
+  totalDelegated: BigNumber;
 };
 
-const formatTotalDelegated = (num, denom) => {
-  const weight = new BigNumber(num).div(denom.toBigNumber()).times(100);
-  return weight.isNaN() ? '0.0' : weight.toFormat(1);
+const formatTotalDelegated = (num: BigNumber, denom: BigNumber): string => {
+  try {
+    // Use bignumber.js to do division because ethers BigNumber does not support decimals
+    const numB = new BigNumberJS(num.toString());
+    const denomB = new BigNumberJS(denom.toString());
+
+    const weight = numB.div(denomB).times(100);
+    return formatValue(parseUnits(weight.toString()));
+  } catch (e) {
+    return '0.0';
+  }
 };
 
 const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: CollapsableRowProps) => {
@@ -36,11 +47,11 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
   return (
     <tr>
-      <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
+      <Flex as="td" sx={{ flexDirection: 'column', mb: [0, 3], pt: ['10px', 0], mr: 2 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}`, query: { network } }} passHref>
-            <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <Address address={address} />
+          <Link href={{ pathname: `/address/${address}` }} passHref>
+            <ThemeUILink title="View address detail" sx={{ fontSize: [1, 3] }}>
+              <AddressIconBox address={address} width={bpi < 1 ? 22 : 41} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -52,7 +63,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   key={blockTimestamp}
                   variant="smallCaps"
                   sx={{
-                    ':first-of-type': { pt: 3 },
+                    ':first-of-type': { pt: 2 },
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
@@ -63,9 +74,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Flex>
-      <Box as="td" sx={{ verticalAlign: 'top' }}>
-        <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
+        <Text sx={{ fontSize: [1, 3] }}>
+          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -85,9 +96,9 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     <Icon name="increase" size={2} color="bull" />
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {`${new BigNumber(
-                      lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
-                    ).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+                    {`${formatValue(
+                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
+                    )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
               );
@@ -95,16 +106,19 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
           </Flex>
         )}
       </Box>
-      <Flex as="td" sx={{ alignSelf: 'flex-start' }}>
+      <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
-          <Text>{`${formatTotalDelegated(lockAmount, totalDelegated)}%`}</Text>
+          <Text sx={{ fontSize: [1, 3] }}>{`${formatTotalDelegated(
+            parseUnits(lockAmount),
+            totalDelegated
+          )}%`}</Text>
         ) : (
           <Box sx={{ width: '100%' }}>
             <Skeleton />
           </Box>
         )}
-      </Flex>
-      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%' }}>
+      </Box>
+      <Box as="td" sx={{ textAlign: 'end', verticalAlign: 'top', width: '100%', pt: 2 }}>
         <Box sx={{ height: '32px' }}>
           <Flex
             sx={{
@@ -136,7 +150,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                   }}
                 >
                   <ThemeUILink
-                    href={getEtherscanLink(getNetwork(), hash as string, 'transaction')}
+                    href={getEtherscanLink(network, hash as string, 'transaction')}
                     target="_blank"
                     title="View on Etherscan"
                     sx={{
@@ -157,7 +171,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
 
 const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressProps): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const network = getNetwork();
+  const { network } = useActiveWeb3React();
 
   return (
     <Box>
@@ -188,11 +202,11 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               Address
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
-              MKR Delegated
+              {bpi < 1 ? 'MKR' : 'MKR Delegated'}
             </Text>
             <Tooltip label={'This is the percentage of the total MKR delegated to this delegate.'}>
               <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-                Voting Weight
+                {bpi < 1 ? 'Weight' : 'Voting Weight'}
               </Text>
             </Tooltip>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">

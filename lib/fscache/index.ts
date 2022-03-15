@@ -1,7 +1,6 @@
 import fs from 'fs';
 import os from 'os';
-import { getNetwork } from 'lib/maker';
-import { SupportedNetworks } from 'lib/constants';
+import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 
 // Mem cache does not work on local instances of nextjs because nextjs creates clean memory states each time.
 const fsCacheCache = {};
@@ -21,7 +20,7 @@ export const fsCacheDel = (path: string): void => {
 export const fsCacheGet = (name: string, network?: SupportedNetworks, expiryMs?: number): any => {
   if (Object.keys(fs).length === 0) return null;
 
-  const currentNetwork = network || getNetwork();
+  const currentNetwork = network || DEFAULT_NETWORK.network;
   const path = getFilePath(name, currentNetwork);
   const memCached = fsCacheCache[path];
 
@@ -56,7 +55,7 @@ export const fsCacheSet = (name: string, data: any, network?: SupportedNetworks,
   if (Object.keys(fs).length === 0) return;
 
   try {
-    const currentNetwork = network || getNetwork();
+    const currentNetwork = network || DEFAULT_NETWORK.network;
 
     const path = getFilePath(name, currentNetwork);
     console.log('fs cache set', path);

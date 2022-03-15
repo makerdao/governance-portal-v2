@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
 import { Button, Flex, Close, Text, Box, Spinner, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 
 import { fadeIn, slideUp } from 'lib/keyframes';
-import getMaker, { getNetwork } from 'lib/maker';
-import useTransactionStore, { transactionsApi, transactionsSelectors } from 'modules/app/stores/transactions';
-import { getEtherscanLink } from 'lib/utils';
-import { TXMined } from 'modules/app/types/transaction';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { TXMined } from 'modules/web3/types/transaction';
 import { Poll } from 'modules/polling/types';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { usePollCreate } from '../hooks/usePollCreate';
 
 type Props = {
   close: () => void;
@@ -18,38 +17,30 @@ type Props = {
   setPoll: (any) => void;
 };
 
-type ModalStep = 'confirm' | 'signing' | 'pending' | 'failed';
-
 const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
-  const [txId, setTxId] = useState(null);
   const bpi = useBreakpointIndex();
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const { createPoll, tx } = usePollCreate();
 
   const [step, setStep] = useState('confirm');
-  const createPoll = async () => {
+  const onPollCreate = () => {
     if (!poll) return;
-    const maker = await getMaker();
-    const voteTxCreator = () =>
-      maker
-        .service('govPolling')
-        .createPoll(poll.startDate.getTime() / 1000, poll.endDate.getTime() / 1000, poll.multiHash, poll.url);
-    const txId = await track(voteTxCreator, `Creating poll with id ${poll?.pollId}`, {
-      pending: () => {
-        setStep('pending');
-      },
-      mined: txId => {
-        setPoll(undefined);
-        transactionsApi.getState().setMessage(txId, 'Created poll');
-        close();
-      },
-      error: () => setStep('failed')
-    });
-    setTxId(txId);
-    setStep('signing');
+
+    createPoll(
+      poll.startDate.getTime() / 1000,
+      poll.endDate.getTime() / 1000,
+      poll.multiHash,
+      poll.url || '',
+      {
+        initialized: () => setStep('signing'),
+        pending: () => setStep('pending'),
+        mined: () => {
+          setPoll(undefined);
+          close();
+        },
+        error: () => setStep('failed')
+      }
+    );
   };
 
   const Default = () => {
@@ -81,13 +72,7 @@ const PollCreateModal = ({ close, poll, setPoll }: Props): JSX.Element => {
           </Box>
         </Box>
         <Box sx={{ width: '100%', mt: 3 }}>
-          <Button
-            variant="primaryLarge"
-            sx={{ width: '100%' }}
-            onClick={() => {
-              createPoll();
-            }}
-          >
+          <Button variant="primaryLarge" sx={{ width: '100%' }} onClick={onPollCreate}>
             Create Poll
           </Button>
         </Box>
@@ -144,42 +129,46 @@ const Signing = ({ close }) => (
   </Flex>
 );
 
-const Pending = ({ tx, close }) => (
-  <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-    <Close
-      aria-label="close"
-      sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
-      onClick={close}
-    />
+const Pending = ({ tx, close }) => {
+  const { network } = useActiveWeb3React();
 
-    <Text variant="heading" sx={{ fontSize: 6 }}>
-      Transaction Sent!
-    </Text>
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
-      <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
-      <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
-        Poll will be created once the transaction has been confirmed.
-      </Text>
-      <ExternalLink
-        target="_blank"
-        href={getEtherscanLink(getNetwork(), (tx as TXMined).hash, 'transaction')}
-        sx={{ p: 0 }}
-      >
-        <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-          View on Etherscan
-          <Icon name="arrowTopRight" pt={2} color="accentBlue" />
-        </Text>
-      </ExternalLink>
-      <Button
+  return (
+    <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Close
+        aria-label="close"
+        sx={{ height: '20px', width: '20px', p: 0, alignSelf: 'flex-end' }}
         onClick={close}
-        sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
-        variant="outline"
-      >
-        Close
-      </Button>
+      />
+
+      <Text variant="heading" sx={{ fontSize: 6 }}>
+        Transaction Sent!
+      </Text>
+      <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+        <Icon name="reviewCheck" size={5} sx={{ my: 4 }} />
+        <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
+          Poll will be created once the transaction has been confirmed.
+        </Text>
+        <ExternalLink
+          target="_blank"
+          href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
+          sx={{ p: 0 }}
+        >
+          <Text as="p" mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+            View on Etherscan
+            <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+          </Text>
+        </ExternalLink>
+        <Button
+          onClick={close}
+          sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
+          variant="outline"
+        >
+          Close
+        </Button>
+      </Flex>
     </Flex>
-  </Flex>
-);
+  );
+};
 
 const Error = ({ close }) => (
   <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>

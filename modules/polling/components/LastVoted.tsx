@@ -18,8 +18,8 @@ export default function LastVoted({
       stroke: '#D8E0E3'
     },
     yellowCalendar: {
-      fill: '#FDC134',
-      stroke: '#FDC134'
+      fill: 'voterYellow',
+      stroke: 'voterYellow'
     },
     orangeCalendar: {
       fill: '#F77249',

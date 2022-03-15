@@ -2,185 +2,152 @@ import { useState } from 'react';
 import { Button, Flex, Text, Box, Link } from 'theme-ui';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import shallow from 'zustand/shallow';
-import useSWR from 'swr';
 
 import { slideUp } from 'lib/keyframes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MKRInput } from './MKRInput';
-import getMaker, { MKR } from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
-import { CurrencyObject } from 'modules/app/types/currency';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import { fadeIn } from 'lib/keyframes';
-import useTransactionStore, { transactionsSelectors, transactionsApi } from 'modules/app/stores/transactions';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
-import invariant from 'tiny-invariant';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import BigNumber from 'bignumber.js';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useApproveUnlimitedToken } from 'modules/web3/hooks/useApproveUnlimitedToken';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
+import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
+import { useLock } from '../hooks/useLock';
+import { Tokens } from 'modules/web3/constants/tokens';
 
-const ModalContent = ({ address, voteProxy, close, ...props }) => {
-  invariant(address);
-  const [mkrToDeposit, setMkrToDeposit] = useState(new BigNumber(0));
-  const [txId, setTxId] = useState(null);
+const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
+  const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
-  const { data: mkrBalance } = useMkrBalance(address);
+  const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
+  const { data: mkrBalance } = useMkrBalance(account);
 
-  const { mutate: mutateLocked } = useLockedMkr(address, voteProxy);
+  const { mutate: mutateLocked } = useLockedMkr(account, voteProxyContractAddress);
+  const { chief } = useContracts();
 
-  const { data: chiefAllowance } = useSWR<CurrencyObject>(
-    ['/user/chief-allowance', address, !!voteProxy],
-    (_, address) =>
-      getMaker().then(maker =>
-        maker
-          .getToken(MKR)
-          .allowance(
-            address,
-            address === voteProxy?.getColdAddress()
-              ? voteProxy?.getProxyAddress()
-              : maker.service('smartContract').getContractAddresses().CHIEF
-          )
-      )
+  const { data: chiefAllowance, mutate: mutateTokenAllowance } = useTokenAllowance(
+    Tokens.MKR,
+    parseUnits('100000000'),
+    account,
+    account === voteProxyColdAddress ? (voteProxyContractAddress as string) : chief.address
   );
 
-  const hasLargeMkrAllowance = chiefAllowance?.gt('10e26'); // greater than 100,000,000 MKR
+  const { approve, tx: approveTx, setTxId: resetApprove } = useApproveUnlimitedToken(Tokens.MKR);
 
-  const [track, tx] = useTransactionStore(
-    state => [state.track, txId ? transactionsSelectors.getTransaction(state, txId) : null],
-    shallow
-  );
+  const { lock, tx: lockTx, setTxId: resetLock } = useLock();
 
-  let content;
-  if (tx) {
-    const txPending = tx.status === 'pending';
-    content = (
-      <Stack sx={{ textAlign: 'center' }}>
-        <Text as="p" variant="microHeading" color="onBackgroundAlt">
-          {txPending ? 'Transaction Pending' : 'Confirm Transaction'}
-        </Text>
+  const [tx, resetTx] = chiefAllowance ? [lockTx, resetLock] : [approveTx, resetApprove];
 
-        <Flex sx={{ justifyContent: 'center' }}>
-          <TxIndicators.Pending sx={{ width: 6 }} />
-        </Flex>
-
-        {!txPending && (
-          <Box>
-            <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
-              Please use your wallet to confirm this transaction.
+  return (
+    <BoxWithClose close={close}>
+      <Box>
+        {tx && (
+          <Stack sx={{ textAlign: 'center' }}>
+            <Text as="p" variant="microHeading" color="onBackgroundAlt">
+              {tx.status === 'pending' ? 'Transaction Pending' : 'Confirm Transaction'}
             </Text>
-            <Text
-              as="p"
-              sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
-              onClick={() => setTxId(null)}
-            >
-              Cancel
-            </Text>
-          </Box>
+
+            <Flex sx={{ justifyContent: 'center' }}>
+              <TxIndicators.Pending sx={{ width: 6 }} />
+            </Flex>
+
+            {tx.status !== 'pending' && (
+              <Box>
+                <Text sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                  Please use your wallet to confirm this transaction.
+                </Text>
+                <Text
+                  as="p"
+                  sx={{ color: 'muted', cursor: 'pointer', fontSize: 2, mt: 2 }}
+                  onClick={() => resetTx(null)}
+                >
+                  Cancel
+                </Text>
+              </Box>
+            )}
+          </Stack>
         )}
-      </Stack>
-    );
-  } else if (hasLargeMkrAllowance) {
-    content = (
-      <Stack gap={2}>
-        <Box sx={{ textAlign: 'center' }}>
-          <Text as="p" variant="microHeading" color="onBackgroundAlt">
-            Deposit into voting contract
-          </Text>
-          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
-            Input the amount of MKR to deposit into the voting contract.
-          </Text>
-        </Box>
+        {!tx && chiefAllowance && (
+          <Stack gap={2}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Text as="p" variant="microHeading" color="onBackgroundAlt">
+                Deposit into voting contract
+              </Text>
+              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+                Input the amount of MKR to deposit into the voting contract.
+              </Text>
+            </Box>
 
-        <Box>
-          <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance?.toBigNumber()} />
-        </Box>
+            <Box>
+              <MKRInput value={mkrToDeposit} onChange={setMkrToDeposit} balance={mkrBalance} />
+            </Box>
 
-        <Button
-          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance?.toBigNumber() || new BigNumber(0))}
-          onClick={async () => {
-            trackButtonClick('DepositMkr');
-            const maker = await getMaker();
-            const lockTxCreator = voteProxy
-              ? () => voteProxy.lock(mkrToDeposit)
-              : () => maker.service('chief').lock(mkrToDeposit);
-            const txId = await track(lockTxCreator, 'Depositing MKR', {
-              mined: txId => {
-                // Mutate locked state
-                mutateLocked();
-                transactionsApi.getState().setMessage(txId, 'MKR deposited');
-                close();
-              },
-              error: () => {
-                transactionsApi.getState().setMessage(txId, 'MKR deposit failed');
-                close();
-              }
-            });
-            setTxId(txId);
-          }}
-        >
-          Deposit MKR
-        </Button>
-      </Stack>
-    );
-  } else {
-    content = (
-      <Stack gap={3} {...props}>
-        <Box sx={{ textAlign: 'center' }}>
-          <Text as="p" variant="microHeading" color="onBackgroundAlt">
-            Approve voting contract
-          </Text>
-          <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
-            Approve the transfer of MKR to the voting contract.
-          </Text>
-        </Box>
+            <Button
+              data-testid="button-deposit-mkr"
+              sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              disabled={mkrToDeposit.eq(0) || mkrToDeposit.gt(mkrBalance || BigNumber.from(0))}
+              onClick={() => {
+                trackButtonClick('DepositMkr');
+                lock(mkrToDeposit, {
+                  mined: () => {
+                    // Mutate locked state
+                    mutateLocked();
+                    close();
+                  },
+                  error: () => close()
+                });
+              }}
+            >
+              Deposit MKR
+            </Button>
+          </Stack>
+        )}
+        {!tx && !chiefAllowance && (
+          <Stack gap={3}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Text as="p" variant="microHeading" color="onBackgroundAlt">
+                Approve voting contract
+              </Text>
+              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
+                Approve the transfer of MKR to the voting contract.
+              </Text>
+            </Box>
 
-        <Button
-          sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
-          onClick={async () => {
-            trackButtonClick('approveDeposit');
-            const maker = await getMaker();
-            const approveTxCreator = () =>
-              maker
-                .getToken(MKR)
-                .approveUnlimited(
-                  voteProxy?.getProxyAddress() || maker.service('smartContract').getContractAddresses().CHIEF
-                );
-
-            const txId = await track(approveTxCreator, 'Granting MKR approval', {
-              mined: txId => {
-                transactionsApi.getState().setMessage(txId, 'Granted MKR approval');
-                setTxId(null);
-              },
-              error: () => {
-                transactionsApi.getState().setMessage(txId, 'MKR approval failed');
-                setTxId(null);
-              }
-            });
-            setTxId(txId);
-          }}
-          data-testid="deposit-approve-button"
-        >
-          Approve
-        </Button>
-      </Stack>
-    );
-  }
-  return <BoxWithClose content={content} close={close} {...props} />;
+            <Button
+              sx={{ flexDirection: 'column', width: '100%', alignItems: 'center' }}
+              onClick={() => {
+                trackButtonClick('approveDeposit');
+                approve(voteProxyContractAddress || chief.address, {
+                  mined: () => {
+                    mutateTokenAllowance();
+                  }
+                });
+              }}
+              data-testid="deposit-approve-button"
+            >
+              Approve
+            </Button>
+          </Stack>
+        )}
+      </Box>
+    </BoxWithClose>
+  );
 };
 
-const Deposit = (props): JSX.Element => {
-  const account = useAccountsStore(state => state.currentAccount);
-  const voteProxy = useAccountsStore(state => (account ? state.proxies[account.address] : null));
+const Deposit = ({ link }: { link?: string }): JSX.Element => {
+  const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
   const bpi = useBreakpointIndex();
 
   const open = () => {
-    if (voteProxy && account?.address === voteProxy.getHotAddress()) {
+    if (account && voteProxyContractAddress && account === voteProxyHotAddress) {
       alert(
         'You are using the hot wallet for a voting proxy. ' +
           'You can only deposit from the cold wallet. ' +
@@ -212,19 +179,18 @@ const Deposit = (props): JSX.Element => {
                 }
           }
         >
-          <ModalContent address={account?.address} voteProxy={voteProxy} close={() => setShowDialog(false)} />
+          <ModalContent close={() => setShowDialog(false)} />
         </DialogContent>
       </DialogOverlay>
-      {props.link ? (
+      {link ? (
         <Link
           onClick={() => {
             trackButtonClick('btn-click');
             open();
           }}
           sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-          {...props}
         >
-          {props.link}
+          {link}
         </Link>
       ) : (
         <Button
@@ -234,7 +200,6 @@ const Deposit = (props): JSX.Element => {
             open();
           }}
           data-testid="deposit-button"
-          {...props}
         >
           Deposit
         </Button>

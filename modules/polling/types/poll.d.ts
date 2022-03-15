@@ -14,15 +14,16 @@ export type Poll = {
   categories: string[];
   slug: string;
   ctx: {
-    prev: Poll | null;
-    next: Poll | null;
+    prev: PartialPoll | null;
+    next: PartialPoll | null;
   };
   url?: string;
 };
 
 export type PartialPoll = {
-  pollId: number;
   multiHash: string;
+  pollId: number;
+  slug: string;
   startDate: Date;
   endDate: Date;
   url: string;

@@ -1,12 +1,12 @@
 export type SpellData = {
-  hasBeenCast: boolean;
+  hasBeenCast?: boolean;
   hasBeenScheduled: boolean;
   eta?: Date;
   expiration?: Date;
-  nextCastTime: Date;
+  nextCastTime?: Date;
   datePassed?: Date;
   dateExecuted?: Date;
-  mkrSupport: number;
+  mkrSupport: string;
   executiveHash?: string;
   officeHours?: boolean;
 };

@@ -3,20 +3,20 @@ import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
-import { getNetwork } from 'lib/maker';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import useAccountsStore from 'modules/app/stores/accounts';
 import ColorModeToggle from './header/ColorModeToggle';
+import NetworkSelect from './header/NetworkSelect';
+import { ErrorBoundary } from '../ErrorBoundary';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 const Header = (): JSX.Element => {
-  const network = getNetwork();
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
-  const account = useAccountsStore(state => state.currentAccount);
+  const { account } = useAccount();
 
   return (
     <Box
@@ -32,13 +32,13 @@ const Header = (): JSX.Element => {
         width: '100%'
       }}
     >
-      <Link href={{ pathname: '/', query: { network } }}>
+      <Link href={{ pathname: '/' }}>
         <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
           <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
         </IconButton>
       </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/polling', query: { network } }} passHref>
+        <Link href={{ pathname: '/polling' }} passHref>
           <NavLink
             title="Polling"
             p={0}
@@ -52,7 +52,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/executive', query: { network } }} passHref>
+        <Link href={{ pathname: '/executive' }} passHref>
           <NavLink
             p={0}
             title="Executive"
@@ -66,7 +66,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/delegates', query: { network } }} passHref>
+        <Link href={{ pathname: '/delegates' }} passHref>
           <NavLink
             title="Delegates"
             p={0}
@@ -80,7 +80,7 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Link href={{ pathname: '/esmodule', query: { network } }} passHref>
+        <Link href={{ pathname: '/esmodule' }} passHref>
           <NavLink
             title="ES Module"
             p={0}
@@ -95,12 +95,23 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Flex sx={{ pr: 2 }}>
-          <ColorModeToggle />
-        </Flex>
+        {bpi > 1 && (
+          <Flex sx={{ pr: 2 }}>
+            <ColorModeToggle />
+          </Flex>
+        )}
 
-        {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        {typeof window !== 'undefined' && <AccountSelect />}
+        {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
+        {bpi > 1 && (
+          <Flex mr={3}>
+            <NetworkSelect />
+          </Flex>
+        )}
+        {typeof window !== 'undefined' && (
+          <ErrorBoundary componentName="Account Select">
+            <AccountSelect />
+          </ErrorBoundary>
+        )}
 
         <IconButton
           aria-label="Show menu"
@@ -110,15 +121,13 @@ const Header = (): JSX.Element => {
         >
           <Icon name="menu" sx={{ width: '18px' }} />
         </IconButton>
-        {showMobileMenu && (
-          <MobileMenu hide={() => setShowMobileMenu(false)} router={router} {...{ network }} />
-        )}
+        {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} router={router} />}
       </Flex>
     </Box>
   );
 };
 
-const MobileMenu = ({ hide, network, router }) => {
+const MobileMenu = ({ hide, router }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -127,7 +136,20 @@ const MobileMenu = ({ hide, network, router }) => {
 
   return (
     <Container variant="modal">
-      <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      <Flex
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: 2
+        }}
+      >
+        <ColorModeToggle />
+        <Flex>
+          <NetworkSelect />
+        </Flex>
+        <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      </Flex>
+
       <Flex
         sx={{
           flexDirection: 'column',
@@ -140,23 +162,23 @@ const MobileMenu = ({ hide, network, router }) => {
           }
         }}
       >
-        <Link href={{ pathname: '/', query: { network } }}>
+        <Link href={{ pathname: '/' }}>
           <NavLink>Home</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/polling', query: { network } }}>
+        <Link href={{ pathname: '/polling' }}>
           <NavLink>Polling</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/executive', query: { network } }}>
+        <Link href={{ pathname: '/executive' }}>
           <NavLink>Executive</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/delegates', query: { network } }}>
+        <Link href={{ pathname: '/delegates' }}>
           <NavLink>Delegates</NavLink>
         </Link>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/esmodule', query: { network } }}>
+        <Link href={{ pathname: '/esmodule' }}>
           <NavLink>ES Module</NavLink>
         </Link>
       </Flex>

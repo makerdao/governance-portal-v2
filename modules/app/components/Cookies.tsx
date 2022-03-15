@@ -68,7 +68,7 @@ export default function Cookies(): React.ReactElement | null {
               <Checkbox
                 type="checkbox"
                 checked={cookies.functional}
-                onClick={() => {
+                onChange={() => {
                   setCookies({ ...cookies, functional: !cookies.functional });
                 }}
               />
@@ -80,7 +80,7 @@ export default function Cookies(): React.ReactElement | null {
               <Checkbox
                 type="checkbox"
                 checked={cookies.statistics}
-                onClick={() => {
+                onChange={() => {
                   setCookies({ ...cookies, statistics: !cookies.statistics });
                 }}
               />

@@ -3,41 +3,31 @@ import { Flex, Text, Box, Link as ExternalLink } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Link from 'next/link';
 import { formatDateWithTime } from 'lib/datetime';
-import { getNetwork } from 'lib/maker';
-import useAccountsStore from 'modules/app/stores/accounts';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import DelegateAvatarName from 'modules/delegates/components/DelegateAvatarName';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
-import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
+import { ParsedExecutiveComments, PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import BigNumber from 'bignumber.js';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
 export default function CommentItem({
   comment,
   votedOption,
   twitterUrl
 }: {
-  comment: PollCommentsAPIResponseItemWithWeight | ExecutiveCommentsAPIResponseItem;
+  comment: PollCommentsAPIResponseItemWithWeight | ParsedExecutiveComments;
   votedOption?: React.ReactNode;
   twitterUrl: string;
 }): React.ReactElement {
   // TODO: Remove this once tweeting functionality gets re-enabled
   const twitterEnabled = false;
 
-  // Used to display the share button in owned comments
-  const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, voteDelegate] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-  );
+  const { network } = useActiveWeb3React();
 
-  // isOwner if the delegateAddress registered in the comment is the same one from the current user
-  // isOwner also if the address is equal to the current account address
-  const isOwner =
-    (comment.comment.voteProxyAddress &&
-      comment.comment.voteProxyAddress?.toLowerCase() === voteProxy?.getProxyAddress().toLowerCase()) ||
-    (comment.comment.delegateAddress &&
-      comment.comment.delegateAddress?.toLowerCase() ===
-        voteDelegate?.getVoteDelegateAddress().toLowerCase()) ||
-    comment.address.address.toLowerCase() === account?.address.toLowerCase();
+  // Used to display the share button in owned comments
+  const { account } = useAccount();
+
   return (
     <Box>
       <Flex
@@ -55,13 +45,12 @@ export default function CommentItem({
                 <Box>
                   <Link
                     href={{
-                      pathname: `/address/${comment.address.delegateInfo.voteDelegateAddress}`,
-                      query: { network: getNetwork() }
+                      pathname: `/address/${comment.address.delegateInfo.voteDelegateAddress}`
                     }}
                     passHref
                   >
                     <ExternalLink title="Profile details" variant="nostyle">
-                      <DelegateAvatarName delegate={comment.address.delegateInfo} isOwner={isOwner} />
+                      <DelegateAvatarName delegate={comment.address.delegateInfo} />
                     </ExternalLink>
                   </Link>
                 </Box>
@@ -69,18 +58,12 @@ export default function CommentItem({
                 <Box>
                   <Link
                     href={{
-                      pathname: `/address/${comment.address.address}`,
-                      query: { network: getNetwork() }
+                      pathname: `/address/${comment.address.address}`
                     }}
                     passHref
                   >
                     <ExternalLink title="Profile details" variant="nostyle">
-                      <AddressIconBox
-                        address={comment.address.address}
-                        voteProxyInfo={comment.address.voteProxyInfo}
-                        isOwner={isOwner}
-                        showExternalLink={false}
-                      />
+                      <AddressIconBox address={comment.address.address} showExternalLink={false} />
                     </ExternalLink>
                   </Link>
                 </Box>
@@ -108,7 +91,7 @@ export default function CommentItem({
             <Box>
               <ExternalLink
                 target="_blank"
-                href={getEtherscanLink(getNetwork(), comment.comment.txHash, 'transaction')}
+                href={getEtherscanLink(network, comment.comment.txHash, 'transaction')}
                 sx={{ my: 3 }}
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
@@ -119,7 +102,7 @@ export default function CommentItem({
             </Box>
           )}
         </Flex>
-        {account?.address === comment.comment.voterAddress && twitterEnabled && (
+        {account === comment.comment.voterAddress && twitterEnabled && (
           <ExternalLink href={twitterUrl} target="_blank">
             <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
               Share <Icon name="twitter" size={12} ml={1} />

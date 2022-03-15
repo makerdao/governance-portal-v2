@@ -1,18 +1,19 @@
-import getMaker, { MKR } from 'lib/maker';
 import useSWR from 'swr';
-import { CurrencyObject } from 'modules/app/types/currency';
+import { useContracts } from 'modules/web3/hooks/useContracts';
+import { BigNumber } from 'ethers';
 
 type MkrBalanceResponse = {
-  data?: CurrencyObject;
+  data?: BigNumber;
   loading?: boolean;
   error?: Error;
   mutate: () => void;
 };
 
 export const useMkrBalance = (address?: string): MkrBalanceResponse => {
+  const { mkr } = useContracts();
   const { data, error, mutate } = useSWR(
     address ? ['/user/mkr-balance', address] : null,
-    (_, address) => getMaker().then(maker => maker.getToken(MKR).balanceOf(address)),
+    (_, address) => mkr.balanceOf(address),
     { revalidateOnMount: true }
   );
 

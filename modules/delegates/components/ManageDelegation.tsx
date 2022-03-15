@@ -1,22 +1,30 @@
 import { Card, Box, Button, Heading } from 'theme-ui';
 import React, { useState } from 'react';
 import { Delegate } from '../types';
-import useAccountsStore from 'modules/app/stores/accounts';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { DelegateModal } from './modals/DelegateModal';
 import { UndelegateModal } from './modals/UndelegateModal';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
+import { useAccount } from 'modules/app/hooks/useAccount';
 
-export default function ManageDelegation({ delegate }: { delegate: Delegate }): React.ReactElement {
-  const [account] = useAccountsStore(state => [state.currentAccount]);
+export default function ManageDelegation({
+  delegate,
+  textDelegate = 'Delegate your MKR to this Delegate',
+  textUndelegate = 'Undelegate your MKR from this Delegate'
+}: {
+  delegate: Delegate;
+  textDelegate?: string;
+  textUndelegate?: string;
+}): React.ReactElement {
+  const { account } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATE_DETAIL);
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
 
   const { mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
-  const { mutate: mutateMkrStaked } = useMkrDelegated(account?.address, delegate.voteDelegateAddress);
+  const { mutate: mutateMkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
 
   return (
     <Box>
@@ -34,7 +42,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
             }}
             sx={{ width: '100%', height: 'auto', mb: [3] }}
           >
-            Delegate your MKR to this Delegate
+            {textDelegate}
           </Button>
         </Box>
 
@@ -48,7 +56,7 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
             }}
             sx={{ width: '100%', height: 'auto' }}
           >
-            Undelegate your MKR from this Delegate
+            {textUndelegate}
           </Button>
         </Box>
       </Card>
@@ -57,14 +65,14 @@ export default function ManageDelegation({ delegate }: { delegate: Delegate }): 
         isOpen={showDelegateModal}
         onDismiss={() => setShowDelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMkrStaked}
       />
       <UndelegateModal
         delegate={delegate}
         isOpen={showUndelegateModal}
         onDismiss={() => setShowUndelegateModal(false)}
         mutateTotalStaked={mutateTotalStaked}
-        mutateMkrStaked={mutateMkrStaked}
+        mutateMKRDelegated={mutateMkrStaked}
       />
     </Box>
   );

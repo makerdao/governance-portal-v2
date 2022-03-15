@@ -1,13 +1,9 @@
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import BigNumber from 'bignumber.js';
 import { fetchJson } from 'lib/fetchJson';
-import getMaker, { getNetwork, personalSign } from 'lib/maker';
 import { sortBytesArray } from 'lib/utils';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-import useAccountsStore from 'modules/app/stores/accounts';
-import useTransactionsStore, { transactionsApi } from 'modules/app/stores/transactions';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
@@ -20,7 +16,14 @@ import { CMSProposal, Proposal } from 'modules/executive/types';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
-import shallow from 'zustand/shallow';
+import { useChiefVote } from 'modules/executive/hooks/useChiefVote';
+import { useDelegateVote } from 'modules/executive/hooks/useDelegateVote';
+import { useVoteProxyVote } from 'modules/executive/hooks/useVoteProxyVote';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { formatValue } from 'lib/string';
+import { BigNumber, utils } from 'ethers';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { sign } from 'modules/web3/helpers/sign';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -40,17 +43,15 @@ export default function DefaultVoteModalView({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const bpi = useBreakpointIndex();
 
-  const account = useAccountsStore(state => state.currentAccount);
-  const [voteProxy, voteDelegate] = useAccountsStore(state =>
-    account ? [state.proxies[account.address], state.voteDelegate] : [null, null]
-  );
-  const addressLockedMKR =
-    voteDelegate?.getVoteDelegateAddress() || voteProxy?.getProxyAddress() || account?.address;
+  const { account, voteProxyContractAddress, voteDelegateContractAddress } = useAccount();
+  const { network, library } = useActiveWeb3React();
+  const addressLockedMKR = voteDelegateContractAddress || voteProxyContractAddress || account;
   const { data: lockedMkr, mutate: mutateLockedMkr } = useLockedMkr(
     addressLockedMKR,
-    voteProxy,
-    voteDelegate
+    voteProxyContractAddress,
+    voteDelegateContractAddress
   );
+
   const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
 
   // revalidate on mount
@@ -65,60 +66,70 @@ export default function DefaultVoteModalView({
 
   const [comment, setComment] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
+  const [isFetchingNonce, setIsFetcingNonce] = useState(false);
 
   const signComment = async () => {
-    const signed = await personalSign(comment);
-    setSignedMessage(signed);
+    try {
+      setIsFetcingNonce(true);
+      const data = await fetchJson('/api/comments/nonce', {
+        method: 'POST',
+        body: JSON.stringify({
+          voterAddress: account
+        })
+      });
+      setIsFetcingNonce(false);
+      const signed = await sign(account as string, data.nonce, library);
+      setSignedMessage(signed);
+    } catch (e) {
+      setIsFetcingNonce(false);
+    }
   };
-
-  const track = useTransactionsStore(state => state.track, shallow);
 
   const { data: allSlates } = useAllSlates();
   const { mutate: mutateMkrOnHat } = useMkrOnHat();
 
   const { data: hat } = useHat();
+
+  const { vote: delegateVote } = useDelegateVote();
+  const { vote: proxyVote } = useVoteProxyVote();
+  const { vote: chiefVote } = useChiefVote();
+
   const isHat = hat && hat === proposal.address;
   const showHatCheckbox =
     hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
-  const votingWeight = lockedMkr?.toBigNumber().toFormat(3);
-  const hasVotingWeight = lockedMkr?.toBigNumber().gt(0);
-  const mkrSupporting = spellData ? new BigNumber(spellData.mkrSupport).toFormat(3) : 0;
+  const hasVotingWeight = lockedMkr?.gt(0);
+  const mkrSupporting = spellData ? BigNumber.from(spellData.mkrSupport) : BigNumber.from(0);
   const afterVote =
     currentSlate && currentSlate.includes(proposal.address)
       ? mkrSupporting
       : lockedMkr && spellData
-      ? lockedMkr.toBigNumber().plus(new BigNumber(spellData.mkrSupport)).toFormat(3)
-      : 0;
+      ? lockedMkr.add(BigNumber.from(spellData.mkrSupport))
+      : BigNumber.from(0);
 
-  const vote = async hatChecked => {
-    const maker = await getMaker();
+  const vote = hatChecked => {
     const proposals =
       hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
 
-    const encodedParam = maker.service('web3')._web3.eth.abi.encodeParameter('address[]', proposals);
-    const slate = maker.service('web3')._web3.utils.sha3('0x' + encodedParam.slice(-64 * proposals.length));
+    const encoder = new utils.AbiCoder();
+    const encodedParam = encoder.encode(['address[]'], [proposals]);
+
+    const slate = utils.keccak256('0x' + encodedParam.slice(-64 * proposals.length)) as any;
     const slateAlreadyExists = allSlates && allSlates.findIndex(l => l === slate) > -1;
     const slateOrProposals = slateAlreadyExists ? slate : proposals;
-    const voteTxCreator = voteDelegate
-      ? () => voteDelegate.voteExec(slateOrProposals)
-      : voteProxy
-      ? () => voteProxy.voteExec(slateOrProposals)
-      : () => maker.service('chief').vote(slateOrProposals);
 
-    const txId = await track(voteTxCreator, 'Voting on executive proposal', {
-      pending: txHash => {
+    const callbacks = {
+      initialized: txId => onTransactionCreated(txId),
+      pending: async txHash => {
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: account?.address || '',
-            delegateAddress: voteDelegate ? voteDelegate.getVoteDelegateAddress() : '',
+            voterAddress: account || '',
             comment: comment,
-            voteProxyAddress: voteProxy ? voteProxy.getProxyAddress() : '',
             signedMessage: signedMessage,
             txHash,
-            voterWeight: votingWeight
+            addressLockedMKR: addressLockedMKR || ''
           };
-          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${getNetwork()}`, {
+          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
             body: JSON.stringify(requestBody)
           })
@@ -128,21 +139,23 @@ export default function DefaultVoteModalView({
             })
             .catch(() => console.error('failed to add comment'));
         }
-
         onTransactionPending();
       },
-      mined: txId => {
-        transactionsApi.getState().setMessage(txId, 'Voted on executive proposal');
+      mined: () => {
         mutateVotedProposals();
         mutateMkrOnHat();
         onTransactionMined();
       },
-      error: () => {
-        onTransactionFailed();
-      }
-    });
+      error: () => onTransactionFailed()
+    };
 
-    onTransactionCreated(txId);
+    if (voteDelegateContractAddress) {
+      delegateVote(slateOrProposals, callbacks);
+    } else if (voteProxyContractAddress) {
+      proxyVote(slateOrProposals, callbacks);
+    } else {
+      chiefVote(slateOrProposals, callbacks);
+    }
   };
 
   const GridBox = ({ bpi, children }) => (
@@ -211,7 +224,7 @@ export default function DefaultVoteModalView({
           </Text>
           {lockedMkr ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {votingWeight} MKR
+              {formatValue(lockedMkr)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -225,7 +238,7 @@ export default function DefaultVoteModalView({
           </Text>
           {spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {mkrSupporting} MKR
+              {formatValue(mkrSupporting)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -239,7 +252,7 @@ export default function DefaultVoteModalView({
           </Text>
           {lockedMkr && spellData ? (
             <Text as="p" color="text" mt={[0, 2]} sx={{ fontSize: 3, fontWeight: 'medium' }}>
-              {afterVote} MKR
+              {formatValue(afterVote)} MKR
             </Text>
           ) : (
             <Box sx={{ mt: [0, 2] }}>
@@ -266,10 +279,12 @@ export default function DefaultVoteModalView({
                 signComment();
               }}
               variant="primaryOutline"
-              disabled={comment.length > 250 || !hasVotingWeight || signedMessage.length > 0}
+              disabled={
+                comment.length > 250 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
+              }
               sx={{ width: '100%' }}
             >
-              1 - Sign your comment
+              {!isFetchingNonce ? '1 - Sign your comment' : 'Loading...'}
             </Button>
             <Button
               mt={2}
@@ -278,6 +293,7 @@ export default function DefaultVoteModalView({
                 vote(hatChecked);
               }}
               variant="primaryLarge"
+              data-testid="vote-modal-vote-btn"
               disabled={comment.length > 250 || !hasVotingWeight || !signedMessage}
               sx={{ width: '100%' }}
             >
@@ -292,6 +308,7 @@ export default function DefaultVoteModalView({
               trackButtonClick('vote');
               vote(hatChecked);
             }}
+            data-testid="vote-modal-vote-btn"
             disabled={!hasVotingWeight}
           >
             {votingMessage}

@@ -2,12 +2,11 @@ import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import shallow from 'zustand/shallow';
-import { SupportedNetworks } from 'lib/constants';
-import { getNetwork } from 'lib/maker';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
-import useTransactionStore, { transactionsSelectors } from 'modules/app/stores/transactions';
-import { getEtherscanLink } from 'lib/utils';
+import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import VotingWeight from './VotingWeight';
 import PollBar from './PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -32,12 +31,12 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
   const router = useRouter();
   const startReview = () => {
     clearTx();
-    router.push({ pathname: '/polling/review', query: { network } });
+    router.push({ pathname: '/polling/review' });
   };
 
   return (
     <Box>
-      <Heading mb={2} mt={4} variant="microHeading">
+      <Heading mb={2} mt={4} variant="microHeading" data-testid="your-ballot-title">
         Your Ballot
       </Heading>
       {transaction?.hash && transaction.status === 'pending' ? (
@@ -53,7 +52,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
             </Text>
             <ExternalLink
               target="_blank"
-              href={getEtherscanLink(getNetwork(), transaction.hash, 'transaction')}
+              href={getEtherscanLink(network, transaction.hash, 'transaction')}
               sx={{ p: 0 }}
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
@@ -68,7 +67,9 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           <PollBar polls={polls} activePolls={activePolls} />
 
           <Divider />
-          <VotingWeight sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }} />
+          <Box sx={{ borderBottom: '1px solid secondaryMuted', px: 3, py: 2 }}>
+            <VotingWeight />
+          </Box>
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
             <Button

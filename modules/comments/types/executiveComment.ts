@@ -1,9 +1,7 @@
-import { SupportedNetworks } from 'lib/constants';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type ExecutiveComment = {
   voterAddress: string;
-  delegateAddress?: string;
-  voteProxyAddress?: string;
   voterWeight: string;
   comment: string;
   date: Date;
@@ -18,10 +16,8 @@ export type ExecutiveCommentFromDB = ExecutiveComment & {
 
 export type ExecutiveCommentsRequestBody = {
   voterAddress: string;
-  delegateAddress?: string;
-  voteProxyAddress?: string;
   comment: string;
   signedMessage: string;
-  voterWeight: string;
   txHash: string;
+  addressLockedMKR: string;
 };

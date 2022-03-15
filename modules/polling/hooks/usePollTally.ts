@@ -1,26 +1,32 @@
 import { fetchJson } from 'lib/fetchJson';
-import { getNetwork } from 'lib/maker';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 import { PollTally } from '../types';
 
 type UsePollTallyResponse = {
   tally: PollTally | undefined;
   mutate: () => void;
+  error: Error;
+  isValidating: boolean;
 };
 
 export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyResponse {
-  const { data: tallyData, mutate } = useSWR<PollTally>(
-    `/api/polling/tally/${pollId}?network=${getNetwork()}`,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      refreshInterval,
-      revalidateOnMount: true
-    }
-  );
+  const { network } = useActiveWeb3React();
+  const {
+    data: tallyData,
+    mutate,
+    error,
+    isValidating
+  } = useSWR<PollTally>(`/api/polling/tally/${pollId}?network=${network}`, fetchJson, {
+    revalidateOnFocus: false,
+    refreshInterval,
+    revalidateOnMount: true
+  });
 
   return {
     tally: tallyData,
+    error,
+    isValidating,
     mutate
   };
 }

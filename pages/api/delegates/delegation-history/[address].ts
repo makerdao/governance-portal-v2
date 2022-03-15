@@ -1,13 +1,14 @@
 import invariant from 'tiny-invariant';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { isSupportedNetwork } from 'lib/maker/index';
-import { DEFAULT_NETWORK } from 'lib/constants';
-import withApiHandler from 'lib/api/withApiHandler';
+import { isSupportedNetwork } from 'modules/web3/helpers/networks';
+
 import { fetchDelegationHistory } from 'modules/delegates/api/fetchDelegationHistory';
+import withApiHandler from 'modules/app/api/withApiHandler';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
-  const network = (req.query.network as string) || DEFAULT_NETWORK;
+  const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   const address = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 

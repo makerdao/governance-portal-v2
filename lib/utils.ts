@@ -1,15 +1,14 @@
-import remark from 'remark';
-import html from 'remark-html';
+import remarkGfm from 'remark-gfm';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
 import { css, ThemeUIStyleObject } from '@theme-ui/css';
 import BigNumber from 'bignumber.js';
 import { CurrencyObject } from 'modules/app/types/currency';
-import { SpellStateDiff } from 'modules/app/types/spellStateDiff';
-import { SupportedNetworks, ETHERSCAN_PREFIXES } from './constants';
-import getMaker from './maker';
-import mockPolls from 'modules/polling/api/mocks/polls.json';
+import { hexZeroPad, stripZeros } from 'ethers/lib/utils';
+
 import round from 'lodash/round';
 
 export function bigNumberKFormat(num: CurrencyObject): string {
@@ -24,7 +23,7 @@ export function bigNumberKFormat(num: CurrencyObject): string {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
-  const result = await remark().use(html).process(markdown);
+  const result = await remark().use(remarkGfm).use(remarkHtml).process(markdown);
   return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 
@@ -54,24 +53,6 @@ export function backoffRetry(retries: number, fn: () => Promise<any>, delay = 50
   return fn().catch(err =>
     retries > 1 ? wait(delay).then(() => backoffRetry(retries - 1, fn, delay * 2)) : Promise.reject(err)
   );
-}
-
-export function getEtherscanLink(
-  network: SupportedNetworks,
-  data: string,
-  type: 'transaction' | 'address'
-): string {
-  const prefix = `https://${
-    ETHERSCAN_PREFIXES[network] || ETHERSCAN_PREFIXES[SupportedNetworks.MAINNET]
-  }etherscan.io`;
-
-  switch (type) {
-    case 'transaction':
-      return `${prefix}/tx/${data}`;
-    case 'address':
-    default:
-      return `${prefix}/address/${data}`;
-  }
 }
 
 /* eslint-disable no-useless-escape */
@@ -116,55 +97,6 @@ export function styledClone(component, { sx: stylesToMerge }: { sx: ThemeUIStyle
   }
 }
 
-export function parseSpellStateDiff(rawStateDiff): SpellStateDiff {
-  invariant(
-    rawStateDiff?.hasBeenCast !== undefined && rawStateDiff?.decodedDiff !== undefined,
-    'invalid or undefined raw state diff'
-  );
-
-  const { hasBeenCast, executedOn, decodedDiff = [] } = rawStateDiff;
-  const groupedDiff: { [key: string]: any } = decodedDiff.reduce((groups, diff) => {
-    const keys = diff.keys
-      ? diff.keys.map(key => (key.address_info ? key.address_info.label : key.value))
-      : null;
-
-    const parsedDiff = {
-      from: diff.from,
-      to: diff.to,
-      name: diff.name,
-      field: diff.field,
-      keys
-    };
-
-    groups[diff.address.label] = groups[diff.address.label]
-      ? groups[diff.address.label].concat([parsedDiff])
-      : [parsedDiff];
-    return groups;
-  }, {});
-
-  return { hasBeenCast, executedOn, groupedDiff };
-}
-
-export async function initTestchainPolls() {
-  const maker = await getMaker();
-  const pollingService = maker.service('govPolling');
-  const hash = 'dummy hash';
-
-  // This detects whether the mock polls have been deployed yet
-  const testTx = await pollingService.createPoll(now(), now() + 500000, hash, hash);
-  if (testTx !== 0) return;
-
-  console.log('setting up some polls on the testchain...');
-  return mockPolls.map(async poll => {
-    const id = await pollingService.createPoll(now(), now() + 50000, hash, poll.url);
-    console.log(`created poll #${id}`);
-  });
-}
-
-function now() {
-  return Math.floor(new Date().getTime());
-}
-
 export function formatAddress(address: string): string {
   return address.slice(0, 7) + '...' + address.slice(-4);
 }
@@ -176,3 +108,72 @@ export const sortBytesArray = _array =>
 
 export const formatRound = (num, decimals = 2) =>
   isNaN(num) ? '----' : round(num, decimals).toLocaleString({}, { minimumFractionDigits: decimals });
+
+export const paddedArray = (k, value) =>
+  Array.from({ length: k })
+    .map(() => 0)
+    .concat(...value);
+
+export const toBuffer = (number, opts) => {
+  let hex = new BigNumber(number).toString(16);
+
+  if (!opts) {
+    opts = {};
+  }
+
+  const endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
+
+  if (hex.charAt(0) === '-') {
+    throw new Error('Converting negative numbers to Buffers not supported yet');
+  }
+
+  const size = opts.size === 'auto' ? Math.ceil(hex.length / 2) : opts.size || 1;
+
+  const len = Math.ceil(hex.length / (2 * size)) * size;
+  const buf = Buffer.alloc(len);
+
+  // Zero-pad the hex string so the chunks are all `size` long
+  while (hex.length < 2 * len) {
+    hex = `0${hex}`;
+  }
+
+  const hx = hex.split(new RegExp(`(.{${2 * size}})`)).filter(s => s.length > 0);
+
+  hx.forEach((chunk, i) => {
+    for (let j = 0; j < size; j++) {
+      const ix = i * size + (endian === 'big' ? j : size - j - 1);
+      buf[ix] = parseInt(chunk.slice(j * 2, j * 2 + 2), 16);
+    }
+  });
+
+  return buf;
+};
+
+export const fromBuffer = (buf, opts) => {
+  if (!opts) {
+    opts = {};
+  }
+
+  const endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
+
+  const size = opts.size === 'auto' ? Math.ceil(buf.length) : opts.size || 1;
+
+  if (buf.length % size !== 0) {
+    throw new RangeError(`Buffer length (${buf.length}) must be a multiple of size (${size})`);
+  }
+
+  const hex: any[] = [];
+  for (let i = 0; i < buf.length; i += size) {
+    const chunk: any[] = [];
+    for (let j = 0; j < size; j++) {
+      chunk.push(buf[i + (endian === 'big' ? j : size - j - 1)]);
+    }
+
+    hex.push(chunk.map(c => (c < 16 ? '0' : '') + c.toString(16)).join(''));
+  }
+
+  return new BigNumber(hex.join(''), 16);
+};
+
+export const paddedBytes32ToAddress = (hex: string): string =>
+  hex.length > 42 ? hexZeroPad(stripZeros(hex), 20) : hex;

@@ -1,8 +1,9 @@
 import { Button, Flex, Text, Link as ExternalLink } from 'theme-ui';
-import { getNetwork } from 'lib/maker';
-import { getEtherscanLink } from 'lib/utils';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Delegate } from '../../types';
-import BigNumber from 'bignumber.js';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { BigNumber } from 'ethers';
+import { formatValue } from 'lib/string';
 
 type Props = {
   mkrToDeposit: BigNumber;
@@ -13,6 +14,8 @@ type Props = {
 
 export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Props): JSX.Element => {
   const { address, voteDelegateAddress } = delegate;
+  const { network } = useActiveWeb3React();
+
   return (
     <Flex sx={{ flexDirection: 'column', textAlign: 'center' }}>
       <Text variant="microHeading" sx={{ fontSize: [3, 6] }}>
@@ -20,11 +23,11 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
       </Text>
       <Text sx={{ mt: 4 }}>
         You are delegating{' '}
-        <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{mkrToDeposit.toFormat(6)} MKR</Text> to delegate
-        contract{' '}
+        <Text sx={{ fontWeight: 'bold', display: 'inline' }}>{formatValue(mkrToDeposit)} MKR</Text> to
+        delegate contract{' '}
         <ExternalLink
           title="View on etherescan"
-          href={getEtherscanLink(getNetwork(), voteDelegateAddress, 'address')}
+          href={getEtherscanLink(network, voteDelegateAddress, 'address')}
           target="_blank"
         >
           <Text
@@ -44,7 +47,7 @@ export const ConfirmContent = ({ mkrToDeposit, delegate, onClick, onBack }: Prop
         This delegate contract was created by{' '}
         <ExternalLink
           title="View on etherescan"
-          href={getEtherscanLink(getNetwork(), address, 'address')}
+          href={getEtherscanLink(network, address, 'address')}
           target="_blank"
         >
           <Text

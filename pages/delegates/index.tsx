@@ -2,10 +2,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import { isDefaultNetwork } from 'lib/maker';
+import Link from 'next/link';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import shallow from 'zustand/shallow';
+import { fetchJson } from 'lib/fetchJson';
+import { shuffleArray } from 'lib/common/shuffleArray';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/delegates/types';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -13,19 +20,14 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { DelegateCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { getNetwork } from 'lib/maker';
-import { fetchJson } from 'lib/fetchJson';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import useAccountsStore from 'modules/app/stores/accounts';
-import Link from 'next/link';
-import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
-import shallow from 'zustand/shallow';
+import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
 import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
 import DelegatesSort from 'modules/delegates/components/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 type Props = {
   delegates: Delegate[];
@@ -33,8 +35,6 @@ type Props = {
 };
 
 const Delegates = ({ delegates, stats }: Props) => {
-  const network = getNetwork();
-
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
   const [showRecognized, showShadow, sort, resetFilters] = useDelegatesFiltersStore(
     state => [state.filters.showRecognized, state.filters.showShadow, state.sort, state.resetFilters],
@@ -50,7 +50,7 @@ const Delegates = ({ delegates, stats }: Props) => {
       if (sort === delegatesSortEnum.creationDate) {
         return prev.expirationDate > next.expirationDate ? -1 : 1;
       } else if (sort === delegatesSortEnum.mkrDelegated) {
-        return prev.mkrDelegated > next.mkrDelegated ? -1 : 1;
+        return new BigNumberJS(prev.mkrDelegated).gt(new BigNumberJS(next.mkrDelegated)) ? -1 : 1;
       } else if (sort === delegatesSortEnum.random) {
         return delegates.indexOf(prev) > delegates.indexOf(next) ? 1 : -1;
       }
@@ -65,10 +65,8 @@ const Delegates = ({ delegates, stats }: Props) => {
     }
   };
 
-  const [voteDelegate] = useAccountsStore(state => [state.voteDelegate]);
-
-  const isOwner = d =>
-    d.voteDelegateAddress.toLowerCase() === voteDelegate?.getVoteDelegateAddress().toLowerCase();
+  const { voteDelegateContractAddress } = useAccount();
+  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const expiredDelegates = sortedDelegates.filter(delegate => delegate.expired === true);
 
@@ -97,7 +95,12 @@ const Delegates = ({ delegates, stats }: Props) => {
         </Flex>
 
         <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
-          <Button variant={'outline'} sx={{ mr: 3 }} onClick={resetFilters}>
+          <Button
+            variant={'outline'}
+            sx={{ mr: 3 }}
+            onClick={resetFilters}
+            data-testid="delegate-reset-filters"
+          >
             Clear filters
           </Button>
 
@@ -117,7 +120,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {recognizedDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -133,7 +138,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {shadowDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -149,7 +156,9 @@ const Delegates = ({ delegates, stats }: Props) => {
               <Box>
                 {expiredDelegates.map(delegate => (
                   <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <DelegateCard delegate={delegate} />
+                    <ErrorBoundary componentName="Delegate Card">
+                      <DelegateCard delegate={delegate} />
+                    </ErrorBoundary>
                   </Box>
                 ))}
               </Box>
@@ -163,15 +172,14 @@ const Delegates = ({ delegates, stats }: Props) => {
             </Heading>
             <Card variant="compact">
               <Text as="p" sx={{ mb: 3 }}>
-                {voteDelegate
+                {voteDelegateContractAddress
                   ? 'Looking for delegate contract information?'
                   : 'Interested in creating a delegate contract?'}
               </Text>
               <Box>
                 <Link
                   href={{
-                    pathname: '/account',
-                    query: { network }
+                    pathname: '/account'
                   }}
                   passHref
                 >
@@ -182,7 +190,11 @@ const Delegates = ({ delegates, stats }: Props) => {
               </Box>
             </Card>
           </Box>
-          {stats && <DelegatesSystemInfo stats={stats} />}
+          {stats && (
+            <ErrorBoundary componentName="Delegates System Info">
+              <DelegatesSystemInfo stats={stats} />
+            </ErrorBoundary>
+          )}
           <ResourceBox type={'delegates'} />
           <ResourceBox type={'general'} />
         </Stack>
@@ -195,24 +207,26 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   const [_delegates, _setDelegates] = useState<Delegate[]>();
   const [_stats, _setStats] = useState<DelegatesAPIStats>();
   const [error, setError] = useState<string>();
+  const { network } = useActiveWeb3React();
 
   // fetch delegates at run-time if on any network other than the default
   useEffect(() => {
-    if (!isDefaultNetwork()) {
-      fetchJson(`/api/delegates?network=${getNetwork()}`)
+    if (!network) return;
+    if (!isDefaultNetwork(network)) {
+      fetchJson(`/api/delegates?network=${network}`)
         .then((response: DelegatesAPIResponse) => {
           _setDelegates(shuffleArray(response.delegates));
           _setStats(response.stats);
         })
         .catch(setError);
     }
-  }, []);
+  }, [network]);
 
   if (error) {
     return <ErrorPage statusCode={404} title="Error fetching delegates" />;
   }
 
-  if (!isDefaultNetwork() && !_delegates) {
+  if (!isDefaultNetwork(network) && !_delegates) {
     return (
       <PrimaryLayout shortenFooter={true}>
         <PageLoadingPlaceholder />
@@ -221,10 +235,12 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   }
 
   return (
-    <Delegates
-      delegates={isDefaultNetwork() ? delegates : (_delegates as Delegate[])}
-      stats={isDefaultNetwork() ? stats : (_stats as DelegatesAPIStats)}
-    />
+    <ErrorBoundary componentName="Delegates List">
+      <Delegates
+        delegates={isDefaultNetwork(network) ? delegates : (_delegates as Delegate[])}
+        stats={isDefaultNetwork(network) ? stats : (_stats as DelegatesAPIStats)}
+      />
+    </ErrorBoundary>
   );
 }
 
@@ -232,7 +248,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const delegatesAPIResponse = await fetchDelegates();
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates: shuffleArray(delegatesAPIResponse.delegates),

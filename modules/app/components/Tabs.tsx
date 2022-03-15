@@ -3,6 +3,7 @@ import { Flex, Divider, ThemeUIStyleObject } from 'theme-ui';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@reach/tabs';
 import Router from 'next/router';
 import { slugify } from 'lib/utils';
+import { ErrorBoundary } from './ErrorBoundary';
 
 type Props = {
   tabTitles: string[];
@@ -51,18 +52,21 @@ const TabbedLayout = ({
           {tabRoutes.map((tabRoute, index) => (
             <Tab
               key={tabRoute}
+              data-testid={`tab-${tabRoute}`}
               sx={{
                 ...getTabStyles({ isActive: activeTab === tabRoute, isFirst: index === 0 })
               }}
             >
-              {tabTitles[index]}
+              <ErrorBoundary componentName={tabRoute}>{tabTitles[index]}</ErrorBoundary>
             </Tab>
           ))}
         </TabList>
         {banner ? banner : <Divider sx={{ m: 0 }} />}
         <TabPanels>
           {tabPanels.map((tabPanel, i) => (
-            <TabPanel key={i}>{tabPanel}</TabPanel>
+            <ErrorBoundary key={`tab-body-${i}`} componentName={tabRoutes[i]}>
+              <TabPanel>{tabPanel}</TabPanel>
+            </ErrorBoundary>
           ))}
         </TabPanels>
       </Tabs>
@@ -77,7 +81,7 @@ const baseTabStyles: ThemeUIStyleObject = {
   p: 0,
   mb: 2,
   color: 'textSecondary',
-  fontSize: [2, 3],
+  fontSize: [1, 3],
   fontWeight: 400,
   border: 'none !important',
   bg: 'inherit',

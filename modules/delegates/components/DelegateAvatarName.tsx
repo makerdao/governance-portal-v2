@@ -4,15 +4,13 @@ import { Box, Flex, Text } from 'theme-ui';
 import { limitString } from 'lib/string';
 import { DelegatePicture } from 'modules/delegates/components';
 
-import { formatAddress } from 'lib/utils';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { Address } from 'modules/address/components/Address';
 
-export default function DelegateAvatarName({
-  delegate,
-  isOwner
-}: {
-  delegate: Delegate;
-  isOwner: boolean;
-}): React.ReactElement {
+export default function DelegateAvatarName({ delegate }: { delegate: Delegate }): React.ReactElement {
+  const { account } = useAccount();
+  const isOwner = account?.toLowerCase() === delegate.address.toLowerCase();
+
   return (
     <Flex>
       <DelegatePicture delegate={delegate} />
@@ -40,7 +38,7 @@ export default function DelegateAvatarName({
             </Flex>
           )}
         </Flex>
-        <Text>{formatAddress(delegate.voteDelegateAddress)}</Text>
+        <Address address={delegate.voteDelegateAddress} />
       </Box>
     </Flex>
   );

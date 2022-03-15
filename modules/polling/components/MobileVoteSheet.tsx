@@ -9,18 +9,15 @@ import isEqual from 'lodash/isEqual';
 import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 
-import { Account } from 'modules/app/types/account';
 import { Poll } from 'modules/polling/types';
 import useBallotStore from 'modules/polling/stores/ballotStore';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useAccountsStore from 'modules/app/stores/accounts';
 
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import { useRouter } from 'next/router';
-import { getNetwork } from 'lib/maker';
 import VotingStatus from './PollVotingStatus';
 import ballotAnimation from 'lib/animation/ballotSuccess.json';
 import { slideUp } from 'lib/keyframes';
@@ -28,6 +25,8 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 
 enum ViewState {
   START,
@@ -37,7 +36,6 @@ enum ViewState {
 }
 
 type Props = {
-  account?: Account;
   poll: Poll;
   close?: () => void;
   setPoll?: (poll: Poll) => void;
@@ -46,7 +44,6 @@ type Props = {
   withStart?: boolean;
 };
 export default function MobileVoteSheet({
-  account,
   poll,
   setPoll,
   close,
@@ -54,9 +51,10 @@ export default function MobileVoteSheet({
   withStart
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
+  const { account, voteDelegateContractAddress } = useAccount();
 
-  const voteDelegate = useAccountsStore(state => (account ? state.voteDelegate : null));
-  const addressToCheck = voteDelegate ? voteDelegate.getVoteDelegateAddress() : account?.address;
+  const { network } = useActiveWeb3React();
+  const addressToCheck = voteDelegateContractAddress ? voteDelegateContractAddress : account;
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
@@ -70,11 +68,10 @@ export default function MobileVoteSheet({
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
   const [viewState, setViewState] = useState<ViewState>(withStart ? ViewState.START : ViewState.INPUT);
   const router = useRouter();
-  const network = getNetwork();
   const onBallot = !isNil(ballot[poll.pollId]?.option);
 
   const [activePolls, setActivePolls] = useState<Poll[]>([]);
-  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${getNetwork()}`, fetchJson, {
+  const { data: pollsData } = useSWR(`/api/polling/all-polls?network=${network}`, fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false,
     revalidateOnMount: true
@@ -213,7 +210,7 @@ export default function MobileVoteSheet({
               <Button
                 variant="primaryLarge"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
-                onClick={() => router.push({ pathname: '/polling/review', query: { network } })}
+                onClick={() => router.push({ pathname: '/polling/review' })}
               >
                 Review &amp; Submit Ballot
               </Button>
@@ -231,6 +228,7 @@ export default function MobileVoteSheet({
               )}
               <Button
                 variant="primaryLarge"
+                data-testid="button-add-vote-to-ballot"
                 sx={{ py: 3, fontSize: 2, borderRadius: 'small' }}
                 onClick={() => {
                   trackButtonClick('addVoteToBallot');
