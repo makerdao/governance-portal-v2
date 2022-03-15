@@ -20,15 +20,15 @@ export default function SystemStats(): JSX.Element {
     },
     {
       title: 'Total Dai',
-      value: totalDai ? `${formatValue(totalDai, 'rad', 0)} DAI` : <Skeleton />
+      value: totalDai ? `${formatValue(totalDai, 'rad')} DAI` : <Skeleton />
     },
     {
       title: 'Dai Debt Ceiling',
-      value: debtCeiling ? `${formatValue(debtCeiling, 'rad', 0)} DAI` : <Skeleton />
+      value: debtCeiling ? `${formatValue(debtCeiling, 'rad')} DAI` : <Skeleton />
     },
     {
       title: 'System Surplus',
-      value: systemSurplus ? `${formatValue(systemSurplus, 'rad', 0)} DAI` : <Skeleton />
+      value: systemSurplus ? `${formatValue(systemSurplus, 'rad')} DAI` : <Skeleton />
     }
   ];
   return (
