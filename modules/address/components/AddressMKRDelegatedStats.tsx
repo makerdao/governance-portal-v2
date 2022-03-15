@@ -29,7 +29,7 @@ export function AddressMKRDelegatedStats({
         styles={{
           textAlign: 'right'
         }}
-        value={totalMKRDelegated ? formatValue(BigNumber.from(totalMKRDelegated)) : '0.000'}
+        value={totalMKRDelegated ? totalMKRDelegated.toFixed(2) : '0.00'}
         label={'Total MKR Delegated'}
       />
     </Flex>

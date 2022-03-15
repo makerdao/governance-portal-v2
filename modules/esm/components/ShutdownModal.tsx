@@ -31,9 +31,9 @@ const ModalContent = ({
         Shutting down the Dai Credit System
       </Text>
       <Text variant="text" sx={{ mt: 3 }}>
-        The {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)}` : '---'} MKR limit for the
-        emergency shutdown module has been reached. By continuing past this alert, emergency shutdown will be
-        initiated for the Dai Credit System.
+        The {thresholdAmount ? `${formatValue(thresholdAmount)}` : '---'} MKR limit for the emergency shutdown
+        module has been reached. By continuing past this alert, emergency shutdown will be initiated for the
+        Dai Credit System.
       </Text>
       <Grid columns={2} mt={4}>
         <Button

@@ -42,7 +42,7 @@ export function DelegatesSystemInfo({
     {
       title: 'Total MKR delegated',
       id: 'total-mkr-system-info',
-      value: new BigNumber(stats.totalMKRDelegated).toFormat(2)
+      value: new BigNumber(stats.totalMKRDelegated).toFormat(0)
     },
     {
       title: 'Percent of MKR delegated',
