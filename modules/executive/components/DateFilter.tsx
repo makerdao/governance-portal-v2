@@ -42,7 +42,7 @@ export default function DateFilter(props): JSX.Element {
   return (
     <FilterButton
       name={() => {
-        if (!startDateDisplay && !endDateDisplay) return 'Date Posted';
+        if (!startDateDisplay && !endDateDisplay) return 'Date Filter';
         if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
         if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
         return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
