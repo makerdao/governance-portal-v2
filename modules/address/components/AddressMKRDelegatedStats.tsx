@@ -2,7 +2,6 @@ import { Flex } from 'theme-ui';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
@@ -18,7 +17,7 @@ export function AddressMKRDelegatedStats({
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
-        flexDirection: ['column', 'row'],
+        flexDirection: 'row',
         marginTop: 1,
         marginBottom: 1
       }}
