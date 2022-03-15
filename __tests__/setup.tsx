@@ -3,6 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { mockIntersectionObserver } from '../__tests__/helpers';
 import { getENS } from 'modules/web3/helpers/ens';
 import { useWeb3React } from '@web3-react/core';
+import { ethers } from 'ethers';
 
 jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
@@ -20,6 +21,8 @@ jest.mock('modules/address/components/AddressIcon', () => {
     }
   };
 });
+
+ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
 
 beforeAll(async () => {
   (useWeb3React as jest.Mock).mockReturnValue({
