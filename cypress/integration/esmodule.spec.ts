@@ -121,7 +121,7 @@ describe('Esmodule Page', async () => {
       cy.contains('Continue').click();
 
       // Type the passphrase
-      cy.get('[data-testid="confirm-input"]').type('I am burning 100,000.0 MKR');
+      cy.get('[data-testid="confirm-input"]').type('I am burning 100,000 MKR');
 
       // Unlock mkr
       cy.get('[data-testid="allowance-toggle"]').click();

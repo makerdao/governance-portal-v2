@@ -38,13 +38,13 @@ describe('Vote Proxy', () => {
     });
   });
 
-  it('should verify executive page displays same data for proxies', { defaultCommandTimeout: 90000 }, () => {
+  it('should verify executive page displays correct data for cold proxy', { defaultCommandTimeout: 90000 }, () => {
     visitPage(`executive`);
 
     // Start with the cold address page
     setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
       // Check balance locked in chief of the vote proxy
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '5.0 MKR');
 
       // Cold wallet can deposit into chief
       cy.get('[data-testid="deposit-button"]').click();
@@ -52,6 +52,11 @@ describe('Vote Proxy', () => {
       cy.get('[data-testid="mkr-input"]').type('1');
       cy.get('[data-testid="button-deposit-mkr"]').click();
     });
+  });
+
+  it('should verify executive page displays correct data for hot proxy', { defaultCommandTimeout: 90000 }, () => {
+    visitPage(`executive`);
+
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
       // Hot account should have the new MKR balance in chief displayed
@@ -73,7 +78,7 @@ describe('Vote Proxy', () => {
       cy.get('[data-testid="button-withdraw-mkr"]').click();
 
       // Check the UI shows the amount withdrawn from chief correctly
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '3.0 MKR');
 
       // Check the value of the MKR supporting on the exec we're not yet voting for
       cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', '1,132.03 MKR Supporting');

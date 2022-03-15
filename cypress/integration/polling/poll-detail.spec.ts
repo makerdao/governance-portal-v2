@@ -19,7 +19,7 @@ describe('/polling detail page', async () => {
     cy.contains('PPG - Open Market Committee Proposal - January 31, 2022').should('be.visible');
 
     // Renders the date
-    cy.contains(/POSTED FEB 15 2022 21:36 UTC/).should('be.visible');
+    cy.contains(/POSTED FEB 15 2022 21:36 UTC/i).should('be.visible');
 
     // Your vote does not exist
     cy.get('[data-testid="poll-vote-box"]').should('not.exist');
