@@ -55,6 +55,7 @@ import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
+import { isAfter, sub } from 'date-fns';
 
 type Props = {
   proposal: Proposal;
@@ -414,11 +415,12 @@ export default function ProposalPage({
 
   const spellAddress = prefetchedProposal?.address;
   const nextCastTime = prefetchedProposal?.spellData.nextCastTime;
+  const hasBeenCast = prefetchedProposal?.spellData.hasBeenCast;
 
-  // If we didn't prefetch spell diffs, it means it hasn't been cast yet.
-  const { data: simulatedDiffs } = useSWR(
+  // If we didn't fetch the diffs during build, attempt to fetch them now
+  const { data: diffs } = useSWR(
     prefetchedSpellDiffs.length === 0
-      ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&network=${network}`
+      ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&hasBeenCast=${hasBeenCast}&network=${network}`
       : null
   );
 
@@ -451,7 +453,7 @@ export default function ProposalPage({
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
-  const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : simulatedDiffs;
+  const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;
 
   return (
     <ErrorBoundary componentName="Executive Page">
@@ -466,9 +468,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
-  // Only fetch at build time if spell has been cast, otherwise we do it client side
+  // Only fetch at build time if spell has been cast, and it's not older than two months (to speed up builds)
   const spellDiffs: SpellDiff[] =
-    proposal && proposal.spellData?.hasBeenCast ? await fetchHistoricalSpellDiff(proposal.address) : [];
+    proposal &&
+    proposal.spellData?.hasBeenCast &&
+    isAfter(new Date(proposal?.date), sub(new Date(), { months: 2 }))
+      ? await fetchHistoricalSpellDiff(proposal.address)
+      : [];
 
   return {
     revalidate: 60 * 60, // Revalidate each hour

@@ -7,7 +7,7 @@ import { config } from 'lib/config';
 // import { validateDiff } from '../helpers/spellDiffParsers';
 // import { DecodedDiffAPIResponse, SpellDiff } from '../types';
 
-export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise<SpellDiff[]> {
+export async function fetchHistoricalSpellDiff(proposalAddress?: string): Promise<SpellDiff[]> {
   if (!proposalAddress) return [];
 
   // Need to find the tx of the cast spell
@@ -15,11 +15,8 @@ export async function fetchHistoricalSpellDiff(proposalAddress: string): Promise
   const history = await provider.getHistory(proposalAddress);
   const castTx = history.filter(h => h.data === SIGNATURE_CAST);
 
-  if (castTx.length > 1) {
-    // TODO: Need to loop & fetch the txns from the provider to find the successful one
-    console.warn('multiple matching txs', castTx);
-  }
-  const [{ hash }] = castTx;
+  // Sometimes the 'cast()' tx fails, so there will be more than one. Always take the last index because it's the one that succeeded.
+  const { hash } = castTx[castTx.length - 1];
 
   const url = DECODED_SPELL_ENDPOINT(hash);
 
