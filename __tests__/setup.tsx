@@ -7,13 +7,17 @@ import { useWeb3React } from '@web3-react/core';
 jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
 
-jest.mock("modules/address/components/AddressIcon", () => {
+jest.mock('remark-gfm', () => () => null);
+jest.mock('remark-html', () => () => null);
+jest.mock('remark', () => () => null);
+
+jest.mock('modules/address/components/AddressIcon', () => {
   return {
     __esModule: true,
     A: true,
     default: () => {
-      return (<div />);
-    },
+      return <div />;
+    }
   };
 });
 
@@ -38,8 +42,7 @@ beforeAll(async () => {
     }))
   });
   global.IntersectionObserver = mockIntersectionObserver;
-  
+
   // Mock ens calls
   (getENS as jest.Mock).mockReturnValue('');
 });
-
