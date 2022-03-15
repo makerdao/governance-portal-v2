@@ -53,6 +53,7 @@ const AccountPage = (): React.ReactElement => {
     : voteProxyContractAddress
     ? voteProxyContractAddress
     : account;
+
   const { data: addressInfo, error: errorLoadingAddressInfo } = useSWR<AddressApiResponse>(
     addressToCheck ? `/api/address/${addressToCheck}?network=${network}` : null,
     fetchJson
@@ -209,12 +210,7 @@ const AccountPage = (): React.ReactElement => {
                         <DelegateDetail delegate={addressInfo.delegateInfo} />
                       </Box>
                     )}
-                    {!addressInfo.delegateInfo && (
-                      <AddressDetail
-                        address={addressInfo.address}
-                        voteProxyInfo={addressInfo.voteProxyInfo}
-                      />
-                    )}
+                    {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
                   </Box>
                 )}
                 {!addressInfo && !errorLoadingAddressInfo && (
