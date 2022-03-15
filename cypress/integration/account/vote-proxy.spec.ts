@@ -44,7 +44,7 @@ describe('Vote Proxy', () => {
     // Start with the cold address page
     setAccount(TEST_ACCOUNTS.voteProxyCold, () => {
       // Check balance locked in chief of the vote proxy
-      cy.get('[data-testid="locked-mkr"]').should('have.text', '5.0 MKR');
+      cy.get('[data-testid="locked-mkr"]').should('have.text', '4.0 MKR');
 
       // Cold wallet can deposit into chief
       cy.get('[data-testid="deposit-button"]').click();
@@ -55,7 +55,7 @@ describe('Vote Proxy', () => {
 
     setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
       // Hot account should have the new MKR balance in chief displayed
-      cy.get('[data-testid="locked-mkr"]').should('have.text', `6.0 MKR`);
+      cy.get('[data-testid="locked-mkr"]').should('have.text', `5.0 MKR`);
 
       // Hot wallet cannot deposit funds into chief
       cy.on('window:alert', txt => {

@@ -55,8 +55,8 @@ describe('/polling detail page', async () => {
       // Checks that are different votes by address
       cy.get('[data-testid="vote-by-address"]').its('length').should('be.greaterThan', 13);
 
-      // Checks that there is a vote with 799.000 MKR
-      cy.contains(/799.000 MKR/).should('be.visible');
+      // Checks that there is a vote with 799.00 MKR
+      cy.contains(/799.00 MKR/).should('be.visible');
 
       // Checks that the voting weight module is visible
       cy.contains(/Voting Weight/).should('be.visible');

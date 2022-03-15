@@ -36,7 +36,7 @@ describe('Delegates Page', () => {
       // Checks the total amount of delegates
       cy.get('[data-testid="total-delegates-system-info"]').contains(/14/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('2');
-      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/14/);
+      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/12/);
       cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
     });
   });
