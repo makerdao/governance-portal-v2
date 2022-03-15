@@ -18,7 +18,7 @@ export type MKRInputProps = {
 };
 
 export function MKRInput({
-  placeholder = '0.000 MKR',
+  placeholder = '0.000000 MKR',
   errorMaxMessage = 'MKR balance too low',
   onChange,
   min = BigNumber.from(0),

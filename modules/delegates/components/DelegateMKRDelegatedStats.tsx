@@ -38,7 +38,7 @@ export function DelegateMKRDelegatedStats({
         label={'Total Active Delegators'}
       />
       <StatBox
-        value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0.000'}
+        value={typeof mkrStaked !== 'undefined' ? formatValue(mkrStaked) : '0.00'}
         label={'MKR Delegated by you'}
       />
     </Flex>

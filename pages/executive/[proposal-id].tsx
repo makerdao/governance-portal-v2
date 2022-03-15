@@ -380,7 +380,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 
                         <Box sx={{ textAlign: 'right' }}>
                           <Text color="onSecondary">
-                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
+                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
                           </Text>
                         </Box>
                       </Flex>
