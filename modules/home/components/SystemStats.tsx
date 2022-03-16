@@ -6,7 +6,7 @@ import { useSystemSurplus } from 'modules/web3/hooks/useSystemSurplus';
 import { useSystemWideDebtCeiling } from 'modules/web3/hooks/useSystemWideDebtCeiling';
 import { formatValue } from 'lib/string';
 
-export default function SystemStats(): JSX.Element {
+export function SystemStats(): JSX.Element {
   const { data: totalDai } = useTotalDai();
   const { data: daiSavingsRate } = useDaiSavingsRate();
   const { data: systemSurplus } = useSystemSurplus();
@@ -31,5 +31,5 @@ export default function SystemStats(): JSX.Element {
     }
   ];
 
-  return <Stats infoUnits={infoUnits} />;
+  return <Stats title="System Stats" infoUnits={infoUnits} />;
 }

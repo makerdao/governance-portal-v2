@@ -1,7 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, Flex, useColorMode, Box } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -10,7 +9,9 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import SystemStats from 'modules/home/components/SystemStats';
+import { SystemStats } from 'modules/home/components/SystemStats';
+import { ViewMore } from 'modules/home/components/ViewMore';
+import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import BlogPostCard from 'modules/home/components/BlogPostCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
@@ -94,10 +95,7 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
                   <Link href={{ pathname: '/executive' }}>
-                    <Flex sx={{ alignItems: 'center', cursor: 'pointer' }}>
-                      <Text sx={{ fontSize: [2, 3] }}>View More</Text>
-                      <Icon name="chevron_right" size={2} ml={2} color="primary" />
-                    </Flex>
+                    <ViewMore />
                   </Link>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
@@ -123,25 +121,9 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
           </section>
 
           <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
+            <ErrorBoundary componentName="Governance Stats">
+              <GovernanceStats />
             </ErrorBoundary>
-          </section>
-
-          <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Executive Votes</Heading>
-                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Executive Votes are conducted to make changes to the protocol. The governing proposal
-                    represents the current state of the system.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}></Container>
-            </Stack>
           </section>
 
           <section>
@@ -203,6 +185,11 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
                 </Grid>
               </Stack>
             </Container>
+          </section>
+          <section>
+            <ErrorBoundary componentName="System Stats">
+              <SystemStats />
+            </ErrorBoundary>
           </section>
         </Stack>
       </PrimaryLayout>
