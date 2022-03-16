@@ -214,7 +214,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
     if (!isDefaultNetwork(network)) {
       fetchJson(`/api/delegates?network=${network}`)
         .then((response: DelegatesAPIResponse) => {
-          _setDelegates(shuffleArray(response.delegates));
+          _setDelegates(response.delegates);
           _setStats(response.stats);
         })
         .catch(setError);
@@ -250,7 +250,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
-      delegates: shuffleArray(delegatesAPIResponse.delegates),
+      delegates: delegatesAPIResponse.delegates,
       stats: delegatesAPIResponse.stats
     }
   };

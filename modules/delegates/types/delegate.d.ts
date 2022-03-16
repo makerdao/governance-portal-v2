@@ -15,11 +15,10 @@ export type DelegateRepoInformation = {
 export type DelegateContractInformation = {
   address: string;
   voteDelegateAddress: string;
-  blockTimestamp: Date;
+  blockTimestamp: string;
   mkrDelegated: string;
   proposalsSupported: number;
-  execSupported: CMSProposal | undefined;
-  pollVoteHistory: PollVoteHistory;
+  delegationHistory: DelegationHistory[];
 };
 
 export type Delegate = {
@@ -41,6 +40,8 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
+  delegationHistory: DelegationHistory[];
+  blockTimestamp: string;
 };
 
 export type DelegationHistory = {
