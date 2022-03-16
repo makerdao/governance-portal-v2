@@ -12,3 +12,16 @@ export const allCurrentVotes = gql`
     }
   }
 `;
+
+export const lastPollVote = gql`
+  query allCurrentVotes($argAddress: String!) {
+    allCurrentVotes(argAddress: $argAddress, first: 1) {
+      nodes {
+        pollId
+        optionId
+        optionIdRaw
+        blockTimestamp
+      }
+    }
+  }
+`;
