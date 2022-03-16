@@ -32,69 +32,72 @@ const Header = (): JSX.Element => {
         width: '100%'
       }}
     >
-      <Link href={{ pathname: '/' }}>
-        <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
-          <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
-        </IconButton>
-      </Link>
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/polling' }} passHref>
-          <NavLink
-            title="Polling"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 'auto'],
-              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
-            }}
-          >
-            Polling
-          </NavLink>
+        <Link href={{ pathname: '/' }}>
+          <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
+            <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
+          </IconButton>
         </Link>
+        <Flex sx={{ ml: [0, 4, 4, 5] }}>
+          <Link href={{ pathname: '/polling' }} passHref>
+            <NavLink
+              title="Polling"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 'auto'],
+                color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
+              }}
+            >
+              Polling
+            </NavLink>
+          </Link>
 
-        <Link href={{ pathname: '/executive' }} passHref>
-          <NavLink
-            p={0}
-            title="Executive"
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 4, 5],
-              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
-            }}
-          >
-            Executive
-          </NavLink>
-        </Link>
+          <Link href={{ pathname: '/executive' }} passHref>
+            <NavLink
+              p={0}
+              title="Executive"
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 4, 5],
+                color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
+              }}
+            >
+              Executive
+            </NavLink>
+          </Link>
 
-        <Link href={{ pathname: '/delegates' }} passHref>
-          <NavLink
-            title="Delegates"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 4, 5],
-              color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
-            }}
-          >
-            Delegates
-          </NavLink>
-        </Link>
+          <Link href={{ pathname: '/delegates' }} passHref>
+            <NavLink
+              title="Delegates"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 4, 5],
+                color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
+              }}
+            >
+              Delegates
+            </NavLink>
+          </Link>
 
-        <Link href={{ pathname: '/esmodule' }} passHref>
-          <NavLink
-            title="ES Module"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 4, 5],
-              mr: [0, 'auto', 4, 5],
-              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
-            }}
-          >
-            ES Module
-          </NavLink>
-        </Link>
-
+          <Link href={{ pathname: '/esmodule' }} passHref>
+            <NavLink
+              title="ES Module"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 4, 5],
+                mr: [0, 'auto', 4, 5],
+                color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
+              }}
+            >
+              ES Module
+            </NavLink>
+          </Link>
+        </Flex>
+      </Flex>
+      <Flex sx={{ alignItems: 'center' }}>
         {bpi > 1 && (
           <Flex sx={{ pr: 2 }}>
             <ColorModeToggle />
