@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Button, Text, Flex, Badge, Box, Link as ThemeUILink } from 'theme-ui';
+import { Button, Text, Flex, Badge, Box, Link as ThemeUILink, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { CMSProposal } from 'modules/executive/types';
@@ -50,7 +50,7 @@ export default function ExecutiveCard({ proposal, isHat, ...props }: Props): JSX
               overflow: 'hidden',
               WebkitBoxOrient: 'vertical',
               WebkitLineClamp: 2
-            } as any
+            } as ThemeUIStyleObject
           }
         >
           {proposal.proposalBlurb}

@@ -1,7 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, useColorMode, Box, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Heading, Container, Grid, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -12,11 +11,9 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SystemStats from 'modules/home/components/SystemStats';
-import ExecutiveCard from 'modules/home/components/ExecutiveCard';
-import IntroCard from 'modules/home/components/IntroCard';
-import PollingIndicator from 'modules/home/components/PollingIndicator';
-import ExecutiveIndicator from 'modules/home/components/ExecutiveIndicator';
+import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import BlogPostCard from 'modules/home/components/BlogPostCard';
+import { PlayButton } from 'modules/home/components/PlayButton';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
@@ -29,14 +26,17 @@ import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import Skeleton from 'react-loading-skeleton';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
   blogPosts: BlogPost[];
+  network: SupportedNetworks;
 };
 
-const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
+const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
   const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
@@ -70,99 +70,57 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
         <Stack gap={[5, 6]}>
           <section>
-            <Stack gap={[4, 6]}>
-              <Container pt={4} sx={{ maxWidth: 'title', textAlign: 'center' }}>
-                <Stack gap={3}>
-                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                    Maker Governance
-                  </Heading>
-                  <Text
-                    as="p"
-                    mb="3"
-                    sx={{
-                      color: 'text',
-                      opacity: '0.7',
-                      fontWeight: 'semiBold',
-                      fontSize: [3, 5],
-                      px: [3, 'inherit']
-                    }}
-                  >
-                    Join a decentralized community protecting the integrity of the Maker Protocol through
-                    research, discussion, and on-chain voting.
-                  </Text>
-                  <ErrorBoundary componentName="Last Polls and Executive">
-                    <Flex
-                      sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
-                    >
-                      <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
-                      <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
-                    </Flex>
+            <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
+              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                  Maker Governance
+                </Heading>
+                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                  Voting Portal
+                </Heading>
+                <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
+                  Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
+                </Text>
+                <Box>
+                  <PlayButton
+                    label="How to vote"
+                    onClick={() => setVideoOpen(true)}
+                    styles={{ mr: [1, 3] }}
+                  />
+                  <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
+                </Box>
+              </Flex>
+              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Heading>Latest Executive</Heading>
+                  <Text>View More</Text>
+                </Flex>
+                <Flex sx={{ mt: 3 }}>
+                  <ErrorBoundary componentName="Latest Executive">
+                    {proposals ? (
+                      proposals.length > 0 ? (
+                        <ExecutiveOverviewCard
+                          network={network}
+                          votedProposals={[]}
+                          isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
+                          proposal={proposals[0]}
+                        />
+                      ) : (
+                        <Text>No proposals found</Text>
+                      )
+                    ) : (
+                      <Skeleton />
+                    )}
                   </ErrorBoundary>
-                  <Box>
-                    <Button
-                      variant="outline"
-                      sx={{ borderRadius: 'round' }}
-                      onClick={() => setVideoOpen(true)}
-                    >
-                      <Flex sx={{ alignItems: 'center' }}>
-                        <Icon sx={{ mr: 2 }} name="play" size={3} fill="#7e7e88" />
-                        <Text>How to vote</Text>
-                      </Flex>
-                    </Button>
-                  </Box>
-                </Stack>
-              </Container>
-            </Stack>
+                </Flex>
+              </Flex>
+            </Flex>
           </section>
 
           <section>
             <ErrorBoundary componentName="System Stats">
               <SystemStats />
             </ErrorBoundary>
-          </section>
-
-          <section>
-            <Grid gap={[4, 5]} sx={{ px: [2, 0] }} columns={[1, 3]}>
-              <IntroCard
-                title="Intro to Governance"
-                linkDest="https://makerdao.world/learn/governance"
-                icon="govIntro"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#FFC28608',
-                    borderColor: '#FFC286CC'
-                  }
-                }}
-              >
-                A guide outlining the basics of getting started with Maker Governance.
-              </IntroCard>
-              <IntroCard
-                title="Maker Forum"
-                linkDest="https://forum.makerdao.com"
-                icon="govForum"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#AFBBFF08',
-                    borderColor: '#AFBBFFCC'
-                  }
-                }}
-              >
-                Get the latest updates and take part in current governance discussions.
-              </IntroCard>
-              <IntroCard
-                title="Community Tools"
-                linkDest="https://makerdao.world/learn/governance/participate"
-                icon="govCalls"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#84CBC408',
-                    borderColor: '#84CBC4CC'
-                  }
-                }}
-              >
-                Use tools from the community to stay informed on the state of the system.
-              </IntroCard>
-            </Grid>
           </section>
 
           <section>
@@ -177,19 +135,7 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                 </Stack>
               </Container>
 
-              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
-                <ErrorBoundary componentName="Executive Votes">
-                  <Stack>
-                    {proposals.map(proposal => (
-                      <ExecutiveCard
-                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                        key={proposal.key}
-                        proposal={proposal}
-                      />
-                    ))}
-                  </Stack>
-                </ErrorBoundary>
-              </Container>
+              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}></Container>
             </Stack>
           </section>
 
@@ -314,6 +260,7 @@ export default function Index({
       proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
       polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
       blogPosts={blogPosts}
+      network={network}
     />
   );
 }

@@ -9,7 +9,6 @@ import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { Proposal } from 'modules/executive/types';
-import Stack from 'modules/app/components/layout/layouts/Stack';
 import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -34,8 +33,7 @@ export default function ExecutiveOverviewCard({
   network,
   account,
   votedProposals,
-  mkrOnHat,
-  ...props
+  mkrOnHat
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voting, setVoting] = useState(false);
@@ -51,7 +49,7 @@ export default function ExecutiveOverviewCard({
 
   if (!('about' in proposal)) {
     return (
-      <Card sx={{ p: [0, 0] }} {...props}>
+      <Card sx={{ p: [0, 0] }}>
         <Box sx={{ p: 3 }}>
           <Text>spell address {proposal.address}</Text>
         </Box>
@@ -66,11 +64,10 @@ export default function ExecutiveOverviewCard({
       sx={{
         p: [0, 0]
       }}
-      {...props}
     >
       <Box px={[3, 4]} py={[3, proposal.spellData?.hasBeenScheduled ? 3 : 4]}>
         <Flex sx={{ justifyContent: 'space-between' }}>
-          <Stack gap={2}>
+          <Box>
             <Link
               href={{ pathname: '/executive/[proposal-id]' }}
               as={{ pathname: `/executive/${proposal.key}` }}
@@ -83,14 +80,16 @@ export default function ExecutiveOverviewCard({
                   </Text>
                 </Flex>
                 <Box>
-                  <Text variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer' }}>
+                  <Text as="h3" variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer', mt: 2 }}>
                     {proposal.title}
                   </Text>
                 </Box>
                 <Text
+                  as="p"
                   sx={{
                     fontSize: [2, 3],
-                    color: 'onSecondary'
+                    color: 'onSecondary',
+                    mt: 2
                   }}
                 >
                   {proposal.proposalBlurb}
@@ -186,53 +185,53 @@ export default function ExecutiveOverviewCard({
                 </Link>
               </Box>
             )}
-          </Stack>
-          {bpi > 0 && (
-            <Flex
-              sx={{
-                mx: 4,
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 7,
-                flexDirection: 'column'
-              }}
-            >
-              {canVote && (
-                <Button
-                  variant="primaryOutline"
-                  sx={{ width: '100%', py: 2 }}
-                  disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
-                  onClick={ev => {
-                    setVoting(true);
-                    ev.stopPropagation();
-                  }}
-                  data-testid="vote-button-exec-overview-card"
-                >
-                  Vote
-                </Button>
-              )}
-              <Link
-                href={{ pathname: '/executive/[proposal-id]' }}
-                as={{ pathname: `/executive/${proposal.key}` }}
-                passHref
+            {bpi > 0 && (
+              <Flex
+                sx={{
+                  mx: 4,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 7,
+                  flexDirection: 'column'
+                }}
               >
-                <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
+                {canVote && (
                   <Button
-                    variant="outline"
-                    sx={{
-                      width: '100%',
-                      mt: canVote ? 3 : 0,
-                      borderColor: 'text',
-                      color: 'text',
-                      ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                    variant="primaryOutline"
+                    sx={{ width: '100%', py: 2 }}
+                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+                    onClick={ev => {
+                      setVoting(true);
+                      ev.stopPropagation();
                     }}
+                    data-testid="vote-button-exec-overview-card"
                   >
-                    View Details
+                    Vote
                   </Button>
-                </ThemeUILink>
-              </Link>
-            </Flex>
-          )}
+                )}
+                <Link
+                  href={{ pathname: '/executive/[proposal-id]' }}
+                  as={{ pathname: `/executive/${proposal.key}` }}
+                  passHref
+                >
+                  <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
+                    <Button
+                      variant="outline"
+                      sx={{
+                        width: '100%',
+                        mt: canVote ? 3 : 0,
+                        borderColor: 'text',
+                        color: 'text',
+                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </ThemeUILink>
+                </Link>
+              </Flex>
+            )}
+          </Box>
         </Flex>
 
         {comments && comments.length > 0 && (
@@ -250,11 +249,18 @@ export default function ExecutiveOverviewCard({
       {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
       <Divider my={0} />
-      <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
+      <Flex sx={{ py: 2, justifyContent: 'center' }}>
         <Text
           data-testid="proposal-status"
           as="p"
-          sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}
+          variant="caps"
+          sx={{
+            textAlign: 'center',
+            px: [3, 4],
+            mb: 1,
+            wordBreak: 'break-word',
+            color: 'textSecondary'
+          }}
         >
           {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
         </Text>
