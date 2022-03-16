@@ -100,6 +100,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
 
   const contracts = getContracts(networkNameToChainId(currentNetwork));
   const executives = await getGithubExecutives(currentNetwork);
+
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
@@ -109,6 +110,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
       const execSupported: CMSProposal | undefined = executives?.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
+      // we don't need the poll vote history on the delegate, since we are only displaying the last voted date. 
       const pollVoteHistory = await fetchAddressPollVoteHistory(delegate.voteDelegateAddress, currentNetwork);
       return {
         ...delegate,
