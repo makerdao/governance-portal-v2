@@ -10,14 +10,13 @@ import {
   DelegateContractInformation,
   DelegateRepoInformation
 } from 'modules/delegates/types';
-import { getExecutiveProposals, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
+import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { CMSProposal } from 'modules/executive/types';
-import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
-import { fetchLastPollVote } from 'modules/polling/api/fetchAllCurrentVotes';
+import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,

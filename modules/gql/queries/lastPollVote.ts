@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
-export const allCurrentVotes = gql`
-  query allCurrentVotes($argAddress: String!) {
-    allCurrentVotes(argAddress: $argAddress) {
+export const lastPollVote = gql`
+  query lastPollVote($argAddress: String!) {
+    allCurrentVotes(argAddress: $argAddress, first: 1) {
       nodes {
         pollId
         optionId
