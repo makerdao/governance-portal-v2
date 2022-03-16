@@ -136,9 +136,9 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   });
 
   const isLoadingInitialData = !paginatedProposals && !error;
+
   const isLoadingMore =
-    isLoadingInitialData ||
-    (size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating);
+    size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating;
 
   const loadMore = () => {
     setSize(size + 1);

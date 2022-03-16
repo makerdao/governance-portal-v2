@@ -10,13 +10,13 @@ import {
   DelegateContractInformation,
   DelegateRepoInformation
 } from 'modules/delegates/types';
-import { getExecutiveProposals, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
+import { getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { CMSProposal } from 'modules/executive/types';
-import { fetchAddressPollVoteHistory } from 'modules/polling/api/fetchAddressPollVoteHistory';
+import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -37,15 +37,14 @@ function mergeDelegateInfo(
     picture: githubDelegate?.picture || '',
     id: onChainDelegate.voteDelegateAddress,
     externalUrl: githubDelegate?.externalUrl,
-    lastVote: null,
+    lastVoteDate: null,
     communication: githubDelegate?.communication,
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
-    execSupported: onChainDelegate.execSupported,
-    pollVoteHistory: onChainDelegate.pollVoteHistory
+    execSupported: onChainDelegate.execSupported
   };
 }
 
@@ -100,6 +99,7 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
 
   const contracts = getContracts(networkNameToChainId(currentNetwork));
   const executives = await getGithubExecutives(currentNetwork);
+
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
@@ -109,12 +109,13 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
       const execSupported: CMSProposal | undefined = executives?.find(proposal =>
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
-      const pollVoteHistory = await fetchAddressPollVoteHistory(delegate.voteDelegateAddress, currentNetwork);
+
+      const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
       return {
         ...delegate,
         proposalsSupported,
         execSupported,
-        pollVoteHistory
+        lastVoteDate: lastVote ? lastVote.blockTimestamp : null
       };
     })
   );

@@ -73,11 +73,15 @@ export function PollCategoryTag({
     Offboard: {
       color: 'tagColorSixteen',
       backgroundColor: 'tagColorSixteenBg'
+    },
+    Uncategorized: {
+      color: 'tagColorSeventeen',
+      backgroundColor: 'tagColorSeventeenBg'
     }
   };
 
-  const color = categories[category] ? categories[category].color : '#AD927D';
-  const backgroundColor = categories[category] ? categories[category].backgroundColor : '#FFF9F4';
+  const color = categories[category] ? categories[category].color : 'tagColorSeventeen';
+  const backgroundColor = categories[category] ? categories[category].backgroundColor : 'tagColorSeventeenBg';
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
