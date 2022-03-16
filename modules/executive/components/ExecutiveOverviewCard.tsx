@@ -149,26 +149,6 @@ export default function ExecutiveOverviewCard({
                     Vote
                   </Button>
                 )}
-                <Link
-                  href={{ pathname: '/executive/[proposal-id]' }}
-                  as={{ pathname: `/executive/${proposal.key}` }}
-                  passHref
-                >
-                  <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
-                    <Button
-                      variant="outline"
-                      sx={{
-                        width: '100%',
-                        my: canVote ? 3 : 0,
-                        borderColor: 'text',
-                        color: 'text',
-                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </ThemeUILink>
-                </Link>
               </Box>
             )}
             {bpi > 0 && (

@@ -1,5 +1,4 @@
-import { Flex, Grid, Box, Text, Link as ExternalLink } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Flex, Grid, Box, Text, Link as ExternalLink, Heading } from 'theme-ui';
 import { ViewMore } from 'modules/home/components/ViewMore';
 
 type Props = {
@@ -15,8 +14,8 @@ export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3, mx: 'auto' }}>
-          <Text sx={{ fontSize: [4, 5], fontWeight: '500' }}>{title}</Text>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Heading>{title}</Heading>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <ViewMore />
           </ExternalLink>
@@ -39,10 +38,10 @@ export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
       </Box>
 
       {/* Mobile */}
-      <Box sx={{ display: ['block', 'none'], backgroundColor: 'background', p: 2 }}>
-        <Grid sx={{ p: 3 }}>
+      <Box sx={{ display: ['block', 'none'], backgroundColor: 'background' }}>
+        <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text sx={{ fontSize: 3, fontWeight: '500', color: 'text' }}>System Stats</Text>
+            <Heading>System Stats</Heading>
             <ExternalLink href="https://daistats.com/" target="_blank">
               <ViewMore />
             </ExternalLink>

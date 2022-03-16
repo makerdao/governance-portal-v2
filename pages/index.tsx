@@ -91,7 +91,7 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
                   <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
                 </Box>
               </Flex>
-              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+              <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
                   <Link href={{ pathname: '/executive' }}>
@@ -127,34 +127,23 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
           </section>
 
           <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Polls take place to establish a rough consensus of community sentiment before Executive
-                    Votes are conducted.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ maxWidth: 'column' }}>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Heading>Active Polls</Heading>
+                <Link href={{ pathname: '/polling' }}>
+                  <ViewMore label="View All" />
+                </Link>
+              </Flex>
+              <Flex>
                 <ErrorBoundary componentName="Recent Polls">
-                  <Stack>
+                  <Grid gap={4} columns={[1, 1, 2]}>
                     {recentPolls.map(poll => (
                       <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
                     ))}
-                  </Stack>
+                  </Grid>
                 </ErrorBoundary>
-                {activePolls.length > 4 && (
-                  <Link href={{ pathname: '/polling' }}>
-                    <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
-                      View all polls
-                    </Text>
-                  </Link>
-                )}
-              </Container>
-            </Stack>
+              </Flex>
+            </Flex>
           </section>
 
           <section sx={{ py: 5 }}>
