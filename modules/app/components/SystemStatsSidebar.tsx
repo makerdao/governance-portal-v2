@@ -64,7 +64,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR in Chief</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {chiefBalance ? (
-              `${formatValue(chiefBalance, 'wad', 0)} MKR`
+              `${formatValue(chiefBalance)} MKR`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -104,7 +104,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {mkrOnHat ? (
-              `${formatValue(mkrOnHat, 'wad', 0)} MKR`
+              `${formatValue(mkrOnHat)} MKR`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -142,7 +142,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Total Dai</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {totalDai ? (
-              `${formatValue(totalDai, 'rad', 0)} DAI`
+              `${formatValue(totalDai, 'rad')} DAI`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -161,7 +161,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Dai Debt Ceiling</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {debtCeiling ? (
-              `${formatValue(debtCeiling, 'rad', 0)} DAI`
+              `${formatValue(debtCeiling, 'rad')} DAI`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />
@@ -180,7 +180,7 @@ export default function SystemStatsSidebar({
           <Text sx={{ fontSize: 3, color: 'textSecondary' }}>System Surplus</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {systemSurplus ? (
-              `${formatValue(systemSurplus, 'rad', 0)} DAI`
+              `${formatValue(systemSurplus, 'rad')} DAI`
             ) : (
               <Box sx={{ width: 6 }}>
                 <Skeleton />

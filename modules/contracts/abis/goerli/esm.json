@@ -9,6 +9,39 @@
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": true, "internalType": "address", "name": "usr", "type": "address" }],
+    "name": "Deny",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "base", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "pause", "type": "address" }
+    ],
+    "name": "DenyProxy",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "bytes32", "name": "what", "type": "bytes32" },
+      { "indexed": false, "internalType": "uint256", "name": "data", "type": "uint256" }
+    ],
+    "name": "File",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "bytes32", "name": "what", "type": "bytes32" },
+      { "indexed": false, "internalType": "address", "name": "data", "type": "address" }
+    ],
+    "name": "File",
+    "type": "event"
+  },
   { "anonymous": false, "inputs": [], "name": "Fire", "type": "event" },
   {
     "anonymous": false,
@@ -20,6 +53,12 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [{ "indexed": true, "internalType": "address", "name": "usr", "type": "address" }],
+    "name": "Rely",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "Sum",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
@@ -27,9 +66,17 @@
     "type": "function"
   },
   { "inputs": [], "name": "burn", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  { "inputs": [], "name": "cage", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }],
+    "name": "deny",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
   {
     "inputs": [{ "internalType": "address", "name": "target", "type": "address" }],
-    "name": "deny",
+    "name": "denyProxy",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -39,6 +86,26 @@
     "name": "end",
     "outputs": [{ "internalType": "contract EndLike", "name": "", "type": "address" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "what", "type": "bytes32" },
+      { "internalType": "uint256", "name": "data", "type": "uint256" }
+    ],
+    "name": "file",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "what", "type": "bytes32" },
+      { "internalType": "address", "name": "data", "type": "address" }
+    ],
+    "name": "file",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   { "inputs": [], "name": "fire", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
@@ -58,6 +125,13 @@
   },
   {
     "inputs": [],
+    "name": "live",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "min",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -71,6 +145,13 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "address", "name": "usr", "type": "address" }],
+    "name": "rely",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "revokesGovernanceAccess",
     "outputs": [{ "internalType": "bool", "name": "ret", "type": "bool" }],
@@ -80,6 +161,13 @@
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "sum",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "wards",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"

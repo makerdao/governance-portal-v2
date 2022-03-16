@@ -1,5 +1,6 @@
-import remark from 'remark';
-import html from 'remark-html';
+import remarkGfm from 'remark-gfm';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
@@ -22,7 +23,7 @@ export function bigNumberKFormat(num: CurrencyObject): string {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
-  const result = await remark().use(html).process(markdown);
+  const result = await remark().use(remarkGfm).use(remarkHtml).process(markdown);
   return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 

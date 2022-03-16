@@ -95,12 +95,18 @@ const Header = (): JSX.Element => {
           </NavLink>
         </Link>
 
-        <Flex sx={{ pr: 2 }}>
-          <ColorModeToggle />
-        </Flex>
+        {bpi > 1 && (
+          <Flex sx={{ pr: 2 }}>
+            <ColorModeToggle />
+          </Flex>
+        )}
 
-        {bpi > 1 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
-        <NetworkSelect />
+        {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
+        {bpi > 1 && (
+          <Flex mr={3}>
+            <NetworkSelect />
+          </Flex>
+        )}
         {typeof window !== 'undefined' && (
           <ErrorBoundary componentName="Account Select">
             <AccountSelect />
@@ -130,7 +136,20 @@ const MobileMenu = ({ hide, router }) => {
 
   return (
     <Container variant="modal">
-      <Close ml="auto" sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      <Flex
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: 2
+        }}
+      >
+        <ColorModeToggle />
+        <Flex>
+          <NetworkSelect />
+        </Flex>
+        <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
+      </Flex>
+
       <Flex
         sx={{
           flexDirection: 'column',

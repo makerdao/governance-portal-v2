@@ -66,7 +66,7 @@ export default function AddressIconBox({
         }}
       >
         <Flex>
-          <Text>
+          <Flex>
             {delegateAddresses[address] ? (
               <Text>
                 {limitTextLength
@@ -74,43 +74,52 @@ export default function AddressIconBox({
                   : delegateAddresses[address].name}
               </Text>
             ) : (
-              <Address address={address} />
-            )}
-          </Text>
-          {showExternalLink && (
-            <ExternalLink
-              title="View on etherscan"
-              href={getEtherscanLink(network, address, 'address')}
-              target="_blank"
-            >
-              <Text as="p" sx={{ fontSize: [1, 3] }}>
-                <Icon ml={2} name="arrowTopRight" size={2} />
+              <Text>
+                <Address address={address} />
               </Text>
-            </ExternalLink>
-          )}
+            )}
+            {showExternalLink && (
+              <ExternalLink
+                title="View on etherscan"
+                href={getEtherscanLink(network, address, 'address')}
+                target="_blank"
+              >
+                <Text as="p" sx={{ fontSize: [1, 3] }}>
+                  <Icon ml={2} name="arrowTopRight" size={2} />
+                </Text>
+              </ExternalLink>
+            )}
+          </Flex>
           {isOwner && (
             <Flex
               sx={{
                 display: 'inline-flex',
-                backgroundColor: 'tagColorSevenBg',
-                borderRadius: 'roundish',
-                padding: '3px 6px',
                 alignItems: 'center',
                 color: 'tagColorSeven',
-                ml: 2
+                ml: [1, 2]
               }}
             >
-              <Text sx={{ fontSize: 1 }}>Owner</Text>
+              <Text
+                sx={{
+                  fontSize: 1,
+                  backgroundColor: 'tagColorSevenBg',
+                  borderRadius: 'roundish',
+                  px: 2,
+                  py: 1
+                }}
+              >
+                Owner
+              </Text>
             </Flex>
           )}
         </Flex>
         {voteProxyInfo && voteProxyInfo.voteProxyAddress && (
-          <Flex>
-            <Text sx={{ color: 'textSecondary', fontSize: [1, 2] }}>Proxy Contract</Text>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Text sx={{ color: 'textSecondary', fontSize: 1 }}>Proxy Contract</Text>
             <Tooltip label={tooltipLabel}>
-              <Box>
-                <Icon name="question" ml={2} mt={['2px', '4px']} />
-              </Box>
+              <Flex>
+                <Icon name="question" ml={2} />
+              </Flex>
             </Tooltip>
           </Flex>
         )}

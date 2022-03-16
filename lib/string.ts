@@ -15,7 +15,7 @@ const builtInUnits = ['wei', 'kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether']
 export function formatValue(
   value: BigNumber,
   type: string | number = 'wad',
-  dp = 6,
+  dp = 2,
   withCommas = true
 ): string {
   if (typeof type === 'string') {
@@ -31,6 +31,7 @@ export function formatValue(
     }
   }
   const formatted = formatUnits(value, type);
+  if (+formatted > 999) dp = 0;
   const fixed = dp || dp === 0 ? (+formatted).toFixed(dp) : formatted;
   const finished = withCommas ? commify(fixed) : fixed;
   return finished;

@@ -13,6 +13,8 @@ import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import AddressIconBox from './AddressIconBox';
+import { parseUnits } from 'ethers/lib/utils';
+import { formatValue } from 'lib/string';
 
 type CollapsableRowProps = {
   delegate: DelegationHistory;
@@ -58,7 +60,7 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-          {`${new BigNumber(lockAmount).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+          {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
           <Flex sx={{ flexDirection: 'column' }}>
@@ -78,9 +80,9 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     <Icon name="increase" size={2} color="bull" />
                   )}
                   <Text key={blockTimestamp} variant="smallCaps" sx={{ pl: 2 }}>
-                    {`${new BigNumber(
-                      lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount
-                    ).toFormat(2)}${bpi > 0 ? ' MKR' : ''}`}
+                    {`${formatValue(
+                      parseUnits(lockAmount.indexOf('-') === 0 ? lockAmount.substring(1) : lockAmount)
+                    )}${bpi > 0 ? ' MKR' : ''}`}
                   </Text>
                 </Flex>
               );

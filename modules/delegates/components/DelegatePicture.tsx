@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from '../types';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { formatAddress } from 'lib/utils';
+import { Address } from 'modules/address/components/Address';
 
 export function DelegatePicture({
   delegate,
@@ -79,7 +79,7 @@ export function DelegatePicture({
             {delegate.status === DelegateStatusEnum.recognized ? delegate.name : 'Shadow Delegate'}
           </Text>
           <Text as="p" sx={{ fontSize: 2, mt: 1 }}>
-            {formatAddress(delegate.voteDelegateAddress)}
+            <Address address={delegate.voteDelegateAddress} />
           </Text>
           <Text as="p" sx={{ fontSize: 2 }}>
             {delegate.status === DelegateStatusEnum.recognized ? 'Recognized Delegate' : 'Shadow Delegate'}
@@ -135,68 +135,66 @@ export function DelegatePicture({
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
       <Tooltip label={delegateMetrics}>
-        {delegate.picture ? (
-          <Image
-            src={delegate.picture}
-            key={delegate.id}
-            sx={{
-              objectFit: 'cover',
-              width: '100%',
-              borderRadius: '100%',
-              maxHeight: width
-            }}
-          />
-        ) : (
-          <Box>
-            <Davatar
-              size={width}
-              address={delegate.address}
-              generatedAvatarType="jazzicon"
-              provider={library}
+        <Box>
+          {delegate.picture ? (
+            <Image
+              src={delegate.picture}
+              key={delegate.id}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                borderRadius: '100%',
+                maxHeight: width
+              }}
             />
-          </Box>
-        )}
-      </Tooltip>
-      {delegate.status === DelegateStatusEnum.recognized && (
-        <Icon
-          name={'verified'}
-          sx={{
-            position: 'absolute',
-            bottom: width / -12,
-            right: width / -7,
-            size: width / 2.5,
-            color: 'primary'
-          }}
-        />
-      )}
-      {delegate.status === DelegateStatusEnum.shadow && (
-        <Icon
-          name={'shadowQuestion'}
-          color="voterYellow"
-          sx={{
-            position: 'absolute',
-            bottom: width / -12,
-            right: width / -7,
-            size: width / 2.5
-          }}
-        />
-      )}
-      {delegate.disclosures && (
-        <Tooltip label={delegate.disclosures}>
-          <Box>
+          ) : (
+            <Box>
+              <Davatar
+                size={width}
+                address={delegate.address}
+                generatedAvatarType="jazzicon"
+                provider={library}
+              />
+            </Box>
+          )}
+          {delegate.status === DelegateStatusEnum.recognized && (
             <Icon
-              name={'info'}
+              name={'verified'}
+              sx={{
+                position: 'absolute',
+                bottom: width / -12,
+                right: width / -7,
+                size: width / 2.5,
+                color: 'primary'
+              }}
+            />
+          )}
+          {delegate.status === DelegateStatusEnum.recognized && (
+            <Icon
+              name={'verified'}
+              sx={{
+                position: 'absolute',
+                bottom: width / -12,
+                right: width / -7,
+                size: width / 2.5,
+                color: 'primary'
+              }}
+            />
+          )}
+          {delegate.status === DelegateStatusEnum.shadow && (
+            <Icon
+              name={'shadowQuestion'}
               color="voterYellow"
               sx={{
                 position: 'absolute',
-                bottom: width * 0.65,
+                bottom: width / -12,
                 right: width / -7,
                 size: width / 2.5
               }}
             />
-          </Box>
-        </Tooltip>
-      )}
+          )}
+        </Box>
+      </Tooltip>
     </Box>
   );
 }

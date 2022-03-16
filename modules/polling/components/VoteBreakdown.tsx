@@ -2,12 +2,14 @@ import { Box, Text, Progress, Flex } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import Delay from 'modules/app/components/Delay';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { PollTally, Poll, RankedChoiceResult, PluralityResult } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+
 export default function VoteBreakdown({
   poll,
   shownOptions,
@@ -20,9 +22,15 @@ export default function VoteBreakdown({
   if (poll.voteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN)) {
     return (
       <Box key={2} sx={{ p: [3, 4] }} data-testid="vote-breakdown">
-        <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
-          Vote Breakdown
-        </Text>
+        <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
+          <Text variant="microHeading" sx={{ display: 'block', mb: 3 }}>
+            Vote Breakdown
+          </Text>
+          <Flex sx={{ alignItems: 'center', mb: 3 }}>
+            <Text variant="caps">Ranked-choice poll</Text>
+            <Icon name="stackedVotes" size={3} ml={2} />
+          </Flex>
+        </Flex>
         {Object.keys(poll.options)
           .slice(0, shownOptions)
           .map((_, i) => {
@@ -31,9 +39,9 @@ export default function VoteBreakdown({
             const transfer = new BigNumberJS(tallyResult.transfer || 0);
             return (
               <div key={i}>
-                <Flex sx={{ justifyContent: 'space-between' }}>
+                <Flex sx={{ flexDirection: ['column', 'row'], justifyContent: 'space-between' }}>
                   {tallyResult ? (
-                    <Text as="p" sx={{ color: 'textSecondary', width: '20%', mr: 2 }}>
+                    <Text as="p" sx={{ color: 'textSecondary', mr: 2 }}>
                       {tallyResult.optionName}
                     </Text>
                   ) : (
@@ -116,6 +124,8 @@ export default function VoteBreakdown({
       </Text>
       {Object.keys(poll.options).map((_, i) => {
         const tallyResult = tally?.results[i] as PluralityResult;
+        const mkrSupport = tally && tallyResult && tallyResult.mkrSupport ? tallyResult.mkrSupport : 0;
+
         return (
           <div key={i}>
             <Flex sx={{ justifyContent: 'space-between' }}>
@@ -129,8 +139,15 @@ export default function VoteBreakdown({
                 </Delay>
               )}
               {tally && tallyResult ? (
-                <Text as="p" sx={{ color: 'textSecondary', width: tally ? 'unset' : '30%' }}>
-                  {`${formatValue(parseUnits(tallyResult.mkrSupport.toString()))} MKR Voting (${formatValue(
+                <Text
+                  as="p"
+                  sx={{
+                    color: 'textSecondary',
+                    width: tally ? 'unset' : '30%',
+                    textAlign: 'right'
+                  }}
+                >
+                  {`${formatValue(parseUnits(mkrSupport.toString()))} MKR Voting (${formatValue(
                     parseUnits(tallyResult.firstPct.toString())
                   )}%)`}
                 </Text>
@@ -142,7 +159,7 @@ export default function VoteBreakdown({
             </Flex>
 
             {tally && tallyResult ? (
-              <Tooltip label={`First choice ${formatValue(parseUnits(tallyResult.mkrSupport.toString()))}`}>
+              <Tooltip label={`First choice ${formatValue(parseUnits(mkrSupport.toString()))}`}>
                 <Box my={2}>
                   <Progress
                     sx={{
@@ -152,7 +169,7 @@ export default function VoteBreakdown({
                       color: getVoteColor(parseInt(tallyResult.optionId), poll.voteType)
                     }}
                     max={tally.totalMkrParticipation}
-                    value={tallyResult.mkrSupport}
+                    value={mkrSupport}
                   />
                 </Box>
               </Tooltip>

@@ -47,11 +47,11 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
   const sortedEvents = events.sort((prev, next) => (prev.blockTimestamp > next.blockTimestamp ? -1 : 1));
   return (
     <tr>
-      <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
+      <Flex as="td" sx={{ flexDirection: 'column', mb: [0, 3], pt: ['10px', 0], mr: 2 }}>
         <Heading variant="microHeading">
           <Link href={{ pathname: `/address/${address}` }} passHref>
-            <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <AddressIconBox address={address} width={41} />
+            <ThemeUILink title="View address detail" sx={{ fontSize: [1, 3] }}>
+              <AddressIconBox address={address} width={bpi < 1 ? 22 : 41} />
             </ThemeUILink>
           </Link>
         </Heading>
@@ -75,7 +75,7 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
         )}
       </Flex>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
-        <Text sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
+        <Text sx={{ fontSize: [1, 3] }}>
           {`${formatValue(parseUnits(lockAmount))}${bpi > 0 ? ' MKR' : ''}`}
         </Text>
         {expanded && (
@@ -108,7 +108,10 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
       </Box>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         {totalDelegated ? (
-          <Text>{`${formatTotalDelegated(parseUnits(lockAmount), totalDelegated)}%`}</Text>
+          <Text sx={{ fontSize: [1, 3] }}>{`${formatTotalDelegated(
+            parseUnits(lockAmount),
+            totalDelegated
+          )}%`}</Text>
         ) : (
           <Box sx={{ width: '100%' }}>
             <Skeleton />
@@ -199,11 +202,11 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
               Address
             </Text>
             <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
-              MKR Delegated
+              {bpi < 1 ? 'MKR' : 'MKR Delegated'}
             </Text>
             <Tooltip label={'This is the percentage of the total MKR delegated to this delegate.'}>
               <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
-                Voting Weight
+                {bpi < 1 ? 'Weight' : 'Voting Weight'}
               </Text>
             </Tooltip>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">

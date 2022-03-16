@@ -88,7 +88,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
     network
   );
 
-  console.log(voteProxyAddress, network);
   const pollVoteHistory = await fetchAddressPollVoteHistory(
     voteProxyAddress.hotAddress ? voteProxyAddress.hotAddress : (address as string),
     network

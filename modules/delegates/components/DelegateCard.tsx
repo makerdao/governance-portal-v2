@@ -188,7 +188,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ fontSize: [3, 5] }}
                   data-testid="total-mkr-delegated"
                 >
-                  {totalStaked ? formatValue(totalStaked) : '0.000'}
+                  {totalStaked ? formatValue(totalStaked) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   Total MKR delegated
@@ -201,7 +201,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
                   sx={{ fontSize: [3, 5] }}
                   data-testid="mkr-delegated-by-you"
                 >
-                  {mkrDelegated ? formatValue(mkrDelegated) : '0.000'}
+                  {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
                 </Text>
                 <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
                   MKR delegated by you

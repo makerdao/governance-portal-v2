@@ -86,8 +86,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 )}
                 {!!account && votedPolls.length === 0 && (
                   <Text as="p" sx={{ mt: 3 }}>
-                    There are no polls added to your ballot. Go back to the polls page to vote on new
-                    initiatives.
+                    Your ballot is empty. Go back to the polling page to add votes to your ballot.
                   </Text>
                 )}
                 {!!account && votedPolls.length === 0 && previousVotedPolls.length > 0 && (
@@ -189,7 +188,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const pollsData = await getPolls();
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60 * 15, // allow revalidation every 15 minutes
     props: {
       polls: pollsData.polls
     }

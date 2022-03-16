@@ -19,4 +19,5 @@ export type ExecutiveCommentsRequestBody = {
   comment: string;
   signedMessage: string;
   txHash: string;
+  addressLockedMKR: string;
 };

@@ -126,7 +126,8 @@ export default function DefaultVoteModalView({
             voterAddress: account || '',
             comment: comment,
             signedMessage: signedMessage,
-            txHash
+            txHash,
+            addressLockedMKR: addressLockedMKR || ''
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',

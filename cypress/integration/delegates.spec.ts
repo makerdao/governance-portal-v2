@@ -26,7 +26,7 @@ describe('Delegates Page', () => {
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Shoudl find various delegates
-      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 15);
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 18);
     });
   });
 
@@ -34,10 +34,10 @@ describe('Delegates Page', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
-      cy.get('[data-testid="total-delegates-system-info"]').contains(/13/);
-      cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('0');
+      cy.get('[data-testid="total-delegates-system-info"]').contains(/15/);
+      cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('2');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/13/);
-      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279.22');
+      cy.get('[data-testid="total-mkr-system-info"]').contains('1,279');
     });
   });
 
@@ -49,14 +49,14 @@ describe('Delegates Page', () => {
 
       cy.get('[data-testid="delegate-type-filter-show-recognized"]').click();
 
-      // See now 0 delegates
-      cy.get('[data-testid="delegate-card"]').should('have.length', 0);
+      // See now 2 delegates
+      cy.get('[data-testid="delegate-card"]').should('have.length', 2);
 
       // Reset filters
       cy.get('[data-testid="delegate-reset-filters"]').click();
 
       // Now see al the delegates again
-      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 15);
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 16);
     });
   });
 

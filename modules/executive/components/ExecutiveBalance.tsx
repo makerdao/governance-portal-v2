@@ -19,7 +19,7 @@ export const ExecutiveBalance = ({ lockedMkr, voteDelegate, voteProxy }: Props) 
       </Text>
       {lockedMkr ? (
         <Text sx={{ fontWeight: 'bold' }} data-testid="locked-mkr">
-          {formatValue(lockedMkr)} MKR
+          {formatValue(lockedMkr, 'wad', 6)} MKR
         </Text>
       ) : (
         <Box sx={{ width: 6 }}>

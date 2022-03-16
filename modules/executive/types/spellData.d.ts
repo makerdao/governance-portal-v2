@@ -6,7 +6,7 @@ export type SpellData = {
   nextCastTime?: Date;
   datePassed?: Date;
   dateExecuted?: Date;
-  mkrSupport?: string;
+  mkrSupport: string;
   executiveHash?: string;
   officeHours?: boolean;
 };

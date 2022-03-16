@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getExecutiveProposal } from 'modules/executive/api/fetchExecutives';
+import { getExecutiveProposal, getGithubExecutives } from 'modules/executive/api/fetchExecutives';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -146,7 +146,8 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             borderTopRightRadius: 'roundish',
             px: 3,
             py: 4,
-            border: '1px solid #D4D9E1'
+            border: '1px solid #D4D9E1',
+            zIndex: 10
           }}
         >
           <Button
@@ -206,14 +207,17 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                 label="Spell Address"
               />
               <StatBox
-                value={
-                  spellData &&
-                  spellData.mkrSupport &&
-                  formatValue(BigNumber.from(spellData.mkrSupport), 'wad', 3)
-                }
+                value={spellData && spellData.mkrSupport && formatValue(BigNumber.from(spellData.mkrSupport))}
                 label="MKR Support"
               />
-              <StatBox value={supporters && supporters.length} label="Supporters" />
+              <StatBox
+                value={
+                  allSupporters && (!supporters || supporters.length === 0)
+                    ? '0'
+                    : supporters && supporters.length
+                }
+                label="Supporters"
+              />
             </Flex>
             {'about' in proposal ? (
               <Tabs
@@ -349,7 +353,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         }}
                         key={supporter.address}
                       >
-                        <Box sx={{ width: '45%' }}>
+                        <Box>
                           <Link
                             href={{
                               pathname: `/address/${supporter.address}`
@@ -374,9 +378,9 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                           </Link>
                         </Box>
 
-                        <Box sx={{ width: '55%', textAlign: 'right' }}>
+                        <Box sx={{ textAlign: 'right' }}>
                           <Text color="onSecondary">
-                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(3)} MKR)
+                            {supporter.percent}% ({new BigNumberJS(supporter.deposits).toFormat(2)} MKR)
                           </Text>
                         </Box>
                       </Flex>
@@ -437,16 +441,27 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
-  const proposalId = context.query['proposal-id'] as string;
-  const network = context.query['network'] as string;
-  const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  // fetch proposal contents at build-time if on the default network
+  const proposalId = (params || {})['proposal-id'] as string;
 
-  const proposal: Proposal | null = await getExecutiveProposal(proposalId, networkToFetch);
+  const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
   return {
+    revalidate: 60 * 60, // Revalidate each hour
     props: {
       proposal
     }
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const proposals = await getGithubExecutives(DEFAULT_NETWORK.network);
+
+  const paths = proposals.map(proposal => `/executive/${proposal.key}`);
+
+  return {
+    paths,
+    fallback: true
   };
 };
