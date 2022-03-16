@@ -1,38 +1,54 @@
+import { DelegationHistory } from '../types/delegate';
+import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightTimeRanges } from '../delegates.constants';
 import { MKRWeightHisory } from '../types/mkrWeight';
 import { format } from 'date-fns';
 import BigNumber from 'bignumber.js';
-import { MKRLockedDelegateAPIResponse } from '../types';
 import { differenceInCalendarYears, subDays } from 'date-fns';
-import { gqlRequest } from 'modules/gql/gqlRequest';
-import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { mkrLockedDelegateArray } from 'modules/gql/queries/mkrLockedDelegateArray';
 
-export async function fetchDelegatesMKRWeightHistory(
+// Time ranges
+const oneDay = 24 * 60 * 60 * 1000;
+const oneYear = 365 * oneDay;
+const oneMonth = 31 * oneDay;
+const oneWeek = 7 * oneDay;
+
+const dateFormat = 'MM-dd-yyyy';
+
+const timeRanges = [
+  {
+    label: 'Last year',
+    from: Date.now() - oneYear,
+    range: MKRWeightTimeRanges.month,
+    interval: 30
+  },
+  {
+    label: 'Last month',
+    from: Date.now() - oneMonth,
+    range: MKRWeightTimeRanges.day,
+    interval: 7
+  },
+  {
+    label: 'Last week',
+    from: Date.now() - oneWeek,
+    range: MKRWeightTimeRanges.day,
+    interval: 1
+  }
+];
+
+export const formatDelegationHistoryChart = (
+  lockEvents: MKRLockedDelegateAPIResponse[],
   address: string,
   from: number,
   range: MKRWeightTimeRanges,
   network: SupportedNetworks
-): Promise<MKRWeightHisory[]> {
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: mkrLockedDelegateArray,
-    variables: {
-      argAddress: [address.toLowerCase()],
-      argUnixTimeStart: 0,
-      argUnixTimeEnd: Math.floor(Date.now() / 1000)
-    }
-  });
-
-  const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArray.nodes;
-
+): DelegationHistory[] => {
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
-  const start = formatIsoDateConversion(addressData[0].blockTimestamp);
+  const start = formatIsoDateConversion(lockEvents[0].blockTimestamp);
 
-  const years = differenceInCalendarYears(Date.now(), new Date(addressData[0].blockTimestamp));
+  const years = differenceInCalendarYears(Date.now(), new Date(lockEvents[0].blockTimestamp));
 
   const end =
     years * 365 +
@@ -45,10 +61,10 @@ export async function fetchDelegatesMKRWeightHistory(
   const output: MKRWeightHisory[] = [];
 
   for (let i = start; i <= end; i++) {
-    const existingItem = addressData.filter(item => {
+    const existingItem = lockEvents.filter(item => {
       const years = differenceInCalendarYears(
         new Date(item.blockTimestamp),
-        new Date(addressData[0].blockTimestamp)
+        new Date(lockEvents[0].blockTimestamp)
       );
       const dayOfYear = formatIsoDateConversion(item.blockTimestamp);
       const dayNumber = dayOfYear + years * 365;
@@ -76,4 +92,4 @@ export async function fetchDelegatesMKRWeightHistory(
   return output.filter(i => {
     return i.date.getTime() > new Date(from).getTime();
   });
-}
+};

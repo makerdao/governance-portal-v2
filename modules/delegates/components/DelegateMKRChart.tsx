@@ -19,8 +19,8 @@ import { MKRWeightTimeRanges } from '../delegates.constants';
 import { fetchJson } from 'lib/fetchJson';
 import useSWR from 'swr';
 import { format } from 'date-fns';
-import { isoDateConversion } from 'lib/datetime';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { formatDelegationHistoryChart } from '../helpers/formatDelegationHistoryChart';
 
 export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.ReactElement {
   const { theme } = useThemeUI();
@@ -56,15 +56,18 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const { data } = useSWR(
-    typeof window !== 'undefined'
-      ? `/api/delegates/mkr-weight-history/${delegate.voteDelegateAddress}?network=${network}&from=${selectedTimeFrame.from}&range=${selectedTimeFrame.range}`
-      : null,
-    fetchJson,
-    {
-      revalidateOnFocus: false,
-      dedupingInterval: 60000
-    }
+  const dataKeyDelegators = `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`;
+  const { data: events } = useSWR(typeof window !== 'undefined' ? dataKeyDelegators : null, fetchJson, {
+    revalidateOnFocus: false,
+    dedupingInterval: 60000
+  });
+
+  const data = formatDelegationHistoryChart(
+    events,
+    delegate.voteDelegateAddress,
+    selectedTimeFrame.from,
+    selectedTimeFrame.range,
+    network
   );
 
   function renderTooltip(item) {
@@ -87,7 +90,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
       // Sometimes the tickItem is "auto", ignore this case
       return 'auto';
     }
-    return format(new Date(isoDateConversion(tickItem)), dateFormat);
+    return format(new Date(tickItem.toISOString()), dateFormat);
   };
 
   return (
