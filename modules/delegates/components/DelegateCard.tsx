@@ -38,8 +38,6 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
 
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
-  const lastVote = delegate.pollVoteHistory.sort((a, b) => (a.blockTimestamp > b.blockTimestamp ? -1 : 1))[0];
-
   return (
     <Card
       sx={{
@@ -50,10 +48,11 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
         <Box mb={2}>
-          {delegate.pollVoteHistory && (
-            <LastVoted expired={delegate.expired} date={lastVote ? lastVote.blockTimestamp : null} left />
-          )}
-          {!delegate.pollVoteHistory && <SkeletonThemed width={'200px'} height={'15px'} />}
+          <LastVoted
+            expired={delegate.expired}
+            date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
+            left
+          />
         </Box>
         <Flex
           sx={{

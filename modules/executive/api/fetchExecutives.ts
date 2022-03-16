@@ -50,8 +50,23 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     .filter(x => !!x)
     .filter(x => x?.address !== ZERO_ADDRESS) as CMSProposal[];
 
+  const sortedProposals = filteredProposals
+    .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
+    .sort(a => (a.active ? -1 : 1)) // Sort by active first
+    .slice(0, 100);
+
+  if (config.USE_FS_CACHE) {
+    fsCacheSet(cacheKey, JSON.stringify(sortedProposals), network);
+  }
+
+  return sortedProposals;
+}
+
+async function getGithubExecutivesWithMKR(network: SupportedNetworks): Promise<CMSProposal[]> {
+  const proposals = await getGithubExecutives(network);
+
   const mkrSupports = await Promise.all(
-    filteredProposals.map(async proposal => {
+    proposals.map(async proposal => {
       const mkrSupport = await getExecutiveMKRSupport(proposal.address, network);
       return {
         ...proposal,
@@ -62,16 +77,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
     })
   );
 
-  const sortedProposals = mkrSupports
-    .sort((a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime())
-    .sort(a => (a.active ? -1 : 1)) // Sort by active first
-    .slice(0, 100);
-
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(sortedProposals), network);
-  }
-
-  return sortedProposals;
+  return mkrSupports;
 }
 
 export async function getExecutiveProposals(
@@ -96,7 +102,7 @@ export async function getExecutiveProposals(
     }
   }
 
-  const proposals = await getGithubExecutives(currentNetwork);
+  const proposals = await getGithubExecutivesWithMKR(currentNetwork);
 
   const sorted = proposals.sort((a, b) => {
     if (sortBy === 'mkr') {
@@ -145,7 +151,7 @@ export async function getExecutiveProposal(
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
   const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
 
-  const proposals = await getGithubExecutives(currentNetwork);
+  const proposals = await getGithubExecutivesWithMKR(currentNetwork);
 
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
