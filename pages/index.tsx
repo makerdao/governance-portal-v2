@@ -1,11 +1,11 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Container, Grid, Text, Flex, useColorMode, Box } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { fetchJson } from 'lib/fetchJson';
-
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -93,7 +93,12 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
               <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
-                  <Text>View More</Text>
+                  <Link href={{ pathname: '/executive' }}>
+                    <Flex sx={{ alignItems: 'center', cursor: 'pointer' }}>
+                      <Text sx={{ fontSize: [2, 3] }}>View More</Text>
+                      <Icon name="chevron_right" size={2} ml={2} color="primary" />
+                    </Flex>
+                  </Link>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <ErrorBoundary componentName="Latest Executive">
