@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Text, Flex, Box, Button, Link as ThemeUILink, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
+import {
+  Card,
+  Text,
+  Flex,
+  Box,
+  Button,
+  Link as ThemeUILink,
+  ThemeUIStyleObject,
+  Divider,
+  Badge
+} from 'theme-ui';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from '../../app/components/layout/layouts/Stack';
 import CountdownTimer from '../../app/components/CountdownTimer';
@@ -28,13 +38,7 @@ type Props = {
   showVoting?: boolean;
   children?: React.ReactNode;
 };
-export default function PollOverviewCard({
-  poll,
-  reviewPage,
-  showVoting,
-  children,
-  ...props
-}: Props): JSX.Element {
+export default function PollOverviewCard({ poll, reviewPage, showVoting, children }: Props): JSX.Element {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
@@ -44,202 +48,211 @@ export default function PollOverviewCard({
   const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
 
   return (
-    <Box
+    <Card
       data-testid="poll-overview-card"
       aria-label="Poll overview"
-      sx={{ variant: 'cards.primary', p: 0 }}
-      {...props}
+      sx={{
+        p: [0, 0]
+      }}
     >
-      <ErrorBoundary componentName="Poll Card">
-        <Box sx={{ p: [2, 4] }}>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Stack gap={3}>
-              {bpi === 0 && (
-                <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                  <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-                </Box>
-              )}
-              <Box sx={{ cursor: 'pointer' }}>
-                <Box>
-                  <Flex sx={{ justifyContent: 'space-between' }}>
-                    <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
-                      Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
-                    </Text>
-                    {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
-                      <Flex sx={{ alignItems: 'center', mb: 3 }}>
-                        <Text variant="caps">Ranked-choice poll</Text>
-                        <Icon name="stackedVotes" size={3} ml={2} />
-                      </Flex>
-                    )}
-                  </Flex>
+      <Box>
+        <ErrorBoundary componentName="Poll Card">
+          <Box sx={{ px: [3, 4], py: 3, height: '330px' }}>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Flex sx={{ flexDirection: 'column' }}>
+                {bpi === 0 && (
+                  <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                    <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
+                  </Box>
+                )}
+                <Box sx={{ cursor: 'pointer' }}>
+                  <Box>
+                    <Flex sx={{ justifyContent: 'space-between' }}>
+                      <Text as="p" variant="caps" sx={{ color: 'mutedAlt', mb: 2 }}>
+                        Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
+                      </Text>
+                      {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
+                        <Flex sx={{ alignItems: 'center', mb: 3 }}>
+                          <Text variant="caps">Ranked-choice poll</Text>
+                          <Icon name="stackedVotes" size={3} ml={2} />
+                        </Flex>
+                      )}
+                    </Flex>
+                    <Link href={`/polling/${poll.slug}`} passHref>
+                      <ThemeUILink variant="nostyle" title="View Poll Details">
+                        <Text
+                          variant="microHeading"
+                          sx={{ fontSize: [3, 5] }}
+                          data-testid="poll-overview-card-poll-title"
+                        >
+                          {poll.title}
+                        </Text>
+                      </ThemeUILink>
+                    </Link>
+                  </Box>
                   <Link href={`/polling/${poll.slug}`} passHref>
                     <ThemeUILink variant="nostyle" title="View Poll Details">
                       <Text
-                        variant="microHeading"
-                        sx={{ fontSize: [3, 5] }}
-                        data-testid="poll-overview-card-poll-title"
+                        as="p"
+                        sx={{
+                          fontSize: [2, 3],
+                          color: 'textSecondary',
+                          my: 2,
+                          height: '80px'
+                        }}
                       >
-                        {poll.title}
+                        {poll.summary}
                       </Text>
                     </ThemeUILink>
                   </Link>
                 </Box>
-                <Link href={`/polling/${poll.slug}`} passHref>
-                  <ThemeUILink variant="nostyle" title="View Poll Details">
-                    <Text
-                      sx={{
-                        fontSize: [2, 3],
-                        color: 'textSecondary',
-                        mt: 1
-                      }}
-                    >
-                      {poll.summary}
-                    </Text>
-                  </ThemeUILink>
-                </Link>
-              </Box>
 
-              <Flex>
-                {poll.categories.map(c => (
-                  <Box key={c} sx={{ marginRight: 2 }}>
-                    <PollCategoryTag clickable={true} category={c} />
-                  </Box>
-                ))}
-              </Flex>
-              {bpi > 0 && (
-                <Flex mb={1} sx={{ alignItems: 'center' }}>
-                  <Box mr={2}>
-                    <ErrorBoundary componentName="Countdown Timer">
-                      <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
-                    </ErrorBoundary>
-                  </Box>
-
-                  {comments && comments.length > 0 && (
-                    <ThemeUILink href={`/polling/${poll.slug}#comments`} title="View Comments">
-                      <CommentCount count={comments.length} />
-                    </ThemeUILink>
-                  )}
-                  {errorComments && (
-                    <Badge
-                      variant="warning"
-                      sx={{
-                        color: 'warning',
-                        borderColor: 'warning',
-                        textTransform: 'uppercase',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        m: 1
-                      }}
-                    >
-                      Error loading comments
-                    </Badge>
-                  )}
+                <Flex>
+                  {poll.categories.map(c => (
+                    <Box key={c} sx={{ marginRight: 2 }}>
+                      <PollCategoryTag clickable={true} category={c} />
+                    </Box>
+                  ))}
                 </Flex>
-              )}
-            </Stack>
-            {showQuickVote && bpi > 0 && (
-              <Box sx={{ ml: 2, minWidth: '265px' }}>
-                <ErrorBoundary componentName="Vote in Poll">
-                  <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
-                </ErrorBoundary>
-              </Box>
-            )}
-          </Flex>
-
-          <Box>
-            <Flex
-              sx={{
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexDirection: ['column', 'row']
-              }}
-            >
-              <Flex
-                sx={{
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  width: bpi > 0 ? 'auto' : '100%',
-                  p: 0,
-                  mt: 3
-                }}
-              >
-                <Link
-                  key={poll.slug}
-                  href={{ pathname: '/polling/[poll-hash]' }}
-                  as={{ pathname: `/polling/${poll.slug}` }}
-                  passHref
-                >
-                  <ThemeUILink variant="nostyle" title="View Poll Details">
-                    <Button
-                      variant="outline"
-                      sx={{
-                        display: reviewPage ? 'none' : undefined,
-                        borderColor: 'text',
-                        color: 'text',
-                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </ThemeUILink>
-                </Link>
-              </Flex>
-
-              {showQuickVote && bpi === 0 && (
-                <Box sx={{ mt: 3, width: '100%' }}>
-                  <ErrorBoundary componentName="Voting Status">
-                    <VotingStatus poll={poll} />
-                  </ErrorBoundary>
-                  <ErrorBoundary componentName="Vote in Poll">
-                    <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
-                  </ErrorBoundary>
-                </Box>
-              )}
-
-              {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
-                <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
-                  {tally && tally.totalMkrParticipation > 0 && (
-                    <Box sx={{ mt: 3 }}>
-                      <ErrorBoundary componentName="Poll Results">
-                        <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                {bpi > 0 && (
+                  <Flex mt={3} sx={{ alignItems: 'center' }}>
+                    <Box mr={2}>
+                      <ErrorBoundary componentName="Countdown Timer">
+                        <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                       </ErrorBoundary>
                     </Box>
-                  )}
-                  {!tally && isValidating && !errorTally && (
-                    <SkeletonThemed width={'265px'} height={'30px'} />
-                  )}
-                  {errorTally && !isValidating && (
-                    <Badge
-                      variant="warning"
-                      sx={{
-                        color: 'warning',
-                        borderColor: 'warning',
-                        textTransform: 'uppercase',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        m: 1
-                      }}
-                    >
-                      Error loading votes
-                    </Badge>
-                  )}
+
+                    {comments && comments.length > 0 && (
+                      <ThemeUILink href={`/polling/${poll.slug}#comments`} title="View Comments">
+                        <CommentCount count={comments.length} />
+                      </ThemeUILink>
+                    )}
+                    {errorComments && (
+                      <Badge
+                        variant="warning"
+                        sx={{
+                          color: 'warning',
+                          borderColor: 'warning',
+                          textTransform: 'uppercase',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          m: 1
+                        }}
+                      >
+                        Error loading comments
+                      </Badge>
+                    )}
+                  </Flex>
+                )}
+              </Flex>
+              {showQuickVote && bpi > 0 && (
+                <Box sx={{ ml: 2, minWidth: '265px' }}>
+                  <ErrorBoundary componentName="Vote in Poll">
+                    <QuickVote poll={poll} showHeader={true} sx={{ maxWidth: 7 }} showStatus={!reviewPage} />
+                  </ErrorBoundary>
                 </Box>
               )}
             </Flex>
+
+            <Box>
+              <Flex
+                sx={{
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexDirection: ['column', 'row']
+                }}
+              >
+                <Flex
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    width: bpi > 0 ? 'auto' : '100%',
+                    p: 0,
+                    mt: 3
+                  }}
+                >
+                  <Link
+                    key={poll.slug}
+                    href={{ pathname: '/polling/[poll-hash]' }}
+                    as={{ pathname: `/polling/${poll.slug}` }}
+                    passHref
+                  >
+                    <ThemeUILink variant="nostyle" title="View Poll Details">
+                      <Button
+                        variant="outline"
+                        sx={{
+                          display: reviewPage ? 'none' : undefined,
+                          borderColor: 'text',
+                          color: 'text',
+                          ':hover': {
+                            color: 'text',
+                            borderColor: 'onSecondary',
+                            backgroundColor: 'background'
+                          }
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </ThemeUILink>
+                  </Link>
+                </Flex>
+
+                {showQuickVote && bpi === 0 && (
+                  <Box sx={{ mt: 3, width: '100%' }}>
+                    <ErrorBoundary componentName="Voting Status">
+                      <VotingStatus poll={poll} />
+                    </ErrorBoundary>
+                    <ErrorBoundary componentName="Vote in Poll">
+                      <QuickVote poll={poll} showHeader={false} showStatus={!reviewPage} />
+                    </ErrorBoundary>
+                  </Box>
+                )}
+
+                {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+                  <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
+                    {tally && tally.totalMkrParticipation > 0 && (
+                      <Box sx={{ mt: 3 }}>
+                        <ErrorBoundary componentName="Poll Results">
+                          <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                        </ErrorBoundary>
+                      </Box>
+                    )}
+                    {!tally && isValidating && !errorTally && (
+                      <SkeletonThemed width={'265px'} height={'30px'} />
+                    )}
+                    {errorTally && !isValidating && (
+                      <Badge
+                        variant="warning"
+                        sx={{
+                          color: 'warning',
+                          borderColor: 'warning',
+                          textTransform: 'uppercase',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          m: 1
+                        }}
+                      >
+                        Error loading votes
+                      </Badge>
+                    )}
+                  </Box>
+                )}
+              </Flex>
+            </Box>
+
+            {children && <Box>{children}</Box>}
           </Box>
 
-          {children && <Box>{children}</Box>}
-        </Box>
-
-        {tally && tally.totalMkrParticipation > 0 && (
-          <Box>
-            <Divider my={0} />
-            <ErrorBoundary componentName="Poll Winning Option">
-              <PollWinningOptionBox tally={tally} poll={poll} />
-            </ErrorBoundary>
-          </Box>
-        )}
-      </ErrorBoundary>
-    </Box>
+          {tally && tally.totalMkrParticipation > 0 && (
+            <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
+              <Divider my={0} />
+              <ErrorBoundary componentName="Poll Winning Option">
+                <PollWinningOptionBox tally={tally} poll={poll} />
+              </ErrorBoundary>
+            </Flex>
+          )}
+        </ErrorBoundary>
+      </Box>
+    </Card>
   );
 }

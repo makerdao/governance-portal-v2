@@ -13,6 +13,7 @@ import VoteModal from './VoteModal';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
+import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -116,35 +117,20 @@ export default function ExecutiveOverviewCard({
                 </Badge>
               )}
               {isHat && proposal.address !== ZERO_ADDRESS ? (
-                <Badge
-                  variant="primary"
+                <Box
                   sx={{
-                    m: 1,
-                    borderColor: 'primaryAlt',
-                    color: 'primaryAlt',
-                    textTransform: 'uppercase'
+                    borderRadius: '12px',
+                    padding: '4px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: 'tagColorThree',
+                    backgroundColor: 'tagColorThreeBg',
+                    my: 2
                   }}
                 >
-                  Governing proposal
-                </Badge>
-              ) : null}
-              {spellData?.mkrSupport === undefined ? (
-                <Box sx={{ width: 6, m: 1 }}>
-                  <Skeleton />
+                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
                 </Box>
-              ) : (
-                <Badge
-                  data-testid="mkr-supporting"
-                  variant="primary"
-                  sx={{
-                    borderColor: 'text',
-                    textTransform: 'uppercase',
-                    m: 1
-                  }}
-                >
-                  {formatValue(BigNumber.from(spellData?.mkrSupport))} MKR Supporting
-                </Badge>
-              )}
+              ) : null}
             </Flex>
             {bpi === 0 && (
               <Box sx={{ pt: 2 }}>
@@ -163,26 +149,6 @@ export default function ExecutiveOverviewCard({
                     Vote
                   </Button>
                 )}
-                <Link
-                  href={{ pathname: '/executive/[proposal-id]' }}
-                  as={{ pathname: `/executive/${proposal.key}` }}
-                  passHref
-                >
-                  <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
-                    <Button
-                      variant="outline"
-                      sx={{
-                        width: '100%',
-                        my: canVote ? 3 : 0,
-                        borderColor: 'text',
-                        color: 'text',
-                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </ThemeUILink>
-                </Link>
               </Box>
             )}
             {bpi > 0 && (
@@ -209,26 +175,6 @@ export default function ExecutiveOverviewCard({
                     Vote
                   </Button>
                 )}
-                <Link
-                  href={{ pathname: '/executive/[proposal-id]' }}
-                  as={{ pathname: `/executive/${proposal.key}` }}
-                  passHref
-                >
-                  <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
-                    <Button
-                      variant="outline"
-                      sx={{
-                        width: '100%',
-                        mt: canVote ? 3 : 0,
-                        borderColor: 'text',
-                        color: 'text',
-                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </ThemeUILink>
-                </Link>
               </Flex>
             )}
           </Box>
@@ -244,6 +190,42 @@ export default function ExecutiveOverviewCard({
             </ThemeUILink>
           </Box>
         )}
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box sx={{ width: '50%' }}>
+            <Link
+              href={{ pathname: '/executive/[proposal-id]' }}
+              as={{ pathname: `/executive/${proposal.key}` }}
+              passHref
+            >
+              <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
+                <Button
+                  variant="outline"
+                  sx={{
+                    mt: canVote ? 3 : 0,
+                    borderColor: 'text',
+                    color: 'text',
+                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                  }}
+                >
+                  View Details
+                </Button>
+              </ThemeUILink>
+            </Link>
+          </Box>
+          <Box sx={{ width: '50%' }}>
+            {spellData?.mkrSupport === undefined ? (
+              <Box sx={{ width: 6, m: 1 }}>
+                <Skeleton />
+              </Box>
+            ) : (
+              <StatBox
+                value={formatValue(BigNumber.from(spellData?.mkrSupport))}
+                label="MKR Supporting"
+                styles={{ textAlign: 'right' }}
+              />
+            )}
+          </Box>
+        </Flex>
       </Box>
 
       {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}

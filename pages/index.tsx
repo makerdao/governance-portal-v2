@@ -5,20 +5,18 @@ import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
 import { fetchJson } from 'lib/fetchJson';
-
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import SystemStats from 'modules/home/components/SystemStats';
+import { SystemStats } from 'modules/home/components/SystemStats';
+import { ViewMore } from 'modules/home/components/ViewMore';
+import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
-import BlogPostCard from 'modules/home/components/BlogPostCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
-import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
@@ -38,13 +36,12 @@ import BigNumber from 'bignumber.js';
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
-  blogPosts: BlogPost[];
   network: SupportedNetworks;
   topDelegates: Delegate[];
   totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, blogPosts, network, topDelegates, totalMKRDelegated }: Props) => {
+const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
@@ -98,10 +95,12 @@ const LandingPage = ({ proposals, polls, blogPosts, network, topDelegates, total
                   <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
                 </Box>
               </Flex>
-              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+              <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
-                  <Text>View More</Text>
+                  <Link href={{ pathname: '/executive' }}>
+                    <ViewMore />
+                  </Link>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <ErrorBoundary componentName="Latest Executive">
@@ -126,56 +125,29 @@ const LandingPage = ({ proposals, polls, blogPosts, network, topDelegates, total
           </section>
 
           <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
+            <ErrorBoundary componentName="Governance Stats">
+              <GovernanceStats />
             </ErrorBoundary>
           </section>
 
           <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Executive Votes</Heading>
-                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Executive Votes are conducted to make changes to the protocol. The governing proposal
-                    represents the current state of the system.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}></Container>
-            </Stack>
-          </section>
-
-          <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Polls take place to establish a rough consensus of community sentiment before Executive
-                    Votes are conducted.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ maxWidth: 'column' }}>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Heading>Active Polls</Heading>
+                <Link href={{ pathname: '/polling' }}>
+                  <ViewMore label="View All" />
+                </Link>
+              </Flex>
+              <Flex>
                 <ErrorBoundary componentName="Recent Polls">
-                  <Stack>
+                  <Grid gap={4} columns={[1, 1, 2]}>
                     {recentPolls.map(poll => (
                       <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
                     ))}
-                  </Stack>
+                  </Grid>
                 </ErrorBoundary>
-                {activePolls.length > 4 && (
-                  <Link href={{ pathname: '/polling' }}>
-                    <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
-                      View all polls
-                    </Text>
-                  </Link>
-                )}
-              </Container>
-            </Stack>
+              </Flex>
+            </Flex>
           </section>
 
           <section>
@@ -201,15 +173,12 @@ const LandingPage = ({ proposals, polls, blogPosts, network, topDelegates, total
                   bg: 'background'
                 }}
               />
-              <Stack>
-                <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Grid gap={4} columns={[1, 3]} sx={{ px: [3, 4] }}>
-                  {blogPosts.map(post => (
-                    <BlogPostCard key={post.link} blogPost={post} />
-                  ))}
-                </Grid>
-              </Stack>
             </Container>
+          </section>
+          <section>
+            <ErrorBoundary componentName="System Stats">
+              <SystemStats />
+            </ErrorBoundary>
           </section>
         </Stack>
       </PrimaryLayout>
@@ -233,7 +202,6 @@ const LandingPage = ({ proposals, polls, blogPosts, network, topDelegates, total
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
-  blogPosts,
   topDelegates: prefetchedTopDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
@@ -290,7 +258,6 @@ export default function Index({
           : []
       }
       polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
-      blogPosts={blogPosts}
       network={network}
       topDelegates={
         isDefaultNetwork(network)
@@ -311,12 +278,8 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls, proposals, blog posts at build-time
-  const [proposals, pollsData, blogPosts] = await Promise.all([
-    getExecutiveProposals(0, 3, 'active'),
-    getPolls(),
-    fetchBlogPosts()
-  ]);
+  // fetch polls, proposals at build-time
+  const [proposals, pollsData] = await Promise.all([getExecutiveProposals(0, 3, 'active'), getPolls()]);
 
   const delegatesResponse = await fetchDelegates(SupportedNetworks.MAINNET, 'mkr');
 
@@ -325,7 +288,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
-      blogPosts,
       topDelegates: delegatesResponse.delegates.slice(0, 10),
       totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
     }
