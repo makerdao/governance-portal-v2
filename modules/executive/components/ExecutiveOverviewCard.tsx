@@ -66,71 +66,81 @@ export default function ExecutiveOverviewCard({
         p: [0, 0]
       }}
     >
-      <Box px={[3, 4]} py={[3, proposal.spellData?.hasBeenScheduled ? 3 : 4]}>
+      <Flex
+        sx={{
+          flexDirection: 'column',
+          px: [3, 4],
+          py: [3, proposal.spellData?.hasBeenScheduled ? 3 : 4],
+          height: '330px',
+          justifyContent: 'space-between'
+        }}
+      >
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
-            <Link
-              href={{ pathname: '/executive/[proposal-id]' }}
-              as={{ pathname: `/executive/${proposal.key}` }}
-              passHref
-            >
-              <ThemeUILink variant="nostyle" title="View Executive Details">
-                <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                  <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                    posted {formatDateWithoutTime(proposal.date)}
-                  </Text>
-                </Flex>
-                <Box>
-                  <Text as="h3" variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer', mt: 2 }}>
-                    {proposal.title}
-                  </Text>
-                </Box>
-                <Text
-                  as="p"
-                  sx={{
-                    fontSize: [2, 3],
-                    color: 'onSecondary',
-                    mt: 2
-                  }}
-                >
-                  {proposal.proposalBlurb}
-                </Text>
-              </ThemeUILink>
-            </Link>
-            <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-              {hasVotedFor && (
-                <Badge
-                  variant="primary"
-                  sx={{
-                    color: 'primary',
-                    borderColor: 'primary',
-                    textTransform: 'uppercase',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    m: 1
-                  }}
-                >
-                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                    <Icon name="verified" size={3} />
+            <Flex sx={{ flexDirection: 'column', height: '200px' }}>
+              <Link
+                href={{ pathname: '/executive/[proposal-id]' }}
+                as={{ pathname: `/executive/${proposal.key}` }}
+                passHref
+              >
+                <ThemeUILink variant="nostyle" title="View Executive Details">
+                  <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
+                    <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                      posted {formatDateWithoutTime(proposal.date)}
+                    </Text>
                   </Flex>
-                  Your Vote
-                </Badge>
-              )}
-              {isHat && proposal.address !== ZERO_ADDRESS ? (
-                <Box
-                  sx={{
-                    borderRadius: '12px',
-                    padding: '4px 8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: 'tagColorThree',
-                    backgroundColor: 'tagColorThreeBg',
-                    my: 2
-                  }}
-                >
-                  <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
-                </Box>
-              ) : null}
+                  <Box>
+                    <Text as="h3" variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer', mt: 2 }}>
+                      {proposal.title}
+                    </Text>
+                  </Box>
+                  <Text
+                    as="p"
+                    sx={{
+                      fontSize: [2, 3],
+                      color: 'onSecondary',
+                      mt: 2
+                    }}
+                  >
+                    {proposal.proposalBlurb}
+                  </Text>
+                </ThemeUILink>
+              </Link>
+              <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                {hasVotedFor && (
+                  <Badge
+                    variant="primary"
+                    sx={{
+                      color: 'primary',
+                      borderColor: 'primary',
+                      textTransform: 'uppercase',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      m: 1
+                    }}
+                  >
+                    <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                      <Icon name="verified" size={3} />
+                    </Flex>
+                    Your Vote
+                  </Badge>
+                )}
+                {isHat && proposal.address !== ZERO_ADDRESS ? (
+                  <Box
+                    sx={{
+                      borderRadius: '12px',
+                      padding: '4px 8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: 'tagColorThree',
+                      backgroundColor: 'tagColorThreeBg',
+                      my: 2
+                    }}
+                  >
+                    <Text sx={{ fontSize: 2 }}>Governing Proposal</Text>
+                  </Box>
+                ) : null}
+              </Flex>
             </Flex>
             {bpi === 0 && (
               <Box sx={{ pt: 2 }}>
@@ -226,26 +236,27 @@ export default function ExecutiveOverviewCard({
             )}
           </Box>
         </Flex>
-      </Box>
+      </Flex>
 
       {voting && <VoteModal proposal={proposal} close={() => setVoting(false)} />}
 
-      <Divider my={0} />
-      <Flex sx={{ py: 2, justifyContent: 'center' }}>
-        <Text
-          data-testid="proposal-status"
-          as="p"
-          variant="caps"
-          sx={{
-            textAlign: 'center',
-            px: [3, 4],
-            mb: 1,
-            wordBreak: 'break-word',
-            color: 'textSecondary'
-          }}
-        >
-          {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
-        </Text>
+      <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
+        <Divider my={0} />
+        <Flex sx={{ py: 2, justifyContent: 'center' }}>
+          <Text
+            data-testid="proposal-status"
+            as="p"
+            variant="caps"
+            sx={{
+              textAlign: 'center',
+              px: [3, 4],
+              mb: 1,
+              wordBreak: 'break-word'
+            }}
+          >
+            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+          </Text>
+        </Flex>
       </Flex>
     </Card>
   );

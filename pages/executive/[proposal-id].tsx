@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
@@ -29,7 +29,7 @@ import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
-import { isDefaultNetwork, isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 //components
 import VoteModal from 'modules/executive/components/VoteModal/index';

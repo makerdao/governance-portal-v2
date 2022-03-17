@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, useColorMode, Box } from 'theme-ui';
+import { Heading, Grid, Text, Flex, useColorMode, Box, Link as ThemeUILink } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -43,8 +43,7 @@ type Props = {
 
 const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
-  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
+  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
@@ -98,8 +97,10 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
               <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
-                  <Link href={{ pathname: '/executive' }}>
-                    <ViewMore />
+                  <Link href={{ pathname: '/executive' }} passHref>
+                    <ThemeUILink title="Latest Executive">
+                      <ViewMore />
+                    </ThemeUILink>
                   </Link>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
@@ -134,16 +135,56 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
             <Flex sx={{ flexDirection: 'column' }}>
               <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Heading>Active Polls</Heading>
-                <Link href={{ pathname: '/polling' }}>
-                  <ViewMore label="View All" />
+                <Link href={{ pathname: '/polling' }} passHref>
+                  <ThemeUILink title="Active Polls">
+                    <ViewMore label="View All" />
+                  </ThemeUILink>
                 </Link>
               </Flex>
               <Flex>
-                <ErrorBoundary componentName="Recent Polls">
+                <ErrorBoundary componentName="Active Polls">
                   <Grid gap={4} columns={[1, 1, 2]}>
-                    {recentPolls.map(poll => (
+                    {activePolls.map(poll => (
                       <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
                     ))}
+                  </Grid>
+                </ErrorBoundary>
+              </Flex>
+            </Flex>
+          </section>
+
+          <section>
+            <Flex sx={{ flexDirection: 'column' }}>
+              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Heading>Executive Proposals</Heading>
+                <Link href={{ pathname: '/executive' }} passHref>
+                  <ThemeUILink title="Executive Proposals">
+                    <ViewMore label="View All" />
+                  </ThemeUILink>
+                </Link>
+              </Flex>
+              <Flex>
+                <ErrorBoundary componentName="Executive Proposals">
+                  <Grid gap={4} columns={[1, 1, 2]}>
+                    {proposals ? (
+                      proposals.length > 0 ? (
+                        proposals
+                          .slice(0, 2)
+                          .map(proposal => (
+                            <ExecutiveOverviewCard
+                              key={proposal.address}
+                              network={network}
+                              votedProposals={[]}
+                              isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
+                              proposal={proposal}
+                            />
+                          ))
+                      ) : (
+                        <Text>No proposals found</Text>
+                      )
+                    ) : (
+                      <Skeleton />
+                    )}
                   </Grid>
                 </ErrorBoundary>
               </Flex>
@@ -154,27 +195,6 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
 
-          <section sx={{ py: 5 }}>
-            <Container
-              sx={{
-                textAlign: 'center',
-                maxWidth: 'page',
-                position: ['relative']
-              }}
-            >
-              <div
-                sx={{
-                  borderRadius: 'small',
-                  height: '100%',
-                  width: '100%',
-                  position: 'absolute',
-                  zIndex: -1,
-                  mt: t => `-${(t as any).space[5]}px`,
-                  bg: 'background'
-                }}
-              />
-            </Container>
-          </section>
           <section>
             <ErrorBoundary componentName="System Stats">
               <SystemStats />
