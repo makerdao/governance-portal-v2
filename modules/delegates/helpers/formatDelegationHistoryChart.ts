@@ -8,42 +8,13 @@ import { format } from 'date-fns';
 import BigNumber from 'bignumber.js';
 import { differenceInCalendarYears, subDays } from 'date-fns';
 
-// Time ranges
-const oneDay = 24 * 60 * 60 * 1000;
-const oneYear = 365 * oneDay;
-const oneMonth = 31 * oneDay;
-const oneWeek = 7 * oneDay;
-
-const dateFormat = 'MM-dd-yyyy';
-
-const timeRanges = [
-  {
-    label: 'Last year',
-    from: Date.now() - oneYear,
-    range: MKRWeightTimeRanges.month,
-    interval: 30
-  },
-  {
-    label: 'Last month',
-    from: Date.now() - oneMonth,
-    range: MKRWeightTimeRanges.day,
-    interval: 7
-  },
-  {
-    label: 'Last week',
-    from: Date.now() - oneWeek,
-    range: MKRWeightTimeRanges.day,
-    interval: 1
-  }
-];
-
 export const formatDelegationHistoryChart = (
   lockEvents: MKRLockedDelegateAPIResponse[],
   address: string,
   from: number,
   range: MKRWeightTimeRanges,
   network: SupportedNetworks
-): DelegationHistory[] => {
+): MKRWeightHisory[] => {
   // We need to fill all the data for the interval
   // If we get last month, we need to add all the missing days
   const start = formatIsoDateConversion(lockEvents[0].blockTimestamp);
