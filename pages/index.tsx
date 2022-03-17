@@ -11,6 +11,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { SystemStats } from 'modules/home/components/SystemStats';
 import { ViewMore } from 'modules/home/components/ViewMore';
+import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
@@ -33,6 +34,7 @@ import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ExecutiveProposalsLanding } from 'modules/home/components/ExecutiveProposalsLanding';
 import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import BigNumber from 'bignumber.js';
+import { getCategories } from 'modules/polling/helpers/getCategories';
 
 type Props = {
   proposals: Proposal[];
@@ -50,6 +52,8 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
   const { data: hat } = useHat();
+
+  const pollCategories = getCategories(polls);
 
   useEffect(() => {
     setBackroundImage(mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)');
@@ -134,6 +138,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <ActivePollsLanding activePolls={activePolls} />
+            <PollCategoriesLanding pollCategories={pollCategories} />
           </section>
 
           <section>
