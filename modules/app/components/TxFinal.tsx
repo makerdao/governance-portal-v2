@@ -1,11 +1,27 @@
 import { Button, Flex, Link, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import { TXMined } from 'modules/web3/types/transaction';
+import { Transaction, TXMined } from 'modules/web3/types/transaction';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
-export const TxFinal = ({ title, description, buttonLabel, onClick, tx, success }) => {
+export const TxFinal = ({
+  title,
+  description,
+  buttonLabel,
+  onClick,
+  tx,
+  success,
+  children
+}: {
+  title: string;
+  description: string;
+  buttonLabel: string;
+  onClick: () => void;
+  tx: Transaction;
+  success: boolean;
+  children?: React.ReactNode;
+}): React.ReactElement => {
   const { network } = useActiveWeb3React();
 
   return (
@@ -23,6 +39,7 @@ export const TxFinal = ({ title, description, buttonLabel, onClick, tx, success 
         </Flex>
       )}
       <Text sx={{ color: 'secondaryEmphasis', mt: 3 }}>{description}</Text>
+      {children}
       <Link
         target="_blank"
         href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}

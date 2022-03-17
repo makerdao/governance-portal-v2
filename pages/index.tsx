@@ -237,7 +237,7 @@ export default function Index({
         isDefaultNetwork(network)
           ? prefetchedTopDelegates
           : delegatesData
-          ? delegatesData.delegates.slice(0, 10)
+          ? delegatesData.delegates.slice(0, 5)
           : []
       }
       totalMKRDelegated={
@@ -262,7 +262,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
-      topDelegates: delegatesResponse.delegates.slice(0, 10),
+      topDelegates: delegatesResponse.delegates.slice(0, 5),
       totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
     }
   };

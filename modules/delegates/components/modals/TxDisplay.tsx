@@ -1,18 +1,34 @@
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
-
-export const TxDisplay = ({ tx, setTxId, onDismiss }): React.ReactElement => {
+import { Transaction } from 'modules/web3/types/transaction';
+export const TxDisplay = ({
+  tx,
+  setTxId,
+  onDismiss,
+  children,
+  title = 'Transaction Sent',
+  description = 'Delegate contract will update once the transaction has been confirmed.'
+}: {
+  tx: Transaction | null;
+  children?: React.ReactNode;
+  setTxId: (txId: null) => void;
+  onDismiss: () => void;
+  title?: string;
+  description?: string;
+}): React.ReactElement => {
   switch (tx?.status) {
     case 'mined':
       return (
         <TxFinal
-          title="Transaction Sent"
-          description="Delegate contract will update once the transaction has been confirmed."
+          title={title}
+          description={description}
           buttonLabel="Close"
           onClick={onDismiss}
           tx={tx}
           success={true}
-        />
+        >
+          {children}
+        </TxFinal>
       );
     case 'error':
       return (

@@ -19,6 +19,8 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { formatValue } from 'lib/string';
+import DelegateAvatarName from '../DelegateAvatarName';
 
 type Props = {
   isOpen: boolean;
@@ -26,6 +28,7 @@ type Props = {
   delegate: Delegate;
   mutateTotalStaked: () => void;
   mutateMKRDelegated: () => void;
+  title?: string;
 };
 
 export const DelegateModal = ({
@@ -33,7 +36,8 @@ export const DelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMKRDelegated
+  mutateMKRDelegated,
+  title = 'Deposit into delegate contract'
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
@@ -93,7 +97,19 @@ export const DelegateModal = ({
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (
-                <TxDisplay tx={tx} setTxId={resetTx} onDismiss={onClose} />
+                <TxDisplay
+                  tx={tx}
+                  setTxId={resetTx}
+                  onDismiss={onClose}
+                  title={`Delegating to ${delegate.name}`}
+                  description={`Congratulations, you delegated ${formatValue(mkrToDeposit)} MKR to ${
+                    delegate.name
+                  }.`}
+                >
+                  <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
+                    <DelegateAvatarName delegate={delegate} />
+                  </Box>
+                </TxDisplay>
               ) : (
                 <>
                   {mkrAllowance ? (
@@ -114,7 +130,7 @@ export const DelegateModal = ({
                       />
                     ) : (
                       <InputDelegateMkr
-                        title="Deposit into delegate contract"
+                        title={title}
                         description="Input the amount of MKR to deposit into the delegate contract."
                         onChange={setMkrToDeposit}
                         balance={mkrBalance}
