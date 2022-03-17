@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Grid, Text, Flex, useColorMode, Box, Link as ThemeUILink } from 'theme-ui';
+import { Heading, Text, Flex, useColorMode, Box, Link as ThemeUILink } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
 import { Global } from '@emotion/core';
@@ -19,7 +19,6 @@ import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -31,6 +30,8 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
+import { ExecutiveProposalsLanding } from 'modules/home/components/ExecutiveProposalsLanding';
+import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import BigNumber from 'bignumber.js';
 
 type Props = {
@@ -132,63 +133,11 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
           </section>
 
           <section>
-            <Flex sx={{ flexDirection: 'column' }}>
-              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Heading>Active Polls</Heading>
-                <Link href={{ pathname: '/polling' }} passHref>
-                  <ThemeUILink title="Active Polls">
-                    <ViewMore label="View All" />
-                  </ThemeUILink>
-                </Link>
-              </Flex>
-              <Flex>
-                <ErrorBoundary componentName="Active Polls">
-                  <Grid gap={4} columns={[1, 1, 2]}>
-                    {activePolls.map(poll => (
-                      <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
-                    ))}
-                  </Grid>
-                </ErrorBoundary>
-              </Flex>
-            </Flex>
+            <ActivePollsLanding activePolls={activePolls} />
           </section>
 
           <section>
-            <Flex sx={{ flexDirection: 'column' }}>
-              <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Heading>Executive Proposals</Heading>
-                <Link href={{ pathname: '/executive' }} passHref>
-                  <ThemeUILink title="Executive Proposals">
-                    <ViewMore label="View All" />
-                  </ThemeUILink>
-                </Link>
-              </Flex>
-              <Flex>
-                <ErrorBoundary componentName="Executive Proposals">
-                  <Grid gap={4} columns={[1, 1, 2]}>
-                    {proposals ? (
-                      proposals.length > 0 ? (
-                        proposals
-                          .slice(0, 2)
-                          .map(proposal => (
-                            <ExecutiveOverviewCard
-                              key={proposal.address}
-                              network={network}
-                              votedProposals={[]}
-                              isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                              proposal={proposal}
-                            />
-                          ))
-                      ) : (
-                        <Text>No proposals found</Text>
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </Grid>
-                </ErrorBoundary>
-              </Flex>
-            </Flex>
+            <ExecutiveProposalsLanding proposals={proposals} network={network} hat={hat} />
           </section>
 
           <section>
