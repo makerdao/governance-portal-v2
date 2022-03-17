@@ -21,7 +21,6 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
-import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -45,18 +44,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     revalidateOnReconnect: false
   });
 
-  const dataKeyDelegators = `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`;
-  const { data: delegators } = useSWR<DelegationHistory[]>(delegate ? dataKeyDelegators : null, fetchJson, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnMount: !cache.get(dataKeyDelegators),
-    revalidateOnReconnect: false
-  });
-
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
-  const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
-  const delegatorCount = delegators ? activeDelegators?.length : undefined;
+  const activeDelegators = delegate.delegationHistory?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
+  const delegatorCount = activeDelegators.length;
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const tabTitles = [
@@ -77,10 +68,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegators && delegators?.length > 0 && totalStaked ? (
+      {delegate.delegationHistory.length > 0 && totalStaked ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
-            <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
+            <DelegatedByAddress delegators={delegate.delegationHistory} totalDelegated={totalStaked} />
           </Box>
           <Divider />
 

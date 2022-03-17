@@ -26,14 +26,22 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
+import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import useSWR, { useSWRConfig } from 'swr';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import TopDelegates from 'modules/delegates/components/TopDelegates';
+import BigNumber from 'bignumber.js';
 
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
   network: SupportedNetworks;
+  topDelegates: Delegate[];
+  totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, network }: Props) => {
+const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
@@ -142,6 +150,10 @@ const LandingPage = ({ proposals, polls, network }: Props) => {
             </Flex>
           </section>
 
+          <section>
+            <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+          </section>
+
           <section sx={{ py: 5 }}>
             <Container
               sx={{
@@ -189,34 +201,47 @@ const LandingPage = ({ proposals, polls, network }: Props) => {
 
 export default function Index({
   proposals: prefetchedProposals,
-  polls: prefetchedPolls
+  polls: prefetchedPolls,
+  topDelegates: prefetchedTopDelegates,
+  totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
-  // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, setPolls] = useState<Poll[]>();
-  const [_proposals, setProposals] = useState<Proposal[]>();
-  const [error, setError] = useState<string>();
   const { network } = useActiveWeb3React();
 
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
-      Promise.all([
-        fetchJson(`/api/polling/all-polls?network=${network}`),
-        fetchJson(`/api/executive?network=${network}&start=0&limit=3&sortBy=active`)
-      ])
-        .then(([pollsData, proposals]) => {
-          setPolls(pollsData.polls);
-          setProposals(proposals.filter(p => p.active));
-        })
-        .catch(setError);
-    }
-  }, [network]);
+  const { cache } = useSWRConfig();
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  // Fetch polls if networks change
+  const dataKeyPolls =
+    !network || isDefaultNetwork(network) ? null : `/api/polling/all-polls?network=${network}`;
+  const { data: pollsData, error: errorPolls } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyPolls)
+  });
+
+  // Fetch executives if networks change
+  const dataKeyProposals =
+    !network || isDefaultNetwork(network)
+      ? null
+      : `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
+  const { data: proposalsData, error: errorProposals } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyProposals)
+  });
+
+  // Fetch delegates if networks change
+  const dataKeyDelegates =
+    !network || isDefaultNetwork(network) ? null : `/api/delegates?network=${network}&sortBy=mkr`;
+  const { data: delegatesData, error: errorDelegates } = useSWR<DelegatesAPIResponse>(
+    dataKeyDelegates,
+    fetchJson,
+    {
+      revalidateOnMount: !cache.get(dataKeyDelegates)
+    }
+  );
+
+  // Error state, only applies for alternative networks
+  if (errorProposals || errorPolls || errorDelegates) {
+    return <ErrorPage statusCode={404} title="Error fetching home page information" />;
   }
 
-  if (!isDefaultNetwork(network) && (!_polls || !_proposals))
+  if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData))
     return (
       <PrimaryLayout>
         <PageLoadingPlaceholder />
@@ -225,9 +250,29 @@ export default function Index({
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
-      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
+      proposals={
+        isDefaultNetwork(network)
+          ? prefetchedProposals
+          : proposalsData
+          ? proposalsData.filter(p => p.active)
+          : []
+      }
+      polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
       network={network}
+      topDelegates={
+        isDefaultNetwork(network)
+          ? prefetchedTopDelegates
+          : delegatesData
+          ? delegatesData.delegates.slice(0, 10)
+          : []
+      }
+      totalMKRDelegated={
+        isDefaultNetwork(network)
+          ? prefetchedTotalMKRDelegated
+          : delegatesData
+          ? delegatesData.stats.totalMKRDelegated
+          : '0'
+      }
     />
   );
 }
@@ -236,11 +281,15 @@ export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals at build-time
   const [proposals, pollsData] = await Promise.all([getExecutiveProposals(0, 3, 'active'), getPolls()]);
 
+  const delegatesResponse = await fetchDelegates(SupportedNetworks.MAINNET, 'mkr');
+
   return {
     revalidate: 30 * 60, // allow revalidation every 30 minutes
     props: {
       proposals: proposals.filter(i => i.active),
-      polls: pollsData.polls
+      polls: pollsData.polls,
+      topDelegates: delegatesResponse.delegates.slice(0, 10),
+      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
     }
   };
 };

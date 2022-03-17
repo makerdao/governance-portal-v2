@@ -10,8 +10,10 @@ import withApiHandler from 'modules/app/api/withApiHandler';
 
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<DelegatesAPIResponse>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
+  const sortBy = req.query.sortBy ? req.query.sortBy : 'random';
+
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
-  const delegates = await fetchDelegates(network);
+  const delegates = await fetchDelegates(network, sortBy as any);
 
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
   res.status(200).json(delegates);
