@@ -10,6 +10,9 @@ import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
 import { Proposal } from 'modules/executive/types';
 import VoteModal from './VoteModal';
+import { CardHeader } from 'modules/app/components/Card/CardHeader';
+import { CardTitle } from 'modules/app/components/Card/CardTitle';
+import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
@@ -84,26 +87,9 @@ export default function ExecutiveOverviewCard({
                 passHref
               >
                 <ThemeUILink variant="nostyle" title="View Executive Details">
-                  <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
-                    <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                      posted {formatDateWithoutTime(proposal.date)}
-                    </Text>
-                  </Flex>
-                  <Box>
-                    <Text as="h3" variant="microHeading" sx={{ fontSize: [3, 5], cursor: 'pointer', mt: 2 }}>
-                      {proposal.title}
-                    </Text>
-                  </Box>
-                  <Text
-                    as="p"
-                    sx={{
-                      fontSize: [2, 3],
-                      color: 'onSecondary',
-                      mt: 2
-                    }}
-                  >
-                    {proposal.proposalBlurb}
-                  </Text>
+                  <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
+                  <CardTitle title={proposal.title} styles={{ mt: 2 }} />
+                  <CardSummary text={proposal.proposalBlurb} styles={{ mt: 2 }} />
                 </ThemeUILink>
               </Link>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>

@@ -12,7 +12,6 @@ import {
   Badge
 } from 'theme-ui';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import Stack from '../../app/components/layout/layouts/Stack';
 import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
@@ -25,6 +24,9 @@ import PollWinningOptionBox from './PollWinningOptionBox';
 import { formatDateWithTime } from 'lib/datetime';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { CardTitle } from 'modules/app/components/Card/CardTitle';
+import { CardHeader } from 'modules/app/components/Card/CardHeader';
+import { CardSummary } from 'modules/app/components/Card/CardSummary';
 import React from 'react';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
@@ -68,9 +70,10 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                 <Box sx={{ cursor: 'pointer' }}>
                   <Box>
                     <Flex sx={{ justifyContent: 'space-between' }}>
-                      <Text as="p" variant="caps" sx={{ color: 'mutedAlt', mb: 2 }}>
-                        Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
-                      </Text>
+                      <CardHeader
+                        text={`Posted ${formatDateWithTime(poll.startDate)} | Poll ID ${poll.pollId}`}
+                        styles={{ mb: 2 }}
+                      />
                       {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
                         <Flex sx={{ alignItems: 'center', mb: 3 }}>
                           <Text variant="caps">Ranked-choice poll</Text>
@@ -79,30 +82,14 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                       )}
                     </Flex>
                     <Link href={`/polling/${poll.slug}`} passHref>
-                      <ThemeUILink variant="nostyle" title="View Poll Details">
-                        <Text
-                          variant="microHeading"
-                          sx={{ fontSize: [3, 5] }}
-                          data-testid="poll-overview-card-poll-title"
-                        >
-                          {poll.title}
-                        </Text>
+                      <ThemeUILink title="View Poll Details">
+                        <CardTitle title={poll.title} />
                       </ThemeUILink>
                     </Link>
                   </Box>
                   <Link href={`/polling/${poll.slug}`} passHref>
-                    <ThemeUILink variant="nostyle" title="View Poll Details">
-                      <Text
-                        as="p"
-                        sx={{
-                          fontSize: [2, 3],
-                          color: 'textSecondary',
-                          my: 2,
-                          height: '80px'
-                        }}
-                      >
-                        {poll.summary}
-                      </Text>
+                    <ThemeUILink title="View Poll Details">
+                      <CardSummary text={poll.summary} styles={{ my: 2, height: '80px' }} />
                     </ThemeUILink>
                   </Link>
                 </Box>
