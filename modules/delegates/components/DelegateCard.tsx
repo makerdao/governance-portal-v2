@@ -14,7 +14,6 @@ import {
 } from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';

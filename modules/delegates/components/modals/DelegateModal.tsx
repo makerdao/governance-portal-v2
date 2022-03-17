@@ -26,6 +26,7 @@ type Props = {
   delegate: Delegate;
   mutateTotalStaked: () => void;
   mutateMKRDelegated: () => void;
+  title?: string;
 };
 
 export const DelegateModal = ({
@@ -33,7 +34,8 @@ export const DelegateModal = ({
   onDismiss,
   delegate,
   mutateTotalStaked,
-  mutateMKRDelegated
+  mutateMKRDelegated,
+  title = 'Deposit into delegate contract'
 }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
@@ -93,7 +95,13 @@ export const DelegateModal = ({
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (
-                <TxDisplay tx={tx} setTxId={resetTx} onDismiss={onClose} />
+                <TxDisplay
+                  tx={tx}
+                  setTxId={resetTx}
+                  onDismiss={onClose}
+                  mkrAmount={mkrToDeposit}
+                  delegate={delegate}
+                />
               ) : (
                 <>
                   {mkrAllowance ? (
@@ -114,7 +122,7 @@ export const DelegateModal = ({
                       />
                     ) : (
                       <InputDelegateMkr
-                        title="Deposit into delegate contract"
+                        title={title}
                         description="Input the amount of MKR to deposit into the delegate contract."
                         onChange={setMkrToDeposit}
                         balance={mkrBalance}
