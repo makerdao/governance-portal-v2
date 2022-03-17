@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
@@ -53,6 +53,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { getPolls } from 'modules/polling/api/fetchPolls';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -393,16 +394,46 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
-  const slug = context.query['poll-hash'] as string;
-  const network = context.query['network'] as string;
-  const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
+// export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
+//   const slug = context.query['poll-hash'] as string;
+//   const network = context.query['network'] as string;
+//   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
 
-  const poll = await fetchPollBySlug(slug, networkToFetch);
+//   const poll = await fetchPollBySlug(slug, networkToFetch);
+
+//   return {
+//     props: {
+//       poll
+//     }
+//   };
+// };
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  // fetch poll contents at build-time if on the default network
+  const pollSlug = params?.['poll-hash'] as string;
+  // invariant(pollSlug, 'getStaticProps poll hash not found in params');
+
+  const poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
+
+  if (!poll) {
+    return { revalidate: 30, props: { poll: null } };
+  }
 
   return {
+    revalidate: 30, // allow revalidation every 30 seconds
     props: {
       poll
     }
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const pollsResponse = await getPolls();
+  const MAX = 10;
+  const paths = pollsResponse.polls.slice(0, MAX).map(p => `/polling/${p.slug}`);
+
+  return {
+    paths,
+    fallback: 'blocking'
   };
 };
