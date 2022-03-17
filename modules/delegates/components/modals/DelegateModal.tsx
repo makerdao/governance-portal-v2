@@ -19,6 +19,8 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { formatValue } from 'lib/string';
+import DelegateAvatarName from '../DelegateAvatarName';
 
 type Props = {
   isOpen: boolean;
@@ -99,9 +101,15 @@ export const DelegateModal = ({
                   tx={tx}
                   setTxId={resetTx}
                   onDismiss={onClose}
-                  mkrAmount={mkrToDeposit}
-                  delegate={delegate}
-                />
+                  title={`Delegating to ${delegate.name}`}
+                  description={`Congratulations, you delegated ${formatValue(mkrToDeposit)} MKR to ${
+                    delegate.name
+                  }.`}
+                >
+                  <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
+                    <DelegateAvatarName delegate={delegate} />
+                  </Box>
+                </TxDisplay>
               ) : (
                 <>
                   {mkrAllowance ? (

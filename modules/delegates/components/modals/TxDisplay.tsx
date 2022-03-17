@@ -1,39 +1,33 @@
 import { TxInProgress } from 'modules/app/components/TxInProgress';
 import { TxFinal } from 'modules/app/components/TxFinal';
 import { Transaction } from 'modules/web3/types/transaction';
-import { Delegate } from 'modules/delegates/types';
-import DelegateAvatarName from '../DelegateAvatarName';
-import { BigNumber } from 'ethers';
-import { formatValue } from 'lib/string';
-import { Box } from 'theme-ui';
-
 export const TxDisplay = ({
   tx,
   setTxId,
   onDismiss,
-  delegate,
-  mkrAmount
+  children,
+  title = 'Transaction Sent',
+  description = 'Delegate contract will update once the transaction has been confirmed.'
 }: {
-  tx: Transaction;
-  delegate: Delegate;
+  tx: Transaction | null;
+  children?: React.ReactNode;
   setTxId: (txId: null) => void;
   onDismiss: () => void;
-  mkrAmount: BigNumber;
+  title?: string;
+  description?: string;
 }): React.ReactElement => {
   switch (tx?.status) {
     case 'mined':
       return (
         <TxFinal
-          title={`Delegating to ${delegate.name}`}
-          description={`Congratulations, you delegated ${formatValue(mkrAmount)} MKR to ${delegate.name}.`}
+          title={title}
+          description={description}
           buttonLabel="Close"
           onClick={onDismiss}
           tx={tx}
           success={true}
         >
-          <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
-            <DelegateAvatarName delegate={delegate} />
-          </Box>
+          {children}
         </TxFinal>
       );
     case 'error':
