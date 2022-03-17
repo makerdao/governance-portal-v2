@@ -13,13 +13,10 @@ import { SystemStats } from 'modules/home/components/SystemStats';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
-import BlogPostCard from 'modules/home/components/BlogPostCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
-import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
@@ -33,11 +30,10 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
-  blogPosts: BlogPost[];
   network: SupportedNetworks;
 };
 
-const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
+const LandingPage = ({ proposals, polls, network }: Props) => {
   const [mode] = useColorMode();
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
@@ -165,14 +161,6 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
                   bg: 'background'
                 }}
               />
-              <Stack>
-                <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Grid gap={4} columns={[1, 3]} sx={{ px: [3, 4] }}>
-                  {blogPosts.map(post => (
-                    <BlogPostCard key={post.link} blogPost={post} />
-                  ))}
-                </Grid>
-              </Stack>
             </Container>
           </section>
           <section>
@@ -201,8 +189,7 @@ const LandingPage = ({ proposals, polls, blogPosts, network }: Props) => {
 
 export default function Index({
   proposals: prefetchedProposals,
-  polls: prefetchedPolls,
-  blogPosts
+  polls: prefetchedPolls
 }: Props): JSX.Element {
   // fetch polls & proposals at run-time if on any network other than the default
   const [_polls, setPolls] = useState<Poll[]>();
@@ -240,26 +227,20 @@ export default function Index({
     <LandingPage
       proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
       polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
-      blogPosts={blogPosts}
       network={network}
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls, proposals, blog posts at build-time
-  const [proposals, pollsData, blogPosts] = await Promise.all([
-    getExecutiveProposals(0, 3, 'active'),
-    getPolls(),
-    fetchBlogPosts()
-  ]);
+  // fetch polls, proposals at build-time
+  const [proposals, pollsData] = await Promise.all([getExecutiveProposals(0, 3, 'active'), getPolls()]);
 
   return {
     revalidate: 30 * 60, // allow revalidation every 30 minutes
     props: {
       proposals: proposals.filter(i => i.active),
-      polls: pollsData.polls,
-      blogPosts
+      polls: pollsData.polls
     }
   };
 };
