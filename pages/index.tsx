@@ -56,7 +56,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
   const pollCategories = getCategories(polls);
 
   useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)');
+    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
   }, [mode]);
 
   return (
@@ -156,19 +156,6 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
           </section>
         </Stack>
       </PrimaryLayout>
-      <Global
-        /* react-loading-skeleton uses an outdated version of @emotion/core which causes incorrect type errors.
-        see: https://github.com/emotion-js/emotion/issues/1800 */
-        // @ts-ignore
-        styles={() => ({
-          body: {
-            backgroundColor: 'transparent'
-          },
-          ':root': {
-            background: theme => theme.colors.surface
-          }
-        })}
-      />
     </div>
   );
 };

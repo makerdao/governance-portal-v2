@@ -1,13 +1,11 @@
 import { Box, Text } from 'theme-ui';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import shallow from 'zustand/shallow';
 
 export function PollCategoryTag({
   category,
-  clickable
+  onClick
 }: {
   category: string;
-  clickable?: boolean;
+  onClick?: (category?: any) => void;
 }): React.ReactElement {
   const categories = {
     Collateral: {
@@ -83,16 +81,6 @@ export function PollCategoryTag({
   const color = categories[category] ? categories[category].color : 'tagColorSeventeen';
   const backgroundColor = categories[category] ? categories[category].backgroundColor : 'tagColorSeventeenBg';
 
-  const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
-    state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
-    shallow
-  );
-
-  function onClickCategory() {
-    if (clickable) {
-      setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
-    }
-  }
   return (
     <Box
       sx={{
@@ -101,10 +89,10 @@ export function PollCategoryTag({
         padding: '4px 8px',
         display: 'flex',
         alignItems: 'center',
-        cursor: clickable ? 'pointer' : 'inherit',
+        cursor: onClick ? 'pointer' : 'inherit',
         color
       }}
-      onClick={onClickCategory}
+      onClick={onClick}
       title={`See all ${category} polls`}
     >
       <Text sx={{ fontSize: 2 }}>{category}</Text>

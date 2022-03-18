@@ -11,6 +11,7 @@ import {
   Divider,
   Badge
 } from 'theme-ui';
+import shallow from 'zustand/shallow';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import CountdownTimer from '../../app/components/CountdownTimer';
 import VotingStatus from './PollVotingStatus';
@@ -32,6 +33,7 @@ import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 type Props = {
   poll: Poll;
@@ -48,6 +50,15 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
   const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
+
+  const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
+    state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
+    shallow
+  );
+
+  function onClickCategory(category) {
+    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+  }
 
   return (
     <Card
@@ -97,7 +108,7 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                 <Flex>
                   {poll.categories.map(c => (
                     <Box key={c} sx={{ marginRight: 2 }}>
-                      <PollCategoryTag clickable={true} category={c} />
+                      <PollCategoryTag onClick={() => onClickCategory(c)} category={c} />
                     </Box>
                   ))}
                 </Flex>
