@@ -29,7 +29,7 @@ export function CurrentlySupportingExecutive({
     <Box>
       <Divider my={1} />
       <Flex sx={{ py: 2, justifyContent: 'center', fontSize: [1, 2], color: 'onSecondary' }}>
-        <Text as="p" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
+        <Text as="p" variant="caps" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
           {supportText}
         </Text>
       </Flex>
