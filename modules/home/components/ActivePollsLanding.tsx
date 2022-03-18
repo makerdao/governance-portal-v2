@@ -1,4 +1,4 @@
-import { Flex, Heading, Link as ThemeUILink, Grid, Text } from 'theme-ui';
+import { Flex, Heading, Link as ThemeUILink, Grid } from 'theme-ui';
 import Link from 'next/link';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';

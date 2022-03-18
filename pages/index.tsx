@@ -3,7 +3,6 @@ import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box, Link as ThemeUILink } from 'theme-ui';
 import ErrorPage from 'next/error';
 import Link from 'next/link';
-import { Global } from '@emotion/core';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -33,6 +32,7 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ExecutiveProposalsLanding } from 'modules/home/components/ExecutiveProposalsLanding';
 import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
+import { ResourcesLanding } from 'modules/home/components/ResourcesLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 
@@ -147,6 +147,10 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+          </section>
+
+          <section>
+            <ResourcesLanding />
           </section>
 
           <section>
