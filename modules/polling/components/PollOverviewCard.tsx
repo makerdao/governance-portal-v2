@@ -57,7 +57,6 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
   );
 
   function onClickCategory(category) {
-    console.log(category);
     setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
   }
 

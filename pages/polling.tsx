@@ -183,16 +183,13 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}
                         </Text>
-                        <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
+                        <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
-                            <PollOverviewCard
-                              key={poll.slug}
-                              poll={poll}
-                              showVoting={!!account}
-                              reviewPage={false}
-                            />
+                            <Box key={poll.slug} sx={{ mb: 4 }}>
+                              <PollOverviewCard poll={poll} showVoting={!!account} reviewPage={false} />
+                            </Box>
                           ))}
-                        </Stack>
+                        </Box>
                       </div>
                     ))}
                   </Stack>
@@ -216,21 +213,18 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     <Stack>
                       {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
-                          <Text variant="caps" color="textSecondary" mb={2}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
                             {groupedHistoricalPolls[date].length} Poll
                             {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
                             {formatDateWithTime(date)}
                           </Text>
-                          <Stack sx={{ mb: 4 }}>
+                          <Box>
                             {groupedHistoricalPolls[date].map((poll: Poll) => (
-                              <PollOverviewCard
-                                key={poll.slug}
-                                poll={poll}
-                                reviewPage={false}
-                                showVoting={false}
-                              />
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard poll={poll} reviewPage={false} showVoting={false} />
+                              </Box>
                             ))}
-                          </Stack>
+                          </Box>
                         </div>
                       ))}
                     </Stack>
