@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
@@ -23,7 +23,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { formatDateWithTime } from 'lib/datetime';
-import { isDefaultNetwork, isSupportedNetwork } from 'modules/web3/helpers/networks';
+import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 
 // api
 import { Poll } from 'modules/polling/types';
