@@ -5,7 +5,7 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
-import { fetchDelegationHistory } from './fetchDelegationHistory';
+import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
@@ -17,18 +17,23 @@ export async function fetchChainDelegates(
 
   const contracts = getContracts(chainId);
 
+
   const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
-    delegates.map(async (delegate): Promise<DelegateContractInformation> => {
+    delegates.map(async (delegate, index): Promise<DelegateContractInformation> => {
       // Get MKR delegated to each contract
       const mkr = await contracts.chief.deposits(delegate.voteDelegate);
-      const delegationHistory = await fetchDelegationHistory(delegate.voteDelegate, network);
-      return {
+
+      const delegationEvents = await fetchDelegationEventsByAddresses([delegate.voteDelegate], network);
+
+      const chainDelegate : DelegateContractInformation = {
         ...delegate,
         address: delegate.delegate,
         voteDelegateAddress: delegate.voteDelegate,
         mkrDelegated: formatValue(mkr, 'wad', 18, false),
-        delegationHistory
+        mkrLockedDelegate: delegationEvents
       };
+
+      return chainDelegate;
     })
   );
 

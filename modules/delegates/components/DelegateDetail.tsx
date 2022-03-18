@@ -26,10 +26,12 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountComments from 'modules/comments/components/AccountComments';
 import { Address } from 'modules/address/components/Address';
+import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 
 type PropTypes = {
   delegate: Delegate;
 };
+
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
@@ -46,7 +48,9 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
-  const activeDelegators = delegate.delegationHistory?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
+  const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
+
+  const activeDelegators = delegationHistory.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
   const delegatorCount = activeDelegators.length;
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -68,10 +72,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegate.delegationHistory.length > 0 && totalStaked ? (
+      {delegationHistory.length > 0 && totalStaked ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
-            <DelegatedByAddress delegators={delegate.delegationHistory} totalDelegated={totalStaked} />
+            <DelegatedByAddress delegators={delegationHistory} totalDelegated={totalStaked} />
           </Box>
           <Divider />
 

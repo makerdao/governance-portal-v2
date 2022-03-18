@@ -5,6 +5,7 @@ export type DelegatesAPIStats = {
   shadow: number;
   recognized: number;
   totalMKRDelegated: string;
+  totalDelegators: number;
 };
 
 export type DelegatesAPIResponse = {
@@ -14,18 +15,4 @@ export type DelegatesAPIResponse = {
     page: number;
     pageSize: number;
   };
-};
-
-export type MKRLockedDelegateAPIResponse = {
-  fromAddress: string;
-  lockAmount: string;
-  blockNumber: number;
-  blockTimestamp: string;
-  lockTotal: string;
-  hash: string;
-};
-
-export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
-  hash: string;
-  immediateCaller: string;
 };

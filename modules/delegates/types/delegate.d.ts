@@ -18,7 +18,7 @@ export type DelegateContractInformation = {
   blockTimestamp: string;
   mkrDelegated: string;
   proposalsSupported: number;
-  delegationHistory: DelegationHistory[];
+  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
 };
 
 export type Delegate = {
@@ -40,7 +40,7 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
-  delegationHistory: DelegationHistory[];
+  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
 };
 
@@ -54,4 +54,20 @@ export type DelegationHistoryEvent = {
   lockAmount: string;
   blockTimestamp: string;
   hash: string;
+};
+
+
+
+export type MKRLockedDelegateAPIResponse = {
+  fromAddress: string;
+  lockAmount: string;
+  blockNumber: number;
+  blockTimestamp: string;
+  lockTotal: string;
+  hash: string;
+};
+
+export type MKRDelegatedToDAIResponse = MKRLockedDelegateAPIResponse & {
+  hash: string;
+  immediateCaller: string;
 };

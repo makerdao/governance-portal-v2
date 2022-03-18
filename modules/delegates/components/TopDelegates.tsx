@@ -12,6 +12,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useState } from 'react';
 import { DelegateModal } from './modals/DelegateModal';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 
 export default function TopDelegates({
   delegates,
@@ -83,6 +84,7 @@ export default function TopDelegates({
           </Box>
         </Flex>
         {delegates.map((delegate, index) => {
+          const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
           return (
             <Box key={`top-delegate-${index}`}>
               <Flex
@@ -110,12 +112,12 @@ export default function TopDelegates({
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>
                   <Text>
-                    {delegate.delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
+                    {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
                     addresses
                   </Text>
                 </Box>
                 <Flex
-                  sx={{ width: ['30%', '15%'], textAlign: ['right', 'left'], justifyContent: 'flex-end' }}
+                  sx={{ width: ['30%', '15%'], textAlign: ['right', 'left'], justifyContent: ['flex-end', 'flex-start'] }}
                   onClick={() => {
                     setToggledDelegates({
                       ...toggledDelegates,
@@ -182,7 +184,7 @@ export default function TopDelegates({
                         Delegators
                       </Text>
                       <Text>
-                        {delegate.delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
+                        {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
                         addresses
                       </Text>
                     </Box>
