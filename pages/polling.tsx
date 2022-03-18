@@ -4,6 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
@@ -48,6 +49,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
     startDate,
     endDate,
     categoryFilter,
+    setCategoryFilter,
     showHistorical,
     showPollActive,
     showPollEnded,
@@ -58,6 +60,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
+      state.setCategoryFilter,
       state.pollFilters.showHistorical,
       state.pollFilters.showPollActive,
       state.pollFilters.showPollEnded,
@@ -66,6 +69,14 @@ const PollingOverview = ({ polls, categories }: Props) => {
     ],
     shallow
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.category) {
+      const category = router.query.category as string;
+      setCategoryFilter({ [category]: true });
+    }
+  }, [router]);
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const loader = useRef<HTMLDivElement>(null);
@@ -172,16 +183,13 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}
                         </Text>
-                        <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
+                        <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
-                            <PollOverviewCard
-                              key={poll.slug}
-                              poll={poll}
-                              showVoting={!!account}
-                              reviewPage={false}
-                            />
+                            <Box key={poll.slug} sx={{ mb: 4 }}>
+                              <PollOverviewCard poll={poll} showVoting={!!account} reviewPage={false} />
+                            </Box>
                           ))}
-                        </Stack>
+                        </Box>
                       </div>
                     ))}
                   </Stack>
@@ -205,21 +213,18 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     <Stack>
                       {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
-                          <Text variant="caps" color="textSecondary" mb={2}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
                             {groupedHistoricalPolls[date].length} Poll
                             {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
                             {formatDateWithTime(date)}
                           </Text>
-                          <Stack sx={{ mb: 4 }}>
+                          <Box>
                             {groupedHistoricalPolls[date].map((poll: Poll) => (
-                              <PollOverviewCard
-                                key={poll.slug}
-                                poll={poll}
-                                reviewPage={false}
-                                showVoting={false}
-                              />
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard poll={poll} reviewPage={false} showVoting={false} />
+                              </Box>
                             ))}
-                          </Stack>
+                          </Box>
                         </div>
                       ))}
                     </Stack>
