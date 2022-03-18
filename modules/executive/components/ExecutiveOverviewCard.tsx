@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import Link from 'next/link';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text, Flex, Box, Button, Badge, Divider, Card, Link as ThemeUILink } from 'theme-ui';
+import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { BigNumber } from 'ethers';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { getStatusText } from 'modules/executive/helpers/getStatusText';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { Proposal } from 'modules/executive/types';
 import VoteModal from './VoteModal';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
@@ -81,17 +81,17 @@ export default function ExecutiveOverviewCard({
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
             <Flex sx={{ flexDirection: 'column', height: '200px' }}>
-              <Link
-                href={{ pathname: '/executive/[proposal-id]' }}
-                as={{ pathname: `/executive/${proposal.key}` }}
-                passHref
+              <InternalLink
+                href={'/executive/[proposal-id]'}
+                title="View executive details"
+                as={`/executive/${proposal.key}`}
               >
-                <ThemeUILink variant="nostyle" title="View Executive Details">
+                <>
                   <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
                   <CardSummary text={proposal.proposalBlurb} styles={{ mt: 2 }} />
-                </ThemeUILink>
-              </Link>
+                </>
+              </InternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                 {hasVotedFor && (
                   <Badge
@@ -178,35 +178,33 @@ export default function ExecutiveOverviewCard({
 
         {comments && comments.length > 0 && (
           <Box sx={{ mt: 2 }}>
-            <ThemeUILink
+            <InternalLink
               href={`/executive/${proposal.key}?network=${network}#comments`}
               title="View Comments"
             >
               <CommentCount count={comments.length} />
-            </ThemeUILink>
+            </InternalLink>
           </Box>
         )}
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ width: '50%' }}>
-            <Link
-              href={{ pathname: '/executive/[proposal-id]' }}
-              as={{ pathname: `/executive/${proposal.key}` }}
-              passHref
+            <InternalLink
+              href={'/executive/[proposal-id]'}
+              title="View executive details"
+              as={`/executive/${proposal.key}`}
             >
-              <ThemeUILink variant="nostyle" title="View Poll Details" sx={{ width: '100%' }}>
-                <Button
-                  variant="outline"
-                  sx={{
-                    mt: canVote ? 3 : 0,
-                    borderColor: 'text',
-                    color: 'text',
-                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                  }}
-                >
-                  View Details
-                </Button>
-              </ThemeUILink>
-            </Link>
+              <Button
+                variant="outline"
+                sx={{
+                  mt: canVote ? 3 : 0,
+                  borderColor: 'text',
+                  color: 'text',
+                  ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                }}
+              >
+                View Details
+              </Button>
+            </InternalLink>
           </Box>
           <Box sx={{ width: '50%' }}>
             {spellData?.mkrSupport === undefined ? (
