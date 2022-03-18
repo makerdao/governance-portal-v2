@@ -112,12 +112,15 @@ export default function TopDelegates({
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>
                   <Text>
-                    {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
-                    addresses
+                    {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length} addresses
                   </Text>
                 </Box>
                 <Flex
-                  sx={{ width: ['30%', '15%'], textAlign: ['right', 'left'], justifyContent: ['flex-end', 'flex-start'] }}
+                  sx={{
+                    width: ['30%', '15%'],
+                    textAlign: ['right', 'left'],
+                    justifyContent: ['flex-end', 'flex-start']
+                  }}
                   onClick={() => {
                     setToggledDelegates({
                       ...toggledDelegates,
@@ -184,8 +187,7 @@ export default function TopDelegates({
                         Delegators
                       </Text>
                       <Text>
-                        {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length}{' '}
-                        addresses
+                        {delegationHistory.filter(i => new BigNumber(i.lockAmount).gt(0)).length} addresses
                       </Text>
                     </Box>
                     <Box sx={{ width: '50%', textAlign: 'right' }}>

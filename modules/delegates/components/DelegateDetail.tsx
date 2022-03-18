@@ -32,7 +32,6 @@ type PropTypes = {
   delegate: Delegate;
 };
 
-
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   const { network } = useActiveWeb3React();
