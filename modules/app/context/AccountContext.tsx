@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -36,7 +35,6 @@ type PropTypes = {
 };
 
 export const AccountProvider = ({ children }: PropTypes): React.ReactElement => {
-  ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
   const { account } = useActiveWeb3React();
 
   const { data: voteDelegateContract } = useCurrentUserVoteDelegateContract();
