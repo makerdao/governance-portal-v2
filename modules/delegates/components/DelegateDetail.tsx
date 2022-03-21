@@ -27,9 +27,20 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountComments from 'modules/comments/components/AccountComments';
 import { Address } from 'modules/address/components/Address';
+import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 
 type PropTypes = {
   delegate: Delegate;
+};
+
+const swrPostProcess = useSWRNext => (key, fetcher, config) => {
+  const swr = useSWRNext(key, fetcher, config);
+
+  return swr.data === undefined
+    ? swr
+    : Object.assign({}, swr, {
+        data: formatDelegationHistory(swr.data)
+      });
 };
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
@@ -50,7 +61,8 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: !cache.get(dataKeyDelegators),
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
+    use: [swrPostProcess]
   });
 
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
