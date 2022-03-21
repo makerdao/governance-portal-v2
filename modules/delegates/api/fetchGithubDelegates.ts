@@ -28,28 +28,28 @@ async function extractGithubInformation(
 
     const profileMdDoc = await (await fetch(profileMd?.download_url)).text();
 
-    let metricsMdDoc;
-    if (metricsMd) {
-      metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
-    }
-
-    let disclosuresMdDoc;
-    if (disclosuresMd) {
-      disclosuresMdDoc = await (await fetch(disclosuresMd?.download_url)).text();
-    }
-
     const {
       content,
       data: { name, external_profile_url }
     } = matter(profileMdDoc);
 
-    const {
-      data: { combined_participation, communication, poll_participation, exec_participation }
-    } = matter(metricsMdDoc);
+    let metricsMdDoc;
+    let metricsData;
+    if (metricsMd) {
+      metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
+      const { data } = matter(metricsMdDoc);
+      metricsData = data;
+    }
 
-    const {
-      data: { text }
-    } = matter(disclosuresMdDoc);
+    let disclosuresMdDoc;
+    let disclosuresData;
+    if (disclosuresMd) {
+      disclosuresMdDoc = await (await fetch(disclosuresMd?.download_url)).text();
+      const {
+        data: { text }
+      } = matter(disclosuresMdDoc);
+      disclosuresData = text;
+    }
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
@@ -60,11 +60,11 @@ async function extractGithubInformation(
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,
-      combinedParticipation: combined_participation,
-      pollParticipation: poll_participation,
-      executiveParticipation: exec_participation,
-      communication,
-      disclosures: text
+      combinedParticipation: metricsData.combined_participation,
+      pollParticipation: metricsData.poll_participation,
+      executiveParticipation: metricsData.exec_participation,
+      communication: metricsData.communication,
+      disclosures: disclosuresData
     };
   } catch (e) {
     console.error('Error parsing folder from github delegate', e.message);
