@@ -1,9 +1,10 @@
+import React, { ReactNode } from 'react';
+import { ethers } from 'ethers';
 import { useCurrentUserVoteDelegateContract } from 'modules/delegates/hooks/useCurrentUserVoteDelegateContract';
 import { useVoteDelegateAddress } from 'modules/delegates/hooks/useVoteDelegateAddress';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useEagerConnect } from 'modules/web3/hooks/useEagerConnect';
 import { useGoerliForkWindowBindings } from 'modules/web3/hooks/useGoerliForkWindowBindings';
-import React, { ReactNode } from 'react';
 import { useCurrentUserVoteProxyContract } from '../hooks/useCurrentUserVoteProxyContract';
 import { useCurrentUserVoteProxyOldContract } from '../hooks/useCurrentUserVoteProxyOldContract';
 import { useVoteProxyAddress } from '../hooks/useVoteProxyAddress';
