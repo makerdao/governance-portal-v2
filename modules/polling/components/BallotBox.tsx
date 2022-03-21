@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -10,6 +9,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import Link from 'next/link';
 
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
@@ -17,12 +17,6 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
   const { transaction, ballotCount } = useContext(BallotContext);
-
-  const router = useRouter();
-
-  const startReview = () => {
-    router.push({ pathname: '/polling/review' });
-  };
 
   return (
     <Box>
@@ -62,17 +56,18 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           </Box>
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Button
-              onClick={() => {
-                trackButtonClick('reviewAndSubmitBallot');
-                startReview();
-              }}
-              variant="primaryLarge"
-              disabled={!ballotCount}
-              sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
-            >
-              Review & Submit Your Ballot
-            </Button>
+            <Link href="/polling/review">
+              <Button
+                onClick={() => {
+                  trackButtonClick('reviewAndSubmitBallot');
+                }}
+                variant="primaryLarge"
+                disabled={!ballotCount}
+                sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
+              >
+                Review & Submit Your Ballot
+              </Button>
+            </Link>
           </Flex>
         </Card>
       )}

@@ -22,12 +22,12 @@ export async function getCommentsByAddress(
 
   // decending sort
   const pollCommentsFromDB: PollCommentFromDB[] = await collectionPolling
-    .find({ voterAddress: address, network })
+    .find({ voterAddress: address.toLowerCase(), network })
     .sort({ date: -1 })
     .toArray();
 
   const executiveCommentsFromDB: ExecutiveCommentFromDB[] = await collectionExecutive
-    .find({ voterAddress: address, network })
+    .find({ voterAddress: address.toLowerCase(), network })
     .sort({ date: -1 })
     .toArray();
 

@@ -102,7 +102,7 @@ export default function CommentItem({
             </Box>
           )}
         </Flex>
-        {account === comment.comment.voterAddress && twitterEnabled && (
+        {account?.toLowerCase() === comment.comment.voterAddress.toLowerCase() && twitterEnabled && (
           <ExternalLink href={twitterUrl} target="_blank">
             <Text variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
               Share <Icon name="twitter" size={12} ml={1} />

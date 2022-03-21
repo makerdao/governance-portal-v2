@@ -119,14 +119,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Comments signing
   const getComments = (): Partial<PollComment>[] => {
     return Object.keys(ballot)
+      .filter(key => isPollOnBallot(parseInt(key)))
       .map(key => {
         return {
-          pollId: key,
-          vote: ballot[parseInt(key)]
+          pollId: parseInt(key),
+          ...ballot[parseInt(key)]
         };
       })
-      .filter(c => !!c.vote && !!c.vote.comment)
-      .map(c => c.vote);
+      .filter(c => !!c.comment);
   };
 
   const signComments = async () => {
@@ -176,7 +176,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         // if comment included, add to comments db
         if (getComments().length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: account || '',
+            voterAddress: account?.toLowerCase() || '',
             comments: getComments(),
             signedMessage: commentsSignature,
             txHash
