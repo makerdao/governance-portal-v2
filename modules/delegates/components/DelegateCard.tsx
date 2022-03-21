@@ -14,7 +14,6 @@ import {
 } from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -66,18 +65,9 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               flexDirection: 'column'
             }}
           >
-            <Link
-              href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`
-              }}
-              passHref
-            >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                <Box sx={{ mr: [0, 2] }}>
-                  <DelegateAvatarName delegate={delegate} />
-                </Box>
-              </ThemeUILink>
-            </Link>
+            <Box sx={{ mr: [0, 2] }}>
+              <DelegateAvatarName delegate={delegate} />
+            </Box>
 
             <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
               <Link

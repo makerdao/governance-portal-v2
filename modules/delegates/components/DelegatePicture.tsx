@@ -1,8 +1,14 @@
-import { DelegateStatusEnum } from '../delegates.constants';
-import { Box, Flex, Image, Text } from 'theme-ui';
+import { useState } from 'react';
+import { DialogOverlay, DialogContent } from '@reach/dialog';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import { Box, Flex, Image, Text, Link as ThemeUILink, IconButton } from 'theme-ui';
+import Link from 'next/link';
 import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate } from '../types';
+import { fadeIn, slideUp } from 'lib/keyframes';
+import { BoxWithClose } from 'modules/app/components/BoxWithClose';
+import { Delegate } from 'modules/delegates/types';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Address } from 'modules/address/components/Address';
@@ -15,6 +21,12 @@ export function DelegatePicture({
   width?: number;
 }): React.ReactElement {
   const { library } = useActiveWeb3React();
+  const bpi = useBreakpointIndex();
+  const [showCoreUnitInfo, setShowCoreUnitInfo] = useState(false);
+
+  const handleInfoClick = () => {
+    setShowCoreUnitInfo(!showCoreUnitInfo);
+  };
 
   const tooltipAvatarWidth = 68;
   const delegateMetrics = (
@@ -136,69 +148,100 @@ export function DelegatePicture({
 
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
-      <Tooltip label={delegateMetrics}>
-        <Box>
-          {delegate.picture ? (
-            <Image
-              src={delegate.picture}
-              key={delegate.id}
-              sx={{
-                objectFit: 'cover',
-                width: '100%',
-                borderRadius: '100%',
-                maxHeight: width
+      <Box>
+        <Tooltip label={delegateMetrics}>
+          <Box>
+            <Link
+              href={{
+                pathname: `/address/${delegate.voteDelegateAddress}`
               }}
-            />
-          ) : (
-            <Box>
-              <Davatar
-                size={width}
-                address={delegate.address}
-                generatedAvatarType="jazzicon"
-                provider={library}
-              />
-            </Box>
-          )}
-          {delegate.status === DelegateStatusEnum.recognized && (
-            <Icon
-              name={'verified'}
-              sx={{
-                position: 'absolute',
-                bottom: width / -12,
-                right: width / -7,
-                size: width / 2.5,
-                color: 'primary'
-              }}
-            />
-          )}
-          {delegate.cuMember && (
-            <Box>
+              passHref
+            >
+              <ThemeUILink title="Profile details" variant="nostyle">
+                {delegate.picture ? (
+                  <Image
+                    src={delegate.picture}
+                    key={delegate.id}
+                    sx={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      borderRadius: '100%',
+                      maxHeight: width
+                    }}
+                  />
+                ) : (
+                  <Box>
+                    <Davatar
+                      size={width}
+                      address={delegate.address}
+                      generatedAvatarType="jazzicon"
+                      provider={library}
+                    />
+                  </Box>
+                )}
+              </ThemeUILink>
+            </Link>
+
+            {delegate.status === DelegateStatusEnum.recognized && (
               <Icon
-                name={'info'}
-                color="voterYellow"
+                name={'verified'}
                 sx={{
                   position: 'absolute',
-                  bottom: width * 0.65,
+                  bottom: width / -12,
                   right: width / -7,
-                  size: width / 2.5
+                  size: width / 2.5,
+                  color: 'primary'
                 }}
               />
-            </Box>
-          )}
-          {delegate.status === DelegateStatusEnum.shadow && (
+            )}
+          </Box>
+        </Tooltip>
+        {delegate.cuMember && (
+          <IconButton variant="icon" onClick={handleInfoClick}>
             <Icon
-              name={'shadowQuestion'}
+              name={'info'}
               color="voterYellow"
               sx={{
                 position: 'absolute',
-                bottom: width / -12,
+                bottom: width * 0.65,
                 right: width / -7,
-                size: width / 2.5
+                size: width / 2.7
               }}
             />
-          )}
-        </Box>
-      </Tooltip>
+          </IconButton>
+        )}
+        {delegate.status === DelegateStatusEnum.shadow && (
+          <Icon
+            name={'shadowQuestion'}
+            color="voterYellow"
+            sx={{
+              position: 'absolute',
+              bottom: width / -12,
+              right: width / -7,
+              size: width / 2.5
+            }}
+          />
+        )}
+      </Box>
+      <DialogOverlay isOpen={showCoreUnitInfo} onDismiss={() => setShowCoreUnitInfo(false)}>
+        <DialogContent
+          sx={
+            bpi === 0
+              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
+              : {
+                  variant: 'dialog.desktop',
+                  animation: `${fadeIn} 350ms ease`,
+                  width: '580px',
+                  px: 5,
+                  py: 4
+                }
+          }
+        >
+          <BoxWithClose close={() => setShowCoreUnitInfo(false)}>
+            <Text>Core unit member bla blah </Text>
+          </BoxWithClose>
+        </DialogContent>
+      </DialogOverlay>
     </Box>
   );
 }
