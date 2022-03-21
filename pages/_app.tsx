@@ -24,6 +24,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
+import Script from 'next/script';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -49,6 +50,12 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
           <AccountProvider>
             <BallotProvider>
               <HeadComponent />
+              <Script
+                data-goatcounter="https://dux-makerdao.goatcounter.com/count"
+                async
+                src="//gc.zgo.at/count.js"
+                strategy="afterInteractive"
+              />
               <CookiesProvider disabled={false}>
                 <AnalyticsProvider>
                   <SWRConfig
