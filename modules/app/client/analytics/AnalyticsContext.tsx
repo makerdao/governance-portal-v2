@@ -51,7 +51,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
           product: ANALYTICS_PRODUCT
         });
 
-        goatcounterTrack(url.slice(1), 'initpageview-track', false);
+        goatcounterTrack(url.slice(1), ANALYTICS_EVENTS.ROUTE_CHANGE, false);
       };
 
       // Subscribe to route event changes and emit
@@ -75,6 +75,7 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
   function emitAnalyticsEvent(event: string, config: TrackConfig): void {
     if (analyticCookiesEnabled) {
       mixpanel.track(event, config);
+      goatcounterTrack(config.page, event);
     }
   }
 
