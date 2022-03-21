@@ -19,7 +19,7 @@ async function extractGithubInformation(
 
     const metricsMd = folderContents.find(item => item.name === 'metrics.md');
 
-    const disclosuresMd = folderContents.find(item => item.name === 'disclosures.md');
+    const cuMemberMd = folderContents.find(item => item.name === 'cumember.md');
 
     // No profile found
     if (!profileMd) {
@@ -41,14 +41,9 @@ async function extractGithubInformation(
       metricsData = data;
     }
 
-    let disclosuresMdDoc;
-    let disclosuresData;
-    if (disclosuresMd) {
-      disclosuresMdDoc = await (await fetch(disclosuresMd?.download_url)).text();
-      const {
-        data: { text }
-      } = matter(disclosuresMdDoc);
-      disclosuresData = text;
+    let cuMember = false;
+    if (cuMemberMd) {
+      cuMember = true;
     }
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
@@ -64,7 +59,7 @@ async function extractGithubInformation(
       pollParticipation: metricsData.poll_participation,
       executiveParticipation: metricsData.exec_participation,
       communication: metricsData.communication,
-      disclosures: disclosuresData
+      cuMember
     };
   } catch (e) {
     console.error('Error parsing folder from github delegate', e.message);

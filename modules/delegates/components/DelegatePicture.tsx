@@ -87,7 +87,7 @@ export function DelegatePicture({
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'column', p: 3 }}>
-        {delegate.disclosures && (
+        {delegate.cuMember && (
           <Flex sx={{ alignItems: 'center', mb: 3 }}>
             <Icon
               name={'info'}
@@ -96,7 +96,9 @@ export function DelegatePicture({
                 size: 18
               }}
             />
-            <Text sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold' }}>{delegate.disclosures}</Text>
+            <Text sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold' }}>
+              This delegate is also a Core Unit member.
+            </Text>
           </Flex>
         )}
         <Text as="p" variant="secondary">
@@ -169,17 +171,19 @@ export function DelegatePicture({
               }}
             />
           )}
-          {delegate.status === DelegateStatusEnum.recognized && (
-            <Icon
-              name={'verified'}
-              sx={{
-                position: 'absolute',
-                bottom: width / -12,
-                right: width / -7,
-                size: width / 2.5,
-                color: 'primary'
-              }}
-            />
+          {delegate.cuMember && (
+            <Box>
+              <Icon
+                name={'info'}
+                color="voterYellow"
+                sx={{
+                  position: 'absolute',
+                  bottom: width * 0.65,
+                  right: width / -7,
+                  size: width / 2.5
+                }}
+              />
+            </Box>
           )}
           {delegate.status === DelegateStatusEnum.shadow && (
             <Icon
