@@ -29,7 +29,13 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const bpi = useBreakpointIndex();
 
-  const { ballot, previousBallot, updateVoteFromBallot } = useContext(BallotContext);
+  const { ballot, previousBallot, updateVoteFromBallot, transaction } = useContext(BallotContext);
+
+  const [transactionStatus, setTransactionStatus] = useState('default');
+
+  useEffect(() => {
+    setTransactionStatus(transaction?.status || 'default');
+  }, [transaction]);
 
   const { account } = useAccount();
   const activePolls = polls.filter(poll => isActivePoll(poll));
@@ -115,6 +121,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                 });
                               }}
                               value={ballot[poll.pollId].comment || ''}
+                              disabled={
+                                transactionStatus === 'pending' || transactionStatus === 'initialized'
+                              }
                             />
                           </Box>
                         </PollOverviewCard>
