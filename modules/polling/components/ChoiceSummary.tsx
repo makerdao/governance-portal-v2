@@ -3,11 +3,11 @@ import { getNumberWithOrdinal } from 'lib/utils';
 import { ABSTAIN } from '../polling.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import isNil from 'lodash/isNil';
-import useBallotStore from '../stores/ballotStore';
-import shallow from 'zustand/shallow';
+
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Poll } from '../types';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
 
 const ChoiceSummary = ({
   choice,
@@ -26,10 +26,9 @@ const ChoiceSummary = ({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const isSingleSelect = typeof choice === 'number';
+  const { removeVoteFromBallot, isPollOnBallot } = useContext(BallotContext);
 
-  const [removeFromBallot, ballot] = useBallotStore(state => [state.removeFromBallot, state.ballot], shallow);
-
-  const onBallot = !isNil(ballot[poll.pollId]?.option);
+  const onBallot = isPollOnBallot(poll.pollId);
 
   return (
     <Box {...props}>
@@ -68,7 +67,7 @@ const ChoiceSummary = ({
           <Button
             data-testid="remove-ballot-choice"
             onClick={() => {
-              removeFromBallot(poll.pollId);
+              removeVoteFromBallot(poll.pollId);
             }}
             variant={showHeader ? 'smallOutline' : 'outline'}
             sx={{

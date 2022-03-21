@@ -22,8 +22,11 @@ export async function getPollComments(
     .toArray();
 
   const comments: PollComment[] = commentsFromDB.map(comment => {
-    const { _id, ...rest } = comment;
-    return rest;
+    const { _id, voterAddress, ...rest } = comment;
+    return {
+      ...rest,
+      voterAddress: voterAddress.toLowerCase()
+    };
   });
 
   // only return the latest comment from each address

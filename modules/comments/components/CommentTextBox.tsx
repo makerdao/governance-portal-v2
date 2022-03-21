@@ -3,10 +3,12 @@ import { Text, Box, Label, Textarea } from 'theme-ui';
 
 export default function CommentTextBox({
   value,
-  onChange
+  onChange,
+  disabled
 }: {
   value: string;
   onChange: (val: string) => void;
+  disabled?: boolean;
 }): React.ReactElement {
   return (
     <Box
@@ -35,6 +37,7 @@ export default function CommentTextBox({
           onChange(event.target.value.substring(0, 250));
         }}
         value={value}
+        disabled={disabled}
       />
 
       <Text
