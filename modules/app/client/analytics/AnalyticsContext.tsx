@@ -4,6 +4,13 @@ import { useRouter } from 'next/router';
 import { mixpanelInit, mixpanelTokenConfigured } from './mixPanel';
 import mixpanel from 'mixpanel-browser';
 import { ANALYTICS_EVENTS, ANALYTICS_PRODUCT } from './analytics.constants';
+import { goatcounterTrack } from './goatcounter';
+
+declare global {
+  interface Window {
+    goatcounter: any;
+  }
+}
 
 type TrackConfig = {
   id: string;
@@ -43,6 +50,8 @@ export const AnalyticsProvider = ({ children }: { children: React.ReactElement }
           id: url,
           product: ANALYTICS_PRODUCT
         });
+
+        goatcounterTrack(url.slice(1), 'initpageview-track', false);
       };
 
       // Subscribe to route event changes and emit
