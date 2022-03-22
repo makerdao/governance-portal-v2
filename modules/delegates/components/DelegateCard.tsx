@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
+import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -17,15 +18,22 @@ import { CurrentlySupportingExecutive } from 'modules/executive/components/Curre
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { CoreUnitModal } from './modals/CoreUnitModal';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const { account, voteDelegateContractAddress } = useAccount();
+
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const { account, voteDelegateContractAddress } = useAccount();
+  const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
+
+  const handleInfoClick = () => {
+    setShowCoreUnitModal(!showCoreUnitModal);
+  };
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
@@ -46,13 +54,30 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
-        <Box mb={2}>
+        <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
             date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
             left
           />
-        </Box>
+          {delegate.cuMember && (
+            <Button variant="outline" onClick={handleInfoClick} sx={{ border: 'none' }}>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Text variant="caps" sx={{ color: 'onSecondary', mr: 2 }}>
+                  core unit member
+                </Text>
+                <Icon
+                  name={'info'}
+                  color="voterYellow"
+                  sx={{
+                    size: 13
+                  }}
+                />
+              </Flex>
+            </Button>
+          )}
+        </Flex>
+
         <Flex
           sx={{
             flexDirection: ['column', 'column', 'row', 'column', 'row']
@@ -236,6 +261,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           mutateTotalStaked={mutateTotalStaked}
           mutateMKRDelegated={mutateMKRDelegated}
         />
+      )}
+
+      {showCoreUnitModal && (
+        <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
       )}
     </Card>
   );

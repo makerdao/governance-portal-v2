@@ -1,12 +1,7 @@
-import { useState } from 'react';
-import { DialogOverlay, DialogContent } from '@reach/dialog';
-import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Image, Text, Link as ThemeUILink, IconButton } from 'theme-ui';
+import { Box, Flex, Image, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
 import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { fadeIn, slideUp } from 'lib/keyframes';
-import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
@@ -21,12 +16,6 @@ export function DelegatePicture({
   width?: number;
 }): React.ReactElement {
   const { library } = useActiveWeb3React();
-  const bpi = useBreakpointIndex();
-  const [showCoreUnitInfo, setShowCoreUnitInfo] = useState(false);
-
-  const handleInfoClick = () => {
-    setShowCoreUnitInfo(!showCoreUnitInfo);
-  };
 
   const tooltipAvatarWidth = 68;
   const delegateMetrics = (
@@ -105,11 +94,11 @@ export function DelegatePicture({
               name={'info'}
               color="voterYellow"
               sx={{
-                size: 18
+                size: 13
               }}
             />
             <Text sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold' }}>
-              This delegate is also a Core Unit member.
+              This delegate is also a Core Unit member
             </Text>
           </Flex>
         )}
@@ -196,20 +185,6 @@ export function DelegatePicture({
             )}
           </Box>
         </Tooltip>
-        {delegate.cuMember && (
-          <IconButton variant="icon" onClick={handleInfoClick}>
-            <Icon
-              name={'info'}
-              color="voterYellow"
-              sx={{
-                position: 'absolute',
-                bottom: width * 0.65,
-                right: width / -7,
-                size: width / 2.7
-              }}
-            />
-          </IconButton>
-        )}
         {delegate.status === DelegateStatusEnum.shadow && (
           <Icon
             name={'shadowQuestion'}
@@ -223,25 +198,6 @@ export function DelegatePicture({
           />
         )}
       </Box>
-      <DialogOverlay isOpen={showCoreUnitInfo} onDismiss={() => setShowCoreUnitInfo(false)}>
-        <DialogContent
-          sx={
-            bpi === 0
-              ? { variant: 'dialog.mobile', animation: `${slideUp} 350ms ease` }
-              : {
-                  variant: 'dialog.desktop',
-                  animation: `${fadeIn} 350ms ease`,
-                  width: '580px',
-                  px: 5,
-                  py: 4
-                }
-          }
-        >
-          <BoxWithClose close={() => setShowCoreUnitInfo(false)}>
-            <Text>Core unit member bla blah </Text>
-          </BoxWithClose>
-        </DialogContent>
-      </DialogOverlay>
     </Box>
   );
 }

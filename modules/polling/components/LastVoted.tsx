@@ -52,11 +52,7 @@ export default function LastVoted({
         alignItems: 'center'
       }}
     >
-      <Text
-        variant="secondary"
-        color={expired ? '#D8E0E3' : 'onSecondary'}
-        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
-      >
+      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2 }}>
         {lastVoteDate}
       </Text>
       <Flex
