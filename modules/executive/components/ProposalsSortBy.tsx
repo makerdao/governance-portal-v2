@@ -21,15 +21,6 @@ export default function ProposalsSortBy(props): JSX.Element {
       {...props}
     >
       <MenuItem
-        onSelect={() => setExecutiveSortBy('date')}
-        sx={{
-          variant: 'menubuttons.default.item',
-          fontWeight: executiveSortBy === 'date' ? 'bold' : undefined
-        }}
-      >
-        Date Posted
-      </MenuItem>
-      <MenuItem
         onSelect={() => setExecutiveSortBy('active')}
         sx={{
           variant: 'menubuttons.default.item',
@@ -37,6 +28,15 @@ export default function ProposalsSortBy(props): JSX.Element {
         }}
       >
         Active
+      </MenuItem>
+      <MenuItem
+        onSelect={() => setExecutiveSortBy('date')}
+        sx={{
+          variant: 'menubuttons.default.item',
+          fontWeight: executiveSortBy === 'date' ? 'bold' : undefined
+        }}
+      >
+        Date Posted
       </MenuItem>
       <MenuItem
         onSelect={() => setExecutiveSortBy('mkr')}

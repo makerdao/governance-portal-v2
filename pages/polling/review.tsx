@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
@@ -14,7 +13,6 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { Poll } from 'modules/polling/types';
 import ReviewBox from 'modules/polling/components/review/ReviewBox';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -24,15 +22,20 @@ import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
+import { BallotContext } from 'modules/polling/context/BallotContext';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
-  const [ballot, previousVotes, setComments, updateComment, comments] = useBallotStore(
-    state => [state.ballot, state.previousVotes, state.setComments, state.updateComment, state.comments],
-    shallow
-  );
+
+  const { ballot, previousBallot, updateVoteFromBallot, transaction } = useContext(BallotContext);
+
+  const [transactionStatus, setTransactionStatus] = useState('default');
+
+  useEffect(() => {
+    setTransactionStatus(transaction?.status || 'default');
+  }, [transaction]);
 
   const { account } = useAccount();
   const activePolls = polls.filter(poll => isActivePoll(poll));
@@ -43,16 +46,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     })
     .filter(p => !!p) as Poll[];
 
-  const previousVotedPolls = Object.keys(previousVotes)
+  const previousVotedPolls = Object.keys(previousBallot)
     .map(pollId => {
       return findPollById(polls, pollId);
     })
     .filter(p => !!p) as Poll[];
-
-  useEffect(() => {
-    // Reset previous comments on load.
-    setComments([]);
-  }, []);
 
   const SubmitButton = props => (
     <Flex sx={{ flexDirection: 'column', width: '100%' }} {...props}>
@@ -118,9 +116,14 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                           <Box sx={{ pt: 2 }}>
                             <CommentTextBox
                               onChange={(val: string) => {
-                                updateComment(val, poll.pollId);
+                                updateVoteFromBallot(poll.pollId, {
+                                  comment: val
+                                });
                               }}
-                              value={comments.find(i => i.pollId === poll.pollId)?.comment || ''}
+                              value={ballot[poll.pollId].comment || ''}
+                              disabled={
+                                transactionStatus === 'pending' || transactionStatus === 'initialized'
+                              }
                             />
                           </Box>
                         </PollOverviewCard>

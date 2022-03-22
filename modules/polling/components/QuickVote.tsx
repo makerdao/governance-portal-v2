@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Text, Flex, Button, Box, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import invariant from 'tiny-invariant';
 import isEqual from 'lodash/isEqual';
-import shallow from 'zustand/shallow';
 import Tooltip from 'modules/app/components/Tooltip';
 
 import { Poll } from 'modules/polling/types';
 import { isRankedChoicePoll, extractCurrentPollVote } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 import RankedChoiceSelect from './RankedChoiceSelect';
 import SingleSelect from './SingleSelect';
 import ChoiceSummary from './ChoiceSummary';
@@ -18,6 +16,7 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import VotingStatus from './PollVotingStatus';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { BallotContext } from '../context/BallotContext';
 
 type Props = {
   poll: Poll;
@@ -44,14 +43,14 @@ const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.Rea
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
 
-  const [addToBallot, addedChoice, removeFromBallot, txId] = useBallotStore(
-    state => [state.addToBallot, state.ballot[poll.pollId], state.removeFromBallot, state.txId],
-    shallow
-  );
+  const { addVoteToBallot, removeVoteFromBallot, ballot, transaction } = useContext(BallotContext);
+
+  const addedChoice = ballot[poll.pollId];
+
   const [choice, setChoice] = useState<number | number[] | null>(addedChoice?.option ?? null);
   const [editing, setEditing] = useState(false);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
-  const voteIsPending = txId !== null;
+  const voteIsPending = !!transaction;
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
 
   useEffect(() => {
@@ -71,9 +70,9 @@ const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.Rea
   const submit = () => {
     invariant(isChoiceValid);
     if (currentVote && isEqual(currentVote, choice)) {
-      removeFromBallot(poll.pollId);
+      removeVoteFromBallot(poll.pollId);
     } else {
-      addToBallot(poll.pollId, choice as number | number[]);
+      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     setEditing(false);
   };
