@@ -141,7 +141,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     }
   });
 
-  const isLoadingInitialData = !paginatedProposals && !error;
+  const isLoadingInitialData = !paginatedProposals && !paginatedProposals && !error;
 
   const isLoadingMore =
     size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating;
@@ -386,9 +386,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
               {isLoadingInitialData && (
                 <Box>
-                  <Box my={3}>
-                    <SkeletonThemed width={'100%'} height={'200px'} />
-                  </Box>
                   <Box my={3}>
                     <SkeletonThemed width={'100%'} height={'200px'} />
                   </Box>
