@@ -1,22 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';
-import useBallotStore from 'modules/polling/stores/ballotStore';
-import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import VotingWeight from '../VotingWeight';
 import TxIndicators from 'modules/app/components/TxIndicators';
 import PollBar from '../PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { SubmitBallotsButtons } from '../SubmitBallotButtons';
+import { BallotContext } from 'modules/polling/context/BallotContext';
 
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
@@ -33,18 +31,10 @@ export default function ReviewBox({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
-  const { clearTx, voteTxId, signedMessage, comments } = useBallotStore(state => ({
-    clearTx: state.clearTx,
-    voteTxId: state.txId,
-    signedMessage: state.signedMessage,
-    comments: state.comments
-  }));
-  const { network } = useActiveWeb3React();
 
-  const transaction = useTransactionStore(
-    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
-    shallow
-  );
+  const { transaction, clearTransaction, ballot, commentsSignature } = useContext(BallotContext);
+
+  const { network } = useActiveWeb3React();
 
   const bpi = useBreakpointIndex();
 
@@ -81,7 +71,7 @@ export default function ReviewBox({
       <Button
         mt={3}
         mb={4}
-        onClick={clearTx}
+        onClick={clearTransaction}
         variant="textual"
         sx={{ color: 'secondaryEmphasis', fontSize: 12 }}
       >
@@ -137,7 +127,12 @@ export default function ReviewBox({
         </Text>
       </ExternalLink>
       <Link href={{ pathname: '/polling' }}>
-        <Button mt={3} variant="outline" sx={{ borderColor: 'primary', color: 'primary' }} onClick={clearTx}>
+        <Button
+          mt={3}
+          variant="outline"
+          sx={{ borderColor: 'primary', color: 'primary' }}
+          onClick={clearTransaction}
+        >
           Back To All Polls
         </Button>
       </Link>
@@ -177,7 +172,7 @@ export default function ReviewBox({
             width: 'max-content',
             margin: 'auto'
           }}
-          onClick={clearTx}
+          onClick={clearTransaction}
         >
           Go back
         </Button>
@@ -198,6 +193,6 @@ export default function ReviewBox({
     if (transactionStatus === 'mined') return <Mined />;
     if (transactionStatus === 'error') return <Error />;
     return <Default />;
-  }, [transactionStatus, bpi, signedMessage, comments]);
+  }, [transactionStatus, bpi, commentsSignature, ballot]);
   return <Box {...props}>{view}</Box>;
 }

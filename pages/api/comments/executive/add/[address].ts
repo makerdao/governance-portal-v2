@@ -31,7 +31,7 @@ export default withApiHandler(
 
     const newComment: ExecutiveComment = {
       spellAddress,
-      voterAddress,
+      voterAddress: voterAddress.toLowerCase(),
       comment,
       voterWeight: formatValue(voterWeigth),
       date: new Date(),
