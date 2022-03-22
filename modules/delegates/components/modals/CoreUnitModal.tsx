@@ -1,6 +1,7 @@
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Text } from 'theme-ui';
+import { Text, Heading, Flex, Button, Link as ExternalLink } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { fadeIn, slideUp } from 'lib/keyframes';
 import { BoxWithClose } from 'modules/app/components/BoxWithClose';
 
@@ -28,7 +29,31 @@ export const CoreUnitModal = ({ isOpen, onDismiss }: Props): JSX.Element => {
         }
       >
         <BoxWithClose close={onDismiss}>
-          <Text>Core unit member bla blah </Text>
+          <Flex sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+            <Icon
+              name={'info'}
+              color="voterYellow"
+              sx={{
+                size: 39,
+                mb: 3
+              }}
+            />
+            <Heading sx={{ textAlign: 'center', mb: 3 }}>
+              Note: This delegate is also a Core Unit Member
+            </Heading>
+            <Text sx={{ mb: 3, color: 'onSecondary' }}>
+              Core Unit members are paid contributors to MakerDAO. When delegating your MKR to this delegate,
+              please be conscious of any potential conflicts of interest. GovAlpha generally advises against
+              delegating to CU members.{' '}
+            </Text>
+            <ExternalLink href={'#'} sx={{ mb: 3 }} target="_blank">
+              <Text px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
+                Read More
+                <Icon name="arrowTopRight" pt={2} color="accentBlue" />
+              </Text>
+            </ExternalLink>
+            <Button onClick={onDismiss}>Close</Button>
+          </Flex>
         </BoxWithClose>
       </DialogContent>
     </DialogOverlay>

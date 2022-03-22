@@ -46,7 +46,6 @@ export default function LastVoted({
   return (
     <Flex
       sx={{
-        mb: 1,
         flexDirection: left ? 'row-reverse' : ['row-reverse', 'row'],
         justifyContent: left ? 'flex-end' : 'flex-start',
         alignItems: 'center'

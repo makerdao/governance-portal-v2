@@ -54,14 +54,14 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
-        <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
             date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
             left
           />
           {delegate.cuMember && (
-            <Button variant="outline" onClick={handleInfoClick} sx={{ border: 'none' }}>
+            <Button variant="outline" onClick={handleInfoClick} sx={{ border: 'none', p: 0 }}>
               <Flex sx={{ alignItems: 'center' }}>
                 <Text variant="caps" sx={{ color: 'onSecondary', mr: 2 }}>
                   core unit member
