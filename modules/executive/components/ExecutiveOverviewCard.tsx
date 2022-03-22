@@ -81,11 +81,7 @@ export default function ExecutiveOverviewCard({
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
             <Flex sx={{ flexDirection: 'column', height: '200px' }}>
-              <InternalLink
-                href={'/executive/[proposal-id]'}
-                title="View executive details"
-                as={`/executive/${proposal.key}`}
-              >
+              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <>
                   <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />

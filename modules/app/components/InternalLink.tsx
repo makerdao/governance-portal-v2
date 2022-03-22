@@ -1,16 +1,16 @@
 import Link from 'next/link';
-import { Link as ThemeUILink } from 'theme-ui';
+import { Link as ThemeUILink, ThemeUIStyleObject } from 'theme-ui';
 
 type Props = {
   children: JSX.Element;
   href: string;
   title: string;
-  as?: string;
+  styles?: ThemeUIStyleObject;
 };
 
-export const InternalLink = ({ children, title, href, as }: Props): JSX.Element => (
-  <Link href={{ pathname: href }} as={as ? { pathname: as } : undefined} passHref>
-    <ThemeUILink variant="nostyle" title={title}>
+export const InternalLink = ({ children, title, href, styles }: Props): JSX.Element => (
+  <Link href={{ pathname: href }} passHref>
+    <ThemeUILink variant="nostyle" title={title} sx={{ ...styles }}>
       {children}
     </ThemeUILink>
   </Link>

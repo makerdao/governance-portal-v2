@@ -155,11 +155,7 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                     mt: 3
                   }}
                 >
-                  <InternalLink
-                    href={'/polling/[poll-hash]'}
-                    title="View poll details"
-                    as={`/polling/${poll.slug}`}
-                  >
+                  <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
                     <Button
                       variant="outline"
                       sx={{
