@@ -69,8 +69,10 @@ export default function VotingWeight(): JSX.Element {
         width: '100%'
       }}
     >
-      <Flex sx={{ flexDirection: 'row' }}>
-        <Text color="textSecondary">Voting weight</Text>
+      <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text as="p" color="textSecondary">
+          Voting weight
+        </Text>
         <Tooltip label={tooltipLabel}>
           <Box>
             <Icon name="question" ml={2} mt={'6px'} />

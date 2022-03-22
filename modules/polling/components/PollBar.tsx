@@ -4,14 +4,15 @@ import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useBallotStore from '../stores/ballotStore';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
 
 type Props = { polls: Poll[]; activePolls: Poll[] };
 
 export default function PollBar({ polls, activePolls, ...props }: Props): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
-  const ballot = useBallotStore(state => state.ballot);
+  const { ballot, ballotCount } = useContext(BallotContext);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
@@ -38,7 +39,7 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
   return availablePollsLength > 0 || edits > 0 ? (
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
       <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
-        {`${Object.keys(ballot).length - edits} of ${availablePollsLength} available polls added to ballot`}
+        {`${ballotCount - edits} of ${availablePollsLength} available polls added to ballot`}
       </Text>
       <Flex
         sx={{
@@ -63,7 +64,7 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
                 borderBottomLeftRadius: index === 0 ? 'small' : undefined,
                 borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
                 borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
-                backgroundColor: index < Object.keys(ballot).length - edits ? 'primary' : undefined
+                backgroundColor: index < ballotCount - edits ? 'primary' : undefined
               }}
             />
           ))}

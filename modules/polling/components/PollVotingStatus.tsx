@@ -1,13 +1,12 @@
 import { Flex, Box, Text, ThemeUIStyleObject } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Icon } from '@makerdao/dai-ui-icons';
-import isNil from 'lodash/isNil';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useBallotStore from 'modules/polling/stores/ballotStore';
-import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Poll } from 'modules/polling/types';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
 
 const BadgeContents = ({ hasVoted, onBallot, poll, isMined, isPending, option, ...otherProps }) => {
   const color = hasVoted || onBallot ? 'greenLinkHover' : 'textMuted';
@@ -39,12 +38,10 @@ const VotingStatus = ({ poll, ...props }: { poll: Poll; sx?: ThemeUIStyleObject 
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
+  const { ballot, transaction, isPollOnBallot } = useContext(BallotContext);
 
-  const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
-  const onBallot = !isNil(ballot[poll.pollId]?.option);
-  const transaction = useTransactionStore(state =>
-    txId ? transactionsSelectors.getTransaction(state, txId) : null
-  );
+  const onBallot = isPollOnBallot(poll.pollId);
+
   const isMined = transaction?.status === 'mined';
   const isPending = transaction?.status === 'pending';
 
