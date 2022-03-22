@@ -108,6 +108,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ...ballotVote
       }
     });
+
+    setPreviousBallot({
+      ...ballot,
+      [pollId]: {
+        ...ballot[pollId],
+        ...ballotVote
+      }
+    })
   };
 
   // Helpers

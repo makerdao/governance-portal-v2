@@ -20,6 +20,7 @@ import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import PollVotedOption from './PollVotedOption';
 
 type Props = {
   poll: Poll;
@@ -27,12 +28,16 @@ type Props = {
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
+  yourVote?: boolean
+  hideTally?: boolean
 };
 export default function PollOverviewCard({
   poll,
   reviewPage,
   showVoting,
   children,
+  yourVote,
+  hideTally = false,
   ...props
 }: Props): JSX.Element {
   const { account } = useAccount();
@@ -41,7 +46,7 @@ export default function PollOverviewCard({
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
   return (
     <Box
@@ -144,6 +149,7 @@ export default function PollOverviewCard({
                 </ErrorBoundary>
               </Box>
             )}
+            {yourVote && <PollVotedOption poll={poll} />}
           </Flex>
 
           <Box>
@@ -196,7 +202,7 @@ export default function PollOverviewCard({
                 </Box>
               )}
 
-              {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+              {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && !hideTally && (
                 <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                   {tally && tally.totalMkrParticipation > 0 && (
                     <Box sx={{ mt: 3 }}>

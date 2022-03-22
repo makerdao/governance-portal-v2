@@ -87,7 +87,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     Your ballot is empty. Go back to the polling page to add votes to your ballot.
                   </Text>
                 )}
-                {!!account && votedPolls.length === 0 && previousVotedPolls.length > 0 && (
+                {!!account  && previousVotedPolls.length > 0 && (
                   <Box mt={3}>
                     <Text mb={3} as="h4">
                       You just voted on:
@@ -99,7 +99,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} />
+                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} yourVote={previousBallot[poll.pollId]} hideTally>
+                           {previousBallot[poll.pollId]?.comment && <Box mt={3}>
+                            <Text as="p" sx={{ fontWeight: 'semiBold' }} mb={2}>Your comment</Text>
+                            <Text>{previousBallot[poll.pollId]?.comment}</Text>
+                            </Box>}
+                          </PollOverviewCard>
                         </Box>
                       );
                     })}

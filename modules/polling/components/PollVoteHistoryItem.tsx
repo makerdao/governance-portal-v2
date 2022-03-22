@@ -7,11 +7,11 @@ import { formatDateWithTime } from 'lib/datetime';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getVoteColor } from '../helpers/getVoteColor';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
-  const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   const { tally } = usePollTally(vote.pollId);
 
   return (
@@ -89,11 +89,11 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
           </Text>
-          <Text
+          <Text 
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: isPluralityVote ? voteColorStyles[vote.optionId || 0] : 'secondaryAlt',
+              color: getVoteColor(vote.optionId as number, vote.poll.voteType),
               fontWeight: 'semiBold'
             }}
           >
