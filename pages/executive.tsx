@@ -115,6 +115,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     ],
     shallow
   );
+
   // Use SWRInfinite to do a loaded pagination of the proposals
   // Preload with the server side data as "fallback"
   const getKey = (pageIndex, previousPageData) => {
@@ -171,8 +172,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   }, [sortBy]);
 
   const flattenedProposals = useMemo(() => {
-    return paginatedProposals?.flat() || [];
-  }, [paginatedProposals]);
+    return paginatedProposals ? paginatedProposals.flat() : proposals || [];
+  }, [proposals, paginatedProposals]);
 
   const { data: hat } = useHat();
 
