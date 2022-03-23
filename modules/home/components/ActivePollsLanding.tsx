@@ -1,5 +1,5 @@
-import { Flex, Heading, Link as ThemeUILink, Grid, Text } from 'theme-ui';
-import Link from 'next/link';
+import { Flex, Heading, Grid } from 'theme-ui';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
@@ -13,11 +13,9 @@ export const ActivePollsLanding = ({ activePolls }: Props): JSX.Element => (
   <Flex sx={{ flexDirection: 'column' }}>
     <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Heading>Active Polls</Heading>
-      <Link href={{ pathname: '/polling' }} passHref>
-        <ThemeUILink title="Active Polls">
-          <ViewMore label="View All" />
-        </ThemeUILink>
-      </Link>
+      <InternalLink href={'/polling'} title="Active Polls">
+        <ViewMore label="View All" />
+      </InternalLink>
     </Flex>
     <Flex>
       <ErrorBoundary componentName="Active Polls">

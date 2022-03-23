@@ -1,7 +1,7 @@
-import { Flex, Box, Heading, Link as ThemeUILink } from 'theme-ui';
+import { Flex, Box, Heading } from 'theme-ui';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
-import Link from 'next/link';
 import { PollCategory } from 'modules/polling/types';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 type Props = {
   pollCategories: PollCategory[];
@@ -13,11 +13,13 @@ export const PollCategoriesLanding = ({ pollCategories }: Props): JSX.Element =>
     <Flex sx={{ flexWrap: 'wrap', justifyContent: 'center', maxWidth: '1000px', margin: 'auto' }}>
       {pollCategories.map(category => (
         <Box key={category.name} sx={{ my: 3, mx: 4 }}>
-          <Link href={{ pathname: '/polling', query: { category: category.name } }} passHref>
-            <ThemeUILink title={`${category.name} polls`}>
-              <PollCategoryTag category={category.name} />
-            </ThemeUILink>
-          </Link>
+          <InternalLink
+            href={'/polling'}
+            queryParams={{ category: category.name }}
+            title={`${category.name} polls`}
+          >
+            <PollCategoryTag category={category.name} />
+          </InternalLink>
         </Box>
       ))}
     </Flex>
