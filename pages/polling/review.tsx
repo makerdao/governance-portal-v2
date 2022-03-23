@@ -23,13 +23,17 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import PollVotedOption from 'modules/polling/components/PollVotedOption';
+import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction } = useContext(BallotContext);
+  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
+    useContext(BallotContext);
 
   const [transactionStatus, setTransactionStatus] = useState('default');
 
@@ -38,6 +42,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   }, [transaction]);
 
   const { account } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
+
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
   const votedPolls = Object.keys(ballot)
@@ -61,12 +67,27 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       />
     </Flex>
   );
+
+  const previousVotesLength = Object.keys(previousBallot).length;
+
+  const hasVoted = previousVotesLength > 0 && ballotCount === 0;
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
-        <Heading mb={3} as="h4">
-          {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
-        </Heading>
+        {!hasVoted && (
+          <Heading mb={3} as="h4">
+            {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
+          </Heading>
+        )}
+        {hasVoted && (
+          <Box mb={3}>
+            <Heading as="h4">You successfully voted on {previousVotesLength} polls.</Heading>
+            <Text>
+              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
+            </Text>
+          </Box>
+        )}
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
@@ -82,16 +103,32 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     Connect a wallet to vote
                   </Text>
                 )}
-                {!!account && votedPolls.length === 0 && (
+                {!!account && votedPolls.length === 0 && !hasVoted && (
                   <Text as="p" sx={{ mt: 3 }}>
                     Your ballot is empty. Go back to the polling page to add votes to your ballot.
                   </Text>
                 )}
-                {!!account  && previousVotedPolls.length > 0 && (
+
+                {bpi <= 2 && !!account && (
+                  <Box>
+                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
+                    {hasVoted && (
+                      <Box>
+                        <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                          Share all your votes
+                        </Heading>
+                        <ActivePollsBox polls={polls} activePolls={activePolls} voted>
+                          <Box p={3}>
+                            <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
+                          </Box>
+                        </ActivePollsBox>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
+                {!!account && hasVoted && (
                   <Box mt={3}>
-                    <Text mb={3} as="h4">
-                      You just voted on:
-                    </Text>
                     {previousVotedPolls.map(poll => {
                       return (
                         <Box
@@ -99,20 +136,38 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} yourVote={previousBallot[poll.pollId]} hideTally>
-                           {previousBallot[poll.pollId]?.comment && <Box mt={3}>
-                            <Text as="p" sx={{ fontWeight: 'semiBold' }} mb={2}>Your comment</Text>
-                            <Text>{previousBallot[poll.pollId]?.comment}</Text>
-                            </Box>}
+                          <PollOverviewCard
+                            poll={poll}
+                            reviewPage={true}
+                            showVoting={false}
+                            yourVote={
+                              <Box ml={[0, 3]} mt={[3, 0]}>
+                                <PollVotedOption
+                                  poll={poll}
+                                  votedOption={previousBallot[poll.pollId].option}
+                                  votingWeight={votingWeight?.total}
+                                  transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                                />
+                              </Box>
+                            }
+                            hideTally
+                          >
+                            {previousBallot[poll.pollId]?.comment && (
+                              <Box mt={[1, 3]}>
+                                <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3] }} mb={2}>
+                                  Your comment
+                                </Text>
+                                <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
+                                  {previousBallot[poll.pollId]?.comment}
+                                </Text>
+                              </Box>
+                            )}
                           </PollOverviewCard>
                         </Box>
                       );
                     })}
                   </Box>
                 )}
-
-                {bpi <= 2 && <SubmitButton />}
-                {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 {votedPolls.length > 0 && (
                   <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                     {votedPolls.map(poll => {
@@ -136,9 +191,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     })}
                   </Stack>
                 )}
-
-                {bpi <= 2 && <SubmitButton />}
-
+                {bpi <= 2 && (
+                  <Box>
+                    {!hasVoted && <SubmitButton />}
+                    {hasVoted && <Button sx={{ width: '100%' }}>Preview and share your votes</Button>}
+                  </Box>
+                )}
                 {!account && (
                   <Box pt="3">
                     <Text>Connect your wallet to review your ballot</Text>
@@ -150,10 +208,26 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
           {bpi >= 3 && !!account && (
             <Box sx={{ pt: 3 }}>
-              <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
-                Submit Ballot
-              </Heading>
-              <ReviewBox polls={polls} activePolls={activePolls} />
+              {!hasVoted && (
+                <Box>
+                  <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                    Submit Ballot
+                  </Heading>
+                  <ReviewBox polls={polls} activePolls={activePolls} />
+                </Box>
+              )}
+              {hasVoted && (
+                <Box>
+                  <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                    Share all your votes
+                  </Heading>
+                  <ActivePollsBox polls={polls} activePolls={activePolls}>
+                    <Box p={3}>
+                      <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
+                    </Box>
+                  </ActivePollsBox>
+                </Box>
+              )}
             </Box>
           )}
         </SidebarLayout>

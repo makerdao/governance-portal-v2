@@ -108,14 +108,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ...ballotVote
       }
     });
-
-    setPreviousBallot({
-      ...ballot,
-      [pollId]: {
-        ...ballot[pollId],
-        ...ballotVote
-      }
-    })
   };
 
   // Helpers
@@ -203,11 +195,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             });
         }
       },
-      mined: txId => {
+      mined: (txId, txHash) => {
         // Set votes
+        const votes = {};
+        Object.keys(ballot).forEach(pollId => {
+          votes[pollId] = ballot[pollId];
+          votes[pollId].transactionHash = txHash;
+        });
+
         setPreviousBallot({
           ...previousBallot,
-          ...ballot
+          ...votes
         });
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);

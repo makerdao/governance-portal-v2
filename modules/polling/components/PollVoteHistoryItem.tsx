@@ -89,7 +89,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           >
             {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
           </Text>
-          <Text 
+          <Text
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
