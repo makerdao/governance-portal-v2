@@ -221,7 +221,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
                     Share all your votes
                   </Heading>
-                  <ActivePollsBox polls={polls} activePolls={activePolls}>
+                  <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
                       <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
                     </Box>
