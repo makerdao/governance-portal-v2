@@ -13,15 +13,18 @@ import InternalIcon from 'modules/app/components/Icon';
 export default function PollVotedOption({
   poll,
   votedOption,
+  toggleMarkdownModal,
   votingWeight,
   transactionHash
 }: {
   poll: Poll;
   votedOption: number | number[];
+  toggleMarkdownModal: (pollId?: number) => void;
   transactionHash: string;
   votingWeight?: BigNumber;
 }): React.ReactElement {
   const { network } = useActiveWeb3React();
+
   return (
     <Box>
       <Box>
@@ -95,7 +98,12 @@ export default function PollVotedOption({
               <InternalIcon name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
             </Flex>
           </Button>
-          <Button variant="primaryOutline" sx={{ width: ['100%', '247px'] }} mb={2}>
+          <Button
+            variant="primaryOutline"
+            sx={{ width: ['100%', '247px'] }}
+            mb={2}
+            onClick={() => toggleMarkdownModal(poll.pollId)}
+          >
             <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
               <InternalIcon name="forum" size={18} /> <Text ml={1}>Share on the forum</Text>
             </Flex>

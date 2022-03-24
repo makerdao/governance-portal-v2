@@ -26,11 +26,20 @@ import { BallotContext } from 'modules/polling/context/BallotContext';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
+import { MarkdownVotesModal } from 'modules/polling/components/MarkdownVotesModal';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
+
+  const [showMarkdownModal, setShowMarkdownModal] = useState(false);
+  const [markdownPollId, setMarkdownPollId] = useState<number | undefined>(undefined);
+
+  const toggleMarkdownModal = (pollId?: number) => {
+    setMarkdownPollId(pollId);
+    setShowMarkdownModal(!showMarkdownModal);
+  };
 
   const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
@@ -67,6 +76,24 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       />
     </Flex>
   );
+
+  const votesToMarkdown = (): string => {
+    let markdown = '';
+    let polls;
+    if (markdownPollId) {
+      polls = [previousVotedPolls.find(poll => poll.pollId === markdownPollId)];
+    } else {
+      polls = previousVotedPolls;
+    }
+    polls.map(poll => {
+      const option = poll.options[previousBallot[poll.pollId].option as number];
+      const comment = previousBallot[poll.pollId]?.comment;
+      markdown += `[${poll.title}](/polling/${poll.multiHash})  \n`;
+      markdown += `Voted: **${option}**  \n`;
+      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
+    });
+    return markdown;
+  };
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
@@ -147,6 +174,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                   votedOption={previousBallot[poll.pollId].option}
                                   votingWeight={votingWeight?.total}
                                   transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                                  toggleMarkdownModal={toggleMarkdownModal}
                                 />
                               </Box>
                             }
@@ -223,10 +251,19 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   </Heading>
                   <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
-                      <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
+                      <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
+                        Preview and share your votes
+                      </Button>
                     </Box>
                   </ActivePollsBox>
                 </Box>
+              )}
+              {showMarkdownModal && (
+                <MarkdownVotesModal
+                  isOpen={showMarkdownModal}
+                  onDismiss={toggleMarkdownModal}
+                  markdownContent={votesToMarkdown()}
+                />
               )}
             </Box>
           )}
