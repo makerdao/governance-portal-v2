@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { formatValue } from 'lib/string';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -19,6 +18,7 @@ import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
+import { CoreUnitButton } from './modals/CoreUnitButton';
 
 type PropTypes = {
   delegate: Delegate;
@@ -60,22 +60,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
             date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
             left
           />
-          {delegate.cuMember && (
-            <Button variant="outline" onClick={handleInfoClick} sx={{ border: 'none', p: 0 }}>
-              <Flex sx={{ alignItems: 'center' }}>
-                <Text variant="caps" sx={{ color: 'onSecondary', mr: 2 }}>
-                  core unit member
-                </Text>
-                <Icon
-                  name={'info'}
-                  color="voterYellow"
-                  sx={{
-                    size: 13
-                  }}
-                />
-              </Flex>
-            </Button>
-          )}
+          {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
         </Flex>
 
         <Flex
