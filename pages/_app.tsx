@@ -1,7 +1,7 @@
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { SWRConfig } from 'swr';
-import { ThemeProvider, Flex } from 'theme-ui';
+import { ThemeProvider, Flex, Theme } from 'theme-ui';
 import { Global } from '@emotion/core';
 import { ethers } from 'ethers';
 import '@reach/dialog/styles.css';
@@ -38,8 +38,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ReactProviderDefault getLibrary={getLibrary}>
-        {/* @ts-ignore */}
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme as Theme}>
           <NextNprogress
             color="#1aab9b"
             startPosition={0.3}
