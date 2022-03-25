@@ -88,6 +88,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     polls.map(poll => {
       const option = poll.options[previousBallot[poll.pollId].option as number];
       const comment = previousBallot[poll.pollId]?.comment;
+      // TODO: fix this URL
       markdown += `[${poll.title}](/polling/${poll.multiHash})  \n`;
       markdown += `Voted: **${option}**  \n`;
       markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';

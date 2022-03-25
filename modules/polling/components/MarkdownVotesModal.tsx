@@ -15,11 +15,17 @@ type Props = {
 
 export const MarkdownVotesModal = ({ isOpen, onDismiss, markdownContent }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
-  const [markdown, setMarkdown] = useState('');
+  const [html, setHtml] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const setContent = async () => {
     const content = await markdownToHtml(markdownContent);
-    setMarkdown(content);
+    setHtml(content);
+  };
+
+  const copyToClipboard = () => {
+    setCopied(true);
+    navigator.clipboard.writeText(markdownContent);
   };
 
   useEffect(() => {
@@ -48,14 +54,22 @@ export const MarkdownVotesModal = ({ isOpen, onDismiss, markdownContent }: Props
               Your recent votes and comments are formatted below
             </Text>
             <Box sx={{ bg: 'background', px: 3 }}>
-              <div dangerouslySetInnerHTML={{ __html: markdown || '' }} />
+              <div dangerouslySetInnerHTML={{ __html: html || '' }} />
             </Box>
-            <Flex sx={{ justifyContent: 'center', mt: 3 }}>
-              <Button>
+            <Flex sx={{ justifyContent: 'center', mt: 4 }}>
+              <Button onClick={copyToClipboard}>
                 <Icon name="copy" mr={2} color="white" size={10} />
                 Copy &amp; paste on the forum
               </Button>
               {/* <Button>Download markdown file</Button> */}
+            </Flex>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'center', mt: 2, height: '10px' }}>
+              {copied && (
+                <>
+                  <Text sx={{ color: 'primary', fontSize: 2, mr: 2 }}>Copied!</Text>
+                  <Icon name="checkmark" size={10} color={'primary'} />
+                </>
+              )}
             </Flex>
           </Flex>
         </BoxWithClose>
