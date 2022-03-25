@@ -62,9 +62,17 @@ describe('Vote Proxy', () => {
     'should verify executive page displays correct data for hot proxy',
     { defaultCommandTimeout: 90000 },
     () => {
+      // Create an alias for fetching goerli proposals
+      cy.intercept({
+        method: 'GET',
+        url: '/api/executive?network=goerlifork&start=0&limit=10'
+      }).as('getGoerliProposals');
       visitPage(`executive`);
 
       setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
+        // Wait until we've fetched the goerli proposals as mainnet proposals will break our test assertions
+        cy.wait('@getGoerliProposals');
+
         // Hot account should have the new MKR balance in chief displayed
         cy.get('[data-testid="locked-mkr"]').should('have.text', `5.0 MKR`);
 
@@ -90,13 +98,13 @@ describe('Vote Proxy', () => {
         cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', '1,130 MKR Supporting');
         cy.get('[data-testid="proposal-status"]')
           .eq(1)
-          .should('have.text', '98,867.974 additional MKR support needed to pass. Expires at .');
+          .should('have.text', '98,870 additional MKR support needed to pass. Expires at .');
 
         // Check the value of the MKR supporting on the exec we are currently voting for
         cy.get('[data-testid="mkr-supporting"]').first().should('have.text', '225.22 MKR Supporting');
         cy.get('[data-testid="proposal-status"]')
           .first()
-          .should('have.text', '99,774.775 additional MKR support needed to pass. Expires at .');
+          .should('have.text', '99,775 additional MKR support needed to pass. Expires at .');
 
         // Vote on the new exec
         cy.get('[data-testid="vote-button-exec-overview-card"]').first().click();
@@ -105,16 +113,16 @@ describe('Vote Proxy', () => {
 
         // Check that all the data changed by the correct amount after voting
         // Old vote
-        cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', `1,127.03 MKR Supporting`);
+        cy.get('[data-testid="mkr-supporting"]').eq(1).should('have.text', `1,127 MKR Supporting`);
         cy.get('[data-testid="proposal-status"]')
           .eq(1)
-          .should('have.text', '98,872.974 additional MKR support needed to pass. Expires at .');
+          .should('have.text', '98,873 additional MKR support needed to pass. Expires at .');
 
         // New vote
-        cy.get('[data-testid="mkr-supporting"]').first().should('have.text', `229.22 MKR Supporting`);
+        cy.get('[data-testid="mkr-supporting"]').first().should('have.text', `228.22 MKR Supporting`);
         cy.get('[data-testid="proposal-status"]')
           .first()
-          .should('have.text', '99,770.775 additional MKR support needed to pass. Expires at .');
+          .should('have.text', '99,772 additional MKR support needed to pass. Expires at .');
       });
     }
   );
