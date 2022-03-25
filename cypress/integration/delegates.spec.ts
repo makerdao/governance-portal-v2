@@ -110,8 +110,8 @@ describe('Delegates Page', () => {
       // CLose modal
       closeModal();
 
-      // Checks that the delegated amount has appeared
-      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.005');
+      // Checks that the delegated amount has appeared. Note: we round UP to two decimals places in the UI.
+      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.01');
 
       // Find the undelegate button
       cy.get('[data-testid="button-undelegate"]').first().click();
