@@ -92,6 +92,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       markdown += `[${poll.title}](/polling/${poll.multiHash})  \n`;
       markdown += `Voted: **${option}**  \n`;
       markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
+      markdown += '  \n';
     });
     return markdown;
   };
