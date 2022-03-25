@@ -38,6 +38,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ReactProviderDefault getLibrary={getLibrary}>
+        {/* @ts-ignore */}
         <ThemeProvider theme={theme}>
           <NextNprogress
             color="#1aab9b"
