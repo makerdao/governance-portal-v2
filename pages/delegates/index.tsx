@@ -59,12 +59,6 @@ const Delegates = ({ delegates, stats }: Props) => {
     });
   }, [filteredDelegates, sort]);
 
-  const styles = {
-    delegateGroup: {
-      marginBottom: 2
-    }
-  };
-
   const { voteDelegateContractAddress } = useAccount();
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
@@ -85,119 +79,112 @@ const Delegates = ({ delegates, stats }: Props) => {
         description="Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases the effectiveness and efficiency of the governance process."
         image={'https://vote.makerdao.com/seo/delegates.png'}
       />
-
-      <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
-        <Flex sx={{ alignItems: 'center' }}>
-          <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
-            Filters
-          </Heading>
-          <DelegatesSort />
-        </Flex>
-
-        <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
-          <DelegatesFilter delegates={delegates} />
-          <Button
-            variant={'outline'}
-            sx={{ ml: 3 }}
-            onClick={resetFilters}
-            data-testid="delegate-reset-filters"
-          >
-            Clear filters
-          </Button>
-        </Flex>
-      </Flex>
-
-      <SidebarLayout>
-        <Box>
-          {sortedDelegates && sortedDelegates.length === 0 && <Text>No delegates found</Text>}
-          {recognizedDelegates.length > 0 && (
-            <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={3} as="h4">
-                Recognized Delegates
-              </Heading>
-
-              <Box>
-                {recognizedDelegates.map(delegate => (
-                  <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <ErrorBoundary componentName="Delegate Card">
-                      <DelegateCard delegate={delegate} />
-                    </ErrorBoundary>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          )}
-
-          {shadowDelegates.length > 0 && (
-            <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={3} as="h4">
-                Shadow Delegates
-              </Heading>
-
-              <Box>
-                {shadowDelegates.map(delegate => (
-                  <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <ErrorBoundary componentName="Delegate Card">
-                      <DelegateCard delegate={delegate} />
-                    </ErrorBoundary>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          )}
-
-          {expiredDelegates.length > 0 && (
-            <Box sx={styles.delegateGroup}>
-              <Heading mb={3} mt={3} as="h4">
-                Expired Delegates
-              </Heading>
-
-              <Box>
-                {expiredDelegates.map(delegate => (
-                  <Box key={delegate.id} sx={{ mb: 4 }}>
-                    <ErrorBoundary componentName="Delegate Card">
-                      <DelegateCard delegate={delegate} />
-                    </ErrorBoundary>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          )}
-        </Box>
-        <Stack gap={3}>
-          <Box>
-            <Heading mt={3} mb={2} as="h3" variant="microHeading">
-              Delegate Contracts
+      <Stack>
+        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
+          <Flex sx={{ alignItems: 'center' }}>
+            <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
+              Filters
             </Heading>
-            <Card variant="compact">
-              <Text as="p" sx={{ mb: 3 }}>
-                {voteDelegateContractAddress
-                  ? 'Looking for delegate contract information?'
-                  : 'Interested in creating a delegate contract?'}
-              </Text>
-              <Box>
-                <Link
-                  href={{
-                    pathname: '/account'
-                  }}
-                  passHref
-                >
-                  <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
-                    <Text>View Account Page</Text>
-                  </ThemeUILInk>
-                </Link>
-              </Box>
-            </Card>
+            <DelegatesSort />
+          </Flex>
+
+          <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
+            <DelegatesFilter delegates={delegates} />
+            <Button
+              variant={'outline'}
+              sx={{ ml: 3 }}
+              onClick={resetFilters}
+              data-testid="delegate-reset-filters"
+            >
+              Clear filters
+            </Button>
+          </Flex>
+        </Flex>
+
+        <SidebarLayout>
+          <Box>
+            <Stack gap={3}>
+              {sortedDelegates && sortedDelegates.length === 0 && <Text>No delegates found</Text>}
+
+              {recognizedDelegates.length > 0 && (
+                <Stack gap={3}>
+                  <Heading as="h1">Recognized Delegates</Heading>
+
+                  {recognizedDelegates.map(delegate => (
+                    <Box key={delegate.id} sx={{ mb: 3 }}>
+                      <ErrorBoundary componentName="Delegate Card">
+                        <DelegateCard delegate={delegate} />
+                      </ErrorBoundary>
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+
+              {shadowDelegates.length > 0 && (
+                <Stack gap={3}>
+                  <Heading as="h1">Shadow Delegates</Heading>
+
+                  {shadowDelegates.map(delegate => (
+                    <Box key={delegate.id} sx={{ mb: 3 }}>
+                      <ErrorBoundary componentName="Delegate Card">
+                        <DelegateCard delegate={delegate} />
+                      </ErrorBoundary>
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+
+              {expiredDelegates.length > 0 && (
+                <Stack gap={3}>
+                  <Heading as="h1">Expired Delegates</Heading>
+
+                  {expiredDelegates.map(delegate => (
+                    <Box key={delegate.id} sx={{ mb: 3 }}>
+                      <ErrorBoundary componentName="Delegate Card">
+                        <DelegateCard delegate={delegate} />
+                      </ErrorBoundary>
+                    </Box>
+                  ))}
+                </Stack>
+              )}
+            </Stack>
           </Box>
-          {stats && (
-            <ErrorBoundary componentName="Delegates System Info">
-              <DelegatesSystemInfo stats={stats} />
-            </ErrorBoundary>
-          )}
-          <ResourceBox type={'delegates'} />
-          <ResourceBox type={'general'} />
-        </Stack>
-      </SidebarLayout>
+
+          <Stack gap={3}>
+            <Box>
+              <Heading mt={3} mb={2} as="h3" variant="microHeading">
+                Delegate Contracts
+              </Heading>
+              <Card variant="compact">
+                <Text as="p" sx={{ mb: 3 }}>
+                  {voteDelegateContractAddress
+                    ? 'Looking for delegate contract information?'
+                    : 'Interested in creating a delegate contract?'}
+                </Text>
+                <Box>
+                  <Link
+                    href={{
+                      pathname: '/account'
+                    }}
+                    passHref
+                  >
+                    <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
+                      <Text>View Account Page</Text>
+                    </ThemeUILInk>
+                  </Link>
+                </Box>
+              </Card>
+            </Box>
+            {stats && (
+              <ErrorBoundary componentName="Delegates System Info">
+                <DelegatesSystemInfo stats={stats} />
+              </ErrorBoundary>
+            )}
+            <ResourceBox type={'delegates'} />
+            <ResourceBox type={'general'} />
+          </Stack>
+        </SidebarLayout>
+      </Stack>
     </PrimaryLayout>
   );
 };

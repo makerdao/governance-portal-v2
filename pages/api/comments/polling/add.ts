@@ -26,7 +26,7 @@ export default withApiHandler(
       comment: comment.comment as string,
       network,
       date: new Date(),
-      voterAddress: body.voterAddress,
+      voterAddress: body.voterAddress.toLowerCase(),
       txHash: body.txHash
     }));
 
