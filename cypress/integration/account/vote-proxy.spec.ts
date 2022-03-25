@@ -62,7 +62,7 @@ describe('Vote Proxy', () => {
     'should verify executive page displays correct data for hot proxy',
     { defaultCommandTimeout: 90000 },
     () => {
-      // Create an alias for fetching goerli proposals
+      // Set an http intercept for fetching goerli proposals
       cy.intercept({
         method: 'GET',
         url: '/api/executive?network=goerlifork&start=0&limit=10'
@@ -70,7 +70,7 @@ describe('Vote Proxy', () => {
       visitPage(`executive`);
 
       setAccount(TEST_ACCOUNTS.voteProxyHot, () => {
-        // Wait until we've fetched the goerli proposals as mainnet proposals will break our test assertions
+        // Wait until we've fetched the goerli proposals since mainnet proposals are fetched first
         cy.wait('@getGoerliProposals');
 
         // Hot account should have the new MKR balance in chief displayed
