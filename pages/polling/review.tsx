@@ -17,6 +17,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { objectToGetParams } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -77,12 +78,44 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     </Flex>
   );
 
+  const setTweetUrl = (pollId?: number) => {
+    setMarkdownPollId(pollId);
+    return votesToTweet();
+  };
+
+  const votesToTweet = (): string => {
+    let url = '';
+    let text = '';
+    if (markdownPollId) {
+      // single vote
+      const poll = previousVotedPolls.find(poll => poll.pollId === markdownPollId);
+      if (!poll) return '';
+      const option = poll.options[previousBallot[poll.pollId].option as number];
+      url = `https://vote.makerdao.com/polling/${poll.slug}`;
+      text = `I just voted ${option} on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
+    } else {
+      // all votes
+      url = 'https://vote.makerdao.com';
+      text = `I just voted on ${polls.length} MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
+    }
+
+    return (
+      'https://twitter.com/share' +
+      objectToGetParams({
+        url,
+        text
+      })
+    );
+  };
+
   const votesToMarkdown = (): string => {
     let markdown = '';
     let polls;
     if (markdownPollId) {
+      // single vote
       polls = [previousVotedPolls.find(poll => poll.pollId === markdownPollId)];
     } else {
+      // all votes
       polls = previousVotedPolls;
     }
     polls.map(poll => {
@@ -176,6 +209,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                   votingWeight={votingWeight?.total}
                                   transactionHash={previousBallot[poll.pollId].transactionHash || ''}
                                   toggleMarkdownModal={toggleMarkdownModal}
+                                  setTweetUrl={setTweetUrl}
                                 />
                               </Box>
                             }

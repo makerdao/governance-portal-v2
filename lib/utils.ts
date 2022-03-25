@@ -177,3 +177,72 @@ export const fromBuffer = (buf, opts) => {
 
 export const paddedBytes32ToAddress = (hex: string): string =>
   hex.length > 42 ? hexZeroPad(stripZeros(hex), 20) : hex;
+
+export const objectToGetParams = (object: { [key: string]: string | number | undefined | null }): string => {
+  const params = Object.entries(object)
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+
+  return params.length > 0 ? `?${params.join('&')}` : '';
+};
+
+const windowOpen = (
+  url: string,
+  { height, width, ...configRest }: { height: number; width: number; [key: string]: any },
+  onClose?: (dialog: Window | null) => void
+) => {
+  const config: { [key: string]: string | number } = {
+    height,
+    width,
+    location: 'no',
+    toolbar: 'no',
+    status: 'no',
+    directories: 'no',
+    menubar: 'no',
+    scrollbars: 'yes',
+    resizable: 'no',
+    centerscreen: 'yes',
+    chrome: 'yes',
+    ...configRest
+  };
+
+  const shareDialog = window.open(
+    url,
+    '',
+    Object.keys(config)
+      .map(key => `${key}=${config[key]}`)
+      .join(', ')
+  );
+
+  if (onClose) {
+    const interval = window.setInterval(() => {
+      try {
+        if (shareDialog === null || shareDialog.closed) {
+          window.clearInterval(interval);
+          onClose(shareDialog);
+        }
+      } catch (e) {
+        /* eslint-disable no-console */
+        console.error(e);
+        /* eslint-enable no-console */
+      }
+    }, 1000);
+  }
+
+  return shareDialog;
+};
+
+const getBoxPositionOnWindowCenter = (width: number, height: number) => ({
+  left: window.outerWidth / 2 + (window.screenX || window.screenLeft || 0) - width / 2,
+  top: window.outerHeight / 2 + (window.screenY || window.screenTop || 0) - height / 2
+});
+
+export function openWindowWithUrl(url: string): void {
+  const windowConfig = {
+    height: 400,
+    width: 550,
+    ...getBoxPositionOnWindowCenter(550, 400)
+  };
+
+  windowOpen(url, windowConfig);
+}

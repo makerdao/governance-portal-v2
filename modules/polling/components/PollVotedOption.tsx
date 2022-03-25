@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { getNumberWithOrdinal } from 'lib/utils';
+import { openWindowWithUrl, getNumberWithOrdinal } from 'lib/utils';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Box, Button, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { getVoteColor } from '../helpers/getVoteColor';
@@ -14,12 +14,14 @@ export default function PollVotedOption({
   poll,
   votedOption,
   toggleMarkdownModal,
+  setTweetUrl,
   votingWeight,
   transactionHash
 }: {
   poll: Poll;
   votedOption: number | number[];
   toggleMarkdownModal: (pollId?: number) => void;
+  setTweetUrl: (pollId?: number) => string;
   transactionHash: string;
   votingWeight?: BigNumber;
 }): React.ReactElement {
@@ -93,7 +95,12 @@ export default function PollVotedOption({
             textAlign: ['left', 'right']
           }}
         >
-          <Button variant="primaryOutline" sx={{ width: ['100%', '247px'] }} mb={2}>
+          <Button
+            variant="primaryOutline"
+            sx={{ width: ['100%', '247px'] }}
+            mb={2}
+            onClick={() => openWindowWithUrl(setTweetUrl(poll.pollId))}
+          >
             <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
               <InternalIcon name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
             </Flex>
