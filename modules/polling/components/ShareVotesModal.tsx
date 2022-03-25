@@ -6,14 +6,17 @@ import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { slideUp, fadeIn } from 'lib/keyframes';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { markdownToHtml } from 'lib/utils';
+import InternalIcon from 'modules/app/components/Icon';
+import { openWindowWithUrl } from 'lib/utils';
 
 type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   markdownContent: string;
+  setTweetUrl: (pollId?: number) => string;
 };
 
-export const MarkdownVotesModal = ({ isOpen, onDismiss, markdownContent }: Props): JSX.Element => {
+export const ShareVotesModal = ({ isOpen, onDismiss, markdownContent, setTweetUrl }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [html, setHtml] = useState('');
   const [copied, setCopied] = useState(false);
@@ -62,7 +65,11 @@ export const MarkdownVotesModal = ({ isOpen, onDismiss, markdownContent }: Props
                 <Icon name="copy" mr={2} color="white" size={10} />
                 {copied ? 'Copied!' : 'Copy & paste on the forum'}
               </Button>
-              {/* <Button>Download markdown file</Button> */}
+              <Button sx={{ ml: 3 }} onClick={() => openWindowWithUrl(setTweetUrl())}>
+                <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <InternalIcon color="white" name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
+                </Flex>
+              </Button>
             </Flex>
           </Flex>
         </BoxWithClose>

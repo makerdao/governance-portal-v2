@@ -27,7 +27,7 @@ import { BallotContext } from 'modules/polling/context/BallotContext';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
-import { MarkdownVotesModal } from 'modules/polling/components/MarkdownVotesModal';
+import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -78,6 +78,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     </Flex>
   );
 
+  const previousVotesLength = Object.keys(previousBallot).length;
+
   const setTweetUrl = (pollId?: number) => {
     setMarkdownPollId(pollId);
     return votesToTweet();
@@ -96,7 +98,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     } else {
       // all votes
       url = 'https://vote.makerdao.com';
-      text = `I just voted on ${polls.length} MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
+      text = `I just voted on ${previousVotesLength} MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
     }
 
     return (
@@ -128,8 +130,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     });
     return markdown;
   };
-
-  const previousVotesLength = Object.keys(previousBallot).length;
 
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
@@ -294,10 +294,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 </Box>
               )}
               {showMarkdownModal && (
-                <MarkdownVotesModal
+                <ShareVotesModal
                   isOpen={showMarkdownModal}
                   onDismiss={toggleMarkdownModal}
                   markdownContent={votesToMarkdown()}
+                  setTweetUrl={setTweetUrl}
                 />
               )}
             </Box>
