@@ -1,6 +1,6 @@
-import { Flex, Heading, Link as ThemeUILink, Grid, Text } from 'theme-ui';
-import Link from 'next/link';
+import { Flex, Heading, Grid, Text } from 'theme-ui';
 import Skeleton from 'react-loading-skeleton';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
@@ -17,11 +17,9 @@ export const ExecutiveProposalsLanding = ({ proposals, network, hat }: Props): J
   <Flex sx={{ flexDirection: 'column' }}>
     <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
       <Heading>Executive Proposals</Heading>
-      <Link href={{ pathname: '/executive' }} passHref>
-        <ThemeUILink title="Executive Proposals">
-          <ViewMore label="View All" />
-        </ThemeUILink>
-      </Link>
+      <InternalLink href={'/executive'} title="Executive proposals">
+        <ViewMore label="View All" />
+      </InternalLink>
     </Flex>
     <Flex>
       <ErrorBoundary componentName="Executive Proposals">

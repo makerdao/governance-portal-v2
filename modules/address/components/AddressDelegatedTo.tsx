@@ -1,14 +1,14 @@
-import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
+import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import BigNumber from 'bignumber.js';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DelegationHistory } from 'modules/delegates/types';
 import { useState } from 'react';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { formatDateWithTime } from 'lib/datetime';
 import Tooltip from 'modules/app/components/Tooltip';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -33,11 +33,13 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: 3 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}` }} passHref>
-            <ThemeUILink title="View address detail" sx={{ fontSize: bpi < 1 ? 1 : 3 }}>
-              <AddressIconBox address={address} width={41} />
-            </ThemeUILink>
-          </Link>
+          <InternalLink
+            href={`/address/${address}`}
+            title="View address detail"
+            styles={{ fontSize: bpi < 1 ? 1 : 3 }}
+          >
+            <AddressIconBox address={address} width={41} />
+          </InternalLink>
         </Heading>
         {expanded && (
           <Flex sx={{ pl: 3, flexDirection: 'column' }}>
@@ -132,16 +134,15 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <ThemeUILink
+                  <ExternalLink
                     href={getEtherscanLink(network, hash as string, 'transaction')}
-                    target="_blank"
                     title="View on Etherscan"
-                    sx={{
+                    styles={{
                       textAlign: 'right'
                     }}
                   >
                     <Icon name="arrowTopRight" size={2} />
-                  </ThemeUILink>
+                  </ExternalLink>
                 </Flex>
               );
             })}

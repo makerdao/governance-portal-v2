@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
+import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import shallow from 'zustand/shallow';
 import { fetchJson } from 'lib/fetchJson';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
@@ -28,6 +26,7 @@ import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 type Props = {
   delegates: Delegate[];
@@ -162,16 +161,13 @@ const Delegates = ({ delegates, stats }: Props) => {
                     : 'Interested in creating a delegate contract?'}
                 </Text>
                 <Box>
-                  <Link
-                    href={{
-                      pathname: '/account'
-                    }}
-                    passHref
+                  <InternalLink
+                    href={'/account'}
+                    title="My account"
+                    // TODO: onClick={() => trackButtonClick('viewAccount')}
                   >
-                    <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
-                      <Text>View Account Page</Text>
-                    </ThemeUILInk>
-                  </Link>
+                    <Text>View Account Page</Text>
+                  </InternalLink>
                 </Box>
               </Card>
             </Box>
