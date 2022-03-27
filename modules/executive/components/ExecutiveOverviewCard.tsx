@@ -184,11 +184,7 @@ export default function ExecutiveOverviewCard({
         )}
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ width: '50%' }}>
-            <InternalLink
-              href={'/executive/[proposal-id]'}
-              title="View executive details"
-              as={`/executive/${proposal.key}`}
-            >
+            <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
               <Button
                 variant="outline"
                 sx={{
