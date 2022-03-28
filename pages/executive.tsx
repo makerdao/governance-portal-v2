@@ -135,9 +135,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     revalidateOnFocus: false,
     initialSize: 1,
     revalidateFirstPage: false,
-    fallback: {
-      [`/api/executive?network=${network}&start=0&limit=10&sortBy=${sortBy}`]: proposals
-    }
+    fallbackData: proposals
   });
 
   const isLoadingInitialData = !paginatedProposals && !error;
@@ -385,9 +383,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
               {isLoadingInitialData && (
                 <Box>
-                  <Box my={3}>
-                    <SkeletonThemed width={'100%'} height={'200px'} />
-                  </Box>
                   <Box my={3}>
                     <SkeletonThemed width={'100%'} height={'200px'} />
                   </Box>

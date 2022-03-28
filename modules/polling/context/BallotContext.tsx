@@ -64,7 +64,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
   const clearBallot = () => {
-    setTxId(null);
     setCommentSignature('');
     setBallot({});
   };
