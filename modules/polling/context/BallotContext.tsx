@@ -210,7 +210,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const arweave = Arweave.init({
       host: 'arweave.net',
       port: 443,
-      protocol: 'https'
+      protocol: 'https',
+      timeout: 60000,
+      logging: true
     });
 
     const arAddress = await arweave.wallets.getAddress(myKey);
@@ -232,6 +234,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       );
       txA.addTag('Content-Type', 'text/html');
       txA.addTag('polling', 'makerdux');
+      txA.addTag('account', account);
+      // pollIds.forEach(id => txA.addTag('pollId', id));
 
       // console.log('tx before sign', txA);
       await arweave.transactions.sign(txA, myKey);
@@ -243,11 +247,14 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
       console.log('sent tx response', response);
 
-      console.log(response.status);
+      console.log('tx response status', response.status);
     }
 
     // // const mytx = 'q45_e4PmYafAynudOP9XAvTPuRQmkusYnacimmEbDZw';
-    const txAId = 'UGNrbK27ai-ZzA3OcQ4DLO6DshNJ9vO_WlNEqG_YeRI';
+    const txAId = arTxId || 'UGNrbK27ai-ZzA3OcQ4DLO6DshNJ9vO_WlNEqG_YeRI';
+
+    // newest
+    // const txAId = arTxId || '3v1jfe_bbxgiZZ2COnP2U7QhJLSlXZpCXrmQ1i8cppE';
     const status = await arweave.transactions.getStatus(txAId);
     console.log('tx status', status);
 
