@@ -1,6 +1,6 @@
-import { Box, Flex, Text, Link as ThemeUILink, Heading, Divider } from 'theme-ui';
+import { Box, Flex, Text, Link as ThemeUILink, Divider } from 'theme-ui';
 import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -9,9 +9,6 @@ import { formatDateWithoutTime } from 'lib/datetime';
 import { formatLocation, formatDiffValue } from '../helpers/spellDiffParsers';
 import Tooltip from 'modules/app/components/Tooltip';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-// import { formatLocation, formatValue } from '../helpers/spellDiffParsers';
-
-// import { SpellDiff as SpellDiffType } from '../../../pages/executive/[proposal-id]';
 
 const CircleIcon = ({ name }) => (
   <Flex
@@ -30,56 +27,53 @@ const CircleIcon = ({ name }) => (
   </Flex>
 );
 
-const SpellDiff = ({ diffs }) => {
-  return diffs.map((diff, i) => {
-    const { contract, location, fromVal, toVal } = diff;
-    return (
-      <Flex key={JSON.stringify(diff[i])} sx={{ flexDirection: 'column' }}>
-        {/* <Flex key={JSON.stringify(diff[i]) + i} sx={{ flexDirection: 'column', p: 3, m: 3 }}> */}
-        <Divider sx={{ m: 0 }} />
-        <Flex sx={{ justifyContent: 'space-between', my: 0, py: 4 }}>
-          <Flex sx={{ flexDirection: 'column', gap: 1 }}>
-            <Text sx={{ fontWeight: 'semiBold' }}>{`${contract}`}</Text>
-            <Tooltip label={location}>
-              <Text sx={{ pl: 2 }}>{formatLocation(location)}</Text>
+const SpellDiffRow = ({ diff }: { diff: SpellDiffType }): React.ReactElement => {
+  const { contract, location, fromVal, toVal } = diff;
+  return (
+    <Flex sx={{ flexDirection: 'column' }}>
+      <Divider sx={{ m: 0 }} />
+      <Flex sx={{ justifyContent: 'space-between', my: 0, py: 4 }}>
+        <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+          <Text sx={{ fontWeight: 'semiBold' }}>{`${contract}`}</Text>
+          <Tooltip label={location}>
+            <Text sx={{ pl: 2 }}>{formatLocation(location)}</Text>
+          </Tooltip>
+        </Flex>
+
+        <Flex sx={{ flexDirection: 'column', mt: 0, gap: 3 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 1
+            }}
+          >
+            <Text variant="caps" color="onSecondary">
+              Old Value
+            </Text>
+            <Tooltip label={fromVal}>
+              <Text>{formatDiffValue(fromVal)}</Text>
             </Tooltip>
           </Flex>
 
-          <Flex sx={{ flexDirection: 'column', mt: 0, gap: 3 }}>
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                gap: 1
-              }}
-            >
-              <Text variant="caps" color="onSecondary">
-                Old Value
-              </Text>
-              <Tooltip label={fromVal}>
-                <Text>{formatDiffValue(fromVal)}</Text>
-              </Tooltip>
-            </Flex>
-
-            <Flex
-              sx={{
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                gap: 1
-              }}
-            >
-              <Text variant="caps" color="onSecondary">
-                New Value
-              </Text>
-              <Tooltip label={toVal}>
-                <Text>{formatDiffValue(toVal)}</Text>
-              </Tooltip>
-            </Flex>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 1
+            }}
+          >
+            <Text variant="caps" color="onSecondary">
+              New Value
+            </Text>
+            <Tooltip label={toVal}>
+              <Text>{formatDiffValue(toVal)}</Text>
+            </Tooltip>
           </Flex>
         </Flex>
       </Flex>
-    );
-  });
+    </Flex>
+  );
 };
 
 export function SpellEffectsTab({
@@ -226,7 +220,9 @@ export function SpellEffectsTab({
       {spellDiffs ? (
         spellDiffs.length > 0 ? (
           <ErrorBoundary componentName={'Spell Effects'}>
-            <SpellDiff diffs={spellDiffs} />
+            {spellDiffs.map(diff => (
+              <SpellDiffRow key={JSON.stringify(diff)} diff={diff} />
+            ))}
           </ErrorBoundary>
         ) : null
       ) : (
