@@ -1,6 +1,7 @@
+export type BallotVote = {
+  option: number | number[];
+  comment?: string;
+};
 export type Ballot = {
-  [pollId: number]: {
-    option: number | number[];
-    submitted?: number | number[];
-  };
+  [pollId: number]: BallotVote;
 };

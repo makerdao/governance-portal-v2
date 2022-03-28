@@ -3,7 +3,7 @@ type LegacyPollVote = {
   optionId: number;
   optionIdRaw?: string;
   rankedChoiceOption?: number[];
-  blockTimestamp: number;
+  blockTimestamp: string;
 };
 
 type RankedChoicePollVote = {
@@ -11,7 +11,7 @@ type RankedChoicePollVote = {
   optionId?: number;
   optionIdRaw?: string;
   rankedChoiceOption: number[];
-  blockTimestamp: number;
+  blockTimestamp: string;
 };
 
 export type PollVote = LegacyPollVote | RankedChoicePollVote;

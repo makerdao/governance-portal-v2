@@ -5,6 +5,7 @@ export type DelegatesAPIStats = {
   shadow: number;
   recognized: number;
   totalMKRDelegated: string;
+  totalDelegators: number;
 };
 
 export type DelegatesAPIResponse = {

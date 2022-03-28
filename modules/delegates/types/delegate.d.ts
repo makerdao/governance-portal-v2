@@ -31,7 +31,7 @@ export type Delegate = {
   picture: string;
   status: DelegateStatus;
   expired: boolean;
-  lastVote: Date | null;
+  lastVoteDate: string | null;
   expirationDate: Date;
   externalUrl?: string;
   combinedParticipation?: string;
@@ -41,7 +41,6 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
-  pollVoteHistory: PollVoteHistory;
 };
 
 export type DelegationHistory = {

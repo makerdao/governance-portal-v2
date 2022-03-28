@@ -1,12 +1,14 @@
+import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import SwaggerUI from 'swagger-ui-react';
+import { HeadComponent } from 'modules/app/components/layout/Head';
 import 'swagger-ui-react/swagger-ui.css';
 import { Box } from 'theme-ui';
 import { createSwaggerSpec } from 'next-swagger-doc';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const router = useRouter();
   return Object.keys(router.query).length > 0 ? (
     <Box>
@@ -16,7 +18,10 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>) => {
       </Link>
     </Box>
   ) : (
-    <SwaggerUI spec={spec} />
+    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+      <HeadComponent title="Account" />
+      <SwaggerUI spec={spec} />
+    </PrimaryLayout>
   );
 };
 

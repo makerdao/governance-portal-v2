@@ -13,21 +13,21 @@ describe('/polling detail page', async () => {
 
   it('can see poll detail', () => {
     // Mainnet poll
-    visitPage('/polling/QmWReBMh');
+    visitPage('/polling/Qmdd4Pg7');
 
     // REnders the title
-    cy.contains('PPG - Open Market Committee Proposal - January 31, 2022').should('be.visible');
+    cy.contains('Adding Rate Limiter to Flap Auctions - February 28, 2022').should('be.visible');
 
     // Renders the date
-    cy.contains(/POSTED FEB 15 2022 21:36 UTC/i).should('be.visible');
+    cy.contains(/POSTED FEB 28 2022 16:00 UTC | POLL ID 749/i).should('be.visible');
 
     // Your vote does not exist
     cy.get('[data-testid="poll-vote-box"]').should('not.exist');
   });
 
   it('Sees the vote box if connected', () => {
-    // Mainnet poll
-    visitPage('/polling/QmWReBMh');
+    // Goerli-fork Poll
+    visitPage('/polling/QmNSjvej');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Shows the vote box

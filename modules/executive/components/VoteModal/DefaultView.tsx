@@ -74,11 +74,11 @@ export default function DefaultVoteModalView({
       const data = await fetchJson('/api/comments/nonce', {
         method: 'POST',
         body: JSON.stringify({
-          voterAddress: account
+          voterAddress: account?.toLowerCase()
         })
       });
       setIsFetcingNonce(false);
-      const signed = await sign(account as string, data.nonce, library);
+      const signed = await sign(account?.toLowerCase() as string, data.nonce, library);
       setSignedMessage(signed);
     } catch (e) {
       setIsFetcingNonce(false);

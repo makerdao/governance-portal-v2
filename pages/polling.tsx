@@ -141,7 +141,6 @@ const PollingOverview = ({ polls, categories }: Props) => {
       />
 
       <Stack gap={3}>
-        {bpi <= 3 && account && <BallotStatus />}
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ alignItems: 'center' }}>
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
@@ -159,14 +158,12 @@ const PollingOverview = ({ polls, categories }: Props) => {
             {filteredPolls.length > 0 ? (
               <Stack>
                 <div>
-                  <Heading
-                    mb={3}
-                    mt={4}
-                    as="h4"
-                    sx={{ display: sortedEndDatesActive.length > 0 ? undefined : 'none' }}
-                  >
-                    Active Polls
-                  </Heading>
+                  <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', my: 3 }}>
+                    <Heading as="h4" sx={{ display: sortedEndDatesActive.length > 0 ? undefined : 'none' }}>
+                      Active Polls
+                    </Heading>
+                    {bpi <= 2 && account && <BallotStatus />}
+                  </Flex>
                   <Stack>
                     {sortedEndDatesActive.map(date => (
                       <div key={date}>
