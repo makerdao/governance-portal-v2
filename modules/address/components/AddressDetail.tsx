@@ -13,6 +13,8 @@ import { AddressMKRDelegatedStats } from './AddressMKRDelegatedStats';
 import AddressIconBox from './AddressIconBox';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import AccountComments from 'modules/comments/components/AccountComments';
+import Tabs from 'modules/app/components/Tabs';
 
 type PropTypes = {
   address: string;
@@ -40,28 +42,10 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
     }
   );
 
-  return (
-    <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
-      <Flex
-        sx={{
-          justifyContent: 'space-between',
-          flexDirection: ['column', 'row'],
-          alignItems: ['flex-start', 'center'],
-          p: [3, 4]
-        }}
-      >
-        <AddressIconBox address={address} showExternalLink />
+  const tabTitles = ['Account Details', 'Comments'];
 
-        <Box sx={{ pt: [2, 0] }}>
-          <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
-        </Box>
-      </Flex>
-
-      <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
-        <AddressMKRDelegatedStats totalMKRDelegated={delegatedToData?.totalDelegated} address={address} />
-      </Box>
-      <Divider mt={1} mb={1} />
-
+  const tabPanels = [
+    <Box key="account-detail">
       <Box sx={{ pl: [3, 4], pr: [3, 4], pt: [3, 4] }}>
         <Text
           as="p"
@@ -123,6 +107,37 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
           <PollingParticipationOverview votes={statsData.pollVoteHistory} />
         </ErrorBoundary>
       )}
+    </Box>,
+    <Box key="account-comments" sx={{ p: [3, 4] }}>
+      <AccountComments address={address} />
+    </Box>
+  ];
+
+  return (
+    <Box sx={{ variant: 'cards.primary', p: [0, 0] }}>
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+          flexDirection: ['column', 'row'],
+          alignItems: ['flex-start', 'center'],
+          pt: [3, 4],
+          pl: [3, 4],
+          pr: [3, 4],
+          pb: 1
+        }}
+      >
+        <AddressIconBox address={address} showExternalLink />
+
+        <Box sx={{ pt: [2, 0] }}>
+          <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
+        </Box>
+      </Flex>
+
+      <Box sx={{ pl: [3, 4], pr: [3, 4], display: 'flex', flexDirection: 'column' }}>
+        <AddressMKRDelegatedStats totalMKRDelegated={delegatedToData?.totalDelegated} address={address} />
+      </Box>
+
+      <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>
     </Box>
   );
 }

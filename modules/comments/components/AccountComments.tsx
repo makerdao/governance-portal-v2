@@ -1,7 +1,7 @@
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
 import Link from 'next/link';
-import { Box, Text, Link as InternalLink, Flex, Divider } from 'theme-ui';
+import { Box, Text, Link as InternalLink } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { ExecutiveCommentsAPIResponseItem, PollCommentsAPIResponseItem } from '../types/comments';
 import { formatDateWithTime } from 'lib/datetime';
@@ -58,7 +58,7 @@ export default function AccountComments({ address }: { address: string }): React
               <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}
               </Text>
-              <Text>{comment.comment.comment}</Text>
+              <Text sx={{ wordBreak: 'break-word' }}>{comment.comment.comment}</Text>
               <Box mt={1}>
                 <Link href={`/executive/${comment.comment.spellAddress}`} passHref>
                   <InternalLink variant="nostyle">
@@ -91,7 +91,7 @@ export default function AccountComments({ address }: { address: string }): React
               <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}
               </Text>
-              <Text>{comment.comment.comment}</Text>
+              <Text sx={{ wordBreak: 'break-word' }}>{comment.comment.comment}</Text>
               <Box mt={1}>
                 <Link href={`/polling/${comment.comment.pollId}`} passHref>
                   <InternalLink variant="nostyle">
