@@ -58,6 +58,10 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
 
   const data = await fetchSpockPollById(pollId, network);
 
+  if (data) {
+    return null;
+  }
+
   const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data));
 
   if (parsedPoll) {
