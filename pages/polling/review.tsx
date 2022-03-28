@@ -17,6 +17,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { objectToGetParams } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -26,11 +27,20 @@ import { BallotContext } from 'modules/polling/context/BallotContext';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
+import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
+
+  const [showMarkdownModal, setShowMarkdownModal] = useState(false);
+  const [markdownPollId, setMarkdownPollId] = useState<number | undefined>(undefined);
+
+  const toggleMarkdownModal = (pollId?: number) => {
+    setMarkdownPollId(pollId);
+    setShowMarkdownModal(!showMarkdownModal);
+  };
 
   const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
     useContext(BallotContext);
@@ -69,6 +79,57 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 
   const previousVotesLength = Object.keys(previousBallot).length;
+
+  const setTweetUrl = (pollId?: number) => {
+    setMarkdownPollId(pollId);
+    return votesToTweet();
+  };
+
+  const votesToTweet = (): string => {
+    let url = '';
+    let text = '';
+    if (markdownPollId) {
+      // single vote
+      const poll = previousVotedPolls.find(poll => poll.pollId === markdownPollId);
+      if (!poll) return '';
+      const option = poll.options[previousBallot[poll.pollId].option as number];
+      url = `https://vote.makerdao.com/polling/${poll.slug}`;
+      text = `I just voted ${option} on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
+    } else {
+      // all votes
+      url = 'https://vote.makerdao.com';
+      text = `I just voted on ${previousVotesLength} MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
+    }
+
+    return (
+      'https://twitter.com/share' +
+      objectToGetParams({
+        url,
+        text
+      })
+    );
+  };
+
+  const votesToMarkdown = (): string => {
+    let markdown = '';
+    let polls;
+    if (markdownPollId) {
+      // single vote
+      polls = [previousVotedPolls.find(poll => poll.pollId === markdownPollId)];
+    } else {
+      // all votes
+      polls = previousVotedPolls;
+    }
+    polls.map(poll => {
+      const option = poll.options[previousBallot[poll.pollId].option as number];
+      const comment = previousBallot[poll.pollId]?.comment;
+      markdown += `[${poll.title}](https://vote.makerdao.com//polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
+      markdown += `Voted: **${option}**  \n`;
+      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
+      markdown += '  \n';
+    });
+    return markdown;
+  };
 
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
@@ -147,6 +208,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                   votedOption={previousBallot[poll.pollId].option}
                                   votingWeight={votingWeight?.total}
                                   transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                                  toggleMarkdownModal={toggleMarkdownModal}
+                                  setTweetUrl={setTweetUrl}
                                 />
                               </Box>
                             }
@@ -223,10 +286,20 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   </Heading>
                   <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
-                      <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
+                      <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
+                        Preview and share your votes
+                      </Button>
                     </Box>
                   </ActivePollsBox>
                 </Box>
+              )}
+              {showMarkdownModal && (
+                <ShareVotesModal
+                  isOpen={showMarkdownModal}
+                  onDismiss={toggleMarkdownModal}
+                  markdownContent={votesToMarkdown()}
+                  setTweetUrl={setTweetUrl}
+                />
               )}
             </Box>
           )}
