@@ -68,7 +68,10 @@ export async function fetchDelegate(
     return Promise.resolve(undefined);
   }
 
-  const { data: githubDelegate } = await fetchGithubDelegate(voteDelegateAddress, currentNetwork);
+  const { data: githubDelegate } = await fetchGithubDelegate(
+    onChainDelegate.voteDelegateAddress,
+    currentNetwork
+  );
 
   return mergeDelegateInfo(onChainDelegate, githubDelegate);
 }
