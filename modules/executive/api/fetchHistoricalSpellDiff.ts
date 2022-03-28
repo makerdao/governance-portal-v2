@@ -15,17 +15,20 @@ export async function fetchHistoricalSpellDiff(proposalAddress?: string): Promis
   const history = await provider.getHistory(proposalAddress);
   const castTx = history.filter(h => h.data === SIGNATURE_CAST);
 
-  // Sometimes the 'cast()' tx fails, so there will be more than one. Always take the last index because it's the one that succeeded.
-  const { hash } = castTx[castTx.length - 1];
+  if (castTx.length > 0) {
+    // Sometimes the 'cast()' tx fails, so there will be more than one. Always take the last index because it's the one that succeeded.
+    const { hash } = castTx[castTx.length - 1];
 
-  const url = DECODED_SPELL_ENDPOINT(hash);
+    const url = DECODED_SPELL_ENDPOINT(hash);
 
-  try {
-    const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
-    const validated = diffs.map(diff => validateDiff(diff));
-    return validated;
-  } catch (e) {
-    console.error('Error fetching historical spell diffs:', e.message);
-    return [];
+    try {
+      const diffs: DecodedDiffAPIResponse[] = await fetchJson(url);
+      const validated = diffs.map(diff => validateDiff(diff));
+      return validated;
+    } catch (e) {
+      console.error('Error fetching historical spell diffs:', e.message);
+      return [];
+    }
   }
+  return [];
 }

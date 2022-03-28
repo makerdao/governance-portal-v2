@@ -1,20 +1,14 @@
 import { fetchJson } from 'lib/fetchJson';
 import {
-  AVG_BLOCKS_PER_DAY,
   SIGNATURE_CAST,
   SIMULATE_TX_ENDPOINT,
   SIMULATE_TX_FROM,
   SIMULATE_TX_GAS,
   SIMULATE_TX_GAS_PRICE,
-  SIMULATE_TX_VALUE,
-  SupportedNetworks
+  SIMULATE_TX_VALUE
 } from 'modules/web3/constants/networks';
 import { validateDiff } from '../helpers/spellDiffParsers';
 import { SimulationDiffAPIResponse, SpellDiff } from '../types';
-import { differenceInDays } from 'date-fns';
-import { getDefaultProvider } from 'ethers';
-// import { validateDiff } from '../helpers/spellDiffParsers';
-// import { SimulationDiffAPIResponse, SpellDiff } from '../types';
 
 type Response = Record<'diffs', SimulationDiffAPIResponse[]>;
 
@@ -25,13 +19,12 @@ type ParamsData = {
   gas: string;
   gas_price: string;
   value: string;
-  execute_on_top_of_block_number?: string;
+  timestamp?: string;
 };
 
 export async function fetchSimulationSpellDiffs(
   proposalAddress: string,
-  nextCastTime: string,
-  network: SupportedNetworks
+  nextCastTime: number
 ): Promise<SpellDiff[]> {
   const paramsData: ParamsData = {
     from_address: SIMULATE_TX_FROM,
@@ -42,16 +35,8 @@ export async function fetchSimulationSpellDiffs(
     value: SIMULATE_TX_VALUE
   };
 
-  // Estimate the block number when the spell can be cast
-  if (nextCastTime) {
-    const provider = getDefaultProvider(network);
-    const currentBlock = await provider.getBlockNumber();
-    const daysUntilCast = differenceInDays(new Date(nextCastTime), Date.now());
-    const blocksToAdd = AVG_BLOCKS_PER_DAY * daysUntilCast;
-    const blockNumber = currentBlock + blocksToAdd;
-
-    paramsData.execute_on_top_of_block_number = blockNumber.toString();
-  }
+  // If nextCastTime is in the future, send it along with the request, otherwise let the endpoint use it's default value
+  if (nextCastTime > new Date().getTime()) paramsData.timestamp = (nextCastTime / 1000).toString();
 
   const searchParams = new URLSearchParams(paramsData);
   const url = new URL(SIMULATE_TX_ENDPOINT);

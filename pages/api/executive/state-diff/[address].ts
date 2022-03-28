@@ -10,7 +10,6 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const spellAddress: string = req.query.address as string;
   const nextCastTime: string = req.query.nextCastTime as string;
   const hasBeenCast: string = req.query.hasBeenCast as string;
-  const network: SupportedNetworks = req.query.network as SupportedNetworks;
 
   invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
@@ -21,7 +20,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const diffs = hasBeenCast
     ? await fetchHistoricalSpellDiff(spellAddress)
-    : await fetchSimulationSpellDiffs(spellAddress, nextCastTime, network);
+    : await fetchSimulationSpellDiffs(spellAddress, parseInt(nextCastTime));
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json(diffs);
