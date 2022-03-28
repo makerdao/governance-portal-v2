@@ -1,5 +1,5 @@
 import withApiHandler from 'modules/app/api/withApiHandler';
-import { fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
+import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -94,7 +94,11 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const slug = req.query.slug as string;
 
-  const poll = await fetchPollBySlug(slug, network);
+  let poll = await fetchPollBySlug(slug, network);
+
+  if (!poll && !isNaN(parseInt(slug))) {
+    poll = await fetchPollById(parseInt(slug), network);
+  }
 
   if (!poll) {
     return res.status(404).json({
