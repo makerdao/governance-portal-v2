@@ -44,6 +44,7 @@ function mergeDelegateInfo(
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
+    cuMember: githubDelegate?.cuMember,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: onChainDelegate.execSupported
