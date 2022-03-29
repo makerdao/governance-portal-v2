@@ -29,7 +29,7 @@ export default withApiHandler(
     }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
     // Verifies the data
-    await verifyCommentParameters(hotAddress, signedMessage, txHash, network);
+    await verifyCommentParameters(hotAddress, voterAddress, signedMessage, txHash, network);
 
     // Get votter weight
     const chief = getContracts(networkNameToChainId(network)).chief;
