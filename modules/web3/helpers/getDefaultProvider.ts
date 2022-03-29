@@ -3,6 +3,8 @@ import { SupportedNetworks } from '../constants/networks';
 import { config } from 'lib/config';
 import { ethers } from 'ethers';
 
+ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
+
 export const getDefaultProvider = (
   network: SupportedNetworks | string | undefined,
   optionsOverrides?: Record<string, string>
