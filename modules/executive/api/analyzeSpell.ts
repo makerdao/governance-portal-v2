@@ -12,9 +12,13 @@ export const getExecutiveMKRSupport = async (
   address: string,
   network: SupportedNetworks
 ): Promise<string> => {
-  const approvals = await getChiefApprovals(address, network);
-
-  return approvals.toString();
+  try {
+    const approvals = await getChiefApprovals(address, network);
+    return approvals.toString();
+  } catch (e) {
+    console.error(`Error fetching approvals for ${address} on ${network}`, e);
+    return new Promise<string>(res => res('0'));
+  }
 };
 
 // executiveHash returns the hash of the executive proposal
