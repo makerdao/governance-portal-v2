@@ -111,7 +111,12 @@ export default function CommentItem({
         )}
       </Flex>
 
-      <Text mt={2} variant="text" color="secondaryEmphasis" sx={{ overflowWrap: 'break-word' }}>
+      <Text
+        mt={2}
+        variant="text"
+        color="secondaryEmphasis"
+        sx={{ overflowWrap: 'break-word', wordBreak: 'break-all' }}
+      >
         {comment.comment.comment}
       </Text>
     </Box>

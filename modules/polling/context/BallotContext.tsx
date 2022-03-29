@@ -74,7 +74,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     : account;
 
   const clearBallot = () => {
-    setTxId(null);
     setCommentSignature('');
     setBallot({});
   };

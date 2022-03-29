@@ -25,17 +25,13 @@ export function DelegateContractExpiration({ delegate }: { delegate: Delegate })
         flexDirection: ['row-reverse', 'row']
       }}
     >
-      <Text
-        variant="secondary"
-        color="onSecondary"
-        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
-      >
+      <Text variant="caps" color="onSecondary" sx={{ mr: 2 }}>
         {delegate.expired ? 'CONTRACT DELEGATION EXPIRED' : ` EXPIRES ${expiryDate}`}
       </Text>
       <Flex
         sx={{
           alignContent: 'center',
-          marginRight: 1
+          marginRight: [1, 0]
         }}
       >
         <Icon name="calendarcross" sx={delegate.expired ? styles.expiredIcon : styles.activeIcon} />

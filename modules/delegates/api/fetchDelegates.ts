@@ -44,6 +44,7 @@ function mergeDelegateInfo(
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
+    cuMember: githubDelegate?.cuMember,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: onChainDelegate.execSupported
@@ -59,14 +60,19 @@ export async function fetchDelegate(
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
 
   const onChainDelegate = onChainDelegates.find(
-    i => i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase()
+    i =>
+      i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase() ||
+      i.address.toLowerCase() === voteDelegateAddress.toLowerCase()
   );
 
   if (!onChainDelegate) {
     return Promise.resolve(undefined);
   }
 
-  const { data: githubDelegate } = await fetchGithubDelegate(voteDelegateAddress, currentNetwork);
+  const { data: githubDelegate } = await fetchGithubDelegate(
+    onChainDelegate.voteDelegateAddress,
+    currentNetwork
+  );
 
   return mergeDelegateInfo(onChainDelegate, githubDelegate);
 }
