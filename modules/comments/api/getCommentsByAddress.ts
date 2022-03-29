@@ -1,4 +1,4 @@
-import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
@@ -13,7 +13,7 @@ export async function getCommentsByAddress(
   executive: ExecutiveCommentsAPIResponseItem[];
   polling: PollCommentsAPIResponseItem[];
 }> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 

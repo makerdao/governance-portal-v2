@@ -63,6 +63,16 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
+  // Determines which address will be use to save the comments
+  const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
+    useAccount();
+
+  const accountToUse = voteDelegateContractAddress
+    ? voteDelegateContractAddress
+    : voteProxyContractAddress
+    ? voteProxyContractAddress
+    : account;
+
   const clearBallot = () => {
     setTxId(null);
     setCommentSignature('');
@@ -139,7 +149,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const data = await fetchJson('/api/comments/nonce', {
       method: 'POST',
       body: JSON.stringify({
-        voterAddress: account
+        address: account.toLowerCase()
       })
     });
 
@@ -153,7 +163,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     shallow
   );
 
-  const { account, voteDelegateContract } = useAccount();
   const { polling } = useContracts();
 
   const submitBallot = () => {
@@ -176,7 +185,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         // if comment included, add to comments db
         if (getComments().length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: account?.toLowerCase() || '',
+            voterAddress: accountToUse || '',
+            hotAddress: account || '',
             comments: getComments(),
             signedMessage: commentsSignature,
             txHash

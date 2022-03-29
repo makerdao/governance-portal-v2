@@ -123,7 +123,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     polls.map(poll => {
       const option = poll.options[previousBallot[poll.pollId].option as number];
       const comment = previousBallot[poll.pollId]?.comment;
-      markdown += `[${poll.title}](https://vote.makerdao.com//polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
+      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
       markdown += `Voted: **${option}**  \n`;
       markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
       markdown += '  \n';
