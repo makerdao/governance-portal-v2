@@ -59,9 +59,7 @@ export async function fetchDelegate(
   const onChainDelegates = await fetchChainDelegates(currentNetwork);
 
   const onChainDelegate = onChainDelegates.find(
-    i =>
-      i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase() ||
-      i.address.toLowerCase() === voteDelegateAddress.toLowerCase()
+    i => i.voteDelegateAddress.toLowerCase() === voteDelegateAddress.toLowerCase()
   );
 
   if (!onChainDelegate) {

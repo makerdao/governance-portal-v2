@@ -9,6 +9,7 @@ export type AddressAPIStats = {
 
 export type AddressApiResponse = {
   isDelegate: boolean;
+  isContractAddress: boolean;
   isProxyContract: boolean;
   voteProxyInfo?: VoteProxyAddresses;
   delegateInfo?: Delegate;

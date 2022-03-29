@@ -26,14 +26,14 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
 
   const { trackButtonClick } = useAnalytics(
-    addressInfo.isDelegate ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
+    addressInfo.isContractAddress ? ANALYTICS_PAGES.DELEGATE_DETAIL : ANALYTICS_PAGES.ADDRESS_DETAIL
   );
 
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title={`${
-          addressInfo.isDelegate ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'
+          addressInfo.isContractAddress ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'
         } Information`}
         description={`See all the voting activity of ${
           addressInfo.delegateInfo?.name || addressInfo.address
@@ -43,7 +43,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
 
       <SidebarLayout>
         <Stack gap={2}>
-          {addressInfo.isDelegate && (
+          {addressInfo.isContractAddress && (
             <Flex sx={{ alignItems: 'center' }}>
               <Heading variant="microHeading" mr={3}>
                 <Link scroll={false} href={{ pathname: '/delegates' }}>
@@ -61,12 +61,12 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           )}
 
           <Box>
-            {addressInfo.delegateInfo && (
+            {addressInfo.isContractAddress && addressInfo.delegateInfo && (
               <ErrorBoundary componentName="Delegate Information">
                 <DelegateDetail delegate={addressInfo.delegateInfo} />
               </ErrorBoundary>
             )}
-            {!addressInfo.delegateInfo && (
+            {!addressInfo.isContractAddress && !addressInfo.delegateInfo && (
               <ErrorBoundary componentName="Address Information">
                 <AddressDetail address={addressInfo.address} />
               </ErrorBoundary>
@@ -74,7 +74,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
           </Box>
         </Stack>
         <Stack gap={3}>
-          {addressInfo.isDelegate && addressInfo.delegateInfo && (
+          {addressInfo.isContractAddress && addressInfo.delegateInfo && (
             <ErrorBoundary componentName="Delegate MKR">
               <ManageDelegation delegate={addressInfo.delegateInfo} />
             </ErrorBoundary>
@@ -84,7 +84,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
               fields={['polling contract', 'savings rate', 'total dai', 'debt ceiling', 'system surplus']}
             />
           </ErrorBoundary>
-          {addressInfo.isDelegate && <ResourceBox type={'delegates'} />}
+          {addressInfo.isContractAddress && <ResourceBox type={'delegates'} />}
           <ResourceBox type={'general'} />
         </Stack>
       </SidebarLayout>

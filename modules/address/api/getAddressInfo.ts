@@ -17,6 +17,7 @@ export async function getAddressInfo(
 
   const response: AddressApiResponse = {
     isDelegate: !!delegate,
+    isContractAddress: delegate?.voteDelegateAddress === address,
     isProxyContract: !!voteProxyAddress.hotAddress,
     voteProxyInfo: voteProxyAddress,
     delegateInfo: delegate,
