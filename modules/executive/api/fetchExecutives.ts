@@ -151,16 +151,20 @@ export async function getExecutiveProposal(
   // Use goerli as a Key for Goerli fork. In order to pick the the current executives
   const currentNetwork = net === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : net;
 
-  const proposals = await getGithubExecutivesWithMKR(currentNetwork);
+  const proposals = await getGithubExecutives(currentNetwork);
 
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
+  const mkrSupport = await getExecutiveMKRSupport(proposal.address, currentNetwork);
   const spellData = await analyzeSpell(proposal.address, currentNetwork);
   const content = await markdownToHtml(proposal.about || '');
   return {
     ...proposal,
-    spellData,
+    spellData: {
+      ...spellData,
+      mkrSupport
+    },
     content
   };
 }
