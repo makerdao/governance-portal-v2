@@ -293,15 +293,16 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   </ActivePollsBox>
                 </Box>
               )}
-              {showMarkdownModal && (
-                <ShareVotesModal
-                  isOpen={showMarkdownModal}
-                  onDismiss={toggleMarkdownModal}
-                  markdownContent={votesToMarkdown()}
-                  setTweetUrl={setTweetUrl}
-                />
-              )}
             </Box>
+          )}
+
+          {showMarkdownModal && (
+            <ShareVotesModal
+              isOpen={showMarkdownModal}
+              onDismiss={toggleMarkdownModal}
+              markdownContent={votesToMarkdown()}
+              setTweetUrl={setTweetUrl}
+            />
           )}
         </SidebarLayout>
       </Stack>

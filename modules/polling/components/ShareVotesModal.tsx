@@ -60,16 +60,21 @@ export const ShareVotesModal = ({ isOpen, onDismiss, markdownContent, setTweetUr
             <Box sx={{ bg: 'background', px: 3 }}>
               <div dangerouslySetInnerHTML={{ __html: html || '' }} />
             </Box>
-            <Flex sx={{ justifyContent: 'center', mt: 4 }}>
-              <Button onClick={copyToClipboard} sx={{ width: '250px' }}>
-                <Icon name="copy" mr={2} color="white" size={10} />
-                {copied ? 'Copied!' : 'Copy & paste on the forum'}
-              </Button>
-              <Button sx={{ ml: 3 }} onClick={() => openWindowWithUrl(setTweetUrl())}>
-                <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <InternalIcon color="white" name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
-                </Flex>
-              </Button>
+            <Flex sx={{ justifyContent: 'center', mt: 4, flexDirection: ['row', 'column'] }}>
+              <Box sx={{ width: ['100%', '50%'], paddingRight: [0, 1], mb: [2, 0] }}>
+                <Button onClick={copyToClipboard} sx={{ width: '100%' }}>
+                  <Icon name="copy" mr={2} color="white" size={10} />
+                  {copied ? 'Copied!' : 'Copy & paste on the forum'}
+                </Button>
+              </Box>
+              <Box sx={{ width: ['100%', '50%'], paddingLeft: [0, 1] }}>
+                <Button sx={{ width: '100%' }} onClick={() => openWindowWithUrl(setTweetUrl())}>
+                  <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <InternalIcon color="white" name="twitter" size={15} />{' '}
+                    <Text ml={1}>Share on Twitter</Text>
+                  </Flex>
+                </Button>
+              </Box>
             </Flex>
           </Flex>
         </BoxWithClose>
