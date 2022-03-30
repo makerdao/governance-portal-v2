@@ -7,7 +7,7 @@ import { parseExecutive } from './parseExecutive';
 import invariant from 'tiny-invariant';
 import { markdownToHtml } from 'lib/utils';
 import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
-import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
+import { analyzeSpell } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { BigNumber } from 'ethers';
 
@@ -62,22 +62,21 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   return sortedProposals;
 }
 
-async function getGithubExecutivesWithMKR(network: SupportedNetworks): Promise<CMSProposal[]> {
-  const proposals = await getGithubExecutives(network);
-
-  const mkrSupports = await Promise.all(
+async function getExecutivesSpellData(
+  network: SupportedNetworks,
+  proposals: CMSProposal[]
+): Promise<Proposal[]> {
+  const proposalsWithData = await Promise.all(
     proposals.map(async proposal => {
-      const mkrSupport = await getExecutiveMKRSupport(proposal.address, network);
+      const spellData = await analyzeSpell(proposal.address, network);
       return {
         ...proposal,
-        spellData: {
-          mkrSupport
-        }
+        spellData
       };
     })
   );
 
-  return mkrSupports;
+  return proposalsWithData;
 }
 
 export async function getExecutiveProposals(
@@ -102,44 +101,44 @@ export async function getExecutiveProposals(
     }
   }
 
-  const proposals = await getGithubExecutivesWithMKR(currentNetwork);
+  // Get all the raw proposals from the github repo
+  const proposals = await getGithubExecutives(currentNetwork);
 
-  const sorted = proposals.sort((a, b) => {
-    if (sortBy === 'mkr') {
-      const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
-      const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
-      return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
-    } else if (sortBy === 'date') {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    } else {
-      return a.active ? -1 : 1; // Sort by active first
-    }
-  });
-
-  // Filter by dates
-  const filtered = sorted.filter(proposal => {
+  // Filter them by dates first because we don't need any proposals outside of this time range
+  const filtered = proposals.filter(proposal => {
     if (startDate && new Date(proposal.date).getTime() < startDate) return false;
     if (endDate && new Date(proposal.date).getTime() > endDate) return false;
     return true;
   });
 
-  const subset = filtered.slice(start, start + limit);
-
-  const analyzedProposals = await Promise.all(
-    subset.map(async p => {
-      const spellData = await analyzeSpell(p.address, currentNetwork);
-      return {
-        ...p,
-        spellData
-      };
-    })
-  );
-
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(analyzedProposals), currentNetwork);
+  // If we're not sorting by MKR support we can do the sort now, otherwise we have to fetch MKR support before sorting
+  if (sortBy === 'date') {
+    filtered.sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  } else if (sortBy !== 'mkr') {
+    filtered.sort((a, b) => {
+      return a.active ? -1 : 1;
+    });
   }
 
-  return analyzedProposals;
+  // Fetch the spell data, including MKR support, sort by MKR if applicable
+  const proposalsWithSpellData =
+    sortBy === 'mkr'
+      ? (await getExecutivesSpellData(currentNetwork, filtered))
+          .sort((a, b) => {
+            const bSupport = b.spellData ? b.spellData?.mkrSupport || 0 : 0;
+            const aSupport = a.spellData ? a.spellData?.mkrSupport || 0 : 0;
+            return BigNumber.from(bSupport).gt(BigNumber.from(aSupport)) ? 1 : -1;
+          })
+          .slice(start, start + limit)
+      : await getExecutivesSpellData(currentNetwork, filtered.slice(start, start + limit));
+
+  if (config.USE_FS_CACHE) {
+    fsCacheSet(cacheKey, JSON.stringify(proposalsWithSpellData), currentNetwork);
+  }
+
+  return proposalsWithSpellData;
 }
 
 export async function getExecutiveProposal(
@@ -156,15 +155,11 @@ export async function getExecutiveProposal(
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
-  const mkrSupport = await getExecutiveMKRSupport(proposal.address, currentNetwork);
   const spellData = await analyzeSpell(proposal.address, currentNetwork);
   const content = await markdownToHtml(proposal.about || '');
   return {
     ...proposal,
-    spellData: {
-      ...spellData,
-      mkrSupport
-    },
+    spellData,
     content
   };
 }
