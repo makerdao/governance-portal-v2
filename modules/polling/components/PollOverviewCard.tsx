@@ -200,19 +200,27 @@ export default function PollOverviewCard({
                 </Box>
               )}
               {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && !hideTally && (
-                <Flex sx={{ alignItems: 'center', mt: 3 }}>
-                  <Text variant="caps">Ranked-choice poll</Text>
-                  <Icon name="stackedVotes" size={3} ml={2} />
-                </Flex>
+                <Link href={`/polling/${poll.slug}/#vote-breakdown`} passHref>
+                  <ThemeUILink variant="nostyle" title="View Vote Breakdown">
+                    <Flex sx={{ alignItems: 'center', mt: 3 }}>
+                      <Text variant="caps">Ranked-choice poll</Text>
+                      <Icon name="stackedVotes" size={3} ml={2} />
+                    </Flex>
+                  </ThemeUILink>
+                </Link>
               )}
               {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && !hideTally && (
                 <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                   {tally && tally.totalMkrParticipation > 0 && (
-                    <Box sx={{ mt: 3 }}>
-                      <ErrorBoundary componentName="Poll Results">
-                        <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
-                      </ErrorBoundary>
-                    </Box>
+                    <Link href={`/polling/${poll.slug}/#vote-breakdown`} passHref>
+                      <ThemeUILink variant="nostyle" title="View Vote Breakdown">
+                        <Box sx={{ mt: 3 }}>
+                          <ErrorBoundary componentName="Poll Results">
+                            <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                          </ErrorBoundary>
+                        </Box>
+                      </ThemeUILink>
+                    </Link>
                   )}
                   {!tally && isValidating && !errorTally && (
                     <SkeletonThemed width={'265px'} height={'30px'} />
