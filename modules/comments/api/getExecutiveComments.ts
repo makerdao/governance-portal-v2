@@ -4,13 +4,13 @@ import uniqBy from 'lodash/uniqBy';
 import { ExecutiveComment, ExecutiveCommentFromDB } from '../types/executiveComment';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
-import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks
 ): Promise<ExecutiveCommentsAPIResponseItem[]> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 

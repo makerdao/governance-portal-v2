@@ -19,11 +19,17 @@ export default withApiHandler(
 
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
 
-    const { voterAddress, comment, signedMessage, txHash, addressLockedMKR }: ExecutiveCommentsRequestBody =
-      JSON.parse(req.body);
+    const {
+      voterAddress,
+      hotAddress,
+      comment,
+      signedMessage,
+      txHash,
+      addressLockedMKR
+    }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
     // Verifies the data
-    await verifyCommentParameters(voterAddress, signedMessage, txHash, network);
+    await verifyCommentParameters(hotAddress, voterAddress, signedMessage, txHash, network);
 
     // Get votter weight
     const chief = getContracts(networkNameToChainId(network)).chief;
@@ -32,6 +38,7 @@ export default withApiHandler(
     const newComment: ExecutiveComment = {
       spellAddress,
       voterAddress: voterAddress.toLowerCase(),
+      hotAddress: hotAddress.toLowerCase(),
       comment,
       voterWeight: formatValue(voterWeigth),
       date: new Date(),

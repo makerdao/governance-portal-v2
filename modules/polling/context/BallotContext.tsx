@@ -63,6 +63,16 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
+  // Determines which address will be use to save the comments
+  const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
+    useAccount();
+
+  const accountToUse = voteDelegateContractAddress
+    ? voteDelegateContractAddress
+    : voteProxyContractAddress
+    ? voteProxyContractAddress
+    : account;
+
   const clearBallot = () => {
     setCommentSignature('');
     setBallot({});
@@ -138,7 +148,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const data = await fetchJson('/api/comments/nonce', {
       method: 'POST',
       body: JSON.stringify({
-        voterAddress: account
+        address: account.toLowerCase()
       })
     });
 
@@ -152,7 +162,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     shallow
   );
 
-  const { account, voteDelegateContract } = useAccount();
   const { polling } = useContracts();
 
   const submitBallot = () => {
@@ -175,7 +184,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         // if comment included, add to comments db
         if (getComments().length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: account?.toLowerCase() || '',
+            voterAddress: accountToUse || '',
+            hotAddress: account || '',
             comments: getComments(),
             signedMessage: commentsSignature,
             txHash
@@ -194,11 +204,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             });
         }
       },
-      mined: txId => {
+      mined: (txId, txHash) => {
         // Set votes
+        const votes = {};
+        Object.keys(ballot).forEach(pollId => {
+          votes[pollId] = ballot[pollId];
+          votes[pollId].transactionHash = txHash;
+        });
+
         setPreviousBallot({
           ...previousBallot,
-          ...ballot
+          ...votes
         });
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);

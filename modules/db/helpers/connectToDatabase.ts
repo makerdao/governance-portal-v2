@@ -1,30 +1,24 @@
 import { MongoClient } from 'mongodb';
-import invariant from 'tiny-invariant';
 
 import { config } from 'lib/config';
 
-let cachedClient = null;
-let cachedDb = null;
-
-export async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
-  }
-
-  invariant(
-    config.MONGODB_URI && config.MONGODB_COMMENTS_DB,
-    'Missing required Mongodb environment variables'
-  );
-
-  const client = await MongoClient.connect(config.MONGODB_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-  });
-
-  const db = client.db(config.MONGODB_COMMENTS_DB);
-
-  cachedClient = client;
-  cachedDb = db;
-
-  return { client, db };
+if (!process.env.MONGODB_URI) {
+  throw new Error('Please add your Mongo URI to .env.local');
 }
+
+// In production mode, it's best to not use a global variable.
+const client = new MongoClient(process.env.MONGODB_URI, {});
+
+const clientPromise = (): Promise<any> => {
+  return client.connect();
+};
+
+// Export a module-scoped MongoClient promise. By doing this in a
+// separate module, the client can be shared across functions.
+export default clientPromise().then(() => {
+  const db = client.db(config.MONGODB_COMMENTS_DB);
+  return {
+    db,
+    client
+  };
+});

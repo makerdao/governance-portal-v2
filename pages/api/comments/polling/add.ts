@@ -9,14 +9,20 @@ export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
     const body = JSON.parse(req.body) as PollsCommentsRequestBody;
 
-    if (!req.query.network || !body.txHash || !body.comments || !body.voterAddress) {
+    if (!req.query.network || !body.txHash || !body.comments || !body.voterAddress || !body.hotAddress) {
       throw new Error('Unsupported parameters');
     }
 
     const network = req.query.network as SupportedNetworks;
 
     // Verifies the data
-    await verifyCommentParameters(body.voterAddress, body.signedMessage, body.txHash, network);
+    await verifyCommentParameters(
+      body.hotAddress,
+      body.voterAddress,
+      body.signedMessage,
+      body.txHash,
+      network
+    );
 
     // TODO: check that the transaction is from a real polling contract
     // console.log(transaction);
@@ -24,6 +30,7 @@ export default withApiHandler(
     const commentsToInsert: PollComment[] = body.comments.map(comment => ({
       pollId: comment.pollId as number,
       comment: comment.comment as string,
+      hotAddress: comment.hotAddress?.toLowerCase() || '',
       network,
       date: new Date(),
       voterAddress: body.voterAddress.toLowerCase(),

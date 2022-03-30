@@ -27,12 +27,16 @@ type Props = {
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
+  yourVote?: React.ReactNode;
+  hideTally?: boolean;
 };
 export default function PollOverviewCard({
   poll,
   reviewPage,
   showVoting,
   children,
+  yourVote,
+  hideTally = false,
   ...props
 }: Props): JSX.Element {
   const { account } = useAccount();
@@ -41,7 +45,7 @@ export default function PollOverviewCard({
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
   return (
     <Box
@@ -52,7 +56,7 @@ export default function PollOverviewCard({
     >
       <ErrorBoundary componentName="Poll Card">
         <Box sx={{ p: [2, 4] }}>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: ['wrap', 'nowrap'] }}>
             <Stack gap={3}>
               {bpi === 0 && (
                 <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -65,12 +69,6 @@ export default function PollOverviewCard({
                     <Text as="p" variant="caps" sx={{ color: 'textSecondary', mb: 2 }}>
                       Posted {formatDateWithTime(poll.startDate)} | Poll ID {poll.pollId}
                     </Text>
-                    {!showQuickVote && poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && (
-                      <Flex sx={{ alignItems: 'center', mb: 3 }}>
-                        <Text variant="caps">Ranked-choice poll</Text>
-                        <Icon name="stackedVotes" size={3} ml={2} />
-                      </Flex>
-                    )}
                   </Flex>
                   <Link href={`/polling/${poll.slug}`} passHref>
                     <ThemeUILink variant="nostyle" title="View Poll Details">
@@ -144,6 +142,7 @@ export default function PollOverviewCard({
                 </ErrorBoundary>
               </Box>
             )}
+            {yourVote}
           </Flex>
 
           <Box>
@@ -154,36 +153,41 @@ export default function PollOverviewCard({
                 flexDirection: ['column', 'row']
               }}
             >
-              <Flex
-                sx={{
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  width: bpi > 0 ? 'auto' : '100%',
-                  p: 0,
-                  mt: 3
-                }}
-              >
-                <Link
-                  key={poll.slug}
-                  href={{ pathname: '/polling/[poll-hash]' }}
-                  as={{ pathname: `/polling/${poll.slug}` }}
-                  passHref
+              {!reviewPage && (
+                <Flex
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    width: bpi > 0 ? 'auto' : '100%',
+                    p: 0,
+                    mt: 3
+                  }}
                 >
-                  <ThemeUILink variant="nostyle" title="View Poll Details">
-                    <Button
-                      variant="outline"
-                      sx={{
-                        display: reviewPage ? 'none' : undefined,
-                        borderColor: 'text',
-                        color: 'text',
-                        ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                      }}
-                    >
-                      View Details
-                    </Button>
-                  </ThemeUILink>
-                </Link>
-              </Flex>
+                  <Link
+                    key={poll.slug}
+                    href={{ pathname: '/polling/[poll-hash]' }}
+                    as={{ pathname: `/polling/${poll.slug}` }}
+                    passHref
+                  >
+                    <ThemeUILink variant="nostyle" title="View Poll Details">
+                      <Button
+                        variant="outline"
+                        sx={{
+                          borderColor: 'text',
+                          color: 'text',
+                          ':hover': {
+                            color: 'text',
+                            borderColor: 'onSecondary',
+                            backgroundColor: 'background'
+                          }
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </ThemeUILink>
+                  </Link>
+                </Flex>
+              )}
 
               {showQuickVote && bpi === 0 && (
                 <Box sx={{ mt: 3, width: '100%' }}>
@@ -195,8 +199,13 @@ export default function PollOverviewCard({
                   </ErrorBoundary>
                 </Box>
               )}
-
-              {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
+              {poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE && !hideTally && (
+                <Flex sx={{ alignItems: 'center', mt: 3 }}>
+                  <Text variant="caps">Ranked-choice poll</Text>
+                  <Icon name="stackedVotes" size={3} ml={2} />
+                </Flex>
+              )}
+              {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && !hideTally && (
                 <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                   {tally && tally.totalMkrParticipation > 0 && (
                     <Box sx={{ mt: 3 }}>

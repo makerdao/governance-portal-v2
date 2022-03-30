@@ -1,4 +1,4 @@
-import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
@@ -10,7 +10,7 @@ export async function getPollComments(
   pollId: number,
   network: SupportedNetworks
 ): Promise<PollCommentsAPIResponseItem[]> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
@@ -35,6 +35,7 @@ export async function getPollComments(
   const promises = uniqueComments.map(async (comment: PollComment) => {
     return {
       comment,
+
       address: await getAddressInfo(comment.voterAddress, network)
     };
   });

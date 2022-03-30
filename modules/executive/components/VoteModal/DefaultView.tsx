@@ -74,7 +74,7 @@ export default function DefaultVoteModalView({
       const data = await fetchJson('/api/comments/nonce', {
         method: 'POST',
         body: JSON.stringify({
-          voterAddress: account?.toLowerCase()
+          address: account?.toLowerCase()
         })
       });
       setIsFetcingNonce(false);
@@ -123,7 +123,8 @@ export default function DefaultVoteModalView({
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: account || '',
+            voterAddress: addressLockedMKR || '',
+            hotAddress: account || '',
             comment: comment,
             signedMessage: signedMessage,
             txHash,
