@@ -65,7 +65,7 @@ describe('/polling/review page', async () => {
 
       cy.contains('Transaction Pending').should('be.visible');
 
-      cy.contains('Transaction Sent!').should('be.visible');
+      cy.contains('Share all your votes').should('be.visible');
 
       // After finishing voting, there should be no polls
       cy.contains('Your ballot is empty. Go back to the polling page to add votes to your ballot.').should(
