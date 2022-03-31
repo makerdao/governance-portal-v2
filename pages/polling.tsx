@@ -43,7 +43,7 @@ type Props = {
 };
 
 const PollingOverview = ({ polls, categories }: Props) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
     endDate,

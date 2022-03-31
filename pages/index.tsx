@@ -29,6 +29,8 @@ import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 
 type Props = {
   proposals: Proposal[];
@@ -38,6 +40,7 @@ type Props = {
 
 const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
   const [mode] = useColorMode();
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.LANDING);
   const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
@@ -102,7 +105,10 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
                     <Button
                       variant="outline"
                       sx={{ borderRadius: 'round' }}
-                      onClick={() => setVideoOpen(true)}
+                      onClick={() => {
+                        setVideoOpen(true);
+                        trackButtonClick('howToVoteVideo');
+                      }}
                     >
                       <Flex sx={{ alignItems: 'center' }}>
                         <Icon sx={{ mr: 2 }} name="play" size={3} fill="#7e7e88" />
