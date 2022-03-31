@@ -26,7 +26,7 @@ export async function fetchHistoricalSpellDiff(proposalAddress?: string): Promis
       const validated = diffs.map(diff => validateDiff(diff));
       return validated;
     } catch (e) {
-      console.error('Error fetching historical spell diffs:', e.message);
+      console.warn(`Error fetching historical spell diffs for ${proposalAddress}:`, e.message);
       return [];
     }
   }
