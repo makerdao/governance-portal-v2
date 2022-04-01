@@ -19,7 +19,6 @@ export async function getPollComments(
     .find({ pollId, network, commentType: 'poll' })
     .sort({ date: -1 })
     .toArray();
-
   const comments: PollComment[] = commentsFromDB.map(comment => {
     const { _id, voterAddress, ...rest } = comment;
     return {

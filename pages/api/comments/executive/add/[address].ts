@@ -18,7 +18,6 @@ export default withApiHandler(
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
     const {
       voterAddress,
       hotAddress,
@@ -26,8 +25,7 @@ export default withApiHandler(
       signedMessage,
       txHash,
       addressLockedMKR
-    }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
-
+    }: ExecutiveCommentsRequestBody = req.body;
     // Verifies the data
     const resultVerify = await verifyCommentParameters(
       hotAddress,
@@ -46,6 +44,7 @@ export default withApiHandler(
       voterAddress: voterAddress.toLowerCase(),
       hotAddress: hotAddress.toLowerCase(),
       accountType: resultVerify,
+      commentType: 'executive',
       comment,
       voterWeight: formatValue(voterWeigth),
       date: new Date(),

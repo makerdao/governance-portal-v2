@@ -7,7 +7,7 @@ import { insertPollComments } from 'modules/comments/api/insertPollingComments';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const body = JSON.parse(req.body) as PollsCommentsRequestBody;
+    const body = req.body as PollsCommentsRequestBody;
 
     if (!req.query.network || !body.txHash || !body.comments || !body.voterAddress || !body.hotAddress) {
       throw new Error('Unsupported parameters');
@@ -30,8 +30,9 @@ export default withApiHandler(
     const commentsToInsert: PollComment[] = body.comments.map(comment => ({
       pollId: comment.pollId as number,
       comment: comment.comment as string,
-      hotAddress: comment.hotAddress?.toLowerCase() || '',
+      hotAddress: body.hotAddress?.toLowerCase() || '',
       accountType: resultVerify,
+      commentType: 'poll',
       network,
       date: new Date(),
       voterAddress: body.voterAddress.toLowerCase(),

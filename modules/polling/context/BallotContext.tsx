@@ -147,6 +147,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const data = await fetchJson('/api/comments/nonce', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
         address: account.toLowerCase()
       })
@@ -193,6 +196,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
           fetchJson(`/api/comments/polling/add?network=${network}`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(commentsRequest)
           })
             .then(() => {

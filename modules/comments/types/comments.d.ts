@@ -35,6 +35,7 @@ export type ExecutiveComment = {
   voterWeight: string;
   comment: string;
   date: Date;
+  commentType: 'executive';
   spellAddress: string;
   network: SupportedNetworks;
   txHash?: string;
@@ -60,6 +61,7 @@ export type PollComment = {
   accountType: 'delegate' | 'proxy' | 'normal';
   comment: string;
   date: Date;
+  commentType: 'poll';
   pollId: number;
   network: SupportedNetworks;
   txHash?: string;

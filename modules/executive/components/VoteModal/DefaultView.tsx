@@ -73,6 +73,9 @@ export default function DefaultVoteModalView({
       setIsFetcingNonce(true);
       const data = await fetchJson('/api/comments/nonce', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           address: account?.toLowerCase()
         })
@@ -132,6 +135,9 @@ export default function DefaultVoteModalView({
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(requestBody)
           })
             .then(() => {

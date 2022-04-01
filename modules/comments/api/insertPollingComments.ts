@@ -8,7 +8,7 @@ export async function insertPollComments(comments: PollComment[]): Promise<PollC
 
   invariant(await client.isConnected(), 'Mongo client failed to connect');
 
-  const collection = db.collection('pollingComments');
+  const collection = db.collection('comments');
 
   try {
     await collection.insertMany(
