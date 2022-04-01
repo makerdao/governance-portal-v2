@@ -20,7 +20,9 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const diffs = hasBeenCast
     ? await fetchHistoricalSpellDiff(spellAddress)
-    : await fetchSimulationSpellDiffs(spellAddress, parseInt(nextCastTime));
+    : nextCastTime
+    ? await fetchSimulationSpellDiffs(spellAddress, parseInt(nextCastTime))
+    : null;
 
   res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate');
   res.status(200).json(diffs);

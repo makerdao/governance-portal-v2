@@ -413,16 +413,17 @@ export default function ProposalPage({
   const { query } = useRouter();
   const { network } = useActiveWeb3React();
 
-  const spellAddress = prefetchedProposal?.address;
-  const nextCastTime = prefetchedProposal?.spellData?.nextCastTime?.getTime();
-  const hasBeenCast = prefetchedProposal?.spellData.hasBeenCast;
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // const spellAddress = prefetchedProposal?.address;
+  // const nextCastTime = prefetchedProposal?.spellData?.nextCastTime?.getTime();
+  // const hasBeenCast = prefetchedProposal?.spellData.hasBeenCast;
 
   // If we didn't fetch the diffs during build, attempt to fetch them now
-  const { data: diffs } = useSWR(
-    prefetchedProposal && prefetchedSpellDiffs.length === 0
-      ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&hasBeenCast=${hasBeenCast}&network=${network}`
-      : null
-  );
+  // const { data: diffs } = useSWR(
+  //   prefetchedProposal && prefetchedSpellDiffs.length === 0
+  //     ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&hasBeenCast=${hasBeenCast}&network=${network}`
+  //     : null
+  // );
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
@@ -453,11 +454,11 @@ export default function ProposalPage({
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
-  const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;
+  // const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ProposalView proposal={proposal as Proposal} spellDiffs={spellDiffs} />
+      <ProposalView proposal={proposal as Proposal} spellDiffs={[]} />
     </ErrorBoundary>
   );
 }
@@ -468,19 +469,20 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
-  // Only fetch at build time if spell has been cast, and it's not older than two months (to speed up builds)
-  const spellDiffs: SpellDiff[] =
-    proposal &&
-    proposal.spellData?.hasBeenCast &&
-    isAfter(new Date(proposal?.date), sub(new Date(), { months: 2 }))
-      ? await fetchHistoricalSpellDiff(proposal.address)
-      : [];
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // // Only fetch at build time if spell has been cast, and it's not older than two months (to speed up builds)
+  // const spellDiffs: SpellDiff[] =
+  //   proposal &&
+  //   proposal.spellData?.hasBeenCast &&
+  //   isAfter(new Date(proposal?.date), sub(new Date(), { months: 2 }))
+  //     ? await fetchHistoricalSpellDiff(proposal.address)
+  //     : [];
 
   return {
     revalidate: 60 * 60, // Revalidate each hour
     props: {
       proposal,
-      spellDiffs,
+      // spellDiffs,
       revalidate: 30 // Ensures that after a spell is cast, we regenerate the static page with fetchHistoricalSpellDiff
     }
   };
