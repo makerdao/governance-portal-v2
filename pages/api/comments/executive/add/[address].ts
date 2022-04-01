@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
+import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -29,7 +29,13 @@ export default withApiHandler(
     }: ExecutiveCommentsRequestBody = JSON.parse(req.body);
 
     // Verifies the data
-    await verifyCommentParameters(hotAddress, voterAddress, signedMessage, txHash, network);
+    const resultVerify = await verifyCommentParameters(
+      hotAddress,
+      voterAddress,
+      signedMessage,
+      txHash,
+      network
+    );
 
     // Get votter weight
     const chief = getContracts(networkNameToChainId(network)).chief;
@@ -39,6 +45,7 @@ export default withApiHandler(
       spellAddress,
       voterAddress: voterAddress.toLowerCase(),
       hotAddress: hotAddress.toLowerCase(),
+      accountType: resultVerify,
       comment,
       voterWeight: formatValue(voterWeigth),
       date: new Date(),

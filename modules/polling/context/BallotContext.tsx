@@ -1,6 +1,6 @@
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
+import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useContracts } from 'modules/web3/hooks/useContracts';

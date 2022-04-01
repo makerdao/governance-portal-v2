@@ -13,7 +13,7 @@ export async function verifyCommentParameters(
   signedMessage: string,
   txHash: string,
   network: SupportedNetworks
-): Promise<void> {
+): Promise<'delegate' | 'proxy' | 'normal'> {
   invariant(hotAddress && hotAddress.length > 0, 'Invalid voter address');
   invariant(network && network.length > 0, 'Network not supported');
   invariant(txHash && txHash.length > 0, 'Missing verification data');
@@ -60,4 +60,6 @@ export async function verifyCommentParameters(
 
   // Validation is good, we delete the nonces for this address
   await removeNonces(hotAddress);
+
+  return vdAddress ? 'delegate' : voteProxyAddress.hasProxy ? 'proxy' : 'normal';
 }

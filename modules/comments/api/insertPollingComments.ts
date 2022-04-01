@@ -1,6 +1,6 @@
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import invariant from 'tiny-invariant';
-import { PollComment } from '../types/pollComments';
+import { PollComment } from '../types/comments';
 
 export async function insertPollComments(comments: PollComment[]): Promise<PollComment[]> {
   // query db
@@ -11,7 +11,14 @@ export async function insertPollComments(comments: PollComment[]): Promise<PollC
   const collection = db.collection('pollingComments');
 
   try {
-    await collection.insertMany(comments);
+    await collection.insertMany(
+      comments.map(comment => {
+        return {
+          ...comment,
+          commentType: 'poll'
+        };
+      })
+    );
   } catch (e) {
     console.error(
       `A MongoBulkWriteException occurred, but there are ${e.result.result.nInserted} successfully processed documents.`
