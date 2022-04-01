@@ -6,7 +6,6 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
-import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
@@ -24,6 +23,7 @@ import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { sign } from 'modules/web3/helpers/sign';
+import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -73,6 +73,9 @@ export default function DefaultVoteModalView({
       setIsFetcingNonce(true);
       const data = await fetchJson('/api/comments/nonce', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           address: account?.toLowerCase()
         })
@@ -132,6 +135,9 @@ export default function DefaultVoteModalView({
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(requestBody)
           })
             .then(() => {

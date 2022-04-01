@@ -1,9 +1,12 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 import uniqBy from 'lodash/uniqBy';
-import { ExecutiveComment, ExecutiveCommentFromDB } from '../types/executiveComment';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
-import { ExecutiveCommentsAPIResponseItem } from '../types/comments';
+import {
+  ExecutiveComment,
+  ExecutiveCommentFromDB,
+  ExecutiveCommentsAPIResponseItem
+} from '../types/comments';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 
 export async function getExecutiveComments(
@@ -14,10 +17,10 @@ export async function getExecutiveComments(
 
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
-  const collection = db.collection('executiveComments');
+  const collection = db.collection('comments');
   // decending sort
   const commentsFromDB: ExecutiveCommentFromDB[] = await collection
-    .find({ spellAddress, network })
+    .find({ spellAddress, network, commentType: 'executive' })
     .sort({ date: -1 })
     .toArray();
 

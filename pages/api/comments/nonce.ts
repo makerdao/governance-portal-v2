@@ -5,7 +5,7 @@ import { generateNonce } from 'modules/comments/api/nonce';
 
 export default withApiHandler(
   async (req: NextApiRequest, res: NextApiResponse) => {
-    const { address }: any = JSON.parse(req.body);
+    const { address }: any = req.body;
     invariant(address && address.length > 0, 'Missing address');
     const nonce = await generateNonce(address);
 
