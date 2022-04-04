@@ -178,7 +178,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             </Flex>
           </Box>
           <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
-            <CoreUnitButton handleInfoClick={handleInfoClick} />
+            {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
             <LastVoted
               expired={delegate.expired}
               date={statsData?.lastVote?.blockTimestamp || ''}
