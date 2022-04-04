@@ -101,7 +101,7 @@ export default function SystemStatsSidebar({
 
       return (
         <Flex key={key} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR needed to pass</Text>
+          <Text sx={{ fontSize: 3, color: 'textSecondary' }}>MKR on Governing Proposal</Text>
           <Text variant="h2" sx={{ fontSize: 3 }}>
             {mkrOnHat ? (
               `${formatValue(mkrOnHat)} MKR`
