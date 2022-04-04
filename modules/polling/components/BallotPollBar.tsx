@@ -43,8 +43,8 @@ export default function BallotPollBar({ polls, activePolls, voted, ...props }: P
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
       <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
         {voted
-          ? `You voted on ${ballotLength} of ${availablePollsLength} available polls`
-          : `${ballotLength - edits} of ${availablePollsLength} available polls added to ballot`}
+          ? `You voted on ${ballotLength} of ${availablePollsLength} available poll${availablePollsLength > 1 ? 's' : ''}`
+          : `${ballotLength - edits} of ${availablePollsLength} available poll${availablePollsLength > 1 ? 's' : ''} added to ballot`}
       </Text>
       <Flex
         sx={{

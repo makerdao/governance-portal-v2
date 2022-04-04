@@ -100,7 +100,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       url = 'https://vote.makerdao.com';
       text = `I just voted on ${
         previousVotesLength > 1 ? previousVotesLength : 'a'
-      } MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
+      } MakerDAO governance poll${
+        previousVotesLength > 1 ? 's' : ''
+      }! Find my votes and all Maker governance proposals on the Governance Portal:`;
     }
 
     return (
@@ -145,7 +147,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
         )}
         {hasVoted && (
           <Box mb={3}>
-            <Heading as="h4">You successfully voted on {previousVotesLength} polls.</Heading>
+            <Heading as="h4">You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.</Heading>
             <Text>
               Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
             </Text>
