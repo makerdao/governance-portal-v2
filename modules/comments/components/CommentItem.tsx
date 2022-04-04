@@ -86,7 +86,7 @@ export default function CommentItem({
             {votedOption
               ? votedOption
               : `Voted with ${
-                  comment.comment.voterWeight.lte(0.0099)
+                  comment.comment.voterWeight.isGreaterThanOrEqualTo(0.01)
                     ? new BigNumber(comment.comment.voterWeight).toFixed(2)
                     : '≈0.00'
                 } MKR`}

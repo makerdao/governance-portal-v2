@@ -43,8 +43,8 @@ export const CoreUnitModal = ({ isOpen, onDismiss }: Props): JSX.Element => {
             </Heading>
             <Text sx={{ mb: 3, color: 'onSecondary' }}>
               Core Unit members are paid contributors to MakerDAO. When delegating your MKR to this delegate,
-              please be conscious of any potential conflicts of interest. GovAlpha generally advises against
-              delegating to CU members.{' '}
+              please be conscious of the potential impact of these divergent incentives. GovAlpha generally
+              advises against delegating to CU members.{' '}
             </Text>
             <ThemeUILink
               href={'https://manual.makerdao.com/governance/what-is-delegation/separation-of-powers'}

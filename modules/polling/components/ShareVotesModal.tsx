@@ -63,7 +63,7 @@ export const ShareVotesModal = ({ isOpen, onDismiss, markdownContent, setTweetUr
             <Flex sx={{ justifyContent: 'center', mt: 4, flexDirection: ['column', 'row'] }}>
               <Box sx={{ width: ['100%', '50%'], paddingRight: [0, 1], mb: [2, 0] }}>
                 <Button onClick={copyToClipboard} sx={{ width: '100%' }}>
-                  <Icon name="copy" mr={2} color="white" size={10} />
+                  <Icon name="copy" mr={2} color="white" size={12} />
                   {copied ? 'Copied!' : 'Copy & paste on the forum'}
                 </Button>
               </Box>
