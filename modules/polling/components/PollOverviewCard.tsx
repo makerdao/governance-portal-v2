@@ -248,7 +248,7 @@ export default function PollOverviewCard({
           {children && <Box>{children}</Box>}
         </Box>
 
-        {tally && tally.totalMkrParticipation > 0 && (
+        {tally && tally.totalMkrParticipation > 0 && tally.winningOptionName && (
           <Box>
             <Divider my={0} />
             <ErrorBoundary componentName="Poll Winning Option">
