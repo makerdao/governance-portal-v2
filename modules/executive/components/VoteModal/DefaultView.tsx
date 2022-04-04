@@ -287,7 +287,7 @@ export default function DefaultVoteModalView({
               }}
               variant="primaryOutline"
               disabled={
-                comment.length > 250 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
+                comment.length > 1500 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
               }
               sx={{ width: '100%' }}
             >
@@ -301,7 +301,7 @@ export default function DefaultVoteModalView({
               }}
               variant="primaryLarge"
               data-testid="vote-modal-vote-btn"
-              disabled={comment.length > 250 || !hasVotingWeight || !signedMessage}
+              disabled={comment.length > 1500 || !hasVotingWeight || !signedMessage}
               sx={{ width: '100%' }}
             >
               2 - {votingMessage}
