@@ -54,7 +54,7 @@ export default function LastVoted({
         ...styles
       }}
     >
-      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2 }}>
+      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2, ml: 1 }}>
         {lastVoteDate}
       </Text>
       <Flex
