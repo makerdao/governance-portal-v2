@@ -85,7 +85,11 @@ export default function CommentItem({
           <Text variant="smallCaps">
             {votedOption
               ? votedOption
-              : `Voted with ${new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR`}
+              : `Voted with ${
+                  comment.comment.voterWeight.lte(0.0099)
+                    ? new BigNumber(comment.comment.voterWeight).toFixed(2)
+                    : '≈0.00'
+                } MKR`}
           </Text>
           {comment.comment.txHash && (
             <Box>

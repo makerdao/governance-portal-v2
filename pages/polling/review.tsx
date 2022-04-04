@@ -98,7 +98,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
     } else {
       // all votes
       url = 'https://vote.makerdao.com';
-      text = `I just voted on ${previousVotesLength} MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
+      text = `I just voted on ${
+        previousVotesLength > 1 ? previousVotesLength : 'a'
+      } MakerDAO governance polls! Find my votes and all Maker governance proposals on the Governance Portal:`;
     }
 
     return (
@@ -180,7 +182,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         </Heading>
                         <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                           <Box p={3}>
-                            <Button sx={{ width: '100%' }}>Preview and share your votes</Button>
+                            <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
+                              Preview and share your votes
+                            </Button>
                           </Box>
                         </ActivePollsBox>
                       </Box>
@@ -257,7 +261,11 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                 {bpi <= 2 && (
                   <Box>
                     {!hasVoted && <SubmitButton />}
-                    {hasVoted && <Button sx={{ width: '100%' }}>Preview and share your votes</Button>}
+                    {hasVoted && (
+                      <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
+                        Preview and share your votes
+                      </Button>
+                    )}
                   </Box>
                 )}
                 {!account && (
