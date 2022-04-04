@@ -153,40 +153,31 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     sx={{ ml: [0, 'auto'] }}
                   />
                 </Flex>
-                <Flex
-                  sx={{
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    mb: 2,
-                    flexDirection: ['column', 'row']
-                  }}
-                >
-                  <Box>
-                    <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                      {poll.title}
-                    </Heading>
+                <Flex sx={{ mb: 2, flexDirection: 'column' }}>
+                  <Heading mt="2" sx={{ fontSize: [5, 6] }}>
+                    {poll.title}
+                  </Heading>
 
-                    <Flex sx={{ mt: 3, mb: 3 }}>
-                      {poll.categories.map(c => (
-                        <Box key={c} sx={{ marginRight: 2 }}>
-                          <PollCategoryTag category={c} />
-                        </Box>
-                      ))}
-                    </Flex>
+                  <Flex sx={{ mt: 3, mb: 3 }}>
+                    {poll.categories.map(c => (
+                      <Box key={c} sx={{ marginRight: 2 }}>
+                        <PollCategoryTag category={c} />
+                      </Box>
+                    ))}
+                  </Flex>
 
-                    <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
-                      {poll.discussionLink && (
-                        <Box>
-                          <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                            <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                              Discussion
-                              <Icon ml={2} name="arrowTopRight" size={2} />
-                            </Text>
-                          </ExternalLink>
-                        </Box>
-                      )}
-                    </Flex>
-                  </Box>
+                  <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
+                    {poll.discussionLink && (
+                      <Box>
+                        <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                          <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                            Discussion
+                            <Icon ml={2} name="arrowTopRight" size={2} />
+                          </Text>
+                        </ExternalLink>
+                      </Box>
+                    )}
+                  </Flex>
                 </Flex>
               </Box>
             </Flex>
