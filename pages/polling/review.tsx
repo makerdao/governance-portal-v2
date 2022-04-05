@@ -17,7 +17,7 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
-import { objectToGetParams } from 'lib/utils';
+import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -94,7 +94,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       if (!poll) return '';
       const option = poll.options[previousBallot[poll.pollId].option as number];
       url = `https://vote.makerdao.com/polling/${poll.slug}`;
-      text = `I just voted ${option} on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
+      text = `I just voted ${option ? option + ' ': ''}on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
     } else {
       // all votes
       url = 'https://vote.makerdao.com';
@@ -125,10 +125,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       polls = previousVotedPolls;
     }
     polls.map(poll => {
-      const option = poll.options[previousBallot[poll.pollId].option as number];
+      const optionData = previousBallot[poll.pollId].option;
+      let option;
+      if (typeof optionData === 'number') {
+        option = `**${poll.options[optionData]}**`;
+      }
+      else {
+        const markdownArray = (optionData as number[]).map((id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`);
+        option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
+      }
       const comment = previousBallot[poll.pollId]?.comment;
       markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
-      markdown += `Voted: **${option}**  \n`;
+      if (option) markdown += `Voted: ${option}  \n`;
       markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
       markdown += '  \n';
     });
