@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
-import { openWindowWithUrl, getNumberWithOrdinal } from 'lib/utils';
+import { getNumberWithOrdinal } from 'lib/utils';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { Box, Button, Flex, Text, Link as ThemeUILink } from 'theme-ui';
 import { getVoteColor } from '../helpers/getVoteColor';
@@ -13,15 +13,13 @@ import InternalIcon from 'modules/app/components/Icon';
 export default function PollVotedOption({
   poll,
   votedOption,
-  toggleMarkdownModal,
-  setTweetUrl,
+  toggleShareModal,
   votingWeight,
   transactionHash
 }: {
   poll: Poll;
   votedOption: number | number[];
-  toggleMarkdownModal: (pollId?: number) => void;
-  setTweetUrl: (pollId?: number) => string;
+  toggleShareModal: (pollId?: number) => void;
   transactionHash: string;
   votingWeight?: BigNumber;
 }): React.ReactElement {
@@ -90,32 +88,22 @@ export default function PollVotedOption({
           </ThemeUILink>
         </Flex>
 
-        <Box
+        <Flex
           sx={{
             textAlign: ['left', 'right']
           }}
         >
           <Button
             variant="primaryOutline"
-            sx={{ width: ['100%', '247px'] }}
+            sx={{ width: ['100%', '250px'] }}
             mb={2}
-            onClick={() => openWindowWithUrl(setTweetUrl(poll.pollId))}
+            onClick={() => toggleShareModal(poll.pollId)}
           >
             <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-              <InternalIcon name="twitter" size={15} /> <Text ml={1}>Share on Twitter</Text>
+              <InternalIcon name="forum" size={18} /> <Text ml={1}>Share this vote</Text>
             </Flex>
           </Button>
-          <Button
-            variant="primaryOutline"
-            sx={{ width: ['100%', '247px'] }}
-            mb={2}
-            onClick={() => toggleMarkdownModal(poll.pollId)}
-          >
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-              <InternalIcon name="forum" size={18} /> <Text ml={1}>Share on the forum</Text>
-            </Flex>
-          </Button>
-        </Box>
+        </Flex>
       </Box>
     </Box>
   );
