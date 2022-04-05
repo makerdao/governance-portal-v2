@@ -50,9 +50,14 @@ export const getStatusText = ({
 
   // not expired, passed, or executed, check support level
   if (!!spellData.mkrSupport && !!mkrOnHat) {
-    return `${formatValue(
-      mkrOnHat.sub(spellData.mkrSupport)
-    )} additional MKR support needed to pass. Expires at ${formatDateWithTime(spellData.expiration)}.`;
+    // If the new proposal has more MKR than the old proposal, but hasn't been lifted, display 0 MKR needed to pass.
+    const mkrNeeded = mkrOnHat.sub(spellData.mkrSupport).gt(0)
+      ? mkrOnHat.sub(spellData.mkrSupport)
+      : BigNumber.from(0);
+
+    return `${formatValue(mkrNeeded)} additional MKR support needed to pass. Expires at ${formatDateWithTime(
+      spellData.expiration
+    )}.`;
   }
 
   // hasn't been scheduled, executed, hasn't expired, must be active and not passed yet

@@ -55,6 +55,11 @@ export function DelegatesSystemInfo({
       ) : (
         <SkeletonThemed width={'100px'} height={'15px'} />
       )
+    },
+    {
+      title: 'Total Delegators',
+      id: 'total-delegators-system-info',
+      value: stats.totalDelegators
     }
   ];
 

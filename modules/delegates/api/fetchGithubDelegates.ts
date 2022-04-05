@@ -19,6 +19,8 @@ async function extractGithubInformation(
 
     const metricsMd = folderContents.find(item => item.name === 'metrics.md');
 
+    const cuMemberMd = folderContents.find(item => item.name === 'cumember.md');
+
     // No profile found
     if (!profileMd) {
       return undefined;
@@ -26,19 +28,23 @@ async function extractGithubInformation(
 
     const profileMdDoc = await (await fetch(profileMd?.download_url)).text();
 
-    let metricsMdDoc;
-    if (metricsMd) {
-      metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
-    }
-
     const {
       content,
       data: { name, external_profile_url }
     } = matter(profileMdDoc);
 
-    const {
-      data: { combined_participation, communication, poll_participation, exec_participation }
-    } = matter(metricsMdDoc);
+    let metricsMdDoc;
+    let metricsData;
+    if (metricsMd) {
+      metricsMdDoc = await (await fetch(metricsMd?.download_url)).text();
+      const { data } = matter(metricsMdDoc);
+      metricsData = data;
+    }
+
+    let cuMember = false;
+    if (cuMemberMd) {
+      cuMember = true;
+    }
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
@@ -49,10 +55,11 @@ async function extractGithubInformation(
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,
-      combinedParticipation: combined_participation,
-      pollParticipation: poll_participation,
-      executiveParticipation: exec_participation,
-      communication
+      combinedParticipation: metricsData.combined_participation,
+      pollParticipation: metricsData.poll_participation,
+      executiveParticipation: metricsData.exec_participation,
+      communication: metricsData.communication,
+      cuMember
     };
   } catch (e) {
     console.error('Error parsing folder from github delegate', e.message);

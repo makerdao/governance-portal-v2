@@ -4,17 +4,21 @@ import isEqual from 'lodash/isEqual';
 import { Poll } from 'modules/polling/types';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
-import useBallotStore from '../stores/ballotStore';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
 
-type Props = { polls: Poll[]; activePolls: Poll[] };
+type Props = { polls: Poll[]; activePolls: Poll[]; voted?: boolean };
 
-export default function PollBar({ polls, activePolls, ...props }: Props): JSX.Element {
+export default function BallotPollBar({ polls, activePolls, voted, ...props }: Props): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
-  const ballot = useBallotStore(state => state.ballot);
+  const { ballot, ballotCount, previousBallot } = useContext(BallotContext);
   const { data: allUserVotes } = useAllUserVotes(
     voteDelegateContractAddress ? voteDelegateContractAddress : account
   );
+
+  const ballotToPick = voted ? previousBallot : ballot;
+  const ballotLength = voted ? Object.keys(previousBallot).length : ballotCount;
 
   const allUserPolls: Poll[] = allUserVotes
     ? allUserVotes
@@ -25,12 +29,12 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
   const allUserVotesActive = allUserPolls.filter(poll => isActivePoll(poll));
   const availablePollsLength = activePolls.length - allUserVotesActive.length;
 
-  const edits = Object.keys(ballot).filter(pollId => {
+  const edits = Object.keys(ballotToPick).filter(pollId => {
     const existingVote = allUserVotes?.find(vote => vote.pollId === parseInt(pollId));
     if (existingVote) {
       return existingVote.rankedChoiceOption
-        ? !isEqual(existingVote.rankedChoiceOption, ballot[pollId].option)
-        : !isEqual(existingVote.optionId, ballot[pollId].option);
+        ? !isEqual(existingVote.rankedChoiceOption, ballotToPick[pollId].option)
+        : !isEqual(existingVote.optionId, ballotToPick[pollId].option);
     }
     return false;
   }).length;
@@ -38,7 +42,13 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
   return availablePollsLength > 0 || edits > 0 ? (
     <Box p={3} sx={{ borderBottom: '1px solid secondaryMuted' }} {...props}>
       <Text sx={{ color: 'textSecondary', fontSize: 3 }}>
-        {`${Object.keys(ballot).length - edits} of ${availablePollsLength} available polls added to ballot`}
+        {voted
+          ? `You voted on ${ballotLength} of ${availablePollsLength} available poll${
+              availablePollsLength > 1 ? 's' : ''
+            }`
+          : `${ballotLength - edits} of ${availablePollsLength} available poll${
+              availablePollsLength > 1 ? 's' : ''
+            } added to ballot`}
       </Text>
       <Flex
         sx={{
@@ -63,12 +73,12 @@ export default function PollBar({ polls, activePolls, ...props }: Props): JSX.El
                 borderBottomLeftRadius: index === 0 ? 'small' : undefined,
                 borderTopRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
                 borderBottomRightRadius: index === availablePollsLength - 1 ? 'small' : undefined,
-                backgroundColor: index < Object.keys(ballot).length - edits ? 'primary' : undefined
+                backgroundColor: index < (voted ? ballotLength : ballotLength - edits) ? 'primary' : undefined
               }}
             />
           ))}
       </Flex>
-      {edits > 0 && (
+      {edits > 0 && !voted && (
         <Box mt={2} mb={-2}>
           <Text sx={{ color: 'textSecondary', fontWeight: 'semiBold' }}>
             <strong sx={{ color: 'text', fontWeight: 'bold' }}>and {edits}</strong> vote edit

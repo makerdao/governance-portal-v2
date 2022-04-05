@@ -55,7 +55,11 @@ export default function PollCommentItem({
 
     return (
       <Text>
-        Voted {voteOptionText} with {new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR
+        Voted {voteOptionText} with{' '}
+        {comment.comment.voterWeight.isGreaterThanOrEqualTo(0.01)
+          ? new BigNumber(comment.comment.voterWeight).toFixed(2)
+          : '≈0.00'}{' '}
+        MKR
       </Text>
     );
   };

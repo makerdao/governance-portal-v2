@@ -26,7 +26,7 @@ export default function VoteBox({ poll, ...props }: { poll: Poll }): JSX.Element
           {poll.summary}
         </Text>
         <VotingStatus sx={{ my: 2, textAlign: 'center' }} poll={poll} />
-        {showQuickVote && <QuickVote poll={poll} showHeader={false} />}
+        {showQuickVote && <QuickVote poll={poll} showHeader={false} showReviewButton={true} />}
       </Card>
     </Box>
   );

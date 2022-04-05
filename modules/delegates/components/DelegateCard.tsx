@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import Link from 'next/link';
+import { Card, Box, Flex, Button, Text, Link as ThemeUILink } from 'theme-ui';
 import { formatValue } from 'lib/string';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
@@ -14,19 +14,26 @@ import {
 } from 'modules/delegates/components/DelegateParticipationMetrics';
 import Tooltip from 'modules/app/components/Tooltip';
 import { CurrentlySupportingExecutive } from 'modules/executive/components/CurrentlySupportingExecutive';
-import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import LastVoted from 'modules/polling/components/LastVoted';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { CoreUnitModal } from './modals/CoreUnitModal';
+import { CoreUnitButton } from './modals/CoreUnitButton';
 
 type PropTypes = {
   delegate: Delegate;
 };
 
 export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+  const { account, voteDelegateContractAddress } = useAccount();
+
   const [showDelegateModal, setShowDelegateModal] = useState(false);
   const [showUndelegateModal, setShowUndelegateModal] = useState(false);
-  const { account, voteDelegateContractAddress } = useAccount();
+  const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
+
+  const handleInfoClick = () => {
+    setShowCoreUnitModal(!showCoreUnitModal);
+  };
 
   const { data: totalStaked, mutate: mutateTotalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { data: mkrDelegated, mutate: mutateMKRDelegated } = useMkrDelegated(
@@ -47,13 +54,15 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={[3, 4]} pt={3}>
-        <Box mb={2}>
+        <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
             date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
             left
           />
-        </Box>
+          {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
+        </Flex>
+
         <Flex
           sx={{
             flexDirection: ['column', 'column', 'row', 'column', 'row']
@@ -66,18 +75,9 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
               flexDirection: 'column'
             }}
           >
-            <Link
-              href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`
-              }}
-              passHref
-            >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                <Box sx={{ mr: [0, 2] }}>
-                  <DelegateAvatarName delegate={delegate} />
-                </Box>
-              </ThemeUILink>
-            </Link>
+            <Box sx={{ mr: [0, 2] }}>
+              <DelegateAvatarName delegate={delegate} />
+            </Box>
 
             <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
               <Link
@@ -246,6 +246,10 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
           mutateTotalStaked={mutateTotalStaked}
           mutateMKRDelegated={mutateMKRDelegated}
         />
+      )}
+
+      {showCoreUnitModal && (
+        <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
       )}
     </Card>
   );

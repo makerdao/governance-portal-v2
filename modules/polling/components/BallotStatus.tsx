@@ -1,25 +1,19 @@
 import { useRouter } from 'next/router';
 import { Text, Button } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
-
-import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Transaction } from 'modules/web3/types/transaction';
-import useBallotStore from 'modules/polling/stores/ballotStore';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
 
 const BallotStatus = (props: any): JSX.Element => {
-  const [ballot, txId] = useBallotStore(state => [state.ballot, state.txId]);
-  const transaction = useTransactionStore(
-    state => (txId ? transactionsSelectors.getTransaction(state, txId) : null),
-    shallow
-  );
-  const ballotLength = Object.keys(ballot).length;
+  const { transaction, ballotCount } = useContext(BallotContext);
+
   const router = useRouter();
 
   return (
     <Button
       variant={
-        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+        ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
           ? 'primary'
           : 'outline'
       }
@@ -28,19 +22,17 @@ const BallotStatus = (props: any): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        border: transaction ? '1px solid #D4D9E1' : ballotLength ? null : '1px solid secondaryMuted',
+        border: transaction ? '1px solid #D4D9E1' : ballotCount ? null : '1px solid secondaryMuted',
         display: 'flex',
         height: '36px'
       }}
       onClick={() => {
-        if (transaction || !ballotLength) return;
+        if (transaction || !ballotCount) return;
         router.push({ pathname: '/polling/review' });
       }}
       {...props}
       disabled={
-        ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
-          ? false
-          : true
+        ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined' ? false : true
       }
     >
       <Icon
@@ -48,28 +40,28 @@ const BallotStatus = (props: any): JSX.Element => {
         size={3}
         sx={{
           color:
-            ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+            ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
               ? 'onPrimary'
               : 'textMuted',
           mr: 2
         }}
       />
-      <StatusText {...{ transaction }} ballotLength={transaction?.status === 'pending' ? 0 : ballotLength} />
+      <StatusText {...{ transaction }} ballotCount={transaction?.status === 'pending' ? 0 : ballotCount} />
     </Button>
   );
 };
 
 const StatusText = ({
   transaction,
-  ballotLength
+  ballotCount
 }: {
-  transaction: Transaction | null;
-  ballotLength: number;
+  transaction?: Transaction;
+  ballotCount: number;
 }): JSX.Element => {
-  const DEFAULT_TEXT = `Your Ballot: ${ballotLength} ${ballotLength === 1 ? 'vote' : 'votes'}`;
+  const DEFAULT_TEXT = `Your Ballot: ${ballotCount} ${ballotCount === 1 ? 'vote' : 'votes'}`;
   const DEFAULT_COLOR = 'onPrimary';
   const color =
-    ballotLength > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
+    ballotCount > 0 && transaction?.status !== 'pending' && transaction?.status !== 'mined'
       ? DEFAULT_COLOR
       : 'textMuted';
 
@@ -77,7 +69,7 @@ const StatusText = ({
     <Text
       sx={{
         color,
-        fontWeight: ballotLength === 0 ? 'normal' : '600'
+        fontWeight: ballotCount === 0 ? 'normal' : '600'
       }}
     >
       {DEFAULT_TEXT}

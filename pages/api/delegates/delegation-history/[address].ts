@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { isSupportedNetwork } from 'modules/web3/helpers/networks';
 
-import { fetchDelegationHistory } from 'modules/delegates/api/fetchDelegationHistory';
+import { fetchDelegationEventsByAddresses } from 'modules/delegates/api/fetchDelegationEventsByAddresses';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 
@@ -12,7 +12,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const address = req.query.address as string;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const data = await fetchDelegationHistory(address, network);
+  const data = await fetchDelegationEventsByAddresses([address], network);
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate');
   res.status(200).json(data);
 });

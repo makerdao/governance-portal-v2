@@ -1,38 +1,22 @@
-import { useRouter } from 'next/router';
 import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
-import useBallotStore from 'modules/polling/stores/ballotStore';
-import useTransactionStore, { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import VotingWeight from './VotingWeight';
-import PollBar from './PollBar';
+import PollBar from './BallotPollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useContext } from 'react';
+import { BallotContext } from '../context/BallotContext';
+import Link from 'next/link';
 
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
 export default function BallotBox({ activePolls, network, polls }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
 
-  const [voteTxId, clearTx, ballot] = useBallotStore(
-    state => [state.txId, state.clearTx, state.ballot],
-    shallow
-  );
-
-  const transaction = useTransactionStore(
-    state => (voteTxId ? transactionsSelectors.getTransaction(state, voteTxId) : null),
-    shallow
-  );
-
-  const ballotLength = Object.keys(ballot).length;
-  const router = useRouter();
-  const startReview = () => {
-    clearTx();
-    router.push({ pathname: '/polling/review' });
-  };
+  const { transaction, ballotCount } = useContext(BallotContext);
 
   return (
     <Box>
@@ -48,7 +32,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
               px={4}
               sx={{ textAlign: 'center', fontSize: 16, color: 'secondaryEmphasis', fontWeight: '500' }}
             >
-              Transaction Sent. Vote{ballotLength === 1 ? '' : 's'} pending.
+              Transaction Sent. Vote{ballotCount === 1 ? '' : 's'} pending.
             </Text>
             <ExternalLink
               target="_blank"
@@ -72,17 +56,18 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           </Box>
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Button
-              onClick={() => {
-                trackButtonClick('reviewAndSubmitBallot');
-                startReview();
-              }}
-              variant="primaryLarge"
-              disabled={!ballotLength}
-              sx={{ width: '100%', cursor: !ballotLength ? 'not-allowed' : 'pointer' }}
-            >
-              Review & Submit Your Ballot
-            </Button>
+            <Link href="/polling/review">
+              <Button
+                onClick={() => {
+                  trackButtonClick('reviewAndSubmitBallot');
+                }}
+                variant="primaryLarge"
+                disabled={!ballotCount}
+                sx={{ width: '100%', cursor: !ballotCount ? 'not-allowed' : 'pointer' }}
+              >
+                Review & Submit Your Ballot
+              </Button>
+            </Link>
           </Flex>
         </Card>
       )}

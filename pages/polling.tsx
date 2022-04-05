@@ -43,7 +43,7 @@ type Props = {
 };
 
 const PollingOverview = ({ polls, categories }: Props) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
     endDate,
@@ -162,7 +162,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     <Heading as="h4" sx={{ display: sortedEndDatesActive.length > 0 ? undefined : 'none' }}>
                       Active Polls
                     </Heading>
-                    {bpi <= 3 && account && <BallotStatus />}
+                    {bpi <= 2 && account && <BallotStatus />}
                   </Flex>
                   <Stack>
                     {sortedEndDatesActive.map(date => (

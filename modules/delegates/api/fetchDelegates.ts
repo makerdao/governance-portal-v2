@@ -1,6 +1,7 @@
 import { fetchChainDelegates } from './fetchChainDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { fetchGithubDelegate, fetchGithubDelegates } from './fetchGithubDelegates';
+import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
 import { add, isBefore } from 'date-fns';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
@@ -15,6 +16,7 @@ import { getContracts } from 'modules/web3/helpers/getContracts';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { ZERO_SLATE_HASH } from 'modules/executive/helpers/zeroSlateHash';
 import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
+import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
 import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
 
@@ -42,6 +44,7 @@ function mergeDelegateInfo(
     combinedParticipation: githubDelegate?.combinedParticipation,
     pollParticipation: githubDelegate?.pollParticipation,
     executiveParticipation: githubDelegate?.executiveParticipation,
+    cuMember: githubDelegate?.cuMember,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: onChainDelegate.execSupported
@@ -64,7 +67,10 @@ export async function fetchDelegate(
     return Promise.resolve(undefined);
   }
 
-  const { data: githubDelegate } = await fetchGithubDelegate(voteDelegateAddress, currentNetwork);
+  const { data: githubDelegate } = await fetchGithubDelegate(
+    onChainDelegate.voteDelegateAddress,
+    currentNetwork
+  );
 
   return mergeDelegateInfo(onChainDelegate, githubDelegate);
 }
@@ -100,6 +106,11 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
   const contracts = getContracts(networkNameToChainId(currentNetwork));
   const executives = await getGithubExecutives(currentNetwork);
 
+  const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
+  // Fetch all delegate lock events to calculate total number of delegators
+  const lockEvents = await fetchDelegationEventsByAddresses(delegateAddresses, currentNetwork);
+  const delegationHistory = formatDelegationHistory(lockEvents);
+
   const delegates = await Promise.all(
     delegatesInfo.map(async delegate => {
       const votedSlate = await contracts.chief.votes(delegate.voteDelegateAddress);
@@ -131,7 +142,8 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);
           return prev.plus(mkrDelegated);
         }, new BigNumberJS(0))
-      ).toString()
+      ).toString(),
+      totalDelegators: delegationHistory.filter(d => parseFloat(d.lockAmount) > 0).length
     }
   };
 

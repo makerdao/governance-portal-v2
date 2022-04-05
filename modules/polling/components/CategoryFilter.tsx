@@ -6,6 +6,8 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useMemo } from 'react';
 import { filterPolls } from '../helpers/filterPolls';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
 export default function CategoryFilter({
   categories,
@@ -15,6 +17,7 @@ export default function CategoryFilter({
   categories: PollCategory[];
   polls: Poll[];
 }): JSX.Element {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
     endDate,
@@ -65,7 +68,10 @@ export default function CategoryFilter({
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showPollActive}
-              onChange={event => setShowPollActive(event.target.checked)}
+              onChange={event => {
+                setShowPollActive(event.target.checked);
+                trackButtonClick(`activePollsFilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`);
+              }}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Active Polls</Text>
@@ -80,7 +86,10 @@ export default function CategoryFilter({
             <Checkbox
               sx={{ width: 3, height: 3 }}
               checked={showPollEnded}
-              onChange={event => setShowPollEnded(event.target.checked)}
+              onChange={event => {
+                setShowPollEnded(event.target.checked);
+                trackButtonClick(`endedPollsFilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`);
+              }}
             />
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Ended Polls</Text>
@@ -98,9 +107,12 @@ export default function CategoryFilter({
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
                   checked={(categoryFilter && categoryFilter[category.name]) || false}
-                  onChange={event =>
-                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked })
-                  }
+                  onChange={event => {
+                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked });
+                    trackButtonClick(
+                      `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
+                    );
+                  }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{category.name}</Text>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Text, Button, Box, Flex } from 'theme-ui';
 import invariant from 'tiny-invariant';
@@ -6,11 +6,9 @@ import { DialogOverlay, DialogContent } from '@reach/dialog';
 import range from 'lodash/range';
 import isNil from 'lodash/isNil';
 import isEqual from 'lodash/isEqual';
-import shallow from 'zustand/shallow';
 import lottie from 'lottie-web';
 
 import { Poll } from 'modules/polling/types';
-import useBallotStore from 'modules/polling/stores/ballotStore';
 import { isRankedChoicePoll, extractCurrentPollVote, isActivePoll } from 'modules/polling/helpers/utils';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
@@ -27,6 +25,7 @@ import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { BallotContext } from '../context/BallotContext';
 
 enum ViewState {
   START,
@@ -58,11 +57,8 @@ export default function MobileVoteSheet({
   const { data: allUserVotes } = useAllUserVotes(addressToCheck);
 
   const currentVote = extractCurrentPollVote(poll, allUserVotes);
-  const [addToBallot, removeFromBallot, ballot] = useBallotStore(
-    state => [state.addToBallot, state.removeFromBallot, state.ballot],
-    shallow
-  );
-  const ballotCount = Object.keys(ballot).length;
+
+  const { addVoteToBallot, ballot, removeVoteFromBallot, ballotCount } = useContext(BallotContext);
 
   const [choice, setChoice] = useState<number | number[] | null>(ballot[poll.pollId]?.option ?? null);
   const isChoiceValid = Array.isArray(choice) ? choice.length > 0 : choice !== null;
@@ -86,10 +82,10 @@ export default function MobileVoteSheet({
   const submit = () => {
     invariant(isChoiceValid);
     if (currentVote && isEqual(currentVote, choice)) {
-      removeFromBallot(poll.pollId);
-      addToBallot(poll.pollId, choice as number | number[]);
+      removeVoteFromBallot(poll.pollId);
+      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     } else {
-      addToBallot(poll.pollId, choice as number | number[]);
+      addVoteToBallot(poll.pollId, { option: choice as number | number[] });
     }
     if (editingOnly) {
       if (close) {

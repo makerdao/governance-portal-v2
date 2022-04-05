@@ -44,7 +44,7 @@ export function HeadComponent({
           "font-src 'self';" +
           "connect-src http://localhost:8545/ 'self' https: wss:;" +
           "style-src 'self' 'unsafe-inline';" +
-          `script-src 'self' ${
+          `script-src 'self' https://gc.zgo.at/count.js ${
             dev ? "'unsafe-eval'" : ''
           } 'sha256-a0L6Pfwt+Nftvey0NflqMTGt/tO5UMFmI/PAiNnoYRo=';` +
           "img-src 'self' https: data:"
