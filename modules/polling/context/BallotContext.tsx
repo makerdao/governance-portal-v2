@@ -1,6 +1,6 @@
 import { fetchJson } from 'lib/fetchJson';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/pollComments';
+import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useContracts } from 'modules/web3/hooks/useContracts';
@@ -63,8 +63,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
 
+  // Determines which address will be use to save the comments
+  const { account, voteDelegateContract, voteDelegateContractAddress, voteProxyContractAddress } =
+    useAccount();
+
+  const accountToUse = voteDelegateContractAddress
+    ? voteDelegateContractAddress
+    : voteProxyContractAddress
+    ? voteProxyContractAddress
+    : account;
+
   const clearBallot = () => {
-    setTxId(null);
     setCommentSignature('');
     setBallot({});
   };
@@ -138,8 +147,11 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const data = await fetchJson('/api/comments/nonce', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        voterAddress: account
+        address: account.toLowerCase()
       })
     });
 
@@ -153,7 +165,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     shallow
   );
 
-  const { account, voteDelegateContract } = useAccount();
   const { polling } = useContracts();
 
   const submitBallot = () => {
@@ -176,7 +187,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         // if comment included, add to comments db
         if (getComments().length > 0) {
           const commentsRequest: PollsCommentsRequestBody = {
-            voterAddress: account?.toLowerCase() || '',
+            voterAddress: accountToUse || '',
+            hotAddress: account || '',
             comments: getComments(),
             signedMessage: commentsSignature,
             txHash
@@ -184,6 +196,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
           fetchJson(`/api/comments/polling/add?network=${network}`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(commentsRequest)
           })
             .then(() => {
@@ -195,11 +210,17 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
             });
         }
       },
-      mined: txId => {
+      mined: (txId, txHash) => {
         // Set votes
+        const votes = {};
+        Object.keys(ballot).forEach(pollId => {
+          votes[pollId] = ballot[pollId];
+          votes[pollId].transactionHash = txHash;
+        });
+
         setPreviousBallot({
           ...previousBallot,
-          ...ballot
+          ...votes
         });
         clearBallot();
         transactionsApi.getState().setMessage(txId, `Voted on ${Object.keys(ballot).length} polls`);

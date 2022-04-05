@@ -1,8 +1,9 @@
-import { DelegateStatusEnum } from '../delegates.constants';
-import { Box, Flex, Image, Text } from 'theme-ui';
+import { Box, Flex, Image, Text, Link as ThemeUILink } from 'theme-ui';
+import Link from 'next/link';
 import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
-import { Delegate } from '../types';
+import { Delegate } from 'modules/delegates/types';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Address } from 'modules/address/components/Address';
@@ -87,6 +88,20 @@ export function DelegatePicture({
         </Flex>
       </Flex>
       <Flex sx={{ flexDirection: 'column', p: 3 }}>
+        {delegate.cuMember && (
+          <Flex sx={{ alignItems: 'center', mb: 3 }}>
+            <Icon
+              name={'info'}
+              color="voterYellow"
+              sx={{
+                size: 13
+              }}
+            />
+            <Text sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold' }}>
+              This delegate is also a Core Unit member
+            </Text>
+          </Flex>
+        )}
         <Text as="p" variant="secondary">
           Participation Breakdown
         </Text>
@@ -122,55 +137,67 @@ export function DelegatePicture({
 
   return (
     <Box sx={{ width: width, height: width, position: 'relative', minWidth: width }}>
-      <Tooltip label={delegateMetrics}>
-        <Box>
-          {delegate.picture ? (
-            <Image
-              src={delegate.picture}
-              key={delegate.id}
-              sx={{
-                objectFit: 'cover',
-                width: '100%',
-                borderRadius: '100%',
-                maxHeight: width
+      <Box>
+        <Tooltip label={delegateMetrics}>
+          <Box>
+            <Link
+              href={{
+                pathname: `/address/${delegate.voteDelegateAddress}`
               }}
-            />
-          ) : (
-            <Box>
-              <Davatar
-                size={width}
-                address={delegate.address}
-                generatedAvatarType="jazzicon"
-                provider={library}
+              passHref
+            >
+              <ThemeUILink title="Profile details" variant="nostyle">
+                {delegate.picture ? (
+                  <Image
+                    src={delegate.picture}
+                    key={delegate.id}
+                    sx={{
+                      objectFit: 'cover',
+                      width: '100%',
+                      borderRadius: '100%',
+                      maxHeight: width
+                    }}
+                  />
+                ) : (
+                  <Box>
+                    <Davatar
+                      size={width}
+                      address={delegate.address}
+                      generatedAvatarType="jazzicon"
+                      provider={library}
+                    />
+                  </Box>
+                )}
+              </ThemeUILink>
+            </Link>
+
+            {delegate.status === DelegateStatusEnum.recognized && (
+              <Icon
+                name={'verified'}
+                sx={{
+                  position: 'absolute',
+                  bottom: width / -12,
+                  right: width / -7,
+                  size: width / 2.5,
+                  color: 'primary'
+                }}
               />
-            </Box>
-          )}
-          {delegate.status === DelegateStatusEnum.recognized && (
-            <Icon
-              name={'verified'}
-              sx={{
-                position: 'absolute',
-                bottom: width / -12,
-                right: width / -7,
-                size: width / 2.5,
-                color: 'primary'
-              }}
-            />
-          )}
-          {delegate.status === DelegateStatusEnum.shadow && (
-            <Icon
-              name={'shadowQuestion'}
-              color="voterYellow"
-              sx={{
-                position: 'absolute',
-                bottom: width / -12,
-                right: width / -7,
-                size: width / 2.5
-              }}
-            />
-          )}
-        </Box>
-      </Tooltip>
+            )}
+          </Box>
+        </Tooltip>
+        {delegate.status === DelegateStatusEnum.shadow && (
+          <Icon
+            name={'shadowQuestion'}
+            color="voterYellow"
+            sx={{
+              position: 'absolute',
+              bottom: width / -12,
+              right: width / -7,
+              size: width / 2.5
+            }}
+          />
+        )}
+      </Box>
     </Box>
   );
 }

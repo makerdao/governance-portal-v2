@@ -1,4 +1,4 @@
-import { Text, Flex } from 'theme-ui';
+import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import React from 'react';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
@@ -6,13 +6,15 @@ import Icon from 'modules/app/components/Icon';
 export default function LastVoted({
   expired,
   date,
-  left = false
+  left = false,
+  styles
 }: {
   expired: boolean;
   date?: string | number;
   left?: boolean;
+  styles?: ThemeUIStyleObject;
 }): React.ReactElement {
-  const styles = {
+  const iconStyles = {
     expiredCalendar: {
       fill: '#D8E0E3',
       stroke: '#D8E0E3'
@@ -46,37 +48,33 @@ export default function LastVoted({
   return (
     <Flex
       sx={{
-        mb: 1,
         flexDirection: left ? 'row-reverse' : ['row-reverse', 'row'],
         justifyContent: left ? 'flex-end' : 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        ...styles
       }}
     >
-      <Text
-        variant="secondary"
-        color={expired ? '#D8E0E3' : 'onSecondary'}
-        sx={{ textTransform: 'uppercase', fontSize: 1, fontWeight: 'semiBold', mr: 2 }}
-      >
+      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2, ml: 1 }}>
         {lastVoteDate}
       </Text>
       <Flex
         sx={{
           alignContent: 'center',
-          mr: 1
+          mr: [1, 0]
         }}
       >
         <Icon
           name="calendar"
           sx={
             expired || !date
-              ? styles.expiredCalendar
+              ? iconStyles.expiredCalendar
               : isLongerThan28Days
-              ? styles.redCalendar
+              ? iconStyles.redCalendar
               : isLongerThan21Days
-              ? styles.orangeCalendar
+              ? iconStyles.orangeCalendar
               : isLongerThan14Days
-              ? styles.yellowCalendar
-              : styles.activeCalendar
+              ? iconStyles.yellowCalendar
+              : iconStyles.activeCalendar
           }
         />
       </Flex>

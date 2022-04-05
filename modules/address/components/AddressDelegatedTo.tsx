@@ -94,8 +94,12 @@ const CollapsableRow = ({ delegate, network, bpi, totalDelegated }: CollapsableR
       </Box>
       <Box as="td" sx={{ verticalAlign: 'top', pt: 2 }}>
         <Flex sx={{ alignSelf: 'flex-start' }}>
-          {totalDelegated ? (
-            <Text>{`${new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)}%`}</Text>
+          {typeof totalDelegated !== 'undefined' ? (
+            <Text>{`${
+              totalDelegated === 0
+                ? '0.0'
+                : new BigNumber(lockAmount).div(totalDelegated).times(100).toFormat(1)
+            }%`}</Text>
           ) : (
             <Box sx={{ width: '100%' }}>
               <Skeleton />

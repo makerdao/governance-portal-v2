@@ -27,8 +27,8 @@ export default function PollComments({
     const tallyVote = tally?.votesByAddress?.find(i => {
       // Get the right voting weight by looking at the proxy contract, delegate address or normal address
       return (
-        i.voter.toLowerCase() === item.address.voteProxyInfo?.voteProxyAddress?.toLowerCase() ||
         i.voter.toLowerCase() === item.address.delegateInfo?.voteDelegateAddress.toLowerCase() ||
+        i.voter.toLowerCase() === item.address.voteProxyInfo?.voteProxyAddress?.toLowerCase() ||
         i.voter.toLowerCase() === item.address.address
       );
     });

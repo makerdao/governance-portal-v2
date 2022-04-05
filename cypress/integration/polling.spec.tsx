@@ -18,9 +18,9 @@ describe('/polling page', async () => {
     const endedPolls = 24;
     visitPage('/polling');
 
-    cy.contains('Active Polls').should('be.visible');
-
     setAccount(TEST_ACCOUNTS.normal, () => {
+      cy.contains('Active Polls').should('be.visible');
+
       cy.contains(/2 POLLS - ENDING NOV 04 2022 16:00 UTC/, {
         matchCase: false
       }).should('be.visible');

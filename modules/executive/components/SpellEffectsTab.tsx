@@ -1,11 +1,14 @@
-import { Box, Flex, Text } from 'theme-ui';
-import { Proposal, SpellData } from '../types';
+import { Box, Flex, Text, Divider } from 'theme-ui';
+import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
+import { formatLocation, formatDiffValue } from '../helpers/spellDiffParsers';
+import Tooltip from 'modules/app/components/Tooltip';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const CircleIcon = ({ name }) => (
   <Flex
@@ -24,40 +27,64 @@ const CircleIcon = ({ name }) => (
   </Flex>
 );
 
+const SpellDiffRow = ({ diff }: { diff: SpellDiffType }): React.ReactElement => {
+  const { contract, location, fromVal, toVal } = diff;
+  return (
+    <Flex sx={{ flexDirection: 'column' }}>
+      <Divider sx={{ m: 0 }} />
+      <Flex sx={{ justifyContent: 'space-between', my: 0, py: 4 }}>
+        <Flex sx={{ flexDirection: 'column', gap: 1 }}>
+          <Text sx={{ fontWeight: 'semiBold' }}>{`${contract}`}</Text>
+          <Tooltip label={location}>
+            <Text sx={{ pl: 2 }}>{formatLocation(location)}</Text>
+          </Tooltip>
+        </Flex>
+
+        <Flex sx={{ flexDirection: 'column', mt: 0, gap: 3 }}>
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 1
+            }}
+          >
+            <Text variant="caps" color="onSecondary">
+              Old Value
+            </Text>
+            <Tooltip label={fromVal}>
+              <Text>{formatDiffValue(fromVal)}</Text>
+            </Tooltip>
+          </Flex>
+
+          <Flex
+            sx={{
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 1
+            }}
+          >
+            <Text variant="caps" color="onSecondary">
+              New Value
+            </Text>
+            <Tooltip label={toVal}>
+              <Text>{formatDiffValue(toVal)}</Text>
+            </Tooltip>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Flex>
+  );
+};
+
 export function SpellEffectsTab({
   proposal,
-  spellData
+  spellData,
+  spellDiffs
 }: {
   proposal: Proposal;
   spellData?: SpellData;
+  spellDiffs?: SpellDiffType[];
 }): React.ReactElement {
-  // ch401: hide until API is fixed
-  // const [stateDiff, setStateDiff] = useState<SpellStateDiff>();
-  // const [stateDiffError, setStateDiffError] = useState();
-
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       const url = `/api/executive/state-diff/${proposal.address}?network=${network}`;
-  //       const _stateDiff = parseSpellStateDiff(await fetchJson(url));
-  //       setStateDiff(_stateDiff);
-  //     } catch (error) {
-  //       setStateDiffError(error);
-  //     }
-  //   })();
-  // }, []);
-
-  /*
-{stateDiff ? (
-        <OnChainFx stateDiff={stateDiff} />
-      ) : stateDiffError ? (
-        <Flex>Unable to fetch on-chain effects at this time</Flex>
-      ) : (
-        <Flex sx={{ alignItems: 'center' }}>
-          loading <Spinner size={20} ml={2} />
-        </Flex>
-      )}
-  */
   const [expanded, setExpanded] = useState(false);
 
   return spellData ? (
@@ -130,7 +157,7 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 4 }}>
         {'proposalLink' in proposal && (
           <Box sx={{ width: ['100%', '50%'] }}>
             <Text
@@ -190,6 +217,17 @@ export function SpellEffectsTab({
           )}
         </Box>
       </Box>
+      {spellDiffs ? (
+        spellDiffs.length > 0 ? (
+          <ErrorBoundary componentName={'Spell Effects'}>
+            {spellDiffs.map(diff => (
+              <SpellDiffRow key={JSON.stringify(diff)} diff={diff} />
+            ))}
+          </ErrorBoundary>
+        ) : null
+      ) : (
+        <SkeletonThemed />
+      )}
     </Box>
   ) : (
     <Stack gap={3}>

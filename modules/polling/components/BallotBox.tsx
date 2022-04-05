@@ -4,7 +4,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import VotingWeight from './VotingWeight';
-import PollBar from './PollBar';
+import PollBar from './BallotPollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useContext } from 'react';
