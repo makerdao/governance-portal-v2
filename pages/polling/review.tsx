@@ -28,6 +28,7 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
+import InternalIcon from 'modules/app/components/Icon';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -80,12 +81,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
-  const votesToTweet = (pollId?: number): string => {
+  const votesToTweet = (): string => {
     let url = '';
     let text = '';
-    if (pollId) {
+    if (modalPollId) {
       // single vote
-      const poll = previousVotedPolls.find(poll => poll.pollId === pollId);
+      const poll = previousVotedPolls.find(poll => poll.pollId === modalPollId);
       if (!poll) return '';
       const option = poll.options[previousBallot[poll.pollId].option as number];
       url = `https://vote.makerdao.com/polling/${poll.slug}`;
@@ -193,7 +194,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                           <Box p={3}>
                             <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
-                              Share all votes
+                              <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                              </Flex>
                             </Button>
                           </Box>
                         </ActivePollsBox>
@@ -272,7 +275,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     {!hasVoted && <SubmitButton />}
                     {hasVoted && (
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
-                        Share all votes
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
                       </Button>
                     )}
                   </Box>
@@ -304,7 +309,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
                       <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
-                        Share all votes
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
                       </Button>
                     </Box>
                   </ActivePollsBox>
