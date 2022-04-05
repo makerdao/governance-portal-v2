@@ -28,6 +28,7 @@ import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
+import InternalIcon from 'modules/app/components/Icon';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -35,10 +36,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const bpi = useBreakpointIndex();
 
   const [showMarkdownModal, setShowMarkdownModal] = useState(false);
-  const [markdownPollId, setMarkdownPollId] = useState<number | undefined>(undefined);
+  const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
 
-  const toggleMarkdownModal = (pollId?: number) => {
-    setMarkdownPollId(pollId);
+  const toggleShareModal = (pollId?: number) => {
+    setModalPollId(pollId);
     setShowMarkdownModal(!showMarkdownModal);
   };
 
@@ -80,21 +81,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const previousVotesLength = Object.keys(previousBallot).length;
 
-  const setTweetUrl = (pollId?: number) => {
-    setMarkdownPollId(pollId);
-    return votesToTweet();
-  };
-
   const votesToTweet = (): string => {
     let url = '';
     let text = '';
-    if (markdownPollId) {
+    if (modalPollId) {
       // single vote
-      const poll = previousVotedPolls.find(poll => poll.pollId === markdownPollId);
+      const poll = previousVotedPolls.find(poll => poll.pollId === modalPollId);
       if (!poll) return '';
       const option = poll.options[previousBallot[poll.pollId].option as number];
       url = `https://vote.makerdao.com/polling/${poll.slug}`;
-      text = `I just voted ${option ? option + ' ': ''}on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
+      text = `I just voted ${
+        option ? option + ' ' : ''
+      }on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
     } else {
       // all votes
       url = 'https://vote.makerdao.com';
@@ -117,9 +115,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const votesToMarkdown = (): string => {
     let markdown = '';
     let polls;
-    if (markdownPollId) {
+    if (modalPollId) {
       // single vote
-      polls = [previousVotedPolls.find(poll => poll.pollId === markdownPollId)];
+      polls = [previousVotedPolls.find(poll => poll.pollId === modalPollId)];
     } else {
       // all votes
       polls = previousVotedPolls;
@@ -129,9 +127,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       let option;
       if (typeof optionData === 'number') {
         option = `**${poll.options[optionData]}**`;
-      }
-      else {
-        const markdownArray = (optionData as number[]).map((id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`);
+      } else {
+        const markdownArray = (optionData as number[]).map(
+          (id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`
+        );
         option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
       }
       const comment = previousBallot[poll.pollId]?.comment;
@@ -155,7 +154,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
         )}
         {hasVoted && (
           <Box mb={3}>
-            <Heading as="h4">You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.</Heading>
+            <Heading as="h4">
+              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.
+            </Heading>
             <Text>
               Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
             </Text>
@@ -192,8 +193,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                         </Heading>
                         <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                           <Box p={3}>
-                            <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
-                              Preview and share your votes
+                            <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                              <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                              </Flex>
                             </Button>
                           </Box>
                         </ActivePollsBox>
@@ -222,8 +225,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                   votedOption={previousBallot[poll.pollId].option}
                                   votingWeight={votingWeight?.total}
                                   transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                                  toggleMarkdownModal={toggleMarkdownModal}
-                                  setTweetUrl={setTweetUrl}
+                                  toggleShareModal={toggleShareModal}
                                 />
                               </Box>
                             }
@@ -231,7 +233,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                           >
                             {previousBallot[poll.pollId]?.comment && (
                               <Box mt={[1, 3]}>
-                                <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3] }} mb={2}>
+                                <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mb: [0, 2] }}>
                                   Your comment
                                 </Text>
                                 <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
@@ -272,8 +274,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   <Box>
                     {!hasVoted && <SubmitButton />}
                     {hasVoted && (
-                      <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
-                        Preview and share your votes
+                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
                       </Button>
                     )}
                   </Box>
@@ -304,8 +308,10 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                   </Heading>
                   <ActivePollsBox polls={polls} activePolls={activePolls} voted>
                     <Box p={3}>
-                      <Button sx={{ width: '100%' }} onClick={() => toggleMarkdownModal()}>
-                        Preview and share your votes
+                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
                       </Button>
                     </Box>
                   </ActivePollsBox>
@@ -317,9 +323,9 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
           {showMarkdownModal && (
             <ShareVotesModal
               isOpen={showMarkdownModal}
-              onDismiss={toggleMarkdownModal}
+              onDismiss={toggleShareModal}
               markdownContent={votesToMarkdown()}
-              setTweetUrl={setTweetUrl}
+              twitterContent={votesToTweet()}
             />
           )}
         </SidebarLayout>

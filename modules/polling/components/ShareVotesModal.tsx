@@ -13,10 +13,15 @@ type Props = {
   isOpen: boolean;
   onDismiss: () => void;
   markdownContent: string;
-  setTweetUrl: (pollId?: number) => string;
+  twitterContent: string;
 };
 
-export const ShareVotesModal = ({ isOpen, onDismiss, markdownContent, setTweetUrl }: Props): JSX.Element => {
+export const ShareVotesModal = ({
+  isOpen,
+  onDismiss,
+  markdownContent,
+  twitterContent
+}: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const [html, setHtml] = useState('');
   const [copied, setCopied] = useState(false);
@@ -68,7 +73,7 @@ export const ShareVotesModal = ({ isOpen, onDismiss, markdownContent, setTweetUr
                 </Button>
               </Box>
               <Box sx={{ width: ['100%', '50%'], paddingLeft: [0, 1] }}>
-                <Button sx={{ width: '100%' }} onClick={() => openWindowWithUrl(setTweetUrl())}>
+                <Button sx={{ width: '100%' }} onClick={() => openWindowWithUrl(twitterContent)}>
                   <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
                     <InternalIcon color="white" name="twitter" size={15} />{' '}
                     <Text ml={1}>Share on Twitter</Text>
