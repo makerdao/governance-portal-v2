@@ -34,6 +34,7 @@ import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 
 type Props = {
   proposals: Proposal[];
@@ -140,6 +141,12 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <ExecutiveProposalsLanding proposals={proposals} network={network} hat={hat} />
+          </section>
+
+          <section>
+            <ErrorBoundary componentName="Meet Delegates">
+              <MeetDelegates delegates={topDelegates} />
+            </ErrorBoundary>
           </section>
 
           <section>
