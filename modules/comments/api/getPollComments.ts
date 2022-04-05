@@ -4,6 +4,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
 import uniqBy from 'lodash/uniqBy';
+import { markdownToHtml } from 'lib/utils';
 
 export async function getPollComments(
   pollId: number,
@@ -19,13 +20,18 @@ export async function getPollComments(
     .find({ pollId, network, commentType: 'poll' })
     .sort({ date: -1 })
     .toArray();
-  const comments: PollComment[] = commentsFromDB.map(comment => {
-    const { _id, voterAddress, ...rest } = comment;
-    return {
-      ...rest,
-      voterAddress: voterAddress.toLowerCase()
-    };
-  });
+  const comments: PollComment[] = await Promise.all(
+    commentsFromDB.map(async comment => {
+      const { _id, voterAddress, ...rest } = comment;
+
+      const commentBody = await markdownToHtml(comment.comment);
+      return {
+        ...rest,
+        comment: commentBody,
+        voterAddress: voterAddress.toLowerCase()
+      };
+    })
+  );
 
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');

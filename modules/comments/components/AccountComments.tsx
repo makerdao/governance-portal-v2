@@ -57,7 +57,10 @@ export default function AccountComments({ address }: { address: string }): React
               <Text as="p" variant="caps" color="textMuted" sx={{ lineHeight: '22px' }}>
                 {formatDateWithTime(comment.comment.date)}
               </Text>
-              <Text sx={{ wordBreak: 'break-word' }}>{comment.comment.comment}</Text>
+              <Text
+                sx={{ wordBreak: 'break-word' }}
+                dangerouslySetInnerHTML={{ __html: comment.comment.comment }}
+              ></Text>
               <Box mt={1}>
                 {comment.comment.commentType === 'executive' && (
                   <Link href={`/executive/${comment.comment.spellAddress}`} passHref>
