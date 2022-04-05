@@ -3,6 +3,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
+import { markdownToHtml } from 'lib/utils';
 
 export async function getCommentsByAddress(
   address: string,
@@ -23,13 +24,20 @@ export async function getCommentsByAddress(
 
   const addressInfo = await getAddressInfo(address, network);
 
-  const comments: CommentsAPIResponseItem[] = commentsFromDB.map(comment => {
-    const { _id, ...rest } = comment;
-    return {
-      comment: rest,
-      address: addressInfo
-    };
-  });
+  const comments: CommentsAPIResponseItem[] = await Promise.all(
+    commentsFromDB.map(async comment => {
+      const { _id, ...rest } = comment;
+      const commentBody = await markdownToHtml(comment.comment);
+
+      return {
+        comment: {
+          ...rest,
+          comment: commentBody
+        },
+        address: addressInfo
+      };
+    })
+  );
 
   return {
     comments

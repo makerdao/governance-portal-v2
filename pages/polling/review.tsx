@@ -29,6 +29,7 @@ import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
+import Markdown from 'modules/app/components/Makrdown';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -237,7 +238,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                                   Your comment
                                 </Text>
                                 <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
-                                  {previousBallot[poll.pollId]?.comment}
+                                  <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
                                 </Text>
                               </Box>
                             )}

@@ -8,6 +8,7 @@ import {
   ExecutiveCommentsAPIResponseItem
 } from '../types/comments';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
+import { markdownToHtml } from 'lib/utils';
 
 export async function getExecutiveComments(
   spellAddress: string,
@@ -24,13 +25,18 @@ export async function getExecutiveComments(
     .sort({ date: -1 })
     .toArray();
 
-  const comments: ExecutiveComment[] = commentsFromDB.map(comment => {
-    const { _id, voterAddress, ...rest } = comment;
-    return {
-      ...rest,
-      voterAddress: voterAddress.toLowerCase()
-    };
-  });
+  const comments: ExecutiveComment[] = await Promise.all(
+    commentsFromDB.map(async comment => {
+      const { _id, voterAddress, ...rest } = comment;
+
+      const commentBody = await markdownToHtml(comment.comment);
+      return {
+        ...rest,
+        comment: commentBody,
+        voterAddress: voterAddress.toLowerCase()
+      };
+    })
+  );
 
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');

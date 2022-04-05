@@ -120,9 +120,8 @@ export default function CommentItem({
         variant="text"
         color="secondaryEmphasis"
         sx={{ overflowWrap: 'break-word', wordBreak: 'break-all' }}
-      >
-        {comment.comment.comment}
-      </Text>
+        dangerouslySetInnerHTML={{ __html: comment.comment.comment }}
+      ></Text>
     </Box>
   );
 }
