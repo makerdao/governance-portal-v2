@@ -23,7 +23,7 @@ export function bigNumberKFormat(num: CurrencyObject): string {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
-  const result = await remark().use(remarkGfm).use(remarkHtml).process(markdown);
+  const result = await remark().use(remarkGfm).use(remarkHtml, { sanitize: true }).process(markdown);
   return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 
