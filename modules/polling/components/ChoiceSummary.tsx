@@ -1,9 +1,9 @@
 import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
+import Link from 'next/link';
 import { ABSTAIN } from '../polling.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Poll } from '../types';
 import { useContext } from 'react';
@@ -15,12 +15,14 @@ const ChoiceSummary = ({
   edit,
   voteIsPending,
   showHeader,
+  showReviewButton,
   ...props
 }: {
   poll: Poll;
   edit: () => void;
   voteIsPending: boolean;
   showHeader: boolean;
+  showReviewButton?: boolean;
   choice: number | number[];
 }): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -83,6 +85,19 @@ const ChoiceSummary = ({
           </Button>
         )}
       </Flex>
+      {showReviewButton && onBallot && (
+        <Link href="/polling/review">
+          <Button
+            onClick={() => {
+              trackButtonClick('reviewAndSubmitBallot');
+            }}
+            variant="primaryLarge"
+            sx={{ width: '100%', cursor: 'pointer', mt: 3 }}
+          >
+            Review & Submit Your Ballot
+          </Button>
+        </Link>
+      )}
     </Box>
   );
 };

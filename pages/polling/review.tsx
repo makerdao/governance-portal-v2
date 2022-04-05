@@ -17,19 +17,35 @@ import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholde
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { fetchJson } from 'lib/fetchJson';
+import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import PollVotedOption from 'modules/polling/components/PollVotedOption';
+import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
+import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
+import InternalIcon from 'modules/app/components/Icon';
+import Markdown from 'modules/app/components/Makrdown';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
 
-  const { ballot, previousBallot, updateVoteFromBallot, transaction } = useContext(BallotContext);
+  const [showMarkdownModal, setShowMarkdownModal] = useState(false);
+  const [modalPollId, setModalPollId] = useState<number | undefined>(undefined);
+
+  const toggleShareModal = (pollId?: number) => {
+    setModalPollId(pollId);
+    setShowMarkdownModal(!showMarkdownModal);
+  };
+
+  const { ballot, previousBallot, updateVoteFromBallot, transaction, ballotCount } =
+    useContext(BallotContext);
 
   const [transactionStatus, setTransactionStatus] = useState('default');
 
@@ -38,6 +54,8 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   }, [transaction]);
 
   const { account } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
+
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
   const votedPolls = Object.keys(ballot)
@@ -61,12 +79,90 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
       />
     </Flex>
   );
+
+  const previousVotesLength = Object.keys(previousBallot).length;
+
+  const votesToTweet = (): string => {
+    let url = '';
+    let text = '';
+    if (modalPollId) {
+      // single vote
+      const poll = previousVotedPolls.find(poll => poll.pollId === modalPollId);
+      if (!poll) return '';
+      const option = poll.options[previousBallot[poll.pollId].option as number];
+      url = `https://vote.makerdao.com/polling/${poll.slug}`;
+      text = `I just voted ${
+        option ? option + ' ' : ''
+      }on a MakerDAO governance poll! Learn more about the poll on the Governance Portal:`;
+    } else {
+      // all votes
+      url = 'https://vote.makerdao.com';
+      text = `I just voted on ${
+        previousVotesLength > 1 ? previousVotesLength : 'a'
+      } MakerDAO governance poll${
+        previousVotesLength > 1 ? 's' : ''
+      }! Find my votes and all Maker governance proposals on the Governance Portal:`;
+    }
+
+    return (
+      'https://twitter.com/share' +
+      objectToGetParams({
+        url,
+        text
+      })
+    );
+  };
+
+  const votesToMarkdown = (): string => {
+    let markdown = '';
+    let polls;
+    if (modalPollId) {
+      // single vote
+      polls = [previousVotedPolls.find(poll => poll.pollId === modalPollId)];
+    } else {
+      // all votes
+      polls = previousVotedPolls;
+    }
+    polls.map(poll => {
+      const optionData = previousBallot[poll.pollId].option;
+      let option;
+      if (typeof optionData === 'number') {
+        option = `**${poll.options[optionData]}**`;
+      } else {
+        const markdownArray = (optionData as number[]).map(
+          (id, index) => `**${getNumberWithOrdinal(index + 1)} choice:** ${poll.options[id]}  \n`
+        );
+        option = markdownArray.reduce((previousValue, currentValue) => previousValue + currentValue);
+      }
+      const comment = previousBallot[poll.pollId]?.comment;
+      markdown += `[${poll.title}](https://vote.makerdao.com/polling/${poll.slug}) ([thread](${poll.discussionLink}))  \n`;
+      if (option) markdown += `Voted: ${option}  \n`;
+      markdown += comment ? `Reasoning: ${comment}  \n` : '  \n';
+      markdown += '  \n';
+    });
+    return markdown;
+  };
+
+  const hasVoted = previousVotesLength > 0 && ballotCount === 0;
+
   return (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
-        <Heading mb={3} as="h4">
-          {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
-        </Heading>
+        {!hasVoted && (
+          <Heading mb={3} as="h4">
+            {bpi <= 2 ? 'Review & Submit Ballot' : 'Review Your Ballot'}
+          </Heading>
+        )}
+        {hasVoted && (
+          <Box mb={3}>
+            <Heading as="h4">
+              You successfully voted on {previousVotesLength} poll{previousVotesLength > 1 ? 's' : ''}.
+            </Heading>
+            <Text>
+              Share your votes to the Forum or Twitter below, or go back to the polls page to edit your votes.
+            </Text>
+          </Box>
+        )}
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
@@ -82,16 +178,36 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     Connect a wallet to vote
                   </Text>
                 )}
-                {!!account && votedPolls.length === 0 && (
+                {!!account && votedPolls.length === 0 && !hasVoted && (
                   <Text as="p" sx={{ mt: 3 }}>
                     Your ballot is empty. Go back to the polling page to add votes to your ballot.
                   </Text>
                 )}
-                {!!account && votedPolls.length === 0 && previousVotedPolls.length > 0 && (
+
+                {bpi <= 2 && !!account && (
+                  <Box>
+                    {!hasVoted && <ReviewBox polls={polls} activePolls={activePolls} />}
+                    {hasVoted && (
+                      <Box>
+                        <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                          Share all your votes
+                        </Heading>
+                        <ActivePollsBox polls={polls} activePolls={activePolls} voted>
+                          <Box p={3}>
+                            <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                              <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                              </Flex>
+                            </Button>
+                          </Box>
+                        </ActivePollsBox>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
+                {!!account && hasVoted && (
                   <Box mt={3}>
-                    <Text mb={3} as="h4">
-                      You just voted on:
-                    </Text>
                     {previousVotedPolls.map(poll => {
                       return (
                         <Box
@@ -99,15 +215,39 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                           data-testid="previously-voted-on"
                           sx={{ mb: 2 }}
                         >
-                          <PollOverviewCard poll={poll} reviewPage={true} showVoting={false} />
+                          <PollOverviewCard
+                            poll={poll}
+                            reviewPage={true}
+                            showVoting={false}
+                            yourVote={
+                              <Box ml={[0, 3]} mt={[3, 0]}>
+                                <PollVotedOption
+                                  poll={poll}
+                                  votedOption={previousBallot[poll.pollId].option}
+                                  votingWeight={votingWeight?.total}
+                                  transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                                  toggleShareModal={toggleShareModal}
+                                />
+                              </Box>
+                            }
+                            hideTally
+                          >
+                            {previousBallot[poll.pollId]?.comment && (
+                              <Box mt={[1, 3]}>
+                                <Text as="p" sx={{ fontWeight: 'semiBold', fontSize: [1, 3], mb: [0, 2] }}>
+                                  Your comment
+                                </Text>
+                                <Text sx={{ fontSize: [1, 3], color: 'onSecondary' }}>
+                                  <Markdown text={previousBallot[poll.pollId]?.comment || ''} />
+                                </Text>
+                              </Box>
+                            )}
+                          </PollOverviewCard>
                         </Box>
                       );
                     })}
                   </Box>
                 )}
-
-                {bpi <= 2 && <SubmitButton />}
-                {bpi <= 2 && !!account && <ReviewBox polls={polls} activePolls={activePolls} />}
                 {votedPolls.length > 0 && (
                   <Stack sx={{ display: activePolls.length ? undefined : 'none' }}>
                     {votedPolls.map(poll => {
@@ -131,9 +271,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                     })}
                   </Stack>
                 )}
-
-                {bpi <= 2 && <SubmitButton />}
-
+                {bpi <= 2 && (
+                  <Box>
+                    {!hasVoted && <SubmitButton />}
+                    {hasVoted && (
+                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
+                      </Button>
+                    )}
+                  </Box>
+                )}
                 {!account && (
                   <Box pt="3">
                     <Text>Connect your wallet to review your ballot</Text>
@@ -145,11 +294,40 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
           {bpi >= 3 && !!account && (
             <Box sx={{ pt: 3 }}>
-              <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
-                Submit Ballot
-              </Heading>
-              <ReviewBox polls={polls} activePolls={activePolls} />
+              {!hasVoted && (
+                <Box>
+                  <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                    Submit Ballot
+                  </Heading>
+                  <ReviewBox polls={polls} activePolls={activePolls} />
+                </Box>
+              )}
+              {hasVoted && (
+                <Box>
+                  <Heading mb={2} variant="microHeading" sx={{ lineHeight: '33px' }}>
+                    Share all your votes
+                  </Heading>
+                  <ActivePollsBox polls={polls} activePolls={activePolls} voted>
+                    <Box p={3}>
+                      <Button sx={{ width: '100%' }} onClick={() => toggleShareModal()}>
+                        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                          <InternalIcon name="forum" size={18} /> <Text ml={1}>Share all votes</Text>
+                        </Flex>
+                      </Button>
+                    </Box>
+                  </ActivePollsBox>
+                </Box>
+              )}
             </Box>
+          )}
+
+          {showMarkdownModal && (
+            <ShareVotesModal
+              isOpen={showMarkdownModal}
+              onDismiss={toggleShareModal}
+              markdownContent={votesToMarkdown()}
+              twitterContent={votesToTweet()}
+            />
           )}
         </SidebarLayout>
       </Stack>

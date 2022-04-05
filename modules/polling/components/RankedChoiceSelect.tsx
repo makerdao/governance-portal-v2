@@ -102,7 +102,12 @@ export default function RankedChoiceSelect({
                   {getNumberWithOrdinal(numConfirmed + 1)} choice
                 </ListboxOption>
                 {map(availableChoices, (label, optionId) => (
-                  <ListboxOption data-testid="ranked choice option" key={optionId} value={optionId}>
+                  <ListboxOption
+                    data-testid="ranked choice option"
+                    key={optionId}
+                    value={optionId}
+                    sx={{ whiteSpace: 'normal' }}
+                  >
                     {label}
                   </ListboxOption>
                 ))}

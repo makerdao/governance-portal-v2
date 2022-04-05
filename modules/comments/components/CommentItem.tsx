@@ -85,7 +85,11 @@ export default function CommentItem({
           <Text variant="smallCaps">
             {votedOption
               ? votedOption
-              : `Voted with ${new BigNumber(comment.comment.voterWeight).toFixed(2)} MKR`}
+              : `Voted with ${
+                  comment.comment.voterWeight.isGreaterThanOrEqualTo(0.01)
+                    ? new BigNumber(comment.comment.voterWeight).toFixed(2)
+                    : '≈0.00'
+                } MKR`}
           </Text>
           {comment.comment.txHash && (
             <Box>
@@ -111,9 +115,13 @@ export default function CommentItem({
         )}
       </Flex>
 
-      <Text mt={2} variant="text" color="secondaryEmphasis" sx={{ overflowWrap: 'break-word' }}>
-        {comment.comment.comment}
-      </Text>
+      <Text
+        mt={2}
+        variant="text"
+        color="secondaryEmphasis"
+        sx={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+        dangerouslySetInnerHTML={{ __html: comment.comment.comment }}
+      ></Text>
     </Box>
   );
 }

@@ -58,12 +58,12 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
  *         content:
  *           application/json:
  *             type: object
- *               properties:
- *                 total:
- *                   type: "number"
- *                 proposals:
- *                   schema:
- *                     $ref: '#/definitions/ArrayOfExecutives'
+ *             properties:
+ *               total:
+ *                 type: "number"
+ *               proposals:
+ *                 schema:
+ *                   $ref: '#/definitions/ArrayOfExecutives'
  */
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<Proposal[]>) => {
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;

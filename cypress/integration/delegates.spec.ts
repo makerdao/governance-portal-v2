@@ -34,9 +34,9 @@ describe('Delegates Page', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
-      cy.get('[data-testid="total-delegates-system-info"]').contains(/15/);
+      cy.get('[data-testid="total-delegates-system-info"]').contains(/17/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('2');
-      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/13/);
+      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/15/);
       cy.get('[data-testid="total-mkr-system-info"]').contains('1,279');
     });
   });
@@ -56,7 +56,7 @@ describe('Delegates Page', () => {
       cy.get('[data-testid="delegate-reset-filters"]').click();
 
       // Now see al the delegates again
-      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 16);
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 18);
     });
   });
 
@@ -64,14 +64,14 @@ describe('Delegates Page', () => {
     // Start from the index page
     visitPage('/delegates');
 
-    const newAccount = getTestAccountByIndex(1);
+    // const newAccount = getTestAccountByIndex(1);
 
     // Wait a few seconds to prevent rate limiting
     cy.wait(5000);
 
-    setAccount(newAccount, () => {
+    setAccount(TEST_ACCOUNTS.normal, () => {
       // Should find the connected
-      cy.contains(formatAddress(newAccount.address)).should('be.visible');
+      cy.contains(formatAddress(TEST_ACCOUNTS.normal.address.toLowerCase())).should('be.visible');
 
       // Click delegate button
       cy.get('[data-testid="button-delegate"]').first().click();
@@ -84,7 +84,7 @@ describe('Delegates Page', () => {
       cy.contains('Confirm Transaction', { timeout: 7500 }).should('be.visible');
 
       // Inserts the amount of MKR to delegate
-      cy.get('[data-testid="mkr-input"]').type('0.005');
+      cy.get('[data-testid="mkr-input"]').type('2');
       cy.contains('Deposit into delegate contract', { timeout: 7500 }).should('be.visible');
 
       cy.wait(1000);
@@ -103,15 +103,13 @@ describe('Delegates Page', () => {
       // Wait for tx confirmed
       cy.contains('Confirm Transaction').should('be.visible');
 
-      // cy.contains('Transaction Pending').should('be.visible');
-
-      cy.contains('Transaction Sent').should('be.visible');
+      cy.contains('Transaction Pending').should('be.visible');
 
       // CLose modal
       closeModal();
 
-      // Checks that the delegated amount has appeared
-      cy.get('[data-testid="mkr-delegated-by-you"]').contains('0.005');
+      // Checks that the delegated amount has appeared. Note: we round UP to two decimals places in the UI.
+      cy.get('[data-testid="mkr-delegated-by-you"]').first().should('have.text', '2.0');
 
       // Find the undelegate button
       cy.get('[data-testid="button-undelegate"]').first().click();

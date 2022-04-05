@@ -8,14 +8,12 @@ import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Poll } from 'modules/polling/types';
 import { TXMined } from 'modules/web3/types/transaction';
-import VotingWeight from '../VotingWeight';
 import TxIndicators from 'modules/app/components/TxIndicators';
-import PollBar from '../PollBar';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { SubmitBallotsButtons } from '../SubmitBallotButtons';
 import { BallotContext } from 'modules/polling/context/BallotContext';
-
+import ActivePollsBox from './ActivePollsBox';
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
     <Flex sx={{ justifyContent: ['center'], flexDirection: 'column' }}>{children}</Flex>
@@ -39,21 +37,13 @@ export default function ReviewBox({
   const bpi = useBreakpointIndex();
 
   const Default = props => (
-    <ReviewBoxCard {...props}>
-      <PollBar polls={polls} activePolls={activePolls} />
-      <Divider />
-      <Box sx={{ px: 3, py: [2, 2], mb: 1 }}>
-        <VotingWeight />
-      </Box>
-      <Divider m={0} sx={{ display: ['none', 'block'] }} />
-      {bpi > 2 && (
-        <SubmitBallotsButtons
-          onSubmit={() => {
-            trackButtonClick('submitBallot');
-          }}
-        />
-      )}
-    </ReviewBoxCard>
+    <ActivePollsBox polls={polls} activePolls={activePolls} {...props}>
+      <SubmitBallotsButtons
+        onSubmit={() => {
+          trackButtonClick('submitBallot');
+        }}
+      />
+    </ActivePollsBox>
   );
 
   const Initializing = props => (

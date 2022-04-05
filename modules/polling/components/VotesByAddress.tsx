@@ -62,12 +62,13 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                   <Text as="td" sx={{ pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
                   </Text>
-                  <Text
-                    as="td"
-                    sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
-                  >{`${new BigNumber(v.mkrSupport).toFormat(new BigNumber(v.mkrSupport).gt(999) ? 0 : 2)}${
-                    bpi > 0 ? ' MKR' : ''
-                  }`}</Text>
+                  <Text as="td" sx={{ textAlign: 'right', pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
+                    {`${
+                      new BigNumber(v.mkrSupport).lte(0.01)
+                        ? '≈0.00'
+                        : new BigNumber(v.mkrSupport).toFormat(new BigNumber(v.mkrSupport).gt(999) ? 0 : 2)
+                    }${bpi > 0 ? ' MKR' : ''}`}{' '}
+                  </Text>
                 </tr>
               ))}
             </>

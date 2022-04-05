@@ -31,15 +31,25 @@ type Props = {
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
+  yourVote?: React.ReactNode;
+  hideTally?: boolean;
 };
-export default function PollOverviewCard({ poll, reviewPage, showVoting, children }: Props): JSX.Element {
+export default function PollOverviewCard({
+  poll,
+  reviewPage,
+  showVoting,
+  children,
+  yourVote,
+  hideTally = false,
+  ...props
+}: Props): JSX.Element {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],

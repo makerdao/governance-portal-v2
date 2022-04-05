@@ -32,7 +32,7 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 //types
-import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
@@ -44,9 +44,12 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
+import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
+import { isAfter, sub } from 'date-fns';
 
 type Props = {
   proposal: Proposal;
+  spellDiffs: SpellDiff[];
 };
 
 const editMarkdown = content => {
@@ -78,7 +81,7 @@ const ProposalTimingBanner = ({
   return <></>;
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
@@ -224,7 +227,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
                   <div key={'spell'} sx={{ p: [3, 4] }}>
-                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
                   </div>,
                   <div key={'comments'} sx={{ p: [3, 4] }}>
                     {comments ? (
@@ -384,11 +387,29 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
+export default function ProposalPage({
+  proposal: prefetchedProposal,
+  spellDiffs: prefetchedSpellDiffs
+}: {
+  proposal?: Proposal;
+  spellDiffs: SpellDiff[];
+}): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
   const { network } = useActiveWeb3React();
+
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // const spellAddress = prefetchedProposal?.address;
+  // const nextCastTime = prefetchedProposal?.spellData?.nextCastTime?.getTime();
+  // const hasBeenCast = prefetchedProposal?.spellData.hasBeenCast;
+
+  // If we didn't fetch the diffs during build, attempt to fetch them now
+  // const { data: diffs } = useSWR(
+  //   prefetchedProposal && prefetchedSpellDiffs.length === 0
+  //     ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&hasBeenCast=${hasBeenCast}&network=${network}`
+  //     : null
+  // );
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
@@ -419,10 +440,11 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
+  // const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ProposalView proposal={proposal as Proposal} />
+      <ProposalView proposal={proposal as Proposal} spellDiffs={[]} />
     </ErrorBoundary>
   );
 }
@@ -433,10 +455,21 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // // Only fetch at build time if spell has been cast, and it's not older than two months (to speed up builds)
+  // const spellDiffs: SpellDiff[] =
+  //   proposal &&
+  //   proposal.spellData?.hasBeenCast &&
+  //   isAfter(new Date(proposal?.date), sub(new Date(), { months: 2 }))
+  //     ? await fetchHistoricalSpellDiff(proposal.address)
+  //     : [];
+
   return {
     revalidate: 60 * 60, // Revalidate each hour
     props: {
-      proposal
+      proposal,
+      // spellDiffs,
+      revalidate: 30 // Ensures that after a spell is cast, we regenerate the static page with fetchHistoricalSpellDiff
     }
   };
 };
