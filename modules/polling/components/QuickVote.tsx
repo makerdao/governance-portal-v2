@@ -22,6 +22,7 @@ type Props = {
   poll: Poll;
   showHeader: boolean;
   showStatus?: boolean;
+  showReviewButton?: boolean;
   sx?: ThemeUIStyleObject;
 };
 
@@ -36,7 +37,13 @@ const rankedChoiceBlurb = (
   </>
 );
 
-const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.ReactElement => {
+const QuickVote = ({
+  poll,
+  showHeader,
+  showStatus,
+  showReviewButton,
+  ...props
+}: Props): React.ReactElement => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: allUserVotes } = useAllUserVotes(
@@ -119,6 +126,7 @@ const QuickVote = ({ poll, showHeader, showStatus, ...props }: Props): React.Rea
           choice={addedChoice?.option ?? currentVote}
           edit={() => setEditing(true)}
           showHeader={showHeader}
+          showReviewButton={showReviewButton}
         />
       ) : (
         <div>
