@@ -40,14 +40,15 @@ type Props = {
   proposals: Proposal[];
   polls: Poll[];
   network: SupportedNetworks;
-  topDelegates: Delegate[];
+  delegates: Delegate[];
   totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegated }: Props) => {
+const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+  const topDelegates = delegates.slice(0, 5);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
@@ -130,7 +131,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats />
+              <GovernanceStats polls={polls} />
             </ErrorBoundary>
           </section>
 
@@ -167,7 +168,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
-  topDelegates: prefetchedTopDelegates,
+  delegates: prefetchedDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
   const { network } = useActiveWeb3React();
@@ -224,12 +225,8 @@ export default function Index({
       }
       polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
       network={network}
-      topDelegates={
-        isDefaultNetwork(network)
-          ? prefetchedTopDelegates
-          : delegatesData
-          ? delegatesData.delegates.slice(0, 5)
-          : []
+      delegates={
+        isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
       }
       totalMKRDelegated={
         isDefaultNetwork(network)
@@ -253,7 +250,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
-      topDelegates: delegatesResponse.delegates.slice(0, 5),
+      delegates: delegatesResponse.delegates,
       totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
     }
   };
