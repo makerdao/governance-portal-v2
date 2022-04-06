@@ -1,12 +1,12 @@
 // Generates a nonce for an address and stores it on the DB.
 // We use this nonce to verify the message
 
-import { connectToDatabase } from 'modules/db/helpers/connectToDatabase';
+import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import invariant from 'tiny-invariant';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function generateNonce(address: string): Promise<string> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('comment-nonces');
@@ -36,7 +36,7 @@ export async function generateNonce(address: string): Promise<string> {
 
 // Removes all nonces for an address
 export async function removeNonces(address: string): Promise<void> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('comment-nonces');
@@ -51,7 +51,7 @@ export async function getNonce(address: string): Promise<{
   nonce: string;
   address: string;
 }> {
-  const { db, client } = await connectToDatabase();
+  const { db, client } = await connectToDatabase;
   invariant(await client.isConnected(), 'mongo client failed to connect');
 
   const collection = db.collection('comment-nonces');

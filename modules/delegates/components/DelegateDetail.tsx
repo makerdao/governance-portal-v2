@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
 import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -27,6 +27,8 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import AccountComments from 'modules/comments/components/AccountComments';
 import { Address } from 'modules/address/components/Address';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
+import { CoreUnitModal } from './modals/CoreUnitModal';
+import { CoreUnitButton } from './modals/CoreUnitButton';
 
 type PropTypes = {
   delegate: Delegate;
@@ -36,6 +38,11 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
   const { voteDelegateAddress } = delegate;
   const { network } = useActiveWeb3React();
   const { cache } = useSWRConfig();
+  const [showCoreUnitModal, setShowCoreUnitModal] = useState(false);
+
+  const handleInfoClick = () => {
+    setShowCoreUnitModal(!showCoreUnitModal);
+  };
 
   const dataKeyDelegateStats = `/api/address/${delegate.voteDelegateAddress}/stats?network=${network}`;
   const { data: statsData } = useSWR<AddressAPIStats>(delegate ? dataKeyDelegateStats : null, fetchJson, {
@@ -94,7 +101,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
       <DelegateVoteHistory delegate={delegate} />
     </Box>,
     <Box key="account-comments" sx={{ p: [3, 4] }}>
-      <AccountComments address={delegate.address} />
+      <AccountComments address={delegate.voteDelegateAddress} />
     </Box>
   ].filter(i => !!i);
 
@@ -153,16 +160,24 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             </Flex>
           </Box>
           <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
-            <LastVoted expired={delegate.expired} date={statsData?.lastVote?.blockTimestamp || ''} />
+            {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
+            <LastVoted
+              expired={delegate.expired}
+              date={statsData?.lastVote?.blockTimestamp || ''}
+              styles={{ my: 1 }}
+            />
             <DelegateContractExpiration delegate={delegate} />
           </Flex>
         </Flex>
-        <Box sx={{ mt: [2], display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ mt: [3], display: 'flex', flexDirection: 'column' }}>
           <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
 
       <Tabs tabListStyles={{ pl: [3, 4] }} tabTitles={tabTitles} tabPanels={tabPanels}></Tabs>
+      {showCoreUnitModal && (
+        <CoreUnitModal isOpen={showCoreUnitModal} onDismiss={() => setShowCoreUnitModal(false)} />
+      )}
     </Box>
   );
 }

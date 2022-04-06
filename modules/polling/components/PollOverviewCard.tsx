@@ -1,19 +1,9 @@
-import Link from 'next/link';
 import { Icon } from '@makerdao/dai-ui-icons';
-import {
-  Card,
-  Text,
-  Flex,
-  Box,
-  Button,
-  Link as ThemeUILink,
-  ThemeUIStyleObject,
-  Divider,
-  Badge
-} from 'theme-ui';
+import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import CountdownTimer from '../../app/components/CountdownTimer';
+import CountdownTimer from 'modules/app/components/CountdownTimer';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import VotingStatus from './PollVotingStatus';
 import { Poll } from 'modules/polling/types';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -41,15 +31,25 @@ type Props = {
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
+  yourVote?: React.ReactNode;
+  hideTally?: boolean;
 };
-export default function PollOverviewCard({ poll, reviewPage, showVoting, children }: Props): JSX.Element {
+export default function PollOverviewCard({
+  poll,
+  reviewPage,
+  showVoting,
+  children,
+  yourVote,
+  hideTally = false,
+  ...props
+}: Props): JSX.Element {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
-  const { tally, error: errorTally, isValidating } = usePollTally(poll.pollId);
+  const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
 
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
@@ -92,17 +92,13 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                         </Flex>
                       )}
                     </Flex>
-                    <Link href={`/polling/${poll.slug}`} passHref>
-                      <ThemeUILink title="View Poll Details">
-                        <CardTitle title={poll.title} />
-                      </ThemeUILink>
-                    </Link>
+                    <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
+                      <CardTitle title={poll.title} />
+                    </InternalLink>
                   </Box>
-                  <Link href={`/polling/${poll.slug}`} passHref>
-                    <ThemeUILink title="View Poll Details">
-                      <CardSummary text={poll.summary} styles={{ my: 2, height: '80px' }} />
-                    </ThemeUILink>
-                  </Link>
+                  <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
+                    <CardSummary text={poll.summary} styles={{ my: 2, height: '80px' }} />
+                  </InternalLink>
                 </Box>
 
                 <Flex>
@@ -121,9 +117,9 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                     </Box>
 
                     {comments && comments.length > 0 && (
-                      <ThemeUILink href={`/polling/${poll.slug}#comments`} title="View Comments">
+                      <InternalLink href={`/polling/${poll.slug}#comments`} title="View comments">
                         <CommentCount count={comments.length} />
-                      </ThemeUILink>
+                      </InternalLink>
                     )}
                     {errorComments && (
                       <Badge
@@ -169,30 +165,23 @@ export default function PollOverviewCard({ poll, reviewPage, showVoting, childre
                     mt: 3
                   }}
                 >
-                  <Link
-                    key={poll.slug}
-                    href={{ pathname: '/polling/[poll-hash]' }}
-                    as={{ pathname: `/polling/${poll.slug}` }}
-                    passHref
-                  >
-                    <ThemeUILink variant="nostyle" title="View Poll Details">
-                      <Button
-                        variant="outline"
-                        sx={{
-                          display: reviewPage ? 'none' : undefined,
-                          borderColor: 'text',
+                  <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
+                    <Button
+                      variant="outline"
+                      sx={{
+                        display: reviewPage ? 'none' : undefined,
+                        borderColor: 'text',
+                        color: 'text',
+                        ':hover': {
                           color: 'text',
-                          ':hover': {
-                            color: 'text',
-                            borderColor: 'onSecondary',
-                            backgroundColor: 'background'
-                          }
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </ThemeUILink>
-                  </Link>
+                          borderColor: 'onSecondary',
+                          backgroundColor: 'background'
+                        }
+                      }}
+                    >
+                      View Details
+                    </Button>
+                  </InternalLink>
                 </Flex>
 
                 {showQuickVote && bpi === 0 && (

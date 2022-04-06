@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
-import { Box, Text, Flex, Button, Heading, Container, Link as ThemeUILink, Divider } from 'theme-ui';
+import { Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import DelegateAvatarName from './DelegateAvatarName';
-import Link from 'next/link';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -99,16 +99,9 @@ export default function TopDelegates({
                   <Text pr={2} sx={{ display: ['none', 'block'] }}>
                     {index + 1}
                   </Text>
-                  <Link
-                    href={{
-                      pathname: `/address/${delegate.voteDelegateAddress}`
-                    }}
-                    passHref
-                  >
-                    <ThemeUILink title="Profile details" variant="nostyle">
-                      <DelegateAvatarName delegate={delegate} />
-                    </ThemeUILink>
-                  </Link>
+                  <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
+                    <DelegateAvatarName delegate={delegate} />
+                  </InternalLink>
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>
                   <Text>
@@ -241,29 +234,21 @@ export default function TopDelegates({
               mr: [2, 3]
             }}
           >
-            <Link
-              href={{
-                pathname: '/delegates'
+            <InternalLink
+              href={'/delegates'}
+              title="View delegates"
+              styles={{
+                borderColor: 'secondaryMuted',
+                color: 'text',
+                ':hover': {
+                  color: 'text',
+                  borderColor: 'onSecondary',
+                  backgroundColor: 'background'
+                }
               }}
-              passHref
             >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                <Button
-                  variant="outline"
-                  sx={{
-                    borderColor: 'secondaryMuted',
-                    color: 'text',
-                    ':hover': {
-                      color: 'text',
-                      borderColor: 'onSecondary',
-                      backgroundColor: 'background'
-                    }
-                  }}
-                >
-                  Find a delegate
-                </Button>
-              </ThemeUILink>
-            </Link>
+              <Button variant="outline">Find a delegate</Button>
+            </InternalLink>
           </Box>
           <Box
             sx={{
@@ -271,29 +256,22 @@ export default function TopDelegates({
               mr: [0, 3]
             }}
           >
-            <Link
-              href={{
-                pathname: '/account'
-              }}
-              passHref
-            >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                <Button
-                  variant="outline"
-                  sx={{
-                    borderColor: 'secondaryMuted',
+            <InternalLink href={'/account'} title="View account">
+              <Button
+                variant="outline"
+                sx={{
+                  borderColor: 'secondaryMuted',
+                  color: 'text',
+                  ':hover': {
                     color: 'text',
-                    ':hover': {
-                      color: 'text',
-                      borderColor: 'onSecondary',
-                      backgroundColor: 'background'
-                    }
-                  }}
-                >
-                  Become a delegate
-                </Button>
-              </ThemeUILink>
-            </Link>
+                    borderColor: 'onSecondary',
+                    backgroundColor: 'background'
+                  }
+                }}
+              >
+                Become a delegate
+              </Button>
+            </InternalLink>
           </Box>
         </Flex>
       </Box>

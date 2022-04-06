@@ -1,7 +1,7 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-import { Box, Text, Link as ThemeUILink } from 'theme-ui';
-
+import { Box, Text } from 'theme-ui';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 export class ErrorBoundary extends React.Component<{ componentName: string }> {
   componentName = 'component';
 
@@ -29,15 +29,13 @@ export class ErrorBoundary extends React.Component<{ componentName: string }> {
           <Text>
             There was a problem loading {this.componentName}. Please, reload the application or contact our
             team on{' '}
-            <ThemeUILink
-              sx={{ color: 'text' }}
+            <ExternalLink
               href="https://discord.gg/tQ5wnN6Ms4"
               title="Discord"
-              target="_blank"
-              rel="noreferrer"
+              styles={{ color: 'accentBlue' }}
             >
-              Discord
-            </ThemeUILink>
+              <Text>Discord</Text>
+            </ExternalLink>
           </Text>
         </Box>
       );

@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
-import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
+import { ExecutiveComment, ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 import withApiHandler from 'modules/app/api/withApiHandler';
 import { getChiefDeposits } from 'modules/web3/api/getChiefDeposits';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
@@ -18,12 +18,22 @@ export default withApiHandler(
     invariant(spellAddress && ethers.utils.isAddress(spellAddress), 'valid spell address required');
 
     const network = (req.query.network as SupportedNetworks) || DEFAULT_NETWORK.network;
-
-    const { voterAddress, comment, signedMessage, txHash, addressLockedMKR }: ExecutiveCommentsRequestBody =
-      JSON.parse(req.body);
-
+    const {
+      voterAddress,
+      hotAddress,
+      comment,
+      signedMessage,
+      txHash,
+      addressLockedMKR
+    }: ExecutiveCommentsRequestBody = req.body;
     // Verifies the data
-    await verifyCommentParameters(voterAddress, signedMessage, txHash, network);
+    const resultVerify = await verifyCommentParameters(
+      hotAddress,
+      voterAddress,
+      signedMessage,
+      txHash,
+      network
+    );
 
     // Get votter weight
     const chief = getContracts(networkNameToChainId(network)).chief;
@@ -31,7 +41,10 @@ export default withApiHandler(
 
     const newComment: ExecutiveComment = {
       spellAddress,
-      voterAddress,
+      voterAddress: voterAddress.toLowerCase(),
+      hotAddress: hotAddress.toLowerCase(),
+      accountType: resultVerify,
+      commentType: 'executive',
       comment,
       voterWeight: formatValue(voterWeigth),
       date: new Date(),

@@ -1,17 +1,18 @@
-import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { PollVoteHistory } from '../types/pollVoteHistory';
 import { PollVotePluralityResultsCompact } from './PollVotePluralityResultsCompact';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getVoteColor } from '../helpers/getVoteColor';
 
 export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.ReactElement {
   const voteDate = formatDateWithTime(vote.blockTimestamp);
   const isPluralityVote = vote.poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE;
-  const voteColorStyles = ['secondaryEmphasis', 'primary', 'notice'];
   const { tally } = usePollTally(vote.pollId);
 
   return (
@@ -37,25 +38,20 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
           Voted {voteDate}
         </Text>
 
-        <Link href={`/polling/${vote.poll.slug}`} passHref>
-          <ThemeUILink variant="nostyle">
-            <Text
-              as="p"
-              sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}
-            >
-              {vote.poll.title}
-            </Text>
-          </ThemeUILink>
-        </Link>
+        <InternalLink href={`/polling/${vote.poll.slug}`} title="View poll details">
+          <Text as="p" sx={{ fontSize: '18px', fontWeight: 'semiBold', color: 'secondaryAlt', mt: 1, mb: 1 }}>
+            {vote.poll.title}
+          </Text>
+        </InternalLink>
 
         <Box mt={2} sx={{ display: 'flex', alignItems: 'center' }}>
           {vote.poll.discussionLink && (
-            <ThemeUILink title="Discussion" href={vote.poll.discussionLink} target="_blank" sx={{ mr: 2 }}>
+            <ExternalLink title="Discussion" href={vote.poll.discussionLink} styles={{ mr: 2 }}>
               <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                 Discussion
                 <Icon ml={2} name="arrowTopRight" size={2} />
               </Text>
-            </ThemeUILink>
+            </ExternalLink>
           )}
         </Box>
       </Box>
@@ -93,7 +89,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: isPluralityVote ? voteColorStyles[vote.optionId || 0] : 'secondaryAlt',
+              color: getVoteColor(vote.optionId as number, vote.poll.voteType),
               fontWeight: 'semiBold'
             }}
           >

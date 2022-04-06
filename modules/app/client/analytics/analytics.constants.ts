@@ -15,5 +15,6 @@ export const ANALYTICS_PAGES = {
   EXECUTIVE: 'Executive',
   POLLING_REVIEW: 'PollingReview',
   ACCOUNT: 'Account',
-  TOP_DELEGATES: 'Top Delegates'
+  TOP_DELEGATES: 'Top Delegates',
+  LANDING: 'Landing'
 };

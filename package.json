@@ -1,7 +1,7 @@
 {
   "name": "governance-portal-v2",
   "license": "AGPL-3.0-only",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "jest": {
     "testTimeout": 7000
   },
@@ -37,7 +37,6 @@
     "@ethersproject/experimental": "^5.5.0",
     "@makerdao/dai-ui-icons": "^0.0.39",
     "@makerdao/dai-ui-icons-branding": "^0.0.39",
-    "@makerdao/dai-ui-theme-maker-neue": "^0.0.47",
     "@makerdao/i18n-helper": "^0.1.8",
     "@octokit/core": "^3.2.5",
     "@reach/dialog": "^0.16.2",
@@ -45,7 +44,7 @@
     "@reach/menu-button": "^0.16.2",
     "@reach/tabs": "^0.10.3",
     "@reach/tooltip": "^0.16.2",
-    "@sentry/nextjs": "^6.18.1",
+    "@sentry/nextjs": "^6.19.2",
     "@theme-ui/css": "^0.12.0",
     "@theme-ui/match-media": "^0.12.0",
     "@web3-react/core": "^6.1.9",
@@ -81,7 +80,7 @@
     "remark-gfm": "^3.0.1",
     "remark-html": "^15.0.1",
     "superjson": "^1.8.1",
-    "swagger-ui-react": "^4.5.2",
+    "swagger-ui-react": "^4.6.2",
     "swr": "^1.0.1",
     "theme-ui": "^0.12.0",
     "tiny-invariant": "^1.1.0",

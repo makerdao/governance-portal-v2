@@ -17,7 +17,7 @@ export function usePollTally(pollId: number, refreshInterval = 0): UsePollTallyR
     mutate,
     error,
     isValidating
-  } = useSWR<PollTally>(`/api/polling/tally/${pollId}?network=${network}`, fetchJson, {
+  } = useSWR<PollTally>(pollId ? `/api/polling/tally/${pollId}?network=${network}` : null, fetchJson, {
     revalidateOnFocus: false,
     refreshInterval,
     revalidateOnMount: true

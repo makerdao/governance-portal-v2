@@ -11,10 +11,12 @@ import { PollSpock } from '../types/pollSpock';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { fetchAllSpockPolls } from './fetchPolls';
 
-export async function fetchSpockPollById(pollId: number, network: SupportedNetworks): Promise<PollSpock> {
+export async function fetchSpockPollById(
+  pollId: number,
+  network: SupportedNetworks
+): Promise<PollSpock | undefined> {
   const polls = await fetchAllSpockPolls(network);
-  const pollIndex = polls.findIndex(poll => poll.pollId === pollId);
-  return polls[pollIndex] as PollSpock;
+  return polls.find(poll => poll.pollId === pollId);
 
   // TODO : this is the new query
   const data: PollSpock = await gqlRequest({
@@ -58,12 +60,15 @@ export async function fetchPollById(pollId: number, network: SupportedNetworks):
 
   const data = await fetchSpockPollById(pollId, network);
 
+  if (!data) {
+    return null;
+  }
+
   const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data));
-
   if (parsedPoll) {
-    const prev: PollSpock = await fetchSpockPollById(pollId - 1, network);
+    const prev = await fetchSpockPollById(pollId - 1, network);
 
-    const next: PollSpock = await fetchSpockPollById(pollId + 1, network);
+    const next = await fetchSpockPollById(pollId + 1, network);
 
     const poll = {
       ...parsedPoll,
@@ -103,9 +108,9 @@ export async function fetchPollBySlug(slug: string, network: SupportedNetworks):
   const parsedPoll = await fetchPollMetadata(spockPollToPartialPoll(data));
 
   if (parsedPoll) {
-    const prev: PollSpock = await fetchSpockPollById(parsedPoll.pollId - 1, network);
+    const prev = await fetchSpockPollById(parsedPoll.pollId - 1, network);
 
-    const next: PollSpock = await fetchSpockPollById(parsedPoll.pollId + 1, network);
+    const next = await fetchSpockPollById(parsedPoll.pollId + 1, network);
 
     const poll = {
       ...parsedPoll,

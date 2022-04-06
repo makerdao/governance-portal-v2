@@ -63,7 +63,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       });
 
     node.append('title').text(d => {
-      return delegateAddresses[d.data.voter] ? delegateAddresses[d.data.voter] : d.data.voter;
+      return delegateAddresses[d.data.voter] ? delegateAddresses[d.data.voter].name : d.data.voter;
     });
 
     node

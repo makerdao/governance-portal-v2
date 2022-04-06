@@ -6,7 +6,6 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
-import { ExecutiveCommentsRequestBody } from 'modules/comments/types/executiveComment';
 import { useAllSlates } from 'modules/executive/hooks/useAllSlates';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
@@ -24,6 +23,7 @@ import { formatValue } from 'lib/string';
 import { BigNumber, utils } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { sign } from 'modules/web3/helpers/sign';
+import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
 
 export default function DefaultVoteModalView({
   proposal,
@@ -73,12 +73,15 @@ export default function DefaultVoteModalView({
       setIsFetcingNonce(true);
       const data = await fetchJson('/api/comments/nonce', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
-          voterAddress: account
+          address: account?.toLowerCase()
         })
       });
       setIsFetcingNonce(false);
-      const signed = await sign(account as string, data.nonce, library);
+      const signed = await sign(account?.toLowerCase() as string, data.nonce, library);
       setSignedMessage(signed);
     } catch (e) {
       setIsFetcingNonce(false);
@@ -123,7 +126,8 @@ export default function DefaultVoteModalView({
         // if comment included, add to comments db
         if (comment.length > 0) {
           const requestBody: ExecutiveCommentsRequestBody = {
-            voterAddress: account || '',
+            voterAddress: addressLockedMKR || '',
+            hotAddress: account || '',
             comment: comment,
             signedMessage: signedMessage,
             txHash,
@@ -131,6 +135,9 @@ export default function DefaultVoteModalView({
           };
           fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify(requestBody)
           })
             .then(() => {
@@ -280,7 +287,7 @@ export default function DefaultVoteModalView({
               }}
               variant="primaryOutline"
               disabled={
-                comment.length > 250 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
+                comment.length > 1500 || !hasVotingWeight || signedMessage.length > 0 || isFetchingNonce
               }
               sx={{ width: '100%' }}
             >
@@ -294,7 +301,7 @@ export default function DefaultVoteModalView({
               }}
               variant="primaryLarge"
               data-testid="vote-modal-vote-btn"
-              disabled={comment.length > 250 || !hasVotingWeight || !signedMessage}
+              disabled={comment.length > 1500 || !hasVotingWeight || !signedMessage}
               sx={{ width: '100%' }}
             >
               2 - {votingMessage}

@@ -3,10 +3,12 @@ import { Text, Box, Label, Textarea } from 'theme-ui';
 
 export default function CommentTextBox({
   value,
-  onChange
+  onChange,
+  disabled
 }: {
   value: string;
   onChange: (val: string) => void;
+  disabled?: boolean;
 }): React.ReactElement {
   return (
     <Box
@@ -30,19 +32,20 @@ export default function CommentTextBox({
           display: 'flex',
           resize: 'none'
         }}
-        maxLength={250}
+        maxLength={1500}
         onChange={event => {
-          onChange(event.target.value.substring(0, 250));
+          onChange(event.target.value.substring(0, 1500));
         }}
         value={value}
+        disabled={disabled}
       />
 
       <Text
         as="p"
         variant="text"
-        sx={{ fontSize: 1, color: value.length > 250 ? 'error' : 'textMuted', mt: 1 }}
+        sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textMuted', mt: 1 }}
       >
-        Optional. You&apos;ll be prompted to sign a message with your wallet. {250 - value.length} characters
+        Optional. You&apos;ll be prompted to sign a message with your wallet. {1500 - value.length} characters
         remaining.
       </Text>
     </Box>

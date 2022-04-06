@@ -50,7 +50,7 @@ import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import PollComments from 'modules/comments/components/PollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import { fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
+import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
@@ -153,40 +153,31 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     sx={{ ml: [0, 'auto'] }}
                   />
                 </Flex>
-                <Flex
-                  sx={{
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    mb: 2,
-                    flexDirection: ['column', 'row']
-                  }}
-                >
-                  <Box>
-                    <Heading mt="2" mb="2" sx={{ fontSize: [5, 6] }}>
-                      {poll.title}
-                    </Heading>
+                <Flex sx={{ mb: 2, flexDirection: 'column' }}>
+                  <Heading mt="2" sx={{ fontSize: [5, 6] }}>
+                    {poll.title}
+                  </Heading>
 
-                    <Flex sx={{ mt: 3, mb: 3 }}>
-                      {poll.categories.map(c => (
-                        <Box key={c} sx={{ marginRight: 2 }}>
-                          <PollCategoryTag category={c} />
-                        </Box>
-                      ))}
-                    </Flex>
+                  <Flex sx={{ mt: 3, mb: 3 }}>
+                    {poll.categories.map(c => (
+                      <Box key={c} sx={{ marginRight: 2 }}>
+                        <PollCategoryTag category={c} />
+                      </Box>
+                    ))}
+                  </Flex>
 
-                    <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
-                      {poll.discussionLink && (
-                        <Box>
-                          <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
-                            <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                              Discussion
-                              <Icon ml={2} name="arrowTopRight" size={2} />
-                            </Text>
-                          </ExternalLink>
-                        </Box>
-                      )}
-                    </Flex>
-                  </Box>
+                  <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
+                    {poll.discussionLink && (
+                      <Box>
+                        <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                          <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                            Discussion
+                            <Icon ml={2} name="arrowTopRight" size={2} />
+                          </Text>
+                        </ExternalLink>
+                      </Box>
+                    )}
+                  </Flex>
                 </Flex>
               </Box>
             </Flex>
@@ -324,7 +315,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                 </div>
               ]}
               banner={
-                tally && tally.totalMkrParticipation > 0 ? (
+                tally && tally.totalMkrParticipation > 0 && tally.winningOptionName ? (
                   <Box>
                     <Divider my={0} />
                     <PollWinningOptionBox tally={tally} poll={poll} />
@@ -413,7 +404,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const pollSlug = params?.['poll-hash'] as string;
   // invariant(pollSlug, 'getStaticProps poll hash not found in params');
 
-  const poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
+  let poll = await fetchPollBySlug(pollSlug, DEFAULT_NETWORK.network);
+
+  if (!poll && !isNaN(parseInt(pollSlug))) {
+    poll = await fetchPollById(parseInt(pollSlug), DEFAULT_NETWORK.network);
+  }
 
   if (!poll) {
     return { revalidate: 30, props: { poll: null } };

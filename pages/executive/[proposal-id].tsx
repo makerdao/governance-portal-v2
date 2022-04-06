@@ -2,19 +2,7 @@ import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
-import {
-  Badge,
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Spinner,
-  Box,
-  Text,
-  Divider,
-  Link as ThemeUILink
-} from 'theme-ui';
+import { Badge, Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -40,9 +28,11 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 //types
-import { CMSProposal, Proposal, SpellData } from 'modules/executive/types';
+import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { BigNumber } from 'ethers';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
@@ -54,9 +44,12 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
+import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
+import { isAfter, sub } from 'date-fns';
 
 type Props = {
   proposal: Proposal;
+  spellDiffs: SpellDiff[];
 };
 
 const editMarkdown = content => {
@@ -88,7 +81,7 @@ const ProposalTimingBanner = ({
   return <></>;
 };
 
-const ProposalView = ({ proposal }: Props): JSX.Element => {
+const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLL_DETAIL);
   const { data: spellData } = useSpellData(proposal.address);
 
@@ -165,14 +158,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
       )}
       <SidebarLayout>
         <Box>
-          <Link href={{ pathname: '/executive' }}>
+          <InternalLink href={'/executive'} title="View executive proposals">
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />
                 Back to {bpi === 0 ? 'all' : 'executive'} proposals
               </Flex>
             </Button>
-          </Link>
+          </InternalLink>
           <Card sx={{ p: [0, 0] }}>
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
@@ -194,15 +187,14 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
-                  <ThemeUILink
+                  <ExternalLink
                     title="View on etherescan"
                     href={getEtherscanLink(network, proposal.address, 'address')}
-                    target="_blank"
                   >
                     <Text sx={{ fontSize: [2, 5] }}>
                       {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
                     </Text>
-                  </ThemeUILink>
+                  </ExternalLink>
                 }
                 label="Spell Address"
               />
@@ -235,7 +227,7 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                     dangerouslySetInnerHTML={{ __html: editMarkdown(proposal.content) }}
                   />,
                   <div key={'spell'} sx={{ p: [3, 4] }}>
-                    <SpellEffectsTab proposal={proposal} spellData={spellData} />
+                    <SpellEffectsTab proposal={proposal} spellData={spellData} spellDiffs={spellDiffs} />
                   </div>,
                   <div key={'comments'} sx={{ p: [3, 4] }}>
                     {comments ? (
@@ -354,28 +346,25 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
                         key={supporter.address}
                       >
                         <Box>
-                          <Link
-                            href={{
-                              pathname: `/address/${supporter.address}`
-                            }}
-                            passHref
+                          <InternalLink
+                            href={`/address/${supporter.address}`}
+                            title="Profile details"
+                            styles={{ mt: 'auto' }}
                           >
-                            <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 2,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                <AddressIconBox
-                                  address={supporter.address}
-                                  width={30}
-                                  limitTextLength={bpi === 0 ? 12 : 14}
-                                />
-                              </Text>
-                            </ThemeUILink>
-                          </Link>
+                            <Text
+                              sx={{
+                                color: 'accentBlue',
+                                fontSize: 2,
+                                ':hover': { color: 'blueLinkHover' }
+                              }}
+                            >
+                              <AddressIconBox
+                                address={supporter.address}
+                                width={30}
+                                limitTextLength={bpi === 0 ? 12 : 14}
+                              />
+                            </Text>
+                          </InternalLink>
                         </Box>
 
                         <Box sx={{ textAlign: 'right' }}>
@@ -398,11 +387,29 @@ const ProposalView = ({ proposal }: Props): JSX.Element => {
 };
 
 // HOC to fetch the proposal depending on the network
-export default function ProposalPage({ proposal: prefetchedProposal }: { proposal?: Proposal }): JSX.Element {
+export default function ProposalPage({
+  proposal: prefetchedProposal,
+  spellDiffs: prefetchedSpellDiffs
+}: {
+  proposal?: Proposal;
+  spellDiffs: SpellDiff[];
+}): JSX.Element {
   const [_proposal, _setProposal] = useState<Proposal>();
   const [error, setError] = useState<string>();
   const { query } = useRouter();
   const { network } = useActiveWeb3React();
+
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // const spellAddress = prefetchedProposal?.address;
+  // const nextCastTime = prefetchedProposal?.spellData?.nextCastTime?.getTime();
+  // const hasBeenCast = prefetchedProposal?.spellData.hasBeenCast;
+
+  // If we didn't fetch the diffs during build, attempt to fetch them now
+  // const { data: diffs } = useSWR(
+  //   prefetchedProposal && prefetchedSpellDiffs.length === 0
+  //     ? `/api/executive/state-diff/${spellAddress}?nextCastTime=${nextCastTime}&hasBeenCast=${hasBeenCast}&network=${network}`
+  //     : null
+  // );
 
   // fetch proposal contents at run-time if on any network other than the default
   useEffect(() => {
@@ -433,10 +440,11 @@ export default function ProposalPage({ proposal: prefetchedProposal }: { proposa
     );
 
   const proposal = isDefaultNetwork(network) ? prefetchedProposal : _proposal;
+  // const spellDiffs = prefetchedSpellDiffs.length > 0 ? prefetchedSpellDiffs : diffs;
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ProposalView proposal={proposal as Proposal} />
+      <ProposalView proposal={proposal as Proposal} spellDiffs={[]} />
     </ErrorBoundary>
   );
 }
@@ -447,10 +455,21 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const proposal: Proposal | null = await getExecutiveProposal(proposalId, DEFAULT_NETWORK.network);
 
+  /**Disabling spell-effects until multi-transactions endpoint is ready */
+  // // Only fetch at build time if spell has been cast, and it's not older than two months (to speed up builds)
+  // const spellDiffs: SpellDiff[] =
+  //   proposal &&
+  //   proposal.spellData?.hasBeenCast &&
+  //   isAfter(new Date(proposal?.date), sub(new Date(), { months: 2 }))
+  //     ? await fetchHistoricalSpellDiff(proposal.address)
+  //     : [];
+
   return {
     revalidate: 60 * 60, // Revalidate each hour
     props: {
-      proposal
+      proposal,
+      // spellDiffs,
+      revalidate: 30 // Ensures that after a spell is cast, we regenerate the static page with fetchHistoricalSpellDiff
     }
   };
 };

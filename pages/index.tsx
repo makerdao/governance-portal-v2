@@ -1,8 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Text, Flex, useColorMode, Box, Link as ThemeUILink } from 'theme-ui';
+import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -35,6 +34,8 @@ import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 
 type Props = {
   proposals: Proposal[];
@@ -102,11 +103,9 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
               <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                 <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                   <Heading>Latest Executive</Heading>
-                  <Link href={{ pathname: '/executive' }} passHref>
-                    <ThemeUILink title="Latest Executive">
-                      <ViewMore />
-                    </ThemeUILink>
-                  </Link>
+                  <InternalLink href={'/executive'} title="Latest Executive">
+                    <ViewMore />
+                  </InternalLink>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <ErrorBoundary componentName="Latest Executive">
@@ -143,6 +142,12 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <ExecutiveProposalsLanding proposals={proposals} network={network} hat={hat} />
+          </section>
+
+          <section>
+            <ErrorBoundary componentName="Meet Delegates">
+              <MeetDelegates delegates={topDelegates} />
+            </ErrorBoundary>
           </section>
 
           <section>
