@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import { DelegationHistory, MKRLockedDelegateAPIResponse} from '../types/delegate';
+import { DelegationHistory, MKRLockedDelegateAPIResponse } from '../types/delegate';
 
 export const formatDelegationHistory = (lockEvents: MKRLockedDelegateAPIResponse[]): DelegationHistory[] => {
   const delegators = lockEvents.reduce<DelegationHistory[]>(

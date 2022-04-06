@@ -54,7 +54,7 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  
+
   const data = formatDelegationHistoryChart(
     delegate.mkrLockedDelegate,
     delegate.voteDelegateAddress,

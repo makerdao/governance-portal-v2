@@ -58,8 +58,6 @@ export type DelegationHistoryEvent = {
   hash: string;
 };
 
-
-
 export type MKRLockedDelegateAPIResponse = {
   fromAddress: string;
   lockAmount: string;

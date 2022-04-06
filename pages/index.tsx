@@ -35,6 +35,8 @@ import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
+import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance';
+import CirclesBackground from 'modules/home/components/CirclesBackground';
 
 type Props = {
   proposals: Proposal[];
@@ -152,6 +154,10 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
           <section>
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
+
+          <CirclesBackground>
+            <InformationParticipateMakerGovernance />
+          </CirclesBackground>
 
           <section>
             <ErrorBoundary componentName="System Stats">
