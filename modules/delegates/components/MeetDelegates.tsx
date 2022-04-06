@@ -1,19 +1,28 @@
-import { Text, Flex, Button, Heading, Card } from 'theme-ui';
+import { Text, Flex, Button, Heading, Card, get } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import DelegateAvatarName from './DelegateAvatarName';
-// import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-// import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ViewMore } from 'modules/home/components/ViewMore';
+import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 
-export const ParticipationBreakdown = ({ delegate }: { delegate: Delegate }): React.ReactElement => {
+export const ParticipationBreakdown = ({
+  delegate,
+  bpi
+}: {
+  delegate: Delegate;
+  bpi: number;
+}): React.ReactElement => {
   return (
-    <Flex sx={{ flexDirection: 'column', py: 3 }}>
+    <Flex sx={{ flexDirection: 'column' }}>
       <Text as="p" variant="secondary">
         Participation Breakdown
       </Text>
-      <Flex sx={{ justifyContent: 'space-between', mt: 2 }}>
+      <Flex
+        sx={{ justifyContent: 'space-between', flexDirection: bpi === 0 ? 'column' : 'row', mt: 1, gap: 2 }}
+      >
         <Flex sx={{ flexDirection: 'column' }}>
           <Text as="p" sx={{ fontWeight: 'semiBold' }}>
             {delegate.pollParticipation || 'Untracked'}
@@ -43,41 +52,58 @@ export const ParticipationBreakdown = ({ delegate }: { delegate: Delegate }): Re
   );
 };
 
-export default function MeetYourDelegates({ delegates }: { delegates: Delegate[] }): React.ReactElement {
-  // const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.TOP_DELEGATES);
+export default function MeetYourDelegates({
+  delegates,
+  bpi
+}: {
+  delegates: Delegate[];
+  bpi: number;
+}): React.ReactElement {
+  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.MEET_DELEGATES);
+
+  // TODO: remove mock values when tag system is ready
+  const delegateValues = ['Collateral', 'Oracles', 'Governance'];
 
   return (
     <Flex
       sx={{
         flexDirection: 'column',
         width: '100vw',
-        ml: 'calc(600px - 100vw / 2)'
+        ml: theme => [
+          `calc(${get(theme, 'sizes.3')}px * -1)`,
+          `calc( calc(${get(theme, 'sizes.page')}px / 2) - 100vw / 2)`
+        ],
+        gap: 2
       }}
     >
       <Flex
         sx={{
-          justifyContent: 'space-between',
-          px: 'calc( calc( 100vw - 1200px) / 2)'
+          flexDirection: 'column',
+          px: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+          gap: 2
         }}
       >
-        <Flex sx={{ flexDirection: 'column', flex: 1, gap: 2 }}>
+        <Flex>
           <Heading>Meet the Delegates</Heading>
-          <Text sx={{ color: 'textMuted', variant: 'smallText' }}>
-            Vote delegation allows for MKR holders to delegate their voting power to delegates, which
-            increases the effectiveness and efficiency of the governance process.
-          </Text>
+          <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
+            <InternalLink href="/delegates" title="Meet the Delegates">
+              <ViewMore label="View All" />
+            </InternalLink>
+          </Flex>
         </Flex>
-        <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
-          <InternalLink href="/delegates" title="Meet the Delegates">
-            <ViewMore label="View All" />
-          </InternalLink>
-        </Flex>
+        <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '50%'] }}>
+          Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases
+          the effectiveness and efficiency of the governance process.
+        </Text>
       </Flex>
       <Flex
         sx={{
-          gap: 5,
+          gap: [4, 5],
+          pb: 5,
+          pt: 3,
           overflowX: 'auto',
-          pl: 'calc( calc( 100vw - 1200px) / 2)',
+          overflowY: 'visible',
+          pl: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
           '::-webkit-scrollbar': {
             display: 'none'
           }
@@ -88,28 +114,36 @@ export default function MeetYourDelegates({ delegates }: { delegates: Delegate[]
             <Card
               key={delegate.name}
               sx={{
-                width: 8,
-                minWidth: 8,
+                minWidth: ['293px', 8],
                 boxShadow: 'floater',
                 border: 'none',
-                my: 4,
+                py: 4,
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                gap: 2
+                gap: 3
               }}
             >
               <DelegateAvatarName delegate={delegate} />
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Text variant="secondary">Values</Text>
-                <Text>Values not implemented error o_0</Text>
+              <Flex sx={{ gap: [3, 4] }}>
+                {delegateValues.map(x => (
+                  <PollCategoryTag key={x} category={x} />
+                ))}
               </Flex>
-              <ParticipationBreakdown delegate={delegate} />
-              <Flex sx={{ justifyContent: 'space-between' }}>
+
+              <ParticipationBreakdown delegate={delegate} bpi={bpi} />
+              <Flex
+                sx={{
+                  justifyContent: 'space-between',
+                  flexDirection: bpi === 0 ? 'column' : 'row',
+                  gap: 3
+                }}
+              >
                 <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View poll details">
                   <Button
                     variant="outline"
                     sx={{
+                      minWidth: '186px',
                       borderRadius: 'round',
                       ':hover': {
                         color: 'text',
@@ -117,11 +151,12 @@ export default function MeetYourDelegates({ delegates }: { delegates: Delegate[]
                         backgroundColor: 'background'
                       }
                     }}
+                    onClick={() => trackButtonClick('viewDelegateDetails')}
                   >
                     View Profile Details
                   </Button>
                 </InternalLink>
-                <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View poll details">
+                <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View delegate details">
                   <Button
                     variant="outline"
                     sx={{
@@ -132,6 +167,7 @@ export default function MeetYourDelegates({ delegates }: { delegates: Delegate[]
                         backgroundColor: 'background'
                       }
                     }}
+                    onClick={() => trackButtonClick('viewDelegateVideo')}
                   >
                     <Flex sx={{ alignItems: 'center' }}>
                       <Icon sx={{ mr: 2 }} name="play" size={3} />

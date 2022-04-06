@@ -35,6 +35,8 @@ import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 type Props = {
   proposals: Proposal[];
@@ -46,8 +48,10 @@ type Props = {
 
 const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
+  const bpi = useBreakpointIndex();
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+  const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
   const topDelegates = delegates.slice(0, 5);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
@@ -146,7 +150,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
 
           <section>
             <ErrorBoundary componentName="Meet Delegates">
-              <MeetDelegates delegates={topDelegates} />
+              <MeetDelegates delegates={recognizedDelegates} bpi={bpi} />
             </ErrorBoundary>
           </section>
 
