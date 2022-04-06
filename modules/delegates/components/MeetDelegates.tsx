@@ -4,9 +4,75 @@ import { Delegate } from '../types';
 import DelegateAvatarName from './DelegateAvatarName';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
+import VideoModal from 'modules/app/components/VideoModal';
+import { useState } from 'react';
+import { PlayButton } from 'modules/home/components/PlayButton';
+
+const MeetDelegateCard = ({
+  delegate,
+  trackButtonClick,
+  bpi,
+  videoOnClick
+}: {
+  delegate: Delegate;
+  trackButtonClick: (string) => void;
+  bpi: number;
+  videoOnClick: (boolean) => void;
+}) => {
+  // TODO: remove mock values when tag system is ready
+  const delegateValues = ['Collateral', 'Oracles', 'Governance'];
+
+  return (
+    <Card
+      sx={{
+        minWidth: ['293px', 8],
+        boxShadow: 'floater',
+        border: 'none',
+        py: 4,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        gap: 3
+      }}
+    >
+      <DelegateAvatarName delegate={delegate} />
+      <Flex sx={{ gap: [3, 4] }}>
+        {delegateValues.map(x => (
+          <PollCategoryTag key={x} category={x} />
+        ))}
+      </Flex>
+      <ParticipationBreakdown delegate={delegate} bpi={bpi} />
+      <Flex
+        sx={{
+          justifyContent: 'space-between',
+          flexDirection: bpi === 0 ? 'column' : 'row',
+          gap: 3
+        }}
+      >
+        <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View poll details">
+          <Button
+            variant="outline"
+            sx={{
+              minWidth: '186px',
+              borderRadius: 'round',
+              ':hover': {
+                color: 'text',
+                borderColor: 'onSecondary',
+                backgroundColor: 'background'
+              }
+            }}
+            onClick={() => trackButtonClick('viewDelegateDetails')}
+          >
+            View Profile Details
+          </Button>
+        </InternalLink>
+        <PlayButton label="Meet the Delegate" onClick={() => videoOnClick(true)} />
+      </Flex>
+    </Card>
+  );
+};
 
 export const ParticipationBreakdown = ({
   delegate,
@@ -59,127 +125,66 @@ export default function MeetYourDelegates({
   delegates: Delegate[];
   bpi: number;
 }): React.ReactElement {
+  const [videoOpen, setVideoOpen] = useState(false);
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.MEET_DELEGATES);
 
-  // TODO: remove mock values when tag system is ready
-  const delegateValues = ['Collateral', 'Oracles', 'Governance'];
-
   return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        width: '100vw',
-        ml: theme => [
-          `calc(${get(theme, 'sizes.3')}px * -1)`,
-          `calc( calc(${get(theme, 'sizes.page')}px / 2) - 100vw / 2)`
-        ],
-        gap: 2
-      }}
-    >
+    <>
+      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
       <Flex
         sx={{
           flexDirection: 'column',
-          px: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+          width: '100vw',
+          ml: theme => [
+            `calc(${get(theme, 'sizes.3')}px * -1)`,
+            `calc( calc(${get(theme, 'sizes.page')}px / 2) - 100vw / 2)`
+          ],
           gap: 2
         }}
       >
-        <Flex>
-          <Heading>Meet the Delegates</Heading>
-          <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
-            <InternalLink href="/delegates" title="Meet the Delegates">
-              <ViewMore label="View All" />
-            </InternalLink>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            px: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+            gap: 2
+          }}
+        >
+          <Flex>
+            <Heading>Meet the Delegates</Heading>
+            <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
+              <InternalLink href="/delegates" title="Meet the Delegates">
+                <ViewMore label="View All" />
+              </InternalLink>
+            </Flex>
           </Flex>
+          <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '50%'] }}>
+            Vote delegation allows for MKR holders to delegate their voting power to delegates, which
+            increases the effectiveness and efficiency of the governance process.
+          </Text>
         </Flex>
-        <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '50%'] }}>
-          Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases
-          the effectiveness and efficiency of the governance process.
-        </Text>
-      </Flex>
-      <Flex
-        sx={{
-          gap: [4, 5],
-          pb: 5,
-          pt: 3,
-          overflowX: 'auto',
-          overflowY: 'visible',
-          pl: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
-          '::-webkit-scrollbar': {
-            display: 'none'
-          }
-        }}
-      >
-        {delegates.map(delegate => {
-          return (
-            <Card
+        <Flex
+          sx={{
+            gap: [4, 5],
+            pb: 5,
+            pt: 3,
+            overflowX: 'auto',
+            pl: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+            '::-webkit-scrollbar': {
+              display: 'none'
+            }
+          }}
+        >
+          {delegates.map(delegate => (
+            <MeetDelegateCard
               key={delegate.name}
-              sx={{
-                minWidth: ['293px', 8],
-                boxShadow: 'floater',
-                border: 'none',
-                py: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                gap: 3
-              }}
-            >
-              <DelegateAvatarName delegate={delegate} />
-              <Flex sx={{ gap: [3, 4] }}>
-                {delegateValues.map(x => (
-                  <PollCategoryTag key={x} category={x} />
-                ))}
-              </Flex>
-
-              <ParticipationBreakdown delegate={delegate} bpi={bpi} />
-              <Flex
-                sx={{
-                  justifyContent: 'space-between',
-                  flexDirection: bpi === 0 ? 'column' : 'row',
-                  gap: 3
-                }}
-              >
-                <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View poll details">
-                  <Button
-                    variant="outline"
-                    sx={{
-                      minWidth: '186px',
-                      borderRadius: 'round',
-                      ':hover': {
-                        color: 'text',
-                        borderColor: 'onSecondary',
-                        backgroundColor: 'background'
-                      }
-                    }}
-                    onClick={() => trackButtonClick('viewDelegateDetails')}
-                  >
-                    View Profile Details
-                  </Button>
-                </InternalLink>
-                <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View delegate details">
-                  <Button
-                    variant="outline"
-                    sx={{
-                      borderRadius: 'round',
-                      ':hover': {
-                        color: 'text',
-                        borderColor: 'onSecondary',
-                        backgroundColor: 'background'
-                      }
-                    }}
-                    onClick={() => trackButtonClick('viewDelegateVideo')}
-                  >
-                    <Flex sx={{ alignItems: 'center' }}>
-                      <Icon sx={{ mr: 2 }} name="play" size={3} />
-                      <Text>Meet the Delegate</Text>
-                    </Flex>
-                  </Button>
-                </InternalLink>
-              </Flex>
-            </Card>
-          );
-        })}
+              delegate={delegate}
+              trackButtonClick={trackButtonClick}
+              bpi={bpi}
+              videoOnClick={setVideoOpen}
+            />
+          ))}
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 }
