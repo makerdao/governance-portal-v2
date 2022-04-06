@@ -1,9 +1,10 @@
+import { formatValue } from 'lib/string';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
-// import { formatValue } from 'lib/string';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 
 export function GovernanceStats(): JSX.Element {
-  // const { data: totalDai } = useTotalDai();
+  const { data: mkrOnHat } = useMkrOnHat();
   // const { data: daiSavingsRate } = useDaiSavingsRate();
   // const { data: systemSurplus } = useSystemSurplus();
   // const { data: debtCeiling } = useSystemWideDebtCeiling();
@@ -13,8 +14,7 @@ export function GovernanceStats(): JSX.Element {
   const infoUnits = [
     {
       title: 'MKR on Hat',
-      // value: true ? '76,234 MKR' : <Skeleton />
-      value: '76,234 MKR'
+      value: mkrOnHat ? `${formatValue(mkrOnHat)} MKR` : <Skeleton />
     },
     {
       title: 'Active Proposals',
