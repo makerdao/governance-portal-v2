@@ -1,15 +1,36 @@
+import { useMemo } from 'react';
+import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { Poll } from 'modules/polling/types';
+import { Delegate } from 'modules/delegates/types';
+import { isActivePoll } from 'modules/polling/helpers/utils';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 
-export function GovernanceStats(): JSX.Element {
-  const { data: mkrOnHat } = useMkrOnHat();
-  // const { data: daiSavingsRate } = useDaiSavingsRate();
-  // const { data: systemSurplus } = useSystemSurplus();
-  // const { data: debtCeiling } = useSystemWideDebtCeiling();
+type Props = {
+  polls: Poll[];
+  delegates: Delegate[];
+  totalMKRDelegated: string;
+  mkrOnHat?: BigNumber;
+  mkrInChief?: BigNumber;
+};
 
-  // TODO get live data
+export function GovernanceStats({
+  polls,
+  delegates,
+  totalMKRDelegated,
+  mkrOnHat,
+  mkrInChief
+}: Props): JSX.Element {
+  const activePollCount = useMemo(() => polls.filter(poll => isActivePoll(poll)).length, [polls]);
+  const recognizedDelegateCount = delegates.filter(
+    delegate => delegate.status === DelegateStatusEnum.recognized
+  ).length;
+  const shadowDelegateCount = delegates.filter(
+    delegate => delegate.status === DelegateStatusEnum.shadow
+  ).length;
 
   const infoUnits = [
     {
@@ -17,29 +38,24 @@ export function GovernanceStats(): JSX.Element {
       value: mkrOnHat ? `${formatValue(mkrOnHat)} MKR` : <Skeleton />
     },
     {
-      title: 'Active Proposals',
-      // value: true ? `9` : <Skeleton />
-      value: '9'
+      title: 'Active Polls',
+      value: polls ? activePollCount.toString() : <Skeleton />
     },
     {
       title: 'Recognized Delegates',
-      // value: true ? '17' : <Skeleton />
-      value: '17'
+      value: delegates ? recognizedDelegateCount.toString() : <Skeleton />
     },
     {
       title: 'Shadow Delegates',
-      // value: true ? '9' : <Skeleton />
-      value: '9'
+      value: delegates ? shadowDelegateCount.toString() : <Skeleton />
     },
     {
       title: 'MKR Delegated',
-      // value: true ? '89,234' : <Skeleton />
-      value: '89,234'
+      value: totalMKRDelegated ? `${new BigNumberJS(totalMKRDelegated).toFormat(0)} MKR` : <Skeleton />
     },
     {
       title: 'MKR in Chief',
-      // value: true ? '132,023 MKR' : <Skeleton />
-      value: '132,023 MKR'
+      value: mkrInChief ? `${formatValue(mkrInChief)} MKR` : <Skeleton />
     }
   ];
 
