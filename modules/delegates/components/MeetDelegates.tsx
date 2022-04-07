@@ -43,7 +43,7 @@ const MeetDelegateCard = ({
           gap: 3
         }}
       >
-        <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View poll details">
+        <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View delegate profile details">
           <Button
             variant="outline"
             sx={{
@@ -60,7 +60,9 @@ const MeetDelegateCard = ({
             View Profile Details
           </Button>
         </InternalLink>
-        <PlayButton label="Meet the Delegate" onClick={() => setDelegateToPlay(delegate.id)} />
+        <Flex>
+          <PlayButton label="Meet the Delegate" onClick={() => setDelegateToPlay(delegate.id)} />
+        </Flex>
       </Flex>
     </Card>
   );
@@ -150,7 +152,7 @@ export default function MeetYourDelegates({
           <Flex>
             <Heading>Meet the Delegates</Heading>
             <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
-              <InternalLink href="/delegates" title="Meet the Delegates">
+              <InternalLink href="/delegates" title="View All Delegates">
                 <ViewMore label="View All" />
               </InternalLink>
             </Flex>
