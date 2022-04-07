@@ -42,6 +42,7 @@ import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 
 type Props = {
   proposals: Proposal[];
@@ -89,7 +90,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
+      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
         <Stack gap={[5, 6]}>
           <section>

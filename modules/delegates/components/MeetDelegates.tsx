@@ -5,25 +5,22 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { ViewMore } from 'modules/home/components/ViewMore';
-import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import VideoModal from 'modules/app/components/VideoModal';
 import { useState } from 'react';
 import { PlayButton } from 'modules/home/components/PlayButton';
+import { MEET_DELEGATE_URLS } from '../delegates.constants';
 
 const MeetDelegateCard = ({
   delegate,
   trackButtonClick,
   bpi,
-  videoOnClick
+  setDelegateToPlay
 }: {
   delegate: Delegate;
   trackButtonClick: (string) => void;
   bpi: number;
-  videoOnClick: (boolean) => void;
+  setDelegateToPlay: (boolean) => void;
 }) => {
-  // TODO: remove mock values when tag system is ready
-  const delegateValues = ['Collateral', 'Oracles', 'Governance'];
-
   return (
     <Card
       sx={{
@@ -38,11 +35,6 @@ const MeetDelegateCard = ({
       }}
     >
       <DelegateAvatarName delegate={delegate} />
-      <Flex sx={{ gap: [3, 4] }}>
-        {delegateValues.map(x => (
-          <PollCategoryTag key={x} category={x} />
-        ))}
-      </Flex>
       <ParticipationBreakdown delegate={delegate} bpi={bpi} />
       <Flex
         sx={{
@@ -68,7 +60,7 @@ const MeetDelegateCard = ({
             View Profile Details
           </Button>
         </InternalLink>
-        <PlayButton label="Meet the Delegate" onClick={() => videoOnClick(true)} />
+        <PlayButton label="Meet the Delegate" onClick={() => setDelegateToPlay(delegate.id)} />
       </Flex>
     </Card>
   );
@@ -125,12 +117,18 @@ export default function MeetYourDelegates({
   delegates: Delegate[];
   bpi: number;
 }): React.ReactElement {
-  const [videoOpen, setVideoOpen] = useState(false);
+  const [delegateToPlay, setDelegateToPlay] = useState();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.MEET_DELEGATES);
 
   return (
     <>
-      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
+      {delegateToPlay && (
+        <VideoModal
+          isOpen={delegateToPlay}
+          url={MEET_DELEGATE_URLS[delegateToPlay]}
+          onDismiss={() => setDelegateToPlay(undefined)}
+        />
+      )}
       <Flex
         sx={{
           flexDirection: 'column',
@@ -180,7 +178,7 @@ export default function MeetYourDelegates({
               delegate={delegate}
               trackButtonClick={trackButtonClick}
               bpi={bpi}
-              videoOnClick={setVideoOpen}
+              setDelegateToPlay={setDelegateToPlay}
             />
           ))}
         </Flex>
