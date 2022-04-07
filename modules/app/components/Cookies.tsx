@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-
-import Link from 'next/link';
 import { Box, Button, Flex, Text, Label, Checkbox } from 'theme-ui';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { CookiesContext } from 'modules/app/client/cookies/CookiesContext';
 
 export default function Cookies(): React.ReactElement | null {
@@ -49,9 +48,9 @@ export default function Cookies(): React.ReactElement | null {
           This website uses cookies for analytic purposes only. Cookies are anonymous and do not link to user
           data. We collect information to improve the governance experience and validate UI changes. You can
           still use the page without cookies. For more information, please read our{' '}
-          <Link href="/cookies-policy">
+          <ExternalLink href="/cookies-policy" title="View cookies policy">
             <a title="cookies policy"> cookies policy</a>
-          </Link>
+          </ExternalLink>
           .
         </Text>
 

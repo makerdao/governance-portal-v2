@@ -1,9 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import { Card, Box, Flex, Button, Text, Link as ExternalLink, Divider } from 'theme-ui';
+import { Card, Box, Flex, Button, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Poll } from 'modules/polling/types';
@@ -14,6 +12,9 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 import { SubmitBallotsButtons } from '../SubmitBallotButtons';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import ActivePollsBox from './ActivePollsBox';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { InternalLink } from 'modules/app/components/InternalLink';
+
 const ReviewBoxCard = ({ children, ...props }) => (
   <Card variant="compact" p={[0, 0]} {...props}>
     <Flex sx={{ justifyContent: ['center'], flexDirection: 'column' }}>{children}</Flex>
@@ -83,9 +84,9 @@ export default function ReviewBox({
       </Text>
 
       <ExternalLink
-        target="_blank"
         href={getEtherscanLink(network, (transaction as TXMined).hash, 'transaction')}
-        sx={{ p: 0, mt: 3 }}
+        styles={{ p: 0, mt: 3 }}
+        title="View on etherscan"
       >
         <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
@@ -107,16 +108,16 @@ export default function ReviewBox({
         Votes will update once the transaction is confirmed.
       </Text>
       <ExternalLink
-        target="_blank"
         href={getEtherscanLink(network, (transaction as TXMined).hash, 'transaction')}
-        sx={{ p: 0 }}
+        styles={{ p: 0 }}
+        title="View on etherscan"
       >
         <Text as="p" sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
           View on Etherscan
           <Icon name="arrowTopRight" pt={2} color="accentBlue" />
         </Text>
       </ExternalLink>
-      <Link href={{ pathname: '/polling' }}>
+      <InternalLink href={'/polling'} title="View polling page">
         <Button
           mt={3}
           variant="outline"
@@ -125,7 +126,7 @@ export default function ReviewBox({
         >
           Back To All Polls
         </Button>
-      </Link>
+      </InternalLink>
     </ReviewBoxCard>
   );
 
@@ -151,7 +152,7 @@ export default function ReviewBox({
           }}
         />
       </Flex>
-      <Link href={{ pathname: '/polling/review' }}>
+      <InternalLink href={'/polling/review'} title="Back">
         <Button
           pb={3}
           variant="textual"
@@ -166,7 +167,7 @@ export default function ReviewBox({
         >
           Go back
         </Button>
-      </Link>
+      </InternalLink>
     </ReviewBoxCard>
   );
 
