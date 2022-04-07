@@ -1,43 +1,158 @@
 import { Box, Flex, Heading, Text, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useState } from 'react';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
+type InfoPoint = {
+  number: string;
+  title: string;
+  titleFirst: string;
+  titleSecond: string;
+  image: string;
+  description: React.ReactNode;
+  color: string;
+  links: {
+    linkHref: string;
+    linkTitle: string;
+  }[];
+};
+
+function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
+  return (
+    <Box>
+      <Flex>
+        <Box sx={{ p: 3 }}>
+          <Heading as="h1" sx={{ fontSize: '32px' }}>
+            <Text sx={{ color: infoPoint.color }}>{infoPoint.number}</Text>
+          </Heading>
+        </Box>
+        <Flex
+          sx={{
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '100%',
+            flex: 1,
+            background: `url(${infoPoint.image});`,
+            backgroundPositionX: '100%',
+            backgroundRepeat: 'no-repeat',
+            p: 3,
+            pl: 2,
+            backgroundSize: 'auto 100%'
+          }}
+        >
+          <Box>
+            <Heading as="h1" sx={{ mb: 3 }}>
+              <Text>{infoPoint.titleFirst}</Text>
+              <Text sx={{ color: infoPoint.color, ml: 1 }}>{infoPoint.titleSecond}</Text>
+            </Heading>
+
+            <Box sx={{ width: '60%' }}>{infoPoint.description}</Box>
+          </Box>
+          {infoPoint.links.map(link => (
+            <ExternalLink key={link.linkHref} href={link.linkHref} title={link.linkTitle}>
+              <Flex>
+                <Text>{link.linkTitle}</Text>
+                <Icon name="chevron_right" color="primary" size="3" ml="1" />
+              </Flex>
+            </ExternalLink>
+          ))}
+        </Flex>
+      </Flex>
+    </Box>
+  );
+}
 export default function InformationParticipateMakerGovernance(): React.ReactElement {
-  const infoPoints = [
+  const infoPoints: InfoPoint[] = [
     {
       number: '01',
       title: 'Understand off-chain governance',
+      titleFirst: 'Understand',
+      titleSecond: 'off-chain governance',
+      links: [
+        {
+          linkHref: 'https://manual.makerdao.com/governance/voting-in-makerdao/off-chain-governance',
+          linkTitle: 'Learn more about off-chain governance'
+        }
+      ],
+      image: '/home/understand-governance/first.png',
       color: '#1AAB9B',
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+        "Off-chain governance refers to processes for making decisions that don't require on-chain voting and gathering feedback prior to on-chain voting. Off-chain governance happens on the Maker Governance Forum, where the community meets to propose and discuss new proposals. Anyone can participate in off-chain governance."
     },
     {
       number: '02',
       color: '#1ACCA7',
       title: 'Understand on-chain governance',
+      titleFirst: 'Understand',
+      titleSecond: 'on-chain governance',
+      links: [
+        {
+          linkHref: 'https://manual.makerdao.com/governance/voting-in-makerdao/on-chain-governance',
+          linkTitle: 'Learn more about on-chain governance'
+        }
+      ],
+      image: '/home/understand-governance/second.png',
+
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+        'On-chain governance refers to Governance Polls and Executive Votes, which are formalized governance proposals that require on-chain voting. Anyone who owns MKR tokens can participate in these votes using their wallet.'
     },
     {
       number: '03',
       color: '#4B68FF',
       title: 'Set up your voting wallet',
+      titleFirst: 'Set up your',
+      titleSecond: 'voting wallet',
+      links: [],
+      image: '/home/understand-governance/third.png',
+
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+        'Connect a web3 wallet (eg. MetaMask, WalletConnect) that holds your MKR tokens and start participating! Users that hold many MKR tokens or use their wallet for other uses besides Maker governance might want to consider more secure methods of setting up a voting wallet, such as using a hardware wallet or setting up a vote proxy (available soon).'
     },
     {
       number: '04',
       color: '#9A4BFF',
-      title: 'Vote manually',
+      title: 'Delegate your voting power',
+      titleFirst: 'Option 1:',
+      titleSecond: 'Delegate your voting power',
+      links: [
+        {
+          linkHref: 'https://manual.makerdao.com/governance/what-is-delegation',
+          linkTitle: 'Learn more about delegation'
+        },
+        {
+          linkHref: 'https://vote.makerdao.com/delegates',
+          linkTitle: 'Choose a suitable delegate'
+        }
+      ],
+      image: '/home/understand-governance/fourth.png',
+
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+        "Vote delegation is a mechanism through which MKR holders can entrust their voting power to one or more chosen delegates. These delegates can then vote using the MKR delegated to them. Delegating your voting power is a good option if you're not willing to invest much time and gas costs in active participation. Note that delegates can never directly access the MKR tokens delegated to them."
     },
     {
       number: '05',
       color: '#E64BFF',
-      title: 'Delegate your voting power',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+      title: 'Vote manually',
+      titleFirst: 'Option 2:',
+      titleSecond: 'Vote manually',
+      links: [
+        {
+          linkHref: 'https://vote.makerdao.com/polling',
+          linkTitle: 'Start voting on active governance polls'
+        }
+      ],
+      image: '/home/understand-governance/first.png',
+
+      description: (
+        <Text>
+          If you prefer to participate in Maker governance manually instead of delegating, then you are able
+          to start participating once your voting wallet is set up. Find the latest Executive Proposal and
+          vote on it by depositing your MKR tokens to the voting contract. By doing so you contribute to
+          protecting the protocol against governance attacks. You are able to withdraw your MKR tokens
+          anytime. Next, start voting on the active governance polls and don&apos;t forget to add comments to
+          your votes.
+        </Text>
+      )
     }
   ];
 
@@ -45,8 +160,8 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
 
   return (
     <Box>
-      <Box sx={{ p: 3 }}>
-        <Flex sx={{ justifyContent: 'space-between', mb: 3 }}>
+      <Box sx={{ p: 3, height: '100%' }}>
+        <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%' }}>
           <Box>
             <Heading as="h2">How to participate in Maker Governance</Heading>
           </Box>
@@ -91,8 +206,8 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
               </Box>
             ))}
           </Box>
-          <Box sx={{ p: 3, borderRadius: 'medium', background: ' rgba(255, 255, 255, 0.5)', width: '70%' }}>
-            <Text>{active.description}</Text>
+          <Box sx={{ borderRadius: 'medium', background: ' rgba(255, 255, 255, 0.5)', width: '70%' }}>
+            <Card infoPoint={active} />
           </Box>
         </Flex>
       </Box>
