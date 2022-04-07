@@ -198,11 +198,16 @@ export default function PollOverviewCard({
                 {poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE && (
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                     {tally && tally.totalMkrParticipation > 0 && (
-                      <Box sx={{ mt: 3 }}>
-                        <ErrorBoundary componentName="Poll Results">
-                          <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
-                        </ErrorBoundary>
-                      </Box>
+                      <InternalLink
+                        href={`/polling/${poll.slug}/#vote-breakdown`}
+                        title="View poll vote breakdown"
+                      >
+                        <Box sx={{ mt: 3 }}>
+                          <ErrorBoundary componentName="Poll Results">
+                            <PollVotePluralityResultsCompact tally={tally} showTitles={false} />
+                          </ErrorBoundary>
+                        </Box>
+                      </InternalLink>
                     )}
                     {!tally && isValidating && !errorTally && (
                       <SkeletonThemed width={'265px'} height={'30px'} />
