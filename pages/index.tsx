@@ -39,6 +39,7 @@ import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 
@@ -64,6 +65,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
   const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
   const { data: hat } = useHat();
   const { data: mkrOnHat } = useMkrOnHat();
+  const { account } = useAccount();
 
   const pollCategories = getCategories(polls);
 
@@ -125,6 +127,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
                         <ExecutiveOverviewCard
                           network={network}
                           votedProposals={[]}
+                          account={account}
                           isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
                           proposal={proposals[0]}
                         />
