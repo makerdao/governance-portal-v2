@@ -29,7 +29,6 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
-import { ExecutiveProposalsLanding } from 'modules/home/components/ExecutiveProposalsLanding';
 import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
@@ -159,10 +158,6 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           <section>
             <ActivePollsLanding activePolls={activePolls} />
             <PollCategoriesLanding pollCategories={pollCategories} />
-          </section>
-
-          <section>
-            <ExecutiveProposalsLanding proposals={proposals} network={network} hat={hat} />
           </section>
 
           <section>
