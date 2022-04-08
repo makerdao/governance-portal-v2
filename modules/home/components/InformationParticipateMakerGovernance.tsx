@@ -179,20 +179,22 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
     <CirclesBackground activeColor={active.color}>
       <Box>
         <Box sx={{ p: 3, height: '100%' }}>
-          <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%' }}>
-            <Box>
+          <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%', alignItems: 'center' }}>
+            <Box sx={{ mr: 2, flex: 1 }}>
               <Heading as="h2">How to participate in Maker Governance</Heading>
             </Box>
-            <ExternalLink
-              href="https://manual.makerdao.com/"
-              title="Learn more"
-              styles={{ color: 'inherit' }}
-            >
-              <Flex sx={{ alignItems: 'center' }}>
-                <Text>Learn more</Text>
-                <Icon name="chevron_right" color="primary" size="3" ml="1" />
-              </Flex>
-            </ExternalLink>
+            <Box>
+              <ExternalLink
+                href="https://manual.makerdao.com/"
+                title="Learn more"
+                styles={{ color: 'inherit', fontSize: [2, 3] }}
+              >
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Text>Learn more</Text>
+                  <Icon name="chevron_right" color="primary" size="3" ml="1" />
+                </Flex>
+              </ExternalLink>
+            </Box>
           </Flex>
 
           <Flex
@@ -205,9 +207,9 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                 <Box
                   key={`info-point-${infoPoint.number}`}
                   sx={{
-                    mb: 3,
+                    mb: [1, 3],
                     background: 'rgba(255, 255, 255, 0.5)',
-                    p: 3,
+                    p: [2, 3],
                     borderRadius: 'medium',
                     cursor: 'pointer'
                   }}
@@ -224,7 +226,8 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                     </Text>
                     <Text
                       sx={{
-                        color: active.number === infoPoint.number ? infoPoint.color : 'text'
+                        color: active.number === infoPoint.number ? infoPoint.color : 'text',
+                        fontSize: [2, 3]
                       }}
                     >
                       {infoPoint.title}
