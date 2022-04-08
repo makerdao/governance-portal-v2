@@ -14,14 +14,14 @@ export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
-        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Heading>{title}</Heading>
           <ExternalLink href="https://daistats.com/" target="_blank">
             <ViewMore />
           </ExternalLink>
         </Flex>
 
-        <Flex sx={{ mx: 0, px: 5, py: 3, backgroundColor: 'background', borderRadius: 'small' }}>
+        <Flex sx={{ mx: 0, px: 5, pb: 3, backgroundColor: 'background', borderRadius: 'small' }}>
           <Flex m={3} sx={{ width: '100%', justifyContent: 'space-between' }}>
             {infoUnits.map(unit => (
               <Box key={unit.title} data-testid={unit.title}>

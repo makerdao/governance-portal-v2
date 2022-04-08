@@ -6,16 +6,16 @@ import 'swagger-ui-react/swagger-ui.css';
 import { Box } from 'theme-ui';
 import { createSwaggerSpec } from 'next-swagger-doc';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const router = useRouter();
   return Object.keys(router.query).length > 0 ? (
     <Box>
-      <h2>Invaid Route</h2>
-      <Link href="/api-docs">
-        <a title="See API docs">Go to the API docs.</a>
-      </Link>
+      <h2>Invalid Route</h2>
+      <InternalLink href="/api-docs" title="View API docs">
+        <a title="See API docs">Go to the API docs</a>
+      </InternalLink>
     </Box>
   ) : (
     <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>

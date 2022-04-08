@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
-import Link from 'next/link';
+import { Box, Text, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tabs from 'modules/app/components/Tabs';
 import {
@@ -29,6 +28,8 @@ import { Address } from 'modules/address/components/Address';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 type PropTypes = {
   delegate: Delegate;
@@ -140,21 +141,18 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                     )}
                   </Flex>
                   <ExternalLink
-                    title="View on etherescan"
                     href={getEtherscanLink(network, voteDelegateAddress, 'address')}
-                    target="_blank"
+                    title="View on etherescan"
                   >
                     <Text as="p" sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
-                  <Link href={`/address/${delegate.address}`} passHref>
-                    <ExternalLink>
-                      <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
-                        Deployed by: <Address address={delegate.address} />
-                      </Text>
-                    </ExternalLink>
-                  </Link>
+                  <InternalLink href={`/address/${delegate.address}`} title="View address">
+                    <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
+                      Deployed by: <Address address={delegate.address} />
+                    </Text>
+                  </InternalLink>
                 </Box>
               </Box>
             </Flex>

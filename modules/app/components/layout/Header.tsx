@@ -1,8 +1,6 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
@@ -11,6 +9,7 @@ import ColorModeToggle from './header/ColorModeToggle';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const Header = (): JSX.Element => {
   const router = useRouter();
@@ -33,15 +32,14 @@ const Header = (): JSX.Element => {
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/' }}>
+        <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
             <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
           </IconButton>
-        </Link>
+        </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
-          <Link href={{ pathname: '/polling' }} passHref>
+          <InternalLink href={'/polling'} title="View polling page">
             <NavLink
-              title="Polling"
               p={0}
               sx={{
                 display: ['none', 'block'],
@@ -51,12 +49,11 @@ const Header = (): JSX.Element => {
             >
               Polling
             </NavLink>
-          </Link>
+          </InternalLink>
 
-          <Link href={{ pathname: '/executive' }} passHref>
+          <InternalLink href={'/executive'} title="View executive page">
             <NavLink
               p={0}
-              title="Executive"
               sx={{
                 display: ['none', 'block'],
                 ml: [0, 4, 4, 5],
@@ -65,11 +62,10 @@ const Header = (): JSX.Element => {
             >
               Executive
             </NavLink>
-          </Link>
+          </InternalLink>
 
-          <Link href={{ pathname: '/delegates' }} passHref>
+          <InternalLink href={'/delegates'} title="View delegates page">
             <NavLink
-              title="Delegates"
               p={0}
               sx={{
                 display: ['none', 'block'],
@@ -79,11 +75,10 @@ const Header = (): JSX.Element => {
             >
               Delegates
             </NavLink>
-          </Link>
+          </InternalLink>
 
-          <Link href={{ pathname: '/esmodule' }} passHref>
+          <InternalLink href={'/esmodule'} title="View emergency shutdown module page">
             <NavLink
-              title="ES Module"
               p={0}
               sx={{
                 display: ['none', 'block'],
@@ -94,7 +89,7 @@ const Header = (): JSX.Element => {
             >
               ES Module
             </NavLink>
-          </Link>
+          </InternalLink>
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
@@ -165,25 +160,25 @@ const MobileMenu = ({ hide, router }) => {
           }
         }}
       >
-        <Link href={{ pathname: '/' }}>
+        <InternalLink href={'/'} title="View homepage">
           <NavLink>Home</NavLink>
-        </Link>
+        </InternalLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/polling' }}>
+        <InternalLink href={'/polling'} title="View polling page">
           <NavLink>Polling</NavLink>
-        </Link>
+        </InternalLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/executive' }}>
+        <InternalLink href={'/executive'} title="View executive page">
           <NavLink>Executive</NavLink>
-        </Link>
+        </InternalLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/delegates' }}>
+        <InternalLink href={'/delegates'} title="View delegates page">
           <NavLink>Delegates</NavLink>
-        </Link>
+        </InternalLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/esmodule' }}>
+        <InternalLink href={'/esmodule'} title="View emergency shutdown module page">
           <NavLink>ES Module</NavLink>
-        </Link>
+        </InternalLink>
       </Flex>
     </Container>
   );

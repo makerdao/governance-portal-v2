@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Text, Flex, Box, Button, Badge, Divider, Card } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { BigNumber } from 'ethers';
@@ -41,7 +40,6 @@ export default function ExecutiveOverviewCard({
 }: Props): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voting, setVoting] = useState(false);
-  const bpi = useBreakpointIndex();
   const { comments } = useExecutiveComments(proposal.address);
   const { data: spellData } = useSpellData(proposal.address);
 
@@ -80,12 +78,15 @@ export default function ExecutiveOverviewCard({
       >
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
-            <Flex sx={{ flexDirection: 'column', height: '200px' }}>
+            <Flex sx={{ flexDirection: 'column', height: '215px' }}>
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <>
                   <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
-                  <CardSummary text={proposal.proposalBlurb} styles={{ mt: 2 }} />
+                  <CardSummary
+                    text={proposal.proposalBlurb}
+                    styles={{ mt: 2, maxHeight: 72, overflow: 'hidden' }}
+                  />
                 </>
               </InternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
@@ -124,93 +125,65 @@ export default function ExecutiveOverviewCard({
                 ) : null}
               </Flex>
             </Flex>
-            {bpi === 0 && (
-              <Box sx={{ pt: 2 }}>
-                {canVote && (
-                  <Button
-                    variant="primaryOutline"
-                    sx={{ width: '100%', py: 2 }}
-                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
-                    onClick={ev => {
-                      trackButtonClick('openExecVoteModal');
-                      setVoting(true);
-                      ev.stopPropagation();
-                    }}
-                    data-testid="vote-button-exec-overview-card"
-                  >
-                    Vote
-                  </Button>
-                )}
-              </Box>
-            )}
-            {bpi > 0 && (
-              <Flex
-                sx={{
-                  mx: 4,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 7,
-                  flexDirection: 'column'
-                }}
-              >
-                {canVote && (
-                  <Button
-                    variant="primaryOutline"
-                    sx={{ width: '100%', py: 2 }}
-                    disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
-                    onClick={ev => {
-                      setVoting(true);
-                      ev.stopPropagation();
-                    }}
-                    data-testid="vote-button-exec-overview-card"
-                  >
-                    Vote
-                  </Button>
-                )}
-              </Flex>
-            )}
           </Box>
         </Flex>
 
-        {comments && comments.length > 0 && (
-          <Box sx={{ mt: 2 }}>
-            <InternalLink
-              href={`/executive/${proposal.key}?network=${network}#comments`}
-              title="View Comments"
-            >
-              <CommentCount count={comments.length} />
-            </InternalLink>
-          </Box>
-        )}
-        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ width: '50%' }}>
-            <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
-              <Button
-                variant="outline"
-                sx={{
-                  mt: canVote ? 3 : 0,
-                  borderColor: 'text',
-                  color: 'text',
-                  ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
-                }}
+        <Flex sx={{ flexDirection: 'column' }}>
+          <Box sx={{ mt: 2, mb: 1 }}>
+            {comments && comments.length > 0 && (
+              <InternalLink
+                href={`/executive/${proposal.key}?network=${network}#comments`}
+                title="View Comments"
               >
-                View Details
-              </Button>
-            </InternalLink>
-          </Box>
-          <Box sx={{ width: '50%' }}>
-            {spellData?.mkrSupport === undefined ? (
-              <Box sx={{ width: 6, m: 1 }}>
-                <Skeleton />
-              </Box>
-            ) : (
-              <StatBox
-                value={formatValue(BigNumber.from(spellData?.mkrSupport))}
-                label="MKR Supporting"
-                styles={{ textAlign: 'right' }}
-              />
+                <CommentCount count={comments.length} />
+              </InternalLink>
             )}
           </Box>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <Flex sx={{ width: '50%' }}>
+              <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
+                <Button
+                  variant="outline"
+                  sx={{
+                    borderColor: 'text',
+                    color: 'text',
+                    width: 122,
+                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                  }}
+                >
+                  View Details
+                </Button>
+              </InternalLink>
+              {canVote && (
+                <Button
+                  variant="primaryOutline"
+                  sx={{ ml: 3, width: 122 }}
+                  disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
+                  onClick={ev => {
+                    trackButtonClick('openExecVoteModal');
+                    setVoting(true);
+                    ev.stopPropagation();
+                  }}
+                  data-testid="vote-button-exec-overview-card"
+                >
+                  Vote
+                </Button>
+              )}
+            </Flex>
+            <Box sx={{ width: '50%', height: 54 }}>
+              {spellData?.mkrSupport === undefined ? (
+                <Box sx={{ mt: 3, width: 6, ml: 'auto', height: '100%' }}>
+                  <Skeleton />
+                </Box>
+              ) : (
+                <StatBox
+                  value={formatValue(BigNumber.from(spellData?.mkrSupport))}
+                  label="MKR Supporting"
+                  styles={{ textAlign: 'right' }}
+                />
+              )}
+            </Box>
+          </Flex>
         </Flex>
       </Flex>
 

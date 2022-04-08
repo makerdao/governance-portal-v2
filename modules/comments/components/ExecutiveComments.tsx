@@ -91,7 +91,10 @@ export default function ExecutiveComments({
                   sx={{ borderBottom: '1px solid', borderColor: 'secondaryMuted', py: 4 }}
                   key={comment.address.address}
                 >
-                  <CommentItem comment={comment} twitterUrl="" />
+                  <CommentItem
+                    comment={comment}
+                    //  twitterUrl=""
+                  />
                 </Box>
               ))}
             </Box>
