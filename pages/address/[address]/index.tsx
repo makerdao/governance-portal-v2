@@ -47,14 +47,12 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
             <Flex sx={{ alignItems: 'center' }}>
               <Heading variant="microHeading" mr={3}>
                 <InternalLink scroll={false} href={'/delegates'} title="View delegates page">
-                  <NavLink p={0}>
-                    <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
-                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                        <Icon name="chevron_left" size={2} mr={2} />
-                        {bpi > 0 ? 'Back to all delegates' : 'Back'}
-                      </Flex>
-                    </Button>
-                  </NavLink>
+                  <Button variant="mutedOutline" onClick={() => trackButtonClick('backToDelegatePage')}>
+                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                      <Icon name="chevron_left" size={2} mr={2} />
+                      {bpi > 0 ? 'Back to all delegates' : 'Back'}
+                    </Flex>
+                  </Button>
                 </InternalLink>
               </Heading>
             </Flex>
