@@ -1,4 +1,4 @@
-import { Card, Heading, Box, Flex, Button, Text, Spinner, Link as ExternalLink, Divider } from 'theme-ui';
+import { Card, Heading, Box, Flex, Button, Text, Spinner, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { Poll } from 'modules/polling/types';
@@ -9,7 +9,8 @@ import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
-import Link from 'next/link';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 type Props = { activePolls: Poll[]; network: SupportedNetworks; polls: Poll[] };
 
@@ -35,9 +36,9 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
               Transaction Sent. Vote{ballotCount === 1 ? '' : 's'} pending.
             </Text>
             <ExternalLink
-              target="_blank"
               href={getEtherscanLink(network, transaction.hash, 'transaction')}
-              sx={{ p: 0 }}
+              styles={{ p: 0 }}
+              title="View on etherscan"
             >
               <Text mt={3} px={4} mb={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
                 View on Etherscan
@@ -56,7 +57,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
           </Box>
           <Divider m="0" />
           <Flex p={3} sx={{ flexDirection: 'column' }}>
-            <Link href="/polling/review">
+            <InternalLink href="/polling/review" title="Review & submit your ballot">
               <Button
                 onClick={() => {
                   trackButtonClick('reviewAndSubmitBallot');
@@ -67,7 +68,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
               >
                 Review & Submit Your Ballot
               </Button>
-            </Link>
+            </InternalLink>
           </Flex>
         </Card>
       )}

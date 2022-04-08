@@ -20,7 +20,7 @@ export default function PollWinningOptionBox({
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       {tally && tally.results.length > 0 && tally.winningOptionName ? (
-        <Text as="p" variant="caps" sx={{ textAlign: 'center', px: [3, 4], mb: 1, wordBreak: 'break-word' }}>
+        <Text as="p" variant="caps" sx={{ textAlign: 'center', px: [3, 4], wordBreak: 'break-word' }}>
           {textWin}:{' '}
           <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.voteType) }}>
             {tally?.winningOptionName}

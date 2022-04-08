@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import { useContext, useEffect, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
@@ -30,6 +29,7 @@ import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -166,12 +166,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling' }}>
+              <InternalLink href={'/polling'} title="View polling page">
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
                 </Button>
-              </Link>
+              </InternalLink>
               <Stack gap={3}>
                 {!account && (
                   <Text as="p" sx={{ mt: 3 }}>

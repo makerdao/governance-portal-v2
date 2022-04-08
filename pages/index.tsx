@@ -29,30 +29,44 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
-import { ExecutiveProposalsLanding } from 'modules/home/components/ExecutiveProposalsLanding';
 import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance';
+import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { Tokens } from 'modules/web3/constants/tokens';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
   network: SupportedNetworks;
-  topDelegates: Delegate[];
+  delegates: Delegate[];
   totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegated }: Props) => {
+const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }: Props) => {
   const [mode] = useColorMode();
+  const bpi = useBreakpointIndex();
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+  const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
+  const topDelegates = delegates.slice(0, 5);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
+  const chiefAddress = useContractAddress('chief');
+  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
   const { data: hat } = useHat();
+  const { data: mkrOnHat } = useMkrOnHat();
+  const { account } = useAccount();
 
   const pollCategories = getCategories(polls);
 
@@ -76,7 +90,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
+      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
       <PrimaryLayout sx={{ maxWidth: 'page' }}>
         <Stack gap={[5, 6]}>
           <section>
@@ -114,6 +128,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
                         <ExecutiveOverviewCard
                           network={network}
                           votedProposals={[]}
+                          account={account}
                           isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
                           proposal={proposals[0]}
                         />
@@ -131,7 +146,13 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 
           <section>
             <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats />
+              <GovernanceStats
+                polls={polls}
+                delegates={delegates}
+                totalMKRDelegated={totalMKRDelegated}
+                mkrOnHat={mkrOnHat}
+                mkrInChief={mkrInChief}
+              />
             </ErrorBoundary>
           </section>
 
@@ -141,12 +162,8 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
           </section>
 
           <section>
-            <ExecutiveProposalsLanding proposals={proposals} network={network} hat={hat} />
-          </section>
-
-          <section>
             <ErrorBoundary componentName="Meet Delegates">
-              <MeetDelegates delegates={topDelegates} />
+              <MeetDelegates delegates={recognizedDelegates} bpi={bpi} />
             </ErrorBoundary>
           </section>
 
@@ -170,7 +187,7 @@ const LandingPage = ({ proposals, polls, network, topDelegates, totalMKRDelegate
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
-  topDelegates: prefetchedTopDelegates,
+  delegates: prefetchedDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
   const { network } = useActiveWeb3React();
@@ -227,12 +244,8 @@ export default function Index({
       }
       polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
       network={network}
-      topDelegates={
-        isDefaultNetwork(network)
-          ? prefetchedTopDelegates
-          : delegatesData
-          ? delegatesData.delegates.slice(0, 5)
-          : []
+      delegates={
+        isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
       }
       totalMKRDelegated={
         isDefaultNetwork(network)
@@ -256,7 +269,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
-      topDelegates: delegatesResponse.delegates.slice(0, 5),
+      delegates: delegatesResponse.delegates,
       totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
     }
   };

@@ -1,21 +1,9 @@
 import { useEffect, useState } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import Link from 'next/link';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import {
-  Card,
-  Flex,
-  Divider,
-  Heading,
-  Text,
-  NavLink,
-  Box,
-  Button,
-  Link as ExternalLink,
-  Badge
-} from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -54,6 +42,8 @@ import { fetchPollById, fetchPollBySlug } from 'modules/polling/api/fetchPollBy'
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -84,51 +74,46 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
         <div>
           <Flex mb={2} sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-            <Link href={{ pathname: '/polling' }}>
-              <NavLink p={0}>
-                <Button variant="mutedOutline">
-                  <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
-                    <Icon name="chevron_left" size="2" mr={2} />
-                    Back to all polls
-                  </Flex>
-                  <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
-                    Back to all
-                  </Flex>
-                </Button>
-              </NavLink>
-            </Link>
+            <InternalLink href={'/polling'} title="View polling page">
+              <Button variant="mutedOutline">
+                <Flex sx={{ display: ['none', 'block'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                  <Icon name="chevron_left" size="2" mr={2} />
+                  Back to all polls
+                </Flex>
+                <Flex sx={{ display: ['block', 'none'], alignItems: 'center', whiteSpace: 'nowrap' }}>
+                  Back to all
+                </Flex>
+              </Button>
+            </InternalLink>
             <Flex sx={{ justifyContent: 'space-between' }}>
               {poll.ctx?.prev?.slug && (
-                <Link
+                <InternalLink
+                  href={`/polling/${poll.ctx.prev.slug}`}
+                  title="View previous poll"
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]' }}
-                  as={{ pathname: `/polling/${poll.ctx.prev.slug}` }}
                 >
-                  <NavLink p={0}>
-                    <Button variant="mutedOutline">
-                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                        <Icon name="chevron_left" size={2} mr={2} />
-                        {bpi > 0 ? 'Previous Poll' : 'Previous'}
-                      </Flex>
-                    </Button>
-                  </NavLink>
-                </Link>
+                  <Button variant="mutedOutline">
+                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                      <Icon name="chevron_left" size={2} mr={2} />
+                      {bpi > 0 ? 'Previous Poll' : 'Previous'}
+                    </Flex>
+                  </Button>
+                </InternalLink>
               )}
               {poll.ctx?.next?.slug && (
-                <Link
+                <InternalLink
+                  href={`/polling/${poll.ctx.next.slug}`}
+                  title="View next poll"
                   scroll={false}
-                  href={{ pathname: '/polling/[poll-hash]' }}
-                  as={{ pathname: `/polling/${poll.ctx.next.slug}` }}
+                  styles={{ ml: 2 }}
                 >
-                  <NavLink p={0} ml={2}>
-                    <Button variant="mutedOutline">
-                      <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
-                        {bpi > 0 ? 'Next Poll' : 'Next'}
-                        <Icon name="chevron_right" size={2} ml={2} />
-                      </Flex>
-                    </Button>
-                  </NavLink>
-                </Link>
+                  <Button variant="mutedOutline">
+                    <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
+                      {bpi > 0 ? 'Next Poll' : 'Next'}
+                      <Icon name="chevron_right" size={2} ml={2} />
+                    </Flex>
+                  </Button>
+                </InternalLink>
               )}
             </Flex>
           </Flex>
@@ -169,7 +154,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   <Flex sx={{ justifyContent: 'space-between', mb: 2, flexDirection: ['column', 'row'] }}>
                     {poll.discussionLink && (
                       <Box>
-                        <ExternalLink title="Discussion" href={poll.discussionLink} target="_blank">
+                        <ExternalLink title="Discussion" href={poll.discussionLink}>
                           <Text sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                             Discussion
                             <Icon ml={2} name="arrowTopRight" size={2} />

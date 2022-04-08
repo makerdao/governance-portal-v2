@@ -1,8 +1,6 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
@@ -11,6 +9,7 @@ import ColorModeToggle from './header/ColorModeToggle';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const Header = (): JSX.Element => {
   const router = useRouter();
@@ -33,68 +32,64 @@ const Header = (): JSX.Element => {
       }}
     >
       <Flex sx={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Link href={{ pathname: '/' }}>
+        <InternalLink href={'/'} title="View homepage">
           <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
             <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
           </IconButton>
-        </Link>
+        </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
-          <Link href={{ pathname: '/polling' }} passHref>
-            <NavLink
-              title="Polling"
-              p={0}
-              sx={{
-                display: ['none', 'block'],
-                ml: [0, 4, 'auto'],
-                color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
-              }}
-            >
-              Polling
-            </NavLink>
-          </Link>
+          <NavLink
+            href={'/polling'}
+            title="View polling page"
+            p={0}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 'auto'],
+              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
+            }}
+          >
+            Polling
+          </NavLink>
 
-          <Link href={{ pathname: '/executive' }} passHref>
-            <NavLink
-              p={0}
-              title="Executive"
-              sx={{
-                display: ['none', 'block'],
-                ml: [0, 4, 4, 5],
-                color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
-              }}
-            >
-              Executive
-            </NavLink>
-          </Link>
+          <NavLink
+            href={'/executive'}
+            title="View executive page"
+            p={0}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
+            }}
+          >
+            Executive
+          </NavLink>
 
-          <Link href={{ pathname: '/delegates' }} passHref>
-            <NavLink
-              title="Delegates"
-              p={0}
-              sx={{
-                display: ['none', 'block'],
-                ml: [0, 4, 4, 5],
-                color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
-              }}
-            >
-              Delegates
-            </NavLink>
-          </Link>
+          <NavLink
+            href={'/delegates'}
+            title="View delegates page"
+            p={0}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
+            }}
+          >
+            Delegates
+          </NavLink>
 
-          <Link href={{ pathname: '/esmodule' }} passHref>
-            <NavLink
-              title="ES Module"
-              p={0}
-              sx={{
-                display: ['none', 'block'],
-                ml: [0, 4, 4, 5],
-                mr: [0, 'auto', 4, 5],
-                color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
-              }}
-            >
-              ES Module
-            </NavLink>
-          </Link>
+          <NavLink
+            href={'/esmodule'}
+            title="View emergency shutdown module page"
+            p={0}
+            sx={{
+              display: ['none', 'block'],
+              ml: [0, 4, 4, 5],
+              mr: [0, 'auto', 4, 5],
+              color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
+            }}
+          >
+            ES Module
+          </NavLink>
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
@@ -165,25 +160,25 @@ const MobileMenu = ({ hide, router }) => {
           }
         }}
       >
-        <Link href={{ pathname: '/' }}>
-          <NavLink>Home</NavLink>
-        </Link>
+        <NavLink href={'/'} title="View homepage">
+          Home
+        </NavLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/polling' }}>
-          <NavLink>Polling</NavLink>
-        </Link>
+        <NavLink href={'/polling'} title="View polling page">
+          Polling
+        </NavLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/executive' }}>
-          <NavLink>Executive</NavLink>
-        </Link>
+        <NavLink href={'/executive'} title="View executive page">
+          Executive
+        </NavLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/delegates' }}>
-          <NavLink>Delegates</NavLink>
-        </Link>
+        <NavLink href={'/delegates'} title="View delegates page">
+          Delegates
+        </NavLink>
         <Divider sx={{ width: '100%' }} />
-        <Link href={{ pathname: '/esmodule' }}>
-          <NavLink>ES Module</NavLink>
-        </Link>
+        <NavLink href={'/esmodule'} title="View emergency shutdown module page">
+          ES Module
+        </NavLink>
       </Flex>
     </Container>
   );

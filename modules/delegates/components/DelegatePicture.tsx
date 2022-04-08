@@ -1,5 +1,4 @@
-import { Box, Flex, Image, Text, Link as ThemeUILink } from 'theme-ui';
-import Link from 'next/link';
+import { Box, Flex, Image, Text } from 'theme-ui';
 import Davatar from '@davatar/react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
@@ -7,6 +6,7 @@ import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import Tooltip from 'modules/app/components/Tooltip';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { Address } from 'modules/address/components/Address';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 export function DelegatePicture({
   delegate,
@@ -140,36 +140,29 @@ export function DelegatePicture({
       <Box>
         <Tooltip label={delegateMetrics}>
           <Box>
-            <Link
-              href={{
-                pathname: `/address/${delegate.voteDelegateAddress}`
-              }}
-              passHref
-            >
-              <ThemeUILink title="Profile details" variant="nostyle">
-                {delegate.picture ? (
-                  <Image
-                    src={delegate.picture}
-                    key={delegate.id}
-                    sx={{
-                      objectFit: 'cover',
-                      width: '100%',
-                      borderRadius: '100%',
-                      maxHeight: width
-                    }}
+            <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="View profile details">
+              {delegate.picture ? (
+                <Image
+                  src={delegate.picture}
+                  key={delegate.id}
+                  sx={{
+                    objectFit: 'cover',
+                    width: '100%',
+                    borderRadius: '100%',
+                    maxHeight: width
+                  }}
+                />
+              ) : (
+                <Box>
+                  <Davatar
+                    size={width}
+                    address={delegate.address}
+                    generatedAvatarType="jazzicon"
+                    provider={library}
                   />
-                ) : (
-                  <Box>
-                    <Davatar
-                      size={width}
-                      address={delegate.address}
-                      generatedAvatarType="jazzicon"
-                      provider={library}
-                    />
-                  </Box>
-                )}
-              </ThemeUILink>
-            </Link>
+                </Box>
+              )}
+            </InternalLink>
 
             {delegate.status === DelegateStatusEnum.recognized && (
               <Icon

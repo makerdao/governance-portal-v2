@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Link as ExternalLink } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import Link from 'next/link';
-
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -24,6 +21,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -346,16 +344,13 @@ const AccountSelect = (): React.ReactElement => {
                       <VotingWeight />
                     </ErrorBoundary>
                     <Box>
-                      <Link
-                        href={{
-                          pathname: '/account'
-                        }}
-                        passHref
+                      <InternalLink
+                        href={'/account'}
+                        title="View account page"
+                        styles={{ color: 'accentBlue', mt: 2 }}
                       >
-                        <ExternalLink title="See account" variant="nostyle" sx={{ color: 'accentBlue' }}>
-                          <Text>See my account page</Text>
-                        </ExternalLink>
-                      </Link>
+                        <Text>View my account page</Text>
+                      </InternalLink>
                     </Box>
                   </Box>
                   {txs?.length > 0 && <TransactionBox txs={txs} />}
