@@ -42,6 +42,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
+import Participation from 'modules/home/components/Participation';
 
 type Props = {
   proposals: Proposal[];
@@ -168,6 +169,10 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
 
           <section>
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+          </section>
+
+          <section>
+            <Participation />
           </section>
 
           <section>
