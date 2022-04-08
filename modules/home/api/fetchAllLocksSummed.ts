@@ -1,30 +1,27 @@
-import { gql } from 'graphql-request';
+import BigNumber from 'bignumber.js';
+import { format } from 'date-fns';
 import { gqlRequest } from 'modules/gql/gqlRequest';
+import { allLocksSummed } from 'modules/gql/queries/allLocksSummed';
 
-// 1633742399 six months ago
-// 1617931199 one year ago
-export const allLocksSummed = gql`
-  {
-    allLocksSummed(unixtimeStart: 1617931199, unixtimeEnd: 1649435010) {
-      nodes {
-        fromAddress
-        immediateCaller
-        lockAmount
-        blockNumber
-        blockTimestamp
-        lockTotal
-        hash
-      }
-    }
-  }
-`;
-
-export default async function fetchAllLocksSummed() {
+export default async function fetchAllLocksSummed(unixtimeStart, unixtimeEnd) {
   const data = await gqlRequest({
     chainId: 1,
     query: allLocksSummed,
-    uri: 'https://9cc9-24-8-30-196.ngrok.io/v1'
+    variables: {
+      unixtimeStart,
+      unixtimeEnd
+    }
   });
 
-  return data;
+  const locks = data?.allLocksSummed?.nodes.map((x, i) => {
+    x.unixDate = new Date(x.blockTimestamp).getTime() / 1000;
+    x.total = new BigNumber(x.lockTotal).toNumber();
+    x.month = format(new Date(x.blockTimestamp), 'M');
+    return x;
+    // x['MKR'] = new BigNumber(x.lockTotal).toNumber();
+  });
+
+  console.log('locks', locks[0]);
+
+  return locks || [];
 }
