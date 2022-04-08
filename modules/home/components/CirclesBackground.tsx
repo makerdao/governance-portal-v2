@@ -8,22 +8,29 @@ const spin = keyframes`
   }
   100% { transform: rotate(360deg);  }
 `;
-function Circle({ sxs }: { sxs: ThemeUIStyleObject }): React.ReactElement {
+function Circle({ sxs, color }: { sxs: ThemeUIStyleObject; color: string }): React.ReactElement {
   console.log(sxs);
   return (
     <Box
       sx={{
-        background: 'linear-gradient(180deg, #b3e1d5 0%, #f3efbd 100%);',
+        background: `linear-gradient(180deg, ${color} 0%, #f3efbd 100%);`,
         borderRadius: '100%',
         filter: 'blur(2px)',
         transformOrigin: '80% 20%',
         animation: `${spin} 10s cubic-bezier(.8, 0, .2, 1) infinite alternate`,
+        transition: 'all 300ms linear',
         ...sxs
       }}
     />
   );
 }
-export default function CirclesBackground({ children }: { children: React.ReactNode }): React.ReactElement {
+export default function CirclesBackground({
+  children,
+  activeColor
+}: {
+  children: React.ReactNode;
+  activeColor: string;
+}): React.ReactElement {
   return (
     <Box
       sx={{
@@ -31,6 +38,7 @@ export default function CirclesBackground({ children }: { children: React.ReactN
       }}
     >
       <Circle
+        color={activeColor}
         sxs={{
           width: '100px',
           height: '100px',
@@ -42,6 +50,7 @@ export default function CirclesBackground({ children }: { children: React.ReactN
       />
 
       <Circle
+        color={activeColor}
         sxs={{
           width: '300px',
           height: '300px',
@@ -57,6 +66,7 @@ export default function CirclesBackground({ children }: { children: React.ReactN
       />
 
       <Circle
+        color={activeColor}
         sxs={{
           width: '300px',
           height: '300px',
@@ -71,6 +81,7 @@ export default function CirclesBackground({ children }: { children: React.ReactN
       />
 
       <Circle
+        color={activeColor}
         sxs={{
           width: '100px',
           height: '100px',

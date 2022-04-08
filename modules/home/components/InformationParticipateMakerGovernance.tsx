@@ -2,6 +2,8 @@ import { Box, Flex, Heading, Text, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useState } from 'react';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import CirclesBackground from './CirclesBackground';
 
 type InfoPoint = {
   number: string;
@@ -19,8 +21,8 @@ type InfoPoint = {
 
 function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
   return (
-    <Box>
-      <Flex>
+    <Box sx={{ height: '100%' }}>
+      <Flex sx={{ height: '100%' }}>
         <Box sx={{ p: 3 }}>
           <Heading as="h1" sx={{ fontSize: '32px' }}>
             <Text sx={{ color: infoPoint.color }}>{infoPoint.number}</Text>
@@ -46,16 +48,24 @@ function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
               <Text sx={{ color: infoPoint.color, ml: 1 }}>{infoPoint.titleSecond}</Text>
             </Heading>
 
-            <Box sx={{ width: '60%' }}>{infoPoint.description}</Box>
+            <Box sx={{ width: '50%' }}>{infoPoint.description}</Box>
           </Box>
-          {infoPoint.links.map(link => (
-            <ExternalLink key={link.linkHref} href={link.linkHref} title={link.linkTitle}>
-              <Flex>
-                <Text>{link.linkTitle}</Text>
-                <Icon name="chevron_right" color="primary" size="3" ml="1" />
-              </Flex>
-            </ExternalLink>
-          ))}
+          <Box>
+            {infoPoint.links.map(link => (
+              <Box mb={2} key={link.linkHref}>
+                <ExternalLink
+                  href={link.linkHref}
+                  title={link.linkTitle}
+                  styles={{ color: 'inherit', fontWeight: 'semiBold' }}
+                >
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Text>{link.linkTitle}</Text>
+                    <Icon ml={2} name="arrowTopRight" size={3} sx={{ color: infoPoint.color }} />
+                  </Flex>
+                </ExternalLink>
+              </Box>
+            ))}
+          </Box>
         </Flex>
       </Flex>
     </Box>
@@ -146,11 +156,17 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
       description: (
         <Text>
           If you prefer to participate in Maker governance manually instead of delegating, then you are able
-          to start participating once your voting wallet is set up. Find the latest Executive Proposal and
-          vote on it by depositing your MKR tokens to the voting contract. By doing so you contribute to
+          to start participating once your voting wallet is set up.{' '}
+          <InternalLink href="/executive" title="Executives" styles={{ fontWeight: 'semiBold' }}>
+            <Text>Find the latest Executive Proposal</Text>
+          </InternalLink>{' '}
+          and vote on it by depositing your MKR tokens to the voting contract. By doing so you contribute to
           protecting the protocol against governance attacks. You are able to withdraw your MKR tokens
-          anytime. Next, start voting on the active governance polls and don&apos;t forget to add comments to
-          your votes.
+          anytime. Next,{' '}
+          <InternalLink href="/polling" title="Polls" styles={{ fontWeight: 'semiBold' }}>
+            <Text>start voting on the active governance polls</Text>
+          </InternalLink>{' '}
+          and don&apos;t forget to add comments to your votes.
         </Text>
       )
     }
@@ -158,59 +174,92 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
 
   const [active, setActive] = useState(infoPoints[0]);
 
+  const indexCard = infoPoints.findIndex(i => i.number === active.number);
   return (
-    <Box>
-      <Box sx={{ p: 3, height: '100%' }}>
-        <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%' }}>
-          <Box>
-            <Heading as="h2">How to participate in Maker Governance</Heading>
-          </Box>
-
-          <Flex sx={{ alignItems: 'center' }}>
-            <Text>Learn more</Text>
-            <Icon name="chevron_right" color="primary" size="3" ml="1" />
+    <CirclesBackground activeColor={active.color}>
+      <Box>
+        <Box sx={{ p: 3, height: '100%' }}>
+          <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%' }}>
+            <Box>
+              <Heading as="h2">How to participate in Maker Governance</Heading>
+            </Box>
+            <ExternalLink
+              href="https://manual.makerdao.com/"
+              title="Learn more"
+              styles={{ color: 'inherit' }}
+            >
+              <Flex sx={{ alignItems: 'center' }}>
+                <Text>Learn more</Text>
+                <Icon name="chevron_right" color="primary" size="3" ml="1" />
+              </Flex>
+            </ExternalLink>
           </Flex>
-        </Flex>
 
-        <Flex>
-          <Box sx={{ mr: 3, width: '30%' }}>
-            {infoPoints.map(infoPoint => (
+          <Flex
+            sx={{
+              flexWrap: ['wrap', 'nowrap']
+            }}
+          >
+            <Box sx={{ mr: 3, width: ['100%', '30%'] }}>
+              {infoPoints.map(infoPoint => (
+                <Box
+                  key={`info-point-${infoPoint.number}`}
+                  sx={{
+                    mb: 3,
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    p: 3,
+                    borderRadius: 'medium',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => setActive(infoPoint)}
+                >
+                  <Box>
+                    <Text
+                      sx={{
+                        color: infoPoint.color,
+                        mr: 1
+                      }}
+                    >
+                      {infoPoint.number}
+                    </Text>
+                    <Text
+                      sx={{
+                        color: active.number === infoPoint.number ? infoPoint.color : 'text'
+                      }}
+                    >
+                      {infoPoint.title}
+                    </Text>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+            <Box
+              sx={{
+                borderRadius: 'medium',
+                background: ' rgba(255, 255, 255, 0.5)',
+                width: ['100%', '70%'],
+                backgroundImage: 'url(/home/understand-governance/00_visual_how_to_participate.png);',
+                backgroundPosition: `100% -${indexCard * 430}px`,
+                backgroundSize: '340px',
+                backgroundRepeat: 'no-repeat',
+                transition: 'all 300ms ease-in-out',
+                height: '430px',
+                overflow: 'hidden'
+              }}
+            >
               <Box
-                key={`info-point-${infoPoint.number}`}
-                sx={{
-                  mb: 3,
-                  background: 'rgba(255, 255, 255, 0.5)',
-                  p: 3,
-                  borderRadius: 'medium',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setActive(infoPoint)}
+                sx={{ transform: `translateY(-${indexCard * 430}px)`, transition: 'all 300ms ease-in-out' }}
               >
-                <Flex>
-                  <Text
-                    sx={{
-                      color: infoPoint.color,
-                      mr: 1
-                    }}
-                  >
-                    {infoPoint.number}
-                  </Text>
-                  <Text
-                    sx={{
-                      color: active.number === infoPoint.number ? infoPoint.color : 'text'
-                    }}
-                  >
-                    {infoPoint.title}
-                  </Text>
-                </Flex>
+                {infoPoints.map(infoPoint => (
+                  <Box key={`card-${infoPoint.number}`} sx={{ height: '430px' }}>
+                    <Card infoPoint={infoPoint} />
+                  </Box>
+                ))}
               </Box>
-            ))}
-          </Box>
-          <Box sx={{ borderRadius: 'medium', background: ' rgba(255, 255, 255, 0.5)', width: '70%' }}>
-            <Card infoPoint={active} />
-          </Box>
-        </Flex>
+            </Box>
+          </Flex>
+        </Box>
       </Box>
-    </Box>
+    </CirclesBackground>
   );
 }
