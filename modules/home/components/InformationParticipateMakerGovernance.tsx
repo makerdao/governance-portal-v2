@@ -21,9 +21,9 @@ type InfoPoint = {
 
 function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
   return (
-    <Box sx={{ height: '100%' }}>
+    <Box sx={{ height: '100%', background: ['#ffffffb0', '#ffffffb0', 'transparent'] }}>
       <Flex sx={{ height: '100%' }}>
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3, display: ['none', 'block'] }}>
           <Heading as="h1" sx={{ fontSize: '32px' }}>
             <Text sx={{ color: infoPoint.color }}>{infoPoint.number}</Text>
           </Heading>
@@ -48,7 +48,7 @@ function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
               <Text sx={{ color: infoPoint.color, ml: 1 }}>{infoPoint.titleSecond}</Text>
             </Heading>
 
-            <Box sx={{ width: '50%' }}>{infoPoint.description}</Box>
+            <Box sx={{ width: ['100%', '100%', '50%'] }}>{infoPoint.description}</Box>
           </Box>
           <Box>
             {infoPoint.links.map(link => (
