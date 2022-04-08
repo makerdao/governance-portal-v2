@@ -1,79 +1,5 @@
 import { Flex, Heading, Card, Grid, Text, Image } from 'theme-ui';
-
-const resourceList = [
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  },
-  {
-    title: 'Monthly Governance Cycle',
-    tag: 'Governance Cycle',
-    bg: '/assets/gov-cycle-bg.png',
-    logo: 'resourcesGovCycle',
-    summary:
-      'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
-  }
-];
+import { resources } from 'modules/home/helpers/resources';
 
 export const ResourcesLanding = (): JSX.Element => {
   return (
@@ -84,7 +10,7 @@ export const ResourcesLanding = (): JSX.Element => {
       </Flex>
       <Flex sx={{ justifyContent: 'center' }}>
         <Grid gap={4} columns={[1, 1, 2, 3]}>
-          {resourceList.map(resource => (
+          {resources.map(resource => (
             <Card key={resource.title} sx={{ width: '405px', height: '300px' }}>
               <Text>{resource.title}</Text>
               <Image
