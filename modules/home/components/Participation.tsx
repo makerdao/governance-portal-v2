@@ -1,58 +1,64 @@
-import BigNumber from 'bignumber.js';
-import { Box, Text, Flex, Button, Heading, Container, Divider, Card } from 'theme-ui';
+import { Box, Text, Flex, Button, Heading, Container, Divider, Card, useThemeUI, get } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';
 import { Tooltip, XAxis, YAxis, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
 import useSWR from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { format } from 'date-fns';
+import { format, sub } from 'date-fns';
 import { commify } from 'ethers/lib/utils';
 
+const getPastMonths = (numMonths: number): string[] => {
+  const pastMonths: string[] = [];
+  const now = new Date();
+
+  while (numMonths > 0) {
+    pastMonths.push(format(sub(now, { months: numMonths }), 'M'));
+    numMonths--;
+  }
+  return pastMonths;
+};
+
 const Chart = ({ data }) => {
-  const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const newRange = months.map(m => {
-    const myMonth = data.filter(({ month }) => parseInt(month) === m);
+  const { theme } = useThemeUI();
+
+  const months = getPastMonths(6); // TODO use unix start time from request
+
+  const range = months.map(m => {
+    const myMonth = data.filter(({ month }) => month === m);
     const lastDay = myMonth[myMonth.length - 1];
-    return { total: lastDay.total, unixDate: m, monthName: format(new Date(lastDay.blockTimestamp), 'LLL') };
+
+    return {
+      total: lastDay.total,
+      blockTimestamp: lastDay.blockTimestamp,
+      unixDate: lastDay.unixDate,
+      lockTotal: lastDay.lockTotal
+    };
   });
 
-  function renderTooltip(item) {
-    const monthMKR = newRange ? newRange.find(i => i.unixDate === item.label) : null;
-
-    if (!data) {
-      return null;
-    }
-
+  const renderTooltip = item => {
+    const monthMKR = range ? range.find(i => i.unixDate === item.label) : null;
     return (
       <Box>
-        {monthMKR && <Text as="p">{monthMKR.monthName}</Text>}
-        <Text as="p">MKR Weight: {new BigNumber(monthMKR?.total).toFormat(2)}</Text>
+        {monthMKR && <Text as="p">{format(new Date(monthMKR.blockTimestamp), 'LLL yyyy')}</Text>}
+        {monthMKR && <Text as="p">{commify(parseInt(monthMKR.lockTotal).toFixed(0))} MKR</Text>}
+        {monthMKR && <Text as="p">{monthMKR.unixDate} MKR</Text>}
       </Box>
     );
-  }
-
-  const formatXAxis = tickItem => {
-    // Sometimes the tickItem is "auto", ignore this case
-    if (tickItem === 'auto') {
-      return 'auto';
-    }
-
-    const d = newRange.find(({ unixDate }) => unixDate === tickItem);
-    return d?.monthName || '';
   };
 
-  const formatYAxis = tickItem => {
-    return commify(tickItem.toFixed(0));
+  const formatXAxis = tickDate => {
+    const tickMonth = range.find(({ unixDate }) => unixDate === tickDate);
+    return tickMonth ? format(new Date(tickMonth.blockTimestamp), 'LLL') : 'd';
   };
 
-  const formatLegend = (value, entry, index) => {
-    return 'MKR Locked in Chief';
-  };
+  const formatYAxis = tickMkr => tickMkr.toFixed(0);
+
+  const formatLegend = () => <span sx={{ color: 'onSurface' }}>MKR Locked in Chief</span>;
 
   return (
     <ResponsiveContainer width={'100%'} height={400}>
-      <LineChart data={newRange || []}>
+      <LineChart data={range || []}>
         <defs>
           <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#1AAB9B" stopOpacity={0.8} />
@@ -61,27 +67,30 @@ const Chart = ({ data }) => {
         </defs>
 
         <YAxis
-          // dataKey="total"
-          interval="preserveStartEnd"
+          interval="preserveEnd"
           axisLine={false}
-          tickLine={true}
+          padding={{ top: 20, bottom: 20 }}
+          stroke={'#ADADAD'}
+          tickLine={false}
           tickFormatter={formatYAxis}
-          tickMargin={-10}
           label={{
-            fill: '#708390',
-            position: 'bottomLeft',
+            fill: get(theme, 'colors.onSurface'),
+            position: 'bottom',
             value: 'MKR',
-            viewBox: { height: 10, width: 10, x: 20, y: 300 }
+            offset: 9
           }}
           domain={['dataMin', 'dataMax']}
         />
 
         <XAxis
           dataKey="unixDate"
+          allowDecimals={true}
+          interval="preserveEnd"
+          tickCount={0}
+          tickLine={false}
           stroke={'#ADADAD'}
+          padding={{ left: 20, right: 20 }}
           color="#ADADAD"
-          tick={true}
-          tickCount={12}
           tickFormatter={formatXAxis}
           type="number"
           domain={['dataMin', 'dataMax']}
@@ -89,21 +98,19 @@ const Chart = ({ data }) => {
 
         <Tooltip content={renderTooltip} />
 
-        <Line type="monotone" dataKey="total" stroke="#A5A6A8" />
-        <Legend formatter={formatLegend} />
+        <Line type="monotone" dataKey="total" stroke={get(theme, 'colors.primary')} strokeWidth={1.5} />
+
+        <Legend formatter={formatLegend} iconType="plainline" />
       </LineChart>
     </ResponsiveContainer>
   );
 };
 
 export default function Participation(): React.ReactElement {
-  const unixtimeStart = 1617931199;
-  const unixtimeEnd = 1649435010;
+  // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
+  const unixtimeStart = new Date(format(sub(new Date(), { months: 6 }), 'MM-dd-yyyy')).getTime() / 1000;
 
-  const { data: locks } = useSWR(
-    `/api/executive/all-locks?unixtimeStart=${unixtimeStart}&unixtimeEnd=${unixtimeEnd}`,
-    fetchJson
-  );
+  const { data: locks } = useSWR(`/api/executive/all-locks?unixtimeStart=${unixtimeStart}`, fetchJson);
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>

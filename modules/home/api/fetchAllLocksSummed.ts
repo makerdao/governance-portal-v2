@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allLocksSummed } from 'modules/gql/queries/allLocksSummed';
 
-export default async function fetchAllLocksSummed(unixtimeStart, unixtimeEnd) {
+export default async function fetchAllLocksSummed(unixtimeStart: number, unixtimeEnd: number) {
   const data = await gqlRequest({
     chainId: 1,
     query: allLocksSummed,
@@ -13,9 +13,10 @@ export default async function fetchAllLocksSummed(unixtimeStart, unixtimeEnd) {
     }
   });
 
+  // TODO move this logic to a formatting function in the component
   const locks = data?.allLocksSummed?.nodes.map((x, i) => {
-    x.unixDate = new Date(x.blockTimestamp).getTime() / 1000;
-    x.total = new BigNumber(x.lockTotal).toNumber();
+    x.unixDate = Math.floor(new Date(x.blockTimestamp).getTime() / 1000);
+    x.total = new BigNumber(x.lockTotal).div(1000).toFixed(0);
     x.month = format(new Date(x.blockTimestamp), 'M');
     return x;
     // x['MKR'] = new BigNumber(x.lockTotal).toNumber();

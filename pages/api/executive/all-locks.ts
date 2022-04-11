@@ -6,10 +6,13 @@ import invariant from 'tiny-invariant';
 export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const unixtimeStart = req.query.unixtimeStart as string;
   const unixtimeEnd = req.query.unixtimeEnd as string;
-  invariant(unixtimeStart, 'unixtimeStart is required');
-  invariant(unixtimeEnd, 'unixtimeEnd is required');
 
-  const data = await fetchAllLocksSummed(parseInt(unixtimeStart), parseInt(unixtimeEnd));
+  invariant(unixtimeStart, 'unixtimeStart is required');
+
+  const data = await fetchAllLocksSummed(
+    parseInt(unixtimeStart),
+    unixtimeEnd ? parseInt(unixtimeEnd) : Math.floor(Date.now() / 1000)
+  );
 
   if (!data) {
     return res.status(404).json({
