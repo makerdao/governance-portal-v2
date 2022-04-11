@@ -9,7 +9,6 @@ const spin = keyframes`
   100% { transform: rotate(360deg);  }
 `;
 function Circle({ sxs, color }: { sxs: ThemeUIStyleObject; color: string }): React.ReactElement {
-  console.log(sxs);
   return (
     <Box
       sx={{

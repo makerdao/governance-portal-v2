@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Box, Flex, Heading, Card, Text, Image } from 'theme-ui';
 import { resources, ResourceColor, ResourceCategory } from 'modules/home/helpers/resources';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { fadeIn } from 'lib/keyframes';
 
 const CategoryButton = ({ label, color, active, onClick }) => {
   return (
@@ -27,14 +28,16 @@ export const ResourcesLanding = (): JSX.Element => {
   }
 
   return (
-    <Flex sx={{ flexDirection: 'column' }}>
+    <Flex sx={{ flexDirection: 'column', mt: 4 }}>
       <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Heading>Resources</Heading>
         <Flex
           sx={{
             background: 'rgba(255, 255, 255, 0.1)',
             backgroundBlendMode: 'multiply',
-            border: '1.35px solid rgba(255, 255, 255, 0.2)'
+            border: '1.35px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: 'inset 0px -3px 22px #FFFFFF',
+            borderRadius: 'round'
           }}
         >
           <CategoryButton
@@ -75,7 +78,10 @@ export const ResourcesLanding = (): JSX.Element => {
             .filter(resource => category === ResourceCategory.ALL_RESOURCES || category === resource.category)
             .map(resource => (
               <ExternalLink href={resource.url} title={resource.title} key={resource.title}>
-                <Card key={resource.title} sx={{ width: '380px', height: '300px', mb: 4 }}>
+                <Card
+                  key={resource.title}
+                  sx={{ width: '380px', height: '300px', mb: 4, animation: `${fadeIn} 750ms ease` }}
+                >
                   <Box sx={{ position: 'relative' }}>
                     <Box sx={{ position: 'absolute', width: '100%' }}>
                       <Flex sx={{ width: '100%', justifyContent: 'space-between', p: 3 }}>

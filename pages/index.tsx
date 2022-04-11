@@ -173,16 +173,21 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
 
-          <InformationParticipateMakerGovernance />
-
-          <section>
+          <section sx={{ position: 'relative', overflowY: 'clip' }}>
+            <Box
+              sx={{
+                background: '#F7F8F9',
+                width: '200vw',
+                zIndex: -1,
+                ml: '-100vw',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '1620px'
+              }}
+            />
+            <InformationParticipateMakerGovernance />
             <ResourcesLanding />
-          </section>
-
-          <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
-            </ErrorBoundary>
           </section>
         </Stack>
       </PrimaryLayout>

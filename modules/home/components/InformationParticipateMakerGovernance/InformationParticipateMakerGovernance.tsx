@@ -63,7 +63,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
   const indexCard = infoPoints.findIndex(i => i.number === active.number);
   return (
     <CirclesBackground activeColor={active.color}>
-      <Box>
+      <Box sx={{ mt: 3 }}>
         <Box sx={{ p: 3, height: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between', mb: 3, height: '100%', alignItems: 'center' }}>
             <Box sx={{ mr: 2, flex: 1 }}>
