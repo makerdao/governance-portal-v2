@@ -35,6 +35,7 @@ import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
+import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
@@ -171,6 +172,8 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           <section>
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
+
+          <InformationParticipateMakerGovernance />
 
           <section>
             <ResourcesLanding />
