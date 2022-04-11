@@ -43,7 +43,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.GOVERNANCE,
     bg: ResourceBackground.GOVERNANCE,
     color: ResourceColor.GOVERNANCE,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_2.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -63,7 +63,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.GOVERNANCE,
     bg: ResourceBackground.GOVERNANCE,
     color: ResourceColor.GOVERNANCE,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_3.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -103,7 +103,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.PRODUCTS_AND_TOOLS,
     bg: ResourceBackground.PRODUCTS_AND_TOOLS,
     color: ResourceColor.PRODUCTS_AND_TOOLS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_4.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -113,7 +113,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.PRODUCTS_AND_TOOLS,
     bg: ResourceBackground.PRODUCTS_AND_TOOLS,
     color: ResourceColor.PRODUCTS_AND_TOOLS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_5.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -133,7 +133,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.PRODUCTS_AND_TOOLS,
     bg: ResourceBackground.PRODUCTS_AND_TOOLS,
     color: ResourceColor.PRODUCTS_AND_TOOLS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_6.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -163,7 +163,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_7.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -173,7 +173,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_8.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   },
@@ -213,7 +213,7 @@ export const resources: LandingResource[] = [
     tag: ResourceCategory.DEVELOPERS,
     bg: ResourceBackground.DEVELOPERS,
     color: ResourceColor.DEVELOPERS,
-    logo: '/assets/resource_icon_1.svg',
+    logo: '/assets/resource_icon_9.svg',
     summary:
       'The Monthly Governance Cycle is defined in MIP51 and provides a predictable monthly cadence by which governance decisions are made.'
   }
