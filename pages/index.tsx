@@ -29,7 +29,7 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
-import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
+import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
@@ -42,6 +42,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
+import allPolls from './api/polling/all-polls';
 
 type Props = {
   proposals: Proposal[];
@@ -156,7 +157,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           </section>
 
           <section>
-            <ActivePollsLanding activePolls={activePolls} />
+            <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
             <PollCategoriesLanding pollCategories={pollCategories} />
           </section>
 
