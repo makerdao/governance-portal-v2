@@ -6,7 +6,7 @@ import { voteAddressMkrWeightsAtTime } from 'modules/gql/queries/voteAddressMkrW
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { parseRawOptinIdRankedChoiceOption } from '../helpers/parseRawOptionIdRankedChoiceOption';
 
-export async function fetchVotesByAddresForPoll(
+export async function fetchVotesByAddressForPoll(
   pollId: number,
   endUnix: number,
   network: SupportedNetworks

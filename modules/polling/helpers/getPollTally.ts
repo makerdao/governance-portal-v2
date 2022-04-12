@@ -1,7 +1,7 @@
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { backoffRetry } from 'lib/utils';
 import { fetchPollTally } from '../api/fetchPollTally';
-import { fetchVotesByAddresForPoll } from '../api/fetchVotesByAddress';
+import { fetchVotesByAddressForPoll } from '../api/fetchVotesByAddress';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { Poll, PollTally, PollVoteType, RawPollTally, RawPollTallyRankedChoice } from '../types';
 import { parseRawPollTally } from './parseRawTally';
@@ -17,7 +17,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   );
 
   const endUnix = new Date(poll.endDate).getTime() / 1000;
-  const votesByAddress = await fetchVotesByAddresForPoll(poll.pollId, endUnix, network);
+  const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
 
   const totalMkrParticipation = tally.totalMkrParticipation;
   const winner: string = tally.winner || '';

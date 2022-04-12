@@ -1,9 +1,10 @@
 import { getPollTally } from '../getPollTally';
 import { fetchPollTally } from '../../api/fetchPollTally';
-import { fetchVotesByAddresForPoll } from '../../api/fetchVotesByAddress';
+import { fetchVotesByAddressForPoll } from '../../api/fetchVotesByAddress';
 import { PluralityResult, Poll } from '../../types';
 import BigNumber from 'bignumber.js';
 import * as PRT from '../parseRawTally';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 jest.mock('../../api/fetchPollTally');
 jest.mock('../../api/fetchVotesByAddress');
@@ -57,11 +58,11 @@ describe('getPollTally', () => {
         options: {}
       })
     );
-    (fetchVotesByAddresForPoll as jest.Mock).mockReturnValue(Promise.resolve([]));
+    (fetchVotesByAddressForPoll as jest.Mock).mockReturnValue(Promise.resolve([]));
     jest.spyOn(PRT, 'parseRawPollTally');
 
     const poll = mockPoll;
-    const tally = await getPollTally(poll);
+    const tally = await getPollTally(poll, SupportedNetworks.GOERLIFORK);
     const results = tally.results as PluralityResult[];
 
     // When no options returned with tally, we manually add them in 'getPollTally'
