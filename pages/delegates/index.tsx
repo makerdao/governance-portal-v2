@@ -166,7 +166,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                     title="My account"
                     // TODO: onClick={() => trackButtonClick('viewAccount')}
                   >
-                    <Text>View Account Page</Text>
+                    <Text color="accentBlue">View Account Page</Text>
                   </InternalLink>
                 </Box>
               </Card>
