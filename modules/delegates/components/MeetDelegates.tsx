@@ -137,6 +137,9 @@ export default function MeetYourDelegates({
           width: '100vw',
           ml: theme => [
             `calc(${get(theme, 'sizes.3')}px * -1)`,
+            `calc(${get(theme, 'sizes.4')}px * -1)`,
+            `calc(${get(theme, 'sizes.4')}px * -1)`,
+            `calc(${get(theme, 'sizes.4')}px * -1)`,
             `calc( calc(${get(theme, 'sizes.page')}px / 2) - 100vw / 2)`
           ],
           gap: 2
@@ -145,11 +148,11 @@ export default function MeetYourDelegates({
         <Flex
           sx={{
             flexDirection: 'column',
-            px: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+            px: theme => [3, 4, 4, 4, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
             gap: 2
           }}
         >
-          <Flex>
+          <Flex sx={{ maxWidth: 'page' }}>
             <Heading>Meet the Delegates</Heading>
             <Flex sx={{ flex: 1, justifyContent: 'flex-end' }}>
               <InternalLink href="/delegates" title="View All Delegates">
@@ -157,7 +160,7 @@ export default function MeetYourDelegates({
               </InternalLink>
             </Flex>
           </Flex>
-          <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '50%'] }}>
+          <Text variant="smallText" sx={{ color: 'textMuted', width: ['100%', '100%', '50%'] }}>
             Vote delegation allows for MKR holders to delegate their voting power to delegates, which
             increases the effectiveness and efficiency of the governance process.
           </Text>
@@ -168,7 +171,7 @@ export default function MeetYourDelegates({
             pb: 5,
             pt: 3,
             overflowX: 'auto',
-            pl: theme => [3, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
+            pl: theme => [3, 4, 4, 4, `calc( calc( 100vw - ${get(theme, 'sizes.page')}px) / 2)`],
             '::-webkit-scrollbar': {
               display: 'none'
             }

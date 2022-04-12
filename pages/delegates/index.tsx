@@ -16,7 +16,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
-import { DelegateCard } from 'modules/delegates/components';
+import { DelegateOverviewCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
@@ -112,7 +112,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {recognizedDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -126,7 +126,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {shadowDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -140,7 +140,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {expiredDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -166,7 +166,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                     title="My account"
                     // TODO: onClick={() => trackButtonClick('viewAccount')}
                   >
-                    <Text>View Account Page</Text>
+                    <Text color="accentBlue">View Account Page</Text>
                   </InternalLink>
                 </Box>
               </Card>

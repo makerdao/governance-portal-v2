@@ -7,6 +7,7 @@ type Props = {
   title: string;
   styles?: ThemeUIStyleObject;
   queryParams?: Record<string, string>;
+  hash?: string;
   scroll?: boolean;
 };
 
@@ -16,9 +17,10 @@ export const InternalLink = ({
   href,
   styles,
   queryParams,
+  hash,
   scroll = true
 }: Props): JSX.Element => (
-  <Link href={{ pathname: href, query: queryParams }} scroll={scroll} passHref>
+  <Link href={{ pathname: href, query: queryParams, hash }} scroll={scroll} passHref>
     <ThemeUILink variant="nostyle" title={title} sx={{ ...styles }}>
       {children}
     </ThemeUILink>

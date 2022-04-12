@@ -29,11 +29,12 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
-import { ActivePollsLanding } from 'modules/home/components/ActivePollsLanding';
+import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
+import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
@@ -43,6 +44,7 @@ import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import Participation from 'modules/home/components/Participation';
+import allPolls from './api/polling/all-polls';
 
 type Props = {
   proposals: Proposal[];
@@ -157,7 +159,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           </section>
 
           <section>
-            <ActivePollsLanding activePolls={activePolls} />
+            <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
             <PollCategoriesLanding pollCategories={pollCategories} />
           </section>
 
@@ -170,6 +172,8 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           <section>
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
+
+          <InformationParticipateMakerGovernance />
 
           <section>
             <Participation />

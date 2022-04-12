@@ -4,7 +4,7 @@ export * from './modals/DelegateModal';
 export * from './modals/InputDelegateMkr';
 export * from './modals/TxDisplay';
 export * from './modals/UndelegateModal';
-export * from './DelegateCard';
+export * from './DelegateOverviewCard';
 export * from './DelegateContractExpiration';
 export * from './DelegateDetail';
 export * from './DelegatePicture';
