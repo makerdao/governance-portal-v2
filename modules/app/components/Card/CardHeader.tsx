@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const CardHeader = ({ text, styles }: Props): JSX.Element => (
-  <Text as="h5" variant="caps" sx={{ color: 'mutedAlt', ...styles }}>
+  <Text as="h5" variant="caps" sx={{ color: 'textSecondary', ...styles }}>
     {text}
   </Text>
 );
