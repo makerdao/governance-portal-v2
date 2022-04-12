@@ -72,21 +72,17 @@ export default function ExecutiveOverviewCard({
           flexDirection: 'column',
           px: [3, 4],
           py: [3, proposal.spellData?.hasBeenScheduled ? 3 : 4],
-          height: '330px',
           justifyContent: 'space-between'
         }}
       >
         <Flex sx={{ justifyContent: 'space-between' }}>
           <Box>
-            <Flex sx={{ flexDirection: 'column', height: '215px' }}>
+            <Flex sx={{ flexDirection: 'column' }}>
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <>
                   <CardHeader text={`posted ${formatDateWithoutTime(proposal.date)}`} />
                   <CardTitle title={proposal.title} styles={{ mt: 2 }} />
-                  <CardSummary
-                    text={proposal.proposalBlurb}
-                    styles={{ mt: 2, maxHeight: 72, overflow: 'hidden' }}
-                  />
+                  <CardSummary text={proposal.proposalBlurb} styles={{ my: 2 }} />
                 </>
               </InternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
@@ -139,8 +135,8 @@ export default function ExecutiveOverviewCard({
               </InternalLink>
             )}
           </Box>
-          <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-            <Flex sx={{ width: '50%' }}>
+          <Flex sx={{ alignItems: ['flex-end', 'center'], justifyContent: 'space-between' }}>
+            <Flex sx={{ flexDirection: ['column-reverse', 'row'], width: '50%' }}>
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <Button
                   variant="outline"
@@ -148,6 +144,7 @@ export default function ExecutiveOverviewCard({
                     borderColor: 'text',
                     color: 'text',
                     width: 122,
+                    mt: [2, 0],
                     ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
                   }}
                 >
@@ -157,7 +154,7 @@ export default function ExecutiveOverviewCard({
               {canVote && (
                 <Button
                   variant="primaryOutline"
-                  sx={{ ml: 3, width: 122 }}
+                  sx={{ ml: [0, 3], width: 122 }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
                     trackButtonClick('openExecVoteModal');
@@ -170,7 +167,7 @@ export default function ExecutiveOverviewCard({
                 </Button>
               )}
             </Flex>
-            <Box sx={{ width: '50%', height: 54 }}>
+            <Flex>
               {spellData?.mkrSupport === undefined ? (
                 <Box sx={{ mt: 3, width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />
@@ -182,7 +179,7 @@ export default function ExecutiveOverviewCard({
                   styles={{ textAlign: 'right' }}
                 />
               )}
-            </Box>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -199,7 +196,6 @@ export default function ExecutiveOverviewCard({
             sx={{
               textAlign: 'center',
               px: [3, 4],
-              mb: 1,
               wordBreak: 'break-word'
             }}
           >
