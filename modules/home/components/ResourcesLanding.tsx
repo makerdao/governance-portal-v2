@@ -11,11 +11,11 @@ const CategoryButton = ({ label, color, active, onClick }) => {
       onClick={onClick}
       sx={{
         background: active ? 'onPrimary' : 'rgba(255, 255, 255, 0.1)',
-        px: 3,
+        px: [2, 2, 3],
         border: 'none'
       }}
     >
-      <Text sx={{ color, fontSize: 2, fontWeight: 'semiBold' }}>{label}</Text>
+      <Text sx={{ color, fontSize: [1, 1, 2], fontWeight: 'semiBold' }}>{label}</Text>
     </Button>
   );
 };
@@ -33,6 +33,7 @@ export const ResourcesLanding = (): JSX.Element => {
         <Heading>Resources</Heading>
         <Flex
           sx={{
+            display: ['none', 'flex', 'flex'],
             background: 'rgba(255, 255, 255, 0.1)',
             backgroundBlendMode: 'multiply',
             border: '1.35px solid rgba(255, 255, 255, 0.2)',
