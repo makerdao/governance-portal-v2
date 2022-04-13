@@ -219,17 +219,17 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                             poll={poll}
                             reviewPage={true}
                             showVoting={false}
-                            yourVote={
-                              <Box ml={[0, 3]} mt={[3, 0]}>
-                                <PollVotedOption
-                                  poll={poll}
-                                  votedOption={previousBallot[poll.pollId].option}
-                                  votingWeight={votingWeight?.total}
-                                  transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                                  toggleShareModal={toggleShareModal}
-                                />
-                              </Box>
-                            }
+                            // yourVote={
+                            //   <Box ml={[0, 3]} mt={[3, 0]}>
+                            //     <PollVotedOption
+                            //       poll={poll}
+                            //       votedOption={previousBallot[poll.pollId].option}
+                            //       votingWeight={votingWeight?.total}
+                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                            //       toggleShareModal={toggleShareModal}
+                            //     />
+                            //   </Box>
+                            // }
                             hideTally
                           >
                             {previousBallot[poll.pollId]?.comment && (
@@ -354,12 +354,9 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && !_polls)
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && !_polls) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return <PollingReview polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])} />;
 }

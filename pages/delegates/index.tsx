@@ -209,11 +209,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   }
 
   if (!isDefaultNetwork(network) && !_delegates) {
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+    return <PageLoadingPlaceholder />;
   }
 
   return (

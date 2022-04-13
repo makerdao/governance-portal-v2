@@ -239,12 +239,9 @@ export default function Index({
     return <ErrorPage statusCode={404} title="Error fetching home page information" />;
   }
 
-  if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData))
-    return (
-      <PrimaryLayout>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData)) {
+    return <PageLoadingPlaceholder sidebar={false} shortenFooter={false} />;
+  }
 
   return (
     <LandingPage
