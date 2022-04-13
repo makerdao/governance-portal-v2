@@ -10,7 +10,7 @@ import PollCommentItem from './PollCommentItem';
 import {
   PollCommentsAPIResponseItem,
   PollCommentsAPIResponseItemWithWeight,
-  PollSortOption
+  CommentSortOption
 } from 'modules/comments/types/comments';
 
 export default function PollComments({
@@ -22,7 +22,7 @@ export default function PollComments({
   tally?: PollTally;
   poll: Poll;
 }): JSX.Element {
-  const [commentSortBy, setCommentSortBy] = useState(PollSortOption.MKR_AMOUNT);
+  const [commentSortBy, setCommentSortBy] = useState(CommentSortOption.MKR_AMOUNT);
 
   const getCommentVote = (item: PollCommentsAPIResponseItem): PollTallyVote | undefined => {
     const tallyVote = tally?.votesByAddress?.find(i => {
@@ -65,11 +65,11 @@ export default function PollComments({
 
   const sortedComments = useMemo(() => {
     return mergedComments.sort((a, b) => {
-      if (commentSortBy === PollSortOption.LATEST) {
+      if (commentSortBy === CommentSortOption.LATEST) {
         const aDate = new Date(a.comment.date).getTime() || 0;
         const bDate = new Date(b.comment.date).getTime() || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
-      } else if (commentSortBy === PollSortOption.MKR_AMOUNT) {
+      } else if (commentSortBy === CommentSortOption.MKR_AMOUNT) {
         return a.comment.voterWeight.lt(b.comment.voterWeight)
           ? 1
           : a.comment.voterWeight.eq(b.comment.voterWeight)
@@ -104,28 +104,28 @@ export default function PollComments({
         <Box>
           <FilterButton name={() => `Sort by ${commentSortBy}`} listVariant="menubuttons.default.list">
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.LATEST)}
+              onSelect={() => setCommentSortBy(CommentSortOption.LATEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.LATEST ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.LATEST ? 'bold' : undefined
               }}
             >
               Latest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.OLDEST)}
+              onSelect={() => setCommentSortBy(CommentSortOption.OLDEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.OLDEST ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.OLDEST ? 'bold' : undefined
               }}
             >
               Oldest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.MKR_AMOUNT)}
+              onSelect={() => setCommentSortBy(CommentSortOption.MKR_AMOUNT)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.MKR_AMOUNT ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.MKR_AMOUNT ? 'bold' : undefined
               }}
             >
               MKR Amount

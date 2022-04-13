@@ -85,7 +85,7 @@ export type PollCommentWithWeight = PollComment & {
 
 export type CommentFromDB = PollCommentFromDB | ExecutiveCommentFromDB;
 
-export enum PollSortOption {
+export enum CommentSortOption {
   LATEST = 'latest',
   OLDEST = 'oldest',
   MKR_AMOUNT = 'MKR amount'

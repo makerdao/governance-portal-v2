@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import FilterButton from 'modules/app/components/FilterButton';
 import { MenuItem } from '@reach/menu-button';
-import { ParsedExecutiveComments, PollSortOption } from '../types/comments';
+import { ParsedExecutiveComments, CommentSortOption } from '../types/comments';
 import CommentItem from './CommentItem';
 
 export default function ExecutiveComments({
@@ -14,14 +14,14 @@ export default function ExecutiveComments({
 }: {
   comments: ParsedExecutiveComments[] | undefined;
 }): JSX.Element {
-  const [commentSortBy, setCommentSortBy] = useState(PollSortOption.MKR_AMOUNT);
+  const [commentSortBy, setCommentSortBy] = useState(CommentSortOption.MKR_AMOUNT);
   const sortedComments = useMemo(() => {
     return (comments || []).sort((a, b) => {
-      if (commentSortBy === PollSortOption.LATEST) {
+      if (commentSortBy === CommentSortOption.LATEST) {
         const aDate = a.comment.date || 0;
         const bDate = b.comment.date || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
-      } else if (commentSortBy === PollSortOption.MKR_AMOUNT) {
+      } else if (commentSortBy === CommentSortOption.MKR_AMOUNT) {
         const aWeight = new BigNumber(a.comment.voterWeight || 0);
         const bWeight = new BigNumber(b.comment.voterWeight || 0);
         return aWeight.lt(bWeight) ? 1 : aWeight.eq(bWeight) ? 0 : -1;
@@ -46,34 +46,36 @@ export default function ExecutiveComments({
         <Box>
           <FilterButton
             name={() =>
-              `Sort by ${commentSortBy !== PollSortOption.LATEST ? commentSortBy : PollSortOption.LATEST}`
+              `Sort by ${
+                commentSortBy !== CommentSortOption.LATEST ? commentSortBy : CommentSortOption.LATEST
+              }`
             }
             listVariant="menubuttons.default.list"
             {...props}
           >
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.LATEST)}
+              onSelect={() => setCommentSortBy(CommentSortOption.LATEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.LATEST ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.LATEST ? 'bold' : undefined
               }}
             >
               Latest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.OLDEST)}
+              onSelect={() => setCommentSortBy(CommentSortOption.OLDEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.OLDEST ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.OLDEST ? 'bold' : undefined
               }}
             >
               Oldest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy(PollSortOption.MKR_AMOUNT)}
+              onSelect={() => setCommentSortBy(CommentSortOption.MKR_AMOUNT)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === PollSortOption.MKR_AMOUNT ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.MKR_AMOUNT ? 'bold' : undefined
               }}
             >
               MKR Amount
