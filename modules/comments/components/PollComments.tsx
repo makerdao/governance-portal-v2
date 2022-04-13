@@ -9,9 +9,9 @@ import { Poll, PollTally, PollTallyVote } from '../../polling/types';
 import PollCommentItem from './PollCommentItem';
 import {
   PollCommentsAPIResponseItem,
-  PollCommentsAPIResponseItemWithWeight
+  PollCommentsAPIResponseItemWithWeight,
+  PollSortOption
 } from 'modules/comments/types/comments';
-import { PollSortOption } from 'modules/comments/types/pollSortOption';
 
 export default function PollComments({
   comments,

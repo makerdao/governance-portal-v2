@@ -5,9 +5,8 @@ import BigNumber from 'bignumber.js';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import FilterButton from 'modules/app/components/FilterButton';
 import { MenuItem } from '@reach/menu-button';
-import { ParsedExecutiveComments } from '../types/comments';
+import { ParsedExecutiveComments, PollSortOption } from '../types/comments';
 import CommentItem from './CommentItem';
-import { PollSortOption } from 'modules/comments/types/pollSortOption';
 
 export default function ExecutiveComments({
   comments,
