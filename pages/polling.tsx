@@ -320,12 +320,9 @@ export default function PollingOverviewPage({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && (!_polls || !_categories))
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && (!_polls || !_categories)) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return (
     <ErrorBoundary componentName="Poll List">

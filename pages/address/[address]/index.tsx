@@ -109,11 +109,7 @@ export default function AddressPage(): JSX.Element {
   }
 
   if (!data) {
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+    return <PageLoadingPlaceholder />;
   }
 
   return (

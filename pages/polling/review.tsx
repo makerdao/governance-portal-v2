@@ -354,12 +354,9 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && !_polls)
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && !_polls) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return <PollingReview polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])} />;
 }
