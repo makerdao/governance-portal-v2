@@ -3,12 +3,6 @@ import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { ExecutiveComment } from './executiveComment';
 import { PollComment, PollCommentWithWeight } from './pollComments';
 
-export enum PollSortOption {
-  LATEST = 'latest',
-  OLDEST = 'oldest',
-  MKR_AMOUNT = 'MKR amount'
-}
-
 export type PollCommentsAPIResponseItem = {
   comment: PollComment;
   address: AddressApiResponse;
