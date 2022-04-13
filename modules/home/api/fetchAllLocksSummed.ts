@@ -3,7 +3,20 @@ import { format } from 'date-fns';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allLocksSummed } from 'modules/gql/queries/allLocksSummed';
 
-export default async function fetchAllLocksSummed(unixtimeStart: number, unixtimeEnd: number) {
+export type AllLocksResponse = {
+  fromAddress: string;
+  immediateCaller: string;
+  lockAmount: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  lockTotal: string;
+  hash: string;
+};
+
+export default async function fetchAllLocksSummed(
+  unixtimeStart: number,
+  unixtimeEnd: number
+): Promise<AllLocksResponse[]> {
   const data = await gqlRequest({
     chainId: 1,
     query: allLocksSummed,

@@ -61,6 +61,13 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
   const [videoOpen, setVideoOpen] = useState(false);
   const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
   const topDelegates = delegates.slice(0, 5);
+  const activeDelegates = recognizedDelegates
+    .sort((a, b) => {
+      const [first] = a.combinedParticipation?.split('%') || '0';
+      const [second] = b.combinedParticipation?.split('%') || '0';
+      return parseFloat(second) - parseFloat(first);
+    })
+    .slice(0, 5);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
@@ -176,7 +183,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           <InformationParticipateMakerGovernance />
 
           <section>
-            <Participation />
+            <Participation activeDelegates={activeDelegates} bpi={bpi} />
           </section>
 
           <section>

@@ -37,6 +37,13 @@ const ParticipationChart = ({
     };
   });
 
+  const formatYAxis = tickMkr => tickMkr.toFixed(0);
+
+  const formatXAxis = tickDate => {
+    const tickMonth = range.find(({ unixDate }) => unixDate === tickDate);
+    return tickMonth ? format(new Date(tickMonth.blockTimestamp), 'LLL') : 'd';
+  };
+
   const renderTooltip = item => {
     const monthMKR = range ? range.find(i => i.unixDate === item.label) : null;
     return (
@@ -47,17 +54,10 @@ const ParticipationChart = ({
     );
   };
 
-  const formatXAxis = tickDate => {
-    const tickMonth = range.find(({ unixDate }) => unixDate === tickDate);
-    return tickMonth ? format(new Date(tickMonth.blockTimestamp), 'LLL') : 'd';
-  };
-
-  const formatYAxis = tickMkr => tickMkr.toFixed(0);
-
   const formatLegend = () => <span sx={{ color: 'onSurface' }}>MKR Locked in Chief</span>;
 
   return (
-    <ResponsiveContainer width={'100%'} height={400}>
+    <ResponsiveContainer width={'100%'} minHeight={400}>
       <AreaChart data={range || []}>
         <defs>
           <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">
@@ -65,6 +65,15 @@ const ParticipationChart = ({
             <stop offset="95%" stopColor={get(theme, 'colors.primary')} stopOpacity={0} />
           </linearGradient>
         </defs>
+
+        <Area
+          dataKey="total"
+          stroke={get(theme, 'colors.primary')}
+          type="natural"
+          fill="url(#gradientFront)"
+          dot={{ stroke: get(theme, 'colors.primary'), strokeWidth: 1.5 }}
+        />
+
         <YAxis
           interval="preserveEnd"
           axisLine={false}
@@ -80,6 +89,7 @@ const ParticipationChart = ({
           }}
           domain={['dataMin', 'dataMax']}
         />
+
         <XAxis
           dataKey="unixDate"
           allowDecimals={true}
@@ -95,13 +105,6 @@ const ParticipationChart = ({
         />
         <Tooltip content={renderTooltip} />
 
-        <Area
-          dataKey="total"
-          stroke={get(theme, 'colors.primary')}
-          type="natural"
-          fill="url(#gradientFront)"
-          dot={{ stroke: get(theme, 'colors.primary'), strokeWidth: 1.5 }}
-        />
         <Legend formatter={formatLegend} iconType="plainline" />
       </AreaChart>
     </ResponsiveContainer>
