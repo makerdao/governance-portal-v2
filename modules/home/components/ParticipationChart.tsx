@@ -2,6 +2,7 @@ import { Box, Text, useThemeUI, get } from 'theme-ui';
 import { Tooltip, XAxis, YAxis, ResponsiveContainer, Legend, AreaChart, Area } from 'recharts';
 import { format, sub } from 'date-fns';
 import { commify } from 'ethers/lib/utils';
+import { AllLocksResponse } from '../types/participation';
 
 const getPastMonths = (numMonths: number): string[] => {
   const pastMonths: string[] = [];
@@ -18,7 +19,7 @@ const ParticipationChart = ({
   data,
   monthsPast
 }: {
-  data: any[];
+  data: AllLocksResponse[];
   monthsPast: number;
 }): React.ReactElement => {
   const { theme } = useThemeUI();
@@ -57,7 +58,7 @@ const ParticipationChart = ({
   const formatLegend = () => <span sx={{ color: 'onSurface' }}>MKR Locked in Chief</span>;
 
   return (
-    <ResponsiveContainer width={'100%'} minHeight={400}>
+    <ResponsiveContainer width={'100%'} minHeight={200}>
       <AreaChart data={range || []}>
         <defs>
           <linearGradient id="gradientFront" x1="0" y1="0" x2="0" y2="1">

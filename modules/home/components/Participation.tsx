@@ -3,14 +3,16 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from './ViewMore';
 import useSWR from 'swr';
-import { fetchJson } from 'lib/fetchJson';
 import { format, sub } from 'date-fns';
 import ParticipationChart from './ParticipationChart';
 import forumPosts from '../forumPosts.json';
 import { Delegate } from 'modules/delegates/types';
 import { DelegatePicture } from 'modules/delegates/components';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { AllLocksResponse, ForumPost } from '../types/participation';
 
-const ForumPosts = ({ posts, bpi }: { posts: any[]; bpi: number }) => {
+const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
@@ -31,12 +33,14 @@ const ForumPosts = ({ posts, bpi }: { posts: any[]; bpi: number }) => {
             >
               <Flex
                 sx={{
-                  display: 'flex',
                   gap: 3,
-                  flexDirection: bpi > 1 ? 'row' : 'column'
+                  flexDirection: bpi > 0 ? 'row' : 'column'
                 }}
               >
-                <Image src={image} sx={{ minWidth: '282px', width: '282px', height: '207px' }} />
+                <Image
+                  src={image}
+                  sx={bpi > 0 ? { ...{ minWidth: '282px', width: '282px', height: '207px' } } : undefined}
+                />
                 <Flex
                   sx={{
                     flexDirection: 'column',
@@ -72,12 +76,15 @@ export default function Participation({
   activeDelegates: Delegate[];
   bpi: number;
 }): React.ReactElement {
+  const { network } = useActiveWeb3React();
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =
     new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'MM-dd-yyyy')).getTime() / 1000;
 
-  const { data: locks } = useSWR(`/api/executive/all-locks?unixtimeStart=${unixtimeStart}`, fetchJson);
+  const { data: locks } = useSWR<AllLocksResponse[]>(
+    `/api/executive/all-locks?network=${network}&unixtimeStart=${unixtimeStart}`
+  );
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 4 }}>
@@ -104,19 +111,23 @@ export default function Participation({
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Heading>Governance Participation</Heading>
           </Flex>
-          {locks && (
-            <Flex
-              sx={{
-                border: 'light',
-                borderRadius: 'medium',
-                borderColor: 'secondaryMuted',
-                height: '100%',
-                pr: [0, 3],
-                pb: 3
-              }}
-            >
-              <ParticipationChart data={locks} monthsPast={MONTHS_PAST} />
-            </Flex>
+          {locks ? (
+            locks.length > 0 ? (
+              <Flex
+                sx={{
+                  border: 'light',
+                  borderRadius: 'medium',
+                  borderColor: 'secondaryMuted',
+                  height: '100%',
+                  pr: [0, 3],
+                  pb: 3
+                }}
+              >
+                <ParticipationChart data={locks} monthsPast={MONTHS_PAST} />
+              </Flex>
+            ) : null
+          ) : (
+            <SkeletonThemed height="300px" />
           )}
         </Flex>
 
