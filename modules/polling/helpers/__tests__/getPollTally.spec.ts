@@ -1,11 +1,12 @@
 import { getPollTally } from '../getPollTally';
-import { fetchPollTally } from '../../api/fetchPollTally';
-import { fetchVotesByAddresForPoll } from '../../api/fetchVotesByAddress';
+import { fetchRawPollTally } from '../../api/fetchRawPollTally';
+import { fetchVotesByAddressForPoll } from '../../api/fetchVotesByAddress';
 import { PluralityResult, Poll } from '../../types';
 import BigNumber from 'bignumber.js';
 import * as PRT from '../parseRawTally';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-jest.mock('../../api/fetchPollTally');
+jest.mock('../../api/fetchRawPollTally');
 jest.mock('../../api/fetchVotesByAddress');
 
 const mockPoll: Poll = {
@@ -49,7 +50,7 @@ const expectedPRTArg = {
 describe('getPollTally', () => {
   // We add this test to check that we always return a non-empty options object to the FE so the components that rely on populated data won't crash
   it('Returns a correct tally for plurality votes even when the options are empty', async () => {
-    (fetchPollTally as jest.Mock).mockReturnValue(
+    (fetchRawPollTally as jest.Mock).mockReturnValue(
       Promise.resolve({
         totalMkrParticipation: new BigNumber(0),
         winner: '0',
@@ -57,11 +58,11 @@ describe('getPollTally', () => {
         options: {}
       })
     );
-    (fetchVotesByAddresForPoll as jest.Mock).mockReturnValue(Promise.resolve([]));
+    (fetchVotesByAddressForPoll as jest.Mock).mockReturnValue(Promise.resolve([]));
     jest.spyOn(PRT, 'parseRawPollTally');
 
     const poll = mockPoll;
-    const tally = await getPollTally(poll);
+    const tally = await getPollTally(poll, SupportedNetworks.GOERLIFORK);
     const results = tally.results as PluralityResult[];
 
     // When no options returned with tally, we manually add them in 'getPollTally'
