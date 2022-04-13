@@ -50,7 +50,9 @@ async function getUniswapV3Mkr(mkrAddress: string) {
     uniswapV3MkrSupply,
     { argMkrAddress: mkrAddress }
   );
-  return resp?.token?.totalSupply ? BigNumber.from(resp.token.totalSupply).mul(WAD) : BigNumber.from(0);
+  return resp?.token?.totalValueLocked
+    ? parseUnits(parseInt(resp.token.totalValueLocked).toString())
+    : BigNumber.from(0);
 }
 
 async function getCompoundMkr(network) {
