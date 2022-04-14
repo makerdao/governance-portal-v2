@@ -43,6 +43,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
+import Participation from 'modules/home/components/Participation';
 import allPolls from './api/polling/all-polls';
 
 type Props = {
@@ -60,6 +61,13 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
   const [videoOpen, setVideoOpen] = useState(false);
   const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
   const topDelegates = delegates.slice(0, 5);
+  const activeDelegates = recognizedDelegates
+    .sort((a, b) => {
+      const [first] = a.combinedParticipation?.split('%') || '0';
+      const [second] = b.combinedParticipation?.split('%') || '0';
+      return parseFloat(second) - parseFloat(first);
+    })
+    .slice(0, 5);
 
   const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
 
@@ -173,6 +181,10 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
           </section>
 
           <InformationParticipateMakerGovernance />
+
+          <section>
+            <Participation activeDelegates={activeDelegates} bpi={bpi} />
+          </section>
 
           <section>
             <ErrorBoundary componentName="System Stats">

@@ -1,6 +1,6 @@
 import { paddedArray, toBuffer } from 'lib/utils';
 
-export function parseRawOptinIdRankedChoiceOption(rawValue?: string): number[] {
+export function parseRankedChoiceRawOptionId(rawValue?: string): number[] {
   let rankedChoiceOption: number[] = [];
   if (rawValue) {
     const ballotBuffer = toBuffer(rawValue, { endian: 'little' });
