@@ -21,6 +21,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
@@ -133,6 +134,20 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             >
               Approve
             </Button>
+            <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
+              Interested in creating a proxy contract instead of depositing directly into Chief? Learn more{' '}
+              <ExternalLink
+                href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                title="Read about proxy contracts"
+              >
+                <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
+              </ExternalLink>{' '}
+              and create one{' '}
+              <ExternalLink href="https://v1.vote.makerdao.com/proxysetup" title="Go to proxy setup">
+                <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
+              </ExternalLink>
+              .
+            </Text>
           </Stack>
         )}
       </Box>
