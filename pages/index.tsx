@@ -7,7 +7,6 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { SystemStats } from 'modules/home/components/SystemStats';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
@@ -29,7 +28,7 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
-import { ResourcesLanding } from 'modules/home/components/ResourcesLanding';
+import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
@@ -44,7 +43,6 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
-import allPolls from './api/polling/all-polls';
 
 type Props = {
   proposals: Proposal[];

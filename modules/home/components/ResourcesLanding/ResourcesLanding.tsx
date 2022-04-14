@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Box, Flex, Heading, Card, Text, Image } from 'theme-ui';
-import { resources, ResourceColor, ResourceCategory } from 'modules/home/helpers/resources';
+import { resources, ResourceColor, ResourceCategory } from './resources';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { fadeIn } from 'lib/keyframes';
 
