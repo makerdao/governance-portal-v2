@@ -129,7 +129,10 @@ export function AddressDetail({ address }: PropTypes): React.ReactElement {
         <AddressIconBox address={address} showExternalLink />
 
         <Box sx={{ pt: [2, 0] }}>
-          <LastVoted expired={false} date={statsData?.lastVote?.blockTimestamp || ''} />
+          <LastVoted
+            expired={false}
+            date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
+          />
         </Box>
       </Flex>
 
