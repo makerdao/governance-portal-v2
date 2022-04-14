@@ -65,7 +65,7 @@ export function DelegatesSystemInfo({
   ];
 
   return (
-    <Box className={className}>
+    <Box sx={{ mt: 3 }}>
       <Heading mt={3} mb={2} as="h3" variant="microHeading">
         System Info
       </Heading>

@@ -20,7 +20,7 @@ export default function BallotBox({ activePolls, network, polls }: Props): JSX.E
   const { transaction, ballotCount } = useContext(BallotContext);
 
   return (
-    <Box>
+    <Box sx={{ mb: 3 }}>
       <Heading mb={2} mt={4} variant="microHeading" data-testid="your-ballot-title">
         Your Ballot
       </Heading>

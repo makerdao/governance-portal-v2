@@ -508,12 +508,9 @@ export default function ExecutiveOverviewPage({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && !_proposals)
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && !_proposals) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return (
     <ErrorBoundary componentName="Executive Page">

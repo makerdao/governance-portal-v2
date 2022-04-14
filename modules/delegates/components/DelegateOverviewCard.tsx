@@ -24,7 +24,7 @@ type PropTypes = {
   delegate: Delegate;
 };
 
-export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
+export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElement {
   const { account, voteDelegateContractAddress } = useAccount();
 
   const [showDelegateModal, setShowDelegateModal] = useState(false);
@@ -48,8 +48,7 @@ export function DelegateCard({ delegate }: PropTypes): React.ReactElement {
   return (
     <Card
       sx={{
-        p: [0, 0],
-        borderColor: isOwner ? 'onSecondary' : 'muted'
+        p: [0, 0]
       }}
       data-testid="delegate-card"
     >

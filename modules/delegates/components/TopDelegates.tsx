@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { parseUnits } from 'ethers/lib/utils';
 import { formatValue } from 'lib/string';
-import { Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
+import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'theme-ui';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -47,12 +47,9 @@ export default function TopDelegates({
           </Text>
         </Stack>
       </Container>
-      <Box
+      <Card
         sx={{
-          border: ['none', '1px solid #D4D9E1'],
-          borderRadius: '6px',
           p: [2, 4],
-
           maxWidth: '926px',
           margin: '0 auto'
         }}
@@ -274,7 +271,7 @@ export default function TopDelegates({
             </InternalLink>
           </Box>
         </Flex>
-      </Box>
+      </Card>
     </Box>
   );
 }

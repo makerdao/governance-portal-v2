@@ -1,3 +1,4 @@
+import React from 'react';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Card, Text, Flex, Box, Button, ThemeUIStyleObject, Divider, Badge } from 'theme-ui';
 import shallow from 'zustand/shallow';
@@ -18,7 +19,6 @@ import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { CardTitle } from 'modules/app/components/Card/CardTitle';
 import { CardHeader } from 'modules/app/components/Card/CardHeader';
 import { CardSummary } from 'modules/app/components/Card/CardSummary';
-import React from 'react';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { usePollComments } from 'modules/comments/hooks/usePollComments';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -31,7 +31,6 @@ type Props = {
   sx?: ThemeUIStyleObject;
   showVoting?: boolean;
   children?: React.ReactNode;
-  yourVote?: React.ReactNode;
   hideTally?: boolean;
 };
 export default function PollOverviewCard({
@@ -39,18 +38,14 @@ export default function PollOverviewCard({
   reviewPage,
   showVoting,
   children,
-  yourVote,
-  hideTally = false,
-  ...props
+  hideTally = false
 }: Props): JSX.Element {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const canVote = !!account && isActivePoll(poll);
   const showQuickVote = canVote && showVoting;
   const { comments, error: errorComments } = usePollComments(poll.pollId);
-
   const { tally, error: errorTally, isValidating } = usePollTally(hideTally ? 0 : poll.pollId);
-
   const [categoryFilter, setCategoryFilter] = useUiFiltersStore(
     state => [state.pollFilters.categoryFilter, state.setCategoryFilter],
     shallow
@@ -70,7 +65,7 @@ export default function PollOverviewCard({
     >
       <Box>
         <ErrorBoundary componentName="Poll Card">
-          <Box sx={{ px: [3, 4], py: 3, height: '330px' }}>
+          <Box sx={{ px: [3, 4], py: 3 }}>
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Flex sx={{ flexDirection: 'column' }}>
                 {bpi === 0 && (
@@ -97,7 +92,7 @@ export default function PollOverviewCard({
                     </InternalLink>
                   </Box>
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                    <CardSummary text={poll.summary} styles={{ my: 2, height: '80px' }} />
+                    <CardSummary text={poll.summary} styles={{ my: 2 }} />
                   </InternalLink>
                 </Box>
 
@@ -199,7 +194,8 @@ export default function PollOverviewCard({
                   <Box sx={{ width: bpi > 0 ? '265px' : '100%', p: bpi > 0 ? 0 : 2 }}>
                     {tally && tally.totalMkrParticipation > 0 && (
                       <InternalLink
-                        href={`/polling/${poll.slug}/#vote-breakdown`}
+                        href={`/polling/${poll.slug}`}
+                        hash="vote-breakdown"
                         title="View poll vote breakdown"
                       >
                         <Box sx={{ mt: 3 }}>
