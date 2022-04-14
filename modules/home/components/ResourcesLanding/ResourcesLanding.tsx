@@ -82,7 +82,12 @@ export const ResourcesLanding = (): JSX.Element => {
               <ExternalLink href={resource.url} title={resource.title} key={resource.title}>
                 <Card
                   key={resource.title}
-                  sx={{ width: '380px', height: '300px', mb: 4, animation: `${fadeIn} 750ms ease` }}
+                  sx={{
+                    width: '380px',
+                    height: '300px',
+                    mb: 4,
+                    animation: `${fadeIn} 750ms ease`
+                  }}
                 >
                   <Box sx={{ position: 'relative' }}>
                     <Box sx={{ position: 'absolute', width: '100%' }}>
