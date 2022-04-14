@@ -9,6 +9,7 @@ const CategoryButton = ({ label, color, active, onClick }) => {
     <Button
       variant="outline"
       onClick={onClick}
+      title={label}
       sx={{
         background: active ? 'onPrimary' : 'rgba(255, 255, 255, 0.1)',
         px: [2, 2, 3],
