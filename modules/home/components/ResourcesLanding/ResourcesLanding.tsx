@@ -84,64 +84,62 @@ export const ResourcesLanding = (): JSX.Element => {
                   key={resource.title}
                   sx={{
                     width: '380px',
-                    height: '300px',
+                    height: '290px',
                     mb: 4,
                     animation: `${fadeIn} 750ms ease`
                   }}
                 >
-                  <Box sx={{ position: 'relative' }}>
-                    <Box sx={{ position: 'absolute', width: '100%' }}>
-                      <Flex sx={{ width: '100%', justifyContent: 'space-between', p: 3 }}>
-                        <Flex sx={{ flexDirection: 'column', width: '60%' }}>
-                          <Flex>
-                            <Box
-                              sx={{
-                                backgroundColor: 'background',
-                                borderRadius: '12px',
-                                padding: '4px 8px',
-                                display: 'flex',
-                                alignItems: 'center'
-                              }}
-                            >
-                              <Text sx={{ color: resource.color, fontSize: '10px' }}>
-                                {resource.category}
-                              </Text>
-                            </Box>
-                          </Flex>
-                          <Text
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: '185px',
+                      background: resource.bg,
+                      borderRadius: 'roundish'
+                    }}
+                  >
+                    <Flex sx={{ width: '100%', justifyContent: 'space-between', p: 3 }}>
+                      <Flex sx={{ flexDirection: 'column', width: '60%' }}>
+                        <Flex>
+                          <Box
                             sx={{
-                              mt: 2,
-                              fontSize: '28px',
-                              color: 'background',
-                              fontWeight: 'semiBold',
-                              lineHeight: '32px'
+                              backgroundColor: 'background',
+                              borderRadius: '12px',
+                              padding: '4px 8px',
+                              display: 'flex',
+                              alignItems: 'center'
                             }}
                           >
-                            {resource.title}
-                          </Text>
+                            <Text sx={{ color: resource.color, fontSize: '10px' }}>{resource.category}</Text>
+                          </Box>
                         </Flex>
-                        <Flex
+                        <Text
                           sx={{
-                            width: '40%',
-                            justifyContent: 'flex-end',
-                            alignItems: 'flex-start',
-                            mr: 3,
-                            mt: 3
+                            mt: 2,
+                            fontSize: '28px',
+                            color: 'background',
+                            fontWeight: 'semiBold',
+                            lineHeight: '32px'
                           }}
                         >
-                          <Image src={resource.logo} sx={{ width: '64px' }} />
-                        </Flex>
+                          {resource.title}
+                        </Text>
                       </Flex>
-                    </Box>
-                    <Image
-                      src={resource.bg}
-                      sx={{
-                        objectFit: 'cover',
-                        width: '100%'
-                      }}
-                    />
+                      <Flex
+                        sx={{
+                          width: '40%',
+                          justifyContent: 'flex-end',
+                          alignItems: 'flex-start',
+                          mr: 3,
+                          mt: 3
+                        }}
+                      >
+                        <Image src={resource.logo} sx={{ width: '64px' }} />
+                      </Flex>
+                    </Flex>
                   </Box>
-                  <Text sx={{ fontSize: 2, color: 'secondaryEmphasis' }}>{resource.summary}</Text>
+                  <Text as="p" sx={{ fontSize: 2, color: 'secondaryEmphasis', mt: 2 }}>
+                    {resource.summary}
+                  </Text>
                 </Card>
               </ExternalLink>
             ))}

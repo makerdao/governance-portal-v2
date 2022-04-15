@@ -6,9 +6,9 @@ export enum ResourceCategory {
 }
 
 enum ResourceBackground {
-  GOVERNANCE = '/assets/resource_card_green.png',
-  PRODUCTS_AND_TOOLS = '/assets/resource_card_purple.png',
-  DEVELOPERS = '/assets/resource_card_pink.png'
+  GOVERNANCE = 'linear-gradient(260.14deg, #DEE8C4 0%, #AAE4D7 97.43%)',
+  PRODUCTS_AND_TOOLS = 'linear-gradient(260.14deg, #E2CCFF 0%, #9A4BFF 97.43%)',
+  DEVELOPERS = 'linear-gradient(260.14deg, #F4B7FE 0%, #E64BFF 97.43%)'
 }
 
 export enum ResourceColor {
