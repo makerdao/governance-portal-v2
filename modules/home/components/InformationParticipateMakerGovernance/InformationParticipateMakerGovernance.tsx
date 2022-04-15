@@ -4,8 +4,15 @@ import { useState } from 'react';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import CirclesBackground from '../CirclesBackground';
 import { InfoPoint, infoPoints } from './InfoPoints';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
-function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
+function Card({
+  infoPoint,
+  children
+}: {
+  infoPoint: InfoPoint;
+  children?: React.ReactNode;
+}): React.ReactElement {
   return (
     <Box sx={{ height: '100%', background: ['#ffffffb0', '#ffffffb0', 'transparent'] }}>
       <Flex sx={{ height: '100%' }}>
@@ -20,25 +27,27 @@ function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
             justifyContent: 'space-between',
             height: '100%',
             flex: 1,
-            background: `url(${infoPoint.image});`,
-            backgroundPositionX: '100%',
-            backgroundRepeat: 'no-repeat',
-            p: 3,
-            pl: 2,
-            backgroundSize: 'auto 100%'
+            p: [0, 3],
+            pl: [0, 2]
           }}
         >
           <Box>
-            <Heading as="h1" sx={{ mb: 3 }}>
-              <Text>{infoPoint.titleFirst}</Text>
-              <Text sx={{ color: infoPoint.color, ml: 1 }}>{infoPoint.titleSecond}</Text>
-            </Heading>
+            <Flex sx={{ alignItems: 'center' }}>
+              <Heading as="h1" sx={{ mb: 3, p: [3, 0], flex: 1 }}>
+                <Text as="p" sx={{ color: infoPoint.color, display: ['block', 'none'] }}>
+                  {infoPoint.number}
+                </Text>
+                <Text>{infoPoint.titleFirst}</Text>
+                <Text sx={{ color: infoPoint.color, ml: 1 }}>{infoPoint.titleSecond}</Text>
+              </Heading>
+              {children}
+            </Flex>
 
-            <Box sx={{ width: ['100%', '100%', '50%'] }}>{infoPoint.description}</Box>
+            <Box sx={{ width: ['100%', '100%', '50%'], p: [3, 0] }}>{infoPoint.description}</Box>
           </Box>
           <Box>
             {infoPoint.links.map(link => (
-              <Box mb={2} key={link.linkHref}>
+              <Box mb={2} key={link.linkHref} sx={{ p: [3, 0] }}>
                 <ExternalLink
                   href={link.linkHref}
                   title={link.linkTitle}
@@ -59,6 +68,7 @@ function Card({ infoPoint }: { infoPoint: InfoPoint }): React.ReactElement {
 }
 export default function InformationParticipateMakerGovernance(): React.ReactElement {
   const [active, setActive] = useState(infoPoints[0]);
+  const bpi = useBreakpointIndex();
 
   const indexCard = infoPoints.findIndex(i => i.number === active.number);
   return (
@@ -113,7 +123,8 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                     <Text
                       sx={{
                         color: active.number === infoPoint.number ? infoPoint.color : 'text',
-                        fontSize: [2, 3]
+                        fontSize: 3,
+                        fontWeight: 'semiBold'
                       }}
                     >
                       {infoPoint.title}
@@ -127,24 +138,47 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                 borderRadius: 'medium',
                 background: ' rgba(255, 255, 255, 0.5)',
                 width: ['100%', '70%'],
-                backgroundImage: 'url(/home/understand-governance/00_visual_how_to_participate.png);',
+                backgroundImage: [
+                  'none',
+                  'url(/home/understand-governance/00_visual_how_to_participate.png);'
+                ],
                 backgroundPosition: `100% -${indexCard * 430}px`,
-                backgroundSize: '340px',
+                backgroundSize: ['340px'],
                 backgroundRepeat: 'no-repeat',
                 transition: 'all 300ms ease-in-out',
-                height: '430px',
+                height: ['auto', '430px'],
                 overflow: 'hidden'
               }}
             >
-              <Box
-                sx={{ transform: `translateY(-${indexCard * 430}px)`, transition: 'all 300ms ease-in-out' }}
-              >
-                {infoPoints.map(infoPoint => (
-                  <Box key={`card-${infoPoint.number}`} sx={{ height: '430px' }}>
-                    <Card infoPoint={infoPoint} />
-                  </Box>
-                ))}
-              </Box>
+              {bpi > 0 ? (
+                <Box
+                  sx={{ transform: `translateY(-${indexCard * 430}px)`, transition: 'all 300ms ease-in-out' }}
+                >
+                  {infoPoints.map(infoPoint => (
+                    <Box key={`card-${infoPoint.number}`} sx={{ height: '430px' }}>
+                      <Card infoPoint={infoPoint} />
+                    </Box>
+                  ))}
+                </Box>
+              ) : (
+                <Box>
+                  <Card infoPoint={active}>
+                    <Box
+                      sx={{
+                        borderRadius: 'medium',
+                        backgroundImage: 'url(/home/understand-governance/00_visual_how_to_participate.png);',
+                        backgroundPosition: `100% -${indexCard * 160}px`,
+                        backgroundSize: ['130px'],
+                        backgroundRepeat: 'no-repeat',
+                        transition: 'all 300ms ease-in-out',
+                        height: '150px',
+                        width: '150px',
+                        overflow: 'hidden'
+                      }}
+                    />
+                  </Card>
+                </Box>
+              )}
             </Box>
           </Flex>
         </Box>
