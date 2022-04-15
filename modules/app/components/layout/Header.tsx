@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
@@ -10,6 +10,83 @@ import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+
+const MenuItemContent = ({ label, icon }) => {
+  return (
+    <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
+      <Icon name={icon} />
+      <Text>{label}</Text>
+    </Flex>
+  );
+};
+
+const HeaderMenu = ({ ...props }): JSX.Element => {
+  return (
+    <Menu>
+      <MenuButton
+        sx={{
+          variant: 'buttons.card',
+          borderRadius: 'round',
+          m: 'auto'
+        }}
+        {...props}
+      >
+        <Icon name="dots_h" />
+      </MenuButton>
+      <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, px: 0, py: 3 }}>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="lock" label="10,233" />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="question_o" label="10,233" />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="discord" label="Support" />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="discord" label="Stats" />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="question_o" label="FAQs" />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => {}}
+          sx={{
+            variant: 'menubuttons.default.item'
+          }}
+        >
+          <MenuItemContent icon="discord" label="Dark mode" />
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  );
+};
 
 const Header = (): JSX.Element => {
   const router = useRouter();
@@ -120,6 +197,9 @@ const Header = (): JSX.Element => {
           <Icon name="menu" sx={{ width: '18px' }} />
         </IconButton>
         {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} router={router} />}
+        <Flex sx={{ ml: 3 }}>
+          <HeaderMenu />
+        </Flex>
       </Flex>
     </Box>
   );
