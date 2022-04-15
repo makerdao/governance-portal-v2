@@ -1,7 +1,7 @@
-import { Flex, Grid, Box, Container, Text, Heading } from 'theme-ui';
+import { Flex, Grid, Box, Container, Text, Heading, useColorMode, get } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { translate } from '@makerdao/i18n-helper';
 
 const ContactSection = ({ heading, title, logos, icon }) => {
@@ -39,6 +39,12 @@ const ContactSection = ({ heading, title, logos, icon }) => {
 };
 
 export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
+  const [mode] = useColorMode();
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
+
+  useEffect(() => {
+    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
+  }, [mode]);
   const t = text => translate(text, locale);
 
   const links = [
@@ -151,54 +157,82 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
       { title: 'Immunifi', url: '', icon: 'immunifi' }
     ]
   };
-
   return (
-    <Flex
-      as="footer"
-      sx={{
-        px: [4, 0, 0],
-        m: 0,
-        pt: 4,
-        pb: 5
-      }}
-    >
-      <Flex sx={{ justifyContent: 'space-between', gap: 4 }}>
-        <ContactSection
-          heading="Contact MakerDAO"
-          title="Official Community Channels"
-          icon="maker"
-          logos={logos.makerdao}
-        />
-        <Flex
-          sx={{
-            justifyContent: 'space-between',
-            gap: 5
-          }}
-        >
-          {links.map(group => {
-            return (
-              <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2 }}>
-                <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                  {group.header}
-                </Text>
-                {group.list.map(({ url, title }) => {
-                  return (
-                    <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
-                      <Text sx={{ fontSize: 3, color: 'footerText' }}>{title}</Text>
-                    </ExternalLink>
-                  );
-                })}
-              </Flex>
-            );
-          })}
+    <div sx={{ position: 'relative', width: '100vw' }}>
+      <div
+        sx={{
+          pt: '100%',
+          width: '100%',
+          zIndex: -1,
+          position: 'absolute',
+          transform: 'rotate(21deg)',
+          backgroundImage,
+          backgroundSize: '100%',
+          backgroundRepeat: 'no-repeat'
+          //WIP mobile settings
+          // pt: '200%',
+          // width: '200%',
+          // // left: -300,
+          // right: -200,
+          // // top: 300,
+          // // pt: '500px',
+          // zIndex: -1,
+          // position: 'absolute',
+          // transform: 'scale(1.5)',
+          // // transform: 'rotate(21deg)',
+          // backgroundImage,
+          // // backgroundSize: '300%',
+          // backgroundRepeat: 'no-repeat',
+          // backgroundPosition: 'center bottom'
+        }}
+      />
+      <Flex
+        as="footer"
+        sx={{
+          px: [4, 0, 0],
+          m: 0,
+          pt: 4,
+          pb: 5
+        }}
+      >
+        <Flex sx={{ justifyContent: 'space-between', gap: 4 }}>
+          <ContactSection
+            heading="Contact MakerDAO"
+            title="Official Community Channels"
+            icon="maker"
+            logos={logos.makerdao}
+          />
+          <Flex
+            sx={{
+              justifyContent: 'space-between',
+              gap: 5
+            }}
+          >
+            {links.map(group => {
+              return (
+                <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2 }}>
+                  <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                    {group.header}
+                  </Text>
+                  {group.list.map(({ url, title }) => {
+                    return (
+                      <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
+                        <Text sx={{ fontSize: 3, color: 'footerText' }}>{title}</Text>
+                      </ExternalLink>
+                    );
+                  })}
+                </Flex>
+              );
+            })}
+          </Flex>
+          <ContactSection
+            heading="Contact MakerDUX for support"
+            title={'Development & UX Core Unit'}
+            icon="makerdux"
+            logos={logos.makerdux}
+          />
         </Flex>
-        <ContactSection
-          heading="Contact MakerDUX for support"
-          title={'Development & UX Core Unit'}
-          icon="makerdux"
-          logos={logos.makerdux}
-        />
       </Flex>
-    </Flex>
+    </div>
   );
 }
