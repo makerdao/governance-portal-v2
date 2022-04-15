@@ -7,7 +7,6 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { SystemStats } from 'modules/home/components/SystemStats';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
@@ -29,6 +28,7 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
+import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
@@ -180,16 +180,25 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
             <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
           </section>
 
-          <InformationParticipateMakerGovernance />
-
-          <section>
-            <Participation activeDelegates={activeDelegates} bpi={bpi} />
+          <section sx={{ position: 'relative', overflowY: 'clip' }}>
+            <Box
+              sx={{
+                background: '#F7F8F9',
+                width: '200vw',
+                zIndex: -1,
+                ml: '-100vw',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '1620px'
+              }}
+            />
+            <InformationParticipateMakerGovernance />
+            <ResourcesLanding />
           </section>
 
           <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
-            </ErrorBoundary>
+            <Participation activeDelegates={activeDelegates} bpi={bpi} />
           </section>
         </Stack>
       </PrimaryLayout>
