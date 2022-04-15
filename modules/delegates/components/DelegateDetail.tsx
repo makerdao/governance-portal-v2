@@ -181,7 +181,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
             <LastVoted
               expired={delegate.expired}
-              date={statsData?.lastVote?.blockTimestamp || ''}
+              date={statsData ? (statsData.lastVote ? statsData.lastVote.blockTimestamp : null) : undefined}
               styles={{ my: 1 }}
             />
             <DelegateContractExpiration delegate={delegate} />
