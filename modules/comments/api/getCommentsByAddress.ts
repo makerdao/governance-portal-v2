@@ -27,7 +27,7 @@ export async function getCommentsByAddress(
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, ...rest } = comment;
-      const commentBody = await markdownToHtml(comment.comment);
+      const commentBody = await markdownToHtml(comment.comment, true);
 
       return {
         comment: {

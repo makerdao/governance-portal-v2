@@ -24,7 +24,7 @@ export async function getPollComments(
     commentsFromDB.map(async comment => {
       const { _id, voterAddress, ...rest } = comment;
 
-      const commentBody = await markdownToHtml(comment.comment);
+      const commentBody = await markdownToHtml(comment.comment, true);
       return {
         ...rest,
         comment: commentBody,
