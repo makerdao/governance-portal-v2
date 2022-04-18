@@ -99,7 +99,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         pt: 5,
         pb: 3,
         width: '100%',
-        backgroundColor: 'background'
+        backgroundColor: 'transparent'
       }}
     >
       <Grid
