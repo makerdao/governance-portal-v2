@@ -5,7 +5,6 @@ import { Card, Box, Text, Flex, Button, Heading, Container, Divider } from 'them
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Delegate } from '../types';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import DelegateAvatarName from './DelegateAvatarName';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -13,6 +12,7 @@ import { useState } from 'react';
 import { DelegateModal } from './modals/DelegateModal';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
+import DelegateAvatarNameLight from './DelegateAvatarNameLight';
 
 export default function TopDelegates({
   delegates,
@@ -41,9 +41,9 @@ export default function TopDelegates({
       )}
       <Container sx={{ textAlign: 'center', maxWidth: 'title', mb: 4 }}>
         <Stack gap={2}>
-          <Heading as="h2">Top Delegates</Heading>
+          <Heading as="h2">Top Recognized Delegates</Heading>
           <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-            Delegates ranking by their voting power
+            Recognized Delegates ranking by their voting power
           </Text>
         </Stack>
       </Container>
@@ -97,7 +97,7 @@ export default function TopDelegates({
                     {index + 1}
                   </Text>
                   <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                    <DelegateAvatarName delegate={delegate} />
+                    <DelegateAvatarNameLight delegate={delegate} />
                   </InternalLink>
                 </Flex>
                 <Box sx={{ width: '15%', display: ['none', 'block'] }}>

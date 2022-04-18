@@ -11,6 +11,7 @@ import { DelegatePicture } from 'modules/delegates/components';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
+import DelegateAvatarNameLight from 'modules/delegates/components/DelegateAvatarNameLight';
 
 const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
@@ -139,7 +140,7 @@ export default function Participation({
               title="View More Metrics"
               target="_blank"
             >
-              <ViewMore label="View More Metrics" />
+              <ViewMore label="View more metrics" />
             </ExternalLink>
           </Flex>
           <Flex
@@ -169,10 +170,7 @@ export default function Participation({
                 <Flex sx={{ alignItems: 'center', gap: 2 }}>
                   <Text>{i + 1}</Text>
                   <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                    <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                      <DelegatePicture delegate={delegate} />
-                      <Text sx={{ color: 'primary' }}>{delegate.name}</Text>
-                    </Flex>
+                    <DelegateAvatarNameLight delegate={delegate} />
                   </InternalLink>
                 </Flex>
                 <Text>{delegate.combinedParticipation}</Text>

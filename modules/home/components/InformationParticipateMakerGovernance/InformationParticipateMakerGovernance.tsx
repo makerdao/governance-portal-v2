@@ -5,6 +5,7 @@ import { ExternalLink } from 'modules/app/components/ExternalLink';
 import CirclesBackground from '../CirclesBackground';
 import { InfoPoint, infoPoints } from './InfoPoints';
 import { useBreakpointIndex } from '@theme-ui/match-media';
+import { ViewMore } from '../ViewMore';
 
 function Card({
   infoPoint,
@@ -85,10 +86,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                 title="Learn more"
                 styles={{ color: 'inherit', fontSize: [2, 3] }}
               >
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Text>Learn more</Text>
-                  <Icon name="chevron_right" color="primary" size="3" ml="1" />
-                </Flex>
+                <ViewMore label="Learn More" />
               </ExternalLink>
             </Box>
           </Flex>
