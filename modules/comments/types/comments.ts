@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
-import { ExecutiveComment } from './executiveComment';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type PollCommentsAPIResponseItem = {
   comment: PollComment;
@@ -84,3 +84,9 @@ export type PollCommentWithWeight = PollComment & {
 };
 
 export type CommentFromDB = PollCommentFromDB | ExecutiveCommentFromDB;
+
+export enum CommentSortOption {
+  LATEST = 'latest',
+  OLDEST = 'oldest',
+  MKR_AMOUNT = 'MKR amount'
+}
