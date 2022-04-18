@@ -149,7 +149,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
       { title: 'GitHub', url: 'https://www.github.com/makerdao', icon: 'github' }
     ],
     makerdux: [
-      { title: 'Discord', url: 'https://discord.gg/tQ5wnN6Ms4', icon: 'discord' },
+      { title: 'Discord', url: 'https://discord.gg/GHcFMdKden', icon: 'discord' },
       { title: 'Twitter', url: 'https://twitter.com/MakerDAO', icon: 'twitter' },
       { title: 'Email', url: '', icon: 'email' },
       { title: 'GitHub', url: 'https://github.com/makerdao/governance-portal-v2', icon: 'github' },

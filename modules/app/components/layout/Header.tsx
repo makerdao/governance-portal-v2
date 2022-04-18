@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text } from 'theme-ui';
+import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
@@ -11,17 +11,31 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { Tokens } from 'modules/web3/constants/tokens';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { formatValue } from 'lib/string';
+import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
+import { ExternalLink } from '../ExternalLink';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
     <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
       <Icon name={icon} />
-      <Text>{label}</Text>
+      {typeof label === 'function' ? { label } : <Text>{label}</Text>}
     </Flex>
   );
 };
 
-const HeaderMenu = ({ ...props }): JSX.Element => {
+const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
+  const [mode, setMode] = useColorMode();
+
+  const onToggleTheme = () => {
+    const next = mode === 'dark' ? 'light' : 'dark';
+    const html = document.getElementsByTagName('html');
+    if (html) html[0].style.colorScheme = next;
+    setMode(next);
+  };
   return (
     <Menu>
       <MenuButton
@@ -36,52 +50,77 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
       </MenuButton>
       <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, px: 0, py: 3 }}>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={() => ({})}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="mkr_locked" label="10,233" />
+          {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
         </MenuItem>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={() => ({})}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="gas" label="10,233" />
+          <MenuItemContent
+            icon="gas"
+            label={
+              <Text>
+                <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+              </Text>
+            }
+          />
         </MenuItem>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={() => ({})}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="discord_outline" label="Support" />
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://discord.gg/GHcFMdKden"
+            title="Support"
+          >
+            <MenuItemContent icon="discord_outline" label="Support" />
+          </ExternalLink>
         </MenuItem>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={() => ({})}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="stats" label="Stats" />
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
+            title="Stats"
+          >
+            <MenuItemContent icon="stats" label="Stats" />
+          </ExternalLink>
         </MenuItem>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={() => ({})}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="faq" label="FAQs" />
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://makerdao.world/en/learn/governance/"
+            title="FAQs"
+          >
+            <MenuItemContent icon="faq" label="FAQs" />
+          </ExternalLink>
         </MenuItem>
         <MenuItem
-          onSelect={() => {}}
+          onSelect={onToggleTheme}
           sx={{
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="color_mode_sun" label="Dark mode" />
+          <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
         </MenuItem>
       </MenuList>
     </Menu>
@@ -93,6 +132,10 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
+  const chiefAddress = useContractAddress('chief');
+  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
+
+  const { data: gas } = useGasPrice();
 
   return (
     <Box
@@ -198,7 +241,7 @@ const Header = (): JSX.Element => {
         </IconButton>
         {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} router={router} />}
         <Flex sx={{ ml: 3 }}>
-          <HeaderMenu />
+          <HeaderMenu mkrInChief={mkrInChief} gas={gas} />
         </Flex>
       </Flex>
     </Box>
