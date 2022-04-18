@@ -116,9 +116,6 @@ export default function Participation({
             locks.length > 0 ? (
               <Card
                 sx={{
-                  // border: 'light',
-                  // borderRadius: 'medium',
-                  // borderColor: 'secondaryMuted',
                   height: '100%',
                   pr: [0, 3],
                   pb: 3
@@ -145,9 +142,6 @@ export default function Participation({
           </Flex>
           <Card
             sx={{
-              // border: 'light',
-              // borderRadius: 'medium',
-              // borderColor: 'secondaryMuted',
               flexDirection: 'column',
               gap: 3,
               p: 3,
