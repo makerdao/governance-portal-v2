@@ -41,7 +41,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="lock" label="10,233" />
+          <MenuItemContent icon="mkr_locked" label="10,233" />
         </MenuItem>
         <MenuItem
           onSelect={() => {}}
@@ -49,7 +49,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="question_o" label="10,233" />
+          <MenuItemContent icon="gas" label="10,233" />
         </MenuItem>
         <MenuItem
           onSelect={() => {}}
@@ -57,7 +57,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="discord" label="Support" />
+          <MenuItemContent icon="discord_outline" label="Support" />
         </MenuItem>
         <MenuItem
           onSelect={() => {}}
@@ -65,7 +65,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="discord" label="Stats" />
+          <MenuItemContent icon="stats" label="Stats" />
         </MenuItem>
         <MenuItem
           onSelect={() => {}}
@@ -73,7 +73,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="question_o" label="FAQs" />
+          <MenuItemContent icon="faq" label="FAQs" />
         </MenuItem>
         <MenuItem
           onSelect={() => {}}
@@ -81,7 +81,7 @@ const HeaderMenu = ({ ...props }): JSX.Element => {
             variant: 'menubuttons.default.item'
           }}
         >
-          <MenuItemContent icon="discord" label="Dark mode" />
+          <MenuItemContent icon="color_mode_sun" label="Dark mode" />
         </MenuItem>
       </MenuList>
     </Menu>
