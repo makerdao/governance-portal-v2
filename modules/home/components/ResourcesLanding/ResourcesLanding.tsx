@@ -84,6 +84,7 @@ export const ResourcesLanding = (): JSX.Element => {
                   key={resource.title}
                   sx={{
                     width: '380px',
+                    maxWidth: '100%',
                     height: '290px',
                     mb: 4,
                     animation: `${fadeIn} 750ms ease`

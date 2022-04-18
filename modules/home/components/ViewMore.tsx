@@ -5,7 +5,7 @@ type Props = {
   label?: string;
 };
 
-export const ViewMore = ({ label = 'View More' }: Props): JSX.Element => {
+export const ViewMore = ({ label = 'View more' }: Props): JSX.Element => {
   return (
     <Flex sx={{ alignItems: 'center', cursor: 'pointer', color: 'text' }}>
       <Text sx={{ fontSize: 2 }}>{label}</Text>
