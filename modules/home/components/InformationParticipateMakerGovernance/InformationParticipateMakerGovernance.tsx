@@ -102,7 +102,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
                   key={`info-point-${infoPoint.number}`}
                   sx={{
                     mb: [1, 3],
-                    background: 'rgba(255, 255, 255, 0.5)',
+                    backgroundColor: 'semiTransparentBackground',
                     p: [2, 3],
                     borderRadius: 'medium',
                     cursor: 'pointer'
@@ -134,7 +134,7 @@ export default function InformationParticipateMakerGovernance(): React.ReactElem
             <Box
               sx={{
                 borderRadius: 'medium',
-                background: ' rgba(255, 255, 255, 0.5)',
+                backgroundColor: 'semiTransparentBackground',
                 width: ['100%', '70%'],
                 backgroundImage: [
                   'none',
