@@ -5,7 +5,6 @@ import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import ColorModeToggle from './header/ColorModeToggle';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
@@ -42,17 +41,25 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         sx={{
           variant: 'buttons.card',
           borderRadius: 'round',
-          m: 'auto'
+          height: '37px',
+          width: '37px',
+          display: 'flex',
+          justifyContent: 'center',
+          color: 'textSecondary',
+          alignItems: 'center',
+          '&:hover': {
+            color: 'text'
+          }
         }}
         {...props}
       >
         <Icon name="dots_h" />
       </MenuButton>
-      <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, px: 0, py: 3 }}>
+      <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, p: 1 }}>
         <MenuItem
           onSelect={() => ({})}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
@@ -60,7 +67,7 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         <MenuItem
           onSelect={() => ({})}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           <MenuItemContent
@@ -75,7 +82,7 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         <MenuItem
           onSelect={() => ({})}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           <ExternalLink
@@ -89,7 +96,7 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         <MenuItem
           onSelect={() => ({})}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           <ExternalLink
@@ -103,7 +110,7 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         <MenuItem
           onSelect={() => ({})}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           <ExternalLink
@@ -117,7 +124,7 @@ const HeaderMenu = ({ mkrInChief, gas, ...props }): JSX.Element => {
         <MenuItem
           onSelect={onToggleTheme}
           sx={{
-            variant: 'menubuttons.default.item'
+            variant: 'menubuttons.default.headerItem'
           }}
         >
           <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
@@ -213,12 +220,6 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && (
-          <Flex sx={{ pr: 2 }}>
-            <ColorModeToggle />
-          </Flex>
-        )}
-
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {bpi > 1 && (
           <Flex mr={3}>
@@ -264,7 +265,6 @@ const MobileMenu = ({ hide, router }) => {
           gap: 2
         }}
       >
-        <ColorModeToggle />
         <Flex>
           <NetworkSelect />
         </Flex>
