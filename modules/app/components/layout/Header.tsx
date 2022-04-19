@@ -20,7 +20,7 @@ import { ExternalLink } from '../ExternalLink';
 const MenuItemContent = ({ label, icon }) => {
   return (
     <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
-      <Icon name={icon} />
+      <Icon name={icon} size={'auto'} sx={{ height: '20px', width: '20px' }} />
       {typeof label === 'function' ? { label } : <Text>{label}</Text>}
     </Flex>
   );

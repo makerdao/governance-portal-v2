@@ -56,7 +56,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Forum')
         },
         {
-          url: '',
+          url: 'https://manual.makerdao.com/',
           title: t('Operational Manual')
         },
         {
@@ -64,15 +64,15 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Governance FAQs')
         },
         {
-          url: '',
+          url: 'https://docs.google.com/spreadsheets/d/1LWNlv6hr8oXebk8rvXZBPRVDjN-3OrzI0IgLwBVk0vM/edit#gid=0',
           title: t('Gov Tracking Sheet')
         },
         {
-          url: '',
+          url: 'https://manual.makerdao.com/governance/governance-cycle/monthly-governance-cycle',
           title: t('Monthly Gov Cycle')
         },
         {
-          url: '',
+          url: 'https://manual.makerdao.com/governance/governance-cycle/weekly-governance-cycle',
           title: t('Weekly Gov Cycle')
         }
       ]
@@ -89,7 +89,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Oasis')
         },
         {
-          url: 'https://makerdao.com/en/ecosystem/',
+          url: 'https://auctions.makerdao.network/',
           title: t('Auctions Dashboard')
         },
         {
@@ -118,9 +118,8 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
           title: t('Technical Docs')
         },
         {
-          url: '/api-docs',
-          title: 'API Docs',
-          internal: true
+          url: 'https://vote.makerdao.com/api-docs',
+          title: 'API Docs'
         },
         {
           url: 'https://github.com/makerdao/developerguides',
@@ -140,21 +139,19 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
 
   const logos = {
     makerdao: [
-      { title: 'Discord', url: 'https://discord.gg/tQ5wnN6Ms4', icon: 'discord' },
+      { title: 'Discord', url: 'https://chat.makerdao.com', icon: 'discord' },
       { title: 'Twitter', url: 'https://twitter.com/MakerDAO', icon: 'twitter' },
       { title: 'Reddit', url: 'https://www.reddit.com/r/MakerDAO/', icon: 'reddit' },
       { title: 'Telegram', url: 'https://t.me/makerdaoOfficial', icon: 'telegram' },
-      { title: 'WeChat', url: '', icon: 'wechat' },
       { title: 'YouTube', url: 'https://www.youtube.com/MakerDAO', icon: 'youtube' },
       { title: 'GitHub', url: 'https://www.github.com/makerdao', icon: 'github' }
     ],
     makerdux: [
       { title: 'Discord', url: 'https://discord.gg/GHcFMdKden', icon: 'discord' },
-      { title: 'Twitter', url: 'https://twitter.com/MakerDAO', icon: 'twitter' },
-      { title: 'Email', url: '', icon: 'email' },
+      { title: 'Twitter', url: 'https://twitter.com/MakerDUX', icon: 'twitter' },
       { title: 'GitHub', url: 'https://github.com/makerdao/governance-portal-v2', icon: 'github' },
       { title: 'Canny', url: 'https://makergovernance.canny.io/', icon: 'canny' },
-      { title: 'Immunifi', url: '', icon: 'immunifi' }
+      { title: 'Immunifi', url: 'https://immunefi.com/bounty/makerdao/', icon: 'immunifi' }
     ]
   };
   return (
