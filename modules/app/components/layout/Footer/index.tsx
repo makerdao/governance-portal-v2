@@ -1,13 +1,12 @@
 import React from 'react';
 import ShortFooter from './ShortFooter';
-import LongFooter from './LongFooter';
-import NewFooter from './NewFooter';
+// import LongFooter from './LongFooter';
+import LandingFooter from './LandingFooter';
 
 export default function Footer({ shorten = false }: { shorten: boolean }): React.ReactElement {
-  return <NewFooter />;
-  // if (shorten) {
-  //   return <ShortFooter />;
-  // } else {
-  //   return <LongFooter />;
-  // }
+  if (shorten) {
+    return <ShortFooter />;
+  } else {
+    return <LandingFooter />;
+  }
 }
