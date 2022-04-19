@@ -1,9 +1,20 @@
 import { useRouter } from 'next/router';
-import { Flex, NavLink, Container, Close, Box, IconButton, Divider, Text, useColorMode } from 'theme-ui';
+import {
+  Flex,
+  NavLink,
+  Container,
+  Close,
+  Box,
+  IconButton,
+  Divider,
+  Text,
+  useColorMode,
+  Badge
+} from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -16,6 +27,12 @@ import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { formatValue } from 'lib/string';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSWR, { useSWRConfig } from 'swr';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { Proposal } from 'modules/executive/types';
+import { fetchJson } from 'lib/fetchJson';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -141,6 +158,21 @@ const Header = (): JSX.Element => {
   const { account } = useAccount();
   const chiefAddress = useContractAddress('chief');
   const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
+  const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+
+  //TODO move this into a hook to share with landing
+  const dataKeyPolls = `/api/polling/all-polls?network=${network}`;
+  const { data: pollsData } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyPolls)
+  });
+  const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
+
+  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
+  const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyProposals)
+  });
+  const activeProposals = proposalsData?.filter(p => p.active);
 
   const { data: gas } = useGasPrice();
 
@@ -165,31 +197,50 @@ const Header = (): JSX.Element => {
           </IconButton>
         </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
-          <NavLink
-            href={'/polling'}
-            title="View polling page"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 'auto'],
-              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
-            }}
-          >
-            Polling
-          </NavLink>
-
-          <NavLink
-            href={'/executive'}
-            title="View executive page"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 4, 5],
-              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
-            }}
-          >
-            Executive
-          </NavLink>
+          <Flex sx={{ gap: 2 }}>
+            <NavLink
+              href={'/polling'}
+              title="View polling page"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 'auto'],
+                color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
+              }}
+            >
+              Polling
+            </NavLink>
+            {activePolls && activePolls.length > 0 && (
+              <Badge
+                variant="solidCircle"
+                sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
+              >
+                {activePolls?.length}
+              </Badge>
+            )}
+          </Flex>
+          <Flex sx={{ gap: 2 }}>
+            <NavLink
+              href={'/executive'}
+              title="View executive page"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 4, 5],
+                color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
+              }}
+            >
+              Executive
+            </NavLink>
+            {activeProposals && activeProposals.length > 0 && (
+              <Badge
+                sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
+                variant="solidCircle"
+              >
+                {activeProposals.length}
+              </Badge>
+            )}
+          </Flex>
 
           <NavLink
             href={'/delegates'}
