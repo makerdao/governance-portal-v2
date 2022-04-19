@@ -159,7 +159,7 @@ export default function Participation({
             {activeDelegates.map((delegate, i) => (
               <Flex
                 key={delegate.voteDelegateAddress}
-                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+                sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 3 }}
               >
                 <Flex sx={{ alignItems: 'center', gap: 2 }}>
                   <Text>{i + 1}</Text>
