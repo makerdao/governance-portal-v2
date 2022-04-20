@@ -103,7 +103,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
       <StickyContainer>
         <PrimaryLayout sx={{ maxWidth: 'page' }}>
-          <Stack gap={[5, 6]}>
+          <Stack gap={[5, 6]} separationType="p">
             <section>
               <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
                 <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
@@ -166,8 +166,9 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
                 />
               </ErrorBoundary>
             </section>
-            <section>
-              <Sticky topOffset={600}>
+
+            <section id="vote">
+              <Sticky topOffset={700}>
                 {({
                   style,
 
@@ -178,15 +179,19 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
                   distanceFromBottom,
                   calculatedHeight
                 }) => (
-                  <Box style={style}>
+                  <Box
+                    style={{
+                      ...style,
+                      zIndex: 100
+                    }}
+                  >
                     <TabsNavigation />
                   </Box>
                 )}
               </Sticky>
-            </section>
-
-            <section id="vote">
-              <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+              <Box sx={{ mt: 3 }}>
+                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+              </Box>
               <PollCategoriesLanding pollCategories={pollCategories} />
             </section>
 

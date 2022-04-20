@@ -1,8 +1,7 @@
-import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import { Box, Flex, Text } from 'theme-ui';
 
-export default function TabsNavigation() {
+export default function TabsNavigation(): React.ReactElement {
   const [activeTab, setActiveTab] = useState('#vote');
   const hashChangeHandler = useCallback(() => {
     setActiveTab(window.location.hash);
@@ -68,7 +67,8 @@ export default function TabsNavigation() {
                   sx={{
                     borderBottom: activeTab === link.href ? '1px solid' : 'none',
                     borderColor: 'onBackground',
-                    pb: 3
+                    pb: 2,
+                    pt: 1
                   }}
                 >
                   <Text>{link.text}</Text>
