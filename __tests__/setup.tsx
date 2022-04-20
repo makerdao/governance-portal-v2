@@ -10,7 +10,12 @@ jest.mock('modules/web3/helpers/ens');
 
 jest.mock('remark-gfm', () => () => null);
 jest.mock('remark-html', () => () => null);
+jest.mock('remark-parse', () => () => null);
+jest.mock('remark-rehype', () => () => null);
+jest.mock('unified', () => () => null);
 jest.mock('remark', () => () => null);
+jest.mock('rehype-stringify', () => () => null);
+jest.mock('rehype-sanitize', () => () => null);
 
 jest.mock('modules/address/components/AddressIcon', () => {
   return {
