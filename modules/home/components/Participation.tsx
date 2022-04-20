@@ -88,7 +88,7 @@ export default function Participation({
   );
 
   return (
-    <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+    <Flex sx={{ flexDirection: 'column', gap: 4, mb: 4 }}>
       <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
         <Stack gap={2}>
           <Heading as="h2">Follow the Conversation and Participate</Heading>
@@ -114,18 +114,15 @@ export default function Participation({
           </Flex>
           {locks ? (
             locks.length > 0 ? (
-              <Flex
+              <Card
                 sx={{
-                  border: 'light',
-                  borderRadius: 'medium',
-                  borderColor: 'secondaryMuted',
                   height: '100%',
                   pr: [0, 3],
                   pb: 3
                 }}
               >
                 <ParticipationChart data={locks} monthsPast={MONTHS_PAST} />
-              </Flex>
+              </Card>
             ) : null
           ) : (
             <SkeletonThemed height="300px" />
@@ -143,11 +140,8 @@ export default function Participation({
               <ViewMore label="View more metrics" />
             </ExternalLink>
           </Flex>
-          <Flex
+          <Card
             sx={{
-              border: 'light',
-              borderRadius: 'medium',
-              borderColor: 'secondaryMuted',
               flexDirection: 'column',
               gap: 3,
               p: 3,
@@ -165,7 +159,7 @@ export default function Participation({
             {activeDelegates.map((delegate, i) => (
               <Flex
                 key={delegate.voteDelegateAddress}
-                sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+                sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 3 }}
               >
                 <Flex sx={{ alignItems: 'center', gap: 2 }}>
                   <Text>{i + 1}</Text>
@@ -176,7 +170,7 @@ export default function Participation({
                 <Text>{delegate.combinedParticipation}</Text>
               </Flex>
             ))}
-          </Flex>
+          </Card>
         </Flex>
       </Flex>
     </Flex>
