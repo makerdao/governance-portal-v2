@@ -197,7 +197,7 @@ const Header = (): JSX.Element => {
           </IconButton>
         </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
-          <Flex sx={{ gap: 2 }}>
+          <Flex>
             <NavLink
               href={'/polling'}
               title="View polling page"
@@ -213,13 +213,20 @@ const Header = (): JSX.Element => {
             {activePolls && activePolls.length > 0 && (
               <Badge
                 variant="solidCircle"
-                sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  p: 2,
+                  mt: '-1rem',
+                  ml: -10
+                }}
               >
                 {activePolls?.length}
               </Badge>
             )}
           </Flex>
-          <Flex sx={{ gap: 2 }}>
+          <Flex>
             <NavLink
               href={'/executive'}
               title="View executive page"
@@ -234,7 +241,13 @@ const Header = (): JSX.Element => {
             </NavLink>
             {activeProposals && activeProposals.length > 0 && (
               <Badge
-                sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  mt: '-1rem',
+                  ml: -10
+                }}
                 variant="solidCircle"
               >
                 {activeProposals.length}
