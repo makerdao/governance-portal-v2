@@ -194,13 +194,14 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         <Flex
           sx={{
             justifyContent: 'space-between',
-            gap: [2, 2, 5],
-            width: ['100%', '100%', 'initial']
+            gap: [4, 2, 5],
+            width: ['100%', '100%', 'initial'],
+            flexWrap: 'wrap'
           }}
         >
           {links.map(group => {
             return (
-              <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2 }}>
+              <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2, minWidth: ['45%', 'initial'] }}>
                 <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
                   {group.header}
                 </Text>
