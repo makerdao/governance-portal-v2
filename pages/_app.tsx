@@ -25,6 +25,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import Script from 'next/script';
+import Banner from 'modules/app/components/layout/header/Banner';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -77,6 +78,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
                         }
                       }}
                     />
+                    <Banner content="( ͡° ͜ʖ ͡°) GM frens!! ( ಠ ͜ʖಠ)" />
                     <Flex
                       sx={{
                         flexDirection: 'column',
