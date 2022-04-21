@@ -1,8 +1,9 @@
-import { Flex, Grid, Box, Container, Text, Heading, useColorMode, get } from 'theme-ui';
+import { Flex, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React, { useEffect, useState } from 'react';
 import { translate } from '@makerdao/i18n-helper';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 
 const ContactSection = ({ heading, title, logos, icon }) => {
   return (
@@ -33,12 +34,13 @@ const ContactSection = ({ heading, title, logos, icon }) => {
           </ExternalLink>
         ))}
       </Flex>
-      <Icon name={icon} size={4} sx={{ my: 4 }} />
+      <Icon name={icon} size={4} sx={{ my: [0, 0, 4] }} />
     </Flex>
   );
 };
 
-export default function LongFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
+export default function LandingFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
+  const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
@@ -119,11 +121,11 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         },
         {
           url: 'https://vote.makerdao.com/api-docs',
-          title: 'API Docs'
+          title: t('API Docs')
         },
         {
           url: 'https://github.com/makerdao/developerguides',
-          title: 'Developer Guides'
+          title: t('Developer Guides')
         },
         {
           url: 'https://www.notion.so/makerdao/Maker-Brand-ac517c82ff9a43089d0db5bb2ee045a4',
@@ -154,81 +156,72 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
       { title: 'Immunifi', url: 'https://immunefi.com/bounty/makerdao/', icon: 'immunifi' }
     ]
   };
+
+  const mobile = bpi <= 1;
   return (
-    <div sx={{ position: 'relative', width: '100vw' }}>
+    <div sx={{ position: 'relative' }}>
       <div
         sx={{
-          pt: '100%',
-          width: '100%',
+          pt: ['200%', '100%'],
+          width: ['200%', '100%'],
           zIndex: -1,
           position: 'absolute',
-          transform: 'rotate(21deg)',
+          transform: mobile ? 'scale(1.5)' : 'rotate(21deg)',
+          right: [-200, undefined],
           backgroundImage,
-          backgroundSize: '100%',
-          backgroundRepeat: 'no-repeat'
-          //WIP mobile settings
-          // pt: '200%',
-          // width: '200%',
-          // // left: -300,
-          // right: -200,
-          // // top: 300,
-          // // pt: '500px',
-          // zIndex: -1,
-          // position: 'absolute',
-          // transform: 'scale(1.5)',
-          // // transform: 'rotate(21deg)',
-          // backgroundImage,
-          // // backgroundSize: '300%',
-          // backgroundRepeat: 'no-repeat',
-          // backgroundPosition: 'center bottom'
+          backgroundSize: [undefined, '100%'],
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: mobile ? 'center bottom' : undefined
         }}
       />
       <Flex
         as="footer"
         sx={{
-          px: [4, 0, 0],
-          m: 0,
+          justifyContent: 'space-between',
+          gap: 4,
+          width: '100%',
+          flexDirection: mobile ? 'column' : 'row',
           pt: 4,
           pb: 5
         }}
       >
-        <Flex sx={{ justifyContent: 'space-between', gap: 4 }}>
-          <ContactSection
-            heading="Contact MakerDAO"
-            title="Official Community Channels"
-            icon="maker"
-            logos={logos.makerdao}
-          />
-          <Flex
-            sx={{
-              justifyContent: 'space-between',
-              gap: 5
-            }}
-          >
-            {links.map(group => {
-              return (
-                <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2 }}>
-                  <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
-                    {group.header}
-                  </Text>
-                  {group.list.map(({ url, title }) => {
-                    return (
-                      <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
-                        <Text sx={{ fontSize: 3, color: 'footerText' }}>{title}</Text>
-                      </ExternalLink>
-                    );
-                  })}
-                </Flex>
-              );
-            })}
-          </Flex>
-          <ContactSection
-            heading="Contact MakerDUX for support"
-            title={'Development & UX Core Unit'}
-            icon="makerdux"
-            logos={logos.makerdux}
-          />
+        <ContactSection
+          heading="Contact MakerDAO"
+          title="Official Community Channels"
+          icon="maker"
+          logos={logos.makerdao}
+        />
+        <Flex
+          sx={{
+            justifyContent: 'space-between',
+            gap: [4, 2, 5],
+            width: ['100%', '100%', 'initial'],
+            flexWrap: 'wrap'
+          }}
+        >
+          {links.map(group => {
+            return (
+              <Flex key={group.header} sx={{ flexDirection: 'column', gap: 2, minWidth: ['45%', 'initial'] }}>
+                <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
+                  {group.header}
+                </Text>
+                {group.list.map(({ url, title }) => {
+                  return (
+                    <ExternalLink key={title} href={url} title={title} styles={{ fontSize: [1, 2] }}>
+                      <Text sx={{ fontSize: 3, color: 'footerText' }}>{title}</Text>
+                    </ExternalLink>
+                  );
+                })}
+              </Flex>
+            );
+          })}
         </Flex>
+        <ContactSection
+          heading="Contact MakerDUX for support"
+          title={'Development & UX Core Unit'}
+          icon="makerdux"
+          logos={logos.makerdux}
+        />
       </Flex>
     </div>
   );

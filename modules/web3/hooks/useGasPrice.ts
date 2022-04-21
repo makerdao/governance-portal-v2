@@ -8,7 +8,7 @@ type GasResponse = {
 };
 
 export const useGasPrice = (): GasResponse => {
-  const { data, error } = useSWR('fetch-gas', () => fetchGasPrice('fast'));
+  const { data, error } = useSWR('fetch-gas', () => fetchGasPrice('fast'), { refreshInterval: 15000 });
 
   return {
     data,
