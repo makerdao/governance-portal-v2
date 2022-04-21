@@ -70,7 +70,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
     })
     .slice(0, 5);
 
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
   const chiefAddress = useContractAddress('chief');
   const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
