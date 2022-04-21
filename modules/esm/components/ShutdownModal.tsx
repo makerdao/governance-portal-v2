@@ -7,6 +7,7 @@ import { TXMined } from 'modules/web3/types/transaction';
 import { BigNumber } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useEsmShutdown } from '../hooks/useEsmShutdown';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const ModalContent = ({
   setShowDialog,
@@ -100,16 +101,16 @@ const ModalContent = ({
         <Text sx={{ color: 'onSecondary', fontWeight: 'medium', fontSize: '16px', textAlign: 'center' }}>
           Shutdown will update once the transaction has been confirmed.
         </Text>
-        <Link
-          target="_blank"
+        <ExternalLink
           href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-          sx={{ p: 0 }}
+          styles={{ p: 0 }}
+          title="View on etherscan"
         >
           <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
             <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>
-        </Link>
+        </ExternalLink>
         <Button
           onClick={close}
           sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}

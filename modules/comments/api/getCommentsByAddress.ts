@@ -3,8 +3,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
-import { markdownToHtml } from 'lib/utils';
-
+import { markdownToHtml } from 'lib/markdown';
 export async function getCommentsByAddress(
   address: string,
   network: SupportedNetworks

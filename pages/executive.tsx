@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
@@ -30,6 +30,7 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 // stores
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
@@ -196,7 +197,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               </Text>
               <Flex>
                 <WithdrawOldChief />
-                <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
+                <ExternalLink
+                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
+                  title="View migration steps"
+                >
                   <Button
                     variant="outline"
                     sx={{
@@ -221,7 +225,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
                     </Text>
                   </Button>
-                </Link>
+                </ExternalLink>
               </Flex>
             </Flex>
           </MigrationBadge>
@@ -239,13 +243,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               <Heading variant="microHeading">
                 Choose one of the options below to deposit MKR into the new chief:
               </Heading>
-              <Link
+              <ExternalLink
                 href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
-                target="_blank"
-                sx={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
-                onClick={() => {
-                  trackButtonClick('chiefMigrationMoreInfoLink');
-                }}
+                title="View migration information"
+                styles={{ color: 'accentBlue', fontSize: 3, ':hover': { color: 'blueLinkHover' } }}
+                // TODO: add tracking
+                // onClick={() => {
+                //   trackButtonClick('chiefMigrationMoreInfoLink');
+                // }}
               >
                 <Flex sx={{ alignItems: 'center' }}>
                   <Text>
@@ -253,7 +258,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                     <Icon ml={2} name="arrowTopRight" size={2} />
                   </Text>
                 </Flex>
-              </Link>
+              </ExternalLink>
             </Flex>
             <MigrationBadge py={[0]}>
               <Flex
@@ -275,26 +280,29 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   <CircleNumber> 2 </CircleNumber>
                   <Text>
                     <b>Hot and cold wallet: </b>
-                    <Link
+                    <ExternalLink
                       href="https://v1.vote.makerdao.com/proxysetup"
-                      sx={{ textDecoration: 'underline' }}
-                      onClick={() => {
-                        trackButtonClick('chiefMigrationLinkToProxySetup');
-                      }}
+                      styles={{ textDecoration: 'underline' }}
+                      title="Go to proxy setup"
+                      // TODO: add tracking
+                      // onClick={() => {
+                      //   trackButtonClick('chiefMigrationLinkToProxySetup');
+                      // }}
                     >
-                      Click here
-                    </Link>{' '}
+                      <Text>Click here</Text>
+                    </ExternalLink>{' '}
                     to create a vote proxy for additional wallet security. More info{' '}
-                    <Link
+                    <ExternalLink
                       href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
-                      target="_blank"
-                      sx={{ textDecoration: 'underline' }}
-                      onClick={() => {
-                        trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
-                      }}
+                      title="View proxy information"
+                      styles={{ textDecoration: 'underline' }}
+                      // TODO: add tracking
+                      // onClick={() => {
+                      //   trackButtonClick('chiefMigrationLinkToVoteProxyBlog');
+                      // }}
                     >
-                      here
-                    </Link>
+                      <Text>here</Text>
+                    </ExternalLink>
                     .
                   </Text>
                 </Flex>

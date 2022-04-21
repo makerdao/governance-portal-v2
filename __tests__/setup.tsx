@@ -5,6 +5,11 @@ import { getENS } from 'modules/web3/helpers/ens';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 
+// Node/Jest don't have 'fetch' bc it's injected by next.js into global
+// requiring next here applies the polyfills for fetch needed for some tests
+// see: https://github.com/vercel/next.js/discussions/13678#discussioncomment-22383
+require('next');
+
 jest.mock('@web3-react/core');
 jest.mock('modules/web3/helpers/ens');
 
@@ -13,7 +18,6 @@ jest.mock('remark-html', () => () => null);
 jest.mock('remark-parse', () => () => null);
 jest.mock('remark-rehype', () => () => null);
 jest.mock('unified', () => () => null);
-jest.mock('remark', () => () => null);
 jest.mock('rehype-stringify', () => () => null);
 jest.mock('rehype-sanitize', () => () => null);
 

@@ -1,4 +1,4 @@
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import React, { useEffect, useState } from 'react';
 
 export default function Markdown({ text }: { text: string }): React.ReactElement {

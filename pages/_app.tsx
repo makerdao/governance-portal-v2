@@ -74,7 +74,8 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
                       styles={{
                         '*': {
                           WebkitFontSmoothing: 'antialiased',
-                          MozOsxFontSmoothing: 'grayscale'
+                          MozOsxFontSmoothing: 'grayscale',
+                          scrollBehavior: 'smooth'
                         }
                       }}
                     />
