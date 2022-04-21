@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import BoxWithClose from 'modules/app/components/BoxWithClose';
 import { slideUp, fadeIn } from 'lib/keyframes';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import InternalIcon from 'modules/app/components/Icon';
 import { openWindowWithUrl } from 'lib/utils';
 
