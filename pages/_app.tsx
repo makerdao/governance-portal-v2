@@ -26,6 +26,7 @@ import { BallotProvider } from 'modules/polling/context/BallotContext';
 import debug from 'debug';
 import Script from 'next/script';
 import Banner from 'modules/app/components/layout/header/Banner';
+import bannerContent from 'modules/home/data/bannerContent.json';
 const vitalslog = debug('govpo:vitals');
 
 const Web3ReactProviderDefault = dynamic(() => import('../modules/web3/components/DefaultProvider'), {
@@ -35,6 +36,8 @@ export const reportWebVitals = vitalslog;
 
 const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
   ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
+
+  const activeBannerContent = bannerContent.find(({ active }) => active === true);
 
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
@@ -79,7 +82,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
                         }
                       }}
                     />
-                    <Banner content="( ͡° ͜ʖ ͡°) GM frens!! ( ಠ ͜ʖಠ)" />
+                    {activeBannerContent && <Banner content={activeBannerContent.content} />}
                     <Flex
                       sx={{
                         flexDirection: 'column',

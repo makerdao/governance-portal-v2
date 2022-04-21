@@ -1,9 +1,9 @@
 import { Text, Alert } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 
-const fadeIn = keyframes({
-  from: { transform: 'translate(0, 0)' },
-  to: { transform: 'translate(-100%, 0)' }
+const scroll = keyframes({
+  from: { transform: 'translate(60vw, 0)' },
+  to: { transform: 'translate(-60vw, 0)' }
 });
 
 const Banner = ({ content }: { content: string | React.ReactElement }): React.ReactElement => {
@@ -15,7 +15,14 @@ const Banner = ({ content }: { content: string | React.ReactElement }): React.Re
       }}
     >
       {typeof content === 'string' ? (
-        <Text sx={{ m: 'auto', fontSize: 2, fontWeight: 'body', animation: `${fadeIn} 5s linear infinite` }}>
+        <Text
+          sx={{
+            m: 'auto',
+            fontSize: 2,
+            fontWeight: 'body',
+            animation: `${scroll} 30s linear infinite`
+          }}
+        >
           {content}
         </Text>
       ) : (
