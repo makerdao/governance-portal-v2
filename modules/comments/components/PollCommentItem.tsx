@@ -6,8 +6,8 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
 import { PollCommentsAPIResponseItemWithWeight } from '../types/comments';
 import CommentItem from './CommentItem';
-import BigNumber from 'bignumber.js';
-import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import { formatValue } from 'lib/string';
+import { parseUnits } from 'ethers/lib/utils';
 
 export default function PollCommentItem({
   comment,
@@ -18,8 +18,6 @@ export default function PollCommentItem({
   commentVote: PollTallyVote | undefined;
   poll: Poll;
 }): React.ReactElement {
-  const { network } = useActiveWeb3React();
-
   const getTwitterMessage = () => {
     if (!commentVote) {
       // This should not happen but in case the tally is missing
@@ -56,8 +54,8 @@ export default function PollCommentItem({
     return (
       <Text>
         Voted {voteOptionText} with{' '}
-        {comment.comment.voterWeight.isGreaterThanOrEqualTo(0.01)
-          ? new BigNumber(comment.comment.voterWeight).toFixed(2)
+        {comment.comment.voterWeight.gte(parseUnits('0.01'))
+          ? formatValue(comment.comment.voterWeight)
           : '≈0.00'}{' '}
         MKR
       </Text>

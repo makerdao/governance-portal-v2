@@ -231,7 +231,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                   </div>,
                   <div key={'comments'} sx={{ p: [3, 4] }}>
                     {comments ? (
-                      <ExecutiveComments proposal={proposal} comments={comments} />
+                      <ExecutiveComments comments={comments} />
                     ) : (
                       <Flex sx={{ alignItems: 'center' }}>
                         {commentsError ? (

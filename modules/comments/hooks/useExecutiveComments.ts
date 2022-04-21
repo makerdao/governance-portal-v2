@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { parseUnits } from 'ethers/lib/utils';
 import { fetchJson } from 'lib/fetchJson';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
@@ -37,7 +37,7 @@ export function useExecutiveComments(
     return {
       comment: {
         ...comment,
-        voterWeight: new BigNumber(voterWeight.replace(/,/g, '')) //remove commas from string before converting to BigNumber
+        voterWeight: parseUnits(voterWeight.replace(/,/g, '')) //remove commas from string before converting to BigNumber
       },
       ...rest
     };

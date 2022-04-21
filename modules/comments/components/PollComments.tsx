@@ -1,6 +1,5 @@
 import { Flex, Text, Box } from 'theme-ui';
 import { useMemo, useState } from 'react';
-import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MenuItem } from '@reach/menu-button';
@@ -9,8 +8,11 @@ import { Poll, PollTally, PollTallyVote } from '../../polling/types';
 import PollCommentItem from './PollCommentItem';
 import {
   PollCommentsAPIResponseItem,
-  PollCommentsAPIResponseItemWithWeight
+  PollCommentsAPIResponseItemWithWeight,
+  CommentSortOption
 } from 'modules/comments/types/comments';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 export default function PollComments({
   comments,
@@ -21,7 +23,7 @@ export default function PollComments({
   tally?: PollTally;
   poll: Poll;
 }): JSX.Element {
-  const [commentSortBy, setCommentSortBy] = useState('latest');
+  const [commentSortBy, setCommentSortBy] = useState(CommentSortOption.MKR_AMOUNT);
 
   const getCommentVote = (item: PollCommentsAPIResponseItem): PollTallyVote | undefined => {
     const tallyVote = tally?.votesByAddress?.find(i => {
@@ -45,7 +47,7 @@ export default function PollComments({
         ...c,
         comment: {
           ...c.comment,
-          voterWeight: new BigNumber(0)
+          voterWeight: BigNumber.from(0)
         }
       }));
     } else {
@@ -55,7 +57,7 @@ export default function PollComments({
           ...c,
           comment: {
             ...c.comment,
-            voterWeight: new BigNumber(tallyVote ? tallyVote.mkrSupport : 0)
+            voterWeight: parseUnits(tallyVote ? tallyVote.mkrSupport.toString() : '0')
           }
         };
       });
@@ -64,11 +66,11 @@ export default function PollComments({
 
   const sortedComments = useMemo(() => {
     return mergedComments.sort((a, b) => {
-      if (commentSortBy === 'latest') {
+      if (commentSortBy === CommentSortOption.LATEST) {
         const aDate = new Date(a.comment.date).getTime() || 0;
         const bDate = new Date(b.comment.date).getTime() || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
-      } else if (commentSortBy === 'MKR Amount') {
+      } else if (commentSortBy === CommentSortOption.MKR_AMOUNT) {
         return a.comment.voterWeight.lt(b.comment.voterWeight)
           ? 1
           : a.comment.voterWeight.eq(b.comment.voterWeight)
@@ -103,28 +105,28 @@ export default function PollComments({
         <Box>
           <FilterButton name={() => `Sort by ${commentSortBy}`} listVariant="menubuttons.default.list">
             <MenuItem
-              onSelect={() => setCommentSortBy('latest')}
+              onSelect={() => setCommentSortBy(CommentSortOption.LATEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === 'latest' ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.LATEST ? 'bold' : undefined
               }}
             >
               Latest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy('oldest')}
+              onSelect={() => setCommentSortBy(CommentSortOption.OLDEST)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === 'oldest' ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.OLDEST ? 'bold' : undefined
               }}
             >
               Oldest
             </MenuItem>
             <MenuItem
-              onSelect={() => setCommentSortBy('MKR Amount')}
+              onSelect={() => setCommentSortBy(CommentSortOption.MKR_AMOUNT)}
               sx={{
                 variant: 'menubuttons.default.item',
-                fontWeight: commentSortBy === 'MKR Amount' ? 'bold' : undefined
+                fontWeight: commentSortBy === CommentSortOption.MKR_AMOUNT ? 'bold' : undefined
               }}
             >
               MKR Amount
