@@ -4,7 +4,7 @@ import Stack from 'modules/app/components/layout/layouts/Stack';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import matter from 'gray-matter';
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { HeadComponent } from 'modules/app/components/layout/Head';

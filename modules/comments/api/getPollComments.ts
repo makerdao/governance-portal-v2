@@ -4,8 +4,7 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { PollComment, PollCommentFromDB, PollCommentsAPIResponseItem } from '../types/comments';
 import uniqBy from 'lodash/uniqBy';
-import { markdownToHtml } from 'lib/utils';
-
+import { markdownToHtml } from 'lib/markdown';
 export async function getPollComments(
   pollId: number,
   network: SupportedNetworks

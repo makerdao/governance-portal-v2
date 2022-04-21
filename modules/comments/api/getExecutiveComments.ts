@@ -8,8 +8,7 @@ import {
   ExecutiveCommentsAPIResponseItem
 } from '../types/comments';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { markdownToHtml } from 'lib/utils';
-
+import { markdownToHtml } from 'lib/markdown';
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks

@@ -1,10 +1,3 @@
-import remarkGfm from 'remark-gfm';
-
-import rehypeStringify from 'rehype-stringify';
-import remarkParse from 'remark-parse';
-import { unified } from 'unified';
-import remarkRehype from 'remark-rehype';
-import rehypeSanitize from 'rehype-sanitize';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
@@ -24,18 +17,6 @@ export function bigNumberKFormat(num: CurrencyObject): string {
   const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
   invariant(value, 'bigNumberKFormat value undefined');
   return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
-}
-
-export async function markdownToHtml(markdown: string, limited?: boolean): Promise<string> {
-  const optionsSanitize = limited ? { tagNames: ['a', 'ul', 'li', 'strong', 'em', 'b'] } : {};
-  const result = await unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype)
-    .use(rehypeSanitize, optionsSanitize)
-    .use(rehypeStringify)
-    .process(markdown);
-  return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 
 export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> {
