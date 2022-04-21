@@ -55,20 +55,29 @@ export default function TabsNavigation(): React.ReactElement {
             <Box
               key={`link-${link.href}`}
               sx={{
-                ml: 2,
-                mr: 2
+                ml: [2, 4],
+                mr: [2, 4]
               }}
             >
               <a
                 href={link.href}
-                sx={{ textDecoration: 'none', color: activeTab === link.href ? 'primary' : 'onSecondary' }}
+                sx={{
+                  textDecoration: 'none',
+                  color: activeTab === link.href ? 'primary' : 'onSecondary',
+                  '&:hover': {
+                    color: 'primary'
+                  }
+                }}
               >
                 <Box
                   sx={{
                     borderBottom: activeTab === link.href ? '1px solid' : 'none',
                     borderColor: 'onBackground',
                     pb: 2,
-                    pt: 1
+                    pt: 1,
+                    '&:hover': {
+                      borderBottom: '1px solid'
+                    }
                   }}
                 >
                   <Text>{link.text}</Text>
