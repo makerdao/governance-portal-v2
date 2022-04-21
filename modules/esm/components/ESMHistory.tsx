@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Card, Text, Link, Spinner } from 'theme-ui';
+import { Card, Text, Spinner } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { formatRound } from 'lib/utils';
@@ -7,6 +7,7 @@ import { formatDateWithTime, formatDateWithoutTime } from 'lib/datetime';
 import { cutMiddle } from 'lib/string';
 import { AllEsmJoinsRecord } from 'modules/gql/generated/graphql';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 type Props = {
   allEsmJoins: AllEsmJoinsRecord[] | undefined;
@@ -103,11 +104,10 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                         </Text>
                       </td>
                       <td>
-                        <Link
+                        <ExternalLink
                           href={getEtherscanLink(network, action.txFrom, 'address')}
-                          target="_blank"
-                          variant="caption"
-                          color="accentBlue"
+                          styles={{ color: 'accentBlue' }}
+                          title="View on etherscan"
                         >
                           <Text
                             as="p"
@@ -117,7 +117,7 @@ const ESMHistory = ({ allEsmJoins }: Props): JSX.Element => {
                           >
                             {cutMiddle(action.txFrom, bpi > 0 ? 8 : 4, bpi > 0 ? 6 : 4)}
                           </Text>
-                        </Link>
+                        </ExternalLink>
                       </td>
                     </tr>
                   );
