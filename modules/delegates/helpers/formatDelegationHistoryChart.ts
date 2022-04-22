@@ -1,5 +1,4 @@
-import { DelegationHistory } from '../types/delegate';
-import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
+import { MKRLockedDelegateAPIResponse } from '../types/delegate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { formatIsoDateConversion } from 'lib/datetime';
 import { MKRWeightTimeRanges } from '../delegates.constants';

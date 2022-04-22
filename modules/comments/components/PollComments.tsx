@@ -1,6 +1,5 @@
 import { Flex, Text, Box } from 'theme-ui';
 import { useMemo, useState } from 'react';
-import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { MenuItem } from '@reach/menu-button';
@@ -12,6 +11,8 @@ import {
   PollCommentsAPIResponseItemWithWeight,
   CommentSortOption
 } from 'modules/comments/types/comments';
+import { BigNumber } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 
 export default function PollComments({
   comments,
@@ -46,7 +47,7 @@ export default function PollComments({
         ...c,
         comment: {
           ...c.comment,
-          voterWeight: new BigNumber(0)
+          voterWeight: BigNumber.from(0)
         }
       }));
     } else {
@@ -56,7 +57,7 @@ export default function PollComments({
           ...c,
           comment: {
             ...c.comment,
-            voterWeight: new BigNumber(tallyVote ? tallyVote.mkrSupport : 0)
+            voterWeight: parseUnits(tallyVote ? tallyVote.mkrSupport.toString() : '0')
           }
         };
       });

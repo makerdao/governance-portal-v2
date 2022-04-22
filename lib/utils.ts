@@ -1,6 +1,3 @@
-import remarkGfm from 'remark-gfm';
-import { remark } from 'remark';
-import remarkHtml from 'remark-html';
 import invariant from 'tiny-invariant';
 import { cloneElement } from 'react';
 import { jsx } from 'theme-ui';
@@ -20,11 +17,6 @@ export function bigNumberKFormat(num: CurrencyObject): string {
   const value = noUnit ? num : num.div(Math.pow(1000, typeIndex + 1));
   invariant(value, 'bigNumberKFormat value undefined');
   return `${value.toBigNumber().toFixed(2)}${noUnit ? '' : units[typeIndex]}`;
-}
-
-export async function markdownToHtml(markdown: string): Promise<string> {
-  const result = await remark().use(remarkGfm).use(remarkHtml, { sanitize: true }).process(markdown);
-  return result.toString().replace(/<a href/g, '<a target="_blank" href');
 }
 
 export function timeoutPromise(ms: number, promise: Promise<any>): Promise<any> {

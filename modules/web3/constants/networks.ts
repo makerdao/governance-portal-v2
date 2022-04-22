@@ -40,7 +40,7 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.MAINNET,
     label: 'Mainnet',
     network: SupportedNetworks.MAINNET,
-    defaultRpc: NodeProviders.ALCHEMY,
+    defaultRpc: NodeProviders.INFURA,
     spockUrl: process.env.NODE_ENV === 'development' ? STAGING_MAINNET_SPOCK_URL : MAINNET_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://mainnet.infura.io/v3/${config.INFURA_KEY}`,
@@ -52,7 +52,7 @@ export const CHAIN_INFO: ChainInfo = {
     chainId: SupportedChainId.GOERLI,
     label: 'Goerli',
     network: SupportedNetworks.GOERLI,
-    defaultRpc: NodeProviders.ALCHEMY,
+    defaultRpc: NodeProviders.INFURA,
     spockUrl: GOERLI_SPOCK_URL,
     rpcs: {
       [NodeProviders.INFURA]: `https://goerli.infura.io/v3/${config.INFURA_KEY}`,
@@ -100,3 +100,5 @@ export const DECODED_SPELL_ENDPOINT = (hash: string): string =>
   `${url}/api/v1/transactions/${hash}/diffs/decoded`;
 
 export const AVG_BLOCKS_PER_DAY = 6500;
+
+export const GASNOW_ENDPOINT = 'https://www.etherchain.org/api/gasnow';

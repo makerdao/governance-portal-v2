@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import BigNumber from 'bignumber.js';
 import { PollTally, Poll } from 'modules/polling/types';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 
@@ -46,11 +46,9 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               {votes.map((v, i) => (
                 <tr key={i} data-testid="vote-by-address">
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
-                    <Link href={{ pathname: `/address/${v.voter}` }} passHref>
-                      <ThemeUILink title="View address detail">
-                        <AddressIconBox address={v.voter} width={41} />
-                      </ThemeUILink>
-                    </Link>
+                    <InternalLink href={`/address/${v.voter}`} title="View address detail">
+                      <AddressIconBox address={v.voter} width={41} />
+                    </InternalLink>
                   </Text>
                   <Text
                     as="td"

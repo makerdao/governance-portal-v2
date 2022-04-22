@@ -2,19 +2,7 @@ import { useState, useEffect } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
-import {
-  Badge,
-  Button,
-  Card,
-  Flex,
-  Heading,
-  Spinner,
-  Box,
-  Text,
-  Divider,
-  Link as ThemeUILink
-} from 'theme-ui';
+import { Badge, Button, Card, Flex, Heading, Spinner, Box, Text, Divider } from 'theme-ui';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import useSWR, { useSWRConfig } from 'swr';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -40,6 +28,8 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import { StatBox } from 'modules/app/components/StatBox';
 import { SpellEffectsTab } from 'modules/executive/components/SpellEffectsTab';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 //types
 import { CMSProposal, Proposal, SpellData, SpellDiff } from 'modules/executive/types';
@@ -168,14 +158,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
       )}
       <SidebarLayout>
         <Box>
-          <Link href={{ pathname: '/executive' }}>
+          <InternalLink href={'/executive'} title="View executive proposals">
             <Button variant="mutedOutline" mb={2}>
               <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                 <Icon name="chevron_left" size="2" mr={2} />
                 Back to {bpi === 0 ? 'all' : 'executive'} proposals
               </Flex>
             </Button>
-          </Link>
+          </InternalLink>
           <Card sx={{ p: [0, 0] }}>
             <Heading pt={[3, 4]} px={[3, 4]} pb="3" sx={{ fontSize: [5, 6] }}>
               {proposal.title ? proposal.title : proposal.address}
@@ -197,15 +187,14 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
             <Flex sx={{ mx: [3, 4], mb: 3, justifyContent: 'space-between' }}>
               <StatBox
                 value={
-                  <ThemeUILink
+                  <ExternalLink
                     title="View on etherescan"
                     href={getEtherscanLink(network, proposal.address, 'address')}
-                    target="_blank"
                   >
                     <Text sx={{ fontSize: [2, 5] }}>
                       {cutMiddle(proposal.address, bpi > 0 ? 6 : 4, bpi > 0 ? 6 : 4)}
                     </Text>
-                  </ThemeUILink>
+                  </ExternalLink>
                 }
                 label="Spell Address"
               />
@@ -357,28 +346,25 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
                         key={supporter.address}
                       >
                         <Box>
-                          <Link
-                            href={{
-                              pathname: `/address/${supporter.address}`
-                            }}
-                            passHref
+                          <InternalLink
+                            href={`/address/${supporter.address}`}
+                            title="Profile details"
+                            styles={{ mt: 'auto' }}
                           >
-                            <ThemeUILink sx={{ mt: 'auto' }} title="Profile details">
-                              <Text
-                                sx={{
-                                  color: 'accentBlue',
-                                  fontSize: 2,
-                                  ':hover': { color: 'blueLinkHover' }
-                                }}
-                              >
-                                <AddressIconBox
-                                  address={supporter.address}
-                                  width={30}
-                                  limitTextLength={bpi === 0 ? 12 : 14}
-                                />
-                              </Text>
-                            </ThemeUILink>
-                          </Link>
+                            <Text
+                              sx={{
+                                color: 'accentBlue',
+                                fontSize: 2,
+                                ':hover': { color: 'blueLinkHover' }
+                              }}
+                            >
+                              <AddressIconBox
+                                address={supporter.address}
+                                width={30}
+                                limitTextLength={bpi === 0 ? 12 : 14}
+                              />
+                            </Text>
+                          </InternalLink>
                         </Box>
 
                         <Box sx={{ textAlign: 'right' }}>

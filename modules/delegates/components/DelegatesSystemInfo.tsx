@@ -2,7 +2,8 @@ import BigNumber from 'bignumber.js';
 import StackLayout from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatAddress } from 'lib/utils';
-import { Box, Card, Flex, Heading, Link as ThemeUILink, Text } from 'theme-ui';
+import { Box, Card, Flex, Heading, Text } from 'theme-ui';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { DelegatesAPIStats } from '../types';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { useTotalSupply } from 'modules/web3/hooks/useTotalSupply';
@@ -64,7 +65,7 @@ export function DelegatesSystemInfo({
   ];
 
   return (
-    <Box className={className}>
+    <Box sx={{ mt: 3 }}>
       <Heading mt={3} mb={2} as="h3" variant="microHeading">
         System Info
       </Heading>
@@ -73,12 +74,12 @@ export function DelegatesSystemInfo({
           <Flex sx={{ justifyContent: 'space-between', flexDirection: 'row' }}>
             <Text sx={{ fontSize: 3, color: 'textSecondary' }}>Delegate Factory</Text>
             {delegateFactoryAddress ? (
-              <ThemeUILink
+              <ExternalLink
                 href={getEtherscanLink(network, delegateFactoryAddress, 'address')}
-                target="_blank"
+                title="View address on Etherscan"
               >
                 <Text>{formatAddress(delegateFactoryAddress)}</Text>
-              </ThemeUILink>
+              </ExternalLink>
             ) : (
               <Box sx={{ width: 6 }}>
                 <SkeletonThemed />

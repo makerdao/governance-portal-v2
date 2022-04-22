@@ -1,6 +1,6 @@
-import { Flex, Grid, Box, Container, Link as ThemeUILink } from 'theme-ui';
+import { Flex, Grid, Box, Container } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import Link from 'next/link';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
 
@@ -99,7 +99,7 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
         pt: 5,
         pb: 3,
         width: '100%',
-        backgroundColor: 'background'
+        backgroundColor: 'transparent'
       }}
     >
       <Grid
@@ -139,11 +139,9 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
             >
               {group.list.map(link => (
                 <li key={link.url}>
-                  <Link href={link.url}>
-                    <a title={link.title} target="_blank" rel="noreferrer">
-                      {link.title}
-                    </a>
-                  </Link>
+                  <ExternalLink href={link.url} title={link.title}>
+                    {link.title}
+                  </ExternalLink>
                 </li>
               ))}
             </Box>
@@ -170,51 +168,21 @@ export default function LongFooter({ locale = 'en' }: { locale?: string }): Reac
               }
             }}
           >
-            <ThemeUILink
-              sx={{ color: 'text' }}
-              href="https://twitter.com/MakerDAO"
-              title="Twitter"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ExternalLink styles={{ color: 'text' }} href="https://twitter.com/MakerDAO" title="Twitter">
               <Icon name="twitter" />
-            </ThemeUILink>
-            <ThemeUILink
-              sx={{ color: 'text' }}
-              href="https://www.reddit.com/r/MakerDAO/"
-              title="Reddit"
-              target="_blank"
-              rel="noreferrer"
-            >
+            </ExternalLink>
+            <ExternalLink styles={{ color: 'text' }} href="https://www.reddit.com/r/MakerDAO/" title="Reddit">
               <Icon name="reddit" />
-            </ThemeUILink>
-            <ThemeUILink
-              sx={{ color: 'text' }}
-              href="https://t.me/makerdaoOfficial"
-              title="Telegram"
-              target="_blank"
-              rel="noreferrer"
-            >
+            </ExternalLink>
+            <ExternalLink styles={{ color: 'text' }} href="https://t.me/makerdaoOfficial" title="Telegram">
               <Icon name="telegram" />
-            </ThemeUILink>
-            <ThemeUILink
-              sx={{ color: 'text' }}
-              href="https://www.youtube.com/MakerDAO"
-              title="Youtube"
-              target="_blank"
-              rel="noreferrer"
-            >
+            </ExternalLink>
+            <ExternalLink styles={{ color: 'text' }} href="https://www.youtube.com/MakerDAO" title="Youtube">
               <Icon name="youtube" />
-            </ThemeUILink>
-            <ThemeUILink
-              sx={{ color: 'text' }}
-              href="https://discord.gg/tQ5wnN6Ms4"
-              title="Discord"
-              target="_blank"
-              rel="noreferrer"
-            >
+            </ExternalLink>
+            <ExternalLink styles={{ color: 'text' }} href="https://discord.gg/tQ5wnN6Ms4" title="Discord">
               <Icon name="discord" />
-            </ThemeUILink>
+            </ExternalLink>
           </Flex>
         </Box>
       </Grid>

@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Heading, Box, Flex, Card, Text, Link as ThemeUILInk, Button } from 'theme-ui';
+import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import shallow from 'zustand/shallow';
 import { fetchJson } from 'lib/fetchJson';
-import { shuffleArray } from 'lib/common/shuffleArray';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
@@ -18,7 +16,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import ResourceBox from 'modules/app/components/ResourceBox';
-import { DelegateCard } from 'modules/delegates/components';
+import { DelegateOverviewCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
@@ -28,6 +26,7 @@ import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 type Props = {
   delegates: Delegate[];
@@ -113,7 +112,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {recognizedDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -127,7 +126,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {shadowDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -141,7 +140,7 @@ const Delegates = ({ delegates, stats }: Props) => {
                   {expiredDelegates.map(delegate => (
                     <Box key={delegate.id} sx={{ mb: 3 }}>
                       <ErrorBoundary componentName="Delegate Card">
-                        <DelegateCard delegate={delegate} />
+                        <DelegateOverviewCard delegate={delegate} />
                       </ErrorBoundary>
                     </Box>
                   ))}
@@ -162,16 +161,13 @@ const Delegates = ({ delegates, stats }: Props) => {
                     : 'Interested in creating a delegate contract?'}
                 </Text>
                 <Box>
-                  <Link
-                    href={{
-                      pathname: '/account'
-                    }}
-                    passHref
+                  <InternalLink
+                    href={'/account'}
+                    title="My account"
+                    // TODO: onClick={() => trackButtonClick('viewAccount')}
                   >
-                    <ThemeUILInk onClick={() => trackButtonClick('viewAccount')} title="My account">
-                      <Text>View Account Page</Text>
-                    </ThemeUILInk>
-                  </Link>
+                    <Text color="accentBlue">View Account Page</Text>
+                  </InternalLink>
                 </Box>
               </Card>
             </Box>
@@ -201,7 +197,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
     if (!isDefaultNetwork(network)) {
       fetchJson(`/api/delegates?network=${network}`)
         .then((response: DelegatesAPIResponse) => {
-          _setDelegates(shuffleArray(response.delegates));
+          _setDelegates(response.delegates);
           _setStats(response.stats);
         })
         .catch(setError);
@@ -213,11 +209,7 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
   }
 
   if (!isDefaultNetwork(network) && !_delegates) {
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+    return <PageLoadingPlaceholder />;
   }
 
   return (
@@ -237,7 +229,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
-      delegates: shuffleArray(delegatesAPIResponse.delegates),
+      delegates: delegatesAPIResponse.delegates,
       stats: delegatesAPIResponse.stats
     }
   };

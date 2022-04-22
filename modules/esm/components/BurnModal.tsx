@@ -5,10 +5,10 @@ import ConfirmBurn from './burnModal/ConfirmBurn';
 import BurnTxSuccess from './burnModal/BurnTxSuccess';
 import BurnFailed from './burnModal/BurnFailed';
 import { useMkrBalance } from 'modules/mkr/hooks/useMkrBalance';
-import { TxDisplay } from 'modules/delegates/components/modals/TxDisplay';
 import { BigNumber } from 'ethers';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useEsmBurn } from '../hooks/useEsmBurn';
+import { TxInProgress } from 'modules/app/components/TxInProgress';
 
 const ModalContent = ({
   setShowDialog,
@@ -69,9 +69,9 @@ const ModalContent = ({
         />
       );
     case 'signing':
-      return <TxDisplay tx={tx} setTxId={setTxId} onDismiss={close} />;
+      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
     case 'pending':
-      return <TxDisplay tx={tx} setTxId={setTxId} onDismiss={close} />;
+      return <TxInProgress tx={tx} txPending={tx?.status === 'pending'} setTxId={setTxId} />;
     case 'mined':
       return <BurnTxSuccess tx={tx} close={close} />;
     case 'failed':

@@ -5,11 +5,11 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { fadeIn, slideUp } from 'lib/keyframes';
 
 const VideoModal = ({
-  embedId,
+  url,
   isOpen,
   onDismiss
 }: {
-  embedId?: string;
+  url: string;
   isOpen: boolean;
   onDismiss: () => void;
 }): React.ReactElement => {
@@ -39,7 +39,7 @@ const VideoModal = ({
       >
         <Box sx={{ height: ['180px', '445px'] }}>
           <iframe
-            src="https://player.vimeo.com/video/649207489?h=f49086d1ab&color=68FEE3&autoplay=1"
+            src={url}
             width="620"
             height="360"
             sx={{

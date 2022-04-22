@@ -1,10 +1,10 @@
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import useSWR from 'swr';
-import Link from 'next/link';
-import { Box, Text, Link as InternalLink } from 'theme-ui';
+import { Box, Text } from 'theme-ui';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { CommentsAPIResponseItem } from '../types/comments';
 import { formatDateWithTime } from 'lib/datetime';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 export default function AccountComments({ address }: { address: string }): React.ReactElement {
   const { network } = useActiveWeb3React();
@@ -63,18 +63,14 @@ export default function AccountComments({ address }: { address: string }): React
               ></Text>
               <Box mt={1}>
                 {comment.comment.commentType === 'executive' && (
-                  <Link href={`/executive/${comment.comment.spellAddress}`} passHref>
-                    <InternalLink variant="nostyle">
-                      <Text sx={{ color: 'accentBlue' }}>View Executive</Text>
-                    </InternalLink>
-                  </Link>
+                  <InternalLink href={`/executive/${comment.comment.spellAddress}`} title="View executive">
+                    <Text sx={{ color: 'accentBlue' }}>View Executive</Text>
+                  </InternalLink>
                 )}
                 {comment.comment.commentType === 'poll' && (
-                  <Link href={`/polling/${comment.comment.pollId}`} passHref>
-                    <InternalLink variant="nostyle">
-                      <Text sx={{ color: 'accentBlue' }}>View Poll</Text>
-                    </InternalLink>
-                  </Link>
+                  <InternalLink href={`/polling/${comment.comment.pollId}`} title="View poll">
+                    <Text sx={{ color: 'accentBlue' }}>View Poll</Text>
+                  </InternalLink>
                 )}
               </Box>
             </Box>
