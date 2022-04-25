@@ -726,6 +726,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.17.8":
+  version "7.17.9"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.9.tgz#d19fbf802d01a8cb6cf053a64e472d42c434ba72"
+  integrity sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.16.0", "@babel/template@^7.16.7", "@babel/template@^7.3.3":
   version "7.16.7"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.16.7.tgz#8d126c8701fde4d66b264b3eba3d96f07666d155"
@@ -3097,6 +3104,14 @@
     "@theme-ui/css" "0.12.1"
     deepmerge "^4.2.2"
 
+"@theme-ui/color@^0.14.4":
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/@theme-ui/color/-/color-0.14.4.tgz#a3d1e11c448935e6897764d11dded0a49a917336"
+  integrity sha512-vhxUtDNZVfhcYc6NC6twzUrdM8kM8B2jK0J2plZh0Qzdpqtg2yC+MHR+Qa44QCJOLpLgpWuVij60NbFuVSmEtg==
+  dependencies:
+    "@theme-ui/css" "0.14.4"
+    polished "^4.0.5"
+
 "@theme-ui/components@0.12.1":
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@theme-ui/components/-/components-0.12.1.tgz#3bd4e8973c0f388996f8203aa2dc519e9b081a8e"
@@ -3126,6 +3141,13 @@
   integrity sha512-/9mvYEjPubtk7u+2tx3wTVq4kTAUNi8hMpisHBJ9em7nJ+b0sdRhPp/RPFVkUxP2Q9RdsTgvfGkrN73UBvVUAQ==
   dependencies:
     "@emotion/react" "^11.6.0"
+    csstype "^3.0.10"
+
+"@theme-ui/css@0.14.4":
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/@theme-ui/css/-/css-0.14.4.tgz#8ae36918046490cc850a6a48ae5b852fb31960d1"
+  integrity sha512-eeLVQDo4sJdGOCG8mObMOd3/DeE/T2yKAHdWu8PGY/14FHWlxjaZfOHBPVyw/u06SLGHvp1BYlYm2VxFLR/KQA==
+  dependencies:
     csstype "^3.0.10"
 
 "@theme-ui/match-media@^0.12.0":
@@ -11419,6 +11441,13 @@ pngjs@^3.3.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
+
+polished@^4.0.5:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-4.2.2.tgz#2529bb7c3198945373c52e34618c8fe7b1aa84d1"
+  integrity sha512-Sz2Lkdxz6F2Pgnpi9U5Ng/WdWAUZxmHrNPoVlm3aAemxoy2Qy7LGjQg4uf8qKelDAUW94F4np3iH2YPf2qefcQ==
+  dependencies:
+    "@babel/runtime" "^7.17.8"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"

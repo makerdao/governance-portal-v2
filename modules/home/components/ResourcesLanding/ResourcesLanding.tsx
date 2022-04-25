@@ -3,6 +3,7 @@ import { Button, Box, Flex, Heading, Card, Text, Image } from 'theme-ui';
 import { resources, ResourceColor, ResourceCategory } from './resources';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { fadeIn } from 'lib/keyframes';
+import { alpha } from '@theme-ui/color';
 
 const CategoryButton = ({ label, color, active, onClick }) => {
   return (
@@ -11,7 +12,16 @@ const CategoryButton = ({ label, color, active, onClick }) => {
       onClick={onClick}
       title={label}
       sx={{
-        background: active ? 'onPrimary' : 'rgba(255, 255, 255, 0.1)',
+        background: theme =>
+          active
+            ? `${alpha(theme?.rawColors?.onPrimary, 0.4)(theme)}`
+            : `${alpha(theme?.rawColors?.onPrimary, 0)(theme)}`,
+        '&:hover': {
+          background: theme =>
+            active
+              ? `${alpha(theme?.rawColors?.onPrimary, 0.4)(theme)}`
+              : `${alpha(theme?.rawColors?.onPrimary, 0.2)(theme)}`
+        },
         px: [2, 2, 3],
         border: 'none'
       }}
@@ -37,8 +47,12 @@ export const ResourcesLanding = (): JSX.Element => {
             display: ['none', 'flex', 'flex'],
             background: 'rgba(255, 255, 255, 0.1)',
             backgroundBlendMode: 'multiply',
-            border: '1.35px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: 'inset 0px -3px 22px #FFFFFF',
+            border: '1.35px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: theme =>
+              `inset 0px -3px 10px ${alpha(
+                theme.rawColors?.shadowFloater,
+                0.15
+              )(theme)},inset 0px 2px 10px ${alpha(theme.rawColors?.shadowFloater, 0.15)(theme)}`,
             borderRadius: 'round'
           }}
         >
