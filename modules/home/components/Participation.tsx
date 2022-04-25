@@ -136,7 +136,7 @@ export default function Participation({
               title="View More Metrics"
               target="_blank"
             >
-              <ViewMore label="View more metrics" />
+              <ViewMore label="View More Metrics" />
             </ExternalLink>
           </Flex>
           <Card
