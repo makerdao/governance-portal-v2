@@ -208,14 +208,14 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
             <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
               <Box
                 sx={{
-                  background: '#F7F8F9',
+                  background: 'onSurfaceAlt',
                   width: '200vw',
                   zIndex: -1,
                   ml: '-100vw',
                   position: 'absolute',
                   top: 0,
                   left: 0,
-                  height: '1620px'
+                  height: '1720px'
                 }}
               />
               <InformationParticipateMakerGovernance />
