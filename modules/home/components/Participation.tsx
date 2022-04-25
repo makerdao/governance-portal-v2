@@ -80,13 +80,11 @@ export default function Participation({
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =
-    new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'MM-dd-yyyy')).getTime() / 1000;
+    new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'yyyy-MM-dd')).getTime() / 1000;
 
-  const { data: locks, error } = useSWR<AllLocksResponse[]>(
+  const { data: locks } = useSWR<AllLocksResponse[]>(
     `/api/executive/all-locks?network=${network}&unixtimeStart=${unixtimeStart}`
   );
-
-  console.log('error from server:', error);
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 4, mb: 4 }}>

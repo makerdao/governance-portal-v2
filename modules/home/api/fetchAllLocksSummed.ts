@@ -31,7 +31,6 @@ export default async function fetchAllLocksSummed(
     return locks;
   } catch (e) {
     console.error('Error fetching all lock events', e);
-    throw new Error(`Error fetching all locks: ${e}`);
   }
   return [];
 }
