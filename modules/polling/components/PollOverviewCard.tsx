@@ -63,10 +63,10 @@ export default function PollOverviewCard({
         p: [0, 0]
       }}
     >
-      <Box>
+      <Flex sx={{ flexDirection: 'column' }}>
         <ErrorBoundary componentName="Poll Card">
           <Box sx={{ px: [3, 4], py: 3 }}>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: 210 }}>
               <Flex sx={{ flexDirection: 'column' }}>
                 {bpi === 0 && (
                   <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
@@ -240,7 +240,7 @@ export default function PollOverviewCard({
             </Flex>
           )}
         </ErrorBoundary>
-      </Box>
+      </Flex>
     </Card>
   );
 }
