@@ -24,7 +24,8 @@ export const MEET_DELEGATE_URLS = {
   // MonetSupply
   '0x45127ec92b58c3a89e89f63553073adcaf2f1f5f': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg',
   // Gauntlet
-  '0xb0b829a6aae0f7e59b43391b2c8a1cfd0c801c8c': 'https://www.youtube-nocookie.com/embed/PbdUe4diPjg',
+  '0xb0b829a6aae0f7e59b43391b2c8a1cfd0c801c8c':
+    'https://www.youtube-nocookie.com/embed/PbdUe4diPjg?start=1710',
   // Acre
   '0x4d3ac33ab1dd7b0f352b8e590fe8b62c4c39ead5': 'https://www.youtube-nocookie.com/embed/9z96VWDC_Eo',
   // GFX
@@ -34,5 +35,8 @@ export const MEET_DELEGATE_URLS = {
   // Doo
   '0x8804d391472126da56b9a560aef6c6d5aaa7607b': 'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU',
   // Flipside
-  '0x84b05b0a30b6ae620f393d1037f217e607ad1b96': 'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU'
+  '0x84b05b0a30b6ae620f393d1037f217e607ad1b96':
+    'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU?start=1751',
+  // Penn Blockchain
+  '0x7ddb50a5b15aea7e7cf9ac8e55a7f9fd9d05ecc6': 'https://www.youtube-nocookie.com/embed/aI-nDmwnWpY'
 };
