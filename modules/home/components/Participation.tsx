@@ -82,9 +82,11 @@ export default function Participation({
   const unixtimeStart =
     new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'MM-dd-yyyy')).getTime() / 1000;
 
-  const { data: locks } = useSWR<AllLocksResponse[]>(
+  const { data: locks, error } = useSWR<AllLocksResponse[]>(
     `/api/executive/all-locks?network=${network}&unixtimeStart=${unixtimeStart}`
   );
+
+  console.log('error from server:', error);
 
   return (
     <Flex sx={{ flexDirection: 'column', gap: 4, mb: 4 }}>
