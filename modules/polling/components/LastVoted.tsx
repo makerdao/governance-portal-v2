@@ -1,7 +1,8 @@
-import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
+import { Box, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import React from 'react';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
+import Skeleton from 'modules/app/components/SkeletonThemed';
 
 export default function LastVoted({
   expired,
@@ -10,7 +11,7 @@ export default function LastVoted({
   styles
 }: {
   expired: boolean;
-  date?: string | number;
+  date?: string | null;
   left?: boolean;
   styles?: ThemeUIStyleObject;
 }): React.ReactElement {
@@ -37,12 +38,22 @@ export default function LastVoted({
     }
   };
 
+  const loading = typeof date === 'undefined';
+
+  if (loading) {
+    return (
+      <Box sx={{ width: '100%', height: '18px', ...styles }}>
+        <Skeleton />
+      </Box>
+    );
+  }
+
   const isLongerThan14Days = date && Date.now() - new Date(date).getTime() > 14 * 24 * 60 * 60 * 1000;
   const isLongerThan21Days = date && Date.now() - new Date(date).getTime() > 21 * 24 * 60 * 60 * 1000;
   const isLongerThan28Days = date && Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000;
 
   const lastVoteDate = date
-    ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date) : formatDateWithTime(date)}`
+    ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date ?? '') : formatDateWithTime(date ?? '')}`
     : 'NO VOTE HISTORY';
 
   return (
@@ -51,6 +62,7 @@ export default function LastVoted({
         flexDirection: left ? 'row-reverse' : ['row-reverse', 'row'],
         justifyContent: left ? 'flex-end' : 'flex-start',
         alignItems: 'center',
+        height: '18px',
         ...styles
       }}
     >

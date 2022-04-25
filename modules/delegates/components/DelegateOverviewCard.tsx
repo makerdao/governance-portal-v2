@@ -56,7 +56,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
         <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
-            date={delegate.lastVoteDate ? delegate.lastVoteDate : ''}
+            date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
             left
           />
           {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
