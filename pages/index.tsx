@@ -122,7 +122,6 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
                       onClick={() => setVideoOpen(true)}
                       styles={{ mr: [1, 3] }}
                     />
-                    <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
                   </Box>
                 </Flex>
                 <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
