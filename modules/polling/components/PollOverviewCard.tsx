@@ -231,7 +231,7 @@ export default function PollOverviewCard({
             {children && <Box>{children}</Box>}
           </Box>
 
-          {tally && tally.totalMkrParticipation > 0 && (
+          {tally && (
             <Flex sx={{ flexDirection: 'column', justifySelf: 'flex-end' }}>
               <Divider my={0} />
               <ErrorBoundary componentName="Poll Winning Option">

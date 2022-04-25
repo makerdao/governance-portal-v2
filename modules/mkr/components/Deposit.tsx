@@ -86,7 +86,7 @@ const ModalContent = ({
               <Text as="p" variant="microHeading" color="onBackgroundAlt">
                 Deposit into voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
                 Input the amount of MKR to deposit into the voting contract.
               </Text>
             </Box>
