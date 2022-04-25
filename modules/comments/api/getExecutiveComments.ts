@@ -8,8 +8,7 @@ import {
   ExecutiveCommentsAPIResponseItem
 } from '../types/comments';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
-import { markdownToHtml } from 'lib/utils';
-
+import { markdownToHtml } from 'lib/markdown';
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks
@@ -29,7 +28,7 @@ export async function getExecutiveComments(
     commentsFromDB.map(async comment => {
       const { _id, voterAddress, ...rest } = comment;
 
-      const commentBody = await markdownToHtml(comment.comment);
+      const commentBody = await markdownToHtml(comment.comment, true);
       return {
         ...rest,
         comment: commentBody,

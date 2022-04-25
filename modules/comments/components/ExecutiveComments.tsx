@@ -16,17 +16,20 @@ export default function ExecutiveComments({
 }): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useState(CommentSortOption.MKR_AMOUNT);
   const sortedComments = useMemo(() => {
+    console.log(comments, commentSortBy);
     return (comments || []).sort((a, b) => {
       if (commentSortBy === CommentSortOption.LATEST) {
         const aDate = a.comment.date || 0;
         const bDate = b.comment.date || 0;
         return aDate < bDate ? 1 : aDate === bDate ? 0 : -1;
       } else if (commentSortBy === CommentSortOption.MKR_AMOUNT) {
-        const aWeight = new BigNumber(a.comment.voterWeight || 0);
-        const bWeight = new BigNumber(b.comment.voterWeight || 0);
-        return aWeight.lt(bWeight) ? 1 : aWeight.eq(bWeight) ? 0 : -1;
+        return a.comment.voterWeight.lt(b.comment.voterWeight)
+          ? 1
+          : a.comment.voterWeight.eq(b.comment.voterWeight)
+          ? 0
+          : -1;
       }
-      return new Date(b.comment.date).getTime() - new Date(a.comment.date).getTime();
+      return new Date(a.comment.date).getTime() < new Date(b.comment.date).getTime() ? -1 : 1;
     });
   }, [commentSortBy, comments]);
 

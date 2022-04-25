@@ -7,7 +7,6 @@ import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import { SystemStats } from 'modules/home/components/SystemStats';
 import { ViewMore } from 'modules/home/components/ViewMore';
 import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
@@ -29,6 +28,7 @@ import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
+import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
 import BigNumber from 'bignumber.js';
 import { getCategories } from 'modules/polling/helpers/getCategories';
@@ -43,7 +43,9 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { Tokens } from 'modules/web3/constants/tokens';
 import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
-import allPolls from './api/polling/all-polls';
+import Participation from 'modules/home/components/Participation';
+import TabsNavigation from 'modules/home/components/TabsNavigation';
+import { StickyContainer, Sticky } from 'react-sticky';
 
 type Props = {
   proposals: Proposal[];
@@ -60,8 +62,15 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
   const [videoOpen, setVideoOpen] = useState(false);
   const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
   const topDelegates = delegates.slice(0, 5);
+  const activeDelegates = recognizedDelegates
+    .sort((a, b) => {
+      const [first] = a.combinedParticipation?.split('%') || '0';
+      const [second] = b.combinedParticipation?.split('%') || '0';
+      return parseFloat(second) - parseFloat(first);
+    })
+    .slice(0, 5);
 
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
   const chiefAddress = useContractAddress('chief');
   const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
@@ -92,95 +101,133 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
         }}
       />
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
-      <PrimaryLayout sx={{ maxWidth: 'page' }}>
-        <Stack gap={[5, 6]}>
-          <section>
-            <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
-              <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
-                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                  Maker Governance
-                </Heading>
-                <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
-                  Voting Portal
-                </Heading>
-                <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
-                  Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
-                </Text>
-                <Box>
-                  <PlayButton
-                    label="How to vote"
-                    onClick={() => setVideoOpen(true)}
-                    styles={{ mr: [1, 3] }}
-                  />
-                  <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
-                </Box>
-              </Flex>
-              <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
-                <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Heading>Latest Executive</Heading>
-                  <InternalLink href={'/executive'} title="Latest Executive">
-                    <ViewMore />
-                  </InternalLink>
+      <StickyContainer>
+        <PrimaryLayout sx={{ maxWidth: 'page' }}>
+          <Stack gap={[5, 6]} separationType="p">
+            <section>
+              <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
+                <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                    Maker Governance
+                  </Heading>
+                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                    Voting Portal
+                  </Heading>
+                  <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
+                    Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
+                  </Text>
+                  <Box>
+                    <PlayButton
+                      label="How to vote"
+                      onClick={() => setVideoOpen(true)}
+                      styles={{ mr: [1, 3] }}
+                    />
+                    <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
+                  </Box>
                 </Flex>
-                <Flex sx={{ mt: 3 }}>
-                  <ErrorBoundary componentName="Latest Executive">
-                    {proposals ? (
-                      proposals.length > 0 ? (
-                        <ExecutiveOverviewCard
-                          network={network}
-                          votedProposals={[]}
-                          account={account}
-                          isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
-                          proposal={proposals[0]}
-                        />
+                <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Heading>Latest Executive</Heading>
+                    <InternalLink href={'/executive'} title="Latest Executive">
+                      <ViewMore />
+                    </InternalLink>
+                  </Flex>
+                  <Flex sx={{ mt: 3 }}>
+                    <ErrorBoundary componentName="Latest Executive">
+                      {proposals ? (
+                        proposals.length > 0 ? (
+                          <ExecutiveOverviewCard
+                            network={network}
+                            votedProposals={[]}
+                            account={account}
+                            isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
+                            proposal={proposals[0]}
+                          />
+                        ) : (
+                          <Text>No proposals found</Text>
+                        )
                       ) : (
-                        <Text>No proposals found</Text>
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
-                  </ErrorBoundary>
+                        <Skeleton />
+                      )}
+                    </ErrorBoundary>
+                  </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          </section>
+            </section>
 
-          <section>
-            <ErrorBoundary componentName="Governance Stats">
-              <GovernanceStats
-                polls={polls}
-                delegates={delegates}
-                totalMKRDelegated={totalMKRDelegated}
-                mkrOnHat={mkrOnHat}
-                mkrInChief={mkrInChief}
+            <section>
+              <ErrorBoundary componentName="Governance Stats">
+                <GovernanceStats
+                  polls={polls}
+                  delegates={delegates}
+                  totalMKRDelegated={totalMKRDelegated}
+                  mkrOnHat={mkrOnHat}
+                  mkrInChief={mkrInChief}
+                />
+              </ErrorBoundary>
+            </section>
+
+            <section id="vote">
+              <Sticky topOffset={700}>
+                {({
+                  style,
+
+                  // the following are also available but unused in this example
+                  isSticky,
+                  wasSticky,
+                  distanceFromTop,
+                  distanceFromBottom,
+                  calculatedHeight
+                }) => (
+                  <Box
+                    style={{
+                      ...style,
+                      zIndex: 100
+                    }}
+                  >
+                    <TabsNavigation />
+                  </Box>
+                )}
+              </Sticky>
+              <Box sx={{ mt: 3 }}>
+                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+              </Box>
+              <PollCategoriesLanding pollCategories={pollCategories} />
+            </section>
+
+            <section id="delegate">
+              <ErrorBoundary componentName="Meet Delegates">
+                <MeetDelegates delegates={recognizedDelegates} bpi={bpi} />
+              </ErrorBoundary>
+            </section>
+
+            <section>
+              <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+            </section>
+
+            <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
+              <Box
+                sx={{
+                  background: '#F7F8F9',
+                  width: '200vw',
+                  zIndex: -1,
+                  ml: '-100vw',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  height: '1620px'
+                }}
               />
-            </ErrorBoundary>
-          </section>
+              <InformationParticipateMakerGovernance />
+              <ResourcesLanding />
+            </section>
 
-          <section>
-            <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
-            <PollCategoriesLanding pollCategories={pollCategories} />
-          </section>
-
-          <section>
-            <ErrorBoundary componentName="Meet Delegates">
-              <MeetDelegates delegates={recognizedDelegates} bpi={bpi} />
-            </ErrorBoundary>
-          </section>
-
-          <section>
-            <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
-          </section>
-
-          <InformationParticipateMakerGovernance />
-
-          <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
-            </ErrorBoundary>
-          </section>
-        </Stack>
-      </PrimaryLayout>
+            <section id="engage">
+              <Participation activeDelegates={activeDelegates} bpi={bpi} />
+            </section>
+          </Stack>
+        </PrimaryLayout>
+      </StickyContainer>
     </div>
   );
 };

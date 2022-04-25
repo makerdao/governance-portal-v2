@@ -1,5 +1,5 @@
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -58,11 +58,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
-  const votedPolls = Object.keys(ballot)
-    .map(pollId => {
-      return findPollById(polls, pollId);
-    })
-    .filter(p => !!p) as Poll[];
+  // Used to create a string that does not trigger the useMemo of votedPolls to be recreated. (Unique string does not re-render the votedPolls object)
+  const ballotKeys = useMemo(() => {
+    return Object.keys(ballot).join('');
+  }, [ballot]);
+
+  const votedPolls = useMemo(() => {
+    return Object.keys(ballot)
+      .map(pollId => {
+        return findPollById(polls, pollId);
+      })
+      .filter(p => !!p) as Poll[];
+  }, [ballotKeys]);
 
   const previousVotedPolls = Object.keys(previousBallot)
     .map(pollId => {
@@ -219,17 +226,17 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                             poll={poll}
                             reviewPage={true}
                             showVoting={false}
-                            yourVote={
-                              <Box ml={[0, 3]} mt={[3, 0]}>
-                                <PollVotedOption
-                                  poll={poll}
-                                  votedOption={previousBallot[poll.pollId].option}
-                                  votingWeight={votingWeight?.total}
-                                  transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                                  toggleShareModal={toggleShareModal}
-                                />
-                              </Box>
-                            }
+                            // yourVote={
+                            //   <Box ml={[0, 3]} mt={[3, 0]}>
+                            //     <PollVotedOption
+                            //       poll={poll}
+                            //       votedOption={previousBallot[poll.pollId].option}
+                            //       votingWeight={votingWeight?.total}
+                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                            //       toggleShareModal={toggleShareModal}
+                            //     />
+                            //   </Box>
+                            // }
                             hideTally
                           >
                             {previousBallot[poll.pollId]?.comment && (

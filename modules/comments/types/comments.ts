@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
 import { AddressApiResponse } from 'modules/address/types/addressApiResponse';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 

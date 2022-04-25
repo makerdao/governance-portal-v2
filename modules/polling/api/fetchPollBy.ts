@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { activePollByMultihash, activePollById } from 'modules/gql/queries/activePollBy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';

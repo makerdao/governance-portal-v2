@@ -1,21 +1,179 @@
 import { useRouter } from 'next/router';
-import { Flex, NavLink, Container, Close, Box, IconButton, Divider } from 'theme-ui';
+import {
+  Flex,
+  NavLink,
+  Container,
+  Close,
+  Box,
+  IconButton,
+  Divider,
+  Text,
+  useColorMode,
+  Badge
+} from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import ColorModeToggle from './header/ColorModeToggle';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { Tokens } from 'modules/web3/constants/tokens';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { formatValue } from 'lib/string';
+import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
+import { ExternalLink } from '../ExternalLink';
+import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
+import useSWR, { useSWRConfig } from 'swr';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { Proposal } from 'modules/executive/types';
+import { fetchJson } from 'lib/fetchJson';
+import { isActivePoll } from 'modules/polling/helpers/utils';
+
+const MenuItemContent = ({ label, icon }) => {
+  return (
+    <Flex sx={{ alignItems: 'center', gap: 2, justifyContent: 'flex-start' }}>
+      <Icon name={icon} size={'auto'} sx={{ height: '20px', width: '20px' }} />
+      {typeof label === 'function' ? { label } : <Text>{label}</Text>}
+    </Flex>
+  );
+};
+
+const HeaderMenu = ({ mkrInChief, gas, onToggleTheme, mode, ...props }): JSX.Element => {
+  return (
+    <Menu>
+      <MenuButton
+        sx={{
+          variant: 'buttons.card',
+          borderRadius: 'round',
+          height: '37px',
+          width: '37px',
+          display: 'flex',
+          justifyContent: 'center',
+          color: 'textSecondary',
+          alignItems: 'center',
+          '&:hover': {
+            color: 'text'
+          }
+        }}
+        {...props}
+      >
+        <Icon name="dots_h" />
+      </MenuButton>
+      <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, p: 1 }}>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
+        </MenuItem>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          <MenuItemContent
+            icon="gas"
+            label={
+              <Text>
+                <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+              </Text>
+            }
+          />
+        </MenuItem>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://discord.gg/GHcFMdKden"
+            title="Support"
+          >
+            <MenuItemContent icon="discord_outline" label="Support" />
+          </ExternalLink>
+        </MenuItem>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
+            title="Stats"
+          >
+            <MenuItemContent icon="stats" label="Stats" />
+          </ExternalLink>
+        </MenuItem>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          <ExternalLink
+            styles={{ variant: 'links.nostyle' }}
+            href="https://makerdao.world/en/learn/governance/"
+            title="FAQs"
+          >
+            <MenuItemContent icon="faq" label="FAQs" />
+          </ExternalLink>
+        </MenuItem>
+        <MenuItem
+          onSelect={onToggleTheme}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
+          <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  );
+};
 
 const Header = (): JSX.Element => {
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
+  const chiefAddress = useContractAddress('chief');
+  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
+  const { data: gas } = useGasPrice();
+  const { network } = useActiveWeb3React();
+  const { cache } = useSWRConfig();
+  const [mode, setMode] = useColorMode();
+
+  const onToggleTheme = () => {
+    const next = mode === 'dark' ? 'light' : 'dark';
+    const html = document.getElementsByTagName('html');
+    if (html) html[0].style.colorScheme = next;
+    setMode(next);
+  };
+
+  // Fetch polls & proposals from cache or revalidate if we don't have them
+  const dataKeyPolls = `/api/polling/all-polls?network=${network}`;
+  const { data: pollsData } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyPolls)
+  });
+  const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
+
+  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
+  const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyProposals)
+  });
+  const activeProposals = proposalsData?.filter(p => p.active);
 
   return (
     <Box
@@ -38,31 +196,63 @@ const Header = (): JSX.Element => {
           </IconButton>
         </InternalLink>
         <Flex sx={{ ml: [0, 4, 4, 5] }}>
-          <NavLink
-            href={'/polling'}
-            title="View polling page"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 'auto'],
-              color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
-            }}
-          >
-            Polling
-          </NavLink>
-
-          <NavLink
-            href={'/executive'}
-            title="View executive page"
-            p={0}
-            sx={{
-              display: ['none', 'block'],
-              ml: [0, 4, 4, 5],
-              color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
-            }}
-          >
-            Executive
-          </NavLink>
+          <Flex>
+            <NavLink
+              href={'/polling'}
+              title="View polling page"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 0, 4, 'auto'],
+                color: router?.asPath?.startsWith('/polling') ? 'primary' : undefined
+              }}
+            >
+              Polling
+            </NavLink>
+            {bpi > 1 && activePolls && activePolls.length > 0 && (
+              <Badge
+                variant="solidCircle"
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  p: 2,
+                  mt: '-1rem',
+                  ml: -10
+                }}
+              >
+                {activePolls?.length}
+              </Badge>
+            )}
+          </Flex>
+          <Flex>
+            <NavLink
+              href={'/executive'}
+              title="View executive page"
+              p={0}
+              sx={{
+                display: ['none', 'block'],
+                ml: [0, 4, 4, 5],
+                color: router?.asPath?.startsWith('/executive') ? 'primary' : undefined
+              }}
+            >
+              Executive
+            </NavLink>
+            {bpi > 1 && activeProposals && activeProposals.length > 0 && (
+              <Badge
+                sx={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  display: 'flex',
+                  mt: '-1rem',
+                  ml: -10
+                }}
+                variant="solidCircle"
+              >
+                {activeProposals.length}
+              </Badge>
+            )}
+          </Flex>
 
           <NavLink
             href={'/delegates'}
@@ -93,12 +283,6 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && (
-          <Flex sx={{ pr: 2 }}>
-            <ColorModeToggle />
-          </Flex>
-        )}
-
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {bpi > 1 && (
           <Flex mr={3}>
@@ -119,13 +303,27 @@ const Header = (): JSX.Element => {
         >
           <Icon name="menu" sx={{ width: '18px' }} />
         </IconButton>
-        {showMobileMenu && <MobileMenu hide={() => setShowMobileMenu(false)} router={router} />}
+        {showMobileMenu && (
+          <MobileMenu
+            hide={() => setShowMobileMenu(false)}
+            router={router}
+            mkrInChief={mkrInChief}
+            gas={gas}
+            onToggleTheme={onToggleTheme}
+            mode={mode}
+          />
+        )}
+        {bpi > 0 && (
+          <Flex sx={{ ml: 3 }}>
+            <HeaderMenu mkrInChief={mkrInChief} gas={gas} onToggleTheme={onToggleTheme} mode={mode} />
+          </Flex>
+        )}
       </Flex>
     </Box>
   );
 };
 
-const MobileMenu = ({ hide, router }) => {
+const MobileMenu = ({ hide, router, mkrInChief, gas, onToggleTheme, mode }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -137,15 +335,19 @@ const MobileMenu = ({ hide, router }) => {
       <Flex
         sx={{
           alignItems: 'center',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           gap: 2
         }}
       >
-        <ColorModeToggle />
-        <Flex>
+        <InternalLink href={'/'} title="View homepage">
+          <IconButton aria-label="Maker home" sx={{ width: '40px', height: 4, p: 0 }}>
+            <Icon name="maker" size="40px" color="ornament" sx={{ cursor: 'pointer' }} />
+          </IconButton>
+        </InternalLink>
+        <Flex sx={{ alignItems: 'center', gap: 2 }}>
           <NetworkSelect />
+          <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
         </Flex>
-        <Close sx={{ display: ['block'], '> svg': { size: [4] } }} onClick={hide} />
       </Flex>
 
       <Flex
@@ -179,6 +381,61 @@ const MobileMenu = ({ hide, router }) => {
         <NavLink href={'/esmodule'} title="View emergency shutdown module page">
           ES Module
         </NavLink>
+        <Divider sx={{ width: '100%' }} />
+        <Flex
+          sx={{
+            justifyContent: 'space-between',
+            px: 3,
+            py: 4,
+            width: '100%',
+            fontSize: 3
+          }}
+        >
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+            {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
+            <MenuItemContent
+              icon="gas"
+              label={
+                <Text>
+                  <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+                </Text>
+              }
+            />
+            <Flex onClick={hide}>
+              <ExternalLink
+                styles={{ variant: 'links.nostyle' }}
+                href="https://discord.gg/GHcFMdKden"
+                title="Support"
+              >
+                <MenuItemContent icon="discord_outline" label="Support" />
+              </ExternalLink>
+            </Flex>
+          </Flex>
+
+          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+            <Flex onClick={hide}>
+              <ExternalLink
+                styles={{ variant: 'links.nostyle' }}
+                href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
+                title="Stats"
+              >
+                <MenuItemContent icon="stats" label="Stats" />
+              </ExternalLink>
+            </Flex>
+            <Flex onClick={hide}>
+              <ExternalLink
+                styles={{ variant: 'links.nostyle' }}
+                href="https://makerdao.world/en/learn/governance/"
+                title="FAQs"
+              >
+                <MenuItemContent icon="faq" label="FAQs" />
+              </ExternalLink>
+            </Flex>
+            <Flex onClick={onToggleTheme}>
+              <MenuItemContent icon="color_mode_sun" label={`${mode === 'dark' ? 'Light' : 'Dark'} mode`} />
+            </Flex>
+          </Flex>
+        </Flex>
       </Flex>
     </Container>
   );

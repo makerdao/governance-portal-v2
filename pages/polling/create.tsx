@@ -13,7 +13,7 @@ import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
 import { formatDateWithTime } from 'lib/datetime';
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';

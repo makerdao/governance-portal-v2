@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Link } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
@@ -30,6 +30,7 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 // stores
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
@@ -196,7 +197,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
               </Text>
               <Flex>
                 <WithdrawOldChief />
-                <Link href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412" target="_blank">
+                <ExternalLink
+                  href="https://forum.makerdao.com/t/dschief-v1-2-migration-steps/5412"
+                  title="View migration steps"
+                >
                   <Button
                     variant="outline"
                     sx={{
@@ -221,13 +225,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       Forum Post <Icon name="arrowTopRight" size={2} ml={'1px'} color="accentBlue" />
                     </Text>
                   </Button>
-                </Link>
+                </ExternalLink>
               </Flex>
             </Flex>
           </MigrationBadge>
         </>
       )}
-
       {votedProposals &&
         !votingForSomething &&
         lockedMkrOldChief &&

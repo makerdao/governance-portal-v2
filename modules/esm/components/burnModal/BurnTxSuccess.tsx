@@ -1,9 +1,9 @@
-import { Flex, Button, Text, Close, Link } from 'theme-ui';
+import { Flex, Button, Text, Close } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { TXMined } from 'modules/web3/types/transaction';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const BurnTxSuccess = ({ tx, close }) => {
   const { network } = useActiveWeb3React();
@@ -25,16 +25,16 @@ const BurnTxSuccess = ({ tx, close }) => {
         </Text>
         <Icon name="burnSuccess" size={7} sx={{ my: 4 }} />
 
-        <Link
-          target="_blank"
+        <ExternalLink
           href={getEtherscanLink(network, (tx as TXMined).hash, 'transaction')}
-          sx={{ p: 0 }}
+          styles={{ p: 0 }}
+          title="View on etherscan"
         >
           <Text mt={3} px={4} sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
             View on Etherscan
             <Icon name="arrowTopRight" pt={2} color="accentBlue" />
           </Text>
-        </Link>
+        </ExternalLink>
         <Button
           onClick={close}
           sx={{ mt: 4, borderColor: 'primary', width: '100%', color: 'primary' }}
