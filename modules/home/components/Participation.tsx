@@ -17,9 +17,9 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Heading>Relevant Forum Posts</Heading>
-        <InternalLink href="/delegates" title="View Forum Posts">
+        <ExternalLink href="https://forum.makerdao.com/" title="View Forum Posts" target="_blank">
           <ViewMore label="View Forum" />
-        </InternalLink>
+        </ExternalLink>
       </Flex>
       <Flex sx={{ gap: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
         {posts.map(({ title, image, summary, username, link }) => {
