@@ -1,10 +1,9 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
@@ -87,15 +86,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
-  const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(
-    state => [
-      state.executiveFilters.startDate,
-      state.executiveFilters.endDate,
-      state.executiveSortBy,
-      state.resetExecutiveFilters
-    ],
-    shallow
-  );
+  const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
+    state.executiveFilters.startDate,
+    state.executiveFilters.endDate,
+    state.executiveSortBy,
+    state.resetExecutiveFilters
+  ]);
 
   const EXEC_PAGE_SIZE = 10;
 
@@ -287,7 +283,8 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
           </Heading>
           <ProposalsSortBy sx={{ mr: 3 }} />
           <DateFilter />
-          {(startDate || endDate) && (
+          {isValidating && <Spinner size={20} ml={3} />}
+          {(startDate || endDate) && !isValidating && (
             <Button
               variant={'outline'}
               sx={{ ml: 3 }}
@@ -320,6 +317,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       </Box>
                     ))}
                 </Stack>
+              )}
+
+              {(startDate || endDate) && flattenedProposals && flattenedProposals.length === 0 && (
+                <Text>No proposals found. Please try clearing filters.</Text>
               )}
 
               {isLoadingInitialData && (

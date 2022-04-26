@@ -1,6 +1,5 @@
 import { useRef, useEffect } from 'react';
 import { Grid, Flex, Input, Text, Button } from 'theme-ui';
-import shallow from 'zustand/shallow';
 
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
@@ -14,15 +13,12 @@ const displayDate = date => {
 };
 
 export default function DateFilter(props): JSX.Element {
-  const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(
-    state => [
-      state.executiveFilters.startDate,
-      state.setStartDate,
-      state.executiveFilters.endDate,
-      state.setEndDate
-    ],
-    shallow
-  );
+  const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(state => [
+    state.executiveFilters.startDate,
+    state.setStartDate,
+    state.executiveFilters.endDate,
+    state.setEndDate
+  ]);
 
   const startDateDisplay = displayDate(startDate);
   const endDateDisplay = displayDate(endDate);
