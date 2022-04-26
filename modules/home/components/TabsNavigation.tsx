@@ -47,7 +47,7 @@ export default function TabsNavigation(): React.ReactElement {
           justifyContent: 'center',
           alignItems: 'center',
           borderBottom: '1px solid',
-          borderColor: 'secondaryMuted'
+          borderColor: 'muted'
         }}
       >
         {links.map(link => {

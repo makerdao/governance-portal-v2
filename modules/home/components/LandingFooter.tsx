@@ -5,13 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { translate } from '@makerdao/i18n-helper';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
-const ContactSection = ({ heading, title, logos, icon }) => {
+const ContactSection = ({ heading, logos, icon }) => {
   return (
     <Flex sx={{ flexDirection: 'column', gap: 2 }}>
       <Text as="h4" sx={{ fontSize: 3, fontWeight: 'semiBold' }}>
         {heading}
       </Text>
-      <Text sx={{ fontSize: 3, fontWeight: 'semiBold', color: 'footerText' }}>{title}</Text>
+      {/* <Text sx={{ fontSize: 3, fontWeight: 'semiBold', color: 'footerText' }}>{title}</Text> */}
       <Flex
         sx={{
           alignItems: 'center',
@@ -185,12 +185,7 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
           pb: 5
         }}
       >
-        <ContactSection
-          heading="Contact MakerDAO"
-          title="Official Community Channels"
-          icon="maker"
-          logos={logos.makerdao}
-        />
+        <ContactSection heading="Official Community Channels" icon="maker" logos={logos.makerdao} />
         <Flex
           sx={{
             justifyContent: 'space-between',
@@ -216,12 +211,7 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
             );
           })}
         </Flex>
-        <ContactSection
-          heading="Contact MakerDUX for support"
-          title={'Development & UX Core Unit'}
-          icon="makerdux"
-          logos={logos.makerdux}
-        />
+        <ContactSection heading="Development & UX Channels" icon="makerdux" logos={logos.makerdux} />
       </Flex>
     </div>
   );

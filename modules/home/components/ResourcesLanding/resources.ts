@@ -13,7 +13,7 @@ enum ResourceBackground {
 
 export enum ResourceColor {
   GOVERNANCE = '#1ACCA7',
-  PRODUCTS_AND_TOOLS = '#4B68FF',
+  PRODUCTS_AND_TOOLS = '#9A4BFF',
   DEVELOPERS = '#E64BFF'
 }
 

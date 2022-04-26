@@ -74,7 +74,7 @@ export default function TopDelegates({
               Voting Power
             </Text>
           </Box>
-          <Box sx={{ width: '30%', textAlign: 'center', display: ['none', 'block'] }}>
+          <Box sx={{ width: '30%', textAlign: 'left', display: ['none', 'block'] }}>
             <Text as="p" variant="caps" sx={{ color: 'mutedAlt' }}>
               MKR
             </Text>

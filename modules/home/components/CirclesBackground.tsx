@@ -8,7 +8,15 @@ const spin = keyframes`
   }
   100% { transform: rotate(360deg);  }
 `;
-function Circle({ sxs, color }: { sxs: ThemeUIStyleObject; color: string }): React.ReactElement {
+function Circle({
+  sxs,
+  color,
+  mobile
+}: {
+  sxs: ThemeUIStyleObject;
+  color: string;
+  mobile: boolean;
+}): React.ReactElement {
   return (
     <Box
       sx={{
@@ -16,8 +24,8 @@ function Circle({ sxs, color }: { sxs: ThemeUIStyleObject; color: string }): Rea
         borderRadius: '100%',
         filter: 'blur(2px)',
         transformOrigin: '80% 20%',
-        animation: `${spin} 10s cubic-bezier(.8, 0, .2, 1) infinite alternate`,
-        transition: 'all 300ms linear',
+        animation: mobile ? undefined : `${spin} 10s cubic-bezier(.8, 0, .2, 1) infinite alternate`,
+        transition: mobile ? undefined : 'all 300ms linear',
         ...sxs
       }}
     />
@@ -25,10 +33,12 @@ function Circle({ sxs, color }: { sxs: ThemeUIStyleObject; color: string }): Rea
 }
 export default function CirclesBackground({
   children,
-  activeColor
+  activeColor,
+  mobile
 }: {
   children: React.ReactNode;
   activeColor: string;
+  mobile: boolean;
 }): React.ReactElement {
   return (
     <Box
@@ -38,6 +48,7 @@ export default function CirclesBackground({
     >
       <Circle
         color={activeColor}
+        mobile={mobile}
         sxs={{
           width: '100px',
           height: '100px',
@@ -50,6 +61,7 @@ export default function CirclesBackground({
 
       <Circle
         color={activeColor}
+        mobile={mobile}
         sxs={{
           width: '300px',
           height: '300px',
@@ -66,6 +78,7 @@ export default function CirclesBackground({
 
       <Circle
         color={activeColor}
+        mobile={mobile}
         sxs={{
           width: '300px',
           height: '300px',
@@ -81,6 +94,7 @@ export default function CirclesBackground({
 
       <Circle
         color={activeColor}
+        mobile={mobile}
         sxs={{
           width: '100px',
           height: '100px',

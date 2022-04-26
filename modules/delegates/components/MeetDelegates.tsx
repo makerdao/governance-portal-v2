@@ -25,7 +25,6 @@ const MeetDelegateCard = ({
     <Card
       sx={{
         minWidth: ['293px', 8],
-        boxShadow: 'floater',
         border: 'none',
         py: 4,
         display: 'flex',

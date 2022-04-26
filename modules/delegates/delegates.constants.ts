@@ -12,8 +12,7 @@ export enum MKRWeightTimeRanges {
 
 export const MEET_DELEGATE_URLS = {
   // Flip Flop Flap
-  '0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b':
-    'https://www.youtube-nocookie.com/embed/SVUm1Bz0U9A?start=1577',
+  '0xaf8aa6846539033eaf0c3ca4c9c7373e370e039b': 'https://www.youtube-nocookie.com/embed/SVUm1Bz0U9A',
   // Hasu
   '0xafaff1a605c373b43727136c995d21a7fcd08989': 'https://www.youtube-nocookie.com/embed/u7tT3HgAXqo',
   // MakerMan
@@ -37,5 +36,7 @@ export const MEET_DELEGATE_URLS = {
   '0x8804d391472126da56b9a560aef6c6d5aaa7607b': 'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU',
   // Flipside
   '0x84b05b0a30b6ae620f393d1037f217e607ad1b96':
-    'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU?start=1751'
+    'https://www.youtube-nocookie.com/embed/hNMKg9BNWjU?start=1751',
+  // Penn Blockchain
+  '0x7ddb50a5b15aea7e7cf9ac8e55a7f9fd9d05ecc6': 'https://www.youtube-nocookie.com/embed/aI-nDmwnWpY'
 };

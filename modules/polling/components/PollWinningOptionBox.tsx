@@ -48,7 +48,7 @@ export default function PollWinningOptionBox({
         </Text>
       ) : tally && !tally.winningOptionName ? (
         <Text as="p" variant="caps" sx={{ textAlign: 'center', px: [3, 4], wordBreak: 'break-word' }}>
-          No winning option
+          {isActivePoll(poll) ? 'No leading option' : 'No winning option'}
         </Text>
       ) : (
         <SkeletonThemed />

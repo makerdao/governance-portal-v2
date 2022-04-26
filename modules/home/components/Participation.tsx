@@ -17,9 +17,9 @@ const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
     <Flex sx={{ flexDirection: 'column', gap: 3 }}>
       <Flex sx={{ justifyContent: 'space-between' }}>
         <Heading>Relevant Forum Posts</Heading>
-        <InternalLink href="/delegates" title="View Forum Posts">
+        <ExternalLink href="https://forum.makerdao.com/" title="View Forum Posts" target="_blank">
           <ViewMore label="View Forum" />
-        </InternalLink>
+        </ExternalLink>
       </Flex>
       <Flex sx={{ gap: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
         {posts.map(({ title, image, summary, username, link }) => {
@@ -80,7 +80,7 @@ export default function Participation({
   const MONTHS_PAST = 6;
   // This makes sure the timestamp is the same throughout the day so the SWR cache-key doesn't change
   const unixtimeStart =
-    new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'MM-dd-yyyy')).getTime() / 1000;
+    new Date(format(sub(new Date(), { months: MONTHS_PAST }), 'yyyy-MM-dd')).getTime() / 1000;
 
   const { data: locks } = useSWR<AllLocksResponse[]>(
     `/api/executive/all-locks?network=${network}&unixtimeStart=${unixtimeStart}`
@@ -136,7 +136,7 @@ export default function Participation({
               title="View More Metrics"
               target="_blank"
             >
-              <ViewMore label="View more metrics" />
+              <ViewMore label="View More Metrics" />
             </ExternalLink>
           </Flex>
           <Card

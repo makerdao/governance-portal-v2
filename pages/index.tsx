@@ -2,6 +2,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -35,7 +36,6 @@ import { getCategories } from 'modules/polling/helpers/getCategories';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
-import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
@@ -46,21 +46,32 @@ import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import Participation from 'modules/home/components/Participation';
 import TabsNavigation from 'modules/home/components/TabsNavigation';
 import { StickyContainer, Sticky } from 'react-sticky';
+import { shuffleArray } from 'lib/common/shuffleArray';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
   network: SupportedNetworks;
   delegates: Delegate[];
+  recognizedDelegates: Delegate[];
+  meetYourDelegates: Delegate[];
   totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }: Props) => {
+const LandingPage = ({
+  proposals,
+  polls,
+  network,
+  delegates,
+  totalMKRDelegated,
+  recognizedDelegates,
+  meetYourDelegates
+}: Props) => {
   const [mode] = useColorMode();
   const bpi = useBreakpointIndex();
   const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
-  const recognizedDelegates = delegates.filter(({ status }) => status === DelegateStatusEnum.recognized);
   const topDelegates = delegates.slice(0, 5);
   const activeDelegates = recognizedDelegates
     .sort((a, b) => {
@@ -122,7 +133,6 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
                       onClick={() => setVideoOpen(true)}
                       styles={{ mr: [1, 3] }}
                     />
-                    <PlayButton label="Maker Relay" onClick={() => setVideoOpen(true)} />
                   </Box>
                 </Flex>
                 <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
@@ -197,7 +207,7 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
 
             <section id="delegate">
               <ErrorBoundary componentName="Meet Delegates">
-                <MeetDelegates delegates={recognizedDelegates} bpi={bpi} />
+                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
               </ErrorBoundary>
             </section>
 
@@ -208,14 +218,14 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
             <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
               <Box
                 sx={{
-                  background: '#F7F8F9',
+                  background: 'onSurfaceAlt',
                   width: '200vw',
                   zIndex: -1,
                   ml: '-100vw',
                   position: 'absolute',
                   top: 0,
                   left: 0,
-                  height: '1620px'
+                  height: '1720px'
                 }}
               />
               <InformationParticipateMakerGovernance />
@@ -225,6 +235,12 @@ const LandingPage = ({ proposals, polls, network, delegates, totalMKRDelegated }
             <section id="engage">
               <Participation activeDelegates={activeDelegates} bpi={bpi} />
             </section>
+            <Flex
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              sx={{ justifyContent: 'flex-end' }}
+            >
+              <ViewMore label="Back to the top" icon="chevron_up" />
+            </Flex>
           </Stack>
         </PrimaryLayout>
       </StickyContainer>
@@ -236,6 +252,8 @@ export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
   delegates: prefetchedDelegates,
+  recognizedDelegates: prefetchedRecognizedDelegates,
+  meetYourDelegates: prefetchedMeetYourDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
   const { network } = useActiveWeb3React();
@@ -292,6 +310,20 @@ export default function Index({
       delegates={
         isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
       }
+      recognizedDelegates={
+        isDefaultNetwork(network)
+          ? prefetchedRecognizedDelegates
+          : delegatesData
+          ? filterDelegates(delegatesData.delegates, false, true)
+          : []
+      }
+      meetYourDelegates={
+        isDefaultNetwork(network)
+          ? prefetchedMeetYourDelegates
+          : delegatesData
+          ? shuffleArray(filterDelegates(delegatesData.delegates, false, true))
+          : []
+      }
       totalMKRDelegated={
         isDefaultNetwork(network)
           ? prefetchedTotalMKRDelegated
@@ -305,9 +337,15 @@ export default function Index({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals at build-time
-  const [proposals, pollsData] = await Promise.all([getExecutiveProposals(0, 3, 'active'), getPolls()]);
+  const [proposals, pollsData, delegatesResponse] = await Promise.all([
+    getExecutiveProposals(0, 3, 'active'),
+    getPolls(),
+    fetchDelegates(SupportedNetworks.MAINNET, 'mkr')
+  ]);
 
-  const delegatesResponse = await fetchDelegates(SupportedNetworks.MAINNET, 'mkr');
+  const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
+
+  const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   return {
     revalidate: 30 * 60, // allow revalidation every 30 minutes
@@ -315,7 +353,9 @@ export const getStaticProps: GetStaticProps = async () => {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
       delegates: delegatesResponse.delegates,
-      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated
+      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
+      recognizedDelegates,
+      meetYourDelegates
     }
   };
 };
