@@ -21,10 +21,6 @@ import { ErrorBoundary } from '../ErrorBoundary';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
-import { Tokens } from 'modules/web3/constants/tokens';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
-import { formatValue } from 'lib/string';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -33,6 +29,7 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { Proposal } from 'modules/executive/types';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
+import { GASNOW_URL } from 'modules/web3/constants/networks';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -43,7 +40,7 @@ const MenuItemContent = ({ label, icon }) => {
   );
 };
 
-const HeaderMenu = ({ mkrInChief, gas, onToggleTheme, mode, ...props }): JSX.Element => {
+const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
   return (
     <Menu>
       <MenuButton
@@ -65,29 +62,6 @@ const HeaderMenu = ({ mkrInChief, gas, onToggleTheme, mode, ...props }): JSX.Ele
         <Icon name="dots_h" />
       </MenuButton>
       <MenuList sx={{ variant: 'cards.compact', borderRadius: 'round', mt: 3, p: 1 }}>
-        <MenuItem
-          onSelect={() => ({})}
-          sx={{
-            variant: 'menubuttons.default.headerItem'
-          }}
-        >
-          {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
-        </MenuItem>
-        <MenuItem
-          onSelect={() => ({})}
-          sx={{
-            variant: 'menubuttons.default.headerItem'
-          }}
-        >
-          <MenuItemContent
-            icon="gas"
-            label={
-              <Text>
-                <span sx={{ color: 'primary' }}>{gas}</span> Gwei
-              </Text>
-            }
-          />
-        </MenuItem>
         <MenuItem
           onSelect={() => ({})}
           sx={{
@@ -148,8 +122,6 @@ const Header = (): JSX.Element => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
-  const chiefAddress = useContractAddress('chief');
-  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
   const { data: gas } = useGasPrice();
   const { network } = useActiveWeb3React();
   const { cache } = useSWRConfig();
@@ -287,6 +259,28 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
+        {bpi > 1 && (
+          <ExternalLink
+            title="Ethereum Gas Price"
+            href={GASNOW_URL}
+            styles={{
+              variant: 'links.nostyle'
+            }}
+          >
+            <Flex
+              sx={{
+                alignItems: 'center',
+                gap: 1,
+                justifyContent: 'flex-start',
+                cursor: 'pointer',
+                px: [0, 0, 2, 3]
+              }}
+            >
+              <Text variant="smallText">{gas}</Text>
+              <Icon name="gas" size={3} />
+            </Flex>
+          </ExternalLink>
+        )}
         {bpi > 3 && account && router.pathname.includes('polling') && <BallotStatus mr={3} />}
         {bpi > 1 && (
           <Flex mr={3}>
@@ -311,7 +305,6 @@ const Header = (): JSX.Element => {
           <MobileMenu
             hide={() => setShowMobileMenu(false)}
             router={router}
-            mkrInChief={mkrInChief}
             gas={gas}
             onToggleTheme={onToggleTheme}
             mode={mode}
@@ -319,7 +312,7 @@ const Header = (): JSX.Element => {
         )}
         {bpi > 0 && (
           <Flex sx={{ ml: 3 }}>
-            <HeaderMenu mkrInChief={mkrInChief} gas={gas} onToggleTheme={onToggleTheme} mode={mode} />
+            <HeaderMenu onToggleTheme={onToggleTheme} mode={mode} />
           </Flex>
         )}
       </Flex>
@@ -327,7 +320,7 @@ const Header = (): JSX.Element => {
   );
 };
 
-const MobileMenu = ({ hide, router, mkrInChief, gas, onToggleTheme, mode }) => {
+const MobileMenu = ({ hide, router, gas, onToggleTheme, mode }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -396,15 +389,22 @@ const MobileMenu = ({ hide, router, mkrInChief, gas, onToggleTheme, mode }) => {
           }}
         >
           <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            {mkrInChief && <MenuItemContent icon="mkr_locked" label={formatValue(mkrInChief)} />}
-            <MenuItemContent
-              icon="gas"
-              label={
-                <Text>
-                  <span sx={{ color: 'primary' }}>{gas}</span> Gwei
-                </Text>
-              }
-            />
+            <ExternalLink
+              title="Ethereum Gas Price"
+              href={GASNOW_URL}
+              styles={{
+                variant: 'links.nostyle'
+              }}
+            >
+              <MenuItemContent
+                icon="gas"
+                label={
+                  <Text>
+                    <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+                  </Text>
+                }
+              />
+            </ExternalLink>
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
