@@ -5,15 +5,11 @@ import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 
 type Props = {
   sidebar?: boolean;
-  shortenFooter?: boolean;
 };
 
-export default function PageLoadingPlaceholder({
-  sidebar = true,
-  shortenFooter = true
-}: Props): React.ReactElement {
+export default function PageLoadingPlaceholder({ sidebar = true }: Props): React.ReactElement {
   return (
-    <PrimaryLayout sx={{ maxWidth: 'dashboard' }} shortenFooter={shortenFooter}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <Box mt={3} mb={4}>
         <Skeleton width="50%" height={'70px'} />
       </Box>

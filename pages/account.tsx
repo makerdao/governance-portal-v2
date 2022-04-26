@@ -67,7 +67,7 @@ const AccountPage = (): React.ReactElement => {
   const { create, tx, setTxId } = useDelegateCreate();
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Account" />
 
       <SidebarLayout>

@@ -292,7 +292,7 @@ export default function Index({
   }
 
   if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData)) {
-    return <PageLoadingPlaceholder sidebar={false} shortenFooter={false} />;
+    return <PageLoadingPlaceholder sidebar={false} />;
   }
 
   return (

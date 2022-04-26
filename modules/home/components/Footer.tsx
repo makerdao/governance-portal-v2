@@ -39,7 +39,7 @@ const ContactSection = ({ heading, logos, icon }) => {
   );
 };
 
-export default function LandingFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
+export default function Footer({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
 

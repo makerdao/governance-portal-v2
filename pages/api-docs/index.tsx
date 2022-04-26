@@ -18,7 +18,7 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.E
       </InternalLink>
     </Box>
   ) : (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Account" />
       <SwaggerUI spec={spec} />
     </PrimaryLayout>

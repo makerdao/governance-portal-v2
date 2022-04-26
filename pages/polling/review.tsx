@@ -153,7 +153,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
         {!hasVoted && (
           <Heading mb={3} as="h4">
