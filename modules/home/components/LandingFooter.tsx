@@ -42,11 +42,7 @@ const ContactSection = ({ heading, logos, icon }) => {
 export default function LandingFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
-  useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
-  }, [mode]);
   const t = text => translate(text, locale);
 
   const links = [
@@ -162,16 +158,24 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
     <div sx={{ position: 'relative' }}>
       <div
         sx={{
-          pt: ['200%', '100%'],
-          width: ['200%', '100%'],
+          width: '100vw',
+          height: '100%',
+          left: '50%',
+
           zIndex: -1,
           position: 'absolute',
-          transform: mobile ? 'scale(1.5)' : 'rotate(21deg)',
-          right: [-200, undefined],
-          backgroundImage,
-          backgroundSize: [undefined, '100%'],
+          transform: 'translateX(-50%)',
+          backgroundImage:
+            mode === 'dark'
+              ? mobile
+                ? 'url(/assets/bg_dark_medium.jpeg)'
+                : 'url(/assets/bg_footer_dark.jpeg)'
+              : mobile
+              ? 'url(/assets/bg_medium.jpeg)'
+              : 'url(/assets/bg_footer_light.jpeg)',
+          backgroundSize: ['1500px', '100% 400px'],
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: mobile ? 'center bottom' : undefined
+          backgroundPosition: ['-750px 100%', 'bottom']
         }}
       />
       <Flex

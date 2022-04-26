@@ -88,7 +88,7 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
                         flexDirection: 'column',
                         variant: 'layout.root',
                         px: [3, 4],
-                        overflow: 'hidden'
+                        overflowX: 'hidden'
                       }}
                     >
                       <Header />

@@ -15,7 +15,7 @@ function Card({
   children?: React.ReactNode;
 }): React.ReactElement {
   return (
-    <Box sx={{ height: '100%', background: ['#ffffffb0', '#ffffffb0', 'transparent'] }}>
+    <Box sx={{ height: '100%', background: 'transparent' }}>
       <Flex sx={{ height: '100%' }}>
         <Box sx={{ p: 3, display: ['none', 'block'] }}>
           <Heading as="h1" sx={{ fontSize: '32px' }}>
