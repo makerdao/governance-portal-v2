@@ -1,10 +1,9 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner } from 'theme-ui';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
-import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 // lib
@@ -39,6 +38,7 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { EXEC_PAGE_SIZE } from 'modules/executive/executive.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -50,27 +50,6 @@ import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
-
-const CircleNumber = ({ children }) => (
-  <Box
-    sx={{
-      width: '26px',
-      minWidth: '26px',
-      lineHeight: '26px',
-      borderRadius: '50%',
-      textAlign: 'center',
-      fontSize: '12px',
-      backgroundColor: 'primary',
-      color: 'white',
-      fontWeight: 'bold',
-      mr: 3,
-      my: 1,
-      ml: [0, '-8px']
-    }}
-  >
-    {children}
-  </Box>
-);
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -107,22 +86,27 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const { chiefOld } = useContracts() as MainnetSdk;
   const { data: mkrOnHat } = useMkrOnHat();
 
-  const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(
-    state => [
-      state.executiveFilters.startDate,
-      state.executiveFilters.endDate,
-      state.executiveSortBy,
-      state.resetExecutiveFilters
-    ],
-    shallow
-  );
+  const [startDate, endDate, sortBy, resetExecutiveFilters] = useUiFiltersStore(state => [
+    state.executiveFilters.startDate,
+    state.executiveFilters.endDate,
+    state.executiveSortBy,
+    state.resetExecutiveFilters
+  ]);
+
+  const EXEC_PAGE_SIZE = 10;
+
   // Use SWRInfinite to do a loaded pagination of the proposals
   // Preload with the server side data as "fallback"
   const getKey = (pageIndex, previousPageData) => {
     if (previousPageData && !previousPageData.length) return null; // reached the end
-    return `/api/executive?network=${network}&start=${pageIndex * 10}&limit=10&sortBy=${sortBy}${
+
+    const key = `/api/executive?network=${network}&start=${
+      pageIndex * EXEC_PAGE_SIZE
+    }&limit=${EXEC_PAGE_SIZE}&sortBy=${sortBy}${
       startDate ? `&startDate=${new Date(startDate).getTime()}` : ''
     }${endDate ? `&endDate=${new Date(endDate).getTime()}` : ''}`; // SWR key
+
+    return key;
   };
 
   const {
@@ -130,12 +114,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     error,
     size,
     setSize,
-    isValidating
+    isValidating,
+    mutate: mutatePaginatedProposals
   } = useSWRInfinite(getKey, fetchJson, {
     refreshInterval: 0,
     revalidateOnFocus: false,
     initialSize: 1,
-    revalidateFirstPage: false,
+    revalidateFirstPage: true,
+    persistSize: false,
     fallbackData: proposals
   });
 
@@ -143,6 +129,11 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
   const isLoadingMore =
     size > 0 && paginatedProposals && typeof paginatedProposals[size - 1] === 'undefined' && isValidating;
+
+  const isEmpty = paginatedProposals?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty ||
+    (paginatedProposals && paginatedProposals[paginatedProposals.length - 1]?.length < EXEC_PAGE_SIZE);
 
   const loadMore = () => {
     setSize(size + 1);
@@ -153,6 +144,11 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     mutateVotedProposals();
   }, [address]);
 
+  useEffect(() => {
+    setSize(1);
+    mutatePaginatedProposals();
+  }, [startDate, endDate]);
+
   const lockedMkrKeyOldChief = voteProxyOldContractAddress || account;
   const { data: lockedMkrOldChief } = useSWR(
     lockedMkrKeyOldChief ? ['/user/mkr-locked-old-chief', lockedMkrKeyOldChief] : null,
@@ -162,6 +158,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
   const votingForSomething = votedProposals && votedProposals.length > 0;
 
   const prevSortByRef = useRef<string>(sortBy);
+
   useEffect(() => {
     if (sortBy !== prevSortByRef.current) {
       prevSortByRef.current = sortBy;
@@ -286,14 +283,17 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
           </Heading>
           <ProposalsSortBy sx={{ mr: 3 }} />
           <DateFilter />
-          <Button
-            variant={'outline'}
-            sx={{ ml: 3 }}
-            onClick={resetExecutiveFilters}
-            data-testid="executive-reset-filters"
-          >
-            Clear filters
-          </Button>
+          {isValidating && <Spinner size={20} ml={3} />}
+          {(startDate || endDate) && !isValidating && (
+            <Button
+              variant={'outline'}
+              sx={{ ml: 3 }}
+              onClick={resetExecutiveFilters}
+              data-testid="executive-reset-filters"
+            >
+              Clear date filter
+            </Button>
+          )}
         </Flex>
 
         <SidebarLayout>
@@ -317,6 +317,10 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                       </Box>
                     ))}
                 </Stack>
+              )}
+
+              {(startDate || endDate) && flattenedProposals && flattenedProposals.length === 0 && (
+                <Text>No proposals found. Please try clearing filters.</Text>
               )}
 
               {isLoadingInitialData && (
@@ -389,13 +393,15 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                     </Box>
                   )}
 
-                  <Grid mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
-                    <Divider />
-                    <Button variant="mutedOutline" onClick={loadMore}>
-                      Load more
-                    </Button>
-                    <Divider />
-                  </Grid>
+                  {!isReachingEnd && (
+                    <Grid mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                      <Divider />
+                      <Button variant="mutedOutline" onClick={loadMore}>
+                        Load more
+                      </Button>
+                      <Divider />
+                    </Grid>
+                  )}
                 </div>
               )}
             </Stack>
@@ -438,7 +444,9 @@ export default function ExecutiveOverviewPage({
   useEffect(() => {
     if (!network) return;
     if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/executive?network=${network}&start=0&limit=10`).then(_setProposals).catch(setError);
+      fetchJson(`/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}`)
+        .then(_setProposals)
+        .catch(setError);
     }
   }, [network]);
 
@@ -459,7 +467,7 @@ export default function ExecutiveOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
-  const proposals = await getExecutiveProposals(0, 10, 'active');
+  const proposals = await getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active');
 
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds
