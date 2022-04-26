@@ -135,7 +135,9 @@ export default function ExecutiveOverviewCard({
               </InternalLink>
             )}
           </Box>
-          <Flex sx={{ alignItems: ['flex-end', 'center'], justifyContent: 'space-between' }}>
+          <Flex
+            sx={{ alignItems: ['flex-end', 'center'], justifyContent: 'space-between', height: ['auto', 74] }}
+          >
             <Flex sx={{ flexDirection: ['column-reverse', 'row'], width: '50%' }}>
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <Button
@@ -169,7 +171,7 @@ export default function ExecutiveOverviewCard({
             </Flex>
             <Flex>
               {spellData?.mkrSupport === undefined ? (
-                <Box sx={{ mt: 3, width: 6, ml: 'auto', height: '100%' }}>
+                <Box sx={{ width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />
                 </Box>
               ) : (
