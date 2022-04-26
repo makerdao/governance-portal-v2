@@ -1,21 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Box, Flex, Text } from 'theme-ui';
 
-export default function TabsNavigation(): React.ReactElement {
-  const [activeTab, setActiveTab] = useState('#vote');
-  const hashChangeHandler = useCallback(() => {
-    setActiveTab(window.location.hash);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.addEventListener('hashchange', hashChangeHandler);
-      return () => {
-        window.removeEventListener('hashchange', hashChangeHandler);
-      };
-    }
-  }, []);
-
+export default function TabsNavigation({ activeTab }: { activeTab: string }): React.ReactElement {
   const links = [
     {
       href: '#vote',

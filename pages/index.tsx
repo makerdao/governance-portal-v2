@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
@@ -48,6 +48,7 @@ import TabsNavigation from 'modules/home/components/TabsNavigation';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 
 type Props = {
   proposals: Proposal[];
@@ -94,6 +95,62 @@ const LandingPage = ({
   useEffect(() => {
     setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
   }, [mode]);
+
+  // Use intersection observers to change the hash on scroll
+  const [activeTab, setActiveTab] = useState('#vote');
+
+  const voteRef = useRef<HTMLDivElement>(null);
+
+  useIntersectionObserver(
+    voteRef.current,
+    () => {
+      setActiveTab('#vote');
+    },
+    '-200px'
+  );
+
+  const delegateRef = useRef<HTMLDivElement>(null);
+
+  useIntersectionObserver(
+    delegateRef.current,
+    () => {
+      setActiveTab('#delegate');
+    },
+    '-200px'
+  );
+
+  const engageRef = useRef<HTMLDivElement>(null);
+
+  useIntersectionObserver(
+    engageRef.current,
+    () => {
+      setActiveTab('#engage');
+    },
+    '-200px'
+  );
+
+  const learnRef = useRef<HTMLDivElement>(null);
+
+  useIntersectionObserver(
+    learnRef.current,
+    () => {
+      setActiveTab('#learn');
+    },
+    '-200px'
+  );
+
+  const hashChangeHandler = useCallback(() => {
+    setActiveTab(window.location.hash);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('hashchange', hashChangeHandler);
+      return () => {
+        window.removeEventListener('hashchange', hashChangeHandler);
+      };
+    }
+  }, []);
 
   return (
     <div>
@@ -179,36 +236,29 @@ const LandingPage = ({
 
             <section id="vote">
               <Sticky topOffset={700}>
-                {({
-                  style,
-
-                  // the following are also available but unused in this example
-                  isSticky,
-                  wasSticky,
-                  distanceFromTop,
-                  distanceFromBottom,
-                  calculatedHeight
-                }) => (
+                {({ style }) => (
                   <Box
                     style={{
                       ...style,
                       zIndex: 100
                     }}
                   >
-                    <TabsNavigation />
+                    <TabsNavigation activeTab={activeTab} />
                   </Box>
                 )}
               </Sticky>
-              <Box sx={{ mt: 3 }}>
+              <Box sx={{ mt: 3 }} ref={voteRef}>
                 <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
               </Box>
               <PollCategoriesLanding pollCategories={pollCategories} />
             </section>
 
             <section id="delegate">
-              <ErrorBoundary componentName="Meet Delegates">
-                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
-              </ErrorBoundary>
+              <Box ref={delegateRef}>
+                <ErrorBoundary componentName="Meet Delegates">
+                  <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
+                </ErrorBoundary>
+              </Box>
             </section>
 
             <section>
@@ -228,12 +278,16 @@ const LandingPage = ({
                   height: '1720px'
                 }}
               />
-              <InformationParticipateMakerGovernance />
-              <ResourcesLanding />
+              <Box ref={learnRef}>
+                <InformationParticipateMakerGovernance />
+                <ResourcesLanding />
+              </Box>
             </section>
 
             <section id="engage">
-              <Participation activeDelegates={activeDelegates} bpi={bpi} />
+              <Box ref={engageRef}>
+                <Participation activeDelegates={activeDelegates} bpi={bpi} />
+              </Box>
             </section>
             <Flex
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
