@@ -143,11 +143,8 @@ export default function ExecutiveOverviewCard({
                 <Button
                   variant="outline"
                   sx={{
-                    borderColor: 'text',
-                    color: 'text',
                     width: 122,
-                    mt: [2, 0],
-                    ':hover': { color: 'text', borderColor: 'onSecondary', backgroundColor: 'background' }
+                    mt: [2, 0]
                   }}
                 >
                   View Details
