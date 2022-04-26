@@ -3,9 +3,10 @@ import { Flex, Text } from 'theme-ui';
 
 type Props = {
   label?: string;
+  icon?: string;
 };
 
-export const ViewMore = ({ label = 'View more' }: Props): JSX.Element => {
+export const ViewMore = ({ label = 'View more', icon = 'chevron_right' }: Props): JSX.Element => {
   return (
     <Flex
       sx={{
@@ -16,7 +17,7 @@ export const ViewMore = ({ label = 'View more' }: Props): JSX.Element => {
       }}
     >
       <Text sx={{ fontSize: 2 }}>{label}</Text>
-      <Icon name="chevron_right" size={2} ml={2} color="primary" />
+      <Icon name={icon} size={2} ml={2} color="primary" />
     </Flex>
   );
 };

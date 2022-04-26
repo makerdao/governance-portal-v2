@@ -2,6 +2,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
@@ -234,6 +235,12 @@ const LandingPage = ({
             <section id="engage">
               <Participation activeDelegates={activeDelegates} bpi={bpi} />
             </section>
+            <Flex
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              sx={{ justifyContent: 'flex-end' }}
+            >
+              <ViewMore label="Back to the top" icon="chevron_up" />
+            </Flex>
           </Stack>
         </PrimaryLayout>
       </StickyContainer>
