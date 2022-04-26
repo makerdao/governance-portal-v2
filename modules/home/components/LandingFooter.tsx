@@ -140,7 +140,6 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
       { title: 'Discord', url: 'https://chat.makerdao.com', icon: 'discord' },
       { title: 'Twitter', url: 'https://twitter.com/MakerDAO', icon: 'twitter' },
       { title: 'Reddit', url: 'https://www.reddit.com/r/MakerDAO/', icon: 'reddit' },
-      { title: 'Telegram', url: 'https://t.me/makerdaoOfficial', icon: 'telegram' },
       { title: 'YouTube', url: 'https://www.youtube.com/MakerDAO', icon: 'youtube' },
       { title: 'GitHub', url: 'https://www.github.com/makerdao', icon: 'github' }
     ],

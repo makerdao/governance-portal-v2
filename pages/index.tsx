@@ -2,7 +2,6 @@ import { useMemo, useEffect, useState } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
-import { Icon } from '@makerdao/dai-ui-icons';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
