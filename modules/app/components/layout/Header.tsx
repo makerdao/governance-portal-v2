@@ -210,19 +210,25 @@ const Header = (): JSX.Element => {
               Polling
             </NavLink>
             {bpi > 1 && activePolls && activePolls.length > 0 && (
-              <Badge
-                variant="solidCircle"
-                sx={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  display: 'flex',
-                  p: 2,
-                  mt: '-1rem',
-                  ml: -10
-                }}
+              <NavLink
+                href={'/polling'}
+                title="View polling page"
+                p={0}
               >
-                {activePolls?.length}
-              </Badge>
+                <Badge
+                  variant="solidCircle"
+                  sx={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    display: 'flex',
+                    p: 2,
+                    mt: '-1rem',
+                    ml: -10
+                  }}
+                >
+                  {activePolls?.length}
+                </Badge>
+              </NavLink>
             )}
           </Flex>
           <Flex>
@@ -239,6 +245,11 @@ const Header = (): JSX.Element => {
               Executive
             </NavLink>
             {bpi > 1 && activeProposals && activeProposals.length > 0 && (
+              <NavLink
+                href={'/executive'}
+                title="View executive page"
+                p={0}
+              >
               <Badge
                 sx={{
                   justifyContent: 'center',
@@ -251,6 +262,7 @@ const Header = (): JSX.Element => {
               >
                 {activeProposals.length}
               </Badge>
+              </NavLink>
             )}
           </Flex>
 
