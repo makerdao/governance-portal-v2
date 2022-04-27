@@ -68,6 +68,16 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
             variant: 'menubuttons.default.headerItem'
           }}
         >
+          <InternalLink href="/account" title="View account">
+            <MenuItemContent icon="person" label="Account" />
+          </InternalLink>
+        </MenuItem>
+        <MenuItem
+          onSelect={() => ({})}
+          sx={{
+            variant: 'menubuttons.default.headerItem'
+          }}
+        >
           <ExternalLink
             styles={{ variant: 'links.nostyle' }}
             href="https://discord.gg/GHcFMdKden"
