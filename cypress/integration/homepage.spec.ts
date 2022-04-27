@@ -24,6 +24,10 @@ describe('Home Page', () => {
     cy.get('h1').contains('Maker Governance');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
+      // Check the header badges are correct
+      cy.get('a').contains('Polling').next().contains('21');
+      cy.get('a').contains('Executive').next().contains('2');
+
       // Find the Governance Stats block
       cy.contains('Governance Stats').should('be.visible');
 
