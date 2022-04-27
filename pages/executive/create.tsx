@@ -95,7 +95,7 @@ const ExecutiveCreate = (): JSX.Element => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Validate Executive Proposal" />
 
       <Stack gap={3}>

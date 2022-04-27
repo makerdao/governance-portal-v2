@@ -39,7 +39,7 @@ const ContactSection = ({ heading, logos, icon }) => {
   );
 };
 
-export default function LandingFooter({ locale = 'en' }: { locale?: string }): React.ReactElement {
+export default function Footer({ locale = 'en' }: { locale?: string }): React.ReactElement {
   const bpi = useBreakpointIndex();
   const [mode] = useColorMode();
 
@@ -82,10 +82,7 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
           url: 'https://makerdao.statuspage.io/',
           title: t('Service Status')
         },
-        {
-          url: 'https://oasis.app/',
-          title: t('Oasis')
-        },
+
         {
           url: 'https://auctions.makerdao.network/',
           title: t('Auctions Dashboard')
@@ -101,6 +98,10 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
         {
           url: 'https://daistats.com/',
           title: t('DAI Stats')
+        },
+        {
+          url: 'https://vote.makerdao.com/terms',
+          title: t('Terms')
         }
       ]
     },
@@ -140,7 +141,6 @@ export default function LandingFooter({ locale = 'en' }: { locale?: string }): R
       { title: 'Discord', url: 'https://chat.makerdao.com', icon: 'discord' },
       { title: 'Twitter', url: 'https://twitter.com/MakerDAO', icon: 'twitter' },
       { title: 'Reddit', url: 'https://www.reddit.com/r/MakerDAO/', icon: 'reddit' },
-      { title: 'Telegram', url: 'https://t.me/makerdaoOfficial', icon: 'telegram' },
       { title: 'YouTube', url: 'https://www.youtube.com/MakerDAO', icon: 'youtube' },
       { title: 'GitHub', url: 'https://www.github.com/makerdao', icon: 'github' }
     ],

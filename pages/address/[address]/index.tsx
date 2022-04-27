@@ -30,7 +30,7 @@ const AddressView = ({ addressInfo }: { addressInfo: AddressApiResponse }) => {
   );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title={`${
           addressInfo.isDelegate ? `${addressInfo.delegateInfo?.name} Delegate` : 'Address'

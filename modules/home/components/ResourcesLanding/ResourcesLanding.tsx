@@ -14,13 +14,13 @@ const CategoryButton = ({ label, color, active, onClick }) => {
       sx={{
         background: theme =>
           active
-            ? `${alpha(theme?.rawColors?.onPrimary, 0.4)(theme)}`
-            : `${alpha(theme?.rawColors?.onPrimary, 0)(theme)}`,
+            ? `${alpha(theme?.rawColors?.badgeSelector, 0.4)(theme)}`
+            : `${alpha(theme?.rawColors?.badgeSelector, 0)(theme)}`,
         '&:hover': {
           background: theme =>
             active
-              ? `${alpha(theme?.rawColors?.onPrimary, 0.4)(theme)}`
-              : `${alpha(theme?.rawColors?.onPrimary, 0.2)(theme)}`
+              ? `${alpha(theme?.rawColors?.badgeSelector, 0.4)(theme)}`
+              : `${alpha(theme?.rawColors?.badgeSelector, 0.2)(theme)}`
         },
         px: [2, 2, 3],
         border: 'none'

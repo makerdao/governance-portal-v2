@@ -65,7 +65,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       {bpi === 0 && account && isActivePoll(poll) && (
         <MobileVoteSheet setPoll={setMobileVotingPoll} poll={mobileVotingPoll} withStart />
       )}
@@ -358,7 +358,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
 
   if (isFallback || (!isDefaultNetwork(network) && !_poll))
     return (
-      <PrimaryLayout shortenFooter={true}>
+      <PrimaryLayout>
         <p>Loading…</p>
       </PrimaryLayout>
     );

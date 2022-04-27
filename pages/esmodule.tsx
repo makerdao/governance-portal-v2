@@ -111,7 +111,7 @@ const ESModule = (): React.ReactElement => {
   };
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'container' }}>
+    <PrimaryLayout sx={{ maxWidth: 'container' }}>
       <HeadComponent title="Emergency Shutdown Module" />
 
       <DialogOverlay
