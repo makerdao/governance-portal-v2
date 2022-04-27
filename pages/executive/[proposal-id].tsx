@@ -118,7 +118,7 @@ const ProposalView = ({ proposal, spellDiffs }: Props): JSX.Element => {
     );
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent
         title={`Proposal ${proposal['title'] ? proposal['title'] : proposal.address}`}
         description={`See the results of the MakerDAO executive proposal ${
@@ -434,7 +434,7 @@ export default function ProposalPage({
 
   if (!isDefaultNetwork(network) && !_proposal)
     return (
-      <PrimaryLayout shortenFooter={true}>
+      <PrimaryLayout>
         <p>Loading…</p>
       </PrimaryLayout>
     );

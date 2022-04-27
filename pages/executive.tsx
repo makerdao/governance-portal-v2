@@ -181,7 +181,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     !voteDelegateContractAddress;
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Executive Proposals" />
 
       {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (

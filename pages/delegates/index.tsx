@@ -72,7 +72,7 @@ const Delegates = ({ delegates, stats }: Props) => {
     .sort(d => (isOwner(d) ? -1 : 0));
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title="Delegates"
         description="Vote delegation allows for MKR holders to delegate their voting power to delegates, which increases the effectiveness and efficiency of the governance process."
