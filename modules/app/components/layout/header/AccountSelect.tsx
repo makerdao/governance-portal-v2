@@ -11,6 +11,9 @@ import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
@@ -22,6 +25,7 @@ import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -83,8 +87,10 @@ const AccountSelect = (): React.ReactElement => {
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
 
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
-  const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
 
+  const { account, voteDelegateContractAddress } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
+  console.log(votingWeight);
   const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
@@ -342,6 +348,25 @@ const AccountSelect = (): React.ReactElement => {
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
                     <ErrorBoundary componentName="Voting Weight">
                       <VotingWeight />
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        <Text
+                          color="textSecondary"
+                          variant="caps"
+                          sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}
+                        >
+                          executive voting weight
+                        </Text>
+                      </Flex>
+                      <Flex>
+                        <Text sx={{ fontSize: 5 }}>
+                          {votingWeight ? `${formatValue(votingWeight.chiefTotal)} MKR` : '--'}
+                        </Text>
+                      </Flex>
+                      <Flex sx={{ py: 1 }}>
+                        <Text sx={{ fontSize: 2 }} color="textSecondary">
+                          {getExecutiveVotingWeightCopy(!!voteDelegateContractAddress)}
+                        </Text>
+                      </Flex>
                     </ErrorBoundary>
                     <Box sx={{ mt: 3 }}>
                       <InternalLink
