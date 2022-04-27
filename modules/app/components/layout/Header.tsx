@@ -29,7 +29,7 @@ import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { Proposal } from 'modules/executive/types';
 import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { GASNOW_URL } from 'modules/web3/constants/networks';
+import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -269,7 +269,7 @@ const Header = (): JSX.Element => {
         </Flex>
       </Flex>
       <Flex sx={{ alignItems: 'center' }}>
-        {bpi > 1 && account && (
+        {bpi > 1 && account && network === SupportedNetworks.MAINNET && (
           <ExternalLink
             title="Ethereum Gas Price"
             href={GASNOW_URL}
