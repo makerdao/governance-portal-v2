@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState, useRef, useCallback } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
@@ -47,7 +47,7 @@ import TabsNavigation from 'modules/home/components/TabsNavigation';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
-import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
+import { useInView } from 'react-intersection-observer';
 
 type Props = {
   proposals: Proposal[];
@@ -98,45 +98,37 @@ const LandingPage = ({
   // Use intersection observers to change the hash on scroll
   const [activeTab, setActiveTab] = useState('#vote');
 
-  const voteRef = useRef<HTMLDivElement>(null);
+  const { ref: voteRef, inView: voteInview } = useInView({
+    /* Optional options */
+    threshold: 0.2,
+  });
 
-  useIntersectionObserver(
-    voteRef.current,
-    () => {
-      setActiveTab('#vote');
-    },
-    '-200px'
-  );
+  const { ref: learnRef, inView: learnInview } = useInView({
+    /* Optional options */
+    threshold: 0.2,
+  });
 
-  const delegateRef = useRef<HTMLDivElement>(null);
+  const { ref: engageRef, inView: engageInview } = useInView({
+    /* Optional options */
+    threshold: 0.2,
+  });
 
-  useIntersectionObserver(
-    delegateRef.current,
-    () => {
-      setActiveTab('#delegate');
-    },
-    '-200px'
-  );
+  const { ref: delegateRef, inView: delegateInview } = useInView({
+    /* Optional options */
+    threshold: 0.2,
+  });
 
-  const engageRef = useRef<HTMLDivElement>(null);
-
-  useIntersectionObserver(
-    engageRef.current,
-    () => {
-      setActiveTab('#engage');
-    },
-    '-200px'
-  );
-
-  const learnRef = useRef<HTMLDivElement>(null);
-
-  useIntersectionObserver(
-    learnRef.current,
-    () => {
+  useEffect(() => {
+    if(learnInview) {
       setActiveTab('#learn');
-    },
-    '-200px'
-  );
+    } else if (voteInview) {
+      setActiveTab('#vote');
+    } else if(engageInview) {
+      setActiveTab('#engage')
+    } else {
+      setActiveTab('#delegate');
+    }
+  }, [learnInview, voteInview, engageInview, delegateInview])
 
   const hashChangeHandler = useCallback(() => {
     setActiveTab(window.location.hash);
