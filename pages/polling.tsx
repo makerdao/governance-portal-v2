@@ -37,6 +37,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 
 type Props = {
   polls: Poll[];
@@ -107,29 +108,16 @@ const PollingOverview = ({ polls, categories }: Props) => {
     setHistoricalPolls(historical);
   }, [filteredPolls]);
 
-  const loadMore = entries => {
-    const target = entries.pop();
-    if (target.isIntersecting) {
-      setNumHistoricalGroupingsLoaded(
-        numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
-          ? numHistoricalGroupingsLoaded + 2
-          : numHistoricalGroupingsLoaded
-      );
-    }
+  const loadMore = () => {
+    setNumHistoricalGroupingsLoaded(
+      numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
+        ? numHistoricalGroupingsLoaded + 2
+        : numHistoricalGroupingsLoaded
+    );
   };
 
-  useEffect(() => {
-    let observer;
-    if (loader?.current) {
-      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
-      observer.observe(loader.current);
-    }
-    return () => {
-      if (loader?.current) {
-        observer?.unobserve(loader.current);
-      }
-    };
-  }, [loader, loadMore]);
+  // Load more on scroll
+  useIntersectionObserver(loader.current, loadMore, '600px');
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
