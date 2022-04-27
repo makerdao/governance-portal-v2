@@ -88,7 +88,7 @@ const AccountPage = (): React.ReactElement => {
                 {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
               </Box>
             )}
-            {!addressInfo && !errorLoadingAddressInfo && (
+            {account && !addressInfo && !errorLoadingAddressInfo && (
               <Box sx={{ my: 3 }}>
                 <SkeletonThemed height={100} width="100%" />
               </Box>
@@ -96,7 +96,7 @@ const AccountPage = (): React.ReactElement => {
             {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
           </Box>
           {!account ? (
-            <Text>Connect your wallet to view information about your account</Text>
+            <Text sx={{ color: 'textSecondary' }}>Connect a wallet to view account information</Text>
           ) : (
             <Box sx={{ mt: 4 }}>
               <Box sx={{ my: 3 }}>
