@@ -343,13 +343,13 @@ const AccountSelect = (): React.ReactElement => {
                     <ErrorBoundary componentName="Voting Weight">
                       <VotingWeight />
                     </ErrorBoundary>
-                    <Box>
+                    <Box sx={{ mt: 3 }}>
                       <InternalLink
                         href={'/account'}
                         title="View account page"
-                        styles={{ color: 'accentBlue', mt: 2 }}
+                        styles={{ color: 'accentBlue' }}
                       >
-                        <Text>View my account page</Text>
+                        <Text as="p">View account page</Text>
                       </InternalLink>
                     </Box>
                   </Box>
