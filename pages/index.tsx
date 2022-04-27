@@ -100,35 +100,35 @@ const LandingPage = ({
 
   const { ref: voteRef, inView: voteInview } = useInView({
     /* Optional options */
-    threshold: 0.2,
+    threshold: 0.2
   });
 
   const { ref: learnRef, inView: learnInview } = useInView({
     /* Optional options */
-    threshold: 0.2,
+    threshold: 0.2
   });
 
   const { ref: engageRef, inView: engageInview } = useInView({
     /* Optional options */
-    threshold: 0.2,
+    threshold: 0.2
   });
 
   const { ref: delegateRef, inView: delegateInview } = useInView({
     /* Optional options */
-    threshold: 0.2,
+    threshold: 0.2
   });
 
   useEffect(() => {
-    if(learnInview) {
+    if (learnInview) {
       setActiveTab('#learn');
     } else if (voteInview) {
       setActiveTab('#vote');
-    } else if(engageInview) {
-      setActiveTab('#engage')
+    } else if (engageInview) {
+      setActiveTab('#engage');
     } else {
       setActiveTab('#delegate');
     }
-  }, [learnInview, voteInview, engageInview, delegateInview])
+  }, [learnInview, voteInview, engageInview, delegateInview]);
 
   const hashChangeHandler = useCallback(() => {
     setActiveTab(window.location.hash);
