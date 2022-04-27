@@ -236,7 +236,7 @@ const LandingPage = ({
             </section>
             <Flex
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              sx={{ justifyContent: 'flex-end' }}
+              sx={{ justifyContent: 'flex-end', mb: 3 }}
             >
               <ViewMore label="Back to the top" icon="chevron_up" />
             </Flex>

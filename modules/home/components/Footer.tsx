@@ -82,10 +82,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           url: 'https://makerdao.statuspage.io/',
           title: t('Service Status')
         },
-        {
-          url: 'https://oasis.app/',
-          title: t('Oasis')
-        },
+
         {
           url: 'https://auctions.makerdao.network/',
           title: t('Auctions Dashboard')
@@ -101,6 +98,10 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
         {
           url: 'https://daistats.com/',
           title: t('DAI Stats')
+        },
+        {
+          url: 'https://vote.makerdao.com/terms',
+          title: t('Terms')
         }
       ]
     },
