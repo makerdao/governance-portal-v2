@@ -71,20 +71,40 @@ const AccountPage = (): React.ReactElement => {
       <HeadComponent title="Account" />
 
       <SidebarLayout>
-        <Box>
-          <Box sx={{ mt: 4, mb: 2 }}>
+        <Box sx={{ mb: 6 }}>
+          <Box sx={{ my: 3 }}>
             <Heading as="h3" variant="microHeading">
-              Account
+              Account Information
             </Heading>
           </Box>
+          <Box>
+            {addressInfo && (
+              <Box>
+                {addressInfo.delegateInfo && (
+                  <Box>
+                    <DelegateDetail delegate={addressInfo.delegateInfo} />
+                  </Box>
+                )}
+                {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
+              </Box>
+            )}
+            {account && !addressInfo && !errorLoadingAddressInfo && (
+              <Box sx={{ my: 3 }}>
+                <SkeletonThemed height={100} width="100%" />
+              </Box>
+            )}
+            {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
+          </Box>
           {!account ? (
-            <Text>Connect your wallet to view information about your account</Text>
+            <Text sx={{ color: 'textSecondary' }}>Connect a wallet to view account information</Text>
           ) : (
-            <Box>
-              <Card>
-                <Text as="p" variant="microHeading" sx={{ mb: 3 }}>
+            <Box sx={{ mt: 4 }}>
+              <Box sx={{ my: 3 }}>
+                <Heading as="h3" variant="microHeading">
                   Vote Delegation
-                </Text>
+                </Heading>
+              </Box>
+              <Card>
                 {voteDelegateContractAddress && !modalOpen ? (
                   <Box>
                     <Text>Your delegate contract address:</Text>
@@ -197,30 +217,6 @@ const AccountPage = (): React.ReactElement => {
                   </Flex>
                 )}
               </Card>
-              <Box>
-                <Box sx={{ mt: 4, mb: 2 }}>
-                  <Heading as="h3" variant="microHeading">
-                    Account information
-                  </Heading>
-                </Box>
-                {addressInfo && (
-                  <Box>
-                    {addressInfo.delegateInfo && (
-                      <Box>
-                        <DelegateDetail delegate={addressInfo.delegateInfo} />
-                      </Box>
-                    )}
-                    {!addressInfo.delegateInfo && <AddressDetail address={addressInfo.address} />}
-                  </Box>
-                )}
-                {!addressInfo && !errorLoadingAddressInfo && (
-                  <Box>
-                    <Text>Loading Account Information...</Text>
-                    <SkeletonThemed height={100} width="100%" />
-                  </Box>
-                )}
-                {errorLoadingAddressInfo && <Text>Error loading address information</Text>}
-              </Box>
             </Box>
           )}
         </Box>

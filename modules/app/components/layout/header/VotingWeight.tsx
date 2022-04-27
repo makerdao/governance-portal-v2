@@ -1,5 +1,5 @@
 import { Flex, Text } from 'theme-ui';
-import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
+import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
@@ -7,7 +7,7 @@ import { formatValue } from 'lib/string';
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
+  const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
   return (
     <>

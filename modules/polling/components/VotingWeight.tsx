@@ -2,7 +2,7 @@ import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
 
-import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
+import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
@@ -51,7 +51,7 @@ export default function VotingWeight(): JSX.Element {
 
   const { data: votingWeight } = useMKRVotingWeight(account);
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
+  const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
   const tooltipLabel = (
     <Box>
