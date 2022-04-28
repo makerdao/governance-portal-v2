@@ -48,6 +48,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 
 type Props = {
   proposals: Proposal[];
@@ -87,7 +88,15 @@ const LandingPage = ({
   const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
   const { data: hat } = useHat();
   const { data: mkrOnHat } = useMkrOnHat();
-  const { account } = useAccount();
+  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+
+  // revalidate votedProposals if connected address changes
+  useEffect(() => {
+    mutateVotedProposals();
+  }, [address]);
 
   const pollCategories = getCategories(polls);
 
@@ -196,7 +205,7 @@ const LandingPage = ({
                         proposals.length > 0 ? (
                           <ExecutiveOverviewCard
                             network={network}
-                            votedProposals={[]}
+                            votedProposals={votedProposals}
                             account={account}
                             isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
                             proposal={proposals[0]}

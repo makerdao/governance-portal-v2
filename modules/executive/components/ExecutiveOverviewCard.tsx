@@ -86,24 +86,6 @@ export default function ExecutiveOverviewCard({
                 </>
               </InternalLink>
               <Flex sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-                {hasVotedFor && (
-                  <Badge
-                    variant="primary"
-                    sx={{
-                      color: 'primary',
-                      borderColor: 'primary',
-                      textTransform: 'uppercase',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      m: 1
-                    }}
-                  >
-                    <Flex sx={{ display: 'inline-flex', pr: 2 }}>
-                      <Icon name="verified" size={3} />
-                    </Flex>
-                    Your Vote
-                  </Badge>
-                )}
                 {isHat && proposal.address !== ZERO_ADDRESS ? (
                   <Box
                     sx={{
@@ -150,7 +132,7 @@ export default function ExecutiveOverviewCard({
                   View Details
                 </Button>
               </InternalLink>
-              {canVote && (
+              {!hasVotedFor && canVote && (
                 <Button
                   variant="primaryOutline"
                   sx={{ ml: [0, 3], width: 122 }}
@@ -164,6 +146,25 @@ export default function ExecutiveOverviewCard({
                 >
                   Vote
                 </Button>
+              )}
+              {hasVotedFor && (
+                <Badge
+                  variant="primary"
+                  sx={{
+                    color: 'primary',
+                    borderColor: 'primary',
+                    textTransform: 'uppercase',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    m: 1,
+                    border: 'none'
+                  }}
+                >
+                  <Flex sx={{ display: 'inline-flex', pr: 2 }}>
+                    <Icon name="verified" size={3} />
+                  </Flex>
+                  Your Vote
+                </Badge>
               )}
             </Flex>
             <Flex>
