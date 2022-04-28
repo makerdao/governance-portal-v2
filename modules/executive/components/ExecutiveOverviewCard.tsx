@@ -109,11 +109,7 @@ export default function ExecutiveOverviewCard({
         <Flex sx={{ flexDirection: 'column' }}>
           <Box sx={{ mt: 2, mb: 1 }}>
             {comments && comments.length > 0 && (
-              <InternalLink
-                href={`/executive/${proposal.key}?network=${network}`}
-                title="View Comments"
-                hash="comments"
-              >
+              <InternalLink href={`/executive/${proposal.key}`} title="View Comments" hash="comments">
                 <CommentCount count={comments.length} />
               </InternalLink>
             )}
