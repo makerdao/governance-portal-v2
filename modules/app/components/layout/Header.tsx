@@ -245,7 +245,7 @@ const Header = (): JSX.Element => {
             title="View delegates page"
             p={0}
             sx={{
-              display: ['none', 'block'],
+              display: ['none', 'flex'],
               ml: [0, 4, 4, 5],
               color: router?.asPath?.startsWith('/delegates') ? 'primary' : undefined
             }}
@@ -258,7 +258,8 @@ const Header = (): JSX.Element => {
             title="View emergency shutdown module page"
             p={0}
             sx={{
-              display: ['none', 'block'],
+              flexShrink: 0,
+              display: ['none', 'flex'],
               ml: [0, 4, 4, 5],
               mr: [0, 'auto', 4, 5],
               color: router?.asPath?.startsWith('/esmodule') ? 'primary' : undefined
