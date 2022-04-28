@@ -110,8 +110,9 @@ export default function ExecutiveOverviewCard({
           <Box sx={{ mt: 2, mb: 1 }}>
             {comments && comments.length > 0 && (
               <InternalLink
-                href={`/executive/${proposal.key}?network=${network}#comments`}
+                href={`/executive/${proposal.key}?network=${network}`}
                 title="View Comments"
+                hash="comments"
               >
                 <CommentCount count={comments.length} />
               </InternalLink>

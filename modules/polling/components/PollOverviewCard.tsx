@@ -112,7 +112,7 @@ export default function PollOverviewCard({
                     </Box>
 
                     {comments && comments.length > 0 && (
-                      <InternalLink href={`/polling/${poll.slug}#comments`} title="View comments">
+                      <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
                         <CommentCount count={comments.length} />
                       </InternalLink>
                     )}
