@@ -65,7 +65,6 @@ describe('Home Page', () => {
       // Checks that there are enough delegates
       cy.get('[data-testid="top-recognized-delegate"]').its('length').should('be.eq', 5);
 
-
       //TODO test footer stuff
 
       // Change account and verify the account box updates
@@ -87,6 +86,4 @@ describe('Home Page', () => {
       });
     });
   });
-
-  
 });

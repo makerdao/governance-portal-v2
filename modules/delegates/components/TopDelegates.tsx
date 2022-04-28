@@ -28,7 +28,7 @@ export default function TopDelegates({
   const [toggledDelegates, setToggledDelegates] = useState({});
 
   return (
-    <Box >
+    <Box>
       {showDelegateModal && (
         <DelegateModal
           title={`Delegate to ${showDelegateModal.name}`}

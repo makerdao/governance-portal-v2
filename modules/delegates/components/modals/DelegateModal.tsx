@@ -76,7 +76,7 @@ export const DelegateModal = ({
   return (
     <>
       <DialogOverlay
-        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)' }}
+        style={{ background: 'hsla(237.4%, 13.8%, 32.7%, 0.9)', zIndex: 200 }}
         isOpen={isOpen}
         onDismiss={onClose}
       >
