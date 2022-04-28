@@ -12,8 +12,7 @@ export const ViewMore = ({ label = 'View more', icon = 'chevron_right' }: Props)
       sx={{
         alignItems: 'center',
         cursor: 'pointer',
-        color: 'text',
-        ':hover > svg': { transform: 'translateX(3px)' }
+        color: 'text'
       }}
     >
       <Text sx={{ fontSize: 2 }}>{label}</Text>
