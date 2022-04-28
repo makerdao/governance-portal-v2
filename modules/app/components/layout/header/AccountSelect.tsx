@@ -90,7 +90,6 @@ const AccountSelect = (): React.ReactElement => {
 
   const { account, voteDelegateContractAddress } = useAccount();
   const { data: votingWeight } = useMKRVotingWeight(account);
-  console.log(votingWeight);
   const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
