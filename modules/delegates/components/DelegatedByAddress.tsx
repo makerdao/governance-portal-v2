@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import Link from 'next/link';
-import { Box, Text, Link as ThemeUILink, Flex, IconButton, Heading } from 'theme-ui';
+import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { InternalLink } from 'modules/app/components/InternalLink';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import Tooltip from 'modules/app/components/Tooltip';
 import { DelegationHistory } from 'modules/delegates/types';
@@ -49,11 +50,13 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
     <tr>
       <Flex as="td" sx={{ flexDirection: 'column', mb: [0, 3], pt: ['10px', 0], mr: 2 }}>
         <Heading variant="microHeading">
-          <Link href={{ pathname: `/address/${address}` }} passHref>
-            <ThemeUILink title="View address detail" sx={{ fontSize: [1, 3] }}>
-              <AddressIconBox address={address} width={bpi < 1 ? 22 : 41} />
-            </ThemeUILink>
-          </Link>
+          <InternalLink
+            href={`/address/${address}`}
+            title="View address detail"
+            styles={{ fontSize: [1, 3] }}
+          >
+            <AddressIconBox address={address} width={bpi < 1 ? 22 : 41} />
+          </InternalLink>
         </Heading>
         {expanded && (
           <Flex sx={{ pl: 3, flexDirection: 'column' }}>
@@ -149,16 +152,15 @@ const CollapsableRow = ({ delegator, network, bpi, totalDelegated }: Collapsable
                     ':not(:last-of-type)': { pb: 2 }
                   }}
                 >
-                  <ThemeUILink
+                  <ExternalLink
                     href={getEtherscanLink(network, hash as string, 'transaction')}
-                    target="_blank"
                     title="View on Etherscan"
-                    sx={{
+                    styles={{
                       textAlign: 'right'
                     }}
                   >
                     <Icon name="arrowTopRight" size={2} />
-                  </ThemeUILink>
+                  </ExternalLink>
                 </Flex>
               );
             })}

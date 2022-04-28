@@ -47,7 +47,9 @@ function mergeDelegateInfo(
     cuMember: githubDelegate?.cuMember,
     mkrDelegated: onChainDelegate.mkrDelegated,
     proposalsSupported: onChainDelegate.proposalsSupported,
-    execSupported: onChainDelegate.execSupported
+    execSupported: undefined,
+    mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
+    blockTimestamp: onChainDelegate.blockTimestamp
   };
 }
 
@@ -98,7 +100,10 @@ export async function fetchDelegatesInformation(network?: SupportedNetworks): Pr
 }
 
 // Returns a list of delegates, mixin onchain and repo information
-export async function fetchDelegates(network?: SupportedNetworks): Promise<DelegatesAPIResponse> {
+export async function fetchDelegates(
+  network?: SupportedNetworks,
+  sortBy: 'mkr' | 'random' | 'delegators' | 'date' = 'random'
+): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
@@ -131,12 +136,35 @@ export async function fetchDelegates(network?: SupportedNetworks): Promise<Deleg
     })
   );
 
+  const sortedDelegates = delegates.sort((a, b) => {
+    if (sortBy === 'mkr') {
+      const bSupport = b.mkrDelegated ? b.mkrDelegated : 0;
+      const aSupport = a.mkrDelegated ? a.mkrDelegated : 0;
+      return new BigNumberJS(aSupport).gt(new BigNumberJS(bSupport)) ? -1 : 1;
+    } else if (sortBy === 'date') {
+      return a.expirationDate > b.expirationDate ? -1 : 1;
+    } else if (sortBy === 'delegators') {
+      const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
+      const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
+      const activeDelegatorsA = delegationHistoryA.filter(
+        ({ lockAmount }) => parseInt(lockAmount) > 0
+      ).length;
+      const activeDelegatorsB = delegationHistoryB.filter(
+        ({ lockAmount }) => parseInt(lockAmount) > 0
+      ).length;
+      return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
+    } else {
+      // Random sorting
+      return Math.random() * 1 > 0.5 ? -1 : 1;
+    }
+  });
+
   const delegatesResponse: DelegatesAPIResponse = {
-    delegates,
+    delegates: sortedDelegates,
     stats: {
-      total: delegates.length,
-      shadow: delegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
-      recognized: delegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
+      total: sortedDelegates.length,
+      shadow: sortedDelegates.filter(d => d.status === DelegateStatusEnum.shadow).length,
+      recognized: sortedDelegates.filter(d => d.status === DelegateStatusEnum.recognized).length,
       totalMKRDelegated: new BigNumberJS(
         delegates.reduce((prev, next) => {
           const mkrDelegated = new BigNumberJS(next.mkrDelegated);

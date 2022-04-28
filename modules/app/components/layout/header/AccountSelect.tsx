@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { Box, Flex, Text, Button, Close, ThemeUICSSObject, Link as ExternalLink } from 'theme-ui';
+import { Box, Flex, Text, Button, Close, ThemeUICSSObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
-import Link from 'next/link';
-
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-
 import { formatAddress } from 'lib/utils';
 import useTransactionStore from 'modules/web3/stores/transactions';
 import { fadeIn, slideUp } from 'lib/keyframes';
@@ -14,6 +11,9 @@ import AccountBox from './AccountBox';
 import TransactionBox from './TransactionBox';
 import VotingWeight from './VotingWeight';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
+import { formatValue } from 'lib/string';
 import ConnectWalletButton from 'modules/web3/components/ConnectWalletButton';
 import { useContext } from 'react';
 import { AnalyticsContext } from 'modules/app/client/analytics/AnalyticsContext';
@@ -24,6 +24,8 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import NetworkAlertModal, { ChainIdError } from './NetworkAlertModal';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { useRouter } from 'next/router';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
@@ -85,8 +87,9 @@ const AccountSelect = (): React.ReactElement => {
   const [chainIdError, setChainIdError] = useState<ChainIdError>(null);
 
   const [showHwAddressSelector, setShowHwAddressSelector] = useState(false);
-  const [hwSelectCallback, setHwSelectCallback] = useState<(err: Error | null, address?: string) => void>();
 
+  const { account, voteDelegateContractAddress } = useAccount();
+  const { data: votingWeight } = useMKRVotingWeight(account);
   const [hwPageNum, setHwPageNum] = useState(0);
 
   const close = () => setShowDialog(false);
@@ -344,18 +347,34 @@ const AccountSelect = (): React.ReactElement => {
                   <Box sx={{ borderBottom: '1px solid secondaryMuted', py: 1 }}>
                     <ErrorBoundary componentName="Voting Weight">
                       <VotingWeight />
+                      <Flex sx={{ justifyContent: 'space-between' }}>
+                        <Text
+                          color="textSecondary"
+                          variant="caps"
+                          sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}
+                        >
+                          executive voting weight
+                        </Text>
+                      </Flex>
+                      <Flex>
+                        <Text sx={{ fontSize: 5 }}>
+                          {votingWeight ? `${formatValue(votingWeight.chiefTotal)} MKR` : '--'}
+                        </Text>
+                      </Flex>
+                      <Flex sx={{ py: 1 }}>
+                        <Text sx={{ fontSize: 2 }} color="textSecondary">
+                          {getExecutiveVotingWeightCopy(!!voteDelegateContractAddress)}
+                        </Text>
+                      </Flex>
                     </ErrorBoundary>
-                    <Box>
-                      <Link
-                        href={{
-                          pathname: '/account'
-                        }}
-                        passHref
+                    <Box sx={{ mt: 3 }}>
+                      <InternalLink
+                        href={'/account'}
+                        title="View account page"
+                        styles={{ color: 'accentBlue' }}
                       >
-                        <ExternalLink title="See account" variant="nostyle" sx={{ color: 'accentBlue' }}>
-                          <Text>See my account page</Text>
-                        </ExternalLink>
-                      </Link>
+                        <Text as="p">View account page</Text>
+                      </InternalLink>
                     </Box>
                   </Box>
                   {txs?.length > 0 && <TransactionBox txs={txs} />}

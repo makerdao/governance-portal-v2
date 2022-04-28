@@ -13,58 +13,77 @@ describe('Home Page', () => {
   before(() => {
     forkNetwork(INIT_BLOCK);
   });
-  it('should navigate to the home page page and find the title', () => {
-    // Start from the index page
-    visitPage('/');
 
-    // Find the title
-    elementContainsText('h1', 'Maker Governance');
+  it('should find the correct data on the landing page', () => {
+    const expectedActivePolls = 4;
+
+    // Start from the index page before connecting
+    visitPage('/');
 
     // Find the title
     cy.get('h1').contains('Maker Governance');
-  });
-
-  it('should find the stats', () => {
-    // Start from the index page
-    visitPage('/');
 
     setAccount(TEST_ACCOUNTS.normal, () => {
-      // Find the Dai Savings Rate info
-      cy.contains('Dai Savings Rate').should('be.visible');
+      // Check the header badges are correct
+      cy.get('a').contains('Polling').next().contains('21');
+      cy.get('a').contains('Executive').next().contains('2');
 
-      // Checks that we have a correct dai savings rate and other values
-      elementContainsText('[data-testid="Dai Savings Rate-value"]', '0.01%');
+      // Find the Governance Stats block
+      cy.contains('Governance Stats').should('be.visible');
 
-      elementContainsText('[data-testid="Total Dai-value"]', '99,596,116 DAI');
+      elementContainsText('[data-testid="MKR on Hat"]', '100,000');
+      elementContainsText('[data-testid="Active Polls"]', '21');
+      elementContainsText('[data-testid="Recognized Delegates"]', '2');
+      elementContainsText('[data-testid="Shadow Delegates"]', '15');
+      elementContainsText('[data-testid="MKR Delegated"]', '1,279 MKR');
+      elementContainsText('[data-testid="MKR in Chief"]', '201,312 MKR');
 
-      elementContainsText('[data-testid="Dai Debt Ceiling-value"]', '2,015,717,023 DAI');
+      // TODO add more specific tests to below sections
 
-      elementContainsText('[data-testid="System Surplus-value"]', '473,459 DAI');
+      // Find the Active Polls block
+      cy.contains('Active Polls').should('be.visible');
 
-      // Find the Polling Votes block
-      cy.contains('Polling Votes').should('be.visible');
-    });
-  });
+      cy.get('[data-testid="poll-overview-card"]').its('length').should('be.eq', expectedActivePolls);
 
-  it('Connects wallet', () => {
-    // Start from the index page
-    visitPage('/');
+      // Find the Meet the Delegates block
+      cy.contains('Meet the Delegates').should('be.visible');
 
-    const newAccount = getTestAccountByIndex(4);
+      // Find the Top Recognized Delegates block
+      cy.contains('Top Recognized Delegates').should('be.visible');
 
-    setAccount(newAccount, () => {
-      // Should find the connected
-      const regex = new RegExp(formatAddress(newAccount.address), 'i');
-      cy.contains(regex).should('be.visible');
+      // Find the How to participate block
+      cy.contains('How to participate in Maker Governance').should('be.visible');
 
-      // Opens modal connection and finds 5 MKR
-      //click on account modal
-      modalAddressEquals(regex);
+      // Find the Resources block
+      cy.contains('Resources').should('be.visible');
 
-      modalPollingWeightEquals('0.01 MKR');
+      // Find the Follow the Conversation and Participate block
+      cy.contains('Follow the Conversation and Participate').should('be.visible');
+      cy.contains('Governance Participation').should('be.visible');
+      cy.contains('Top Voters').should('be.visible');
 
-      // Save screenshot
-      cy.screenshot('test');
+      // Checks that there are enough delegates
+      cy.get('[data-testid="top-recognized-delegate"]').its('length').should('be.eq', 5);
+
+      //TODO test footer stuff
+
+      // Change account and verify the account box updates
+      const newAccount = getTestAccountByIndex(4);
+
+      setAccount(newAccount, () => {
+        // Should find the connected
+        const regex = new RegExp(formatAddress(newAccount.address), 'i');
+        cy.contains(regex).should('be.visible');
+
+        // Opens modal connection and finds 5 MKR
+        //click on account modal
+        modalAddressEquals(regex);
+
+        modalPollingWeightEquals('0.01 MKR');
+
+        // Save screenshot
+        cy.screenshot('test');
+      });
     });
   });
 });

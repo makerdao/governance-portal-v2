@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Text, Link as ExternalLink, Flex, Divider } from 'theme-ui';
-import Link from 'next/link';
+import { Box, Text, Flex, Divider } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tabs from 'modules/app/components/Tabs';
 import {
@@ -21,7 +20,6 @@ import { AddressAPIStats } from 'modules/address/types/addressApiResponse';
 import LastVoted from 'modules/polling/components/LastVoted';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import DelegatedByAddress from 'modules/delegates/components/DelegatedByAddress';
-import { DelegationHistory } from 'modules/delegates/types/delegate';
 import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -30,19 +28,11 @@ import { Address } from 'modules/address/components/Address';
 import { formatDelegationHistory } from '../helpers/formatDelegationHistory';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 type PropTypes = {
   delegate: Delegate;
-};
-
-const swrPostProcess = useSWRNext => (key, fetcher, config) => {
-  const swr = useSWRNext(key, fetcher, config);
-
-  return swr.data === undefined
-    ? swr
-    : Object.assign({}, swr, {
-        data: formatDelegationHistory(swr.data)
-      });
 };
 
 export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
@@ -63,19 +53,12 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
     revalidateOnReconnect: false
   });
 
-  const dataKeyDelegators = `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`;
-  const { data: delegators } = useSWR<DelegationHistory[]>(delegate ? dataKeyDelegators : null, fetchJson, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnMount: !cache.get(dataKeyDelegators),
-    revalidateOnReconnect: false,
-    use: [swrPostProcess]
-  });
-
   const { data: totalStaked } = useLockedMkr(delegate.voteDelegateAddress);
   const { voteDelegateContractAddress } = useAccount();
-  const activeDelegators = delegators?.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
-  const delegatorCount = delegators ? activeDelegators?.length : undefined;
+  const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
+
+  const activeDelegators = delegationHistory.filter(({ lockAmount }) => parseInt(lockAmount) > 0);
+  const delegatorCount = activeDelegators.length;
   const isOwner = delegate.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
   const tabTitles = [
@@ -96,10 +79,10 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
         <DelegateParticipationMetrics delegate={delegate} />
       )}
       {delegate.status === DelegateStatusEnum.recognized && <Divider />}
-      {delegators && delegators?.length > 0 && totalStaked ? (
+      {delegationHistory.length > 0 && totalStaked ? (
         <>
           <Box sx={{ pl: [3, 4], pr: [3, 4], py: [3, 4] }}>
-            <DelegatedByAddress delegators={delegators} totalDelegated={totalStaked} />
+            <DelegatedByAddress delegators={delegationHistory} totalDelegated={totalStaked} />
           </Box>
           <Divider />
 
@@ -158,21 +141,18 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                     )}
                   </Flex>
                   <ExternalLink
-                    title="View on etherescan"
                     href={getEtherscanLink(network, voteDelegateAddress, 'address')}
-                    target="_blank"
+                    title="View on etherescan"
                   >
                     <Text as="p" sx={{ fontSize: [1, 3], mt: [1, 0], fontWeight: 'semiBold' }}>
                       Delegate contract <Icon ml={2} name="arrowTopRight" size={2} />
                     </Text>
                   </ExternalLink>
-                  <Link href={`/address/${delegate.address}`} passHref>
-                    <ExternalLink>
-                      <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
-                        Deployed by: <Address address={delegate.address} />
-                      </Text>
-                    </ExternalLink>
-                  </Link>
+                  <InternalLink href={`/address/${delegate.address}`} title="View address">
+                    <Text as="p" variant="secondary" sx={{ fontSize: [1, 2], mt: [1, 0] }}>
+                      Deployed by: <Address address={delegate.address} />
+                    </Text>
+                  </InternalLink>
                 </Box>
               </Box>
             </Flex>

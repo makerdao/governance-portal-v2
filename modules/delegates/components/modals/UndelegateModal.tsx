@@ -17,6 +17,8 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { BigNumber } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { formatValue } from 'lib/string';
+import DelegateAvatarName from '../DelegateAvatarName';
 
 type Props = {
   isOpen: boolean;
@@ -83,7 +85,17 @@ export const UndelegateModal = ({
           <BoxWithClose close={onClose}>
             <Box>
               {tx ? (
-                <TxDisplay tx={tx} setTxId={resetTx} onDismiss={onClose} />
+                <TxDisplay
+                  tx={tx}
+                  setTxId={resetTx}
+                  onDismiss={onClose}
+                  title={'Undelegating your MKR'}
+                  description={`You undelegated ${formatValue(mkrToWithdraw)} from ${delegate.name}`}
+                >
+                  <Box sx={{ textAlign: 'left', margin: '0 auto', p: 3 }}>
+                    <DelegateAvatarName delegate={delegate} />
+                  </Box>
+                </TxDisplay>
               ) : (
                 <>
                   {mkrStaked && iouAllowance ? (

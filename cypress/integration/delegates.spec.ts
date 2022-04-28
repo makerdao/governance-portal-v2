@@ -84,8 +84,8 @@ describe('Delegates Page', () => {
       cy.contains('Confirm Transaction', { timeout: 7500 }).should('be.visible');
 
       // Inserts the amount of MKR to delegate
-      cy.get('[data-testid="mkr-input"]').type('2');
       cy.contains('Deposit into delegate contract', { timeout: 7500 }).should('be.visible');
+      cy.get('[data-testid="mkr-input"]').type('2');
 
       cy.wait(1000);
 

@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { GetStaticProps } from 'next';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
@@ -30,6 +29,7 @@ import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -58,11 +58,18 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
-  const votedPolls = Object.keys(ballot)
-    .map(pollId => {
-      return findPollById(polls, pollId);
-    })
-    .filter(p => !!p) as Poll[];
+  // Used to create a string that does not trigger the useMemo of votedPolls to be recreated. (Unique string does not re-render the votedPolls object)
+  const ballotKeys = useMemo(() => {
+    return Object.keys(ballot).join('');
+  }, [ballot]);
+
+  const votedPolls = useMemo(() => {
+    return Object.keys(ballot)
+      .map(pollId => {
+        return findPollById(polls, pollId);
+      })
+      .filter(p => !!p) as Poll[];
+  }, [ballotKeys]);
 
   const previousVotedPolls = Object.keys(previousBallot)
     .map(pollId => {
@@ -146,7 +153,7 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const hasVoted = previousVotesLength > 0 && ballotCount === 0;
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <Stack gap={3}>
         {!hasVoted && (
           <Heading mb={3} as="h4">
@@ -166,12 +173,12 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling' }}>
+              <InternalLink href={'/polling'} title="View polling page">
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
                 </Button>
-              </Link>
+              </InternalLink>
               <Stack gap={3}>
                 {!account && (
                   <Text as="p" sx={{ mt: 3 }}>
@@ -219,17 +226,17 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
                             poll={poll}
                             reviewPage={true}
                             showVoting={false}
-                            yourVote={
-                              <Box ml={[0, 3]} mt={[3, 0]}>
-                                <PollVotedOption
-                                  poll={poll}
-                                  votedOption={previousBallot[poll.pollId].option}
-                                  votingWeight={votingWeight?.total}
-                                  transactionHash={previousBallot[poll.pollId].transactionHash || ''}
-                                  toggleShareModal={toggleShareModal}
-                                />
-                              </Box>
-                            }
+                            // yourVote={
+                            //   <Box ml={[0, 3]} mt={[3, 0]}>
+                            //     <PollVotedOption
+                            //       poll={poll}
+                            //       votedOption={previousBallot[poll.pollId].option}
+                            //       votingWeight={votingWeight?.total}
+                            //       transactionHash={previousBallot[poll.pollId].transactionHash || ''}
+                            //       toggleShareModal={toggleShareModal}
+                            //     />
+                            //   </Box>
+                            // }
                             hideTally
                           >
                             {previousBallot[poll.pollId]?.comment && (
@@ -354,12 +361,9 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && !_polls)
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && !_polls) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return <PollingReview polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])} />;
 }

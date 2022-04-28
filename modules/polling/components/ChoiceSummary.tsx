@@ -1,6 +1,5 @@
 import { Text, Flex, Box, Button } from 'theme-ui';
 import { getNumberWithOrdinal } from 'lib/utils';
-import Link from 'next/link';
 import { ABSTAIN } from '../polling.constants';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -8,6 +7,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { Poll } from '../types';
 import { useContext } from 'react';
 import { BallotContext } from '../context/BallotContext';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const ChoiceSummary = ({
   choice,
@@ -86,7 +86,7 @@ const ChoiceSummary = ({
         )}
       </Flex>
       {showReviewButton && onBallot && (
-        <Link href="/polling/review">
+        <InternalLink href="/polling/review" title="Review & submit your ballot">
           <Button
             onClick={() => {
               trackButtonClick('reviewAndSubmitBallot');
@@ -96,7 +96,7 @@ const ChoiceSummary = ({
           >
             Review & Submit Your Ballot
           </Button>
-        </Link>
+        </InternalLink>
       )}
     </Box>
   );

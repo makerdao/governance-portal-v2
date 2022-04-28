@@ -16,8 +16,6 @@ import {
 import FilterButton from 'modules/app/components/FilterButton';
 import { useState } from 'react';
 import { MKRWeightTimeRanges } from '../delegates.constants';
-import { fetchJson } from 'lib/fetchJson';
-import useSWR from 'swr';
 import { format } from 'date-fns';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { formatDelegationHistoryChart } from '../helpers/formatDelegationHistoryChart';
@@ -56,14 +54,9 @@ export function DelegateMKRChart({ delegate }: { delegate: Delegate }): React.Re
   ];
 
   const [selectedTimeFrame, setSelectedTimeframe] = useState(timeRanges[0]);
-  const dataKeyDelegators = `/api/delegates/delegation-history/${delegate.voteDelegateAddress}?network=${network}`;
-  const { data: events } = useSWR(typeof window !== 'undefined' ? dataKeyDelegators : null, fetchJson, {
-    revalidateOnFocus: false,
-    dedupingInterval: 60000
-  });
 
   const data = formatDelegationHistoryChart(
-    events,
+    delegate.mkrLockedDelegate,
     delegate.voteDelegateAddress,
     selectedTimeFrame.from,
     selectedTimeFrame.range,

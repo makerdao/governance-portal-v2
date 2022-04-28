@@ -1,8 +1,8 @@
-import { Box, Flex, Text, Link as ThemeUILink, Divider } from 'theme-ui';
+import { Box, Flex, Text, Divider } from 'theme-ui';
 import { Proposal, SpellData, SpellDiff as SpellDiffType } from '../types';
 import { useState } from 'react';
 import { Icon as DaiUIIcon } from '@makerdao/dai-ui-icons';
-
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { formatDateWithoutTime } from 'lib/datetime';
@@ -143,15 +143,15 @@ export function SpellEffectsTab({
                 registered on the blockchain in the spell smart contract.
               </Text>
               <Box sx={{ mt: 3 }}>
-                <ThemeUILink
-                  href={'https://makerdao.world/en/learn/governance/audit-exec-spells'}
-                  target="_blank"
+                <ExternalLink
+                  href="https://makerdao.world/en/learn/governance/audit-exec-spells"
+                  title="Learn more about auditing executive spells"
                 >
                   <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                     Learn more about auditing Executive Spells
                     <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                   </Text>
-                </ThemeUILink>
+                </ExternalLink>
               </Box>
             </Box>
           )}
@@ -169,12 +169,12 @@ export function SpellEffectsTab({
               Proposal Markdown
             </Text>
             <Box>
-              <ThemeUILink href={proposal.proposalLink} target="_blank">
+              <ExternalLink href={proposal.proposalLink} title="View in GitHub">
                 <Text sx={{ color: 'accentBlue', ':hover': { color: 'blueLinkHover' } }}>
                   View in GitHub
                   <DaiUIIcon ml={2} name="arrowTopRight" size="2" />
                 </Text>
-              </ThemeUILink>
+              </ExternalLink>
             </Box>
           </Box>
         )}

@@ -1,7 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { Poll, PollCategory, PollVoteType } from 'modules/polling/types';
-import mockPolls from './mocks/polls.json';
+import { Poll, PollCategory } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';

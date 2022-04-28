@@ -21,8 +21,15 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useTokenAllowance } from 'modules/web3/hooks/useTokenAllowance';
 import { useLock } from '../hooks/useLock';
 import { Tokens } from 'modules/web3/constants/tokens';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
-const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
+const ModalContent = ({
+  close,
+  showProxyInfo
+}: {
+  close: () => void;
+  showProxyInfo?: boolean;
+}): React.ReactElement => {
   const [mkrToDeposit, setMkrToDeposit] = useState(BigNumber.from(0));
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const { account, voteProxyContractAddress, voteProxyColdAddress } = useAccount();
@@ -79,7 +86,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
               <Text as="p" variant="microHeading" color="onBackgroundAlt">
                 Deposit into voting contract
               </Text>
-              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3 }}>
+              <Text as="p" sx={{ color: 'mutedAlt', fontSize: 3, mt: 3 }}>
                 Input the amount of MKR to deposit into the voting contract.
               </Text>
             </Box>
@@ -133,6 +140,22 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
             >
               Approve
             </Button>
+            {showProxyInfo && (
+              <Text as="p" sx={{ fontSize: 2, mt: 3, color: 'textSecondary', textAlign: 'center' }}>
+                Interested in creating a proxy contract instead of depositing directly into Chief? Learn more{' '}
+                <ExternalLink
+                  href="https://blog.makerdao.com/the-makerdao-voting-proxy-contract/"
+                  title="Read about proxy contracts"
+                >
+                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
+                </ExternalLink>{' '}
+                and create one{' '}
+                <ExternalLink href="https://v1.vote.makerdao.com/proxysetup" title="Go to proxy setup">
+                  <Text sx={{ color: 'accentBlue', fontSize: 2 }}>here</Text>
+                </ExternalLink>
+                .
+              </Text>
+            )}
           </Stack>
         )}
       </Box>
@@ -140,7 +163,7 @@ const ModalContent = ({ close }: { close: () => void }): React.ReactElement => {
   );
 };
 
-const Deposit = ({ link }: { link?: string }): JSX.Element => {
+const Deposit = ({ link, showProxyInfo }: { link?: string; showProxyInfo?: boolean }): JSX.Element => {
   const { account, voteProxyContractAddress, voteProxyHotAddress } = useAccount();
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [showDialog, setShowDialog] = useState(false);
@@ -179,7 +202,7 @@ const Deposit = ({ link }: { link?: string }): JSX.Element => {
                 }
           }
         >
-          <ModalContent close={() => setShowDialog(false)} />
+          <ModalContent close={() => setShowDialog(false)} showProxyInfo={showProxyInfo} />
         </DialogContent>
       </DialogOverlay>
       {link ? (

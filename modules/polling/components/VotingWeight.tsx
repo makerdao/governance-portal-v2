@@ -2,7 +2,7 @@ import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
 
-import { getVotingWeightCopy } from 'modules/polling/helpers/getVotingWeightCopy';
+import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
@@ -22,7 +22,7 @@ const getDescription = votingWeight => {
             {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
           </Text>
           <Text as="p">
-            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
+            {'Cold balance in chief: ' + formatValue(votingWeight.chiefBalanceCold, 'wad', 18) + ' MKR'}
           </Text>
           <Text as="p">
             {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
@@ -51,7 +51,7 @@ export default function VotingWeight(): JSX.Element {
 
   const { data: votingWeight } = useMKRVotingWeight(account);
 
-  const votingWeightCopy = getVotingWeightCopy(!!voteDelegateContractAddress);
+  const votingWeightCopy = getPollingVotingWeightCopy(!!voteDelegateContractAddress);
 
   const tooltipLabel = (
     <Box>

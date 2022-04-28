@@ -1,57 +1,156 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
-import { Heading, Container, Grid, Text, Flex, useColorMode, Box, Button } from 'theme-ui';
-import { Icon } from '@makerdao/dai-ui-icons';
+import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
-import Link from 'next/link';
-import { Global } from '@emotion/core';
 import { fetchJson } from 'lib/fetchJson';
-
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
-import SystemStats from 'modules/home/components/SystemStats';
-import ExecutiveCard from 'modules/home/components/ExecutiveCard';
-import IntroCard from 'modules/home/components/IntroCard';
-import PollingIndicator from 'modules/home/components/PollingIndicator';
-import ExecutiveIndicator from 'modules/home/components/ExecutiveIndicator';
-import BlogPostCard from 'modules/home/components/BlogPostCard';
+import { ViewMore } from 'modules/home/components/ViewMore';
+import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLanding';
+import { GovernanceStats } from 'modules/home/components/GovernanceStats';
+import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
+import { PlayButton } from 'modules/home/components/PlayButton';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { fetchBlogPosts } from 'modules/blog/api/fetchBlogPosts';
-import { BlogPost } from 'modules/blog/types/blogPost';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
-import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
+import Skeleton from 'react-loading-skeleton';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
+import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import useSWR, { useSWRConfig } from 'swr';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import TopDelegates from 'modules/delegates/components/TopDelegates';
+import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
+import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
+import BigNumber from 'bignumber.js';
+import { getCategories } from 'modules/polling/helpers/getCategories';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import MeetDelegates from 'modules/delegates/components/MeetDelegates';
+import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
+import { useBreakpointIndex } from '@theme-ui/match-media';
+import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
+import { useAccount } from 'modules/app/hooks/useAccount';
+import { Tokens } from 'modules/web3/constants/tokens';
+import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
+import { VIDEO_URLS } from 'modules/app/client/videos.constants';
+import Participation from 'modules/home/components/Participation';
+import TabsNavigation from 'modules/home/components/TabsNavigation';
+import { StickyContainer, Sticky } from 'react-sticky';
+import { shuffleArray } from 'lib/common/shuffleArray';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { useInView } from 'react-intersection-observer';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 
 type Props = {
   proposals: Proposal[];
   polls: Poll[];
-  blogPosts: BlogPost[];
+  network: SupportedNetworks;
+  delegates: Delegate[];
+  recognizedDelegates: Delegate[];
+  meetYourDelegates: Delegate[];
+  totalMKRDelegated: string;
 };
 
-const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
+const LandingPage = ({
+  proposals,
+  polls,
+  network,
+  delegates,
+  totalMKRDelegated,
+  recognizedDelegates,
+  meetYourDelegates
+}: Props) => {
   const [mode] = useColorMode();
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.LANDING);
-  const recentPolls = useMemo(() => polls.slice(0, 4), [polls]);
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
+  const bpi = useBreakpointIndex();
+  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+  const topDelegates = delegates.slice(0, 5);
+  const activeDelegates = recognizedDelegates
+    .sort((a, b) => {
+      const [first] = a.combinedParticipation?.split('%') || '0';
+      const [second] = b.combinedParticipation?.split('%') || '0';
+      return parseFloat(second) - parseFloat(first);
+    })
+    .slice(0, 5);
 
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/heroVisual.svg');
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
+  const chiefAddress = useContractAddress('chief');
+  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
   const { data: hat } = useHat();
+  const { data: mkrOnHat } = useMkrOnHat();
+  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+
+  // revalidate votedProposals if connected address changes
+  useEffect(() => {
+    mutateVotedProposals();
+  }, [address]);
+
+  const pollCategories = getCategories(polls);
 
   useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/heroVisualDark.svg)' : 'url(/assets/heroVisual.svg)');
+    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
   }, [mode]);
+
+  // Use intersection observers to change the hash on scroll
+  const [activeTab, setActiveTab] = useState('#vote');
+
+  const { ref: voteRef, inView: voteInview } = useInView({
+    /* Optional options */
+    threshold: 0.5
+  });
+
+  const { ref: learnRef, inView: learnInview } = useInView({
+    /* Optional options */
+    threshold: 0.5
+  });
+
+  const { ref: engageRef, inView: engageInview } = useInView({
+    /* Optional options */
+    threshold: 0.5
+  });
+
+  const { ref: delegateRef, inView: delegateInview } = useInView({
+    /* Optional options */
+    threshold: 0.5
+  });
+
+  useEffect(() => {
+    if (learnInview) {
+      setActiveTab('#learn');
+    } else if (voteInview) {
+      setActiveTab('#vote');
+    } else if (engageInview) {
+      setActiveTab('#engage');
+    } else if (delegateInview) {
+      setActiveTab('#delegate');
+    }
+  }, [learnInview, voteInview, engageInview, delegateInview]);
+
+  const hashChangeHandler = useCallback(() => {
+    setActiveTab(window.location.hash);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('hashchange', hashChangeHandler);
+      return () => {
+        window.removeEventListener('hashchange', hashChangeHandler);
+      };
+    }
+  }, []);
 
   return (
     <div>
@@ -69,211 +168,136 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} />
-      <PrimaryLayout sx={{ maxWidth: 'page' }}>
-        <Stack gap={[5, 6]}>
-          <section>
-            <Stack gap={[4, 6]}>
-              <Container pt={4} sx={{ maxWidth: 'title', textAlign: 'center' }}>
-                <Stack gap={3}>
+      <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
+      <StickyContainer>
+        <PrimaryLayout sx={{ maxWidth: 'page' }}>
+          <Stack gap={[5, 6]} separationType="p">
+            <section>
+              <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
+                <Flex sx={{ p: 3, width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
                   <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
                     Maker Governance
                   </Heading>
-                  <Text
-                    as="p"
-                    mb="3"
-                    sx={{
-                      color: 'text',
-                      opacity: '0.7',
-                      fontWeight: 'semiBold',
-                      fontSize: [3, 5],
-                      px: [3, 'inherit']
+                  <Heading as="h1" sx={{ color: 'text', fontSize: [7, 8] }}>
+                    Voting Portal
+                  </Heading>
+                  <Text as="p" sx={{ fontWeight: 'semiBold', my: 3, width: ['100%', '100%', '80%'] }}>
+                    Vote with or delegate your MKR tokens to help protect the integrity of the Maker protocol
+                  </Text>
+                  <Box>
+                    <PlayButton
+                      label="How to vote"
+                      onClick={() => setVideoOpen(true)}
+                      styles={{ mr: [1, 3] }}
+                    />
+                  </Box>
+                </Flex>
+                <Flex sx={{ py: 3, px: [1, 3], width: ['100%', '100%', '50%'], flexDirection: 'column' }}>
+                  <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Heading>Latest Executive</Heading>
+                    <InternalLink href={'/executive'} title="Latest Executive">
+                      <ViewMore />
+                    </InternalLink>
+                  </Flex>
+                  <Flex sx={{ mt: 3 }}>
+                    <ErrorBoundary componentName="Latest Executive">
+                      {proposals ? (
+                        proposals.length > 0 ? (
+                          <ExecutiveOverviewCard
+                            network={network}
+                            votedProposals={votedProposals}
+                            account={account}
+                            isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
+                            proposal={proposals[0]}
+                          />
+                        ) : (
+                          <Text>No proposals found</Text>
+                        )
+                      ) : (
+                        <Skeleton />
+                      )}
+                    </ErrorBoundary>
+                  </Flex>
+                </Flex>
+              </Flex>
+            </section>
+
+            <section>
+              <ErrorBoundary componentName="Governance Stats">
+                <GovernanceStats
+                  polls={polls}
+                  delegates={delegates}
+                  totalMKRDelegated={totalMKRDelegated}
+                  mkrOnHat={mkrOnHat}
+                  mkrInChief={mkrInChief}
+                />
+              </ErrorBoundary>
+            </section>
+
+            <section id="vote">
+              <Sticky topOffset={bpi < 1 ? 1050 : 700}>
+                {({ style, isSticky }) => (
+                  <Box
+                    style={{
+                      ...style,
+                      zIndex: 100,
+                      width: isSticky ? '100%' : 'auto',
+                      left: 0
                     }}
                   >
-                    Join a decentralized community protecting the integrity of the Maker Protocol through
-                    research, discussion, and on-chain voting.
-                  </Text>
-                  <ErrorBoundary componentName="Last Polls and Executive">
-                    <Flex
-                      sx={{ flexDirection: ['column', 'row'], width: ['100%', '85%'], alignSelf: 'center' }}
-                    >
-                      <PollingIndicator polls={polls} sx={{ mb: [2, 0] }} />
-                      <ExecutiveIndicator proposals={proposals} sx={{ mt: [2, 0] }} />
-                    </Flex>
-                  </ErrorBoundary>
-                  <Box>
-                    <Button
-                      variant="outline"
-                      sx={{ borderRadius: 'round' }}
-                      onClick={() => {
-                        setVideoOpen(true);
-                        trackButtonClick('howToVoteVideo');
-                      }}
-                    >
-                      <Flex sx={{ alignItems: 'center' }}>
-                        <Icon sx={{ mr: 2 }} name="play" size={3} fill="#7e7e88" />
-                        <Text>How to vote</Text>
-                      </Flex>
-                    </Button>
+                    <TabsNavigation activeTab={activeTab} />
                   </Box>
-                </Stack>
-              </Container>
-            </Stack>
-          </section>
-
-          <section>
-            <ErrorBoundary componentName="System Stats">
-              <SystemStats />
-            </ErrorBoundary>
-          </section>
-
-          <section>
-            <Grid gap={[4, 5]} sx={{ px: [2, 0] }} columns={[1, 3]}>
-              <IntroCard
-                title="Intro to Governance"
-                linkDest="https://makerdao.world/learn/governance"
-                icon="govIntro"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#FFC28608',
-                    borderColor: '#FFC286CC'
-                  }
-                }}
-              >
-                A guide outlining the basics of getting started with Maker Governance.
-              </IntroCard>
-              <IntroCard
-                title="Maker Forum"
-                linkDest="https://forum.makerdao.com"
-                icon="govForum"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#AFBBFF08',
-                    borderColor: '#AFBBFFCC'
-                  }
-                }}
-              >
-                Get the latest updates and take part in current governance discussions.
-              </IntroCard>
-              <IntroCard
-                title="Community Tools"
-                linkDest="https://makerdao.world/learn/governance/participate"
-                icon="govCalls"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: '#84CBC408',
-                    borderColor: '#84CBC4CC'
-                  }
-                }}
-              >
-                Use tools from the community to stay informed on the state of the system.
-              </IntroCard>
-            </Grid>
-          </section>
-
-          <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Executive Votes</Heading>
-                  <Text sx={{ fontWeight: 400, color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Executive Votes are conducted to make changes to the protocol. The governing proposal
-                    represents the current state of the system.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ textAlign: 'left', maxWidth: 'column' }}>
-                <ErrorBoundary componentName="Executive Votes">
-                  <Stack>
-                    {proposals.map(proposal => (
-                      <ExecutiveCard
-                        isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                        key={proposal.key}
-                        proposal={proposal}
-                      />
-                    ))}
-                  </Stack>
-                </ErrorBoundary>
-              </Container>
-            </Stack>
-          </section>
-
-          <section>
-            <Stack>
-              <Container sx={{ textAlign: 'center', maxWidth: 'title' }}>
-                <Stack gap={2}>
-                  <Heading as="h2">Polling Votes</Heading>
-                  <Text as="p" sx={{ color: 'textSecondary', px: 'inherit', fontSize: [2, 4] }}>
-                    Polls take place to establish a rough consensus of community sentiment before Executive
-                    Votes are conducted.
-                  </Text>
-                </Stack>
-              </Container>
-
-              <Container sx={{ maxWidth: 'column' }}>
-                <ErrorBoundary componentName="Recent Polls">
-                  <Stack>
-                    {recentPolls.map(poll => (
-                      <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
-                    ))}
-                  </Stack>
-                </ErrorBoundary>
-                {activePolls.length > 4 && (
-                  <Link href={{ pathname: '/polling' }}>
-                    <Text as="p" sx={{ color: 'primary', mt: 3, cursor: 'pointer' }}>
-                      View all polls
-                    </Text>
-                  </Link>
                 )}
-              </Container>
-            </Stack>
-          </section>
+              </Sticky>
+              <Box ref={voteRef} />
+              <Box sx={{ mt: 3 }}>
+                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+              </Box>
+              <PollCategoriesLanding pollCategories={pollCategories} />
+            </section>
 
-          <section sx={{ py: 5 }}>
-            <Container
-              sx={{
-                textAlign: 'center',
-                maxWidth: 'page',
-                position: ['relative']
-              }}
-            >
-              <div
+            <section id="delegate">
+              <Box ref={delegateRef} />
+              <ErrorBoundary componentName="Meet Delegates">
+                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
+              </ErrorBoundary>
+            </section>
+
+            <section>
+              <TopDelegates delegates={topDelegates} totalMKRDelegated={new BigNumber(totalMKRDelegated)} />
+            </section>
+
+            <section sx={{ position: 'relative', overflowY: 'clip' }} id="learn">
+              <Box
                 sx={{
-                  borderRadius: 'small',
-                  height: '100%',
-                  width: '100%',
-                  position: 'absolute',
+                  background: 'onSurfaceAlt',
+                  width: '200vw',
                   zIndex: -1,
-                  mt: t => `-${(t as any).space[5]}px`,
-                  bg: 'background'
+                  ml: '-100vw',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  height: '1720px'
                 }}
               />
-              <Stack>
-                <Heading as="h2">Recent Governance Blog Posts</Heading>
-                <Grid gap={4} columns={[1, 3]} sx={{ px: [3, 4] }}>
-                  {blogPosts.map(post => (
-                    <BlogPostCard key={post.link} blogPost={post} />
-                  ))}
-                </Grid>
-              </Stack>
-            </Container>
-          </section>
-        </Stack>
-      </PrimaryLayout>
-      <Global
-        /* react-loading-skeleton uses an outdated version of @emotion/core which causes incorrect type errors.
-        see: https://github.com/emotion-js/emotion/issues/1800 */
-        // @ts-ignore
-        styles={() => ({
-          body: {
-            backgroundColor: 'transparent'
-          },
-          ':root': {
-            background: theme => theme.colors.surface
-          }
-        })}
-      />
+              <Box ref={learnRef} />
+              <InformationParticipateMakerGovernance />
+              <ResourcesLanding />
+            </section>
+
+            <section id="engage">
+              <Box ref={engageRef} />
+              <Participation activeDelegates={activeDelegates} bpi={bpi} />
+            </section>
+            <Flex
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              sx={{ justifyContent: 'flex-end', mb: 3 }}
+            >
+              <ViewMore label="Back to the top" icon="chevron_up" />
+            </Flex>
+          </Stack>
+        </PrimaryLayout>
+      </StickyContainer>
     </div>
   );
 };
@@ -281,63 +305,111 @@ const LandingPage = ({ proposals, polls, blogPosts }: Props) => {
 export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
-  blogPosts
+  delegates: prefetchedDelegates,
+  recognizedDelegates: prefetchedRecognizedDelegates,
+  meetYourDelegates: prefetchedMeetYourDelegates,
+  totalMKRDelegated: prefetchedTotalMKRDelegated
 }: Props): JSX.Element {
-  // fetch polls & proposals at run-time if on any network other than the default
-  const [_polls, setPolls] = useState<Poll[]>();
-  const [_proposals, setProposals] = useState<Proposal[]>();
-  const [error, setError] = useState<string>();
   const { network } = useActiveWeb3React();
 
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network) && (!_polls || !_proposals)) {
-      Promise.all([
-        fetchJson(`/api/polling/all-polls?network=${network}`),
-        fetchJson(`/api/executive?network=${network}&start=0&limit=3&sortBy=active`)
-      ])
-        .then(([pollsData, proposals]) => {
-          setPolls(pollsData.polls);
-          setProposals(proposals.filter(p => p.active));
-        })
-        .catch(setError);
-    }
-  }, [network]);
+  const { cache } = useSWRConfig();
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
+  // Fetch polls if networks change
+  const dataKeyPolls =
+    !network || isDefaultNetwork(network) ? null : `/api/polling/all-polls?network=${network}`;
+  const { data: pollsData, error: errorPolls } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyPolls)
+  });
+
+  // Fetch executives if networks change
+  const dataKeyProposals =
+    !network || isDefaultNetwork(network)
+      ? null
+      : `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
+  const { data: proposalsData, error: errorProposals } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyProposals)
+  });
+
+  // Fetch delegates if networks change
+  const dataKeyDelegates =
+    !network || isDefaultNetwork(network) ? null : `/api/delegates?network=${network}&sortBy=mkr`;
+  const { data: delegatesData, error: errorDelegates } = useSWR<DelegatesAPIResponse>(
+    dataKeyDelegates,
+    fetchJson,
+    {
+      revalidateOnMount: !cache.get(dataKeyDelegates)
+    }
+  );
+
+  // Error state, only applies for alternative networks
+  if (errorProposals || errorPolls || errorDelegates) {
+    return <ErrorPage statusCode={404} title="Error fetching home page information" />;
   }
 
-  if (!isDefaultNetwork(network) && (!_polls || !_proposals))
-    return (
-      <PrimaryLayout>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData)) {
+    return <PageLoadingPlaceholder sidebar={false} />;
+  }
 
   return (
     <LandingPage
-      proposals={isDefaultNetwork(network) ? prefetchedProposals : (_proposals as Proposal[])}
-      polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
-      blogPosts={blogPosts}
+      proposals={
+        isDefaultNetwork(network)
+          ? prefetchedProposals
+          : proposalsData
+          ? proposalsData.filter(p => p.active)
+          : []
+      }
+      polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
+      network={network}
+      delegates={
+        isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
+      }
+      recognizedDelegates={
+        isDefaultNetwork(network)
+          ? prefetchedRecognizedDelegates
+          : delegatesData
+          ? filterDelegates(delegatesData.delegates, false, true)
+          : []
+      }
+      meetYourDelegates={
+        isDefaultNetwork(network)
+          ? prefetchedMeetYourDelegates
+          : delegatesData
+          ? shuffleArray(filterDelegates(delegatesData.delegates, false, true))
+          : []
+      }
+      totalMKRDelegated={
+        isDefaultNetwork(network)
+          ? prefetchedTotalMKRDelegated
+          : delegatesData
+          ? delegatesData.stats.totalMKRDelegated
+          : '0'
+      }
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls, proposals, blog posts at build-time
-  const [proposals, pollsData, blogPosts] = await Promise.all([
+  // fetch polls, proposals at build-time
+  const [proposals, pollsData, delegatesResponse] = await Promise.all([
     getExecutiveProposals(0, 3, 'active'),
     getPolls(),
-    fetchBlogPosts()
+    fetchDelegates(SupportedNetworks.MAINNET, 'mkr')
   ]);
+
+  const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
+
+  const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   return {
     revalidate: 30 * 60, // allow revalidation every 30 minutes
     props: {
       proposals: proposals.filter(i => i.active),
       polls: pollsData.polls,
-      blogPosts
+      delegates: delegatesResponse.delegates,
+      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
+      recognizedDelegates,
+      meetYourDelegates
     }
   };
 };

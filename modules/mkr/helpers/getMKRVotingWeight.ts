@@ -11,6 +11,7 @@ export type MKRVotingWeightResponse = {
   chiefBalanceHot: BigNumber;
   chiefBalanceCold?: BigNumber;
   chiefBalanceProxy?: BigNumber;
+  chiefTotal: BigNumber;
   total: BigNumber;
 };
 // returns the voting weight for an address
@@ -28,6 +29,7 @@ export async function getMKRVotingWeight(
     return {
       walletBalanceHot: mkrDelegate,
       chiefBalanceHot: mkrChiefDelegate,
+      chiefTotal: mkrChiefDelegate,
       total: mkrDelegate.add(mkrChiefDelegate)
     };
   }
@@ -56,6 +58,7 @@ export async function getMKRVotingWeight(
       chiefBalanceHot,
       chiefBalanceCold,
       chiefBalanceProxy,
+      chiefTotal: chiefBalanceHot.add(chiefBalanceCold).add(chiefBalanceProxy),
       total: walletBalanceHot
         .add(walletBalanceCold)
         .add(chiefBalanceHot)
@@ -71,6 +74,7 @@ export async function getMKRVotingWeight(
   return {
     walletBalanceHot,
     chiefBalanceHot,
+    chiefTotal: chiefBalanceHot,
     total: walletBalanceHot.add(chiefBalanceHot)
   };
 }

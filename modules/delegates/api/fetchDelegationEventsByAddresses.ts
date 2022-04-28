@@ -2,7 +2,7 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { mkrLockedDelegateArray } from 'modules/gql/queries/mkrLockedDelegateArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { MKRLockedDelegateAPIResponse } from '../types/delegatesAPI';
+import { MKRLockedDelegateAPIResponse } from '../types';
 
 export async function fetchDelegationEventsByAddresses(
   addresses: string[],

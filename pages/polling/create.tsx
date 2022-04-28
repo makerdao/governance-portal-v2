@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Heading, Text, Box, Button, Flex, Input, Label, Link as ExternalLink } from 'theme-ui';
-import Link from 'next/link';
+import { Heading, Text, Box, Button, Flex, Input, Label } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
@@ -14,9 +13,11 @@ import { validateUrl } from 'modules/polling/helpers/validator';
 import { Poll } from 'modules/polling/types';
 import Hash from 'ipfs-only-hash';
 import { formatDateWithTime } from 'lib/datetime';
-import { markdownToHtml } from 'lib/utils';
+import { markdownToHtml } from 'lib/markdown';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { InternalLink } from 'modules/app/components/InternalLink';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const generateIPFSHash = async (data, options) => {
   // options object has the key encoding which defines the encoding type
@@ -94,7 +95,7 @@ const PollingCreate = (): React.ReactElement => {
   };
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'dashboard' }}>
+    <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
       <HeadComponent title="Create Poll" />
 
       <Stack gap={3}>
@@ -104,12 +105,12 @@ const PollingCreate = (): React.ReactElement => {
         <SidebarLayout>
           <Box>
             <Stack gap={2}>
-              <Link href={{ pathname: '/polling' }}>
+              <InternalLink href={'/polling'} title="View polling page">
                 <Button variant="smallOutline" sx={{ width: 'max-content' }}>
                   <Icon name="chevron_left" size="2" mr={2} />
                   Back To All Polls
                 </Button>
-              </Link>
+              </InternalLink>
               <Stack gap={3}>
                 <Tabs
                   tabListStyles={{ pl: [3, 4] }}
@@ -164,7 +165,7 @@ const PollingCreate = (): React.ReactElement => {
                       </CreateText>
                       <Label>Discussion Link</Label>
                       {poll && poll.discussionLink ? (
-                        <ExternalLink target="_blank" href={poll.discussionLink} sx={{ p: 0 }}>
+                        <ExternalLink href={poll.discussionLink} styles={{ p: 0 }} title="View discussion">
                           <CreateText>{poll && poll.discussionLink}</CreateText>
                         </ExternalLink>
                       ) : (

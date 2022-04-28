@@ -12,12 +12,15 @@ export async function insertPollComments(comments: PollComment[]): Promise<PollC
 
   try {
     await collection.insertMany(
-      comments.map(comment => {
-        return {
-          ...comment,
-          commentType: 'poll'
-        };
-      })
+      comments
+        .filter(c => c.comment.length > 0)
+        .map(comment => {
+          return {
+            ...comment,
+            comment: comment.comment.substring(0, 1500),
+            commentType: 'poll'
+          };
+        })
     );
   } catch (e) {
     console.error(

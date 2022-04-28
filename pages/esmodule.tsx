@@ -1,4 +1,4 @@
-import { Flex, Box, Button, Text, Card, Link } from 'theme-ui';
+import { Flex, Box, Button, Text, Card } from 'theme-ui';
 import { useState, useRef } from 'react';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import { useBreakpointIndex } from '@theme-ui/match-media';
@@ -6,7 +6,6 @@ import { BigNumber as BigNumberJS } from 'bignumber.js';
 import { BigNumber } from 'ethers';
 import { formatValue } from 'lib/string';
 import { formatDateWithTime } from 'lib/datetime';
-
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import BurnModal from 'modules/esm/components/BurnModal';
 import ShutdownModal from 'modules/esm/components/ShutdownModal';
@@ -22,6 +21,7 @@ import { useMkrInEsmByAddress } from 'modules/esm/hooks/useMkrInEsm';
 import { useCageTime } from 'modules/esm/hooks/useCageTime';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
 
 const ESModule = (): React.ReactElement => {
   const loader = useRef<HTMLDivElement>(null);
@@ -111,7 +111,7 @@ const ESModule = (): React.ReactElement => {
   };
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: 'container' }}>
+    <PrimaryLayout sx={{ maxWidth: 'container' }}>
       <HeadComponent title="Emergency Shutdown Module" />
 
       <DialogOverlay
@@ -172,9 +172,12 @@ const ESModule = (): React.ReactElement => {
           <Text data-testid="es-initiated" sx={{ textAlign: 'center' }}>
             Emergency shutdown has been initiated on {formatDateWithTime(cageTime.toNumber())}. This dashboard
             is currently read-only. You can read more information about next steps{' '}
-            <Link href="https://makerdao.world/en/learn/governance/emergency-shutdown" target="_blank">
-              here
-            </Link>
+            <ExternalLink
+              href="https://makerdao.world/en/learn/governance/emergency-shutdown"
+              title="Learn about emergency shutdown"
+            >
+              <Text>here</Text>
+            </ExternalLink>
             .
           </Text>
         </Flex>
@@ -187,12 +190,12 @@ const ESModule = (): React.ReactElement => {
           The ESM allows MKR holders to shutdown the system without a central authority. Once{' '}
           {thresholdAmount ? `${formatValue(thresholdAmount, 'wad', 0)}` : '---'} MKR are entered into the
           ESM, emergency shutdown can be executed.{' '}
-          <Link
+          <ExternalLink
             href="https://docs.makerdao.com/smart-contract-modules/emergency-shutdown-module"
-            target="_blank"
+            title="View emergency shutdown docs"
           >
-            Read the documentation here.
-          </Link>
+            <Text>Read the documentation here.</Text>
+          </ExternalLink>
         </Text>
       </Box>
       <Box sx={{ mt: 4 }}>

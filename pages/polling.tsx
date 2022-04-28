@@ -4,6 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
@@ -36,6 +37,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
+import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 
 type Props = {
   polls: Poll[];
@@ -48,6 +50,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
     startDate,
     endDate,
     categoryFilter,
+    setCategoryFilter,
     showHistorical,
     showPollActive,
     showPollEnded,
@@ -58,6 +61,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
+      state.setCategoryFilter,
       state.pollFilters.showHistorical,
       state.pollFilters.showPollActive,
       state.pollFilters.showPollEnded,
@@ -66,6 +70,14 @@ const PollingOverview = ({ polls, categories }: Props) => {
     ],
     shallow
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.category) {
+      const category = router.query.category as string;
+      setCategoryFilter({ [category]: true });
+    }
+  }, [router]);
 
   const [numHistoricalGroupingsLoaded, setNumHistoricalGroupingsLoaded] = useState(3);
   const loader = useRef<HTMLDivElement>(null);
@@ -96,29 +108,16 @@ const PollingOverview = ({ polls, categories }: Props) => {
     setHistoricalPolls(historical);
   }, [filteredPolls]);
 
-  const loadMore = entries => {
-    const target = entries.pop();
-    if (target.isIntersecting) {
-      setNumHistoricalGroupingsLoaded(
-        numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
-          ? numHistoricalGroupingsLoaded + 2
-          : numHistoricalGroupingsLoaded
-      );
-    }
+  const loadMore = () => {
+    setNumHistoricalGroupingsLoaded(
+      numHistoricalGroupingsLoaded < sortedEndDatesHistorical.length
+        ? numHistoricalGroupingsLoaded + 2
+        : numHistoricalGroupingsLoaded
+    );
   };
 
-  useEffect(() => {
-    let observer;
-    if (loader?.current) {
-      observer = new IntersectionObserver(loadMore, { root: null, rootMargin: '600px' });
-      observer.observe(loader.current);
-    }
-    return () => {
-      if (loader?.current) {
-        observer?.unobserve(loader.current);
-      }
-    };
-  }, [loader, loadMore]);
+  // Load more on scroll
+  useIntersectionObserver(loader.current, loadMore, '600px');
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
@@ -134,7 +133,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
   }, [addressToCheck]);
 
   return (
-    <PrimaryLayout shortenFooter={true} sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title="Polling"
         description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
@@ -172,16 +171,13 @@ const PollingOverview = ({ polls, categories }: Props) => {
                           {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
                           {formatDateWithTime(date)}
                         </Text>
-                        <Stack sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
+                        <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
-                            <PollOverviewCard
-                              key={poll.slug}
-                              poll={poll}
-                              showVoting={!!account}
-                              reviewPage={false}
-                            />
+                            <Box key={poll.slug} sx={{ mb: 4 }}>
+                              <PollOverviewCard poll={poll} showVoting={!!account} reviewPage={false} />
+                            </Box>
                           ))}
-                        </Stack>
+                        </Box>
                       </div>
                     ))}
                   </Stack>
@@ -205,21 +201,18 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     <Stack>
                       {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
-                          <Text variant="caps" color="textSecondary" mb={2}>
+                          <Text as="p" variant="caps" color="textSecondary" mb={2}>
                             {groupedHistoricalPolls[date].length} Poll
                             {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
                             {formatDateWithTime(date)}
                           </Text>
-                          <Stack sx={{ mb: 4 }}>
+                          <Box>
                             {groupedHistoricalPolls[date].map((poll: Poll) => (
-                              <PollOverviewCard
-                                key={poll.slug}
-                                poll={poll}
-                                reviewPage={false}
-                                showVoting={false}
-                              />
+                              <Box key={poll.slug} sx={{ mb: 4 }}>
+                                <PollOverviewCard poll={poll} reviewPage={false} showVoting={false} />
+                              </Box>
                             ))}
-                          </Stack>
+                          </Box>
                         </div>
                       ))}
                     </Stack>
@@ -315,12 +308,9 @@ export default function PollingOverviewPage({
     return <ErrorPage statusCode={404} title="Error fetching proposals" />;
   }
 
-  if (!isDefaultNetwork(network) && (!_polls || !_categories))
-    return (
-      <PrimaryLayout shortenFooter={true}>
-        <PageLoadingPlaceholder />
-      </PrimaryLayout>
-    );
+  if (!isDefaultNetwork(network) && (!_polls || !_categories)) {
+    return <PageLoadingPlaceholder />;
+  }
 
   return (
     <ErrorBoundary componentName="Poll List">
