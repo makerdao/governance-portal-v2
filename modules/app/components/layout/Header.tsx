@@ -318,6 +318,7 @@ const Header = (): JSX.Element => {
             gas={gas}
             onToggleTheme={onToggleTheme}
             mode={mode}
+            network={network}
           />
         )}
         {bpi > 0 && (
@@ -330,7 +331,7 @@ const Header = (): JSX.Element => {
   );
 };
 
-const MobileMenu = ({ hide, router, gas, onToggleTheme, mode }) => {
+const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       router.events.on('routeChangeComplete', hide);
@@ -369,25 +370,32 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode }) => {
           }
         }}
       >
-        <NavLink href={'/'} title="View homepage">
-          Home
-        </NavLink>
-        <Divider sx={{ width: '100%' }} />
-        <NavLink href={'/polling'} title="View polling page">
-          Polling
-        </NavLink>
-        <Divider sx={{ width: '100%' }} />
-        <NavLink href={'/executive'} title="View executive page">
-          Executive
-        </NavLink>
-        <Divider sx={{ width: '100%' }} />
-        <NavLink href={'/delegates'} title="View delegates page">
-          Delegates
-        </NavLink>
-        <Divider sx={{ width: '100%' }} />
-        <NavLink href={'/esmodule'} title="View emergency shutdown module page">
-          ES Module
-        </NavLink>
+        <Flex
+          sx={{
+            justifyContent: 'space-between',
+            px: 3,
+            py: 4,
+            width: '100%',
+            fontSize: 3
+          }}
+        >
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
+            <InternalLink title="View polling page" href="/polling">
+              <Text sx={{ fontWeight: 'semiBold' }}>Polling</Text>
+            </InternalLink>
+            <InternalLink title="View executive page" href="/executive">
+              <Text sx={{ fontWeight: 'semiBold' }}>Executive</Text>
+            </InternalLink>
+          </Flex>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
+            <InternalLink title="View delegate page" href="/delegates">
+              <Text sx={{ fontWeight: 'semiBold' }}>Delegates</Text>
+            </InternalLink>
+            <InternalLink title="View emergency shutdown page" href="/esmodule">
+              <Text sx={{ fontWeight: 'semiBold' }}>ES Module</Text>
+            </InternalLink>
+          </Flex>
+        </Flex>
         <Divider sx={{ width: '100%' }} />
         <Flex
           sx={{
@@ -398,23 +406,28 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode }) => {
             fontSize: 3
           }}
         >
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
-            <ExternalLink
-              title="Ethereum Gas Price"
-              href={GASNOW_URL}
-              styles={{
-                variant: 'links.nostyle'
-              }}
-            >
-              <MenuItemContent
-                icon="gas"
-                label={
-                  <Text>
-                    <span sx={{ color: 'primary' }}>{gas}</span> Gwei
-                  </Text>
-                }
-              />
-            </ExternalLink>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
+            <InternalLink href="/account" title="View account">
+              <MenuItemContent icon="person" label="Account" />
+            </InternalLink>
+            {network === SupportedNetworks.MAINNET && (
+              <ExternalLink
+                title="Ethereum Gas Price"
+                href={GASNOW_URL}
+                styles={{
+                  variant: 'links.nostyle'
+                }}
+              >
+                <MenuItemContent
+                  icon="gas"
+                  label={
+                    <Text>
+                      <span sx={{ color: 'primary' }}>{gas}</span> Gwei
+                    </Text>
+                  }
+                />
+              </ExternalLink>
+            )}
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
@@ -426,7 +439,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode }) => {
             </Flex>
           </Flex>
 
-          <Flex sx={{ flexDirection: 'column', gap: 4 }}>
+          <Flex sx={{ flexDirection: 'column', alignItems: 'flex-start', gap: 3, width: '50%' }}>
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
