@@ -167,15 +167,15 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
           transform: 'translateX(-50%)',
           backgroundImage:
             mode === 'dark'
-              ? mobile
+              ? bpi <= 2
                 ? 'url(/assets/bg_dark_medium.jpeg)'
                 : 'url(/assets/bg_footer_dark.jpeg)'
-              : mobile
+              : bpi <= 2
               ? 'url(/assets/bg_medium.jpeg)'
               : 'url(/assets/bg_footer_light.jpeg)',
-          backgroundSize: ['1500px', '100% 400px'],
+          backgroundSize: ['1500px', '1500px', '1500px', '100% 600px', '100% 400px'],
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: ['-750px 100%', 'bottom']
+          backgroundPosition: ['-750px 100%', '-750px 100%', '-750px 100%', 'bottom', 'bottom']
         }}
       />
       <Flex
