@@ -23,7 +23,7 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
   return (
     <Box
       sx={{
-        backgroundColor: 'surface',
+        backgroundColor: 'background',
         zIndex: 200
       }}
     >
