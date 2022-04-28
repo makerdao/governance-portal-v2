@@ -3,13 +3,15 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import SwaggerUI from 'swagger-ui-react';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import 'swagger-ui-react/swagger-ui.css';
-import { Box } from 'theme-ui';
+import { Box, useColorMode } from 'theme-ui';
 import { createSwaggerSpec } from 'next-swagger-doc';
 import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
 
 const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const router = useRouter();
+  const [mode] = useColorMode();
+
   return Object.keys(router.query).length > 0 ? (
     <Box>
       <h2>Invalid Route</h2>
@@ -20,7 +22,18 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.E
   ) : (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent title="Account" />
-      <SwaggerUI spec={spec} />
+      <Box
+        sx={{
+          '.swagger-ui': {
+            filter: mode === 'dark' ? 'invert(88%) hue-rotate(180deg)' : 'none',
+            '.highlight-code': {
+              filter: mode === 'dark' ? 'invert(100%) hue-rotate(180deg)' : 'none'
+            }
+          }
+        }}
+      >
+        <SwaggerUI spec={spec} />
+      </Box>
     </PrimaryLayout>
   );
 };
