@@ -125,7 +125,7 @@ const LandingPage = ({
       setActiveTab('#vote');
     } else if (engageInview) {
       setActiveTab('#engage');
-    } else {
+    } else if(delegateInview) {
       setActiveTab('#delegate');
     }
   }, [learnInview, voteInview, engageInview, delegateInview]);
