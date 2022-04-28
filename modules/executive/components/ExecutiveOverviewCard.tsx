@@ -118,9 +118,20 @@ export default function ExecutiveOverviewCard({
             )}
           </Box>
           <Flex
-            sx={{ alignItems: ['flex-end', 'center'], justifyContent: 'space-between', height: ['auto', 74] }}
+            sx={{
+              alignItems: ['flex-end', 'center'],
+              justifyContent: 'space-between',
+              height: ['auto', 'auto', 'auto', 74]
+            }}
           >
-            <Flex sx={{ flexDirection: ['column-reverse', 'row'], width: '50%' }}>
+            <Flex
+              sx={{
+                flexDirection: ['column-reverse', 'row'],
+                flexWrap: 'wrap-reverse',
+                width: ['auto', 'auto', 'auto', 'auto', '55%'],
+                gap: [0, 3]
+              }}
+            >
               <InternalLink href={`/executive/${proposal.key}`} title="View executive details">
                 <Button
                   variant="outline"
@@ -135,7 +146,7 @@ export default function ExecutiveOverviewCard({
               {!hasVotedFor && canVote && (
                 <Button
                   variant="primaryOutline"
-                  sx={{ ml: [0, 3], width: 122 }}
+                  sx={{ width: 122 }}
                   disabled={hasVotedFor && votedProposals && votedProposals.length === 1}
                   onClick={ev => {
                     trackButtonClick('openExecVoteModal');
@@ -167,7 +178,7 @@ export default function ExecutiveOverviewCard({
                 </Badge>
               )}
             </Flex>
-            <Flex>
+            <Flex sx={{ flexShrink: 0 }}>
               {spellData?.mkrSupport === undefined ? (
                 <Box sx={{ width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />

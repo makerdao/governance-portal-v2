@@ -195,7 +195,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
             justifyContent: 'space-between',
             gap: [4, 2, 5],
             width: ['100%', '100%', 'initial'],
-            flexWrap: 'wrap'
+            flexWrap: ['wrap', 'nowrap']
           }}
         >
           {links.map(group => {
