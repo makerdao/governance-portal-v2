@@ -16,7 +16,7 @@ const VideoModal = ({
   const bpi = useBreakpointIndex();
 
   return (
-    <DialogOverlay isOpen={isOpen} onDismiss={onDismiss}>
+    <DialogOverlay isOpen={isOpen} onDismiss={onDismiss} sx={{ zIndex: 200 }}>
       <DialogContent
         aria-label="Video"
         sx={
