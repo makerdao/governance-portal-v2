@@ -28,7 +28,7 @@ export default function TopDelegates({
   const [toggledDelegates, setToggledDelegates] = useState({});
 
   return (
-    <Box>
+    <Box >
       {showDelegateModal && (
         <DelegateModal
           title={`Delegate to ${showDelegateModal.name}`}
@@ -83,7 +83,7 @@ export default function TopDelegates({
         {delegates.map((delegate, index) => {
           const delegationHistory = formatDelegationHistory(delegate.mkrLockedDelegate);
           return (
-            <Box key={`top-delegate-${index}`}>
+            <Box key={`top-delegate-${index}`} data-testid="top-recognized-delegate">
               <Flex
                 sx={{
                   justifyContent: 'space-between',
