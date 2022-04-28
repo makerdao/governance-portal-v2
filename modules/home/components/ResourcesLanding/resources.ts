@@ -84,7 +84,8 @@ export const resources: LandingResource[] = [
     bg: ResourceBackground.PRODUCTS_AND_TOOLS,
     color: ResourceColor.PRODUCTS_AND_TOOLS,
     logo: '/assets/resource_icon_6.svg',
-    summary: 'A unified dashboard for understanding & interacting with auctions of the Maker Protocol.'
+    summary:
+      'A data dashboard for the Maker Protocol and MakerDAO, displaying burn rate, revenues, expenses and more.'
   },
   {
     title: 'Technical Docs',
