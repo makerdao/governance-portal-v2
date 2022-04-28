@@ -75,6 +75,18 @@ export function PollCategoryTag({
     Uncategorized: {
       color: 'tagColorSeventeen',
       backgroundColor: 'tagColorSeventeenBg'
+    },
+    'High Impact': {
+      color: 'tagColorFive',
+      backgroundColor: 'tagColorFiveBg'
+    },
+    'Medium Impact': {
+      color: 'tagColorThirteen',
+      backgroundColor: 'tagColorThirteenBg'
+    },
+    'Low Impact': {
+      color: 'tagColorEleven',
+      backgroundColor: 'tagColorElevenBg'
     }
   };
 
