@@ -24,7 +24,7 @@ export const PollsOverviewLanding = ({ activePolls, allPolls }: Props): JSX.Elem
       </Flex>
       <Flex>
         <ErrorBoundary componentName="Active Polls">
-          <Grid gap={4} columns={[1, 1, 2]}>
+          <Grid gap={4} columns={[1, 1, 1, 2]}>
             {pollsToDisplay.map(poll => (
               <PollOverviewCard key={poll.pollId} poll={poll} reviewPage={false} showVoting={false} />
             ))}
