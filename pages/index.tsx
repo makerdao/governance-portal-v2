@@ -100,22 +100,22 @@ const LandingPage = ({
 
   const { ref: voteRef, inView: voteInview } = useInView({
     /* Optional options */
-    threshold: 0.2
+    threshold: 0.5
   });
 
   const { ref: learnRef, inView: learnInview } = useInView({
     /* Optional options */
-    threshold: 0.2
+    threshold: 0.5
   });
 
   const { ref: engageRef, inView: engageInview } = useInView({
     /* Optional options */
-    threshold: 0.2
+    threshold: 0.5
   });
 
   const { ref: delegateRef, inView: delegateInview } = useInView({
     /* Optional options */
-    threshold: 0.2
+    threshold: 0.5
   });
 
   useEffect(() => {
@@ -238,18 +238,18 @@ const LandingPage = ({
                   </Box>
                 )}
               </Sticky>
-              <Box sx={{ mt: 3 }} ref={voteRef}>
+              <Box ref={voteRef} />
+              <Box sx={{ mt: 3 }}>
                 <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
               </Box>
               <PollCategoriesLanding pollCategories={pollCategories} />
             </section>
 
             <section id="delegate">
-              <Box ref={delegateRef}>
-                <ErrorBoundary componentName="Meet Delegates">
-                  <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
-                </ErrorBoundary>
-              </Box>
+              <Box ref={delegateRef} />
+              <ErrorBoundary componentName="Meet Delegates">
+                <MeetDelegates delegates={meetYourDelegates} bpi={bpi} />
+              </ErrorBoundary>
             </section>
 
             <section>
@@ -269,16 +269,14 @@ const LandingPage = ({
                   height: '1720px'
                 }}
               />
-              <Box ref={learnRef}>
-                <InformationParticipateMakerGovernance />
-                <ResourcesLanding />
-              </Box>
+              <Box ref={learnRef} />
+              <InformationParticipateMakerGovernance />
+              <ResourcesLanding />
             </section>
 
             <section id="engage">
-              <Box ref={engageRef}>
-                <Participation activeDelegates={activeDelegates} bpi={bpi} />
-              </Box>
+              <Box ref={engageRef} />
+              <Participation activeDelegates={activeDelegates} bpi={bpi} />
             </section>
             <Flex
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
