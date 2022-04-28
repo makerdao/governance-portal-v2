@@ -66,7 +66,7 @@ export const resources: LandingResource[] = [
     color: ResourceColor.PRODUCTS_AND_TOOLS,
     logo: '/assets/resource_icon_4.svg',
     summary:
-      'A daily updated breakdown of the current and future governance actions taking place in MakerDAO.'
+      'The most popular user interface for interacting with the Maker Protocol, used for creating & managing vaults.'
   },
   {
     title: 'Auctions Dashboard',
