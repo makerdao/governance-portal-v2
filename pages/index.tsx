@@ -125,7 +125,7 @@ const LandingPage = ({
       setActiveTab('#vote');
     } else if (engageInview) {
       setActiveTab('#engage');
-    } else if(delegateInview) {
+    } else if (delegateInview) {
       setActiveTab('#delegate');
     }
   }, [learnInview, voteInview, engageInview, delegateInview]);
@@ -226,12 +226,14 @@ const LandingPage = ({
             </section>
 
             <section id="vote">
-              <Sticky topOffset={700}>
-                {({ style }) => (
+              <Sticky topOffset={bpi < 1 ? 1050 : 700}>
+                {({ style, isSticky }) => (
                   <Box
                     style={{
                       ...style,
-                      zIndex: 100
+                      zIndex: 100,
+                      width: isSticky ? '100%' : 'auto',
+                      left: 0
                     }}
                   >
                     <TabsNavigation activeTab={activeTab} />
