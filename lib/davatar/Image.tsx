@@ -1,9 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bn.js';
-import React, { useState, useEffect, useCallback, CSSProperties, ReactChild } from 'react';
-
-import Blockies from './Blockies';
+import { useState, useEffect, useCallback, CSSProperties, ReactChild } from 'react';
 import Jazzicon from './Jazzicon';
 
 // 24 hour TTL
@@ -28,7 +26,6 @@ export interface Props {
   // deprecated
   graphApiKey?: string;
   provider?: BaseProvider | null;
-  generatedAvatarType?: 'jazzicon' | 'blockies';
   defaultComponent?: ReactChild | ReactChild[];
 }
 
@@ -84,16 +81,7 @@ export const getGatewayUrl = (uri: string, tokenId?: string): string => {
   return tokenId ? url.replaceAll('{id}', tokenId) : url;
 };
 
-export default function Avatar({
-  uri,
-  style,
-  className,
-  size,
-  address,
-  provider,
-  generatedAvatarType,
-  defaultComponent
-}: Props) {
+export default function Avatar({ uri, style, className, size, address, provider, defaultComponent }: Props) {
   const [url, setUrl] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -293,14 +281,7 @@ export default function Avatar({
   }
 
   const defaultAvatar =
-    (!url || !loaded) &&
-    address &&
-    (defaultComponent ||
-      (generatedAvatarType === 'blockies' ? (
-        <Blockies address={address} size={size} />
-      ) : (
-        <Jazzicon address={address} size={size} />
-      )));
+    (!url || !loaded) && address && (defaultComponent || <Jazzicon address={address} size={size} />);
 
   return (
     <>

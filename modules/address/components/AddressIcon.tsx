@@ -19,7 +19,7 @@ export default function AddressIcon({
       {delegateAddresses[address] ? (
         <DelegatePicture delegate={delegateAddresses[address]} width={width} />
       ) : (
-        <Davatar size={width} address={address} generatedAvatarType="jazzicon" provider={library} />
+        <Davatar size={width} address={address} provider={library} />
       )}
     </Box>
   );

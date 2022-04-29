@@ -1,4 +1,5 @@
 import { Web3Provider, getDefaultProvider, BaseProvider } from '@ethersproject/providers';
+import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { useEffect, useState, ReactChild, CSSProperties } from 'react';
 
 import Image from './Image';
@@ -12,7 +13,6 @@ export interface DavatarProps {
   provider?: any;
   // deprecated
   graphApiKey?: string;
-  generatedAvatarType?: 'jazzicon' | 'blockies';
   defaultComponent?: ReactChild | ReactChild[];
   style?: CSSProperties;
 }
@@ -22,7 +22,6 @@ export default function Davatar({
   address,
   provider,
   graphApiKey,
-  generatedAvatarType,
   defaultComponent,
   style
 }: DavatarProps) {
@@ -31,10 +30,9 @@ export default function Davatar({
 
   useEffect(() => {
     let eth = getDefaultProvider();
-    let chainId: any = null;
+    let chainId;
     let isEthers = false;
 
-    // carlos: Only use the provided provider if ENS is actually on that chain
     if (provider) {
       if (provider.currentProvider?.chainId) {
         chainId = parseInt(provider.currentProvider.chainId);
@@ -45,25 +43,25 @@ export default function Davatar({
 
       if ([1, 3, 4, 5].includes(chainId)) {
         eth = isEthers ? (provider as BaseProvider) : new Web3Provider(provider.currentProvider);
-      } else {
-        chainId = 1;
       }
-    }
 
-    setEthersProvider(eth);
+      setEthersProvider(eth);
 
-    eth.lookupAddress(address).then(ensName => {
-      if (ensName) {
-        eth.getResolver(ensName).then(resolver => {
-          resolver &&
-            resolver.getText('avatar').then(avatar => {
-              if (avatar && avatar.length > 0) {
-                setAvatarUri(avatar);
-              }
+      if (chainId !== SupportedChainId.GOERLIFORK) {
+        eth.lookupAddress(address).then(ensName => {
+          if (ensName) {
+            eth.getResolver(ensName).then(resolver => {
+              resolver &&
+                resolver.getText('avatar').then(avatar => {
+                  if (avatar && avatar.length > 0) {
+                    setAvatarUri(avatar);
+                  }
+                });
             });
+          }
         });
       }
-    });
+    }
   }, [address, provider]);
 
   return (
@@ -73,7 +71,6 @@ export default function Davatar({
       uri={avatarUri}
       graphApiKey={graphApiKey}
       provider={ethersProvider}
-      generatedAvatarType={generatedAvatarType}
       defaultComponent={defaultComponent}
       style={style}
     />
