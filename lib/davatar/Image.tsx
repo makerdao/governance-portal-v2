@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { BaseProvider } from '@ethersproject/providers';
 import BigNumber from 'bn.js';
+import { fetchJson } from 'lib/fetchJson';
 import { useState, useEffect, useCallback, CSSProperties, ReactChild } from 'react';
 import Jazzicon from './Jazzicon';
 
@@ -212,9 +213,13 @@ export default function Avatar({ uri, style, className, size, address, provider,
           }
 
           const tokenURI = await erc721Contract.tokenURI(tokenId);
-          const res = await fetch(getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16)));
-          const data = (await res.json()) as { image: string };
-          setUrl(getGatewayUrl(data.image));
+          const gatewayUrl = getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16));
+          try {
+            const data = await fetchJson(`api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
+            setUrl(getGatewayUrl(data.image));
+          } catch (e) {
+            console.error(`Error fetching image from ${gatewayUrl}`, e);
+          }
         })();
       }
     } else if (match1155 && match1155.length === 3) {
