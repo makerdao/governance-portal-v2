@@ -151,7 +151,10 @@ const Header = (): JSX.Element => {
   });
   const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
 
-  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
+  // TODO: change to 0 for tests
+  const EXEC_PAGE_SIZE = 3;
+
+  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}&sortBy=active`;
   const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
     revalidateOnMount: !cache.get(dataKeyProposals)
   });

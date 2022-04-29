@@ -38,6 +38,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
+import { config } from 'lib/config';
 
 type Props = {
   polls: Poll[];
@@ -323,7 +324,17 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls at build-time if on the default network
+  if (config.USE_STATIC_PROPS === '') {
+    console.log('skipping static props');
+
+    return {
+      props: {
+        polls: [],
+        categories: []
+      }
+    };
+  }
+
   const pollsResponse = await getPolls();
 
   return {

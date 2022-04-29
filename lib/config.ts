@@ -11,6 +11,7 @@ type SystemConfig = {
   GITHUB_TOKEN: string;
   MIXPANEL_PROD: string;
   MIXPANEL_DEV: string;
+  USE_STATIC_PROPS: string;
 };
 
 export const config: SystemConfig = {
@@ -25,5 +26,6 @@ export const config: SystemConfig = {
   NODE_ENV: process.env.NODE_ENV || 'development',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
   MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
-  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || ''
+  MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || '',
+  USE_STATIC_PROPS: process.env.USE_STATIC_PROPS || ''
 };

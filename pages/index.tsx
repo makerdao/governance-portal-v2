@@ -49,6 +49,7 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { config } from 'lib/config';
 
 type Props = {
   proposals: Proposal[];
@@ -390,6 +391,21 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  if (config.USE_STATIC_PROPS === '') {
+    console.log('skipping static props');
+
+    return {
+      props: {
+        proposals: [],
+        polls: [],
+        delegates: [],
+        totalMKRDelegated: null,
+        recognizedDelegates: [],
+        meetYourDelegates: []
+      }
+    };
+  }
+
   // fetch polls, proposals at build-time
   const [proposals, pollsData, delegatesResponse] = await Promise.all([
     getExecutiveProposals(0, 3, 'active'),

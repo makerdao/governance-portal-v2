@@ -25,6 +25,24 @@ export const getExecutiveMKRSupport = async (
 export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
   const spellContract = getSpellContract(address, network);
 
+  // don't fetch spell data if not on mainnet
+  if (network !== SupportedNetworks.MAINNET) {
+    const approvals = await getChiefApprovals(address, network);
+
+    return {
+      hasBeenCast: undefined,
+      hasBeenScheduled: false,
+      eta: undefined,
+      expiration: undefined,
+      nextCastTime: undefined,
+      datePassed: undefined,
+      dateExecuted: undefined,
+      mkrSupport: approvals.toString(),
+      executiveHash: undefined,
+      officeHours: undefined
+    };
+  }
+
   const getDone = async () => {
     try {
       const done = await spellContract.done();
