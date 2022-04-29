@@ -41,7 +41,7 @@ export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
       <Box sx={{ display: ['block', 'none'], backgroundColor: 'background' }}>
         <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Heading>System Stats</Heading>
+            <Heading>{title}</Heading>
             <ExternalLink href="https://daistats.com/" target="_blank">
               <ViewMore />
             </ExternalLink>
