@@ -1,5 +1,5 @@
 import { Box } from 'theme-ui';
-import Davatar from '@davatar/react';
+import Davatar from 'lib/davatar';
 import { useDelegateAddressMap } from 'modules/delegates/hooks/useDelegateAddressMap';
 import { DelegatePicture } from 'modules/delegates/components';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';

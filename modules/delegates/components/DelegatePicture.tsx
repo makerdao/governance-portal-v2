@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Text } from 'theme-ui';
-import Davatar from '@davatar/react';
+import Davatar from 'lib/davatar';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
