@@ -1,6 +1,5 @@
 import { Flex, Text, Box } from 'theme-ui';
 import { useMemo, useState } from 'react';
-import BigNumber from 'bignumber.js';
 
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import FilterButton from 'modules/app/components/FilterButton';
@@ -16,7 +15,6 @@ export default function ExecutiveComments({
 }): JSX.Element {
   const [commentSortBy, setCommentSortBy] = useState(CommentSortOption.MKR_AMOUNT);
   const sortedComments = useMemo(() => {
-    console.log(comments, commentSortBy);
     return (comments || []).sort((a, b) => {
       if (commentSortBy === CommentSortOption.LATEST) {
         const aDate = a.comment.date || 0;

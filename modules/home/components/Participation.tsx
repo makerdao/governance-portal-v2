@@ -11,6 +11,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { AllLocksResponse, ForumPost } from '../types/participation';
 import DelegateAvatarNameLight from 'modules/delegates/components/DelegateAvatarNameLight';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
 const ForumPosts = ({ posts, bpi }: { posts: ForumPost[]; bpi: number }) => {
   return (
@@ -107,70 +108,74 @@ export default function Participation({
           flexDirection: bpi > 1 ? 'row' : 'column'
         }}
       >
-        <Flex sx={{ flexDirection: 'column', flex: 2, gap: 3 }}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <Heading>Governance Participation</Heading>
-          </Flex>
-          {locks ? (
-            locks.length > 0 ? (
-              <Card
-                sx={{
-                  height: '100%',
-                  pr: [0, 3],
-                  pb: 3
-                }}
-              >
-                <ParticipationChart data={locks} monthsPast={MONTHS_PAST} />
-              </Card>
-            ) : null
-          ) : (
-            <SkeletonThemed height="300px" />
-          )}
-        </Flex>
-
-        <Flex sx={{ flexDirection: 'column', flex: 1, gap: 3 }}>
-          <Flex sx={{ justifyContent: 'space-between' }}>
-            <Heading>Top Voters</Heading>
-            <ExternalLink
-              href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
-              title="View More Metrics"
-              target="_blank"
-            >
-              <ViewMore label="View More Metrics" />
-            </ExternalLink>
-          </Flex>
-          <Card
-            sx={{
-              flexDirection: 'column',
-              gap: 3,
-              p: 3,
-              height: '100%'
-            }}
-          >
+        <ErrorBoundary componentName="Governance Participation">
+          <Flex sx={{ flexDirection: 'column', flex: 2, gap: 3 }}>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                Address
-              </Text>
-              <Text variant="caps" sx={{ color: 'mutedAlt' }}>
-                Participation
-              </Text>
+              <Heading>Governance Participation</Heading>
             </Flex>
-            {activeDelegates.map((delegate, i) => (
-              <Flex
-                key={delegate.voteDelegateAddress}
-                sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 3 }}
+            {locks ? (
+              locks.length > 0 ? (
+                <Card
+                  sx={{
+                    height: '100%',
+                    pr: [0, 3],
+                    pb: 3
+                  }}
+                >
+                  <ParticipationChart data={locks} monthsPast={MONTHS_PAST} />
+                </Card>
+              ) : null
+            ) : (
+              <SkeletonThemed height="300px" />
+            )}
+          </Flex>
+        </ErrorBoundary>
+
+        <ErrorBoundary componentName="Top Voters">
+          <Flex sx={{ flexDirection: 'column', flex: 1, gap: 3 }}>
+            <Flex sx={{ justifyContent: 'space-between' }}>
+              <Heading>Top Voters</Heading>
+              <ExternalLink
+                href="https://governance-metrics-dashboard.vercel.app/"
+                title="View More Metrics"
+                target="_blank"
               >
-                <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                  <Text>{i + 1}</Text>
-                  <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
-                    <DelegateAvatarNameLight delegate={delegate} />
-                  </InternalLink>
-                </Flex>
-                <Text>{delegate.combinedParticipation}</Text>
+                <ViewMore label="View More Metrics" />
+              </ExternalLink>
+            </Flex>
+            <Card
+              sx={{
+                flexDirection: 'column',
+                gap: 3,
+                p: 3,
+                height: '100%'
+              }}
+            >
+              <Flex sx={{ justifyContent: 'space-between' }}>
+                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                  Address
+                </Text>
+                <Text variant="caps" sx={{ color: 'mutedAlt' }}>
+                  Participation
+                </Text>
               </Flex>
-            ))}
-          </Card>
-        </Flex>
+              {activeDelegates.map((delegate, i) => (
+                <Flex
+                  key={delegate.voteDelegateAddress}
+                  sx={{ justifyContent: 'space-between', alignItems: 'center', mt: 3 }}
+                >
+                  <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                    <Text>{i + 1}</Text>
+                    <InternalLink href={`/address/${delegate.voteDelegateAddress}`} title="Profile details">
+                      <DelegateAvatarNameLight delegate={delegate} />
+                    </InternalLink>
+                  </Flex>
+                  <Text>{delegate.combinedParticipation}</Text>
+                </Flex>
+              ))}
+            </Card>
+          </Flex>
+        </ErrorBoundary>
       </Flex>
     </Flex>
   );

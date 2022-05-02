@@ -59,5 +59,11 @@ export function GovernanceStats({
     }
   ];
 
-  return <Stats title="Governance Stats" infoUnits={infoUnits} />;
+  return (
+    <Stats
+      title="Governance Stats"
+      infoUnits={infoUnits}
+      viewMoreUrl="https://governance-metrics-dashboard.vercel.app/"
+    />
+  );
 }

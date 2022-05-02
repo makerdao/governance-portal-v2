@@ -94,7 +94,7 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
         >
           <ExternalLink
             styles={{ variant: 'links.nostyle' }}
-            href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
+            href="https://governance-metrics-dashboard.vercel.app/"
             title="Stats"
           >
             <MenuItemContent icon="stats" label="Stats" />
@@ -444,7 +444,7 @@ const MobileMenu = ({ hide, router, gas, onToggleTheme, mode, network }) => {
             <Flex onClick={hide}>
               <ExternalLink
                 styles={{ variant: 'links.nostyle' }}
-                href="https://governance-metrics-dashboard-gupjnd1ew-hernandoagf.vercel.app/"
+                href="https://governance-metrics-dashboard.vercel.app/"
                 title="Stats"
               >
                 <MenuItemContent icon="stats" label="Stats" />

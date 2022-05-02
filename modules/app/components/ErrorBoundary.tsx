@@ -25,7 +25,7 @@ export class ErrorBoundary extends React.Component<{ componentName: string }> {
     if ((this.state as any).hasError) {
       // You can render any custom fallback UI
       return (
-        <Box sx={{ variant: 'cards.primary', p: [2] }}>
+        <Box sx={{ variant: 'cards.primary', p: 4 }}>
           <Text>
             There was a problem loading {this.componentName}. Please reload the application or contact our
             team on{' '}

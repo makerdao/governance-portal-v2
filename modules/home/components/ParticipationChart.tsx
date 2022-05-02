@@ -26,17 +26,20 @@ const ParticipationChart = ({
 
   const months = getPastMonths(monthsPast);
 
-  const range = months.map(m => {
-    const myMonth = data.filter(({ month }) => month === m);
-    const lastDay = myMonth[myMonth.length - 1];
+  const range = months
+    // filter out months with no data
+    .filter(m => data.find(({ month }) => month === m))
+    .map(m => {
+      const myMonth = data.filter(({ month }) => month === m);
+      const lastDay = myMonth[myMonth.length - 1];
 
-    return {
-      total: lastDay.total,
-      blockTimestamp: lastDay.blockTimestamp,
-      unixDate: lastDay.unixDate,
-      lockTotal: lastDay.lockTotal
-    };
-  });
+      return {
+        total: lastDay.total,
+        blockTimestamp: lastDay.blockTimestamp,
+        unixDate: lastDay.unixDate,
+        lockTotal: lastDay.lockTotal
+      };
+    });
 
   const formatYAxis = tickMkr => tickMkr.toFixed(0);
 

@@ -7,16 +7,17 @@ type Props = {
     title: string;
     value: string | JSX.Element;
   }[];
+  viewMoreUrl: string;
 };
 
-export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
+export const Stats = ({ title, infoUnits, viewMoreUrl }: Props): JSX.Element => {
   return (
     <>
       {/* Desktop */}
       <Box sx={{ display: ['none', 'block'] }}>
         <Flex sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Heading>{title}</Heading>
-          <ExternalLink href="https://daistats.com/" target="_blank">
+          <ExternalLink href={viewMoreUrl} target="_blank">
             <ViewMore />
           </ExternalLink>
         </Flex>
@@ -41,8 +42,8 @@ export const Stats = ({ title, infoUnits }: Props): JSX.Element => {
       <Box sx={{ display: ['block', 'none'], backgroundColor: 'background' }}>
         <Grid sx={{ p: 0 }}>
           <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Heading>System Stats</Heading>
-            <ExternalLink href="https://daistats.com/" target="_blank">
+            <Heading>{title}</Heading>
+            <ExternalLink href={viewMoreUrl} target="_blank">
               <ViewMore />
             </ExternalLink>
           </Flex>
