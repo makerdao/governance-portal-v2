@@ -49,7 +49,7 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { config } from 'lib/config';
+import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 type Props = {
   proposals: Proposal[];
@@ -64,7 +64,6 @@ type Props = {
 const LandingPage = ({
   proposals,
   polls,
-  network,
   delegates,
   totalMKRDelegated,
   recognizedDelegates,
@@ -205,7 +204,6 @@ const LandingPage = ({
                       {proposals ? (
                         proposals.length > 0 ? (
                           <ExecutiveOverviewCard
-                            network={network}
                             votedProposals={votedProposals}
                             account={account}
                             isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
@@ -391,20 +389,20 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (config.USE_STATIC_PROPS === '') {
-    console.log('skipping static props');
+  // if (skipStaticProps) {
+  //   console.log('skipping static props');
 
-    return {
-      props: {
-        proposals: [],
-        polls: [],
-        delegates: [],
-        totalMKRDelegated: null,
-        recognizedDelegates: [],
-        meetYourDelegates: []
-      }
-    };
-  }
+  //   return {
+  //     props: {
+  //       proposals: [],
+  //       polls: [],
+  //       delegates: [],
+  //       totalMKRDelegated: null,
+  //       recognizedDelegates: [],
+  //       meetYourDelegates: []
+  //     }
+  //   };
+  // }
 
   // fetch polls, proposals at build-time
   const [proposals, pollsData, delegatesResponse] = await Promise.all([
