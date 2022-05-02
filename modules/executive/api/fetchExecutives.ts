@@ -9,7 +9,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { EXEC_PROPOSAL_INDEX } from '../executive.constants';
 import { analyzeSpell, getExecutiveMKRSupport } from './analyzeSpell';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 
 export async function getGithubExecutives(network: SupportedNetworks): Promise<CMSProposal[]> {
   const cacheKey = 'github-proposals';
@@ -125,12 +125,15 @@ export async function getExecutiveProposals(
 
   const subset = filtered.slice(start, start + limit);
 
+  const batchProvider = new providers.JsonRpcBatchProvider(
+    `https://mainnet.infura.io/v3/${config.INFURA_KEY}`
+  );
+
   const analyzedProposals = await Promise.all(
     subset.map(async p => {
-      const spellData = await analyzeSpell(p.address, currentNetwork);
       return {
         ...p,
-        spellData
+        spellData: await analyzeSpell(batchProvider, p.address, currentNetwork)
       };
     })
   );
@@ -156,7 +159,11 @@ export async function getExecutiveProposal(
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
-  const spellData = await analyzeSpell(proposal.address, currentNetwork);
+  const batchProvider = new providers.JsonRpcBatchProvider(
+    `https://mainnet.infura.io/v3/${config.INFURA_KEY}`
+  );
+
+  const spellData = await analyzeSpell(batchProvider, proposal.address, currentNetwork);
   const content = await markdownToHtml(proposal.about || '');
   return {
     ...proposal,
