@@ -468,15 +468,15 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (skipStaticProps) {
-    console.log('skipping static props');
+  // if (skipStaticProps) {
+  //   console.log('skipping static props');
 
-    return {
-      props: {
-        proposals: []
-      }
-    };
-  }
+  //   return {
+  //     props: {
+  //       proposals: []
+  //     }
+  //   };
+  // }
 
   // fetch proposals at build-time if on the default network
   const EXEC_PAGE_SIZE = 10;

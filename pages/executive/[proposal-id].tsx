@@ -451,13 +451,13 @@ export default function ProposalPage({
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  if (skipStaticProps) {
-    return {
-      props: {
-        proposal: null
-      }
-    };
-  }
+  // if (skipStaticProps) {
+  //   return {
+  //     props: {
+  //       proposal: null
+  //     }
+  //   };
+  // }
 
   // fetch proposal contents at build-time if on the default network
   const proposalId = (params || {})['proposal-id'] as string;

@@ -225,16 +225,16 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (skipStaticProps) {
-    console.log('skipping static props');
+  // if (skipStaticProps) {
+  //   console.log('skipping static props');
 
-    return {
-      props: {
-        delegates: [],
-        stats: {}
-      }
-    };
-  }
+  //   return {
+  //     props: {
+  //       delegates: [],
+  //       stats: {}
+  //     }
+  //   };
+  // }
 
   const delegatesAPIResponse = await fetchDelegates();
 

@@ -370,13 +370,13 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (skipStaticProps) {
-    return {
-      props: {
-        polls: []
-      }
-    };
-  }
+  // if (skipStaticProps) {
+  //   return {
+  //     props: {
+  //       polls: []
+  //     }
+  //   };
+  // }
 
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();

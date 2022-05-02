@@ -389,20 +389,20 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (skipStaticProps) {
-    console.log('skipping static props');
+  // if (skipStaticProps) {
+  //   console.log('skipping static props');
 
-    return {
-      props: {
-        proposals: [],
-        polls: [],
-        delegates: [],
-        totalMKRDelegated: null,
-        recognizedDelegates: [],
-        meetYourDelegates: []
-      }
-    };
-  }
+  //   return {
+  //     props: {
+  //       proposals: [],
+  //       polls: [],
+  //       delegates: [],
+  //       totalMKRDelegated: null,
+  //       recognizedDelegates: [],
+  //       meetYourDelegates: []
+  //     }
+  //   };
+  // }
 
   // fetch polls, proposals at build-time
   const [proposals, pollsData, delegatesResponse] = await Promise.all([
