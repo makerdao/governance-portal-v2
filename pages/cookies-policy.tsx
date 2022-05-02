@@ -4,7 +4,7 @@ import { markdownToHtml } from 'lib/markdown';
 import { GetStaticProps } from 'next';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 
-const cookiespolicy = `
+const cookiesPolicyText = `
 ### Use of Cookies and Similar Technologies
 The Site is using cookies. Cookies are small text files that are placed on your computer by websites that you visit. They are widely used in order to make websites work, or work more efficiently, as well as to provide information to the owners of the site. Cookies are typically stored on your computer's hard drive. Information collected from cookies is used by us to evaluate the effectiveness of our Site and analyze trends. The information collected from cookies allows us to determine such things as which parts of the Site are most visited and difficulties our visitors may experience in accessing the SIte. With this knowledge, we can improve the quality of your experience on the Site by recognizing and delivering more of the most desired features and information, as well as by resolving access difficulties.
 
@@ -36,7 +36,7 @@ export default function CookiesPolicy(props: { content: string }): React.ReactEl
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const content = await markdownToHtml(cookiespolicy);
+  const content = await markdownToHtml(cookiesPolicyText);
 
   return {
     props: {

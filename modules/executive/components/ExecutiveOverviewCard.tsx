@@ -18,14 +18,12 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { useSpellData } from '../hooks/useSpellData';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
   account?: string;
-  network: SupportedNetworks;
   votedProposals: string[];
   mkrOnHat?: BigNumber;
 };
@@ -33,7 +31,6 @@ type Props = {
 export default function ExecutiveOverviewCard({
   proposal,
   isHat,
-  network,
   account,
   votedProposals,
   mkrOnHat

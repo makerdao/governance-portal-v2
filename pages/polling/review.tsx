@@ -30,6 +30,7 @@ import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -369,6 +370,14 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  if (skipStaticProps) {
+    return {
+      props: {
+        polls: []
+      }
+    };
+  }
+
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();
 

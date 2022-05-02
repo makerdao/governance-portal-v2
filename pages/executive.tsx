@@ -50,7 +50,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
-import { config } from 'lib/config';
+import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -310,7 +310,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                         <ExecutiveOverviewCard
                           proposal={proposal}
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                          network={network}
                           account={account}
                           votedProposals={votedProposals}
                           mkrOnHat={mkrOnHat}
@@ -372,7 +371,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                           <ExecutiveOverviewCard
                             proposal={proposal}
                             isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                            network={network}
                             account={account}
                             votedProposals={votedProposals}
                             mkrOnHat={mkrOnHat}
@@ -470,7 +468,7 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (config.USE_STATIC_PROPS === '') {
+  if (skipStaticProps) {
     console.log('skipping static props');
 
     return {

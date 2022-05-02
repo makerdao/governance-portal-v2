@@ -46,6 +46,7 @@ import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
 import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
 import { isAfter, sub } from 'date-fns';
+import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 type Props = {
   proposal: Proposal;
@@ -450,6 +451,14 @@ export default function ProposalPage({
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  if (skipStaticProps) {
+    return {
+      props: {
+        proposal: null
+      }
+    };
+  }
+
   // fetch proposal contents at build-time if on the default network
   const proposalId = (params || {})['proposal-id'] as string;
 

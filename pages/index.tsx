@@ -50,6 +50,7 @@ import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { config } from 'lib/config';
+import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 type Props = {
   proposals: Proposal[];
@@ -205,7 +206,6 @@ const LandingPage = ({
                       {proposals ? (
                         proposals.length > 0 ? (
                           <ExecutiveOverviewCard
-                            network={network}
                             votedProposals={votedProposals}
                             account={account}
                             isHat={hat ? hat.toLowerCase() === proposals[0].address.toLowerCase() : false}
@@ -391,7 +391,7 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  if (config.USE_STATIC_PROPS === '') {
+  if (skipStaticProps) {
     console.log('skipping static props');
 
     return {
