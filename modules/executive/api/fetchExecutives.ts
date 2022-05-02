@@ -102,7 +102,10 @@ export async function getExecutiveProposals(
     }
   }
 
-  const proposals = await getGithubExecutivesWithMKR(currentNetwork);
+  const proposals =
+    sortBy === 'mkr'
+      ? await getGithubExecutivesWithMKR(currentNetwork)
+      : await getGithubExecutives(currentNetwork);
 
   const sorted = proposals.sort((a, b) => {
     if (sortBy === 'mkr') {

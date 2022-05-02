@@ -49,7 +49,6 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { config } from 'lib/config';
 import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 type Props = {
@@ -65,7 +64,6 @@ type Props = {
 const LandingPage = ({
   proposals,
   polls,
-  network,
   delegates,
   totalMKRDelegated,
   recognizedDelegates,
