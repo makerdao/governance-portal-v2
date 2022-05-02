@@ -97,7 +97,7 @@
     "zustand": "^2.2.3"
   },
   "devDependencies": {
-    "@dethcrypto/eth-sdk": "^0.2.4",
+    "@dethcrypto/eth-sdk": "^0.3.1",
     "@dethcrypto/eth-sdk-client": "^0.1.6",
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/introspection": "^2.1.1",
