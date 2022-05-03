@@ -108,7 +108,7 @@ export async function fetchDelegates(
 
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork));
+  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());

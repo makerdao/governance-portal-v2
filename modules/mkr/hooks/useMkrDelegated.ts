@@ -28,7 +28,8 @@ export const useMkrDelegated = (
         abi,
         chainId,
         library,
-        account
+        account,
+        true
       );
 
       return await contract.stake(userAddress as string);
