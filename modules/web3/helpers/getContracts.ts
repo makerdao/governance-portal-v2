@@ -31,9 +31,7 @@ export const getContracts = (
     ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
     : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
 
-  const provider = readOnly
-    ? new providers.JsonRpcBatchProvider(rpcUrl)
-    : getDefaultProvider(getRPCFromChainID(chainId || 1));
+  const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
