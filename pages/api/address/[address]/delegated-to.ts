@@ -23,7 +23,7 @@ export default withApiHandler(
 
     const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
-    const contracts = getContracts(networkNameToChainId(network), undefined, true);
+    const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
     const proxyInfo = await getVoteProxyAddresses(
       contracts.voteProxyFactory,
