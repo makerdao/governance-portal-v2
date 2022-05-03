@@ -19,7 +19,6 @@ import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { useSpellData } from '../hooks/useSpellData';
 
 type Props = {
   proposal: Proposal;
@@ -33,7 +32,6 @@ type Props = {
 export default function ExecutiveOverviewCard({
   proposal,
   isHat,
-  network,
   account,
   votedProposals,
   mkrOnHat
@@ -41,7 +39,6 @@ export default function ExecutiveOverviewCard({
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.EXECUTIVE);
   const [voting, setVoting] = useState(false);
   const { comments } = useExecutiveComments(proposal.address);
-  const { data: spellData } = useSpellData(proposal.address);
 
   const hasVotedFor =
     votedProposals &&
@@ -176,13 +173,13 @@ export default function ExecutiveOverviewCard({
               )}
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
-              {spellData?.mkrSupport === undefined ? (
+              {proposal.spellData?.mkrSupport === undefined ? (
                 <Box sx={{ width: 6, ml: 'auto', height: '100%' }}>
                   <Skeleton />
                 </Box>
               ) : (
                 <StatBox
-                  value={formatValue(BigNumber.from(spellData?.mkrSupport))}
+                  value={formatValue(BigNumber.from(proposal.spellData?.mkrSupport))}
                   label="MKR Supporting"
                   styles={{ textAlign: 'right' }}
                 />
@@ -207,7 +204,7 @@ export default function ExecutiveOverviewCard({
               wordBreak: 'break-word'
             }}
           >
-            {getStatusText({ proposalAddress: proposal.address, spellData, mkrOnHat })}
+            {getStatusText({ proposalAddress: proposal.address, spellData: proposal.spellData, mkrOnHat })}
           </Text>
         </Flex>
       </Flex>
