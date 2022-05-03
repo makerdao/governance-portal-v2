@@ -42,7 +42,7 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
-  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
+  mkrLockedDelegate?: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
 };
 
@@ -60,10 +60,12 @@ export type DelegationHistoryEvent = {
 
 export type MKRLockedDelegateAPIResponse = {
   fromAddress: string;
+  immediateCaller: string;
   lockAmount: string;
   blockNumber: number;
   blockTimestamp: string;
   lockTotal: string;
+  callerLockTotal: string;
   hash: string;
 };
 

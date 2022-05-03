@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
-export const mkrLockedDelegateArray = gql`
-  query mkrLockedDelegateArray($argAddress: [String]!, $argUnixTimeStart: Int!, $argUnixTimeEnd: Int!) {
-    mkrLockedDelegateArray(
+export const mkrLockedDelegateArrayTotals = gql`
+  query mkrLockedDelegateArrayTotals($argAddress: [String]!, $argUnixTimeStart: Int!, $argUnixTimeEnd: Int!) {
+    mkrLockedDelegateArrayTotals(
       argAddress: $argAddress
       unixtimeStart: $argUnixTimeStart
       unixtimeEnd: $argUnixTimeEnd
@@ -14,6 +14,7 @@ export const mkrLockedDelegateArray = gql`
         blockNumber
         blockTimestamp
         lockTotal
+        callerLockTotal
         hash
       }
     }
