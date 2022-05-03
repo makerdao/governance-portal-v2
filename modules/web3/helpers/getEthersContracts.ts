@@ -15,9 +15,7 @@ export const getEthersContracts = <T extends Contract>(
 ): T => {
   const rcpUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
 
-  const provider = readOnly
-    ? new providers.JsonRpcBatchProvider(rcpUrl)
-    : getDefaultProvider(getRPCFromChainID(chainId || 1));
+  const provider = readOnly ? new providers.JsonRpcBatchProvider(rcpUrl) : getDefaultProvider(rcpUrl);
 
   const signerOrProvider =
     account && library
