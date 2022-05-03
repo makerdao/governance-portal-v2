@@ -146,11 +146,11 @@ export async function fetchDelegates(
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
-      const activeDelegatorsA = delegationHistoryA.filter(
-        ({ lockAmount }) => parseInt(lockAmount) > 0
+      const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
-      const activeDelegatorsB = delegationHistoryB.filter(
-        ({ lockAmount }) => parseInt(lockAmount) > 0
+      const activeDelegatorsB = delegationHistoryB.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
       return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
     } else {
