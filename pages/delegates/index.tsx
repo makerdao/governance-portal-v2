@@ -27,8 +27,6 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { config } from 'lib/config';
-import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 type Props = {
   delegates: Delegate[];
@@ -225,17 +223,6 @@ export default function DelegatesPage({ delegates, stats }: Props): JSX.Element 
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // if (skipStaticProps) {
-  //   console.log('skipping static props');
-
-  //   return {
-  //     props: {
-  //       delegates: [],
-  //       stats: {}
-  //     }
-  //   };
-  // }
-
   const delegatesAPIResponse = await fetchDelegates();
 
   return {

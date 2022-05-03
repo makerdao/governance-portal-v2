@@ -44,8 +44,6 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
-import { props } from 'cypress/types/bluebird';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -372,29 +370,7 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
-//   const slug = context.query['poll-hash'] as string;
-//   const network = context.query['network'] as string;
-//   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
-
-//   const poll = await fetchPollBySlug(slug, networkToFetch);
-
-//   return {
-//     props: {
-//       poll
-//     }
-//   };
-// };
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // if (skipStaticProps) {
-  //   return {
-  //     props: {
-  //       poll: null
-  //     }
-  //   };
-  // }
-
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
   // invariant(pollSlug, 'getStaticProps poll hash not found in params');

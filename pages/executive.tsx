@@ -50,8 +50,6 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 
-import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
-
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
     variant="primary"
@@ -468,16 +466,6 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // if (skipStaticProps) {
-  //   console.log('skipping static props');
-
-  //   return {
-  //     props: {
-  //       proposals: []
-  //     }
-  //   };
-  // }
-
   // fetch proposals at build-time if on the default network
   const EXEC_PAGE_SIZE = 10;
   const proposals = await getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active');

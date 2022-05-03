@@ -24,13 +24,11 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { skipStaticProps } from 'modules/app/helpers/skipStaticProps';
 
 const PollingReview = ({ polls }: { polls: Poll[] }) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
@@ -370,14 +368,6 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: P
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // if (skipStaticProps) {
-  //   return {
-  //     props: {
-  //       polls: []
-  //     }
-  //   };
-  // }
-
   // fetch polls at build-time if on the default network
   const pollsData = await getPolls();
 
