@@ -1,7 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { getRPCFromChainID } from './getRPC';
 import { SupportedChainId } from '../constants/chainID';
-import { Contract, ethers } from 'ethers';
+import { Contract, ethers, providers } from 'ethers';
+import { DEFAULT_NETWORK } from '../constants/networks';
 import { getDefaultProvider } from './getDefaultProvider';
 
 export const getEthersContracts = <T extends Contract>(
@@ -9,11 +10,21 @@ export const getEthersContracts = <T extends Contract>(
   abi: any,
   chainId?: SupportedChainId,
   library?: Web3Provider,
-  account?: string
+  account?: string,
+  readOnly?: boolean
 ): T => {
-  const readOnlyProvider = getDefaultProvider(getRPCFromChainID(chainId || 1));
+  const rcpUrl = chainId ? getRPCFromChainID(chainId) : DEFAULT_NETWORK.defaultRpc;
 
-  const signerOrProvider = account && library ? library.getSigner(account) : readOnlyProvider;
+  const provider = readOnly
+    ? new providers.JsonRpcBatchProvider(rcpUrl)
+    : getDefaultProvider(getRPCFromChainID(chainId || 1));
+
+  const signerOrProvider =
+    account && library
+      ? readOnly
+        ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
+        : library.getSigner(account)
+      : provider;
 
   return new ethers.Contract(address, abi, signerOrProvider) as T;
 };

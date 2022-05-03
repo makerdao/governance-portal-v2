@@ -1,13 +1,13 @@
 // nextCastTime returns when the spell is available for execution, accounting for office hours (only works if the spell has not been executed yet)
 // eta returns when the spell is available for execution, not account for office hours
 
-import { ethers } from 'ethers';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
 import { getSpellExecutionDate } from 'modules/web3/api/getSpellExecuationDate';
 import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { SpellData } from '../types';
-import spellAbi from 'modules/contracts/ethers/dsSpell.json';
+import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
+
 export const getExecutiveMKRSupport = async (
   address: string,
   network: SupportedNetworks
@@ -22,12 +22,8 @@ export const getExecutiveMKRSupport = async (
 };
 
 // executiveHash returns the hash of the executive proposal
-export const analyzeSpell = async (
-  batchProvider: ethers.providers.JsonRpcBatchProvider,
-  address: string,
-  network: SupportedNetworks
-): Promise<SpellData> => {
-  const spellContract = new ethers.Contract(address, spellAbi, batchProvider);
+export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
+  const spellContract = getSpellContract(address, network);
   // don't fetch spell data if not on mainnet
   if (network !== SupportedNetworks.MAINNET) {
     const approvals = await getChiefApprovals(address, network);
