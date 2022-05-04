@@ -15,7 +15,7 @@ describe('Account Page', async () => {
   it('should navigate to the account page and be able to create a delegate contract', () => {
     visitPage('/account');
 
-    cy.contains('Connect your wallet to view information about your account').should('be.visible');
+    cy.contains('Connect a wallet to view account information').should('be.visible');
 
     const newAccount = getTestAccountByIndex(0);
 

@@ -145,20 +145,20 @@ const Header = (): JSX.Element => {
   };
 
   // Fetch polls & proposals from cache or revalidate if we don't have them
-  // const dataKeyPolls = `/api/polling/all-polls?network=${network}`;
-  // const { data: pollsData } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
-  //   revalidateOnMount: !cache.get(dataKeyPolls)
-  // });
-  // const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
+  const dataKeyPolls = `/api/polling/all-polls?network=${network}`;
+  const { data: pollsData } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyPolls)
+  });
+  const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
 
   // TODO: change to 0 for tests
   const EXEC_PAGE_SIZE = 3;
 
-  // const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}&sortBy=active`;
-  // const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
-  //   revalidateOnMount: !cache.get(dataKeyProposals)
-  // });
-  // const activeProposals = proposalsData?.filter(p => p.active);
+  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}&sortBy=active`;
+  const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
+    revalidateOnMount: !cache.get(dataKeyProposals)
+  });
+  const activeProposals = proposalsData?.filter(p => p.active);
 
   return (
     <Box
@@ -194,7 +194,7 @@ const Header = (): JSX.Element => {
             >
               Polling
             </NavLink>
-            {/* {bpi > 1 && activePolls && activePolls.length > 0 && (
+            {bpi > 1 && activePolls && activePolls.length > 0 && (
               <NavLink href={'/polling'} title="View polling page" p={0}>
                 <Badge
                   variant="solidCircle"
@@ -210,7 +210,7 @@ const Header = (): JSX.Element => {
                   {activePolls?.length}
                 </Badge>
               </NavLink>
-            )} */}
+            )}
           </Flex>
           <Flex>
             <NavLink
@@ -225,7 +225,7 @@ const Header = (): JSX.Element => {
             >
               Executive
             </NavLink>
-            {/* {bpi > 1 && activeProposals && activeProposals.length > 0 && (
+            {bpi > 1 && activeProposals && activeProposals.length > 0 && (
               <NavLink href={'/executive'} title="View executive page" p={0}>
                 <Badge
                   sx={{
@@ -240,7 +240,7 @@ const Header = (): JSX.Element => {
                   {activeProposals.length}
                 </Badge>
               </NavLink>
-            )} */}
+            )}
           </Flex>
 
           <NavLink
