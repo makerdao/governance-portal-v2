@@ -53,6 +53,8 @@ describe('/polling/review page', async () => {
 
       // Opens the select
       cy.get('[data-testid="single-select"]').first().click();
+      
+      cy.wait(1000)
 
       // Clicks on "No"
       cy.get('[data-testid="single-select-option-No"]').click();
