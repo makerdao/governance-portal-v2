@@ -34,7 +34,7 @@ describe('Delegates Page', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
-      cy.get('[data-testid="total-delegates-system-info"]').contains(/25/);
+      cy.get('[data-testid="total-delegates-system-info"]').contains(/17/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('2');
       cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/15/);
       cy.get('[data-testid="total-mkr-system-info"]').contains('1,279');

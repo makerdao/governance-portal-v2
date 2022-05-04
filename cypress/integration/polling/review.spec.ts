@@ -49,6 +49,8 @@ describe('/polling/review page', async () => {
       // It can edit a choice
       cy.get('[data-testid="edit-poll-choice"]').click();
 
+      cy.wait(1000)
+
       // Opens the select
       cy.get('[data-testid="single-select"]').first().click();
 
