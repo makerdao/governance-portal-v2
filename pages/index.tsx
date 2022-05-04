@@ -49,6 +49,9 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
+import { fetchMkrOnHat } from 'modules/executive/api/fetchMkrOnHat';
+import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
+import { formatValue } from 'lib/string';
 
 type Props = {
   proposals: Proposal[];
@@ -58,6 +61,9 @@ type Props = {
   recognizedDelegates: Delegate[];
   meetYourDelegates: Delegate[];
   totalMKRDelegated: string;
+  mkrOnHat?: string;
+  hat?: string;
+  mkrInChief?: string;
 };
 
 const LandingPage = ({
@@ -66,12 +72,30 @@ const LandingPage = ({
   delegates,
   totalMKRDelegated,
   recognizedDelegates,
-  meetYourDelegates
+  meetYourDelegates,
+  mkrOnHat,
+  hat,
+  mkrInChief
 }: Props) => {
-  const [mode] = useColorMode();
   const bpi = useBreakpointIndex();
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
   const [videoOpen, setVideoOpen] = useState(false);
+  const [mode] = useColorMode();
+  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
+
+  // change background on color mode switch
+  useEffect(() => {
+    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
+  }, [mode]);
+
+  // account
+  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+
+  // polls
+  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
+  const pollCategories = getCategories(polls);
+
+  // delegates
   const topDelegates = delegates.slice(0, 5);
   const activeDelegates = recognizedDelegates
     .sort((a, b) => {
@@ -81,27 +105,13 @@ const LandingPage = ({
     })
     .slice(0, 5);
 
-  const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
-
-  const chiefAddress = useContractAddress('chief');
-  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
-  const { data: hat } = useHat();
-  const { data: mkrOnHat } = useMkrOnHat();
-  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  // executives
   const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
-
-  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
 
   // revalidate votedProposals if connected address changes
   useEffect(() => {
     mutateVotedProposals();
   }, [address]);
-
-  const pollCategories = getCategories(polls);
-
-  useEffect(() => {
-    setBackroundImage(mode === 'dark' ? 'url(/assets/bg_dark_medium.jpeg)' : 'url(/assets/bg_medium.jpeg)');
-  }, [mode]);
 
   // Use intersection observers to change the hash on scroll
   const [activeTab, setActiveTab] = useState('#vote');
@@ -306,7 +316,10 @@ export default function Index({
   delegates: prefetchedDelegates,
   recognizedDelegates: prefetchedRecognizedDelegates,
   meetYourDelegates: prefetchedMeetYourDelegates,
-  totalMKRDelegated: prefetchedTotalMKRDelegated
+  totalMKRDelegated: prefetchedTotalMKRDelegated,
+  mkrOnHat: prefetchedMkrOnHat,
+  hat: prefetchedHat,
+  mkrInChief: prefetchedMkrInChief
 }: Props): JSX.Element {
   const { network } = useActiveWeb3React();
 
@@ -338,6 +351,13 @@ export default function Index({
       revalidateOnMount: !cache.get(dataKeyDelegates)
     }
   );
+
+  const { data: mkrOnHat } = useMkrOnHat();
+
+  const { data: hat } = useHat();
+
+  const chiefAddress = useContractAddress('chief');
+  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
 
   // Error state, only applies for alternative networks
   if (errorProposals || errorPolls || errorDelegates) {
@@ -383,16 +403,23 @@ export default function Index({
           ? delegatesData.stats.totalMKRDelegated
           : '0'
       }
+      mkrOnHat={isDefaultNetwork(network) ? prefetchedMkrOnHat : mkrOnHat ? formatValue(mkrOnHat) : undefined}
+      hat={isDefaultNetwork(network) ? prefetchedHat : hat ? hat : undefined}
+      mkrInChief={
+        isDefaultNetwork(network) ? prefetchedMkrInChief : mkrInChief ? formatValue(mkrInChief) : undefined
+      }
     />
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch polls, proposals at build-time
-  const [proposals, pollsData, delegatesResponse] = await Promise.all([
+  const [proposals, pollsData, delegatesResponse, { hat, mkrOnHat }, mkrInChief] = await Promise.all([
     getExecutiveProposals(0, 3, 'active'),
     getPolls(),
-    fetchDelegates(SupportedNetworks.MAINNET, 'mkr')
+    fetchDelegates(SupportedNetworks.MAINNET, 'mkr'),
+    fetchMkrOnHat(),
+    fetchMkrInChief()
   ]);
 
   const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
@@ -407,7 +434,10 @@ export const getStaticProps: GetStaticProps = async () => {
       delegates: delegatesResponse.delegates,
       totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
       recognizedDelegates,
-      meetYourDelegates
+      meetYourDelegates,
+      mkrOnHat: formatValue(mkrOnHat),
+      hat,
+      mkrInChief: formatValue(mkrInChief)
     }
   };
 };

@@ -44,11 +44,11 @@ export const formatDelegationHistoryChart = (
     });
 
     if (existingItem && existingItem.length > 0) {
-      // If we have multiple items for the same day, use the final one because the lockTotal will be accurate.
+      // If we have multiple items for the same day, use the final one because the callerLockTotal will be accurate.
       const mostRecent = existingItem[existingItem.length - 1];
       output.push({
         date: subDays(new Date(), end - i),
-        MKR: new BigNumber(mostRecent.lockTotal).toNumber()
+        MKR: new BigNumber(mostRecent.callerLockTotal).toNumber()
       });
     } else {
       output.push({

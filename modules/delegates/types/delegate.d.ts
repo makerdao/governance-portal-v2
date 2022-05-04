@@ -60,10 +60,12 @@ export type DelegationHistoryEvent = {
 
 export type MKRLockedDelegateAPIResponse = {
   fromAddress: string;
+  immediateCaller: string;
   lockAmount: string;
   blockNumber: number;
   blockTimestamp: string;
   lockTotal: string;
+  callerLockTotal: string;
   hash: string;
 };
 

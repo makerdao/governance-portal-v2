@@ -69,6 +69,13 @@ export async function fetchDelegate(
     return Promise.resolve(undefined);
   }
 
+  const delegationEvents = await fetchDelegationEventsByAddresses(
+    [onChainDelegate.voteDelegateAddress],
+    network || SupportedNetworks.MAINNET
+  );
+
+  onChainDelegate.mkrLockedDelegate = delegationEvents;
+
   const { data: githubDelegate } = await fetchGithubDelegate(
     onChainDelegate.voteDelegateAddress,
     currentNetwork
@@ -106,6 +113,7 @@ export async function fetchDelegates(
 ): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
+  // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
   const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
@@ -126,12 +134,18 @@ export async function fetchDelegates(
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
 
+      // Filter the lock events to get only the ones for this delegate address
+      const mkrLockedDelegate = lockEvents.filter(
+        ({ immediateCaller }) => immediateCaller.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
+      );
+
       const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
       return {
         ...delegate,
         proposalsSupported,
         execSupported,
-        lastVoteDate: lastVote ? lastVote.blockTimestamp : null
+        lastVoteDate: lastVote ? lastVote.blockTimestamp : null,
+        mkrLockedDelegate
       };
     })
   );
@@ -146,11 +160,11 @@ export async function fetchDelegates(
     } else if (sortBy === 'delegators') {
       const delegationHistoryA = formatDelegationHistory(a.mkrLockedDelegate);
       const delegationHistoryB = formatDelegationHistory(b.mkrLockedDelegate);
-      const activeDelegatorsA = delegationHistoryA.filter(
-        ({ lockAmount }) => parseInt(lockAmount) > 0
+      const activeDelegatorsA = delegationHistoryA.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
-      const activeDelegatorsB = delegationHistoryB.filter(
-        ({ lockAmount }) => parseInt(lockAmount) > 0
+      const activeDelegatorsB = delegationHistoryB.filter(({ lockAmount }) =>
+        new BigNumberJS(lockAmount).gt(0)
       ).length;
       return activeDelegatorsA > activeDelegatorsB ? -1 : 1;
     } else {

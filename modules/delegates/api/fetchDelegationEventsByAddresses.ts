@@ -1,5 +1,5 @@
 import { gqlRequest } from 'modules/gql/gqlRequest';
-import { mkrLockedDelegateArray } from 'modules/gql/queries/mkrLockedDelegateArray';
+import { mkrLockedDelegateArrayTotals } from 'modules/gql/queries/mkrLockedDelegateArray';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { MKRLockedDelegateAPIResponse } from '../types';
@@ -11,7 +11,7 @@ export async function fetchDelegationEventsByAddresses(
   try {
     const data = await gqlRequest({
       chainId: networkNameToChainId(network),
-      query: mkrLockedDelegateArray,
+      query: mkrLockedDelegateArrayTotals,
       variables: {
         argAddress: addresses,
         argUnixTimeStart: 0,
@@ -19,7 +19,7 @@ export async function fetchDelegationEventsByAddresses(
       }
     });
 
-    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArray.nodes;
+    const addressData: MKRLockedDelegateAPIResponse[] = data.mkrLockedDelegateArrayTotals.nodes;
 
     return addressData;
   } catch (e) {
