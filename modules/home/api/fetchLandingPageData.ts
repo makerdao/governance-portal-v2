@@ -27,11 +27,11 @@ export type LandingPageData = {
 
 export async function fetchLandingPageData(network: SupportedNetworks): Promise<LandingPageData> {
   const [proposals, pollsData, delegatesResponse, { hat, mkrOnHat }, mkrInChief] = await Promise.all([
-    getExecutiveProposals(0, 3, 'active'),
-    getPolls(),
+    getExecutiveProposals(0, 3, 'active', network),
+    getPolls(undefined, network),
     fetchDelegates(network, 'mkr'),
-    fetchMkrOnHat(),
-    fetchMkrInChief()
+    fetchMkrOnHat(network),
+    fetchMkrInChief(network)
   ]);
   const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
   const meetYourDelegates = shuffleArray(recognizedDelegates);
