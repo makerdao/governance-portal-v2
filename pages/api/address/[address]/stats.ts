@@ -80,7 +80,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<A
 
   const address = tempAddress.indexOf('.eth') !== -1 ? await resolveENS(tempAddress) : tempAddress;
 
-  const contracts = getContracts(networkNameToChainId(network));
+  const contracts = getContracts(networkNameToChainId(network), undefined, undefined, true);
 
   const voteProxyAddress = await getVoteProxyAddresses(
     contracts.voteProxyFactory,

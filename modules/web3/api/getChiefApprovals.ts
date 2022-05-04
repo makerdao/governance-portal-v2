@@ -5,7 +5,7 @@ import { networkNameToChainId } from '../helpers/chain';
 
 export const getChiefApprovals = async (address: string, network?: SupportedNetworks): Promise<BigNumber> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
-  const contracts = getContracts(chainId);
+  const contracts = getContracts(chainId, undefined, undefined, true);
 
   return await contracts['chief'].approvals(address);
 };
