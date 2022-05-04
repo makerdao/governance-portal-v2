@@ -49,15 +49,11 @@ describe('/polling/review page', async () => {
       // It can edit a choice
       cy.get('[data-testid="edit-poll-choice"]').click();
 
-      cy.wait(1000)
-
       // Opens the select
       cy.get('[data-testid="single-select"]').first().click();
-      
-      cy.wait(1000)
 
       // Clicks on "No"
-      cy.get('[data-testid="single-select-option-No"]').click();
+      cy.get('[data-testid="single-select-option-No"]').click({ force: true });
 
       // Clicks on update vote
       cy.contains('Update vote').click();
@@ -157,19 +153,22 @@ describe('/polling/review page', async () => {
       cy.get('[data-testid="submit-ballot-button"]').click();
 
       // Expect to see the previously voted polls
-      cy.get('[data-testid="previously-voted-on"]').should('be.visible');
+      cy.get('[data-testid="previously-voted-on"]')
+        .eq(0)
+        .find('a')
+        .first()
+        .invoke('attr', 'href')
+        .then(hrefComment1 => {
+          visitPage(hrefComment1 as string, true);
 
-      // Clicks on the title of the poll
-      cy.get('[data-testid="poll-overview-card-poll-title"]').click();
+          setAccount(TEST_ACCOUNTS.normal, () => {
+            // Opens the comment tab
+            cy.get('[data-testid="tab-Comments"]').click();
 
-      // Navigates to the detail of the poll and sees the comments tab
-      cy.get('[data-testid="tab-Comments"]').should('be.visible');
-
-      // Opens the comment tab
-      cy.get('[data-testid="tab-Comments"]').click();
-
-      // Checks the comment exists
-      cy.contains(commentText).should('be.visible');
+            // Checks the comment exists
+            cy.contains(commentText).should('be.visible');
+          });
+        });
     });
   });
 
