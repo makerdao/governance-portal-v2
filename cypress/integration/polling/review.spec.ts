@@ -50,7 +50,7 @@ describe('/polling/review page', async () => {
       cy.get('[data-testid="edit-poll-choice"]').click();
 
       // Opens the select
-      cy.get('[data-testid="single-select"]').click();
+      cy.get('[data-testid="single-select"]').first().click();
 
       // Clicks on "No"
       cy.get('[data-testid="single-select-option-No"]').click();
