@@ -42,7 +42,7 @@ export type Delegate = {
   mkrDelegated: string;
   proposalsSupported: number;
   execSupported: CMSProposal | undefined;
-  mkrLockedDelegate?: MKRLockedDelegateAPIResponse[];
+  mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
 };
 
