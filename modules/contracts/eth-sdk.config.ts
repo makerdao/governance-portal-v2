@@ -1,5 +1,7 @@
 import type { EthSdkConfig } from '@dethcrypto/eth-sdk';
-import { config as envConfig } from 'lib/config';
+import 'dotenv/config';
+
+declare let process: any;
 
 const config: EthSdkConfig = {
   contracts: {
@@ -41,7 +43,7 @@ const config: EthSdkConfig = {
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
     }
   },
-  etherscanKeys: { mainnet: envConfig.ETHERSCAN_KEY }
+  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY }
 };
 
 export default config;
