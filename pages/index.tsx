@@ -13,18 +13,14 @@ import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
 import { Proposal } from 'modules/executive/types';
-import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { getPolls } from 'modules/polling/api/fetchPolls';
-import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
-import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
+import { DelegatesAPIResponse } from 'modules/delegates/types';
 import useSWR, { useSWRConfig } from 'swr';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
@@ -49,22 +45,9 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { fetchMkrOnHat } from 'modules/executive/api/fetchMkrOnHat';
-import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
 import { formatValue } from 'lib/string';
-
-type Props = {
-  proposals: Proposal[];
-  polls: Poll[];
-  network: SupportedNetworks;
-  delegates: Delegate[];
-  recognizedDelegates: Delegate[];
-  meetYourDelegates: Delegate[];
-  totalMKRDelegated: string;
-  mkrOnHat?: string;
-  hat?: string;
-  mkrInChief?: string;
-};
+import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 
 const LandingPage = ({
   proposals,
@@ -76,7 +59,7 @@ const LandingPage = ({
   mkrOnHat,
   hat,
   mkrInChief
-}: Props) => {
+}: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -320,7 +303,7 @@ export default function Index({
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
-}: Props): JSX.Element {
+}: LandingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
   const { cache } = useSWRConfig();
@@ -378,7 +361,6 @@ export default function Index({
           : []
       }
       polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
-      network={network}
       delegates={
         isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
       }
@@ -413,31 +395,30 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls, proposals at build-time
-  const [proposals, pollsData, delegatesResponse, { hat, mkrOnHat }, mkrInChief] = await Promise.all([
-    getExecutiveProposals(0, 3, 'active'),
-    getPolls(),
-    fetchDelegates(SupportedNetworks.MAINNET, 'mkr'),
-    fetchMkrOnHat(),
-    fetchMkrInChief()
-  ]);
-
-  const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
-
-  const meetYourDelegates = shuffleArray(recognizedDelegates);
+  const {
+    proposals,
+    polls,
+    delegates,
+    totalMKRDelegated,
+    recognizedDelegates,
+    meetYourDelegates,
+    mkrOnHat,
+    hat,
+    mkrInChief
+  } = await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 30 * 60, // allow revalidation every 30 minutes
     props: {
-      proposals: proposals.filter(i => i.active),
-      polls: pollsData.polls,
-      delegates: delegatesResponse.delegates,
-      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
+      proposals,
+      polls,
+      delegates,
+      totalMKRDelegated,
       recognizedDelegates,
       meetYourDelegates,
-      mkrOnHat: formatValue(mkrOnHat),
+      mkrOnHat,
       hat,
-      mkrInChief: formatValue(mkrInChief)
+      mkrInChief
     }
   };
 };
