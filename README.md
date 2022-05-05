@@ -75,11 +75,17 @@ npm run hardhat
 
 Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
 
-You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`.
+You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`. 
+
+For more information about the fund process, take a look at `/scripts/setup.js`
 
 **Writting E2E**:
 
 Please refer to: https://docs.cypress.io/guides/references/best-practices and check current test examples under the cypress folder.
+
+**Windows Support**
+
+If you are using Windows and WSL you will need to install XLaunch to be able to launch a client for the UI.
 
 ### CI/CD
 
