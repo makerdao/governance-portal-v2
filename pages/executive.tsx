@@ -51,6 +51,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getPolls } from 'modules/polling/api/fetchPolls';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -485,14 +486,15 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  const endDate = Math.floor(Date.now() / 1000);
   // fetch proposals at build-time if on the default network
   const EXEC_PAGE_SIZE = 10;
   const [proposals, polls] = await Promise.all([
     getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active'),
-    getPolls()
+    getPolls(undefined, SupportedNetworks.MAINNET, endDate)
   ]);
 
-  const activePollCount = polls.polls.filter(poll => isActivePoll(poll)).length;
+  const activePollCount = polls.polls.length;
 
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds

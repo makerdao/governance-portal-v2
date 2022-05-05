@@ -13,6 +13,7 @@ import { PollSpock } from '../types/pollSpock';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
+import { filteredWhitelistedPolls } from 'modules/gql/queries/filteredWhitelistedPolls';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -64,11 +65,19 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchAllSpockPolls(network: SupportedNetworks): Promise<PollSpock[]> {
-  const data = await gqlRequest({
-    chainId: networkNameToChainId(network),
-    query: allWhitelistedPolls
-  });
+export async function fetchAllSpockPolls(network: SupportedNetworks, endDate?: number): Promise<PollSpock[]> {
+  const requestData = endDate
+    ? {
+        chainId: networkNameToChainId(network),
+        query: filteredWhitelistedPolls,
+        variables: { endDate: 1651787606 }
+      }
+    : {
+        chainId: networkNameToChainId(network),
+        query: allWhitelistedPolls
+      };
+
+  const data = await gqlRequest(requestData);
 
   const pollList: PollSpock[] = data.activePolls.nodes;
   return pollList;
@@ -95,6 +104,28 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
   return polls;
 }
 
+export async function _getFilteredPolls(network?: SupportedNetworks, endDate?: number): Promise<Poll[]> {
+  // const cacheKey = 'active-polls';
+
+  // if (config.USE_FS_CACHE) {
+  //   const cachedPolls = fsCacheGet(cacheKey, network);
+  //   if (cachedPolls) {
+  //     return JSON.parse(cachedPolls);
+  //   }
+  // }
+
+  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network, endDate);
+
+  console.log('poll list.letng', pollList.length);
+
+  const polls = await fetchAllPollsMetadata(pollList);
+
+  // if (config.USE_FS_CACHE) {
+  //   fsCacheSet(cacheKey, JSON.stringify(polls), network);
+  // }
+  return polls;
+}
+
 // Public method that returns the polls, and accepts filters
 const defaultFilters: PollFilters = {
   startDate: null,
@@ -105,9 +136,10 @@ const defaultFilters: PollFilters = {
 
 export async function getPolls(
   filters = defaultFilters,
-  network?: SupportedNetworks
+  network?: SupportedNetworks,
+  endDate?: number
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network);
+  const allPolls = endDate ? await _getFilteredPolls(network, endDate) : await _getAllPolls(network);
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
     if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
