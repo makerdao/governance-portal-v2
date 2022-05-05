@@ -9,7 +9,6 @@ import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
-
 import { Poll, PollCategory } from 'modules/polling/types';
 import { formatDateWithTime } from 'lib/datetime';
 import { fetchJson } from 'lib/fetchJson';
@@ -38,13 +37,14 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
-
+import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 type Props = {
   polls: Poll[];
   categories: PollCategory[];
+  activeProposalsCount?: number;
 };
 
-const PollingOverview = ({ polls, categories }: Props) => {
+const PollingOverview = ({ polls, categories, activeProposalsCount }: Props) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
@@ -83,6 +83,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const loader = useRef<HTMLDivElement>(null);
   const bpi = useBreakpointIndex();
   const { network } = useActiveWeb3React();
+
+  const activePollCount = useMemo(() => polls.filter(poll => isActivePoll(poll)).length, [polls]);
 
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
@@ -133,7 +135,11 @@ const PollingOverview = ({ polls, categories }: Props) => {
   }, [addressToCheck]);
 
   return (
-    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout
+      activePollCount={activePollCount}
+      activeProposalsCount={activeProposalsCount}
+      sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}
+    >
       <HeadComponent
         title="Polling"
         description={`${polls.length > 0 ? `Lastest poll: ${polls[0].title}. ` : ''}Active Polls: ${
@@ -286,7 +292,8 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  categories: prefetchedCategories
+  categories: prefetchedCategories,
+  activeProposalsCount: prefetchedActiveProposalsCount
 }: Props): JSX.Element {
   const [_polls, _setPolls] = useState<Poll[]>();
   const [_categories, _setCategories] = useState<PollCategory[]>();
@@ -319,19 +326,23 @@ export default function PollingOverviewPage({
       <PollingOverview
         polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
         categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
+        activeProposalsCount={prefetchedActiveProposalsCount}
       />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const pollsResponse = await getPolls();
+  const [pollsResponse, proposals] = await Promise.all([getPolls(), getExecutiveProposals(0, 3, 'active')]);
+
+  const activeProposalsCount = proposals.filter(i => i.active).length;
 
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
       polls: pollsResponse.polls,
-      categories: pollsResponse.categories
+      categories: pollsResponse.categories,
+      activeProposalsCount
     }
   };
 };

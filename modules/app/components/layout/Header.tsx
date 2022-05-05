@@ -14,7 +14,7 @@ import {
 import { Icon } from '@makerdao/dai-ui-icons';
 import AccountSelect from './header/AccountSelect';
 import BallotStatus from 'modules/polling/components/BallotStatus';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import NetworkSelect from './header/NetworkSelect';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -24,12 +24,12 @@ import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 import { useGasPrice } from 'modules/web3/hooks/useGasPrice';
 import { ExternalLink } from '../ExternalLink';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
-import useSWR, { useSWRConfig } from 'swr';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
-import { Proposal } from 'modules/executive/types';
-import { fetchJson } from 'lib/fetchJson';
-import { isActivePoll } from 'modules/polling/helpers/utils';
 import { GASNOW_URL, SupportedNetworks } from 'modules/web3/constants/networks';
+
+type HeaderProps = {
+  activePollCount?: number;
+  activeProposalsCount?: number;
+};
 
 const MenuItemContent = ({ label, icon }) => {
   return (
@@ -127,14 +127,13 @@ const HeaderMenu = ({ onToggleTheme, mode, ...props }): JSX.Element => {
   );
 };
 
-const Header = (): JSX.Element => {
+const Header = ({ activePollCount, activeProposalsCount }: HeaderProps): JSX.Element => {
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const bpi = useBreakpointIndex();
   const { account } = useAccount();
   const { data: gas } = useGasPrice();
   const { network } = useActiveWeb3React();
-  const { cache } = useSWRConfig();
   const [mode, setMode] = useColorMode();
 
   const onToggleTheme = () => {
@@ -143,22 +142,6 @@ const Header = (): JSX.Element => {
     if (html) html[0].style.colorScheme = next;
     setMode(next);
   };
-
-  // Fetch polls & proposals from cache or revalidate if we don't have them
-  const dataKeyPolls = `/api/polling/all-polls?network=${network}`;
-  const { data: pollsData } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
-    revalidateOnMount: !cache.get(dataKeyPolls)
-  });
-  const activePolls = useMemo(() => pollsData?.polls?.filter(poll => isActivePoll(poll)), [pollsData?.polls]);
-
-  // TODO: change to 0 for tests
-  const EXEC_PAGE_SIZE = 3;
-
-  const dataKeyProposals = `/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}&sortBy=active`;
-  const { data: proposalsData } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
-    revalidateOnMount: !cache.get(dataKeyProposals)
-  });
-  const activeProposals = proposalsData?.filter(p => p.active);
 
   return (
     <Box
@@ -194,7 +177,7 @@ const Header = (): JSX.Element => {
             >
               Polling
             </NavLink>
-            {bpi > 1 && activePolls && activePolls.length > 0 && (
+            {bpi > 1 && activePollCount && (
               <NavLink href={'/polling'} title="View polling page" p={0}>
                 <Badge
                   variant="solidCircle"
@@ -207,7 +190,7 @@ const Header = (): JSX.Element => {
                     ml: -10
                   }}
                 >
-                  {activePolls?.length}
+                  {activePollCount}
                 </Badge>
               </NavLink>
             )}
@@ -225,7 +208,7 @@ const Header = (): JSX.Element => {
             >
               Executive
             </NavLink>
-            {bpi > 1 && activeProposals && activeProposals.length > 0 && (
+            {bpi > 1 && activeProposalsCount && (
               <NavLink href={'/executive'} title="View executive page" p={0}>
                 <Badge
                   sx={{
@@ -237,7 +220,7 @@ const Header = (): JSX.Element => {
                   }}
                   variant="solidCircle"
                 >
-                  {activeProposals.length}
+                  {activeProposalsCount}
                 </Badge>
               </NavLink>
             )}

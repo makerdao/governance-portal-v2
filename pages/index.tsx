@@ -92,7 +92,7 @@ const LandingPage = ({
   const address = voteDelegateContractAddress || voteProxyContractAddress || account;
 
   // polls
-  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)).slice(0, 4), [polls]);
+  const activePolls = useMemo(() => polls.filter(poll => isActivePoll(poll)), [polls]);
   const pollCategories = getCategories(polls);
 
   // delegates
@@ -179,7 +179,11 @@ const LandingPage = ({
       />
       <VideoModal isOpen={videoOpen} onDismiss={() => setVideoOpen(false)} url={VIDEO_URLS.howToVote} />
       <StickyContainer>
-        <PrimaryLayout sx={{ maxWidth: 'page' }}>
+        <PrimaryLayout
+          activePollCount={activePolls.length}
+          activeProposalsCount={proposals.length}
+          sx={{ maxWidth: 'page' }}
+        >
           <Stack gap={[5, 6]} separationType="p">
             <section>
               <Flex sx={{ flexDirection: ['column', 'column', 'row'], justifyContent: 'space-between' }}>
@@ -259,7 +263,7 @@ const LandingPage = ({
               </Sticky>
               <Box ref={voteRef} />
               <Box sx={{ mt: 3 }}>
-                <PollsOverviewLanding activePolls={activePolls} allPolls={polls} />
+                <PollsOverviewLanding activePolls={activePolls.slice(0, 4)} allPolls={polls} />
               </Box>
               <PollCategoriesLanding pollCategories={pollCategories} />
             </section>

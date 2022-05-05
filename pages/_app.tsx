@@ -11,7 +11,6 @@ import '@reach/tabs/styles.css';
 import '@reach/tooltip/styles.css';
 import { fetchJson } from 'lib/fetchJson';
 import theme from 'lib/theme';
-import Header from 'modules/app/components/layout/Header';
 import Cookies from 'modules/app/components/Cookies';
 import { AnalyticsProvider } from 'modules/app/client/analytics/AnalyticsContext';
 import { CookiesProvider } from 'modules/app/client/cookies/CookiesContext';
@@ -90,7 +89,6 @@ const MyApp = ({ Component, pageProps }: AppProps): React.ReactElement => {
                         overflowX: 'hidden'
                       }}
                     >
-                      <Header />
                       <Component {...pageProps} />
                       <Cookies />
                     </Flex>
