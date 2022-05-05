@@ -234,7 +234,7 @@ const PollingOverview = ({ polls, categories, activeProposalsCount }: Props) => 
                     }}
                     variant="outline"
                     data-testid="button-view-ended-polls"
-                    sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
+                    sx={{ mb: 5, py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
                   </Button>
