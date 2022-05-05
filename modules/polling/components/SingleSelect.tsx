@@ -13,7 +13,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
 
   return (
     <ListboxInput
-      data-testid="single-select"
+      
       onChange={x => {
         setChoice(parseInt(x));
       }}
@@ -21,6 +21,7 @@ export default function SingleSelect({ poll, choice, setChoice, ...props }: Prop
       {...props}
     >
       <ListboxButton
+      data-testid="single-select"
         sx={{ variant: 'listboxes.default.button', fontWeight: 400 }}
         arrow={<Icon name="chevron_down" size={2} />}
       />

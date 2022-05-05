@@ -88,7 +88,7 @@ export default function PollOverviewCard({
                       )}
                     </Flex>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                      <CardTitle title={poll.title} />
+                      <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
                     </InternalLink>
                   </Box>
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
