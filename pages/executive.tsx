@@ -13,6 +13,7 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
+import { isActivePoll } from 'modules/polling/helpers/utils';
 
 // components
 import Deposit from 'modules/mkr/components/Deposit';
@@ -49,6 +50,7 @@ import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { getPolls } from 'modules/polling/api/fetchPolls';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -70,7 +72,13 @@ const MigrationBadge = ({ children, py = [2, 3] }) => (
   </Badge>
 );
 
-export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JSX.Element => {
+export const ExecutiveOverview = ({
+  proposals,
+  activePollCount
+}: {
+  proposals?: Proposal[];
+  activePollCount?: number;
+}): JSX.Element => {
   const { account, voteDelegateContractAddress, voteProxyContractAddress, voteProxyOldContractAddress } =
     useAccount();
   const { network } = useActiveWeb3React();
@@ -179,8 +187,14 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
     lockedMkr.eq(0) &&
     !voteDelegateContractAddress;
 
+  const activeProposalsCount = proposals && proposals.filter(i => i.active).length;
+
   return (
-    <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
+    <PrimaryLayout
+      activePollCount={activePollCount}
+      activeProposalsCount={activeProposalsCount}
+      sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}
+    >
       <HeadComponent title="Executive Proposals" />
 
       {lockedMkrOldChief && lockedMkrOldChief.gt(0) && (
@@ -429,9 +443,11 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 };
 
 export default function ExecutiveOverviewPage({
-  proposals: prefetchedProposals
+  proposals: prefetchedProposals,
+  activePollCount
 }: {
   proposals: Proposal[];
+  activePollCount?: number;
 }): JSX.Element {
   const [_proposals, _setProposals] = useState<Proposal[]>();
   const [error, setError] = useState<string>();
@@ -460,7 +476,10 @@ export default function ExecutiveOverviewPage({
 
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ExecutiveOverview proposals={isDefaultNetwork(network) ? prefetchedProposals : _proposals} />
+      <ExecutiveOverview
+        proposals={isDefaultNetwork(network) ? prefetchedProposals : _proposals}
+        activePollCount={activePollCount}
+      />
     </ErrorBoundary>
   );
 }
@@ -468,12 +487,18 @@ export default function ExecutiveOverviewPage({
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
   const EXEC_PAGE_SIZE = 10;
-  const proposals = await getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active');
+  const [proposals, polls] = await Promise.all([
+    getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active'),
+    getPolls()
+  ]);
+
+  const activePollCount = polls.polls.filter(poll => isActivePoll(poll)).length;
 
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds
     props: {
       proposals,
+      activePollCount,
       staticPageGenerationTimeout: 120
     }
   };

@@ -177,7 +177,7 @@ const Header = ({ activePollCount, activeProposalsCount }: HeaderProps): JSX.Ele
             >
               Polling
             </NavLink>
-            {bpi > 1 && activePollCount && (
+            {bpi > 1 && activePollCount && activePollCount > 0 && (
               <NavLink href={'/polling'} title="View polling page" p={0}>
                 <Badge
                   variant="solidCircle"
@@ -208,7 +208,7 @@ const Header = ({ activePollCount, activeProposalsCount }: HeaderProps): JSX.Ele
             >
               Executive
             </NavLink>
-            {bpi > 1 && activeProposalsCount && (
+            {bpi > 1 && activeProposalsCount && activeProposalsCount > 0 && (
               <NavLink href={'/executive'} title="View executive page" p={0}>
                 <Badge
                   sx={{
