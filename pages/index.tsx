@@ -17,7 +17,7 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
@@ -36,6 +36,7 @@ import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { fetchJson } from 'lib/fetchJson';
 
 const LandingPage = ({
   proposals,
@@ -294,11 +295,8 @@ export default function Index({
 }: LandingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  const { data, error } = useSWR<LandingPageData>(
-    !network || isDefaultNetwork(network) ? null : `page/landing/${network}`,
-    (_, network) => fetchLandingPageData(network),
-    {
-      fallbackData: {
+  const fallbackData = isDefaultNetwork(network)
+    ? {
         proposals: prefetchedProposals,
         polls: prefetchedPolls,
         delegates: prefetchedDelegates,
@@ -309,12 +307,20 @@ export default function Index({
         hat: prefetchedHat,
         mkrInChief: prefetchedMkrInChief
       }
+    : null;
+
+  const { cache } = useSWRConfig();
+  const cacheKey = `/api/landing?network=${network}`;
+  const { data, error } = useSWR<LandingPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    fetchJson,
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
   );
 
-  console.log({ error });
-
-  if (!isDefaultNetwork(network) && !data) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder sidebar={false} />;
   }
 
@@ -323,25 +329,25 @@ export default function Index({
     return <ErrorPage statusCode={404} title="Error fetching home page information" />;
   }
 
-  return (
-    <LandingPage
-      proposals={isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? []}
-      polls={isDefaultNetwork(network) ? prefetchedPolls : data?.polls || []}
-      delegates={isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? []}
-      recognizedDelegates={
-        isDefaultNetwork(network) ? prefetchedRecognizedDelegates : data?.recognizedDelegates ?? []
-      }
-      meetYourDelegates={
-        isDefaultNetwork(network) ? prefetchedMeetYourDelegates : data?.meetYourDelegates ?? []
-      }
-      totalMKRDelegated={
-        isDefaultNetwork(network) ? prefetchedTotalMKRDelegated : data?.totalMKRDelegated ?? '0'
-      }
-      mkrOnHat={isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined}
-      hat={isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined}
-      mkrInChief={isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined}
-    />
-  );
+  const props = {
+    proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [],
+    recognizedDelegates: isDefaultNetwork(network)
+      ? prefetchedRecognizedDelegates
+      : data?.recognizedDelegates ?? [],
+    meetYourDelegates: isDefaultNetwork(network)
+      ? prefetchedMeetYourDelegates
+      : data?.meetYourDelegates ?? [],
+    totalMKRDelegated: isDefaultNetwork(network)
+      ? prefetchedTotalMKRDelegated
+      : data?.totalMKRDelegated ?? '0',
+    mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
+    hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
+    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
+  };
+
+  return <LandingPage {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
@@ -358,7 +364,7 @@ export const getStaticProps: GetStaticProps = async () => {
   } = await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 30 * 60, // allow revalidation every 30 minutes
+    revalidate: 5 * 60, // allow revalidation every 30 minutes
     props: {
       proposals,
       polls,
