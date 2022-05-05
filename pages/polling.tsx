@@ -117,7 +117,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
   };
 
   // Load more on scroll
-  useIntersectionObserver(loader.current, loadMore, '600px');
+  useIntersectionObserver(loader, loadMore);
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
