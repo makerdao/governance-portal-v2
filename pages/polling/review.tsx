@@ -24,7 +24,6 @@ import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';

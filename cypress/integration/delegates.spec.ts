@@ -26,7 +26,7 @@ describe('Delegates Page', () => {
 
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Shoudl find various delegates
-      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 18);
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 30);
     });
   });
 
@@ -84,7 +84,7 @@ describe('Delegates Page', () => {
       cy.contains('Confirm Transaction', { timeout: 7500 }).should('be.visible');
 
       // Inserts the amount of MKR to delegate
-      cy.contains('Deposit into delegate contract', { timeout: 7500 }).should('be.visible');
+      cy.contains('Deposit into delegate contract').should('be.visible');
       cy.get('[data-testid="mkr-input"]').type('2');
 
       cy.wait(1000);

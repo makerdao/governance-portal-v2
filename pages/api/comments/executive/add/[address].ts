@@ -36,7 +36,7 @@ export default withApiHandler(
     );
 
     // Get votter weight
-    const chief = getContracts(networkNameToChainId(network)).chief;
+    const chief = getContracts(networkNameToChainId(network), undefined, undefined, true).chief;
     const voterWeigth = await getChiefDeposits(addressLockedMKR, chief);
 
     const newComment: ExecutiveComment = {

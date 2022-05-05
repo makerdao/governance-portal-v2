@@ -1,5 +1,5 @@
 import { Box, Flex, Image, Text } from 'theme-ui';
-import Davatar from '@davatar/react';
+import Davatar from 'lib/davatar';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { Delegate } from 'modules/delegates/types';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
@@ -42,12 +42,7 @@ export function DelegatePicture({
             />
           ) : (
             <Box>
-              <Davatar
-                size={tooltipAvatarWidth}
-                address={delegate.address}
-                generatedAvatarType="jazzicon"
-                provider={library}
-              />
+              <Davatar size={tooltipAvatarWidth} address={delegate.address} provider={library} />
             </Box>
           )}
           {delegate.status === DelegateStatusEnum.recognized && (
@@ -154,12 +149,7 @@ export function DelegatePicture({
                 />
               ) : (
                 <Box>
-                  <Davatar
-                    size={width}
-                    address={delegate.address}
-                    generatedAvatarType="jazzicon"
-                    provider={library}
-                  />
+                  <Davatar size={width} address={delegate.address} provider={library} />
                 </Box>
               )}
             </InternalLink>

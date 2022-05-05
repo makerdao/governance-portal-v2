@@ -136,7 +136,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title="Polling"
-        description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
+        description={`${polls.length > 0 ? `Lastest poll: ${polls[0].title}. ` : ''}Active Polls: ${
+          activePolls.length
+        }. Total Polls: ${polls.length}. .`}
       />
 
       <Stack gap={3}>
@@ -323,7 +325,6 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls at build-time if on the default network
   const pollsResponse = await getPolls();
 
   return {

@@ -11,7 +11,7 @@ export const getSpellExecutionDate = async (
   network?: SupportedNetworks
 ): Promise<Date | undefined> => {
   const chainId = networkNameToChainId(network || DEFAULT_NETWORK.network);
-  const contracts = getContracts(chainId);
+  const contracts = getContracts(chainId, undefined, undefined, true);
 
   const provider = getDefaultProvider(network);
 

@@ -38,7 +38,6 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { EXEC_PAGE_SIZE } from 'modules/executive/executive.constants';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -309,7 +308,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                         <ExecutiveOverviewCard
                           proposal={proposal}
                           isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                          network={network}
                           account={account}
                           votedProposals={votedProposals}
                           mkrOnHat={mkrOnHat}
@@ -371,7 +369,6 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                           <ExecutiveOverviewCard
                             proposal={proposal}
                             isHat={hat ? hat.toLowerCase() === proposal.address.toLowerCase() : false}
-                            network={network}
                             account={account}
                             votedProposals={votedProposals}
                             mkrOnHat={mkrOnHat}
@@ -440,6 +437,9 @@ export default function ExecutiveOverviewPage({
   const [error, setError] = useState<string>();
   const { network } = useActiveWeb3React();
 
+  // client side exec page size
+  const EXEC_PAGE_SIZE = 10;
+
   // fetch proposals at run-time if on any network other than the default
   useEffect(() => {
     if (!network) return;
@@ -467,6 +467,7 @@ export default function ExecutiveOverviewPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   // fetch proposals at build-time if on the default network
+  const EXEC_PAGE_SIZE = 10;
   const proposals = await getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active');
 
   return {

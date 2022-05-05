@@ -69,6 +69,13 @@ export async function fetchDelegate(
     return Promise.resolve(undefined);
   }
 
+  const delegationEvents = await fetchDelegationEventsByAddresses(
+    [onChainDelegate.voteDelegateAddress],
+    network || SupportedNetworks.MAINNET
+  );
+
+  onChainDelegate.mkrLockedDelegate = delegationEvents;
+
   const { data: githubDelegate } = await fetchGithubDelegate(
     onChainDelegate.voteDelegateAddress,
     currentNetwork
@@ -106,9 +113,10 @@ export async function fetchDelegates(
 ): Promise<DelegatesAPIResponse> {
   const currentNetwork = network ? network : DEFAULT_NETWORK.network;
 
+  // This contains all the delegates including info merged with recognized delegates
   const delegatesInfo = await fetchDelegatesInformation(currentNetwork);
 
-  const contracts = getContracts(networkNameToChainId(currentNetwork));
+  const contracts = getContracts(networkNameToChainId(currentNetwork), undefined, undefined, true);
   const executives = await getGithubExecutives(currentNetwork);
 
   const delegateAddresses = delegatesInfo.map(d => d.voteDelegateAddress.toLowerCase());
@@ -126,12 +134,18 @@ export async function fetchDelegates(
         votedProposals?.find(vp => vp.toLowerCase() === proposal?.address?.toLowerCase())
       );
 
+      // Filter the lock events to get only the ones for this delegate address
+      const mkrLockedDelegate = lockEvents.filter(
+        ({ immediateCaller }) => immediateCaller.toLowerCase() === delegate.voteDelegateAddress.toLowerCase()
+      );
+
       const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
       return {
         ...delegate,
         proposalsSupported,
         execSupported,
-        lastVoteDate: lastVote ? lastVote.blockTimestamp : null
+        lastVoteDate: lastVote ? lastVote.blockTimestamp : null,
+        mkrLockedDelegate
       };
     })
   );

@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
-import { BigNumber } from 'ethers';
-import { formatValue } from 'lib/string';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { Stats } from 'modules/home/components/Stats';
 import { Poll } from 'modules/polling/types';
@@ -13,8 +11,8 @@ type Props = {
   polls: Poll[];
   delegates: Delegate[];
   totalMKRDelegated: string;
-  mkrOnHat?: BigNumber;
-  mkrInChief?: BigNumber;
+  mkrOnHat?: string;
+  mkrInChief?: string;
 };
 
 export function GovernanceStats({
@@ -35,7 +33,7 @@ export function GovernanceStats({
   const infoUnits = [
     {
       title: 'MKR on Hat',
-      value: mkrOnHat ? `${formatValue(mkrOnHat)} MKR` : <Skeleton />
+      value: mkrOnHat ? `${mkrOnHat} MKR` : <Skeleton />
     },
     {
       title: 'Active Polls',
@@ -55,7 +53,7 @@ export function GovernanceStats({
     },
     {
       title: 'MKR in Chief',
-      value: mkrInChief ? `${formatValue(mkrInChief)} MKR` : <Skeleton />
+      value: mkrInChief ? `${mkrInChief} MKR` : <Skeleton />
     }
   ];
 

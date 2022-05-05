@@ -1,4 +1,7 @@
 import type { EthSdkConfig } from '@dethcrypto/eth-sdk';
+import 'dotenv/config';
+
+declare let process: any;
 
 const config: EthSdkConfig = {
   contracts: {
@@ -39,7 +42,8 @@ const config: EthSdkConfig = {
       voteProxyFactory: '0x1a7c1ee5eE2A3B67778ff1eA8c719A3fA1b02b6f',
       vow: '0x23f78612769b9013b3145E43896Fa1578cAa2c2a'
     }
-  }
+  },
+  etherscanKeys: { mainnet: process.env.ETHERSCAN_KEY }
 };
 
 export default config;

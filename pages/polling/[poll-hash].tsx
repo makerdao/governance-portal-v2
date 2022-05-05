@@ -370,20 +370,6 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
-//   const slug = context.query['poll-hash'] as string;
-//   const network = context.query['network'] as string;
-//   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
-
-//   const poll = await fetchPollBySlug(slug, networkToFetch);
-
-//   return {
-//     props: {
-//       poll
-//     }
-//   };
-// };
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
