@@ -54,7 +54,7 @@ export const CirclesSvg = ({ poll, tally, diameter }: CircleProps): JSX.Element 
       .data(bubble(nodes).descendants())
       .enter()
       .filter(function (d) {
-        return d.children == null;
+        return d.children === null;
       })
       .append('g')
       .attr('class', 'node')
