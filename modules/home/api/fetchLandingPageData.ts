@@ -7,8 +7,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { shuffleArray } from 'lib/common/shuffleArray';
 import { formatValue } from 'lib/string';
-
-// types
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
 import { Delegate } from 'modules/delegates/types';

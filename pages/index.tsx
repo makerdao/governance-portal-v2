@@ -324,9 +324,8 @@ export default function Index({
     return <PageLoadingPlaceholder sidebar={false} />;
   }
 
-  // // Error state, only applies for alternative networks
   if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching home page information" />;
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
   const props = {
