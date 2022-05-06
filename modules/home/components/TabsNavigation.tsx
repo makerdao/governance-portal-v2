@@ -41,7 +41,8 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
               key={`link-${link.href}`}
               sx={{
                 ml: [2, 4],
-                mr: [2, 4]
+                mr: [2, 4],
+                mb: '-1px'
               }}
             >
               <a
@@ -57,11 +58,12 @@ export default function TabsNavigation({ activeTab }: { activeTab: string }): Re
                 <Box
                   sx={{
                     borderBottom: activeTab === link.href ? '1px solid' : 'none',
-                    borderColor: 'onBackground',
+                    borderColor: activeTab === link.href ? 'primary' : 'onBackground',
                     pb: 2,
                     pt: 1,
                     '&:hover': {
-                      borderBottom: '1px solid'
+                      borderBottom: '1px solid',
+                      borderColor: 'primary'
                     }
                   }}
                 >
