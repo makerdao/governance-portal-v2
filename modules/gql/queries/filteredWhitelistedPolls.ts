@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
 export const filteredWhitelistedPolls = gql`
-  query ActivePolls($endDate: Int) {
-    activePolls(filter: { endDate: { greaterThanOrEqualTo: $endDate } }) {
+  query ActivePolls($filter: ActivePollsRecordFilter) {
+    activePolls(filter: $filter) {
       nodes {
         creator
         pollId

@@ -486,12 +486,11 @@ export default function ExecutiveOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const endDate = Math.floor(Date.now() / 1000);
   // fetch proposals at build-time if on the default network
   const EXEC_PAGE_SIZE = 10;
   const [proposals, polls] = await Promise.all([
     getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active'),
-    getPolls(undefined, SupportedNetworks.MAINNET, endDate)
+    getPolls(undefined, SupportedNetworks.MAINNET, 'active')
   ]);
 
   const activePollCount = polls.polls.length;

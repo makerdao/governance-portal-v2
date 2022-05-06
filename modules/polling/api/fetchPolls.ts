@@ -6,7 +6,6 @@ import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/netwo
 import { getCategories } from '../helpers/getCategories';
 import { isActivePoll } from '../helpers/utils';
 import { PollFilters, PollsResponse } from '../types/pollsResponse';
-import { allWhitelistedPolls } from 'modules/gql/queries/allWhitelistedPolls';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { PollSpock } from '../types/pollSpock';
@@ -14,6 +13,9 @@ import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { filteredWhitelistedPolls } from 'modules/gql/queries/filteredWhitelistedPolls';
+import { ActivePollsRecord, Maybe, Query as GqlQuery } from 'modules/gql/generated/graphql';
+import { getQueryFilter } from 'modules/gql/gqlFilters';
+import { PollsQuery } from 'modules/gql/types';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -65,22 +67,23 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchSpockPolls(network: SupportedNetworks, endDate?: number): Promise<PollSpock[]> {
-  const query = endDate ? filteredWhitelistedPolls : allWhitelistedPolls;
+export async function fetchSpockPolls(network: SupportedNetworks, filterName?: string): Promise<PollSpock[]> {
+  const variables = getQueryFilter(filterName) as Maybe<PollsQuery>;
   const requestData = {
     chainId: networkNameToChainId(network),
-    query,
-    variables: endDate ? { endDate } : {}
+    query: filteredWhitelistedPolls,
+    variables
   };
 
-  const data = await gqlRequest(requestData);
+  const data = await gqlRequest<GqlQuery>(requestData);
 
-  const pollList: PollSpock[] = data.activePolls.nodes;
-  return pollList;
+  const pollList: Maybe<ActivePollsRecord>[] = data.activePolls.nodes;
+  //TODO: maybe we should use the GQL generated types when applicable
+  return pollList as PollSpock[];
 }
 
 // Returns all the polls and caches them in the file system.
-export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
+export async function _getCachedPolls(network?: SupportedNetworks): Promise<Poll[] | null> {
   const cacheKey = 'polls';
 
   if (config.USE_FS_CACHE) {
@@ -90,27 +93,13 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }
   }
 
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network);
-
-  const polls = await fetchAllPollsMetadata(pollList);
-
-  if (config.USE_FS_CACHE) {
-    fsCacheSet(cacheKey, JSON.stringify(polls), network);
-  }
-  return polls;
+  return null;
 }
 
-export async function _getFilteredPolls(network?: SupportedNetworks, endDate?: number): Promise<Poll[]> {
-  const cacheKey = 'active-polls';
+export async function _getAllPolls(network?: SupportedNetworks, filterName?: string): Promise<Poll[]> {
+  const cacheKey = 'polls';
 
-  if (config.USE_FS_CACHE) {
-    const cachedPolls = fsCacheGet(cacheKey, network);
-    if (cachedPolls) {
-      return JSON.parse(cachedPolls);
-    }
-  }
-
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, endDate);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, filterName);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -131,9 +120,11 @@ const defaultFilters: PollFilters = {
 export async function getPolls(
   filters = defaultFilters,
   network?: SupportedNetworks,
-  endDate?: number
+  filterName?: string
 ): Promise<PollsResponse> {
-  const allPolls = endDate ? await _getFilteredPolls(network, endDate) : await _getAllPolls(network);
+  const cachedPolls = await _getCachedPolls(network);
+  const allPolls = cachedPolls ?? (await _getAllPolls(network, filterName));
+
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
     if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
