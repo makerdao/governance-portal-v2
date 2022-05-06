@@ -117,7 +117,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
   };
 
   // Load more on scroll
-  useIntersectionObserver(loader.current, loadMore, '600px');
+  useIntersectionObserver(loader, loadMore);
 
   useEffect(() => {
     setNumHistoricalGroupingsLoaded(3); // reset inifite scroll if a new filter is applied
@@ -228,7 +228,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     }}
                     variant="outline"
                     data-testid="button-view-ended-polls"
-                    sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
+                    sx={{ mb: 5, py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
                   </Button>

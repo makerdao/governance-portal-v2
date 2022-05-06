@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 
 export function useIntersectionObserver(
-  element: HTMLElement | null,
+  ref: RefObject<HTMLElement> | null,
   callback: () => void,
   rootMarging = '600px'
 ): void {
   useEffect(() => {
     let observer;
-    if (element) {
+    if (ref?.current) {
       observer = new IntersectionObserver(
         entries => {
           if (entries.pop()?.isIntersecting) {
@@ -16,12 +16,12 @@ export function useIntersectionObserver(
         },
         { root: null, rootMargin: rootMarging }
       );
-      observer.observe(element);
+      observer.observe(ref.current);
     }
     return () => {
-      if (element) {
-        observer?.unobserve(element);
+      if (ref?.current) {
+        observer?.unobserve(ref.current);
       }
     };
-  }, [element, callback]);
+  }, [ref, callback]);
 }
