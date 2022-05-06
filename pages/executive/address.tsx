@@ -25,9 +25,9 @@ export default function ExecutiveAddress(): JSX.Element {
     setSpellAddress(e.target.value);
   };
 
-  // const handleVote = () => {
-  //   setVoting(true);
-  // };
+  const handleVote = () => {
+    setVoting(true);
+  };
 
   const fetchSpellData = async () => {
     setSpellData(undefined);
@@ -53,7 +53,7 @@ export default function ExecutiveAddress(): JSX.Element {
         <Heading>Spell address</Heading>
         <Input name="spellAddress" my={3} onChange={handleInput} />
         <Flex sx={{ alignItems: 'center' }}>
-          <Button disabled={!spellAddress} onClick={handleVote} sx={{ mr: 3 }}>
+          <Button disabled={!spellAddress} onClick={()handleVote} sx={{ mr: 3 }}>
             Vote for this address
           </Button>
           <Button disabled={!spellAddress} onClick={fetchSpellData}>
