@@ -65,17 +65,13 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchAllSpockPolls(network: SupportedNetworks, endDate?: number): Promise<PollSpock[]> {
-  const requestData = endDate
-    ? {
-        chainId: networkNameToChainId(network),
-        query: filteredWhitelistedPolls,
-        variables: { endDate: 1651787606 }
-      }
-    : {
-        chainId: networkNameToChainId(network),
-        query: allWhitelistedPolls
-      };
+export async function fetchSpockPolls(network: SupportedNetworks, endDate?: number): Promise<PollSpock[]> {
+  const query = endDate ? filteredWhitelistedPolls : allWhitelistedPolls;
+  const requestData = {
+    chainId: networkNameToChainId(network),
+    query,
+    variables: endDate ? { endDate } : {}
+  };
 
   const data = await gqlRequest(requestData);
 
@@ -94,7 +90,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }
   }
 
-  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -105,24 +101,22 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
 }
 
 export async function _getFilteredPolls(network?: SupportedNetworks, endDate?: number): Promise<Poll[]> {
-  // const cacheKey = 'active-polls';
+  const cacheKey = 'active-polls';
 
-  // if (config.USE_FS_CACHE) {
-  //   const cachedPolls = fsCacheGet(cacheKey, network);
-  //   if (cachedPolls) {
-  //     return JSON.parse(cachedPolls);
-  //   }
-  // }
+  if (config.USE_FS_CACHE) {
+    const cachedPolls = fsCacheGet(cacheKey, network);
+    if (cachedPolls) {
+      return JSON.parse(cachedPolls);
+    }
+  }
 
-  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network, endDate);
-
-  console.log('poll list.letng', pollList.length);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, endDate);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
-  // if (config.USE_FS_CACHE) {
-  //   fsCacheSet(cacheKey, JSON.stringify(polls), network);
-  // }
+  if (config.USE_FS_CACHE) {
+    fsCacheSet(cacheKey, JSON.stringify(polls), network);
+  }
   return polls;
 }
 
