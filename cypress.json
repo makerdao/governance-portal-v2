@@ -13,5 +13,5 @@
   },
   "experimentalStudio": true,
   "chromeWebSecurity": false,
-  "numTestsKeptInMemory": 3
+  "numTestsKeptInMemory": 2
 }
