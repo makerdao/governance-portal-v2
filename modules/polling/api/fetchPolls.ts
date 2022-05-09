@@ -15,7 +15,8 @@ import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { filteredWhitelistedPolls } from 'modules/gql/queries/filteredWhitelistedPolls';
 import { ActivePollsRecord, Maybe, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { getQueryFilter } from 'modules/gql/gqlFilters';
-import { PollsQuery } from 'modules/gql/types';
+import { PollsQuery, QueryFilterList } from 'modules/gql/types';
+import { QueryFilterNames } from 'modules/gql/gql.constants';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -67,12 +68,14 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchSpockPolls(network: SupportedNetworks, filterName?: string): Promise<PollSpock[]> {
-  const variables = getQueryFilter(filterName) as Maybe<PollsQuery>;
+export async function fetchSpockPolls(
+  network: SupportedNetworks,
+  queryFilter?: PollsQuery | null
+): Promise<PollSpock[]> {
   const requestData = {
     chainId: networkNameToChainId(network),
     query: filteredWhitelistedPolls,
-    variables
+    variables: queryFilter
   };
 
   const data = await gqlRequest<GqlQuery>(requestData);
@@ -96,10 +99,13 @@ export async function _getCachedPolls(network?: SupportedNetworks): Promise<Poll
   return null;
 }
 
-export async function _getAllPolls(network?: SupportedNetworks, filterName?: string): Promise<Poll[]> {
+export async function _getAllPolls(
+  network?: SupportedNetworks,
+  queryFilter?: PollsQuery | null
+): Promise<Poll[]> {
   const cacheKey = 'polls';
 
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, filterName);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryFilter);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -120,10 +126,10 @@ const defaultFilters: PollFilters = {
 export async function getPolls(
   filters = defaultFilters,
   network?: SupportedNetworks,
-  filterName?: string
+  filterName?: QueryFilterNames
 ): Promise<PollsResponse> {
   const cachedPolls = await _getCachedPolls(network);
-  const allPolls = cachedPolls ?? (await _getAllPolls(network, filterName));
+  const allPolls = cachedPolls ?? (await _getAllPolls(network, getQueryFilter(filterName)));
 
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first

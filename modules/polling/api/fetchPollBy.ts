@@ -1,6 +1,8 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { markdownToHtml } from 'lib/markdown';
+import { QueryFilterNames } from 'modules/gql/gql.constants';
+import { getQueryFilter } from 'modules/gql/gqlFilters';
 // import { gqlRequest } from 'modules/gql/gqlRequest';
 // import { activePollByMultihash, activePollById } from 'modules/gql/queries/activePollBy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -15,8 +17,9 @@ export async function fetchSpockPollById(
   pollId: number,
   network: SupportedNetworks
 ): Promise<PollSpock | undefined> {
-  const polls = await fetchSpockPolls(network);
-  return polls.find(poll => poll.pollId === pollId);
+  const filter = getQueryFilter(QueryFilterNames.PollId, pollId);
+  const [poll] = await fetchSpockPolls(network, filter);
+  return poll;
 
   // TODO : this is the new query
   // const data: PollSpock = await gqlRequest({

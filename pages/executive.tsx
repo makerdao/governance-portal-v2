@@ -52,6 +52,7 @@ import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { QueryFilterNames } from 'modules/gql/gql.constants';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -490,7 +491,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const EXEC_PAGE_SIZE = 10;
   const [proposals, polls] = await Promise.all([
     getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active'),
-    getPolls(undefined, SupportedNetworks.MAINNET, 'active')
+    getPolls(undefined, SupportedNetworks.MAINNET, QueryFilterNames.Active)
   ]);
 
   const activePollCount = polls.polls.length;
