@@ -71,8 +71,8 @@ async function main() {
     toBytes32(ethers.utils.parseUnits('250000')).toString()
   );
 
-  const mkrBalance = await mkrToken.balanceOf(testAccount);
-  console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
+  //const mkrBalance = await mkrToken.balanceOf(testAccount);
+  //console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
 
   // Create delegate contract 
   // const delegateAddress = '0x81431b69b1e0e334d4161a13c2955e0f3599381e'
