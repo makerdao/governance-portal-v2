@@ -4,10 +4,8 @@
 // https://github.com/cypress-io/eslint-plugin-cypress
 
 import { INIT_BLOCK } from 'cypress/support/constants/blockNumbers';
-import { getTestAccount } from 'cypress/support/constants/testaccounts';
-import { formatAddress } from 'lib/utils';
-import { closeModal, forkNetwork, setAccount, visitPage } from '../../support/commons';
-import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
+import {  forkNetwork, setAccount, visitPage } from '../../support/commons';
+import {  TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
   before(() => {
@@ -34,9 +32,9 @@ describe('Delegates Page', () => {
     visitPage('/delegates');
     setAccount(TEST_ACCOUNTS.normal, () => {
       // Checks the total amount of delegates
-      cy.get('[data-testid="total-delegates-system-info"]').contains(/18/);
+      cy.get('[data-testid="total-delegates-system-info"]').contains(/19/);
       cy.get('[data-testid="total-recognized-delegates-system-info"]').contains('2');
-      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/16/);
+      cy.get('[data-testid="total-shadow-delegates-system-info"]').contains(/17/);
       cy.get('[data-testid="total-mkr-system-info"]').contains('1,279');
     });
   });
@@ -56,7 +54,7 @@ describe('Delegates Page', () => {
       cy.get('[data-testid="delegate-reset-filters"]').click();
 
       // Now see al the delegates again
-      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 19);
+      cy.get('[data-testid="delegate-card"]').its('length').should('be.gte', 12).and('be.lessThan', 20);
     });
   });
 
