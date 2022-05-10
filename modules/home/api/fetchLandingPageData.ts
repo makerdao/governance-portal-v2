@@ -9,7 +9,10 @@ import { shuffleArray } from 'lib/common/shuffleArray';
 import { formatValue } from 'lib/string';
 import { Proposal } from 'modules/executive/types';
 import { Poll } from 'modules/polling/types';
-import { Delegate } from 'modules/delegates/types';
+import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
+import { PollsResponse } from 'modules/polling/types/pollsResponse';
+import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
+import { BigNumber } from 'ethers';
 
 export type LandingPageData = {
   proposals: Proposal[];
@@ -24,25 +27,38 @@ export type LandingPageData = {
 };
 
 export async function fetchLandingPageData(network: SupportedNetworks): Promise<LandingPageData> {
-  const [proposals, pollsData, delegatesResponse, { hat, mkrOnHat }, mkrInChief] = await Promise.all([
+  const responses = await Promise.allSettled([
     getExecutiveProposals(0, 3, 'active', network),
     getPolls(undefined, network),
     fetchDelegates(network, 'mkr'),
     fetchMkrOnHat(network),
     fetchMkrInChief(network)
   ]);
-  const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
+
+  // return null for any data we couldn't fetch
+  const [proposals, pollsData, delegatesResponse, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
+    promise.status === 'fulfilled' ? promise.value : null
+  );
+
+  // filter delegates
+  const recognizedDelegates = filterDelegates(
+    (delegatesResponse as DelegatesAPIResponse).delegates,
+    false,
+    true
+  );
   const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   return {
-    proposals: proposals.filter(i => i.active),
-    polls: pollsData.polls,
-    delegates: delegatesResponse.delegates,
-    totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
+    proposals: proposals ? (proposals as Proposal[]).filter(i => i.active) : [],
+    polls: pollsData ? (pollsData as PollsResponse).polls : [],
+    delegates: delegatesResponse ? (delegatesResponse as DelegatesAPIResponse).delegates : [],
+    totalMKRDelegated: delegatesResponse
+      ? (delegatesResponse as DelegatesAPIResponse).stats.totalMKRDelegated
+      : '0',
     recognizedDelegates,
     meetYourDelegates,
-    mkrOnHat: formatValue(mkrOnHat),
-    hat,
-    mkrInChief: formatValue(mkrInChief)
+    mkrOnHat: mkrOnHatResponse ? formatValue((mkrOnHatResponse as MkrOnHatResponse).mkrOnHat) : undefined,
+    hat: mkrOnHatResponse ? (mkrOnHatResponse as MkrOnHatResponse).hat : undefined,
+    mkrInChief: mkrInChief ? formatValue(mkrInChief as BigNumber) : undefined
   };
 }
