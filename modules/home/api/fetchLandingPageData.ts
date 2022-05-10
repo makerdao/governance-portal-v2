@@ -52,7 +52,6 @@ export async function fetchLandingPageData(
         fetchMkrInChief(network)
       ]);
 
-  console.log({ responses });
   // return null for any data we couldn't fetch
   const [proposals, pollsData, delegatesResponse, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
     promise.status === 'fulfilled' ? promise.value : null
