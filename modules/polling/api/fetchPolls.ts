@@ -85,9 +85,12 @@ export async function fetchSpockPolls(
   return pollList as PollSpock[];
 }
 
-// Returns all the polls and caches them in the file system.
-export async function _getCachedPolls(network?: SupportedNetworks): Promise<Poll[] | null> {
-  const cacheKey = 'polls';
+
+export async function _getAllPolls(
+  network?: SupportedNetworks,
+  queryFilter?: PollsQuery | null
+): Promise<Poll[]> {
+  const cacheKey = `polls-${queryFilter ? JSON.stringify(queryFilter): 'all'}`;
 
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
@@ -95,15 +98,6 @@ export async function _getCachedPolls(network?: SupportedNetworks): Promise<Poll
       return JSON.parse(cachedPolls);
     }
   }
-
-  return null;
-}
-
-export async function _getAllPolls(
-  network?: SupportedNetworks,
-  queryFilter?: PollsQuery | null
-): Promise<Poll[]> {
-  const cacheKey = 'polls';
 
   const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryFilter);
 
@@ -128,8 +122,7 @@ export async function getPolls(
   network?: SupportedNetworks,
   filterName?: QueryFilterNames
 ): Promise<PollsResponse> {
-  const cachedPolls = await _getCachedPolls(network);
-  const allPolls = cachedPolls ?? (await _getAllPolls(network, getQueryFilter(filterName)));
+  const allPolls = await _getAllPolls(network, getQueryFilter(filterName));
 
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
