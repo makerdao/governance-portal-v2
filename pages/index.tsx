@@ -310,10 +310,10 @@ export default function Index({
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `/api/landing?network=${network}`;
+  const cacheKey = `page/landing/${network}`;
   const { data, error } = useSWR<LandingPageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    fetchJson,
+    () => fetchLandingPageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })

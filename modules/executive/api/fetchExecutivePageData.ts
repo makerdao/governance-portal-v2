@@ -1,3 +1,4 @@
+import { fetchJson } from 'lib/fetchJson';
 import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { Proposal } from 'modules/executive/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -6,12 +7,20 @@ export type ExecutivePageData = {
   proposals: Proposal[];
 };
 
-export const NUMBER_OF_EXECS_TO_FETCH = 10;
+export const EXEC_FETCH_SIZE = 10;
+const EXEC_SORT_BY = 'active';
 
-export async function fetchExecutivePageData(network: SupportedNetworks): Promise<ExecutivePageData> {
-  const proposals = await getExecutiveProposals(0, NUMBER_OF_EXECS_TO_FETCH, 'active', network);
+export async function fetchExecutivePageData(
+  network: SupportedNetworks,
+  useApi = false
+): Promise<ExecutivePageData> {
+  const proposals = useApi
+    ? await fetchJson(
+        `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
+      )
+    : await getExecutiveProposals(0, EXEC_FETCH_SIZE, EXEC_SORT_BY, network);
 
   return {
-    proposals
+    proposals: proposals as Proposal[]
   };
 }

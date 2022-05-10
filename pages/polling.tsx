@@ -12,7 +12,6 @@ import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
 import { Poll } from 'modules/polling/types';
 import { formatDateWithTime } from 'lib/datetime';
-import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -293,10 +292,10 @@ export default function PollingOverviewPage({
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `/api/polling?network=${network}`;
+  const cacheKey = `page/polling/${network}`;
   const { data, error } = useSWR<PollingPageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    fetchJson,
+    () => fetchPollingPageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })

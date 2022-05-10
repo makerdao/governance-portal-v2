@@ -1,6 +1,7 @@
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { Poll, PollCategory } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { fetchJson } from 'lib/fetchJson';
 
 export type PollingReviewPageData = {
   polls: Poll[];
@@ -11,11 +12,16 @@ export type PollingPageData = {
   categories: PollCategory[];
 };
 
-export async function fetchPollingPageData(network: SupportedNetworks): Promise<PollingPageData> {
-  const pollsData = await getPolls(undefined, network);
+export async function fetchPollingPageData(
+  network: SupportedNetworks,
+  useApi = false
+): Promise<PollingPageData> {
+  const pollsData = useApi
+    ? fetchJson(`/api/polling/all-polls?network=${network}`)
+    : await getPolls(undefined, network);
 
   return {
-    polls: pollsData.polls,
-    categories: pollsData.categories
+    polls: (pollsData as PollingPageData).polls,
+    categories: (pollsData as PollingPageData).categories
   };
 }

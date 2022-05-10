@@ -13,6 +13,7 @@ import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
 import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { MkrOnHatResponse } from 'modules/executive/api/fetchMkrOnHat';
 import { BigNumber } from 'ethers';
+import { fetchJson } from 'lib/fetchJson';
 
 export type LandingPageData = {
   proposals: Proposal[];
@@ -26,14 +27,30 @@ export type LandingPageData = {
   mkrInChief?: string;
 };
 
-export async function fetchLandingPageData(network: SupportedNetworks): Promise<LandingPageData> {
-  const responses = await Promise.allSettled([
-    getExecutiveProposals(0, 3, 'active', network),
-    getPolls(undefined, network),
-    fetchDelegates(network, 'mkr'),
-    fetchMkrOnHat(network),
-    fetchMkrInChief(network)
-  ]);
+export async function fetchLandingPageData(
+  network: SupportedNetworks,
+  useApi = false
+): Promise<LandingPageData> {
+  const EXEC_FETCH_SIZE = 3;
+  const EXEC_SORT_BY = 'active';
+
+  const responses = useApi
+    ? await Promise.allSettled([
+        fetchJson(
+          `/api/executive?network=${network}&start=0&limit=${EXEC_FETCH_SIZE}&sortBy=${EXEC_SORT_BY}`
+        ),
+        fetchJson(`/api/polling/all-polls?network=${network}`),
+        fetchJson(`/api/delegates?network=${network}`),
+        fetchMkrOnHat(network),
+        fetchMkrInChief(network)
+      ])
+    : await Promise.allSettled([
+        getExecutiveProposals(0, EXEC_FETCH_SIZE, EXEC_SORT_BY, network),
+        getPolls(undefined, network),
+        fetchDelegates(network, 'mkr'),
+        fetchMkrOnHat(network),
+        fetchMkrInChief(network)
+      ]);
 
   // return null for any data we couldn't fetch
   const [proposals, pollsData, delegatesResponse, mkrOnHatResponse, mkrInChief] = responses.map(promise =>
@@ -41,11 +58,9 @@ export async function fetchLandingPageData(network: SupportedNetworks): Promise<
   );
 
   // filter delegates
-  const recognizedDelegates = filterDelegates(
-    (delegatesResponse as DelegatesAPIResponse).delegates,
-    false,
-    true
-  );
+  const recognizedDelegates = delegatesResponse
+    ? filterDelegates((delegatesResponse as DelegatesAPIResponse).delegates, false, true)
+    : [];
   const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   return {
