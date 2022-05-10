@@ -12,5 +12,6 @@
     "openMode": 0
   },
   "experimentalStudio": true,
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "numTestsKeptInMemory": 2
 }

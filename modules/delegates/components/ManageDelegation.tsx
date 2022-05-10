@@ -35,6 +35,7 @@ export default function ManageDelegation({
         <Box>
           <Button
             variant="primaryLarge"
+            data-testid="button-delegate"
             disabled={!account}
             onClick={() => {
               trackButtonClick('openDelegateModal');
