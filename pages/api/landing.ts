@@ -9,7 +9,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<L
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
 
-  const data = await fetchLandingPageData(network);
+  const data = await fetchLandingPageData(network, true);
 
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
   res.status(200).json(data);
