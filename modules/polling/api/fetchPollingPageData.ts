@@ -17,7 +17,7 @@ export async function fetchPollingPageData(
   useApi = false
 ): Promise<PollingPageData> {
   const pollsData = useApi
-    ? fetchJson(`/api/polling/all-polls?network=${network}`)
+    ? await fetchJson(`/api/polling/all-polls?network=${network}`)
     : await getPolls(undefined, network);
 
   return {
