@@ -310,7 +310,7 @@ export default function Index({
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `pages/landing/${network}`;
+  const cacheKey = `page/landing/${network}`;
   const { data, error } = useSWR<LandingPageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
     () => fetchLandingPageData(network, true),
