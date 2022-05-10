@@ -140,6 +140,7 @@ export async function fetchDelegates(
       );
 
       const lastVote = await fetchLastPollVote(delegate.voteDelegateAddress, currentNetwork);
+
       return {
         ...delegate,
         proposalsSupported,

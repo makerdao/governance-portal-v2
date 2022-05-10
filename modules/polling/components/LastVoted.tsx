@@ -3,6 +3,7 @@ import React from 'react';
 import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
+import { DateWitHover } from 'modules/app/components/DateWithHover';
 
 export default function LastVoted({
   expired,
@@ -52,9 +53,13 @@ export default function LastVoted({
   const isLongerThan21Days = date && Date.now() - new Date(date).getTime() > 21 * 24 * 60 * 60 * 1000;
   const isLongerThan28Days = date && Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000;
 
-  const lastVoteDate = date
-    ? `LAST VOTED ${isLongerThan14Days ? formatTimeAgo(date ?? '') : formatDateWithTime(date ?? '')}`
-    : 'NO VOTE HISTORY';
+  const lastVoteDate = date ? (
+    <Box>
+      LAST VOTED <DateWitHover timeago={isLongerThan14Days} date={date} />
+    </Box>
+  ) : (
+    'NO VOTE HISTORY'
+  );
 
   return (
     <Flex

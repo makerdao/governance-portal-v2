@@ -3,7 +3,7 @@ import { Text, ThemeUIStyleObject } from 'theme-ui';
 type Props = {
   title: string;
   styles?: ThemeUIStyleObject;
-  dataTestId?: string
+  dataTestId?: string;
 };
 
 export const CardTitle = ({ title, styles, dataTestId = 'card-title' }: Props): JSX.Element => (

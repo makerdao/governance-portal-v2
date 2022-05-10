@@ -10,8 +10,6 @@ import { closeModal, forkNetwork, setAccount, visitPage } from '../../support/co
 import { getTestAccountByIndex, TEST_ACCOUNTS } from '../../support/constants/testaccounts';
 
 describe('Delegates Page', () => {
- 
-
   it('connects wallet and clicks on delegate', { defaultCommandTimeout: 90000 }, () => {
     // Start from the index page
     visitPage('/delegates');

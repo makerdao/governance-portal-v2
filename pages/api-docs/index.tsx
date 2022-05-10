@@ -2,7 +2,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 
-const SwaggerUI : any= dynamic(() => import('swagger-ui-react'), {ssr: false});
+const SwaggerUI: any = dynamic(() => import('swagger-ui-react'), { ssr: false });
 
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import 'swagger-ui-react/swagger-ui.css';
@@ -35,7 +35,6 @@ const ApiDoc = ({ spec }: InferGetStaticPropsType<typeof getStaticProps>): JSX.E
           }
         }}
       >
-        
         <SwaggerUI spec={spec} />
       </Box>
     </PrimaryLayout>

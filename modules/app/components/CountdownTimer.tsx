@@ -3,6 +3,8 @@ import { Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 import useInterval from 'lib/useInterval';
+import TooltipComponent from './Tooltip';
+import { formatDateWithTime } from 'lib/datetime';
 
 type Props = {
   endDate: Date;
@@ -51,9 +53,11 @@ const CountdownTimer = ({ endDate, endText, ...props }: Props): JSX.Element => {
       {...props}
     >
       <Icon mr="1" name="clock" size="3" sx={{ color: text !== endText ? 'primary' : 'secondary' }} />
-      <Text variant="caps" color={text !== endText ? 'textSecondary' : 'secondary'}>
-        {text}
-      </Text>
+      <TooltipComponent label={formatDateWithTime(endDate)}>
+        <Text variant="caps" color={text !== endText ? 'textSecondary' : 'secondary'}>
+          {text}
+        </Text>
+      </TooltipComponent>
     </Flex>
   );
 };
