@@ -15,7 +15,6 @@ import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { fetchJson } from 'lib/fetchJson';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
@@ -352,10 +351,10 @@ export default function PollingReviewPage({ polls: prefetchedPolls }: PollingRev
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `/api/polling?network=${network}`;
+  const cacheKey = `page/polling/${network}`;
   const { data, error } = useSWR<PollingReviewPageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    fetchJson,
+    () => fetchPollingPageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })
