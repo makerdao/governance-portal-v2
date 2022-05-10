@@ -436,10 +436,10 @@ export default function ExecutiveOverviewPage({
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `/api/executive?network=${network}`;
+  const cacheKey = `page/executive/${network}`;
   const { data, error } = useSWR<ExecutivePageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    fetchJson,
+    () => fetchExecutivePageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })

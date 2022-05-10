@@ -191,10 +191,10 @@ export default function DelegatesPage({
     : null;
 
   const { cache } = useSWRConfig();
-  const cacheKey = `/api/delegates?network=${network}`;
+  const cacheKey = `page/delegates/${network}`;
   const { data, error } = useSWR<DelegatesPageData>(
     !network || isDefaultNetwork(network) ? null : cacheKey,
-    fetchJson,
+    () => fetchDelegatesPageData(network, true),
     {
       revalidateOnMount: !cache.get(cacheKey),
       ...(fallbackData && { fallbackData })
