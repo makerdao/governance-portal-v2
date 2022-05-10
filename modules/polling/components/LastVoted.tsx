@@ -1,6 +1,5 @@
 import { Box, Text, Flex, ThemeUIStyleObject } from 'theme-ui';
 import React from 'react';
-import { formatDateWithTime, formatTimeAgo } from 'lib/datetime';
 import Icon from 'modules/app/components/Icon';
 import Skeleton from 'modules/app/components/SkeletonThemed';
 import { DateWitHover } from 'modules/app/components/DateWithHover';
@@ -55,7 +54,7 @@ export default function LastVoted({
 
   const lastVoteDate = date ? (
     <Box>
-      LAST VOTED <DateWitHover timeago={isLongerThan14Days} date={date} />
+      LAST VOTED <DateWitHover timeago={!!isLongerThan14Days} date={date} />
     </Box>
   ) : (
     'NO VOTE HISTORY'
