@@ -7,12 +7,11 @@ import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
+import useSWR, { useSWRConfig } from 'swr';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
-
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import { formatDateWithTime } from 'lib/datetime';
-import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -28,23 +27,18 @@ import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
+import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-type Props = {
-  polls: Poll[];
-  categories: PollCategory[];
-};
-
-const PollingOverview = ({ polls, categories }: Props) => {
+const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
@@ -287,51 +281,55 @@ const PollingOverview = ({ polls, categories }: Props) => {
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
   categories: prefetchedCategories
-}: Props): JSX.Element {
-  const [_polls, _setPolls] = useState<Poll[]>();
-  const [_categories, _setCategories] = useState<PollCategory[]>();
-  const [error, setError] = useState<string>();
+}: PollingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  // fetch polls at run-time if on any network other than the default
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/polling/all-polls?network=${network}`)
-        .then((pollsResponse: PollsResponse) => {
-          _setPolls(pollsResponse.polls);
-          _setCategories(pollsResponse.categories);
-        })
-        .catch(setError);
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        polls: prefetchedPolls,
+        categories: prefetchedCategories
+      }
+    : null;
+
+  const { cache } = useSWRConfig();
+  const cacheKey = `page/polling/${network}`;
+  const { data, error } = useSWR<PollingPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchPollingPageData(network, true),
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
-  }, [network]);
+  );
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
-  }
-
-  if (!isDefaultNetwork(network) && (!_polls || !_categories)) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder />;
   }
 
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    categories: isDefaultNetwork(network) ? prefetchedCategories : data?.categories || []
+  };
+
   return (
     <ErrorBoundary componentName="Poll List">
-      <PollingOverview
-        polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
-        categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
-      />
+      <PollingOverview {...props} />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const pollsResponse = await getPolls();
+  const { polls, categories } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60, // revalidate every 60 seconds
     props: {
-      polls: pollsResponse.polls,
-      categories: pollsResponse.categories
+      polls,
+      categories
     }
   };
 };

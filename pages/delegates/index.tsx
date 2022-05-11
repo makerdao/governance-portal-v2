@@ -1,17 +1,14 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import shallow from 'zustand/shallow';
+import useSWR, { useSWRConfig } from 'swr';
 import { fetchJson } from 'lib/fetchJson';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
-import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
-import { Delegate, DelegatesAPIResponse, DelegatesAPIStats } from 'modules/delegates/types';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
@@ -27,14 +24,10 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-type Props = {
-  delegates: Delegate[];
-  stats: DelegatesAPIStats;
-};
-
-const Delegates = ({ delegates, stats }: Props) => {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.DELEGATES);
+const Delegates = ({ delegates, stats }: DelegatesPageData) => {
   const [showRecognized, showShadow, sort, resetFilters] = useDelegatesFiltersStore(
     state => [state.filters.showRecognized, state.filters.showShadow, state.sort, state.resetFilters],
     shallow
@@ -185,52 +178,58 @@ const Delegates = ({ delegates, stats }: Props) => {
   );
 };
 
-export default function DelegatesPage({ delegates, stats }: Props): JSX.Element {
-  const [_delegates, _setDelegates] = useState<Delegate[]>();
-  const [_stats, _setStats] = useState<DelegatesAPIStats>();
-  const [error, setError] = useState<string>();
+export default function DelegatesPage({
+  delegates: prefetchedDelegates,
+  stats: prefetchedStats
+}: DelegatesPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  // fetch delegates at run-time if on any network other than the default
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/delegates?network=${network}`)
-        .then((response: DelegatesAPIResponse) => {
-          _setDelegates(response.delegates);
-          _setStats(response.stats);
-        })
-        .catch(setError);
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        delegates: prefetchedDelegates
+      }
+    : null;
+
+  const { cache } = useSWRConfig();
+  const cacheKey = `page/delegates/${network}`;
+  const { data, error } = useSWR<DelegatesPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchDelegatesPageData(network, true),
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
-  }, [network]);
+  );
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching delegates" />;
-  }
-
-  if (!isDefaultNetwork(network) && !_delegates) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder />;
   }
 
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates || [],
+    stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || undefined
+  };
+
   return (
     <ErrorBoundary componentName="Delegates List">
-      <Delegates
-        delegates={isDefaultNetwork(network) ? delegates : (_delegates as Delegate[])}
-        stats={isDefaultNetwork(network) ? stats : (_stats as DelegatesAPIStats)}
-      />
+      <Delegates {...props} />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const delegatesAPIResponse = await fetchDelegates();
+  const { delegates, stats } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
-      delegates: delegatesAPIResponse.delegates,
-      stats: delegatesAPIResponse.stats
+      delegates,
+      stats
     }
   };
 };
