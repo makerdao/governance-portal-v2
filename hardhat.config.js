@@ -15,7 +15,7 @@ task('fork', 'Forks network at the specified block')
       params: [
         {
           forking: {
-            jsonRpcUrl: `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_GOERLI_API_KEY}`,
+            jsonRpcUrl: process.env.GOERLI_FORK_API_KEY,
             blockNumber: parseInt(taskArgs.block)
           }
         }
@@ -36,7 +36,7 @@ module.exports = {
 
     hardhat: {
       forking: {
-        url: `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_GOERLI_API_KEY}`,
+        url: process.env.GOERLI_FORK_API_KEY,
         blockNumber: 6840228,
         chainId: 31337
       },
