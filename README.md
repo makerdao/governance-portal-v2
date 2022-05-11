@@ -105,4 +105,4 @@ The command `yarn start:ci` launches a detached process with hardhat, executes e
 
 ### Contributing
 
-See our [contributing guide](./CONTRIBUTING.md)
+See our [contributing guide](./CONTRIBUTING.md).
