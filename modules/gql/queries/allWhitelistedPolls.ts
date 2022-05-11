@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
 export const allWhitelistedPolls = gql`
-  {
-    activePolls {
+  query ActivePolls($filter: ActivePollsRecordFilter) {
+    activePolls(filter: $filter) {
       nodes {
         creator
         pollId

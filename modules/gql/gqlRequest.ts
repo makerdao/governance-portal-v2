@@ -1,16 +1,19 @@
-import { request } from 'graphql-request';
+import { request, Variables, RequestDocument } from 'graphql-request';
 import { SupportedChainId } from 'modules/web3/constants/chainID';
 import { CHAIN_INFO } from 'modules/web3/constants/networks';
 
-export const gqlRequest = async ({
+type GqlRequestProps = {
+  chainId?: SupportedChainId;
+  query: RequestDocument;
+  variables?: Variables | null;
+};
+
+// TODO we'll be able to remove the "any" if we update all the instances of gqlRequest to pass <Query>
+export const gqlRequest = async <Query = any>({
   chainId,
   query,
   variables
-}: {
-  chainId?: SupportedChainId;
-  query: any;
-  variables?: Record<any, any>;
-}): Promise<any> => {
+}: GqlRequestProps): Promise<Query> => {
   const id = chainId ?? SupportedChainId.MAINNET;
   const url = CHAIN_INFO[id].spockUrl;
 

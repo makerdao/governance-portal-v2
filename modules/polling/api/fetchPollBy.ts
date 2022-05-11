@@ -1,6 +1,8 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { markdownToHtml } from 'lib/markdown';
+import { QueryFilterNames } from 'modules/gql/gql.constants';
+import { getQueryFilter } from 'modules/gql/gqlFilters';
 import { gqlRequest } from 'modules/gql/gqlRequest';
 import { activePollByMultihash, activePollById } from 'modules/gql/queries/activePollBy';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
@@ -9,14 +11,15 @@ import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { Poll } from '../types';
 import { PollSpock } from '../types/pollSpock';
 import { fetchPollMetadata } from './fetchPollMetadata';
-import { fetchAllSpockPolls } from './fetchPolls';
+import { fetchSpockPolls } from './fetchPolls';
 
 export async function fetchSpockPollById(
   pollId: number,
   network: SupportedNetworks
 ): Promise<PollSpock | undefined> {
-  const polls = await fetchAllSpockPolls(network);
-  return polls.find(poll => poll.pollId === pollId);
+  const filter = getQueryFilter(QueryFilterNames.PollId, pollId);
+  const [poll] = await fetchSpockPolls(network, filter);
+  return poll;
 
   // TODO : this is the new query
   const data: PollSpock = await gqlRequest({
@@ -31,7 +34,7 @@ export async function fetchSpockPollById(
 }
 
 export async function fetchSpockPollBySlug(slug: string, network: SupportedNetworks): Promise<PollSpock> {
-  const polls = await fetchAllSpockPolls(network);
+  const polls = await fetchSpockPolls(network);
 
   const pollIndex = polls.findIndex(poll => poll.multiHash.slice(0, 8) === slug);
   return polls[pollIndex] as PollSpock;
