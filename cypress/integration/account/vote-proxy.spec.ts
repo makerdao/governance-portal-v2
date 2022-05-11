@@ -65,7 +65,7 @@ describe('Vote Proxy', () => {
       // Set an http intercept for fetching goerli proposals
       cy.intercept({
         method: 'GET',
-        url: '/api/executive?network=goerlifork&start=0&limit=10'
+        url: '/api/executive?network=goerlifork&start=0&limit=10&sortBy=active'
       }).as('getGoerliProposals');
       visitPage(`executive`);
 
