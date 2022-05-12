@@ -2,9 +2,7 @@ import { useMemo, useEffect, useState, useCallback } from 'react';
 import { GetStaticProps } from 'next';
 import { Heading, Text, Flex, useColorMode, Box } from 'theme-ui';
 import ErrorPage from 'next/error';
-import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
-import { useHat } from 'modules/executive/hooks/useHat';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import { ViewMore } from 'modules/home/components/ViewMore';
@@ -12,21 +10,14 @@ import { PollCategoriesLanding } from 'modules/home/components/PollCategoriesLan
 import { GovernanceStats } from 'modules/home/components/GovernanceStats';
 import ExecutiveOverviewCard from 'modules/executive/components/ExecutiveOverviewCard';
 import { PlayButton } from 'modules/home/components/PlayButton';
-import { Proposal } from 'modules/executive/types';
-import { Poll } from 'modules/polling/types';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
-import { getPolls } from 'modules/polling/api/fetchPolls';
-import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import VideoModal from 'modules/app/components/VideoModal';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import Skeleton from 'react-loading-skeleton';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { Delegate, DelegatesAPIResponse } from 'modules/delegates/types';
-import { fetchDelegates } from 'modules/delegates/api/fetchDelegates';
 import useSWR, { useSWRConfig } from 'swr';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import TopDelegates from 'modules/delegates/components/TopDelegates';
 import { ResourcesLanding } from 'modules/home/components/ResourcesLanding/ResourcesLanding';
 import { PollsOverviewLanding } from 'modules/home/components/PollsOverviewLanding';
@@ -36,35 +27,16 @@ import { InternalLink } from 'modules/app/components/InternalLink';
 import MeetDelegates from 'modules/delegates/components/MeetDelegates';
 import InformationParticipateMakerGovernance from 'modules/home/components/InformationParticipateMakerGovernance/InformationParticipateMakerGovernance';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-import { useTokenBalance } from 'modules/web3/hooks/useTokenBalance';
 import { useAccount } from 'modules/app/hooks/useAccount';
-import { Tokens } from 'modules/web3/constants/tokens';
-import { useContractAddress } from 'modules/web3/hooks/useContractAddress';
 import { VIDEO_URLS } from 'modules/app/client/videos.constants';
 import Participation from 'modules/home/components/Participation';
 import TabsNavigation from 'modules/home/components/TabsNavigation';
 import { StickyContainer, Sticky } from 'react-sticky';
-import { shuffleArray } from 'lib/common/shuffleArray';
-import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { fetchMkrOnHat } from 'modules/executive/api/fetchMkrOnHat';
-import { fetchMkrInChief } from 'modules/executive/api/fetchMkrInChief';
-import { formatValue } from 'lib/string';
-
-type Props = {
-  proposals: Proposal[];
-  polls: Poll[];
-  network: SupportedNetworks;
-  delegates: Delegate[];
-  recognizedDelegates: Delegate[];
-  meetYourDelegates: Delegate[];
-  totalMKRDelegated: string;
-  mkrOnHat?: string;
-  hat?: string;
-  mkrInChief?: string;
-};
+import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { fetchJson } from 'lib/fetchJson';
 
 const LandingPage = ({
   proposals,
@@ -76,7 +48,7 @@ const LandingPage = ({
   mkrOnHat,
   hat,
   mkrInChief
-}: Props) => {
+}: LandingPageData) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -320,124 +292,88 @@ export default function Index({
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
-}: Props): JSX.Element {
+}: LandingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        proposals: prefetchedProposals,
+        polls: prefetchedPolls,
+        delegates: prefetchedDelegates,
+        recognizedDelegates: prefetchedRecognizedDelegates,
+        meetYourDelegates: prefetchedMeetYourDelegates,
+        totalMKRDelegated: prefetchedTotalMKRDelegated,
+        mkrOnHat: prefetchedMkrOnHat,
+        hat: prefetchedHat,
+        mkrInChief: prefetchedMkrInChief
+      }
+    : null;
+
   const { cache } = useSWRConfig();
-
-  // Fetch polls if networks change
-  const dataKeyPolls =
-    !network || isDefaultNetwork(network) ? null : `/api/polling/all-polls?network=${network}`;
-  const { data: pollsData, error: errorPolls } = useSWR<PollsResponse>(dataKeyPolls, fetchJson, {
-    revalidateOnMount: !cache.get(dataKeyPolls)
-  });
-
-  // Fetch executives if networks change
-  const dataKeyProposals =
-    !network || isDefaultNetwork(network)
-      ? null
-      : `/api/executive?network=${network}&start=0&limit=3&sortBy=active`;
-  const { data: proposalsData, error: errorProposals } = useSWR<Proposal[]>(dataKeyProposals, fetchJson, {
-    revalidateOnMount: !cache.get(dataKeyProposals)
-  });
-
-  // Fetch delegates if networks change
-  const dataKeyDelegates =
-    !network || isDefaultNetwork(network) ? null : `/api/delegates?network=${network}&sortBy=mkr`;
-  const { data: delegatesData, error: errorDelegates } = useSWR<DelegatesAPIResponse>(
-    dataKeyDelegates,
-    fetchJson,
+  const cacheKey = `page/landing/${network}`;
+  const { data, error } = useSWR<LandingPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchLandingPageData(network, true),
     {
-      revalidateOnMount: !cache.get(dataKeyDelegates)
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
   );
 
-  const { data: mkrOnHat } = useMkrOnHat();
-
-  const { data: hat } = useHat();
-
-  const chiefAddress = useContractAddress('chief');
-  const { data: mkrInChief } = useTokenBalance(Tokens.MKR, chiefAddress);
-
-  // Error state, only applies for alternative networks
-  if (errorProposals || errorPolls || errorDelegates) {
-    return <ErrorPage statusCode={404} title="Error fetching home page information" />;
-  }
-
-  if (!isDefaultNetwork(network) && (!pollsData || !proposalsData || !delegatesData)) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder sidebar={false} />;
   }
 
-  return (
-    <LandingPage
-      proposals={
-        isDefaultNetwork(network)
-          ? prefetchedProposals
-          : proposalsData
-          ? proposalsData.filter(p => p.active)
-          : []
-      }
-      polls={isDefaultNetwork(network) ? prefetchedPolls : pollsData ? pollsData.polls : []}
-      network={network}
-      delegates={
-        isDefaultNetwork(network) ? prefetchedDelegates : delegatesData ? delegatesData.delegates : []
-      }
-      recognizedDelegates={
-        isDefaultNetwork(network)
-          ? prefetchedRecognizedDelegates
-          : delegatesData
-          ? filterDelegates(delegatesData.delegates, false, true)
-          : []
-      }
-      meetYourDelegates={
-        isDefaultNetwork(network)
-          ? prefetchedMeetYourDelegates
-          : delegatesData
-          ? shuffleArray(filterDelegates(delegatesData.delegates, false, true))
-          : []
-      }
-      totalMKRDelegated={
-        isDefaultNetwork(network)
-          ? prefetchedTotalMKRDelegated
-          : delegatesData
-          ? delegatesData.stats.totalMKRDelegated
-          : '0'
-      }
-      mkrOnHat={isDefaultNetwork(network) ? prefetchedMkrOnHat : mkrOnHat ? formatValue(mkrOnHat) : undefined}
-      hat={isDefaultNetwork(network) ? prefetchedHat : hat ? hat : undefined}
-      mkrInChief={
-        isDefaultNetwork(network) ? prefetchedMkrInChief : mkrInChief ? formatValue(mkrInChief) : undefined
-      }
-    />
-  );
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [],
+    recognizedDelegates: isDefaultNetwork(network)
+      ? prefetchedRecognizedDelegates
+      : data?.recognizedDelegates ?? [],
+    meetYourDelegates: isDefaultNetwork(network)
+      ? prefetchedMeetYourDelegates
+      : data?.meetYourDelegates ?? [],
+    totalMKRDelegated: isDefaultNetwork(network)
+      ? prefetchedTotalMKRDelegated
+      : data?.totalMKRDelegated ?? '0',
+    mkrOnHat: isDefaultNetwork(network) ? prefetchedMkrOnHat : data?.mkrOnHat ?? undefined,
+    hat: isDefaultNetwork(network) ? prefetchedHat : data?.hat ?? undefined,
+    mkrInChief: isDefaultNetwork(network) ? prefetchedMkrInChief : data?.mkrInChief ?? undefined
+  };
+
+  return <LandingPage {...props} />;
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls, proposals at build-time
-  const [proposals, pollsData, delegatesResponse, { hat, mkrOnHat }, mkrInChief] = await Promise.all([
-    getExecutiveProposals(0, 3, 'active'),
-    getPolls(),
-    fetchDelegates(SupportedNetworks.MAINNET, 'mkr'),
-    fetchMkrOnHat(),
-    fetchMkrInChief()
-  ]);
-
-  const recognizedDelegates = filterDelegates(delegatesResponse.delegates, false, true);
-
-  const meetYourDelegates = shuffleArray(recognizedDelegates);
+  const {
+    proposals,
+    polls,
+    delegates,
+    totalMKRDelegated,
+    recognizedDelegates,
+    meetYourDelegates,
+    mkrOnHat,
+    hat,
+    mkrInChief
+  } = await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 30 * 60, // allow revalidation every 30 minutes
+    revalidate: 5 * 60, // allow revalidation every 30 minutes
     props: {
-      proposals: proposals.filter(i => i.active),
-      polls: pollsData.polls,
-      delegates: delegatesResponse.delegates,
-      totalMKRDelegated: delegatesResponse.stats.totalMKRDelegated,
+      proposals,
+      polls,
+      delegates,
+      totalMKRDelegated,
       recognizedDelegates,
       meetYourDelegates,
-      mkrOnHat: formatValue(mkrOnHat),
+      mkrOnHat,
       hat,
-      mkrInChief: formatValue(mkrInChief)
+      mkrInChief
     }
   };
 };

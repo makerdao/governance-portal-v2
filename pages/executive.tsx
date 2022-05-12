@@ -1,20 +1,15 @@
 import React from 'react';
 import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner } from 'theme-ui';
-import { useEffect, useState, useMemo, useRef } from 'react';
-import useSWR from 'swr';
+import { useEffect, useMemo, useRef } from 'react';
+import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { Icon } from '@makerdao/dai-ui-icons';
-
-// lib
-import { getExecutiveProposals } from 'modules/executive/api/fetchExecutives';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import { useHat } from 'modules/executive/hooks/useHat';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchJson } from 'lib/fetchJson';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
-
-// components
 import Deposit from 'modules/mkr/components/Deposit';
 import WithdrawOldChief from 'modules/executive/components/WithdrawOldChief';
 import ProposalsSortBy from 'modules/executive/components/ProposalsSortBy';
@@ -30,11 +25,7 @@ import ProgressBar from 'modules/executive/components/ProgressBar';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { ExecutiveBalance } from 'modules/executive/components/ExecutiveBalance';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-
-// stores
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
-
-// types
 import { Proposal } from 'modules/executive/types';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
@@ -49,6 +40,8 @@ import { formatValue } from 'lib/string';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -317,9 +310,12 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                 </Stack>
               )}
 
-              {(startDate || endDate) && flattenedProposals && flattenedProposals.length === 0 && (
-                <Text>No proposals found. Please try clearing filters.</Text>
-              )}
+              {!isValidating &&
+                (startDate || endDate) &&
+                flattenedProposals &&
+                flattenedProposals.length === 0 && (
+                  <Text>No proposals found. Please try clearing filters.</Text>
+                )}
 
               {isLoadingInitialData && (
                 <Box>
@@ -391,7 +387,7 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
                   )}
 
                   {!isReachingEnd && (
-                    <Grid mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
+                    <Grid mb={5} mt={4} columns="1fr max-content 1fr" sx={{ alignItems: 'center' }}>
                       <Divider />
                       <Button variant="mutedOutline" onClick={loadMore}>
                         Load more
@@ -430,45 +426,47 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
 
 export default function ExecutiveOverviewPage({
   proposals: prefetchedProposals
-}: {
-  proposals: Proposal[];
-}): JSX.Element {
-  const [_proposals, _setProposals] = useState<Proposal[]>();
-  const [error, setError] = useState<string>();
+}: ExecutivePageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  // client side exec page size
-  const EXEC_PAGE_SIZE = 10;
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        proposals: prefetchedProposals
+      }
+    : null;
 
-  // fetch proposals at run-time if on any network other than the default
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/executive?network=${network}&start=0&limit=${EXEC_PAGE_SIZE}`)
-        .then(_setProposals)
-        .catch(setError);
+  const { cache } = useSWRConfig();
+  const cacheKey = `page/executive/${network}`;
+  const { data, error } = useSWR<ExecutivePageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchExecutivePageData(network, true),
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
-  }, [network]);
+  );
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
-  }
-
-  if (!isDefaultNetwork(network) && !_proposals) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder />;
   }
 
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals || []
+  };
+
   return (
     <ErrorBoundary componentName="Executive Page">
-      <ExecutiveOverview proposals={isDefaultNetwork(network) ? prefetchedProposals : _proposals} />
+      <ExecutiveOverview {...props} />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch proposals at build-time if on the default network
-  const EXEC_PAGE_SIZE = 10;
-  const proposals = await getExecutiveProposals(0, EXEC_PAGE_SIZE, 'active');
+  const { proposals } = await fetchExecutivePageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60 * 30, // allow revalidation every half an hour in seconds

@@ -69,7 +69,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse<P
   const network = (req.query.network as string) || DEFAULT_NETWORK.network;
   invariant(isSupportedNetwork(network), `unsupported network ${network}`);
   const start = req.query.start ? parseInt(req.query.start as string, 10) : 0;
-  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
   const sortBy = req.query.sortBy || 'date';
   const startDate = req.query.startDate ? parseInt(req.query.startDate as string, 10) : 0;
   const endDate = req.query.endDate ? parseInt(req.query.endDate as string, 10) : 0;
