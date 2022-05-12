@@ -42,11 +42,12 @@ export async function getPollComments(
   const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
   const promises = uniqueComments.map(async (comment: PollComment) => {
     // verify tx ownership
-    const { from } = await provider.getTransaction(comment.txHash as string);
+    const transaction = await provider.getTransaction(comment.txHash as string);
 
     const isValid =
-      ethers.utils.getAddress(from).toLowerCase() ===
-      ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+      transaction &&
+      ethers.utils.getAddress(transaction.from).toLowerCase() ===
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
     return {
       comment,
       isValid,
