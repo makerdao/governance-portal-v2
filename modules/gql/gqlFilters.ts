@@ -7,10 +7,11 @@ export const queryFilters: QueryFilterList = {
   }),
   range: (start, end) => ({
     filter: {
-      and: [{ pollId: { greaterThanOrEqualTo: start } }, { pollId: { lessThanOrEqualTo: end } }]
+      and: [{ startDate: { greaterThanOrEqualTo: start } }, { endDate: { lessThanOrEqualTo: end } }]
     }
   }),
-  pollId: pollId => ({ filter: { pollId: { equalTo: pollId } } })
+  pollId: pollId => ({ filter: { pollId: { equalTo: pollId } } }),
+  multiHash: multiHash => ({ filter: { multiHash: { startsWith: multiHash } } })
 };
 
 // TODO: I would like generalize this function so we don't have to use the switch, but I couldn't make typescript happy
@@ -25,6 +26,9 @@ export const getQueryFilter = (filterName: QueryFilterNames | undefined, ...args
 
       case QueryFilterNames.PollId:
         return queryFilters.pollId(args[0]);
+
+      case QueryFilterNames.MultiHash:
+        return queryFilters.multiHash(args[0]);
 
       default:
         break;

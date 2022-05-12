@@ -7,5 +7,6 @@ export const MAINNET_SPOCK_URL = 'https://polling-db-prod.makerdux.com/api/v1';
 export enum QueryFilterNames {
   Active = 'active',
   PollId = 'pollId',
-  Range = 'range'
+  Range = 'range',
+  MultiHash = 'multiHash'
 }
