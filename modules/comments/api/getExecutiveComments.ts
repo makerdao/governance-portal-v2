@@ -62,5 +62,5 @@ export async function getExecutiveComments(
 
   const response = await Promise.all(promises);
 
-  return response as ExecutiveCommentsAPIResponseItem[];
+  return response.filter(i => i.isValid) as ExecutiveCommentsAPIResponseItem[];
 }

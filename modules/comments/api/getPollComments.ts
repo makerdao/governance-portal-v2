@@ -56,5 +56,5 @@ export async function getPollComments(
 
   const response = await Promise.all(promises);
 
-  return response as PollCommentsAPIResponseItem[];
+  return response.filter(i => i.isValid) as PollCommentsAPIResponseItem[];
 }
