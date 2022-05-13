@@ -3,7 +3,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { useState } from 'react';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
-// import VoteModal from 'modules/executive/components/VoteModal';
+import VoteModal from 'modules/executive/components/VoteModal';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
 import { formatDateWithTime } from 'lib/datetime';
@@ -16,7 +16,7 @@ export default function ExecutiveAddress(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [voting, setVoting] = useState(false);
   const { network } = useActiveWeb3React();
-  // const { account } = useAccount();
+  const { account } = useAccount();
 
   const handleInput = e => {
     if (e.target.value === '') {
@@ -37,14 +37,18 @@ export default function ExecutiveAddress(): JSX.Element {
       setLoading(false);
       return null;
     }
-    const data = await analyzeSpell(spellAddress, network);
-    if (data && data.executiveHash === undefined) {
-      setSpellData(null);
-    } else {
-      setSpellData(data);
+    try {
+      const data = await analyzeSpell(spellAddress, network);
+      if (data && data.executiveHash === undefined) {
+        setSpellData(null);
+      } else {
+        setSpellData(data);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
     }
-    setLoading(false);
-    // return data;
   };
 
   return (
@@ -53,7 +57,7 @@ export default function ExecutiveAddress(): JSX.Element {
         <Heading>Spell address</Heading>
         <Input name="spellAddress" my={3} onChange={handleInput} />
         <Flex sx={{ alignItems: 'center' }}>
-          <Button disabled={!spellAddress} onClick={handleVote} sx={{ mr: 3 }}>
+          <Button disabled={!spellAddress || !account} onClick={handleVote} sx={{ mr: 3 }}>
             Vote for this address
           </Button>
           <Button disabled={!spellAddress} onClick={fetchSpellData}>
@@ -119,7 +123,7 @@ export default function ExecutiveAddress(): JSX.Element {
           </Flex>
         </Card>
       )}
-      {/* {voting && <VoteModal proposal={null} address={spellAddress} close={() => setVoting(false)} />} */}
+      {voting && spellAddress && <VoteModal address={spellAddress} close={() => setVoting(false)} />}
     </PrimaryLayout>
   );
 }
