@@ -115,11 +115,11 @@ export default function ExecutiveAddress(): JSX.Element {
 
                 <Flex sx={{ mt: 3 }}>
                   <Text>Has been cast:</Text>
-                  <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.expiration)}</Text>
+                  <Text sx={{ ml: 3 }}>{spellData?.hasBeenCast ? 'true' : 'false'}</Text>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <Text>Has been scheduled:</Text>
-                  <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.expiration)}</Text>
+                  <Text sx={{ ml: 3 }}>{spellData?.hasBeenScheduled ? 'true' : 'false'}</Text>
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <Text>MKR support:</Text>
@@ -131,7 +131,7 @@ export default function ExecutiveAddress(): JSX.Element {
                 </Flex>
                 <Flex sx={{ mt: 3 }}>
                   <Text>Office hours:</Text>
-                  <Text sx={{ ml: 3 }}>{spellData?.officeHours}</Text>
+                  <Text sx={{ ml: 3 }}>{spellData?.officeHours ? 'true' : 'false'}</Text>
                 </Flex>
               </>
             )}
