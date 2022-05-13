@@ -21,8 +21,8 @@ export const TEST_ACCOUNTS: TestAccounts = {
   },
   [TestAccountsEnum.delegate]: {
     name: 'MakerDAO address delegate owner',
-    address: '0x81431b69b1e0e334d4161a13c2955e0f3599381e',
-    key: 'b3ae65f191aac33f3e3f662b8411cabf14f91f2b48cf338151d6021ea1c08541'
+    address: '0x5fd0b82A53FB7df49dc6889Cd836EEF26516D0cB',
+    key: '9e96498ebd6d4784a342bdf0bfd9ebfc77433783b67960ffa1c31a9630e5df80'
   },
   [TestAccountsEnum.voteProxyHot]: {
     name: 'Hot address for vote proxy',

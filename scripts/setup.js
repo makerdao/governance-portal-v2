@@ -3,7 +3,7 @@ const { ethers } = hre;
 
 const keyPairs = require('../cypress/support/constants/keypairs.json');
 const ERC20_ABI = require('../cypress/fixtures/erc20_abi.json');
-
+const VOTEDELEGATE_ABI = require('../cypress/fixtures/votedelegatefactoryabi.json');
 async function main() {
   const accounts = await hre.ethers.getSigners();
   const testAccount = '0x8028Ef7ADA45AA7fa31EdaE7d6C30BfA5fb3cf0B';
@@ -20,14 +20,19 @@ async function main() {
     params: [testAccount]
   });
 
+  const ethSender = await ethers.getSigner(accounts[0].address);
   // Send 0.5 ETH to all addresses
   for (let i = 0; i < 50; i++) {
-    const signer = await ethers.getSigner(accounts[0].address);
-    await signer.sendTransaction({
+    await ethSender.sendTransaction({
       to: keyPairs.addresses[i],
       value: ethers.utils.parseEther('0.5')
     });
   }
+
+  await ethSender.sendTransaction({
+    to: testAccount,
+    value: ethers.utils.parseEther('2.5')
+  });
 
   console.log('All addresses have now 0.5 ETH');
 
@@ -66,8 +71,20 @@ async function main() {
     toBytes32(ethers.utils.parseUnits('250000')).toString()
   );
 
-  const mkrBalance = await mkrToken.balanceOf(testAccount);
-  console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
+  //const mkrBalance = await mkrToken.balanceOf(testAccount);
+  //console.log(`test account now has ${ethers.utils.formatUnits(mkrBalance)} MKR`);
+
+  // Create delegate contract 
+  // const delegateAddress = '0x81431b69b1e0e334d4161a13c2955e0f3599381e'
+  // await hre.network.provider.request({
+  //   method: 'hardhat_impersonateAccount',
+  //   params: [delegateAddress]
+  // });
+
+  // const delegateSigner = await ethers.getSigner(delegateAddress);
+  // const voteDelegateFactory = new ethers.Contract('0xE2d249AE3c156b132C40D07bd4d34e73c1712947', VOTEDELEGATE_ABI, delegateSigner);
+  // await voteDelegateFactory.create();
+
 }
 
 main().catch(error => {

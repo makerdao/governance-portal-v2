@@ -33,7 +33,7 @@ _Requires node version >= v11.15.0_
 8. Set `GITHUB_TOKEN` to fetch delegates information from GitHub
 9. Set `NEXT_PUBLIC_MIXPANEL_DEV` to the valid Mixpanel dev environment API key
 10. Set `NEXT_PUBLIC_MIXPANEL_PROD` to the valid Mixpanel prod environment API key
-11. Set `ALCHEMY_GOERLI_API_KEY` for the API key
+11. Set `GOERLI_FORK_API_KEY` for the API key
 12. Set `ETHERSCAN_KEY` for ethers provider to use
 13. Set `POCKET_KEY` for ethers provider to use
 
@@ -73,7 +73,7 @@ By default, e2e tests run on a fork of Goerli. We do this because the governance
 npm run hardhat
 ```
 
-Note: Make sure to fill in the ALCHEMY_GOERLI_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
+Note: Make sure to fill in the GOERLI_FORK_API_KEY environment variable. After the network is running you can execute `npm run e2e` to execute the test suite.
 
 You can use this local network from MetaMask, by switching to the "localhost:8545" network, with chain ID: `31337`. In order to get a wallet with some MKR and ETH you can run the script: `npm run fund` that will send some MKR and ETH to the first 50 wallets under the `/cypress/support/constants/keypairs.json`. 
 
@@ -105,4 +105,4 @@ The command `yarn start:ci` launches a detached process with hardhat, executes e
 
 ### Contributing
 
-See our [contributing guide](./CONTRIBUTING.md)
+See our [contributing guide](./CONTRIBUTING.md).

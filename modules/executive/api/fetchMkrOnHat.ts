@@ -4,7 +4,7 @@ import { getContracts } from 'modules/web3/helpers/getContracts';
 import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
 import { BigNumber } from 'ethers';
 
-type MkrOnHatResponse = {
+export type MkrOnHatResponse = {
   hat: string;
   mkrOnHat: BigNumber;
 };
