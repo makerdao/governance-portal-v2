@@ -40,7 +40,7 @@ export async function getPollComments(
 
   const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
   const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-  const promises = uniqueComments.map(async (comment: PollComment) => {
+  const promises = uniqueComments.map(async (comment: PollComment, i) => {
     // verify tx ownership
     const transaction = await provider.getTransaction(comment.txHash as string);
 
@@ -51,6 +51,7 @@ export async function getPollComments(
     return {
       comment,
       isValid,
+      completed: i === 0 ? false : transaction && transaction.confirmations > 10,
       address: await getAddressInfo(comment.voterAddress, network)
     };
   });

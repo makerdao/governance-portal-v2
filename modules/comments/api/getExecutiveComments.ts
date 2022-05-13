@@ -57,7 +57,8 @@ export async function getExecutiveComments(
     return {
       comment,
       address: await getAddressInfo(comment.voterAddress, network),
-      isValid
+      isValid,
+      completed: transaction && transaction.confirmations > 10
     };
   });
 
