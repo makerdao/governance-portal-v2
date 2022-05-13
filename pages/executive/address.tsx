@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { Button, Card, Flex, Text, Input, Spinner, Heading } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { useState } from 'react';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
+import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import VoteModal from 'modules/executive/components/VoteModal';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
@@ -16,7 +18,19 @@ export default function ExecutiveAddress(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [voting, setVoting] = useState(false);
   const { network } = useActiveWeb3React();
-  const { account } = useAccount();
+  const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
+  const address = voteDelegateContractAddress || voteProxyContractAddress || account;
+
+  const { data: votedProposals, mutate: mutateVotedProposals } = useVotedProposals();
+
+  // revalidate votedProposals if connected address changes
+  useEffect(() => {
+    mutateVotedProposals();
+  }, [address]);
+
+  const hasVotedFor =
+    votedProposals &&
+    !!votedProposals.find(proposalAddress => proposalAddress.toLowerCase() === spellAddress?.toLowerCase());
 
   const handleInput = e => {
     if (e.target.value === '') {
@@ -72,9 +86,10 @@ export default function ExecutiveAddress(): JSX.Element {
             <Heading>Spell details</Heading>
             {spellData === null && (
               <Flex sx={{ mt: 3 }}>
-                <Text>No spell data found</Text>
+                <Text>No spell details found</Text>
               </Flex>
             )}
+
             {!!spellData && (
               <>
                 <Flex sx={{ mt: 3 }}>
@@ -120,6 +135,14 @@ export default function ExecutiveAddress(): JSX.Element {
                 </Flex>
               </>
             )}
+          </Flex>
+        </Card>
+      )}
+      {hasVotedFor && (
+        <Card sx={{ mt: 4 }}>
+          <Heading>Your Vote</Heading>
+          <Flex sx={{ mt: 3 }}>
+            <Text>You are currently supporting this executive spell address</Text>
           </Flex>
         </Card>
       )}
