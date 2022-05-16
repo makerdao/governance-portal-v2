@@ -155,7 +155,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
 
   const mobile = bpi <= 1;
   return (
-    <div sx={{ position: 'relative', mt: 5 }}>
+    <div sx={{ position: 'relative', mt: 4 }}>
       <div
         sx={{
           width: '100vw',
