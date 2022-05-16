@@ -8,9 +8,7 @@ import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import VoteModal from 'modules/executive/components/VoteModal';
 import { analyzeSpell } from 'modules/executive/api/analyzeSpell';
 import { SpellData } from 'modules/executive/types';
-import { formatDateWithTime } from 'lib/datetime';
-import { formatValue } from 'lib/string';
-import { BigNumber } from 'ethers';
+import { SpellDetailsOverview } from 'modules/executive/components/SpellDetailsOverview';
 
 export default function CustomSpell(): JSX.Element {
   const [spellAddress, setSpellAddress] = useState<string | null>(null);
@@ -76,7 +74,7 @@ export default function CustomSpell(): JSX.Element {
       </Text>
       <Heading sx={{ mt: 4, mb: 3 }}>Spell address</Heading>
       <Card>
-        <Input name="spellAddress" my={3} onChange={handleInput} />
+        <Input name="spellAddress" mb={3} onChange={handleInput} />
         <Flex sx={{ alignItems: 'center' }}>
           <Button disabled={!spellAddress || !account} onClick={handleVote} sx={{ mr: 3 }}>
             Vote for this address
@@ -98,53 +96,7 @@ export default function CustomSpell(): JSX.Element {
                 </Flex>
               )}
 
-              {!!spellData && (
-                <>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Executive hash:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.executiveHash}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Data executed:</Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.dateExecuted)}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Data passed: </Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.datePassed)}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Available for execution at: </Text>
-                    <Text sx={{ ml: 3 }}>
-                      {formatDateWithTime(spellData?.nextCastTime || spellData?.eta)}
-                    </Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Expiration: </Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.expiration)}</Text>
-                  </Flex>
-
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Has been cast:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.hasBeenCast ? 'true' : 'false'}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Has been scheduled:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.hasBeenScheduled ? 'true' : 'false'}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>MKR support:</Text>
-                    <Text sx={{ ml: 3 }}>{formatValue(BigNumber.from(spellData?.mkrSupport))} MKR</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Next cast time:</Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.nextCastTime)}</Text>
-                  </Flex>
-                  <Flex sx={{ mt: 3 }}>
-                    <Text>Office hours:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.officeHours ? 'true' : 'false'}</Text>
-                  </Flex>
-                </>
-              )}
+              {!!spellData && <SpellDetailsOverview spellDetails={spellData} />}
             </Flex>
           </Card>
         </>
