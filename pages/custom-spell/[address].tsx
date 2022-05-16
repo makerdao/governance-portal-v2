@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Button, Card, Flex, Text, Input, Spinner, Heading } from 'theme-ui';
+import { Button, Card, Flex, Text, Heading } from 'theme-ui';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { useState } from 'react';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -11,11 +11,16 @@ import { SpellData } from 'modules/executive/types';
 import { formatDateWithTime } from 'lib/datetime';
 import { formatValue } from 'lib/string';
 import { BigNumber } from 'ethers';
+import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
-export default function ExecutiveAddress(): JSX.Element {
-  const [spellAddress, setSpellAddress] = useState<string | null>(null);
-  const [spellData, setSpellData] = useState<SpellData | null | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+type Props = {
+  address: string;
+  spellDetails: SpellData | null | undefined;
+};
+
+export default function CustomSpellAddress({ spellDetails }: Props): JSX.Element {
   const [voting, setVoting] = useState(false);
   const { network } = useActiveWeb3React();
   const { account, voteDelegateContractAddress, voteProxyContractAddress } = useAccount();
@@ -30,39 +35,10 @@ export default function ExecutiveAddress(): JSX.Element {
 
   const hasVotedFor =
     votedProposals &&
-    !!votedProposals.find(proposalAddress => proposalAddress.toLowerCase() === spellAddress?.toLowerCase());
-
-  const handleInput = e => {
-    if (e.target.value === '') {
-      setSpellData(undefined);
-    }
-    setSpellAddress(e.target.value);
-  };
+    !!votedProposals.find(proposalAddress => proposalAddress.toLowerCase() === address?.toLowerCase());
 
   const handleVote = () => {
     setVoting(true);
-  };
-
-  const fetchSpellData = async () => {
-    setSpellData(undefined);
-    setLoading(true);
-    if (!spellAddress) {
-      setSpellData(undefined);
-      setLoading(false);
-      return null;
-    }
-    try {
-      const data = await analyzeSpell(spellAddress, network);
-      if (data && data.executiveHash === undefined) {
-        setSpellData(null);
-      } else {
-        setSpellData(data);
-      }
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
   };
 
   return (
@@ -76,72 +52,74 @@ export default function ExecutiveAddress(): JSX.Element {
       </Text>
       <Heading sx={{ mt: 4, mb: 3 }}>Spell address</Heading>
       <Card>
-        <Input name="spellAddress" my={3} onChange={handleInput} />
+        {address && (
+          <ExternalLink href={getEtherscanLink(network, address, 'address')} title="View on Etherscan">
+            <Text as="p" sx={{ fontSize: [1, 4], mb: 3 }}>
+              {address}
+            </Text>
+          </ExternalLink>
+        )}
         <Flex sx={{ alignItems: 'center' }}>
-          <Button disabled={!spellAddress || !account} onClick={handleVote} sx={{ mr: 3 }}>
+          <Button disabled={!address || !account} onClick={handleVote} sx={{ mr: 3 }}>
             Vote for this address
           </Button>
-          <Button disabled={!spellAddress} onClick={fetchSpellData}>
-            Fetch spell details
-          </Button>
-          {loading && <Spinner size={20} ml={3} />}
         </Flex>
       </Card>
-      {spellData !== undefined && (
+      {spellDetails !== undefined && (
         <>
           <Heading sx={{ mt: 4, mb: 3 }}>Spell details</Heading>
           <Card>
             <Flex sx={{ flexDirection: 'column' }}>
-              {spellData === null && (
+              {spellDetails === null && (
                 <Flex sx={{ mt: 3 }}>
                   <Text>No spell details found</Text>
                 </Flex>
               )}
 
-              {!!spellData && (
+              {!!spellDetails && (
                 <>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Executive hash:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.executiveHash}</Text>
+                    <Text sx={{ ml: 3 }}>{spellDetails?.executiveHash}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Data executed:</Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.dateExecuted)}</Text>
+                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellDetails?.dateExecuted)}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Data passed: </Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.datePassed)}</Text>
+                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellDetails?.datePassed)}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Available for execution at: </Text>
                     <Text sx={{ ml: 3 }}>
-                      {formatDateWithTime(spellData?.nextCastTime || spellData?.eta)}
+                      {formatDateWithTime(spellDetails?.nextCastTime || spellDetails?.eta)}
                     </Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Expiration: </Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.expiration)}</Text>
+                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellDetails?.expiration)}</Text>
                   </Flex>
 
                   <Flex sx={{ mt: 3 }}>
                     <Text>Has been cast:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.hasBeenCast ? 'true' : 'false'}</Text>
+                    <Text sx={{ ml: 3 }}>{spellDetails?.hasBeenCast ? 'true' : 'false'}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Has been scheduled:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.hasBeenScheduled ? 'true' : 'false'}</Text>
+                    <Text sx={{ ml: 3 }}>{spellDetails?.hasBeenScheduled ? 'true' : 'false'}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>MKR support:</Text>
-                    <Text sx={{ ml: 3 }}>{formatValue(BigNumber.from(spellData?.mkrSupport))} MKR</Text>
+                    <Text sx={{ ml: 3 }}>{formatValue(BigNumber.from(spellDetails?.mkrSupport))} MKR</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Next cast time:</Text>
-                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellData?.nextCastTime)}</Text>
+                    <Text sx={{ ml: 3 }}>{formatDateWithTime(spellDetails?.nextCastTime)}</Text>
                   </Flex>
                   <Flex sx={{ mt: 3 }}>
                     <Text>Office hours:</Text>
-                    <Text sx={{ ml: 3 }}>{spellData?.officeHours ? 'true' : 'false'}</Text>
+                    <Text sx={{ ml: 3 }}>{spellDetails?.officeHours ? 'true' : 'false'}</Text>
                   </Flex>
                 </>
               )}
@@ -159,7 +137,25 @@ export default function ExecutiveAddress(): JSX.Element {
           </Card>
         </>
       )}
-      {voting && spellAddress && <VoteModal address={spellAddress} close={() => setVoting(false)} />}
+      {voting && address && <VoteModal address={address} close={() => setVoting(false)} />}
     </PrimaryLayout>
   );
+}
+
+export async function getServerSideProps({ params }) {
+  const address = (params || {})['address'] as string;
+  const data = await analyzeSpell(address, DEFAULT_NETWORK.network);
+
+  let spellDetails;
+
+  if (data && data.executiveHash === undefined) {
+    spellDetails = null;
+  } else spellDetails = data;
+
+  return {
+    props: {
+      address,
+      spellDetails
+    }
+  };
 }
