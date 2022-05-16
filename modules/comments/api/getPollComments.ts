@@ -51,7 +51,7 @@ export async function getPollComments(
     return {
       comment,
       isValid,
-      completed: i === 0 ? false : transaction && transaction.confirmations > 10,
+      completed: transaction && transaction.confirmations > 10,
       address: await getAddressInfo(comment.voterAddress, network)
     };
   });
