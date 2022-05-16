@@ -9,11 +9,11 @@ type GqlRequestProps = {
 };
 
 // TODO we'll be able to remove the "any" if we update all the instances of gqlRequest to pass <Query>
-export const gqlRequest = async <Query = any>({
+export const gqlRequest = async <TQuery = any>({
   chainId,
   query,
   variables
-}: GqlRequestProps): Promise<Query> => {
+}: GqlRequestProps): Promise<TQuery> => {
   const id = chainId ?? SupportedChainId.MAINNET;
   const url = CHAIN_INFO[id].spockUrl;
 
