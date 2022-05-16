@@ -14,14 +14,14 @@ export async function fetchSpockPollById(
   pollId: number,
   network: SupportedNetworks
 ): Promise<PollSpock | undefined> {
-  const filter = getQueryFilter(QueryFilterNames.PollId);
-  const [poll] = await fetchSpockPolls(network, filter(pollId));
+  const filter = getQueryFilter(QueryFilterNames.PollId, { pollId });
+  const [poll] = await fetchSpockPolls(network, filter);
   return poll as PollSpock;
 }
 
 export async function fetchSpockPollBySlug(slug: string, network: SupportedNetworks): Promise<PollSpock> {
-  const filter = getQueryFilter(QueryFilterNames.MultiHash);
-  const [poll] = await fetchSpockPolls(network, filter(slug));
+  const filter = getQueryFilter(QueryFilterNames.MultiHash, { multiHash: slug });
+  const [poll] = await fetchSpockPolls(network, filter);
   return poll as PollSpock;
 }
 

@@ -14,9 +14,7 @@ import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
 import { ActivePollsRecord, Maybe, Query as GqlQuery } from 'modules/gql/generated/graphql';
-import { getQueryFilter } from 'modules/gql/gqlFilters';
-import { PollsQuery, QueryFilterList } from 'modules/gql/types';
-import { QueryFilterNames } from 'modules/gql/gql.constants';
+import { PollsQueryVariables } from 'modules/gql/types';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -70,7 +68,7 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
 
 export async function fetchSpockPolls(
   network: SupportedNetworks,
-  queryFilter?: PollsQuery | null
+  queryFilter?: PollsQueryVariables | null
 ): Promise<PollSpock[]> {
   const requestData = {
     chainId: networkNameToChainId(network),
@@ -87,9 +85,9 @@ export async function fetchSpockPolls(
 
 export async function _getAllPolls(
   network?: SupportedNetworks,
-  queryFilter?: PollsQuery | null
+  filter?: PollsQueryVariables | null
 ): Promise<Poll[]> {
-  const cacheKey = `polls-${queryFilter ? JSON.stringify(queryFilter) : 'all'}`;
+  const cacheKey = `polls-${filter ? JSON.stringify(filter) : 'all'}`;
 
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
@@ -98,7 +96,7 @@ export async function _getAllPolls(
     }
   }
 
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryFilter);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, filter);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -119,9 +117,9 @@ const defaultFilters: PollFilters = {
 export async function getPolls(
   filters = defaultFilters,
   network?: SupportedNetworks,
-  filterName?: QueryFilterNames
+  filter?: PollsQueryVariables
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network, getQueryFilter(filterName));
+  const allPolls = await _getAllPolls(network, filter);
 
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first

@@ -1,22 +1,12 @@
-import { ActivePollsRecordFilter } from '../generated/graphql';
-
-export type QueryFilterObject = Record<any, any>;
-export type QueryFilter<T> = T;
+import { QueryActivePollsArgs } from '../generated/graphql';
 
 // More filter types can be included here as we add them
-export type PollsQuery = {
-  filter: Partial<ActivePollsRecordFilter>;
-};
+export type PollsQueryVariables = Partial<QueryActivePollsArgs>;
 
-export type ActiveQueryFn = () => PollsQuery;
-export type RangeQueryFn = (start: number, end: number) => PollsQuery;
-export type PollIdQueryFn = (pollId: number) => PollsQuery;
-export type MultiHashQueryFn = (multiHash: string) => PollsQuery;
-
-type ActiveGenFn = (endDate: number) => Partial<QueryActivePollsArgs>;
-type PollIdGenFn = (pollId: number) => Partial<QueryActivePollsArgs>;
-type RangeGenFn = (start: number, end: number) => Partial<QueryActivePollsArgs>;
-type MultiHashGenFn = (multiHash: string) => Partial<QueryActivePollsArgs>;
+type ActiveGenFn = ({ endDate }: { endDate: number }) => Partial<QueryActivePollsArgs>;
+type PollIdGenFn = ({ pollId }: { pollId: number }) => Partial<QueryActivePollsArgs>;
+type RangeGenFn = ({ start, end }: { start: number; end: number }) => Partial<QueryActivePollsArgs>;
+type MultiHashGenFn = ({ multiHash }: { multiHash: string }) => Partial<QueryActivePollsArgs>;
 
 type QueryFilterList = {
   active: ActiveGenFn;
@@ -25,4 +15,4 @@ type QueryFilterList = {
   multiHash: MultiHashGenFn;
 };
 
-type FilterName = keyof QueryFilterList;
+type FilterNames = keyof QueryFilterList;
