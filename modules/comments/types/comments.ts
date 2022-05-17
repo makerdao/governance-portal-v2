@@ -4,26 +4,40 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 export type PollCommentsAPIResponseItem = {
   comment: PollComment;
+  isValid: boolean;
+  completed: boolean;
+
   address: AddressApiResponse;
 };
 
 export type PollCommentsAPIResponseItemWithWeight = {
   comment: PollCommentWithWeight;
+  isValid: boolean;
+  completed: boolean;
+
   address: AddressApiResponse;
 };
 
 export type ExecutiveCommentsAPIResponseItem = {
   comment: ExecutiveComment;
+  isValid: boolean;
+  completed: boolean;
+
   address: AddressApiResponse;
 };
 
 export type CommentsAPIResponseItem = {
   comment: ExecutiveComment | PollComment;
+  isValid: boolean;
+  completed: boolean;
+
   address: AddressApiResponse;
 };
 
 export type ParsedExecutiveComments = {
   comment: Omit<ExecutiveComment, 'voterWeight'> & { voterWeight: BigNumber };
+  isValid: boolean;
+  completed: boolean;
   address: AddressApiResponse;
 };
 

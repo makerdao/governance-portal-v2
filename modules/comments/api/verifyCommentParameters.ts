@@ -3,7 +3,6 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 import invariant from 'tiny-invariant';
 import { getNonce, removeNonces } from './nonce';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
 import { getContracts } from 'modules/web3/helpers/getContracts';
 import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 
@@ -18,23 +17,12 @@ export async function verifyCommentParameters(
   invariant(network && network.length > 0, 'Network not supported');
   invariant(txHash && txHash.length > 0, 'Missing verification data');
 
-  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
-  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-
   // Check nonce exist in db
   // Returns the address + uuid
   const nonceDB = await getNonce(hotAddress);
 
   // Missing nonce means that someone is trying to send a message without the api generating a valid nonce first
   invariant(!!nonceDB, 'Invalid data');
-
-  // verify tx ownership
-  const { from } = await provider.getTransaction(txHash);
-
-  invariant(
-    ethers.utils.getAddress(from).toLowerCase() === ethers.utils.getAddress(hotAddress).toLowerCase(),
-    "invalid 'from' address"
-  );
 
   // verify signature ownership and check that the signed nonce corresponds to the one in db
   invariant(

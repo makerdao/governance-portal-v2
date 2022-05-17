@@ -9,6 +9,9 @@ import {
 } from '../types/comments';
 import connectToDatabase from 'modules/db/helpers/connectToDatabase';
 import { markdownToHtml } from 'lib/markdown';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
+import { ethers } from 'ethers';
 export async function getExecutiveComments(
   spellAddress: string,
   network: SupportedNetworks
@@ -39,15 +42,27 @@ export async function getExecutiveComments(
 
   // only return the latest comment from each address
   const uniqueComments = uniqBy(comments, 'voterAddress');
+  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
+  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
 
   const promises = uniqueComments.map(async (comment: ExecutiveComment) => {
+    // verify tx ownership
+    const transaction = await provider.getTransaction(comment.txHash as string);
+
+    const isValid =
+      transaction &&
+      ethers.utils.getAddress(transaction.from).toLowerCase() ===
+        ethers.utils.getAddress(comment.hotAddress).toLowerCase();
+
     return {
       comment,
-      address: await getAddressInfo(comment.voterAddress, network)
+      address: await getAddressInfo(comment.voterAddress, network),
+      isValid,
+      completed: transaction && transaction.confirmations > 10
     };
   });
 
   const response = await Promise.all(promises);
 
-  return response as ExecutiveCommentsAPIResponseItem[];
+  return response.filter(i => i.isValid) as ExecutiveCommentsAPIResponseItem[];
 }

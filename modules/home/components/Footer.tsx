@@ -1,7 +1,7 @@
 import { Flex, Text, useColorMode } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { translate } from '@makerdao/i18n-helper';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 
@@ -155,7 +155,7 @@ export default function Footer({ locale = 'en' }: { locale?: string }): React.Re
 
   const mobile = bpi <= 1;
   return (
-    <div sx={{ position: 'relative' }}>
+    <div sx={{ position: 'relative', mt: 4 }}>
       <div
         sx={{
           width: '100vw',

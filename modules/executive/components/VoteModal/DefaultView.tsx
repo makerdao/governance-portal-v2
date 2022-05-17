@@ -11,7 +11,7 @@ import { useHat } from 'modules/executive/hooks/useHat';
 import { useMkrOnHat } from 'modules/executive/hooks/useMkrOnHat';
 import { useSpellData } from 'modules/executive/hooks/useSpellData';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
-import { CMSProposal, Proposal } from 'modules/executive/types';
+import { Proposal } from 'modules/executive/types';
 import { useLockedMkr } from 'modules/mkr/hooks/useLockedMkr';
 import React, { useEffect, useState } from 'react';
 import { Grid, Button, Flex, Close, Text, Box, Label, Checkbox } from 'theme-ui';
@@ -24,16 +24,20 @@ import { BigNumber, utils } from 'ethers';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { sign } from 'modules/web3/helpers/sign';
 import { ExecutiveCommentsRequestBody } from 'modules/comments/types/comments';
+import { ExternalLink } from 'modules/app/components/ExternalLink';
+import { getEtherscanLink } from 'modules/web3/helpers/getEtherscanLink';
 
 export default function DefaultVoteModalView({
   proposal,
+  address,
   close,
   onTransactionPending,
   onTransactionMined,
   onTransactionCreated,
   onTransactionFailed
 }: {
-  proposal: Proposal;
+  proposal?: Proposal;
+  address?: string;
   close: () => void;
   onTransactionPending: () => void;
   onTransactionMined: () => void;
@@ -52,7 +56,9 @@ export default function DefaultVoteModalView({
     voteDelegateContractAddress
   );
 
-  const { data: spellData, mutate: mutateSpellData } = useSpellData(proposal.address);
+  const spellAddress = proposal ? proposal.address : address ? address : '';
+
+  const { data: spellData, mutate: mutateSpellData } = useSpellData(spellAddress);
 
   // revalidate on mount
   useEffect(() => {
@@ -62,7 +68,7 @@ export default function DefaultVoteModalView({
 
   const [hatChecked, setHatChecked] = useState(true);
   const { data: currentSlate, mutate: mutateVotedProposals } = useVotedProposals();
-  const { mutate: mutateComments } = useExecutiveComments(proposal.address);
+  const { mutate: mutateComments } = useExecutiveComments(spellAddress);
 
   const [comment, setComment] = useState('');
   const [signedMessage, setSignedMessage] = useState('');
@@ -97,21 +103,20 @@ export default function DefaultVoteModalView({
   const { vote: proxyVote } = useVoteProxyVote();
   const { vote: chiefVote } = useChiefVote();
 
-  const isHat = hat && hat === proposal.address;
+  const isHat = hat && hat === spellAddress;
   const showHatCheckbox =
-    hat && proposal.address !== hat && currentSlate.includes(hat) && !currentSlate.includes(proposal.address);
+    hat && spellAddress !== hat && currentSlate.includes(hat) && !currentSlate.includes(spellAddress);
   const hasVotingWeight = lockedMkr?.gt(0);
   const mkrSupporting = spellData ? BigNumber.from(spellData.mkrSupport) : BigNumber.from(0);
   const afterVote =
-    currentSlate && currentSlate.includes(proposal.address)
+    currentSlate && currentSlate.includes(spellAddress)
       ? mkrSupporting
       : lockedMkr && spellData
       ? lockedMkr.add(BigNumber.from(spellData.mkrSupport))
       : BigNumber.from(0);
 
   const vote = hatChecked => {
-    const proposals =
-      hatChecked && showHatCheckbox ? sortBytesArray([hat, proposal.address]) : [proposal.address];
+    const proposals = hatChecked && showHatCheckbox ? sortBytesArray([hat, spellAddress]) : [spellAddress];
 
     const encoder = new utils.AbiCoder();
     const encodedParam = encoder.encode(['address[]'], [proposals]);
@@ -133,7 +138,7 @@ export default function DefaultVoteModalView({
             txHash,
             addressLockedMKR: addressLockedMKR || ''
           };
-          fetchJson(`/api/comments/executive/add/${proposal.address}?network=${network}`, {
+          fetchJson(`/api/comments/executive/add/${spellAddress}?network=${network}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -178,9 +183,9 @@ export default function DefaultVoteModalView({
   );
 
   const votingMessage =
-    currentSlate && currentSlate.includes(proposal.address) && currentSlate.length > 1
+    currentSlate && currentSlate.includes(spellAddress) && currentSlate.length > 1
       ? 'Concentrate all my MKR on this proposal'
-      : currentSlate && !currentSlate.includes(proposal.address) && isHat
+      : currentSlate && !currentSlate.includes(spellAddress) && isHat
       ? 'Add MKR to secure the protocol'
       : 'Submit Vote';
 
@@ -209,7 +214,14 @@ export default function DefaultVoteModalView({
           fontSize: [3, 4]
         }}
       >
-        <Text>{(proposal as CMSProposal).title}</Text>
+        <Text as="p" sx={{ fontSize: [3, 4], fontWeight: 'bold' }}>
+          {proposal ? proposal.title : 'Unknown Spell'}
+        </Text>
+        <ExternalLink href={getEtherscanLink(network, spellAddress, 'address')} title="View on Etherscan">
+          <Text as="p" sx={{ fontSize: [1, 4] }}>
+            {spellAddress}
+          </Text>
+        </ExternalLink>
       </Box>
       <Grid
         columns={[1, 3, 3, 3]}
