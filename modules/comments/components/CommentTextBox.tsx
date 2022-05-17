@@ -46,7 +46,7 @@ export default function CommentTextBox({
         sx={{ fontSize: 1, color: value.length > 1500 ? 'error' : 'textMuted', mt: 1 }}
       >
         Optional. You&apos;ll be prompted to sign a message with your wallet. {1500 - value.length} characters
-        remaining.
+        remaining. Commenting is not yet supported for multisig users.
       </Text>
     </Box>
   );
