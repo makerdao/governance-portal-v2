@@ -1,28 +1,20 @@
-import { Flex, Box, Checkbox, Label, Text, Divider } from 'theme-ui';
+import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import { useMemo } from 'react';
-import { filterPolls } from '../helpers/filterPolls';
+import { filterPolls } from '../../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 
-export default function CategoryFilter({
-  categories,
-  polls,
-  ...props
-}: {
-  categories: PollCategory[];
-  polls: Poll[];
-}): JSX.Element {
+export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
     endDate,
     categoryFilter,
-    setCategoryFilter,
     showPollActive,
     showPollEnded,
     setShowPollActive,
@@ -32,7 +24,6 @@ export default function CategoryFilter({
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
-      state.setCategoryFilter,
       state.pollFilters.showPollActive,
       state.pollFilters.showPollEnded,
       state.setShowPollActive,
@@ -46,10 +37,6 @@ export default function CategoryFilter({
     return filterPolls(polls, startDate, endDate, categoryFilter, true, true);
   }, [polls, startDate, endDate, categoryFilter]);
 
-  const filteredPollsNoCategories = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, null, showPollActive, showPollEnded);
-  }, [polls, startDate, endDate, showPollActive, showPollEnded]);
-
   const filteredPolls = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
   }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
@@ -57,7 +44,7 @@ export default function CategoryFilter({
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (
     <FilterButton
-      name={() => `Poll Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
+      name={() => `Status ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
       {...props}
@@ -99,36 +86,6 @@ export default function CategoryFilter({
             </Flex>
           </Label>
         </Flex>
-        <Divider />
-        <Flex sx={{ flexDirection: 'column' }}>
-          {categories.map(category => (
-            <Flex key={category.name}>
-              <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
-                <Checkbox
-                  sx={{ width: 3, height: 3 }}
-                  checked={(categoryFilter && categoryFilter[category.name]) || false}
-                  onChange={event => {
-                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked });
-                    trackButtonClick(
-                      `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
-                    );
-                  }}
-                />
-                <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{category.name}</Text>
-                  <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.categories.includes(category.name)).length}
-                  </Text>
-                </Flex>
-              </Label>
-            </Flex>
-          ))}
-        </Flex>
-      </Box>
-      <Box sx={{ borderTop: '1px solid', borderColor: 'outline' }}>
-        <Text as="p" sx={{ color: 'primary', textAlign: 'center', fontWeight: 'semiBold', p: 2 }}>
-          {filteredPolls.length} Results
-        </Text>
       </Box>
     </FilterButton>
   );

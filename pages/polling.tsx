@@ -17,8 +17,10 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import DateFilter from 'modules/polling/components/DateFilter';
-import CategoryFilter from 'modules/polling/components/CategoryFilter';
+import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
+import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
+import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
+import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
@@ -142,6 +144,8 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
               Filters
             </Heading>
             <CategoryFilter categories={categories} polls={polls} />
+            <StatusFilter polls={polls} sx={{ ml: 3 }} />
+            <PollTypeFilter categories={categories} polls={polls} sx={{ ml: 3 }} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
           <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>

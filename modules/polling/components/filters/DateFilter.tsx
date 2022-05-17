@@ -13,7 +13,7 @@ const displayDate = date => {
   }
 };
 
-export default function DateFilter(props): JSX.Element {
+export function DateFilter(props): JSX.Element {
   const [startDate, setStartDate, endDate, setEndDate] = useUiFiltersStore(
     state => [state.pollFilters.startDate, state.setStartDate, state.pollFilters.endDate, state.setEndDate],
     shallow
@@ -37,10 +37,10 @@ export default function DateFilter(props): JSX.Element {
   return (
     <FilterButton
       name={() => {
-        if (!startDateDisplay && !endDateDisplay) return 'Date Filter';
-        if (!startDateDisplay) return `Date Filter: before ${endDateDisplay}`;
-        if (!endDateDisplay) return `Date Filter: after ${startDateDisplay}`;
-        return `Date Filter: ${startDateDisplay} - ${endDateDisplay}`;
+        if (!startDateDisplay && !endDateDisplay) return 'Date';
+        if (!startDateDisplay) return `Date: before ${endDateDisplay}`;
+        if (!endDateDisplay) return `Date: after ${startDateDisplay}`;
+        return `Date: ${startDateDisplay} - ${endDateDisplay}`;
       }}
       {...props}
     >
