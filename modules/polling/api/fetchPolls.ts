@@ -13,7 +13,7 @@ import { PollSpock } from '../types/pollSpock';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
-import { ActivePollsRecord, Maybe, Query as GqlQuery } from 'modules/gql/generated/graphql';
+import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
 import { PollsQueryVariables } from 'modules/gql/types';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
@@ -78,8 +78,12 @@ export async function fetchSpockPolls(
 
   const data = await gqlRequest<GqlQuery>(requestData);
 
-  const pollList: Maybe<ActivePollsRecord>[] = data.activePolls.nodes;
-  //TODO: maybe we should use the GQL generated types when applicable
+  const pollEdges: ActivePollEdge[] = data.activePolls.edges;
+
+  const pollList = pollEdges.map(({ node: poll, cursor }) => {
+    return { ...poll, cursor };
+  });
+
   return pollList as PollSpock[];
 }
 
