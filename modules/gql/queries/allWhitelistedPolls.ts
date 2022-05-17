@@ -6,9 +6,17 @@ export const allWhitelistedPolls = gql`
     $before: Cursor
     $last: Int
     $after: Cursor
+    $offset: Int
     $filter: ActivePollsRecordFilter
   ) {
-    activePolls(first: $first, before: $before, last: $last, after: $after, filter: $filter) {
+    activePolls(
+      first: $first
+      before: $before
+      last: $last
+      after: $after
+      offset: $offset
+      filter: $filter
+    ) {
       edges {
         node {
           creator

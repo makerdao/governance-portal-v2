@@ -68,12 +68,12 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
 
 export async function fetchSpockPolls(
   network: SupportedNetworks,
-  queryFilter?: PollsQueryVariables | null
+  queryVariables?: PollsQueryVariables | null
 ): Promise<PollSpock[]> {
   const requestData = {
     chainId: networkNameToChainId(network),
     query: allWhitelistedPolls,
-    variables: queryFilter
+    variables: queryVariables
   };
 
   const data = await gqlRequest<GqlQuery>(requestData);
@@ -89,9 +89,9 @@ export async function fetchSpockPolls(
 
 export async function _getAllPolls(
   network?: SupportedNetworks,
-  filter?: PollsQueryVariables | null
+  queryVariables?: PollsQueryVariables | null
 ): Promise<Poll[]> {
-  const cacheKey = `polls-${filter ? JSON.stringify(filter) : 'all'}`;
+  const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
 
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
@@ -100,7 +100,7 @@ export async function _getAllPolls(
     }
   }
 
-  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, filter);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -121,9 +121,9 @@ const defaultFilters: PollFilters = {
 export async function getPolls(
   filters = defaultFilters,
   network?: SupportedNetworks,
-  filter?: PollsQueryVariables
+  queryVariables?: PollsQueryVariables
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network, filter);
+  const allPolls = await _getAllPolls(network, queryVariables);
 
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
