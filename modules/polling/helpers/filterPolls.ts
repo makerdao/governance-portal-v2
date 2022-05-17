@@ -1,4 +1,4 @@
-import { Poll } from '../types';
+import { Poll, PollVoteType } from '../types';
 import { isActivePoll } from './utils';
 
 // Functions for filtering polls based on the frontend main polling page needs
@@ -6,7 +6,8 @@ export function filterPolls(
   polls: Poll[],
   start,
   end,
-  categoryFilter,
+  categoryFilter: Record<string, boolean> | null,
+  pollVoteType: PollVoteType | null,
   showPollActive: boolean,
   showPollEnded: boolean
 ): Poll[] {
@@ -35,5 +36,10 @@ export function filterPolls(
         return false;
       }
       return true;
+    })
+    .filter(poll => {
+      if (!pollVoteType) return true;
+
+      return poll.voteType === pollVoteType;
     });
 }

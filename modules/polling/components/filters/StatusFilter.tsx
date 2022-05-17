@@ -32,16 +32,11 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
     shallow
   );
 
-  const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
   const filteredPollsOnlyCategories = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, true, true);
   }, [polls, startDate, endDate, categoryFilter]);
 
-  const filteredPolls = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
-  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
-
-  const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
+  const filtersSelected = (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (
     <FilterButton
       name={() => `Status ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}

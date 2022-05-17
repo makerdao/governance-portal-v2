@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export function PollTypeFilter({
   categories,
@@ -18,13 +19,14 @@ export function PollTypeFilter({
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [startDate, endDate, categoryFilter, setCategoryFilter, showPollActive, showPollEnded] =
+  const [startDate, endDate, categoryFilter, pollVoteType, setPollVoteType, showPollActive, showPollEnded] =
     useUiFiltersStore(
       state => [
         state.pollFilters.startDate,
         state.pollFilters.endDate,
         state.pollFilters.categoryFilter,
-        state.setCategoryFilter,
+        state.pollFilters.pollVoteType,
+        state.setPollVoteType,
         state.pollFilters.showPollActive,
         state.pollFilters.showPollEnded
       ],
@@ -32,41 +34,38 @@ export function PollTypeFilter({
     );
 
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
+
   const filteredPollsNoCategories = useMemo(() => {
     return filterPolls(polls, startDate, endDate, null, showPollActive, showPollEnded);
   }, [polls, startDate, endDate, showPollActive, showPollEnded]);
 
-  const filteredPolls = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
-  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
-
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (
     <FilterButton
-      name={() => `Category ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
+      name={() => `Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
-          {categories.map(category => (
-            <Flex key={category.name}>
+          {Object.values(POLL_VOTE_TYPE).map(type => (
+            <Flex key={type}>
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(categoryFilter && categoryFilter[category.name]) || false}
+                  checked={(pollVoteType && pollVoteType[type]) || false}
                   onChange={event => {
-                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked });
-                    trackButtonClick(
-                      `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
-                    );
+                    setPollVoteType(type);
+                    // trackButtonClick(
+                    //   `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
+                    // );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{category.name}</Text>
+                  <Text>{type}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.categories.includes(category.name)).length}
+                    {filteredPollsNoCategories.filter(i => i.categories.includes(type)).length}
                   </Text>
                 </Flex>
               </Label>

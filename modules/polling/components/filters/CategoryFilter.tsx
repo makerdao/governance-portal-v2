@@ -17,12 +17,13 @@ export function CategoryFilter({
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [startDate, endDate, categoryFilter, setCategoryFilter, showPollActive, showPollEnded] =
+  const [startDate, endDate, categoryFilter, pollVoteType, setCategoryFilter, showPollActive, showPollEnded] =
     useUiFiltersStore(
       state => [
         state.pollFilters.startDate,
         state.pollFilters.endDate,
         state.pollFilters.categoryFilter,
+        state.pollFilters.pollVoteType,
         state.setCategoryFilter,
         state.pollFilters.showPollActive,
         state.pollFilters.showPollEnded
@@ -32,12 +33,8 @@ export function CategoryFilter({
 
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
   const filteredPollsNoCategories = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, null, showPollActive, showPollEnded);
+    return filterPolls(polls, startDate, endDate, null, pollVoteType, showPollActive, showPollEnded);
   }, [polls, startDate, endDate, showPollActive, showPollEnded]);
-
-  const filteredPolls = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
-  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (

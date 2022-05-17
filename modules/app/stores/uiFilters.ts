@@ -1,3 +1,4 @@
+import { PollVoteType } from 'modules/polling/types';
 import create from 'zustand';
 
 type Store = {
@@ -5,6 +6,7 @@ type Store = {
     startDate: null | Date;
     endDate: null | Date;
     categoryFilter: null | { [category: string]: boolean };
+    pollVoteType: null | PollVoteType;
     showHistorical: boolean;
     showPollActive: boolean;
     showPollEnded: boolean;
@@ -16,6 +18,7 @@ type Store = {
   setStartDate: (type: 'poll' | 'executive', startDate: Date | null) => void;
   setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
+  setPollVoteType: (pollVoteType: PollVoteType) => void;
   setShowHistorical: (showHistorical: boolean) => void;
   setShowPollActive: (showActive: boolean) => void;
   setShowPollEnded: (ended: boolean) => void;
@@ -30,6 +33,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     startDate: null,
     endDate: null,
     categoryFilter: null,
+    pollVoteType: null,
     showHistorical: false,
     showPollActive: false,
     showPollEnded: false
@@ -54,6 +58,10 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ pollFilters: { ...get().pollFilters, categoryFilter } });
   },
 
+  setPollVoteType: pollVoteType => {
+    set({ pollFilters: { ...get().pollFilters, pollVoteType } });
+  },
+
   setShowPollActive: (active: boolean) => {
     set({ pollFilters: { ...get().pollFilters, showPollActive: active } });
   },
@@ -72,6 +80,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         startDate: null,
         endDate: null,
         categoryFilter: null,
+        pollVoteType: null,
         showHistorical: false,
         showPollActive: false,
         showPollEnded: false
