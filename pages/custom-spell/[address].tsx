@@ -98,8 +98,6 @@ export async function getServerSideProps({ params }) {
   const spellAddress = (params || {})['address'] as string;
   const data = await analyzeSpell(spellAddress, DEFAULT_NETWORK.network);
 
-  console.log(data);
-
   let spellDetails;
 
   if (data && data.executiveHash === undefined) {
@@ -107,10 +105,7 @@ export async function getServerSideProps({ params }) {
   } else {
     spellDetails = data;
   }
-
-  console.log(spellAddress);
-  console.log(spellDetails);
-
+  
   return {
     props: {
       spellAddress,
