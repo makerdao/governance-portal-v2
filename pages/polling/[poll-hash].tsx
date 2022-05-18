@@ -83,7 +83,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
       setNextSlug(nextPoll?.slug);
     };
 
-    fetchFilteredPolls(categoryFilter);
+    fetchFilteredPolls(categoryFilter).catch(() => {
+      // Do nothing
+    });
   }, [categoryFilter, poll]);
 
   return (
