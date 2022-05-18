@@ -92,7 +92,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       showPollActive,
       showPollEnded
     });
-  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
+  }, [polls, startDate, endDate, categoryFilter, pollVoteType, showPollActive, showPollEnded]);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);

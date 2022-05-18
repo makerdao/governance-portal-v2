@@ -42,7 +42,7 @@ export function CategoryFilter({
       showPollActive,
       showPollEnded
     });
-  }, [polls, startDate, endDate, showPollActive, showPollEnded]);
+  }, [polls, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (

@@ -44,7 +44,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
       showPollActive: true,
       showPollEnded: true
     });
-  }, [polls, startDate, endDate, categoryFilter]);
+  }, [polls, startDate, endDate, pollVoteType, categoryFilter]);
 
   const filtersSelected = (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (

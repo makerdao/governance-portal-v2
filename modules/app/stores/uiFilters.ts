@@ -6,7 +6,7 @@ type Store = {
     startDate: null | Date;
     endDate: null | Date;
     categoryFilter: null | { [category: string]: boolean };
-    pollVoteType: null | PollVoteType;
+    pollVoteType: null | { [type: string]: boolean };
     showHistorical: boolean;
     showPollActive: boolean;
     showPollEnded: boolean;
@@ -18,7 +18,7 @@ type Store = {
   setStartDate: (type: 'poll' | 'executive', startDate: Date | null) => void;
   setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
-  setPollVoteType: (pollVoteType: PollVoteType) => void;
+  setPollVoteType: (pollVoteType: { [type: string]: boolean }) => void;
   setShowHistorical: (showHistorical: boolean) => void;
   setShowPollActive: (showActive: boolean) => void;
   setShowPollEnded: (ended: boolean) => void;

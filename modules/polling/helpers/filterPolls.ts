@@ -1,4 +1,4 @@
-import { Poll, PollVoteType } from '../types';
+import { Poll } from '../types';
 import { isActivePoll } from './utils';
 
 type PollFilterInputs = {
@@ -6,7 +6,7 @@ type PollFilterInputs = {
   start;
   end;
   categoryFilter: Record<string, boolean> | null;
-  pollVoteType: PollVoteType | null;
+  pollVoteType: Record<string, boolean> | null;
   showPollActive: boolean;
   showPollEnded: boolean;
 };
@@ -25,6 +25,7 @@ export function filterPolls({
   const endDate = end && new Date(end);
 
   const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
+  const noPollVoteTypesSelected = pollVoteType === null || Object.values(pollVoteType).every(t => !t);
 
   return polls
     .filter(poll => {
@@ -50,6 +51,6 @@ export function filterPolls({
     .filter(poll => {
       if (!pollVoteType) return true;
 
-      return poll.voteType === pollVoteType;
+      return noPollVoteTypesSelected || pollVoteType[poll.voteType] === true;
     });
 }

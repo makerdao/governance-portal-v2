@@ -33,24 +33,23 @@ export function PollTypeFilter({
       shallow
     );
 
-  const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
+  const itemsSelected = Object.values(pollVoteType || {}).filter(i => !!i);
 
-  const filteredPollsNoCategories = useMemo(() => {
+  const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
       start: startDate,
       end: endDate,
-      categoryFilter: null,
+      categoryFilter,
       pollVoteType,
       showPollActive,
       showPollEnded
     });
   }, [polls, startDate, endDate, showPollActive, showPollEnded]);
 
-  const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (
     <FilterButton
-      name={() => `Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
+      name={() => `Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
       {...props}
@@ -64,7 +63,7 @@ export function PollTypeFilter({
                   sx={{ width: 3, height: 3 }}
                   checked={(pollVoteType && pollVoteType[type]) || false}
                   onChange={event => {
-                    setPollVoteType(type);
+                    setPollVoteType({ ...pollVoteType, [type]: event.target.checked });
                     // trackButtonClick(
                     //   `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
                     // );
@@ -73,7 +72,7 @@ export function PollTypeFilter({
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{type}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.categories.includes(type)).length}
+                    {filteredPolls.filter(i => i.voteType.includes(type)).length}
                   </Text>
                 </Flex>
               </Label>
