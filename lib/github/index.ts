@@ -23,7 +23,7 @@ export async function fetchGitHubPage(owner: string, repo: string, path: string)
     return Promise.resolve([]);
   }
 
-  const octokitRequest = octokit.defaults({
+  const octokitRequest = octokit.request.defaults({
     per_page: 1000
   });
 
