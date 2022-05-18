@@ -1,4 +1,4 @@
-import { Flex, Box, Checkbox, Label, Text } from 'theme-ui';
+import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import { Poll, PollCategory } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
@@ -15,26 +15,37 @@ export function CategoryFilter({
 }: {
   categories: PollCategory[];
   polls: Poll[];
+  sx?: ThemeUIStyleObject;
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [startDate, endDate, categoryFilter, pollVoteType, setCategoryFilter, showPollActive, showPollEnded] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.pollVoteType,
-        state.setCategoryFilter,
-        state.pollFilters.showPollActive,
-        state.pollFilters.showPollEnded
-      ],
-      shallow
-    );
+  const [
+    title,
+    startDate,
+    endDate,
+    categoryFilter,
+    pollVoteType,
+    setCategoryFilter,
+    showPollActive,
+    showPollEnded
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.title,
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.pollVoteType,
+      state.setCategoryFilter,
+      state.pollFilters.showPollActive,
+      state.pollFilters.showPollEnded
+    ],
+    shallow
+  );
 
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
   const filteredPollsNoCategories = useMemo(() => {
     return filterPolls({
       polls,
+      title,
       start: startDate,
       end: endDate,
       categoryFilter: null,
@@ -42,7 +53,7 @@ export function CategoryFilter({
       showPollActive,
       showPollEnded
     });
-  }, [polls, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
+  }, [polls, title, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (

@@ -19,25 +19,35 @@ export function PollTypeFilter({
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [startDate, endDate, categoryFilter, pollVoteType, setPollVoteType, showPollActive, showPollEnded] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters.startDate,
-        state.pollFilters.endDate,
-        state.pollFilters.categoryFilter,
-        state.pollFilters.pollVoteType,
-        state.setPollVoteType,
-        state.pollFilters.showPollActive,
-        state.pollFilters.showPollEnded
-      ],
-      shallow
-    );
+  const [
+    title,
+    startDate,
+    endDate,
+    categoryFilter,
+    pollVoteType,
+    setPollVoteType,
+    showPollActive,
+    showPollEnded
+  ] = useUiFiltersStore(
+    state => [
+      state.pollFilters.title,
+      state.pollFilters.startDate,
+      state.pollFilters.endDate,
+      state.pollFilters.categoryFilter,
+      state.pollFilters.pollVoteType,
+      state.setPollVoteType,
+      state.pollFilters.showPollActive,
+      state.pollFilters.showPollEnded
+    ],
+    shallow
+  );
 
   const itemsSelected = Object.values(pollVoteType || {}).filter(i => !!i);
 
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
+      title,
       start: startDate,
       end: endDate,
       categoryFilter,
@@ -45,7 +55,7 @@ export function PollTypeFilter({
       showPollActive,
       showPollEnded
     });
-  }, [polls, startDate, endDate, showPollActive, showPollEnded]);
+  }, [polls, title, startDate, endDate, showPollActive, showPollEnded]);
 
   return (
     <FilterButton

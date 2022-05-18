@@ -12,6 +12,7 @@ import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constant
 export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIStyleObject }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
+    title,
     startDate,
     endDate,
     categoryFilter,
@@ -22,6 +23,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
     setShowPollEnded
   ] = useUiFiltersStore(
     state => [
+      state.pollFilters.title,
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
@@ -37,6 +39,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
   const filteredPollsOnlyCategories = useMemo(() => {
     return filterPolls({
       polls,
+      title,
       start: startDate,
       end: endDate,
       categoryFilter,
@@ -44,7 +47,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
       showPollActive: true,
       showPollEnded: true
     });
-  }, [polls, startDate, endDate, pollVoteType, categoryFilter]);
+  }, [polls, title, startDate, endDate, pollVoteType, categoryFilter]);
 
   const filtersSelected = (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
   return (

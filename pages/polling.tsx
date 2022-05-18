@@ -17,6 +17,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
+import { PollTitleSearch } from 'modules/polling/components/filters/PollTitleSearch';
 import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
 import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
@@ -43,6 +44,7 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
+    title,
     startDate,
     endDate,
     categoryFilter,
@@ -55,6 +57,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     resetPollFilters
   ] = useUiFiltersStore(
     state => [
+      state.pollFilters.title,
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
@@ -85,6 +88,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
+      title,
       start: startDate,
       end: endDate,
       categoryFilter,
@@ -92,7 +96,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       showPollActive,
       showPollEnded
     });
-  }, [polls, startDate, endDate, categoryFilter, pollVoteType, showPollActive, showPollEnded]);
+  }, [polls, title, startDate, endDate, categoryFilter, pollVoteType, showPollActive, showPollEnded]);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
@@ -148,17 +152,16 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       />
 
       <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
-              Filters
-            </Heading>
-            <CategoryFilter categories={categories} polls={polls} />
-            <StatusFilter polls={polls} sx={{ ml: 3 }} />
-            <PollTypeFilter categories={categories} polls={polls} sx={{ ml: 3 }} />
-            <DateFilter sx={{ ml: 3 }} />
-          </Flex>
-          <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
+        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'], flexWrap: 'wrap' }}>
+          <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
+            Filters
+          </Heading>
+          <PollTitleSearch sx={{ mb: [3, 0] }} />
+          <CategoryFilter categories={categories} polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
+          <StatusFilter polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
+          <PollTypeFilter categories={categories} polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
+          <DateFilter sx={{ ml: 3, mb: [3, 0] }} />
+          <Button variant={'outline'} sx={{ ml: 3, mb: [3, 0] }} onClick={resetPollFilters}>
             Clear filters
           </Button>
         </Flex>
