@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import shallow from 'zustand/shallow';
 import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -44,6 +45,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import useUiFiltersStore from 'modules/app/stores/uiFilters';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -51,6 +53,10 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
+  const [categoryFilter] = useUiFiltersStore(state => [state.pollFilters.categoryFilter], shallow);
+  const [prevSlug, setPrevSlug] = useState();
+  const [nextSlug, setNextSlug] = useState();
+
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
@@ -63,6 +69,22 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const { tally } = usePollTally(poll.pollId, 60000);
   const { comments, error: errorComments } = usePollComments(poll.pollId);
+
+  useEffect(() => {
+    const fetchFilteredPolls = async filter => {
+      if (!filter) return;
+      const { polls: pollData } = await fetchJson(
+        `/api/polling/all-polls?network=mainnet&categories=${Object.keys(filter)}`
+      );
+      const currentIdx = pollData.indexOf(pollData.find(({ pollId }) => pollId === poll.pollId));
+      const previousPoll = pollData[currentIdx - 1];
+      const nextPoll = pollData[currentIdx + 1];
+      setPrevSlug(previousPoll?.slug);
+      setNextSlug(nextPoll?.slug);
+    };
+
+    fetchFilteredPolls(categoryFilter);
+  }, [categoryFilter, poll]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -86,12 +108,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </Button>
             </InternalLink>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              {poll.ctx?.prev?.slug && (
-                <InternalLink
-                  href={`/polling/${poll.ctx.prev.slug}`}
-                  title="View previous poll"
-                  scroll={false}
-                >
+              {prevSlug && (
+                <InternalLink href={`/polling/${prevSlug}`} title="View previous poll" scroll={false}>
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} />
@@ -100,9 +118,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </Button>
                 </InternalLink>
               )}
-              {poll.ctx?.next?.slug && (
+              {nextSlug && (
                 <InternalLink
-                  href={`/polling/${poll.ctx.next.slug}`}
+                  href={`/polling/${nextSlug}`}
                   title="View next poll"
                   scroll={false}
                   styles={{ ml: 2 }}
