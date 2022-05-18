@@ -15,6 +15,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
     startDate,
     endDate,
     categoryFilter,
+    pollVoteType,
     showPollActive,
     showPollEnded,
     setShowPollActive,
@@ -24,6 +25,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
+      state.pollFilters.pollVoteType,
       state.pollFilters.showPollActive,
       state.pollFilters.showPollEnded,
       state.setShowPollActive,
@@ -33,7 +35,15 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
   );
 
   const filteredPollsOnlyCategories = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, true, true);
+    return filterPolls({
+      polls,
+      start: startDate,
+      end: endDate,
+      categoryFilter,
+      pollVoteType,
+      showPollActive: true,
+      showPollEnded: true
+    });
   }, [polls, startDate, endDate, categoryFilter]);
 
   const filtersSelected = (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);

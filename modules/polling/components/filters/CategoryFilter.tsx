@@ -33,7 +33,15 @@ export function CategoryFilter({
 
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
   const filteredPollsNoCategories = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, null, pollVoteType, showPollActive, showPollEnded);
+    return filterPolls({
+      polls,
+      start: startDate,
+      end: endDate,
+      categoryFilter: null,
+      pollVoteType,
+      showPollActive,
+      showPollEnded
+    });
   }, [polls, startDate, endDate, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);

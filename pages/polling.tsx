@@ -46,6 +46,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     startDate,
     endDate,
     categoryFilter,
+    pollVoteType,
     setCategoryFilter,
     showHistorical,
     showPollActive,
@@ -57,6 +58,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       state.pollFilters.startDate,
       state.pollFilters.endDate,
       state.pollFilters.categoryFilter,
+      state.pollFilters.pollVoteType,
       state.setCategoryFilter,
       state.pollFilters.showHistorical,
       state.pollFilters.showPollActive,
@@ -81,7 +83,15 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { network } = useActiveWeb3React();
 
   const filteredPolls = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
+    return filterPolls({
+      polls,
+      start: startDate,
+      end: endDate,
+      categoryFilter,
+      pollVoteType,
+      showPollActive,
+      showPollEnded
+    });
   }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
   const [activePolls, setActivePolls] = useState([]);

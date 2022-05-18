@@ -1,16 +1,26 @@
 import { Poll, PollVoteType } from '../types';
 import { isActivePoll } from './utils';
 
+type PollFilterInputs = {
+  polls: Poll[];
+  start;
+  end;
+  categoryFilter: Record<string, boolean> | null;
+  pollVoteType: PollVoteType | null;
+  showPollActive: boolean;
+  showPollEnded: boolean;
+};
+
 // Functions for filtering polls based on the frontend main polling page needs
-export function filterPolls(
-  polls: Poll[],
+export function filterPolls({
+  polls,
   start,
   end,
-  categoryFilter: Record<string, boolean> | null,
-  pollVoteType: PollVoteType | null,
-  showPollActive: boolean,
-  showPollEnded: boolean
-): Poll[] {
+  categoryFilter,
+  pollVoteType,
+  showPollActive,
+  showPollEnded
+}: PollFilterInputs): Poll[] {
   const startDate = start && new Date(start);
   const endDate = end && new Date(end);
 
