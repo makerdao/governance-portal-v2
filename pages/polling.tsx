@@ -167,7 +167,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
               {/* <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} /> */}
             </Button>
           </Flex>
-          {showFilters && (
+          {(showFilters || bpi > 0) && (
             <Flex sx={{ flexDirection: ['column', 'row'] }}>
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
                 <PollTitleSearch sx={{ m: 2 }} />
