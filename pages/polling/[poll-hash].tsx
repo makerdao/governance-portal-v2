@@ -3,7 +3,6 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import shallow from 'zustand/shallow';
 import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -53,9 +52,9 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  const [categoryFilter] = useUiFiltersStore(state => [state.pollFilters.categoryFilter], shallow);
-  const [prevSlug, setPrevSlug] = useState();
-  const [nextSlug, setNextSlug] = useState();
+  const categoryFilter = useUiFiltersStore(state => state.pollFilters.categoryFilter);
+  const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
+  const [nextSlug, setNextSlug] = useState(poll.ctx?.next?.slug);
 
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
@@ -71,10 +70,11 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
   useEffect(() => {
-    const fetchFilteredPolls = async filter => {
-      if (!filter) return;
+    const fetchFilteredPolls = async categories => {
       const { polls: pollData } = await fetchJson(
-        `/api/polling/all-polls?network=mainnet&categories=${Object.keys(filter)}`
+        `/api/polling/all-polls?network=mainnet&categories=${Object.keys(categories).filter(
+          cat => !!categories[cat]
+        )}`
       );
       const currentIdx = pollData.indexOf(pollData.find(({ pollId }) => pollId === poll.pollId));
       const previousPoll = pollData[currentIdx - 1];
@@ -83,9 +83,16 @@ const PollView = ({ poll }: { poll: Poll }) => {
       setNextSlug(nextPoll?.slug);
     };
 
-    fetchFilteredPolls(categoryFilter).catch(() => {
-      // Do nothing
-    });
+    if (categoryFilter) {
+      fetchFilteredPolls(categoryFilter).catch(() => {
+        // If there's an error fetching filtered polls, just use the default sort by pollId
+        setPrevSlug(poll.ctx?.prev?.slug);
+        setNextSlug(poll.ctx?.next?.slug);
+      });
+    } else {
+      setPrevSlug(poll.ctx?.prev?.slug);
+      setNextSlug(poll.ctx?.next?.slug);
+    }
   }, [categoryFilter, poll]);
 
   return (
