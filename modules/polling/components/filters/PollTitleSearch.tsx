@@ -24,18 +24,32 @@ export const PollTitleSearch = ({ ...props }: Props): JSX.Element => {
     }
   }, [title]);
 
+  const hasSearchTerm = !(!searchTerm || searchTerm === '');
+
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative' }} {...props}>
       <Input
         name="pollSearch"
         onChange={handleInput}
         type="search"
         value={searchTerm}
         placeholder="Search poll titles"
-        sx={{ maxWidth: 250, borderRadius: 'round', px: 3 }}
-        {...props}
+        sx={{
+          maxWidth: 250,
+          borderRadius: 'round',
+          px: 3,
+          borderColor: hasSearchTerm ? 'primary' : 'auto',
+          '&:focus': {
+            borderColor: hasSearchTerm ? 'primary' : 'auto'
+          },
+          'input:invalid ~ span:after': {
+            paddingLeft: '5px',
+            position: 'absolute',
+            cursor: 'pointer'
+          }
+        }}
       />
-      {(!searchTerm || searchTerm === '') && (
+      {!hasSearchTerm && (
         <Box sx={{ position: 'absolute', top: 11, right: 16 }}>
           <Icon name="magnifying_glass" sx={{ color: 'black', size: 3 }} />
         </Box>

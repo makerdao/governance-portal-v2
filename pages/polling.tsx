@@ -152,17 +152,27 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       />
 
       <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'], flexWrap: 'wrap' }}>
-          <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
+        <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+          <Heading variant="microHeading" mr={3} mb={[3, 0]}>
             Filters
           </Heading>
-          <PollTitleSearch sx={{ mb: [3, 0] }} />
-          <CategoryFilter categories={categories} polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
-          <StatusFilter polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
-          <PollTypeFilter categories={categories} polls={polls} sx={{ ml: 3, mb: [3, 0] }} />
-          <DateFilter sx={{ ml: 3, mb: [3, 0] }} />
-          <Button variant={'outline'} sx={{ ml: 3, mb: [3, 0] }} onClick={resetPollFilters}>
-            Clear filters
+          <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+            <PollTitleSearch sx={{ m: 2 }} />
+            <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+            <StatusFilter polls={polls} sx={{ m: 2 }} />
+            <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+            <DateFilter sx={{ m: 2 }} />
+          </Flex>
+          <Button
+            variant={'outline'}
+            sx={{
+              m: 2,
+              color: 'textSecondary',
+              border: 'none'
+            }}
+            onClick={resetPollFilters}
+          >
+            Reset filters
           </Button>
         </Flex>
         <SidebarLayout>

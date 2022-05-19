@@ -42,6 +42,7 @@ export function DateFilter(props): JSX.Element {
         if (!endDateDisplay) return `Date: after ${startDateDisplay}`;
         return `Date: ${startDateDisplay} - ${endDateDisplay}`;
       }}
+      active={!!startDate || !!endDate}
       {...props}
     >
       <Grid gap={2} columns="max-content max-content" sx={{ alignItems: 'baseline' }}>

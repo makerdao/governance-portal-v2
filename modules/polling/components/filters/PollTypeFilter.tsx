@@ -62,6 +62,7 @@ export function PollTypeFilter({
       name={() => `Type ${itemsSelected.length > 0 ? `(${itemsSelected.length})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
+      active={itemsSelected.length > 0}
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>

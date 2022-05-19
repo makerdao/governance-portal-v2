@@ -50,11 +50,13 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
   }, [polls, title, startDate, endDate, pollVoteType, categoryFilter]);
 
   const filtersSelected = (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
+
   return (
     <FilterButton
       name={() => `Status ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
+      active={filtersSelected > 0}
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>

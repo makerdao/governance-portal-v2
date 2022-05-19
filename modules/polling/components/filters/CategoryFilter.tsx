@@ -56,11 +56,13 @@ export function CategoryFilter({
   }, [polls, title, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
+
   return (
     <FilterButton
       name={() => `Category ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
+      active={filtersSelected > 0}
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
