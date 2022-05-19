@@ -43,34 +43,17 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [
-    title,
-    startDate,
-    endDate,
-    categoryFilter,
-    pollVoteType,
-    setCategoryFilter,
-    showHistorical,
-    showPollActive,
-    showPollEnded,
-    setShowHistorical,
-    resetPollFilters
-  ] = useUiFiltersStore(
-    state => [
-      state.pollFilters.title,
-      state.pollFilters.startDate,
-      state.pollFilters.endDate,
-      state.pollFilters.categoryFilter,
-      state.pollFilters.pollVoteType,
-      state.setCategoryFilter,
-      state.pollFilters.showHistorical,
-      state.pollFilters.showPollActive,
-      state.pollFilters.showPollEnded,
-      state.setShowHistorical,
-      state.resetPollFilters
-    ],
-    shallow
-  );
+  const [pollFilters, setCategoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
+    useUiFiltersStore(
+      state => [
+        state.pollFilters,
+        state.setCategoryFilter,
+        state.pollFilters.showHistorical,
+        state.setShowHistorical,
+        state.resetPollFilters
+      ],
+      shallow
+    );
   const router = useRouter();
 
   useEffect(() => {
@@ -88,15 +71,9 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
-      title,
-      start: startDate,
-      end: endDate,
-      categoryFilter,
-      pollVoteType,
-      showPollActive,
-      showPollEnded
+      pollFilters
     });
-  }, [polls, title, startDate, endDate, categoryFilter, pollVoteType, showPollActive, showPollEnded]);
+  }, [polls, pollFilters]);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);

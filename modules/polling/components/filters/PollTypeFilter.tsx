@@ -5,12 +5,9 @@ import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
-import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
-import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 
 export function PollTypeFilter({
-  categories,
   polls,
   ...props
 }: {
@@ -18,27 +15,8 @@ export function PollTypeFilter({
   polls: Poll[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
-  const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [
-    title,
-    startDate,
-    endDate,
-    categoryFilter,
-    pollVoteType,
-    setPollVoteType,
-    showPollActive,
-    showPollEnded
-  ] = useUiFiltersStore(
-    state => [
-      state.pollFilters.title,
-      state.pollFilters.startDate,
-      state.pollFilters.endDate,
-      state.pollFilters.categoryFilter,
-      state.pollFilters.pollVoteType,
-      state.setPollVoteType,
-      state.pollFilters.showPollActive,
-      state.pollFilters.showPollEnded
-    ],
+  const [pollFilters, pollVoteType, setPollVoteType] = useUiFiltersStore(
+    state => [state.pollFilters, state.pollFilters.pollVoteType, state.setPollVoteType],
     shallow
   );
 
@@ -47,15 +25,9 @@ export function PollTypeFilter({
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
-      title,
-      start: startDate,
-      end: endDate,
-      categoryFilter,
-      pollVoteType,
-      showPollActive,
-      showPollEnded
+      pollFilters
     });
-  }, [polls, title, startDate, endDate, showPollActive, showPollEnded]);
+  }, [polls, pollFilters]);
 
   return (
     <FilterButton
@@ -75,9 +47,6 @@ export function PollTypeFilter({
                   checked={(pollVoteType && pollVoteType[type]) || false}
                   onChange={event => {
                     setPollVoteType({ ...pollVoteType, [type]: event.target.checked });
-                    // trackButtonClick(
-                    //   `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
-                    // );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>

@@ -18,42 +18,19 @@ export function CategoryFilter({
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [
-    title,
-    startDate,
-    endDate,
-    categoryFilter,
-    pollVoteType,
-    setCategoryFilter,
-    showPollActive,
-    showPollEnded
-  ] = useUiFiltersStore(
-    state => [
-      state.pollFilters.title,
-      state.pollFilters.startDate,
-      state.pollFilters.endDate,
-      state.pollFilters.categoryFilter,
-      state.pollFilters.pollVoteType,
-      state.setCategoryFilter,
-      state.pollFilters.showPollActive,
-      state.pollFilters.showPollEnded
-    ],
+  const [pollFilters, categoryFilter, setCategoryFilter] = useUiFiltersStore(
+    state => [state.pollFilters, state.pollFilters.categoryFilter, state.setCategoryFilter],
     shallow
   );
 
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i).length;
+
   const filteredPollsNoCategories = useMemo(() => {
     return filterPolls({
       polls,
-      title,
-      start: startDate,
-      end: endDate,
-      categoryFilter: null,
-      pollVoteType,
-      showPollActive,
-      showPollEnded
+      pollFilters
     });
-  }, [polls, title, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
+  }, [polls, pollFilters]);
 
   return (
     <FilterButton
