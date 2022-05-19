@@ -4,6 +4,7 @@ import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import categoryMap from './oldPollCategories';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
+import { getPollTags } from '../api/getPollTags';
 
 export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   const formatted: PartialPoll = {
@@ -25,11 +26,15 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const voteType: PollVoteType =
     (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
-  const categories = [
+  const tags = getPollTags();
+
+  // TODO: here we should be fetching the JSON of the poll mapping and filtering it
+  const pollTags = [
     ...(pollMeta?.categories || []),
     ...(pollMeta?.category ? [pollMeta?.category] : []),
     ...(categoryMap[poll.pollId] || [])
   ];
+  console.log(pollTags);
 
   let startDate, endDate;
   //poll coming from poll create page
@@ -52,7 +57,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     options,
     discussionLink,
     voteType,
-    categories: categories.length > 0 ? categories : ['Uncategorized'],
+    tags: pollTags.map(p => tags.find(t => t.id === p)).filter(p => !!p),
     ctx: { prev: null, next: null }
   };
 }

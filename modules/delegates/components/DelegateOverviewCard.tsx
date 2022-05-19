@@ -19,6 +19,7 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
+import DelegateTags from './DelegateTags';
 
 type PropTypes = {
   delegate: Delegate;
@@ -76,6 +77,10 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
           >
             <Box sx={{ mr: [0, 2] }}>
               <DelegateAvatarName delegate={delegate} />
+            </Box>
+
+            <Box>
+              <DelegateTags tags={delegate.tags} />
             </Box>
 
             <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>

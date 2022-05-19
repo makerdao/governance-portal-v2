@@ -22,7 +22,7 @@ export function filterPolls(
       if (endDate && new Date(poll.endDate).getTime() > endDate.getTime()) return false;
 
       // if no category filters selected, return all, otherwise, check if poll contains category
-      return noCategoriesSelected || poll.categories.some(c => categoryFilter && categoryFilter[c]);
+      return noCategoriesSelected || poll.tags.some(c => categoryFilter && categoryFilter[c]);
     })
     .filter(poll => {
       if (!showPollEnded && !showPollActive) {

@@ -1,12 +1,8 @@
-import { Box, Text } from 'theme-ui';
+import TagComponent from 'modules/app/components/Tag';
+import { Tag } from 'modules/app/types/tag.dt';
+import { Box } from 'theme-ui';
 
-export function PollCategoryTag({
-  category,
-  onClick
-}: {
-  category: string;
-  onClick?: (category?: any) => void;
-}): React.ReactElement {
+export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => void }): React.ReactElement {
   const categories = {
     Collateral: {
       color: 'tagColorOne',
@@ -90,24 +86,19 @@ export function PollCategoryTag({
     }
   };
 
-  const color = categories[category] ? categories[category].color : 'tagColorSeventeen';
-  const backgroundColor = categories[category] ? categories[category].backgroundColor : 'tagColorSeventeenBg';
-
   return (
     <Box
       sx={{
-        backgroundColor,
-        borderRadius: '12px',
-        padding: '4px 8px',
-        display: 'flex',
-        alignItems: 'center',
-        cursor: onClick ? 'pointer' : 'inherit',
-        color
+        cursor: onClick ? 'pointer' : 'inherit'
       }}
       onClick={onClick}
-      title={`See all ${category} polls`}
+      title={`See all ${tag.id} polls`}
     >
-      <Text sx={{ fontSize: 2 }}>{category}</Text>
+      <TagComponent
+        tag={tag}
+        color={categories[tag.id]?.color}
+        backgroundColor={categories[tag.id]?.backgroundColor}
+      />
     </Box>
   );
 }

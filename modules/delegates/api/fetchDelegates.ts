@@ -19,6 +19,8 @@ import { getSlateAddresses } from 'modules/executive/helpers/getSlateAddresses';
 import { formatDelegationHistory } from 'modules/delegates/helpers/formatDelegationHistory';
 import { CMSProposal } from 'modules/executive/types';
 import { fetchLastPollVote } from 'modules/polling/api/fetchLastPollvote';
+import { getDelegateTags } from './getDelegateTags';
+import { Tag } from 'modules/app/types/tag.dt';
 
 function mergeDelegateInfo(
   onChainDelegate: DelegateContractInformation,
@@ -27,6 +29,7 @@ function mergeDelegateInfo(
   // check if contract is expired to assing the status
   const expirationDate = add(new Date(onChainDelegate.blockTimestamp), { years: 1 });
   const isExpired = isBefore(new Date(expirationDate), new Date());
+  const tags = getDelegateTags();
 
   return {
     voteDelegateAddress: onChainDelegate.voteDelegateAddress,
@@ -49,7 +52,8 @@ function mergeDelegateInfo(
     proposalsSupported: onChainDelegate.proposalsSupported,
     execSupported: undefined,
     mkrLockedDelegate: onChainDelegate.mkrLockedDelegate,
-    blockTimestamp: onChainDelegate.blockTimestamp
+    blockTimestamp: onChainDelegate.blockTimestamp,
+    tags: (githubDelegate?.tags || []).map(tag => tags.find(t => t.id === tag)).filter(t => !!t) as Tag[]
   };
 }
 

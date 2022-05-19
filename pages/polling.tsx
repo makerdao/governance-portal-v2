@@ -38,7 +38,7 @@ import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserv
 import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 
-const PollingOverview = ({ polls, categories }: PollingPageData) => {
+const PollingOverview = ({ polls, tags }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [
     startDate,
@@ -141,7 +141,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
             <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
               Filters
             </Heading>
-            <CategoryFilter categories={categories} polls={polls} />
+            <CategoryFilter tags={tags} polls={polls} />
             <DateFilter sx={{ ml: 3 }} />
           </Flex>
           <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
@@ -280,14 +280,14 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  categories: prefetchedCategories
+  tags: prefetchedCategories
 }: PollingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         polls: prefetchedPolls,
-        categories: prefetchedCategories
+        tags: prefetchedCategories
       }
     : null;
 
@@ -312,7 +312,7 @@ export default function PollingOverviewPage({
 
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    categories: isDefaultNetwork(network) ? prefetchedCategories : data?.categories || []
+    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || []
   };
 
   return (
@@ -323,13 +323,13 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, categories } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
       polls,
-      categories
+      tags
     }
   };
 };

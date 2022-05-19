@@ -151,7 +151,7 @@ const PollingCreate = (): React.ReactElement => {
                       <Label>Vote Type</Label>
                       <CreateText>{poll?.voteType}</CreateText>
                       <Label>Category</Label>
-                      <CreateText>{poll?.categories.join(', ')}</CreateText>
+                      <CreateText>{poll?.tags.map(t => t.longname).join(', ')}</CreateText>
                       <Label>Poll Start Time</Label>
                       <CreateText>{poll && formatDateWithTime(poll.startDate)}</CreateText>
                       <Label>Poll End Time</Label>

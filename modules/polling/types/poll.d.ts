@@ -11,7 +11,7 @@ export type Poll = {
   startDate: Date;
   discussionLink: string | null;
   voteType: PollVoteType;
-  categories: string[];
+  tags: Tag[];
   slug: string;
   ctx: {
     prev: PartialPoll | null;

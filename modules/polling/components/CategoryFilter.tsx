@@ -1,6 +1,6 @@
 import { Flex, Box, Checkbox, Label, Text, Divider } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { isActivePoll } from 'modules/polling/helpers/utils';
@@ -8,13 +8,14 @@ import { useMemo } from 'react';
 import { filterPolls } from '../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { Tag } from 'modules/app/types/tag.dt';
 
 export default function CategoryFilter({
-  categories,
+  tags,
   polls,
   ...props
 }: {
-  categories: PollCategory[];
+  tags: Tag[];
   polls: Poll[];
 }): JSX.Element {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
@@ -101,23 +102,23 @@ export default function CategoryFilter({
         </Flex>
         <Divider />
         <Flex sx={{ flexDirection: 'column' }}>
-          {categories.map(category => (
-            <Flex key={category.name}>
+          {tags.map(category => (
+            <Flex key={category.id}>
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(categoryFilter && categoryFilter[category.name]) || false}
+                  checked={(categoryFilter && categoryFilter[category.id]) || false}
                   onChange={event => {
-                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked });
+                    setCategoryFilter({ ...categoryFilter, [category.id]: event.target.checked });
                     trackButtonClick(
-                      `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
+                      `${category.id}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
                     );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{category.name}</Text>
+                  <Text>{category.longname}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.categories.includes(category.name)).length}
+                    {filteredPollsNoCategories.filter(i => i.tags.includes(category.id)).length}
                   </Text>
                 </Flex>
               </Label>

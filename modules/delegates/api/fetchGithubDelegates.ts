@@ -28,6 +28,7 @@ async function extractGithubInformation(
 
     const profileMdDoc = await (await fetch(profileMd?.download_url)).text();
 
+    // TODO: Extract tags from profiledoc
     const {
       content,
       data: { name, external_profile_url }
@@ -55,6 +56,7 @@ async function extractGithubInformation(
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,
+      tags: ['sustainability', 'profitability'],
       combinedParticipation: metricsData.combined_participation,
       pollParticipation: metricsData.poll_participation,
       executiveParticipation: metricsData.exec_participation,

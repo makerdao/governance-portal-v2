@@ -1,7 +1,8 @@
 import { getPolls } from 'modules/polling/api/fetchPolls';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
+import { TagCount } from 'modules/app/types/tag.dt';
 
 export type PollingReviewPageData = {
   polls: Poll[];
@@ -9,7 +10,7 @@ export type PollingReviewPageData = {
 
 export type PollingPageData = {
   polls: Poll[];
-  categories: PollCategory[];
+  tags: TagCount[];
 };
 
 export async function fetchPollingPageData(
@@ -22,6 +23,6 @@ export async function fetchPollingPageData(
 
   return {
     polls: (pollsData as PollingPageData).polls,
-    categories: (pollsData as PollingPageData).categories
+    tags: (pollsData as PollingPageData).tags
   };
 }

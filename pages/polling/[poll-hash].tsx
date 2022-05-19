@@ -144,9 +144,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </Heading>
 
                   <Flex sx={{ mt: 3, mb: 3 }}>
-                    {poll.categories.map(c => (
-                      <Box key={c} sx={{ marginRight: 2 }}>
-                        <PollCategoryTag category={c} />
+                    {poll.tags.map(c => (
+                      <Box key={c.id} sx={{ marginRight: 2 }}>
+                        <PollCategoryTag tag={c} />
                       </Box>
                     ))}
                   </Flex>

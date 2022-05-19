@@ -1,15 +1,15 @@
+import { TagCount } from 'modules/app/types/tag.dt';
 import { Poll } from './poll';
-import { PollCategory } from './pollCategory';
 
 export type PollFilters = {
   startDate?: Date | null;
   endDate?: Date | null;
-  categories?: string[] | null;
+  tags?: string[] | null;
   active?: boolean | null;
 };
 export type PollsResponse = {
   polls: Poll[];
-  categories: PollCategory[];
+  tags: TagCount[];
   stats: {
     active: number;
     finished: number;

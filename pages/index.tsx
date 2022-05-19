@@ -36,7 +36,6 @@ import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
-import { fetchJson } from 'lib/fetchJson';
 
 const LandingPage = ({
   proposals,

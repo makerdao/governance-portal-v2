@@ -1,10 +1,10 @@
 import { Flex, Box, Heading } from 'theme-ui';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
-import { PollCategory } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { TagCount } from 'modules/app/types/tag.dt';
 
 type Props = {
-  pollCategories: PollCategory[];
+  pollCategories: TagCount[];
 };
 
 export const PollCategoriesLanding = ({ pollCategories }: Props): JSX.Element => (
@@ -12,15 +12,15 @@ export const PollCategoriesLanding = ({ pollCategories }: Props): JSX.Element =>
     <Heading sx={{ mb: 3 }}>Show me more polls related to</Heading>
     <Flex sx={{ flexWrap: 'wrap', justifyContent: 'center', maxWidth: '1000px', margin: 'auto' }}>
       {pollCategories
-        .filter(category => category.name !== 'Uncategorized')
+        .filter(category => category.id !== 'uncategorized')
         .map(category => (
-          <Box key={category.name} sx={{ my: 3, mx: 4 }}>
+          <Box key={category.id} sx={{ my: 3, mx: 4 }}>
             <InternalLink
               href={'/polling'}
-              queryParams={{ category: category.name }}
-              title={`${category.name} polls`}
+              queryParams={{ category: category.id }}
+              title={`${category.shortname} polls`}
             >
-              <PollCategoryTag category={category.name} />
+              <PollCategoryTag tag={category} />
             </InternalLink>
           </Box>
         ))}

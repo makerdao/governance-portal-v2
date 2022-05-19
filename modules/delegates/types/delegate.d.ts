@@ -1,3 +1,5 @@
+import { Tag } from 'modules/app/types/tag.dt';
+
 export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 
 export type DelegateRepoInformation = {
@@ -11,6 +13,7 @@ export type DelegateRepoInformation = {
   executiveParticipation?: string;
   communication?: string;
   cuMember?: boolean;
+  tags?: string[];
 };
 
 export type DelegateContractInformation = {
@@ -44,6 +47,7 @@ export type Delegate = {
   execSupported: CMSProposal | undefined;
   mkrLockedDelegate: MKRLockedDelegateAPIResponse[];
   blockTimestamp: string;
+  tags: Tag[];
 };
 
 export type DelegationHistory = {
