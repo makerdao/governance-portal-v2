@@ -71,28 +71,41 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             sx={{
               maxWidth: ['100%', '100%', '300px', '100%', '300px'],
               flex: 1,
-              flexDirection: 'column'
+              flexDirection: 'row',
+              alignItems: 'center',
+              height: '100vh',
+              justifyContent: 'space-between'
             }}
           >
             <Box sx={{ mr: [0, 2] }}>
               <DelegateAvatarName delegate={delegate} />
             </Box>
-
-            <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
-              <InternalLink
-                href={`/address/${delegate.voteDelegateAddress}`}
-                title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
-                styles={{ mt: 'auto' }}
+            <Box>
+              <Button
+                variant="primaryOutline"
+                disabled={!account}
+                onClick={() => {
+                  trackButtonClick('openUndelegateModal');
+                  setShowUndelegateModal(true);
+                }}
+                sx={{ width: ['100%', '135px'], height: '45px', maxWidth: '135px', mr: '2' }}
+                data-testid="button-undelegate"
               >
-                <Button
-                  variant="outline"
-                  onClick={() => trackButtonClick('openDelegateProfile')}
-                  sx={{ borderColor: 'text', color: 'text', mt: [0, 0, 3, 0, 3] }}
-                >
-                  {`View ${isOwner ? 'Your' : 'Profile'} Details`}
-                </Button>
-              </InternalLink>
-            </Flex>
+                Undelegate
+              </Button>
+              <Button
+                variant="primaryLarge"
+                data-testid="button-delegate"
+                disabled={!account}
+                onClick={() => {
+                  trackButtonClick('openDelegateModal');
+                  setShowDelegateModal(true);
+                }}
+                sx={{ width: ['100%', '135px'], maxWidth: '135px', height: '45px', ml: '3' }}
+              >
+                Delegate
+              </Button>
+            </Box>
           </Flex>
 
           <Flex
@@ -149,20 +162,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Text>
                 </Tooltip>
               </Box>
-              <Box>
-                <Button
-                  variant="primaryOutline"
-                  disabled={!account}
-                  onClick={() => {
-                    trackButtonClick('openUndelegateModal');
-                    setShowUndelegateModal(true);
-                  }}
-                  sx={{ width: ['100%', '150px'], height: '45px', maxWidth: '150px', mt: [4, 4, 0, 4, 0] }}
-                  data-testid="button-undelegate"
-                >
-                  Undelegate
-                </Button>
-              </Box>
             </Flex>
             <Flex
               sx={{
@@ -198,20 +197,21 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   MKR delegated by you
                 </Text>
               </Box>
-              <Box>
-                <Button
-                  variant="primaryLarge"
-                  data-testid="button-delegate"
-                  disabled={!account}
-                  onClick={() => {
-                    trackButtonClick('openDelegateModal');
-                    setShowDelegateModal(true);
-                  }}
-                  sx={{ width: ['100%', '150px'], maxWidth: '150px', height: '45px', mt: [4, 4, 0, 4, 0] }}
+              <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
+                <InternalLink
+                  href={`/address/${delegate.voteDelegateAddress}`}
+                  title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                  styles={{ mt: 'auto' }}
                 >
-                  Delegate
-                </Button>
-              </Box>
+                  <Button
+                    variant="outline"
+                    onClick={() => trackButtonClick('openDelegateProfile')}
+                    sx={{ borderColor: 'text', color: 'text', mt: [0, 0, 3, 0, 3] }}
+                  >
+                    {`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                  </Button>
+                </InternalLink>
+              </Flex>
             </Flex>
           </Flex>
         </Flex>
