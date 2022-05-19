@@ -25,7 +25,10 @@ export function PollTypeFilter({
   const filteredPolls = useMemo(() => {
     return filterPolls({
       polls,
-      pollFilters
+      pollFilters: {
+        ...pollFilters,
+        pollVoteType: null
+      }
     });
   }, [polls, pollFilters]);
 

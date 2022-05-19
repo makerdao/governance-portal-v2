@@ -43,17 +43,10 @@ import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [pollFilters, setCategoryFilter, showHistorical, setShowHistorical, resetPollFilters] =
-    useUiFiltersStore(
-      state => [
-        state.pollFilters,
-        state.setCategoryFilter,
-        state.pollFilters.showHistorical,
-        state.setShowHistorical,
-        state.resetPollFilters
-      ],
-      shallow
-    );
+  const [pollFilters, setCategoryFilter, resetPollFilters] = useUiFiltersStore(
+    state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters],
+    shallow
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -77,6 +70,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
+  const [showHistorical, setShowHistorical] = useState(false);
 
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
@@ -140,6 +134,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
               sx={{ display: ['block', 'none'], color: 'onSecondary' }}
               onClick={() => setShowFilters(!showFilters)}
             >
+              {/* TODO: how to show this? */}
               {showFilters ? '(hide)' : '(show)'}
               {/* <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} /> */}
             </Button>
