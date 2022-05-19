@@ -101,6 +101,9 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
 
+  // only for mobile
+  const [showFilters, setShowFilters] = useState(false);
+
   const groupedActivePolls = groupBy(activePolls, 'endDate');
   const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
 
@@ -153,27 +156,39 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
 
       <Stack gap={3}>
         <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-          <Heading variant="microHeading" mr={3} mb={[3, 0]}>
-            Filters
-          </Heading>
-          <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-            <PollTitleSearch sx={{ m: 2 }} />
-            <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
-            <StatusFilter polls={polls} sx={{ m: 2 }} />
-            <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} />
-            <DateFilter sx={{ m: 2 }} />
+          <Flex sx={{ mr: [0, 3], mb: [3, 0], alignItems: 'center' }}>
+            <Heading variant="microHeading">Filters</Heading>
+            <Button
+              variant="textual"
+              sx={{ display: ['block', 'none'], color: 'onSecondary' }}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              {showFilters ? '(hide)' : '(show)'}
+              {/* <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} /> */}
+            </Button>
           </Flex>
-          <Button
-            variant={'outline'}
-            sx={{
-              m: 2,
-              color: 'textSecondary',
-              border: 'none'
-            }}
-            onClick={resetPollFilters}
-          >
-            Reset filters
-          </Button>
+          {showFilters && (
+            <Flex sx={{ flexDirection: ['column', 'row'] }}>
+              <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+                <PollTitleSearch sx={{ m: 2 }} />
+                <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+                <StatusFilter polls={polls} sx={{ m: 2 }} />
+                <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+                <DateFilter sx={{ m: 2 }} />
+              </Flex>
+              <Button
+                variant={'outline'}
+                sx={{
+                  m: 2,
+                  color: 'textSecondary',
+                  border: 'none'
+                }}
+                onClick={resetPollFilters}
+              >
+                Reset filters
+              </Button>
+            </Flex>
+          )}
         </Flex>
         <SidebarLayout>
           <Box>
