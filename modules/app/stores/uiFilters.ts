@@ -1,5 +1,10 @@
 import create from 'zustand';
 
+export enum PollsSortEnum {
+  endDate = 'endDate',
+  startDate = 'startDate'
+}
+
 type Store = {
   pollFilters: {
     title: null | string;
@@ -25,6 +30,8 @@ type Store = {
   resetExecutiveFilters: () => void;
   executiveSortBy: 'active' | 'date' | 'mkr';
   setExecutiveSortBy: (method: 'active' | 'date' | 'mkr') => void;
+  pollsSortBy: PollsSortEnum;
+  setPollsSortBy: (sort: PollsSortEnum) => void;
 };
 
 const [useUiFiltersStore] = create<Store>((set, get) => ({
@@ -83,7 +90,8 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         pollVoteType: null,
         showPollActive: false,
         showPollEnded: false
-      }
+      },
+      pollsSortBy: PollsSortEnum.endDate
     });
   },
 
@@ -100,6 +108,14 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
 
   setExecutiveSortBy: sortMethod => {
     set({ executiveSortBy: sortMethod });
+  },
+
+  pollsSortBy: PollsSortEnum.endDate,
+
+  setPollsSortBy: pollsSortBy => {
+    set({
+      pollsSortBy
+    });
   }
 }));
 

@@ -25,7 +25,7 @@ import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import useUiFiltersStore, { PollsSortEnum } from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
@@ -40,11 +40,12 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
 import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import PollsSort from 'modules/polling/components/filters/PollsSort';
 
 const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [pollFilters, setCategoryFilter, resetPollFilters] = useUiFiltersStore(
-    state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters],
+  const [pollFilters, setCategoryFilter, resetPollFilters, sort] = useUiFiltersStore(
+    state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters, state.pollsSortBy],
     shallow
   );
   const router = useRouter();
@@ -68,6 +69,18 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     });
   }, [polls, pollFilters]);
 
+  // const sortedPolls = useMemo(() => {
+  //   return filteredPolls.sort((prev, next) => {
+  //     if (sort === PollsSortEnum.createdDate) {
+  //       return prev.startDate > next.startDate ? -1 : 1;
+  //     } else if (sort === PollsSortEnum.expiringDate) {
+  //       return prev.startDate < next.startDate ? -1 : 1;
+  //     }
+
+  //     return 1;
+  //   });
+  // }, [sort]);
+
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
   const [showHistorical, setShowHistorical] = useState(false);
@@ -75,10 +88,12 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
 
-  const groupedActivePolls = groupBy(activePolls, 'endDate');
+  const groupedActivePolls = groupBy(activePolls, sort);
+  console.log('group active polls', groupedActivePolls);
   const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
 
-  const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
+  const groupedHistoricalPolls = groupBy(historicalPolls, sort);
+  console.log('group historic polls', groupedHistoricalPolls);
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   useEffect(() => {
@@ -143,6 +158,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
             <Flex sx={{ flexDirection: ['column', 'row'] }}>
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
                 <PollTitleSearch sx={{ m: 2 }} />
+                <PollsSort />
                 <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />
                 <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} />
