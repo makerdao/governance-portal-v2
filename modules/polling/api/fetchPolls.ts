@@ -13,6 +13,8 @@ import { PollSpock } from '../types/pollSpock';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
+import { ActivePollsRecord, Maybe, Query as GqlQuery } from 'modules/gql/generated/graphql';
+import { PollsQueryVariables } from 'modules/gql/types';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -64,19 +66,28 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchAllSpockPolls(network: SupportedNetworks): Promise<PollSpock[]> {
-  const data = await gqlRequest({
+export async function fetchSpockPolls(
+  network: SupportedNetworks,
+  queryFilter?: PollsQueryVariables | null
+): Promise<PollSpock[]> {
+  const requestData = {
     chainId: networkNameToChainId(network),
-    query: allWhitelistedPolls
-  });
+    query: allWhitelistedPolls,
+    variables: queryFilter
+  };
 
-  const pollList: PollSpock[] = data.activePolls.nodes;
-  return pollList;
+  const data = await gqlRequest<GqlQuery>(requestData);
+
+  const pollList: Maybe<ActivePollsRecord>[] = data.activePolls.nodes;
+  //TODO: maybe we should use the GQL generated types when applicable
+  return pollList as PollSpock[];
 }
 
-// Returns all the polls and caches them in the file system.
-export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
-  const cacheKey = 'polls';
+export async function _getAllPolls(
+  network?: SupportedNetworks,
+  filter?: PollsQueryVariables | null
+): Promise<Poll[]> {
+  const cacheKey = `polls-${filter ? JSON.stringify(filter) : 'all'}`;
 
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
@@ -85,7 +96,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }
   }
 
-  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, filter);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -105,9 +116,11 @@ const defaultFilters: PollFilters = {
 
 export async function getPolls(
   filters = defaultFilters,
-  network?: SupportedNetworks
+  network?: SupportedNetworks,
+  filter?: PollsQueryVariables
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network);
+  const allPolls = await _getAllPolls(network, filter);
+
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
     if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;

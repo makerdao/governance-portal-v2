@@ -7,7 +7,7 @@ import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 
 jest.mock('modules/gql/gqlRequest');
 
-const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-${new Date().toISOString().substring(0, 10)}`;
+const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-all-${new Date().toISOString().substring(0, 10)}`;
 
 describe('Fetch poll', () => {
   beforeAll(() => {
