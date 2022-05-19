@@ -30,6 +30,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
 
   // TODO: here we should be fetching the JSON of the poll mapping and filtering it
   const pollTags = [
+    'surplus',
     ...(pollMeta?.categories || []),
     ...(pollMeta?.category ? [pollMeta?.category] : []),
     ...(categoryMap[poll.pollId] || [])

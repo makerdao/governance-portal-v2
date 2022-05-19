@@ -31,6 +31,7 @@ import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import DelegateTags from './DelegateTags';
 
 type PropTypes = {
   delegate: Delegate;
@@ -157,6 +158,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
                 </Box>
               </Box>
             </Flex>
+            <DelegateTags tags={delegate.tags} />
           </Box>
           <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
