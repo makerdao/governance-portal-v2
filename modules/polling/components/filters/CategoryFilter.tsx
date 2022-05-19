@@ -41,7 +41,7 @@ export function CategoryFilter({
     shallow
   );
 
-  const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
+  const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i).length;
   const filteredPollsNoCategories = useMemo(() => {
     return filterPolls({
       polls,
@@ -55,14 +55,12 @@ export function CategoryFilter({
     });
   }, [polls, title, startDate, endDate, pollVoteType, showPollActive, showPollEnded]);
 
-  const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
-
   return (
     <FilterButton
-      name={() => `Category ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
+      name={() => `Category ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
-      active={filtersSelected > 0}
+      active={itemsSelected > 0}
       {...props}
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
