@@ -7,37 +7,31 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 
-const getDescription = votingWeight => {
+export const getDescription = votingWeight => {
   if (votingWeight) {
     if (votingWeight.chiefBalanceProxy && votingWeight.chiefBalanceCold && votingWeight.walletBalanceCold) {
       return (
         <>
           <Text as="p">
-            {'Proxy balance in chief: ' + formatValue(votingWeight.chiefBalanceProxy, 'wad', 18) + ' MKR'}
+            {'Proxy balance in chief: ' + formatValue(votingWeight.chiefBalanceProxy) + ' MKR'}
+          </Text>
+          <Text as="p">{'Hot balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}</Text>
+          <Text as="p">
+            {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot) + ' MKR'}
           </Text>
           <Text as="p">
-            {'Hot balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
+            {'Cold balance in chief: ' + formatValue(votingWeight.chiefBalanceCold) + ' MKR'}
           </Text>
           <Text as="p">
-            {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Cold balance in chief: ' + formatValue(votingWeight.chiefBalanceCold, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
+            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold) + ' MKR'}
           </Text>
         </>
       );
     } else {
       return (
         <>
-          <Text as="p">
-            {'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
+          <Text as="p">{'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}</Text>
+          <Text as="p">{'Balance in wallet: ' + formatValue(votingWeight.walletBalanceHot) + ' MKR'}</Text>
         </>
       );
     }
