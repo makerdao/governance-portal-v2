@@ -14,11 +14,17 @@ export default function PollsSort(): JSX.Element {
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
-          <ListboxOption label="Sort by posted on date" value={PollsSortEnum.startDate}>
-            Posted On
+          <ListboxOption label="Sort by ending soonest" value={PollsSortEnum.endDateAsc}>
+            Ending soonest
           </ListboxOption>
-          <ListboxOption label="Creation date" value={PollsSortEnum.endDate}>
-            Expiry
+          <ListboxOption label="Sort by ending latest" value={PollsSortEnum.endDateDesc}>
+            Ending latest
+          </ListboxOption>
+          <ListboxOption label="Sort by posted oldest" value={PollsSortEnum.startDateAsc}>
+            Posted oldest first
+          </ListboxOption>
+          <ListboxOption label="Sort by posted newest" value={PollsSortEnum.startDateDesc}>
+            Posted newest first
           </ListboxOption>
         </ListboxList>
       </ListboxPopover>

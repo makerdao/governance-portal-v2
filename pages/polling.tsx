@@ -69,17 +69,12 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     });
   }, [polls, pollFilters]);
 
-  // const sortedPolls = useMemo(() => {
-  //   return filteredPolls.sort((prev, next) => {
-  //     if (sort === PollsSortEnum.createdDate) {
-  //       return prev.startDate > next.startDate ? -1 : 1;
-  //     } else if (sort === PollsSortEnum.expiringDate) {
-  //       return prev.startDate < next.startDate ? -1 : 1;
-  //     }
-
-  //     return 1;
-  //   });
-  // }, [sort]);
+  const sortCriteria = {
+    endDateAsc: { sortFn: x => new Date(x), sortKey: 'endDate', verb: 'ending' },
+    endDateDesc: { sortFn: x => -new Date(x), sortKey: 'endDate', verb: 'ending' },
+    startDateAsc: { sortFn: x => new Date(x), sortKey: 'startDate', verb: 'posted' },
+    startDateDesc: { sortFn: x => -new Date(x), sortKey: 'startDate', verb: 'posted' }
+  };
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
@@ -88,12 +83,10 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
 
-  const groupedActivePolls = groupBy(activePolls, sort);
-  console.log('group active polls', groupedActivePolls);
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
+  const groupedActivePolls = groupBy(activePolls, sortCriteria[sort].sortKey);
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), sortCriteria[sort].sortFn); // -new Date(x) has same effect as .reverse()
 
-  const groupedHistoricalPolls = groupBy(historicalPolls, sort);
-  console.log('group historic polls', groupedHistoricalPolls);
+  const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
 
   useEffect(() => {
@@ -193,9 +186,9 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
                     {sortedEndDatesActive.map(date => (
                       <div key={date}>
                         <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                          {groupedActivePolls[date].length} Poll
-                          {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
-                          {formatDateWithTime(date)}
+                          {`${groupedActivePolls[date].length} Poll${
+                            groupedActivePolls[date].length === 1 ? '' : 's'
+                          } - ${sortCriteria[sort].verb} ${formatDateWithTime(date)}`}
                         </Text>
                         <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
