@@ -93,7 +93,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         showPollActive: false,
         showPollEnded: false
       },
-      pollsSortBy: PollsSortEnum.endDateDesc
+      pollsSortBy: PollsSortEnum.endDateAsc
     });
   },
 
@@ -112,7 +112,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ executiveSortBy: sortMethod });
   },
 
-  pollsSortBy: PollsSortEnum.endDateDesc,
+  pollsSortBy: PollsSortEnum.endDateAsc,
 
   setPollsSortBy: pollsSortBy => {
     set({

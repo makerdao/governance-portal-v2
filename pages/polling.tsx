@@ -84,7 +84,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const groupedActivePolls = groupBy(activePolls, sortCriteria[sort].sortKey);
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), sortCriteria[sort].sortFn); // -new Date(x) has same effect as .reverse()
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), sortCriteria[sort].sortFn);
 
   const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
   const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
