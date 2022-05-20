@@ -52,7 +52,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
       }}
       data-testid="delegate-card"
     >
-      <Box px={[3, 4]} pb={[3, 4]} pt={3}>
+      <Box px={[3, 4]} pb={3} pt={3}>
         <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
@@ -112,92 +112,52 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             sx={{
               flex: 1,
               mt: [4, 4, 0, 4, 0],
-              mb: [2, 2, 0, 2, 0],
-              flexDirection: ['row', 'row', 'column-reverse', 'row', 'column-reverse']
+              flexDirection: ['column']
             }}
           >
             <Flex
               sx={{
-                flexDirection: ['column', 'column', 'row', 'column', 'row'],
-                justifyContent: 'space-between',
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
                 width: ['50%', '100%'],
-                mr: [1, 0]
+                mr: [1, 0],
+                mb: 3,
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
-                >
-                  {delegate.combinedParticipation ?? 'Untracked'}
-                </Text>
+              <Box sx={{mr: 3}}>
                 <Tooltip label={participationTooltipLabel}>
                   <Text
                     as="p"
-                    variant="secondary"
+                    variant="caps"
                     color="onSecondary"
-                    sx={{ fontSize: [2, 3], cursor: 'help' }}
+                    sx={{ fontSize: 1, cursor: 'help' }}
                   >
-                    Participation
+                    {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
                   </Text>
                 </Tooltip>
               </Box>
-              <Box sx={{ width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
-                >
-                  {delegate.communication ?? 'Untracked'}
-                </Text>
+              <Box sx={{ }}>
                 <Tooltip label={communicationTooltipLabel}>
                   <Text
                     as="p"
-                    variant="secondary"
+                    variant="caps"
                     color="onSecondary"
-                    sx={{ fontSize: [2, 3], cursor: 'help' }}
+                    sx={{ fontSize: 1, cursor: 'help' }}
                   >
-                    Communication
+                    {`${delegate.communication ?? 'Untracked'} Communication`}
                   </Text>
                 </Tooltip>
               </Box>
             </Flex>
             <Flex
               sx={{
-                flexDirection: ['column', 'column', 'row', 'column', 'row'],
+                flexDirection: ['row'],
                 justifyContent: 'space-between',
                 width: ['50%', '100%'],
-                mb: [0, 0, 3, 0, 3]
+                alignItems: 'center'
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5] }}
-                  data-testid="total-mkr-delegated"
-                >
-                  {totalStaked ? formatValue(totalStaked) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                  Total MKR delegated
-                </Text>
-              </Box>
-              <Box sx={{ width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5] }}
-                  data-testid="mkr-delegated-by-you"
-                >
-                  {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                  MKR delegated by you
-                </Text>
-              </Box>
-              <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
+              <Flex sx={{ height: '100%'}}>
                 <InternalLink
                   href={`/address/${delegate.voteDelegateAddress}`}
                   title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
@@ -206,11 +166,39 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Button
                     variant="outline"
                     onClick={() => trackButtonClick('openDelegateProfile')}
-                    sx={{ borderColor: 'text', color: 'text', mt: [0, 0, 3, 0, 3] }}
+                    sx={{ borderColor: 'text', color: 'text' }}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}
                   </Button>
                 </InternalLink>
+              </Flex>
+              <Flex sx={{ justifyContent: 'flex-end'}}>
+                <Box>
+                  <Text
+                    as="p"
+                    variant="microHeading"
+                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    data-testid="mkr-delegated-by-you"
+                  >
+                    {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
+                  </Text>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                    MKR delegated by you
+                  </Text>
+                </Box>
+                <Box sx={{ ml: '4'}}>
+                  <Text
+                    as="p"
+                    variant="microHeading"
+                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    data-testid="total-mkr-delegated"
+                  >
+                    {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}
+                  </Text>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                    Total MKR delegated
+                  </Text>
+                </Box>
               </Flex>
             </Flex>
           </Flex>
