@@ -111,43 +111,44 @@ export default function PollOverviewCard({
                   ))}
                 </Flex>
                 {bpi > 0 && (
-                  <Flex mt={3} sx={{ gap: 2, alignItems: 'center' }}>
+                  <Flex mt={3} sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                     <Box>
                       <ErrorBoundary componentName="Countdown Timer">
                         <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                       </ErrorBoundary>
                     </Box>
-
-                    {hasPollComments && (
-                      <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
-                        <CommentCount count={comments.length} />
-                      </InternalLink>
-                    )}
-                    {hasUserComments && (
-                      <InternalLink href={`/polling/${poll.slug}`} title="Your Comment" hash="comments">
-                        <Flex sx={{ alignItems: 'center', gap: 2 }}>
-                          <Icon name="yourComment" color="primary" size={3} />
-                          <Text variant="caps" color="primary">
-                            Your Comment
-                          </Text>
-                        </Flex>
-                      </InternalLink>
-                    )}
-                    {errorComments && (
-                      <Badge
-                        variant="warning"
-                        sx={{
-                          color: 'warning',
-                          borderColor: 'warning',
-                          textTransform: 'uppercase',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          m: 1
-                        }}
-                      >
-                        Error loading comments
-                      </Badge>
-                    )}
+                    <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
+                      {hasPollComments && (
+                        <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
+                          <CommentCount count={comments.length} />
+                        </InternalLink>
+                      )}
+                      {hasUserComments && (
+                        <InternalLink href={`/polling/${poll.slug}`} title="Your Comment" hash="comments">
+                          <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                            <Icon name="yourComment" color="primary" size={3} />
+                            <Text variant="caps" color="primary">
+                              Your Comment
+                            </Text>
+                          </Flex>
+                        </InternalLink>
+                      )}
+                      {errorComments && (
+                        <Badge
+                          variant="warning"
+                          sx={{
+                            color: 'warning',
+                            borderColor: 'warning',
+                            textTransform: 'uppercase',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            m: 1
+                          }}
+                        >
+                          Error loading comments
+                        </Badge>
+                      )}
+                    </Flex>
                   </Flex>
                 )}
               </Flex>
