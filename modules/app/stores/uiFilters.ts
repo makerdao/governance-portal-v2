@@ -32,7 +32,7 @@ type Store = {
   resetExecutiveFilters: () => void;
   executiveSortBy: 'active' | 'date' | 'mkr';
   setExecutiveSortBy: (method: 'active' | 'date' | 'mkr') => void;
-  pollsSortBy: PollsSortEnum;
+  pollsSortBy: PollsSortEnum | null;
   setPollsSortBy: (sort: PollsSortEnum) => void;
 };
 
@@ -93,7 +93,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         showPollActive: false,
         showPollEnded: false
       },
-      pollsSortBy: PollsSortEnum.endDateAsc
+      pollsSortBy: null
     });
   },
 
@@ -112,7 +112,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ executiveSortBy: sortMethod });
   },
 
-  pollsSortBy: PollsSortEnum.endDateAsc,
+  pollsSortBy: null,
 
   setPollsSortBy: pollsSortBy => {
     set({

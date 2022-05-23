@@ -42,6 +42,37 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 
+const getSortCriteria = (sort: PollsSortEnum | null) => {
+  if (!sort) sort = PollsSortEnum.endDateAsc;
+  const sortCriteria = {
+    endDateAsc: {
+      active: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ending' },
+      historical: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ended' }
+    },
+    endDateDesc: {
+      active: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ending' },
+      historical: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ended' }
+    },
+    startDateAsc: {
+      active: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' },
+      historical: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' }
+    },
+    startDateDesc: {
+      active: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' },
+      historical: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' }
+    }
+  };
+
+  return {
+    activeVerb: sortCriteria[sort].active.verb,
+    historicalVerb: sortCriteria[sort].historical.verb,
+    activeGroupBy: sortCriteria[sort].active.groupBy,
+    historicalGroupBy: sortCriteria[sort].historical.groupBy,
+    activeSortFn: sortCriteria[sort].active.sortFn,
+    historicalSortFn: sortCriteria[sort].historical.sortFn
+  };
+};
+
 const PollingOverview = ({ polls, categories }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, setCategoryFilter, resetPollFilters, sort] = useUiFiltersStore(
@@ -69,12 +100,8 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     });
   }, [polls, pollFilters]);
 
-  const sortCriteria = {
-    endDateAsc: { sortFn: x => new Date(x), sortKey: 'endDate', verb: 'ending' },
-    endDateDesc: { sortFn: x => -new Date(x), sortKey: 'endDate', verb: 'ending' },
-    startDateAsc: { sortFn: x => new Date(x), sortKey: 'startDate', verb: 'posted' },
-    startDateDesc: { sortFn: x => -new Date(x), sortKey: 'startDate', verb: 'posted' }
-  };
+  const { activeGroupBy, historicalGroupBy, activeSortFn, historicalSortFn, activeVerb, historicalVerb } =
+    getSortCriteria(sort);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
@@ -83,11 +110,11 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
   // only for mobile
   const [showFilters, setShowFilters] = useState(false);
 
-  const groupedActivePolls = groupBy(activePolls, sortCriteria[sort].sortKey);
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), sortCriteria[sort].sortFn);
+  const groupedActivePolls = groupBy(activePolls, activeGroupBy);
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), activeSortFn);
 
-  const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
-  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
+  const groupedHistoricalPolls = groupBy(historicalPolls, historicalGroupBy);
+  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), historicalSortFn);
 
   useEffect(() => {
     const [active, historical] = partition(filteredPolls, isActivePoll);
@@ -188,7 +215,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
                         <Text as="p" variant="caps" color="textSecondary" mb={2}>
                           {`${groupedActivePolls[date].length} Poll${
                             groupedActivePolls[date].length === 1 ? '' : 's'
-                          } - ${sortCriteria[sort].verb} ${formatDateWithTime(date)}`}
+                          } - ${activeVerb} ${formatDateWithTime(date)}`}
                         </Text>
                         <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
@@ -221,9 +248,9 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
                       {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
                           <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                            {groupedHistoricalPolls[date].length} Poll
-                            {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
-                            {formatDateWithTime(date)}
+                            {`${groupedHistoricalPolls[date].length} Poll${
+                              groupedHistoricalPolls[date].length === 1 ? '' : 's'
+                            } - ${historicalVerb} ${formatDateWithTime(date)}`}
                           </Text>
                           <Box>
                             {groupedHistoricalPolls[date].map((poll: Poll) => (

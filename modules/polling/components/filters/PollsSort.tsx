@@ -7,7 +7,7 @@ export default function PollsSort(): JSX.Element {
   const [sort, setSort] = useUiFiltersStore(state => [state.pollsSortBy, state.setPollsSortBy], shallow);
 
   return (
-    <ListboxInput onChange={setSort} defaultValue={sort}>
+    <ListboxInput onChange={setSort} defaultValue={sort ?? PollsSortEnum.endDateAsc}>
       <ListboxButton
         sx={{ variant: 'listboxes.default.button', fontWeight: 'semiBold', py: [2] }}
         arrow={<Icon name="chevron_down" size={2} />}
@@ -20,11 +20,11 @@ export default function PollsSort(): JSX.Element {
           <ListboxOption label="Sort by ending latest" value={PollsSortEnum.endDateDesc}>
             Ending latest
           </ListboxOption>
-          <ListboxOption label="Sort by posted oldest" value={PollsSortEnum.startDateAsc}>
-            Posted oldest first
+          <ListboxOption label="Sort by created latest" value={PollsSortEnum.startDateAsc}>
+            Created latest
           </ListboxOption>
-          <ListboxOption label="Sort by posted newest" value={PollsSortEnum.startDateDesc}>
-            Posted newest first
+          <ListboxOption label="Sort by created soonest" value={PollsSortEnum.startDateDesc}>
+            Created soonest
           </ListboxOption>
         </ListboxList>
       </ListboxPopover>
