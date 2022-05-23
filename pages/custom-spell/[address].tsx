@@ -105,7 +105,7 @@ export async function getServerSideProps({ params }) {
   } else {
     spellDetails = data;
   }
-  
+
   return {
     props: {
       spellAddress,

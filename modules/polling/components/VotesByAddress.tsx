@@ -5,6 +5,8 @@ import { PollTally, Poll } from 'modules/polling/types';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
+import { useMemo, useState } from 'react';
+import { parseUnits } from 'ethers/lib/utils';
 
 type Props = {
   tally: PollTally;
@@ -15,6 +17,46 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
   const { votesByAddress: votes, totalMkrParticipation } = tally;
   const showRankedChoiceInfo = votes?.find(v => v.rankedChoiceOption && v.rankedChoiceOption.length > 1);
+  const [sortBy, setSortBy] = useState({
+    type: 'mkr',
+    order: 1
+  });
+
+  const changeSort = type => {
+    if (sortBy.type === type) {
+      setSortBy({
+        type,
+        order: sortBy.order === 1 ? -1 : 1
+      });
+    } else {
+      setSortBy({
+        type,
+        order: 1
+      });
+    }
+  };
+
+  const sortedVotes = useMemo(() => {
+    switch (sortBy.type) {
+      case 'mkr':
+        return votes?.sort((a, b) => {
+          // The type of a.mkrSupport is typed as number, but in reality here we are getting a string
+          const aMKR = parseUnits(a.mkrSupport as unknown as string);
+          const bMKR = parseUnits(b.mkrSupport as unknown as string);
+          return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
+        });
+      case 'address':
+        return votes?.sort((a, b) =>
+          sortBy.order === 1 ? (a.voter > b.voter ? -1 : 1) : a.voter > b.voter ? 1 : -1
+        );
+      case 'option':
+        return votes?.sort((a, b) =>
+          sortBy.order === 1 ? (a.optionId > b.optionId ? -1 : 1) : a.optionId > b.optionId ? 1 : -1
+        );
+      default:
+        return votes;
+    }
+  }, [votes, sortBy.type, sortBy.order]);
 
   return (
     <Box>
@@ -26,25 +68,45 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
       >
         <thead>
           <tr>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '30%' }}
+              variant="caps"
+              onClick={() => changeSort('address')}
+            >
               Address
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '30%' }}
+              variant="caps"
+              onClick={() => changeSort('option')}
+            >
               Option
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'left', cursor: 'pointer', pb: 2, width: '20%' }}
+              variant="caps"
+              onClick={() => changeSort('mkr')}
+            >
               Voting Power
             </Text>
-            <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ textAlign: 'right', cursor: 'pointer', pb: 2, width: '20%' }}
+              variant="caps"
+              onClick={() => changeSort('mkr')}
+            >
               MKR Amount
             </Text>
           </tr>
         </thead>
         <tbody>
-          {votes ? (
+          {sortedVotes ? (
             <>
-              {votes.map((v, i) => (
-                <tr key={i} data-testid="vote-by-address">
+              {sortedVotes.map((v, i) => (
+                <tr key={v.voter} data-testid="vote-by-address">
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
                       <AddressIconBox address={v.voter} width={41} />
