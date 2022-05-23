@@ -19,6 +19,7 @@ import DelegateAvatarName from './DelegateAvatarName';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
+import Icon from 'modules/app/components/Icon';
 
 type PropTypes = {
   delegate: Delegate;
@@ -48,7 +49,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
   return (
     <Card
       sx={{
-        p: [0, 0]
+        p: 0
       }}
       data-testid="delegate-card"
     >
@@ -73,14 +74,17 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               flex: 1,
               flexDirection: 'row',
               alignItems: 'center',
-              height: '100vh',
+              //height: '100vh',
               justifyContent: 'space-between'
             }}
           >
-            <Box sx={{ mr: [0, 2] }}>
+            <Box sx={{ mr: 2 }}>
               <DelegateAvatarName delegate={delegate} />
             </Box>
-            <Box>
+            <Flex sx={{
+              flexDirection: ['column', 'row'],
+              alignItems: 'center'
+            }}>
               <Button
                 variant="primaryOutline"
                 disabled={!account}
@@ -88,7 +92,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
-                sx={{ width: ['100%', '135px'], height: '45px', maxWidth: '135px', mr: '2' }}
+                sx={{ width: ['100%', '135px'], height: '45px', maxWidth: '135px', mr: [0, 2], mb: [2, 0] }}
                 data-testid="button-undelegate"
               >
                 Undelegate
@@ -101,17 +105,17 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
-                sx={{ width: ['100%', '135px'], maxWidth: '135px', height: '45px', ml: '3' }}
+                sx={{ width: ['100%', '135px'], maxWidth: '135px', height: '45px', ml: [0, 3] }}
               >
                 Delegate
               </Button>
-            </Box>
+            </Flex>
           </Flex>
 
           <Flex
             sx={{
               flex: 1,
-              mt: [4, 4, 0, 4, 0],
+              mt: 3,
               flexDirection: ['column']
             }}
           >
@@ -126,26 +130,34 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             >
               <Box sx={{mr: 3}}>
                 <Tooltip label={participationTooltipLabel}>
-                  <Text
-                    as="p"
-                    variant="caps"
-                    color="onSecondary"
-                    sx={{ fontSize: 1, cursor: 'help' }}
-                  >
-                    {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
-                  </Text>
+                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
+                    <Icon name="participation"/>
+                    <Text
+                      as="p"
+                      variant="caps"
+                      color="onSecondary"
+                      sx={{ fontSize: 1 }}
+                      ml={1}
+                    >
+                      {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
+                    </Text>
+                  </Flex>
                 </Tooltip>
               </Box>
-              <Box sx={{ }}>
+              <Box>
                 <Tooltip label={communicationTooltipLabel}>
-                  <Text
-                    as="p"
-                    variant="caps"
-                    color="onSecondary"
-                    sx={{ fontSize: 1, cursor: 'help' }}
-                  >
-                    {`${delegate.communication ?? 'Untracked'} Communication`}
-                  </Text>
+                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
+                    <Icon name="comment"/>
+                    <Text
+                      as="p"
+                      variant="caps"
+                      color="onSecondary"
+                      sx={{ fontSize: 1}}
+                      ml={1}
+                    >
+                      {`${delegate.communication ?? 'Untracked'} Communication`}
+                    </Text>
+                  </Flex>
                 </Tooltip>
               </Box>
             </Flex>
