@@ -65,20 +65,17 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
         <Flex
           sx={{
-            flexDirection: ['column', 'column', 'row', 'column', 'row']
+            flexDirection: 'column'
           }}
         >
           <Flex
             sx={{
-              maxWidth: ['100%', '100%', '300px', '100%', '300px'],
-              flex: 1,
               flexDirection: 'row',
               alignItems: 'center',
-              //height: '100vh',
               justifyContent: 'space-between'
             }}
           >
-            <Box sx={{ mr: 2 }}>
+            <Box sx={{ mr: 2, maxWidth: '155px' }}>
               <DelegateAvatarName delegate={delegate} />
             </Box>
             <Flex sx={{
@@ -114,21 +111,17 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
           <Flex
             sx={{
-              flex: 1,
               mt: 3,
-              flexDirection: ['column']
+              flexDirection: 'column'
             }}
           >
             <Flex
               sx={{
                 flexDirection: 'row',
-                justifyContent: 'flex-start',
-                width: ['50%', '100%'],
-                mr: [1, 0],
-                mb: 3,
+                justifyContent: ['space-between', 'flex-start'],
               }}
             >
-              <Box sx={{mr: 3}}>
+              <Box sx={{mr: [0, 3]}}>
                 <Tooltip label={participationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="participation"/>
@@ -163,13 +156,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             </Flex>
             <Flex
               sx={{
-                flexDirection: ['row'],
+                flexDirection: 'row',
                 justifyContent: 'space-between',
-                width: ['50%', '100%'],
-                alignItems: 'center'
+                flexWrap: 'wrap-reverse'
               }}
             >
-              <Flex sx={{ height: '100%'}}>
+                <Flex sx={{ height: '100%'}}>
                 <InternalLink
                   href={`/address/${delegate.voteDelegateAddress}`}
                   title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
@@ -178,13 +170,13 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Button
                     variant="outline"
                     onClick={() => trackButtonClick('openDelegateProfile')}
-                    sx={{ borderColor: 'text', color: 'text' }}
+                    sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
                   >
                     {`View ${isOwner ? 'Your' : 'Profile'} Details`}
                   </Button>
                 </InternalLink>
               </Flex>
-              <Flex sx={{ justifyContent: 'flex-end'}}>
+              <Flex sx={{ justifyContent: 'flex-end', mt: '3'}}>
                 <Box>
                   <Text
                     as="p"
@@ -194,7 +186,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
                   </Text>
-                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
                     MKR delegated by you
                   </Text>
                 </Box>
@@ -207,7 +199,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}
                   </Text>
-                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
                     Total MKR delegated
                   </Text>
                 </Box>
