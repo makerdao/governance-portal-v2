@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
