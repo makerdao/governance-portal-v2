@@ -22,8 +22,21 @@ export default function TagComponent({
         color
       }}
     >
-      <TooltipComponent label={tag.description}>
-        <Text sx={{ fontSize: 2 }}>{tag.shortname}</Text>
+      <TooltipComponent
+        label={
+          <Box>
+            <Text>{tag.description}</Text>
+            {tag.related_link && (
+              <Text as="p">
+                <a href={tag.related_link}>{tag.related_link}</a>
+              </Text>
+            )}
+          </Box>
+        }
+      >
+        <Box>
+          <Text sx={{ fontSize: 2 }}>{tag.longname}</Text>
+        </Box>
       </TooltipComponent>
     </Box>
   );

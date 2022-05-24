@@ -41,7 +41,6 @@ export default function CategoryFilter({
     ],
     shallow
   );
-
   const itemsSelected = Object.values(categoryFilter || {}).filter(i => !!i);
   const filteredPollsOnlyCategories = useMemo(() => {
     return filterPolls(polls, startDate, endDate, categoryFilter, true, true);
@@ -56,6 +55,7 @@ export default function CategoryFilter({
   }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
 
   const filtersSelected = itemsSelected.length + (showPollActive ? 1 : 0) + (showPollEnded ? 1 : 0);
+
   return (
     <FilterButton
       name={() => `Poll Type ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
@@ -103,7 +103,7 @@ export default function CategoryFilter({
         <Divider />
         <Flex sx={{ flexDirection: 'column' }}>
           {tags.map(category => (
-            <Flex key={category.id}>
+            <Flex key={`category-filter-${category.id}`}>
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
@@ -118,7 +118,11 @@ export default function CategoryFilter({
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{category.longname}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.tags.includes(category.id)).length}
+                    {
+                      filteredPollsNoCategories.filter(
+                        i => i.tags.filter(tag => tag.id === category.id).length > 0
+                      ).length
+                    }
                   </Text>
                 </Flex>
               </Label>

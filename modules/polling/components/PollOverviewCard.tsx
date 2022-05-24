@@ -52,7 +52,7 @@ export default function PollOverviewCard({
   );
 
   function onClickCategory(category) {
-    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+    setCategoryFilter({ ...categoryFilter, [category.id]: !(categoryFilter || {})[category.id] });
   }
 
   return (

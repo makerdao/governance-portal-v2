@@ -1,10 +1,9 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
-import categoryMap from './oldPollCategories';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
-import { getPollTags } from '../api/getPollTags';
+import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
 
 export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   const formatted: PartialPoll = {
@@ -27,15 +26,9 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
   const tags = getPollTags();
+  const mapping = getPollTagsMapping();
 
-  // TODO: here we should be fetching the JSON of the poll mapping and filtering it
-  const pollTags = [
-    'surplus',
-    ...(pollMeta?.categories || []),
-    ...(pollMeta?.category ? [pollMeta?.category] : []),
-    ...(categoryMap[poll.pollId] || [])
-  ];
-  console.log(pollTags);
+  const pollTags = mapping[poll.pollId];
 
   let startDate, endDate;
   //poll coming from poll create page

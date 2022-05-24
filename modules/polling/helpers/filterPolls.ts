@@ -14,7 +14,6 @@ export function filterPolls(
   const endDate = end && new Date(end);
 
   const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
-
   return polls
     .filter(poll => {
       // check date filters first
@@ -22,7 +21,7 @@ export function filterPolls(
       if (endDate && new Date(poll.endDate).getTime() > endDate.getTime()) return false;
 
       // if no category filters selected, return all, otherwise, check if poll contains category
-      return noCategoriesSelected || poll.tags.some(c => categoryFilter && categoryFilter[c]);
+      return noCategoriesSelected || poll.tags.some(c => categoryFilter && categoryFilter[c.id]);
     })
     .filter(poll => {
       if (!showPollEnded && !showPollActive) {
