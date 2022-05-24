@@ -87,164 +87,170 @@ export default function Avatar({ uri, style, className, size, address, provider,
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!uri && address) {
-      const cachedUrl = getCachedUrl(address.toLowerCase());
-      if (cachedUrl) {
-        setUrl(cachedUrl);
+    try {
+      if (!uri && address) {
+        const cachedUrl = getCachedUrl(address.toLowerCase());
+        if (cachedUrl) {
+          setUrl(cachedUrl);
+        }
       }
-    }
 
-    if (!uri) {
-      return;
-    }
-
-    if (uri) {
-      const cachedUrl = getCachedUrl(uri);
-      if (cachedUrl) {
-        setUrl(cachedUrl);
+      if (!uri) {
+        return;
       }
-    }
 
-    if (uri && address) {
-      const cachedUrl = getCachedUrl(`${address.toLowerCase()}/${uri}`);
-      if (cachedUrl) {
-        setUrl(cachedUrl);
+      if (uri) {
+        const cachedUrl = getCachedUrl(uri);
+        if (cachedUrl) {
+          setUrl(cachedUrl);
+        }
       }
-    }
 
-    const match = new RegExp(/([a-z]+):\/\/(.*)/).exec(uri);
-    const match721 = new RegExp(/eip155:1\/erc721:(\w+)\/(\w+)/).exec(uri);
-    const match1155 = new RegExp(/eip155:1\/erc1155:(\w+)\/(\w+)/).exec(uri);
+      if (uri && address) {
+        const cachedUrl = getCachedUrl(`${address.toLowerCase()}/${uri}`);
+        if (cachedUrl) {
+          setUrl(cachedUrl);
+        }
+      }
 
-    if (match && match.length === 3) {
-      const protocol = match[1];
-      const id = match[2];
+      const match = new RegExp(/([a-z]+):\/\/(.*)/).exec(uri);
+      const match721 = new RegExp(/eip155:1\/erc721:(\w+)\/(\w+)/).exec(uri);
+      const match1155 = new RegExp(/eip155:1\/erc1155:(\w+)\/(\w+)/).exec(uri);
 
-      switch (protocol) {
-        case 'ar': {
-          const baseUrl = 'https://arweave.net';
+      if (match && match.length === 3) {
+        const protocol = match[1];
+        const id = match[2];
 
-          fetch(`${baseUrl}/graphql`, {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json;charset=UTF-8'
-            },
-            body: JSON.stringify({
-              query: `
-              {
-                transactions(ids: ["${id}"]) {
-                  edges {
-                    node {
-                      id
-                      owner {
-                        address
-                      }
-                    }
-                  }
-                }
-              }
-              `
-            })
-          })
-            .then(d => d.json())
-            .then(res => res.data.transactions.edges[0].node)
-            .then(tx =>
-              fetch(`${baseUrl}/graphql`, {
-                method: 'POST',
-                headers: {
-                  'content-type': 'application/json;charset=UTF-8'
-                },
-                body: JSON.stringify({
-                  query: `
+        switch (protocol) {
+          case 'ar': {
+            const baseUrl = 'https://arweave.net';
+
+            fetch(`${baseUrl}/graphql`, {
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json;charset=UTF-8'
+              },
+              body: JSON.stringify({
+                query: `
                 {
-                  transactions(owners: ["${tx.owner.address}"], tags: { name: "Origin", values: ["${tx.id}"] }, sort: HEIGHT_DESC) {
+                  transactions(ids: ["${id}"]) {
                     edges {
                       node {
                         id
+                        owner {
+                          address
+                        }
                       }
                     }
                   }
                 }
                 `
-                })
               })
-            )
-            .then(res => res.json())
-            .then(res => {
-              if (res.data && res.data.transactions.edges.length > 0) {
-                setUrl(`${baseUrl}/${res.data.transactions.edges[0].node.id}`);
-              } else {
-                setUrl(`${baseUrl}/${id}`);
-              }
             })
-            .catch(e => console.error(e)); // eslint-disable-line
+              .then(d => d.json())
+              .then(res => res.data.transactions.edges[0].node)
+              .then(tx =>
+                fetch(`${baseUrl}/graphql`, {
+                  method: 'POST',
+                  headers: {
+                    'content-type': 'application/json;charset=UTF-8'
+                  },
+                  body: JSON.stringify({
+                    query: `
+                  {
+                    transactions(owners: ["${tx.owner.address}"], tags: { name: "Origin", values: ["${tx.id}"] }, sort: HEIGHT_DESC) {
+                      edges {
+                        node {
+                          id
+                        }
+                      }
+                    }
+                  }
+                  `
+                  })
+                })
+              )
+              .then(res => res.json())
+              .then(res => {
+                if (res.data && res.data.transactions.edges.length > 0) {
+                  setUrl(`${baseUrl}/${res.data.transactions.edges[0].node.id}`);
+                } else {
+                  setUrl(`${baseUrl}/${id}`);
+                }
+              })
+              .catch(e => console.error(e)); // eslint-disable-line
 
-          break;
+            break;
+          }
+          case 'ipfs':
+            setUrl(`https://gateway.ipfs.io/ipfs/${id}`);
+            break;
+          case 'ipns':
+            setUrl(`https://gateway.ipfs.io/ipns/${id}`);
+            break;
+          case 'http':
+          case 'https':
+            setUrl(uri);
+            break;
+          default:
+            setUrl(uri);
+            break;
         }
-        case 'ipfs':
-          setUrl(`https://gateway.ipfs.io/ipfs/${id}`);
-          break;
-        case 'ipns':
-          setUrl(`https://gateway.ipfs.io/ipns/${id}`);
-          break;
-        case 'http':
-        case 'https':
-          setUrl(uri);
-          break;
-        default:
-          setUrl(uri);
-          break;
-      }
-    } else if (match721 && match721.length === 3) {
-      const contractId = match721[1].toLowerCase();
-      const tokenId = match721[2];
-      const normalizedAddress = address?.toLowerCase();
+      } else if (match721 && match721.length === 3) {
+        const contractId = match721[1].toLowerCase();
+        const tokenId = match721[2];
+        const normalizedAddress = address?.toLowerCase();
 
-      if (provider) {
-        const erc721Contract = new Contract(contractId, erc721Abi, provider);
+        if (provider) {
+          const erc721Contract = new Contract(contractId, erc721Abi, provider);
 
-        (async () => {
-          if (normalizedAddress) {
-            const owner = await erc721Contract.ownerOf(tokenId);
+          (async () => {
+            if (normalizedAddress) {
+              const owner = await erc721Contract.ownerOf(tokenId);
 
-            if (!owner || owner.toLowerCase() !== normalizedAddress) {
-              throw new Error('ERC721 token not owned by address');
+              if (!owner || owner.toLowerCase() !== normalizedAddress) {
+                // throw new Error('ERC721 token not owned by address');
+                return null;
+              }
             }
-          }
 
-          const tokenURI = await erc721Contract.tokenURI(tokenId);
-          const gatewayUrl = getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16));
-          try {
-            const data = await fetchJson(`api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
+            const tokenURI = await erc721Contract.tokenURI(tokenId);
+            const gatewayUrl = getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16));
+            try {
+              const data = await fetchJson(`api/delegates/davatar/image?gatewayUrl=${gatewayUrl}`);
+              setUrl(getGatewayUrl(data.image));
+            } catch (e) {
+              console.error(`Error fetching image from ${gatewayUrl}`, e);
+            }
+          })();
+        }
+      } else if (match1155 && match1155.length === 3) {
+        const contractId = match1155[1].toLowerCase();
+        const tokenId = match1155[2];
+
+        if (provider) {
+          const erc1155Contract = new Contract(contractId, erc1155Abi, provider);
+
+          (async () => {
+            if (address) {
+              const balance: BigNumber = await erc1155Contract.balanceOf(address, tokenId);
+              if (balance.isZero()) {
+                // throw new Error('ERC1155 token not owned by address');
+                return null;
+              }
+            }
+
+            const tokenURI = await erc1155Contract.uri(tokenId);
+            const res = await fetch(getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16)));
+            const data = (await res.json()) as { image: string };
             setUrl(getGatewayUrl(data.image));
-          } catch (e) {
-            console.error(`Error fetching image from ${gatewayUrl}`, e);
-          }
-        })();
+          })();
+        }
+      } else {
+        setUrl(getGatewayUrl(uri));
       }
-    } else if (match1155 && match1155.length === 3) {
-      const contractId = match1155[1].toLowerCase();
-      const tokenId = match1155[2];
-
-      if (provider) {
-        const erc1155Contract = new Contract(contractId, erc1155Abi, provider);
-
-        (async () => {
-          if (address) {
-            const balance: BigNumber = await erc1155Contract.balanceOf(address, tokenId);
-            if (balance.isZero()) {
-              throw new Error('ERC1155 token not owned by address');
-            }
-          }
-
-          const tokenURI = await erc1155Contract.uri(tokenId);
-          const res = await fetch(getGatewayUrl(tokenURI, new BigNumber(tokenId).toString(16)));
-          const data = (await res.json()) as { image: string };
-          setUrl(getGatewayUrl(data.image));
-        })();
-      }
-    } else {
-      setUrl(getGatewayUrl(uri));
+    } catch (e) {
+      console.error(e);
     }
   }, [uri, address, provider]);
 
