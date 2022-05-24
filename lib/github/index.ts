@@ -23,11 +23,7 @@ export async function fetchGitHubPage(owner: string, repo: string, path: string)
     return Promise.resolve([]);
   }
 
-  const octokitRequest = octokit.request.defaults({
-    per_page: 1000
-  });
-
-  const { data } = await octokitRequest('GET /repos/{owner}/{repo}/contents/{path}', {
+  const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner,
     repo,
     path

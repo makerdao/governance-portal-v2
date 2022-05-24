@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner } from 'theme-ui';
+import { Heading, Flex, Box, Button, Divider, Grid, Text, Badge, Spinner, Card } from 'theme-ui';
 import { useEffect, useMemo, useRef } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 import { GetStaticProps } from 'next';
@@ -42,6 +42,7 @@ import useSWRInfinite from 'swr/infinite';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { ExecutivePageData, fetchExecutivePageData } from 'modules/executive/api/fetchExecutivePageData';
+import { InternalLink } from 'modules/app/components/InternalLink';
 
 const MigrationBadge = ({ children, py = [2, 3] }) => (
   <Badge
@@ -400,6 +401,25 @@ export const ExecutiveOverview = ({ proposals }: { proposals?: Proposal[] }): JS
             </Stack>
           </Box>
           <Stack gap={3}>
+            <Box sx={{ mb: 3 }}>
+              <Heading mt={3} mb={2} as="h3" variant="microHeading">
+                Custom Spell Voting
+              </Heading>
+              <Card variant="compact">
+                <Text as="p" sx={{ mb: 3, color: 'textSecondary', fontSize: [2, 3] }}>
+                  It is also possible to vote on a custom spell address—only use this in case of emergencies!
+                </Text>
+                <Box>
+                  <InternalLink
+                    href={'/custom-spell'}
+                    title="View custom spell voting page"
+                    styles={{ fontSize: [2, 3] }}
+                  >
+                    <Text color="accentBlue">View Custom Spell Voting Page</Text>
+                  </InternalLink>
+                </Box>
+              </Card>
+            </Box>
             <ErrorBoundary componentName="System Info">
               <SystemStatsSidebar
                 fields={[

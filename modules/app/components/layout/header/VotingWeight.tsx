@@ -1,8 +1,11 @@
-import { Flex, Text } from 'theme-ui';
+import { Box, Flex, Text } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
+import Tooltip from '../../Tooltip';
+import { getDescription } from 'modules/polling/components/VotingWeight';
 
 export default function VotingWeight(): JSX.Element {
   const { account, voteDelegateContractAddress } = useAccount();
@@ -11,10 +14,15 @@ export default function VotingWeight(): JSX.Element {
 
   return (
     <>
-      <Flex sx={{ justifyContent: 'space-between' }}>
-        <Text color="textSecondary" variant="caps" sx={{ pt: 4, fontSize: 1, fontWeight: '600' }}>
+      <Flex sx={{ pt: 4, alignItems: 'center', gap: 2 }}>
+        <Text color="textSecondary" variant="caps" sx={{ fontSize: 1, fontWeight: '600' }}>
           polling voting weight
         </Text>
+        <Tooltip label={getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}>
+          <Box>
+            <Icon name="question" />
+          </Box>
+        </Tooltip>
       </Flex>
       <Flex>
         <Text sx={{ fontSize: 5 }} data-testid="polling-voting-weight">
