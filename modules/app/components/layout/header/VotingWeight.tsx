@@ -18,7 +18,7 @@ export default function VotingWeight(): JSX.Element {
         <Text color="textSecondary" variant="caps" sx={{ fontSize: 1, fontWeight: '600' }}>
           polling voting weight
         </Text>
-        <Tooltip label={getDescription(votingWeight)}>
+        <Tooltip label={getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}>
           <Box>
             <Icon name="question" />
           </Box>

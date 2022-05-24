@@ -1,15 +1,31 @@
 import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
-
+import { MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 
-export const getDescription = votingWeight => {
+export const getDescription = ({
+  votingWeight,
+  isDelegate
+}: {
+  votingWeight?: MKRVotingWeightResponse;
+  isDelegate?: boolean;
+}): JSX.Element | null => {
   if (votingWeight) {
-    if (votingWeight.chiefBalanceProxy && votingWeight.chiefBalanceCold && votingWeight.walletBalanceCold) {
+    if (isDelegate) {
+      return (
+        <Text as="p">
+          {'Balance of delegated MKR: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}
+        </Text>
+      );
+    } else if (
+      votingWeight.chiefBalanceProxy &&
+      votingWeight.chiefBalanceCold &&
+      votingWeight.walletBalanceCold
+    ) {
       return (
         <>
           <Text as="p">
@@ -50,7 +66,7 @@ export default function VotingWeight(): JSX.Element {
   const tooltipLabel = (
     <Box>
       <Text as="p">{votingWeightCopy}</Text>
-      {getDescription(votingWeight)}
+      {getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}
     </Box>
   );
 
