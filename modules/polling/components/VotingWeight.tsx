@@ -1,43 +1,53 @@
 import { Box, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import Tooltip from 'modules/app/components/Tooltip';
-
+import { MKRVotingWeightResponse } from 'modules/mkr/helpers/getMKRVotingWeight';
 import { getPollingVotingWeightCopy } from 'modules/polling/helpers/getPollingVotingWeightCopy';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
 
-const getDescription = votingWeight => {
+export const getDescription = ({
+  votingWeight,
+  isDelegate
+}: {
+  votingWeight?: MKRVotingWeightResponse;
+  isDelegate?: boolean;
+}): JSX.Element | null => {
   if (votingWeight) {
-    if (votingWeight.chiefBalanceProxy && votingWeight.chiefBalanceCold && votingWeight.walletBalanceCold) {
+    if (isDelegate) {
+      return (
+        <Text as="p">
+          {'Balance of delegated MKR: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}
+        </Text>
+      );
+    } else if (
+      votingWeight.chiefBalanceProxy &&
+      votingWeight.chiefBalanceCold &&
+      votingWeight.walletBalanceCold
+    ) {
       return (
         <>
           <Text as="p">
-            {'Proxy balance in chief: ' + formatValue(votingWeight.chiefBalanceProxy, 'wad', 18) + ' MKR'}
+            {'Proxy balance in chief: ' + formatValue(votingWeight.chiefBalanceProxy) + ' MKR'}
+          </Text>
+          <Text as="p">{'Hot balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}</Text>
+          <Text as="p">
+            {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot) + ' MKR'}
           </Text>
           <Text as="p">
-            {'Hot balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
+            {'Cold balance in chief: ' + formatValue(votingWeight.chiefBalanceCold) + ' MKR'}
           </Text>
           <Text as="p">
-            {'Hot balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Cold balance in chief: ' + formatValue(votingWeight.chiefBalanceCold, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold, 'wad', 18) + ' MKR'}
+            {'Cold balance in wallet: ' + formatValue(votingWeight.walletBalanceCold) + ' MKR'}
           </Text>
         </>
       );
     } else {
       return (
         <>
-          <Text as="p">
-            {'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
-          <Text as="p">
-            {'Balance in wallet: ' + formatValue(votingWeight.walletBalanceHot, 'wad', 18) + ' MKR'}
-          </Text>
+          <Text as="p">{'Balance in chief: ' + formatValue(votingWeight.chiefBalanceHot) + ' MKR'}</Text>
+          <Text as="p">{'Balance in wallet: ' + formatValue(votingWeight.walletBalanceHot) + ' MKR'}</Text>
         </>
       );
     }
@@ -56,7 +66,7 @@ export default function VotingWeight(): JSX.Element {
   const tooltipLabel = (
     <Box>
       <Text as="p">{votingWeightCopy}</Text>
-      {getDescription(votingWeight)}
+      {getDescription({ votingWeight, isDelegate: !!voteDelegateContractAddress })}
     </Box>
   );
 
