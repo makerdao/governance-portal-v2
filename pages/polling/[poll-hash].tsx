@@ -45,6 +45,7 @@ import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import { useFilteredPolls } from 'modules/polling/hooks/useFilteredPolls';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -68,32 +69,20 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const { tally } = usePollTally(poll.pollId, 60000);
   const { comments, error: errorComments } = usePollComments(poll.pollId);
+  const { data: filteredPollData } = useFilteredPolls(categoryFilter);
 
   useEffect(() => {
-    const fetchFilteredPolls = async categories => {
-      const { polls: pollData } = await fetchJson(
-        `/api/polling/all-polls?network=mainnet&categories=${Object.keys(categories).filter(
-          cat => !!categories[cat]
-        )}`
-      );
-      const currentIdx = pollData.indexOf(pollData.find(({ pollId }) => pollId === poll.pollId));
-      const previousPoll = pollData[currentIdx - 1];
-      const nextPoll = pollData[currentIdx + 1];
+    if (filteredPollData) {
+      const currentIdx = filteredPollData?.findIndex(({ pollId }) => pollId === poll.pollId);
+      const previousPoll = filteredPollData[currentIdx - 1];
+      const nextPoll = filteredPollData[currentIdx + 1];
       setPrevSlug(previousPoll?.slug);
       setNextSlug(nextPoll?.slug);
-    };
-
-    if (categoryFilter) {
-      fetchFilteredPolls(categoryFilter).catch(() => {
-        // If there's an error fetching filtered polls, just use the default sort by pollId
-        setPrevSlug(poll.ctx?.prev?.slug);
-        setNextSlug(poll.ctx?.next?.slug);
-      });
     } else {
       setPrevSlug(poll.ctx?.prev?.slug);
       setNextSlug(poll.ctx?.next?.slug);
     }
-  }, [categoryFilter, poll]);
+  }, [filteredPollData, poll]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
