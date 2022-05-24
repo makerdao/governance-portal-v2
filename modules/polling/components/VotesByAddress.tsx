@@ -40,9 +40,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
     switch (sortBy.type) {
       case 'mkr':
         return votes?.sort((a, b) => {
-          // The type of a.mkrSupport is typed as number, but in reality here we are getting a string
-          const aMKR = parseUnits(a.mkrSupport as unknown as string);
-          const bMKR = parseUnits(b.mkrSupport as unknown as string);
+          const aMKR = parseUnits(a.mkrSupport.toString());
+          const bMKR = parseUnits(b.mkrSupport.toString());
           return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
         });
       case 'address':
