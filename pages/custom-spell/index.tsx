@@ -65,7 +65,7 @@ export default function CustomSpell(): JSX.Element {
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
-      <Heading>Custom Spell Voting Module</Heading>
+      <Heading>Custom Spell Voting</Heading>
       <Text as="p" sx={{ mt: 3, color: 'onSecondary' }}>
         This page can be used to vote on custom executive spells by manually entering the spell address.
         Fetching spell details for a custom executive spell might return some empty values in case they are
