@@ -16,7 +16,7 @@ export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   return formatted;
 }
 
-export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
+export async function parsePollMetadata(poll: PartialPoll, document: string): Promise<Poll> {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
@@ -27,7 +27,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
   const tags = getPollTags();
-  const mapping = getPollTagsMapping();
+  const mapping = await getPollTagsMapping();
 
   const pollTags = mapping[poll.pollId] || [];
 

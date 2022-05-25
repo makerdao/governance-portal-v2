@@ -1,3 +1,4 @@
+import { fsCacheGet, fsCacheSet } from 'lib/fscache';
 import { Tag } from 'modules/app/types/tag.dt';
 
 import pollTags from 'modules/tags/constants/poll-tags-definitions.json';
@@ -6,6 +7,23 @@ export function getPollTags(): Tag[] {
   return pollTags;
 }
 
-export function getPollTagsMapping(): { [key: number]: string[] } {
-  return pollTagsMapping;
+export async function getPollTagsMapping(): Promise<{ [key: number]: string[] }> {
+  try {
+    const existingTags = fsCacheGet('poll-tags-mapping');
+
+    if (existingTags) {
+      return JSON.parse(existingTags);
+    }
+
+    const urlPollTags =
+      'https://raw.githubusercontent.com/makerdao-dux/community/governance-tags/governance/polls/meta/poll-tags.json';
+    const pollTags = await fetch(urlPollTags);
+    const dataPollTags = await pollTags.json();
+
+    fsCacheSet('poll-tags-mapping', JSON.stringify(dataPollTags));
+
+    return dataPollTags;
+  } catch (e) {
+    return pollTagsMapping;
+  }
 }

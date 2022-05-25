@@ -17,7 +17,7 @@ export async function validateUrl(url: string, poll?: PartialPoll): Promise<Vali
   const result = validateText(text);
   if (result.valid && poll) {
     result.wholeDoc = text;
-    result.parsedData = parsePollMetadata(poll, text);
+    result.parsedData = await parsePollMetadata(poll, text);
   }
   return result;
 }

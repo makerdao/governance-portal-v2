@@ -21,13 +21,15 @@ describe('Parse poll metadata', () => {
       }
     ]);
 
-    (getPollTagsMapping as jest.Mock).mockReturnValue({
-      431: ['risk']
-    });
+    (getPollTagsMapping as jest.Mock).mockReturnValue(
+      Promise.resolve({
+        431: ['risk']
+      })
+    );
   });
 
-  test('return the expected values', () => {
-    const actual = parsePollMetadata(spockPollToPartialPoll(pollJson431 as PollSpock), pollMetadata431);
+  test('return the expected values', async () => {
+    const actual = await parsePollMetadata(spockPollToPartialPoll(pollJson431 as PollSpock), pollMetadata431);
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 431,
@@ -55,8 +57,8 @@ describe('Parse poll metadata', () => {
     expect(actual.content).toEqual(matter(pollMetadata431).content);
   });
 
-  test('return the expected values for an old uncategorized poll', () => {
-    const actual = parsePollMetadata(spockPollToPartialPoll(pollJson327 as PollSpock), pollMetadata327);
+  test('return the expected values for an old uncategorized poll', async () => {
+    const actual = await parsePollMetadata(spockPollToPartialPoll(pollJson327 as PollSpock), pollMetadata327);
     expect(actual).toEqual(
       expect.objectContaining({
         pollId: 327,

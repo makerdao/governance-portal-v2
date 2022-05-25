@@ -20,7 +20,7 @@ async function fetchPollGithubDocument(url: string): Promise<string> {
 // Fetches poll metadata and returns null if it's invalid
 export async function fetchPollMetadata(p: PartialPoll): Promise<Poll | null> {
   const document = await fetchPollGithubDocument(p.url);
-  const poll = parsePollMetadata(p, document);
+  const poll = await parsePollMetadata(p, document);
 
   // If incorrect data, return null
   if (!poll || !poll.summary || !poll.options) {
