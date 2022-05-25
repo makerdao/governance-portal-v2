@@ -68,7 +68,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
     endDate: req.query.endDate ? new Date(req.query.endDate as string) : null,
     categories: req.query.categories
       ? typeof req.query.categories === 'string'
-        ? [req.query.categories]
+        ? req.query.categories.split(',')
         : req.query.categories
       : null
   };

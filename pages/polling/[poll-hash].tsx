@@ -44,6 +44,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import usePollsStore from 'modules/polling/stores/polls';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -51,6 +52,10 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
+  const filteredPollData = usePollsStore(state => state.filteredPolls);
+  const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
+  const [nextSlug, setNextSlug] = useState(poll.ctx?.next?.slug);
+
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
@@ -63,6 +68,19 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const { tally } = usePollTally(poll.pollId, 60000);
   const { comments, error: errorComments } = usePollComments(poll.pollId);
+
+  useEffect(() => {
+    if (filteredPollData && filteredPollData.length > 0) {
+      const currentIdx = filteredPollData?.findIndex(({ pollId }) => pollId === poll.pollId);
+      const previousPoll = filteredPollData[currentIdx - 1];
+      const nextPoll = filteredPollData[currentIdx + 1];
+      setPrevSlug(previousPoll?.slug);
+      setNextSlug(nextPoll?.slug);
+    } else {
+      setPrevSlug(poll.ctx?.prev?.slug);
+      setNextSlug(poll.ctx?.next?.slug);
+    }
+  }, [filteredPollData, poll]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -86,12 +104,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </Button>
             </InternalLink>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              {poll.ctx?.prev?.slug && (
-                <InternalLink
-                  href={`/polling/${poll.ctx.prev.slug}`}
-                  title="View previous poll"
-                  scroll={false}
-                >
+              {prevSlug && (
+                <InternalLink href={`/polling/${prevSlug}`} title="View previous poll" scroll={false}>
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} />
@@ -100,9 +114,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </Button>
                 </InternalLink>
               )}
-              {poll.ctx?.next?.slug && (
+              {nextSlug && (
                 <InternalLink
-                  href={`/polling/${poll.ctx.next.slug}`}
+                  href={`/polling/${nextSlug}`}
                   title="View next poll"
                   scroll={false}
                   styles={{ ml: 2 }}
