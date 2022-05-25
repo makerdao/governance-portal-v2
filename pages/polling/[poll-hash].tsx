@@ -52,7 +52,7 @@ const editMarkdown = content => {
   return content.replace(/^<h1>.*<\/h1>|^<h2>.*<\/h2>/, '');
 };
 
-const PollView = ({ poll }: { poll: Poll }) => {
+function PollView({ poll }: { poll: Poll }) {
   const categoryFilter = useUiFiltersStore(state => state.pollFilters.categoryFilter);
   const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
   const [nextSlug, setNextSlug] = useState(poll.ctx?.next?.slug);
@@ -60,6 +60,10 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
+
+  const handleSetShownOptions = () => {
+    setShownOptions(shownOptions + 6);
+  };
 
   const VotingWeightComponent = dynamic(() => import('../../modules/polling/components/VoteWeightVisual'), {
     ssr: false
@@ -206,12 +210,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     />,
                     shownOptions < Object.keys(poll.options).length && (
                       <Box sx={{ px: 4, pb: 3 }} key={'view more'}>
-                        <Button
-                          variant="mutedOutline"
-                          onClick={() => {
-                            setShownOptions(shownOptions + 6);
-                          }}
-                        >
+                        <Button variant="mutedOutline" onClick={handleSetShownOptions}>
                           <Flex sx={{ alignItems: 'center' }}>
                             View more
                             <Icon name="chevron_down" size="2" ml={2} />
@@ -344,7 +343,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
       </SidebarLayout>
     </PrimaryLayout>
   );
-};
+}
 
 export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX.Element {
   const [_poll, _setPoll] = useState<Poll>();
