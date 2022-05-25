@@ -13,7 +13,7 @@ export const PollCategoriesLanding = ({ pollCategories }: Props): JSX.Element =>
     <Flex sx={{ flexWrap: 'wrap', justifyContent: 'center', maxWidth: '1000px', margin: 'auto' }}>
       {pollCategories
         .filter(category => category.id !== 'uncategorized')
-        .sort((a, b) => (a.count > b.count ? -1 : 1))
+        .sort((a, b) => ((a.precedence || 100) > (b.precedence || 100) ? 1 : -1))
         .slice(0, 11)
         .map(category => (
           <Box key={category.id} sx={{ my: 3, mx: 4 }}>

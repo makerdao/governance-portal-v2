@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Text, Flex, IconButton, Heading } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
@@ -175,6 +175,43 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
   const bpi = useBreakpointIndex();
   const { network } = useActiveWeb3React();
 
+  const [sortBy, setSortBy] = useState({
+    type: 'mkr',
+    order: 1
+  });
+
+  const changeSort = type => {
+    if (sortBy.type === type) {
+      setSortBy({
+        type,
+        order: sortBy.order === 1 ? -1 : 1
+      });
+    } else {
+      setSortBy({
+        type,
+        order: 1
+      });
+    }
+  };
+
+  const sortedDelegators = useMemo(() => {
+    switch (sortBy.type) {
+      case 'mkr':
+        return delegators?.sort((a, b) => {
+          const aMKR = parseUnits(a.lockAmount);
+          const bMKR = parseUnits(b.lockAmount);
+          return sortBy.order === 1 ? (aMKR.gt(bMKR) ? -1 : 1) : aMKR.gt(bMKR) ? 1 : -1;
+        });
+      case 'address':
+        return delegators?.sort((a, b) =>
+          sortBy.order === 1 ? (a.address > b.address ? -1 : 1) : a.address > b.address ? 1 : -1
+        );
+
+      default:
+        return delegators;
+    }
+  }, [delegators, sortBy.type, sortBy.order]);
+
   return (
     <Box>
       <Box mb={3}>
@@ -200,15 +237,57 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
       >
         <thead>
           <tr>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '30%' }}
+              variant="caps"
+              onClick={() => changeSort('address')}
+            >
               Address
+              {sortBy.type === 'address' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
-            <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '30%' }} variant="caps">
+            <Text
+              as="th"
+              sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '30%' }}
+              variant="caps"
+              onClick={() => changeSort('mkr')}
+            >
               {bpi < 1 ? 'MKR' : 'MKR Delegated'}
+              {sortBy.type === 'mkr' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
             <Tooltip label={'This is the percentage of the total MKR delegated to this delegate.'}>
-              <Text as="th" sx={{ textAlign: 'left', pb: 2, width: '20%' }} variant="caps">
+              <Text
+                as="th"
+                sx={{ cursor: 'pointer', textAlign: 'left', pb: 2, width: '20%' }}
+                variant="caps"
+                onClick={() => changeSort('mkr')}
+              >
                 {bpi < 1 ? 'Weight' : 'Voting Weight'}
+                {sortBy.type === 'mkr' ? (
+                  sortBy.order === 1 ? (
+                    <Icon name="chevron_down" size={2} ml={1} />
+                  ) : (
+                    <Icon name="chevron_up" size={2} ml={1} />
+                  )
+                ) : (
+                  ''
+                )}
               </Text>
             </Tooltip>
             <Text as="th" sx={{ textAlign: 'right', pb: 2, width: '20%' }} variant="caps">
@@ -217,10 +296,10 @@ const DelegatedByAddress = ({ delegators, totalDelegated }: DelegatedByAddressPr
           </tr>
         </thead>
         <tbody>
-          {delegators ? (
-            delegators.map((delegator, i) => (
+          {sortedDelegators ? (
+            sortedDelegators.map((delegator, i) => (
               <CollapsableRow
-                key={i}
+                key={delegator.address}
                 delegator={delegator}
                 network={network}
                 bpi={bpi}

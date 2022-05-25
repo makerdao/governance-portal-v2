@@ -1,3 +1,4 @@
+import { Tag } from 'modules/app/types/tag.dt';
 import { PollVoteType } from './pollVoteType';
 
 export type Poll = {

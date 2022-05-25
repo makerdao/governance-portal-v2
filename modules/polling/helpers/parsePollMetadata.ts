@@ -28,7 +28,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const tags = getPollTags();
   const mapping = getPollTagsMapping();
 
-  const pollTags = mapping[poll.pollId];
+  const pollTags = mapping[poll.pollId] || [];
 
   let startDate, endDate;
   //poll coming from poll create page

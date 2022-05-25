@@ -79,7 +79,7 @@ export default function VoteBreakdown({
                             sx={{
                               backgroundColor: 'muted',
                               height: 2,
-                              color: 'mutedAlt',
+                              color: `${transfer.lt(0) ? '#f57350' : '#27ab9b'}`,
                               position: 'absolute'
                             }}
                             max={tally.totalMkrParticipation}

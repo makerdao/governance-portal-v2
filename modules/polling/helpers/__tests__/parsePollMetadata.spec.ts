@@ -4,7 +4,7 @@ import pollJson431 from './__helpers__/poll-431.js';
 import fs from 'fs';
 import matter from 'gray-matter';
 import { PollSpock } from '../../types/pollSpock';
-import { getPollTags } from 'modules/polling/api/getPollTags';
+import { getPollTags, getPollTagsMapping } from 'modules/polling/api/getPollTags';
 
 jest.mock('modules/polling/api/getPollTags');
 
@@ -20,6 +20,10 @@ describe('Parse poll metadata', () => {
         description: 'risk'
       }
     ]);
+
+    (getPollTagsMapping as jest.Mock).mockReturnValue({
+      431: ['risk']
+    });
   });
 
   test('return the expected values', () => {

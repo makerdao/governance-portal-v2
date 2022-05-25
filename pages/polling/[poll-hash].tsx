@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -170,21 +170,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={[
-                'Poll Detail',
                 'Vote Breakdown',
+                'Poll Detail',
                 `Comments${comments ? ` (${comments.length})` : ''}`
               ]}
-              tabRoutes={['Poll Detail', 'Vote Breakdown', 'Comments']}
+              tabRoutes={['Vote Breakdown', 'Poll Detail', 'Comments']}
               tabPanels={[
-                <div key={1}>
-                  <div
-                    data-testid="poll-detail"
-                    sx={{ variant: 'markdown.default', p: [3, 4] }}
-                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                  />
-                </div>,
                 !tally ? (
-                  <Box sx={{ m: 4 }} key={2}>
+                  <Box sx={{ m: 4 }} key={1}>
                     <Skeleton />
                   </Box>
                 ) : (
@@ -280,6 +273,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     </Flex>
                   ]
                 ),
+                <div key={2}>
+                  <div
+                    data-testid="poll-detail"
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                  />
+                </div>,
                 <div key={3}>
                   {!errorComments && <PollComments comments={comments} tally={tally} poll={poll} />}
                   {errorComments && (
