@@ -148,7 +148,7 @@ const Delegates = ({ delegates, stats }: DelegatesPageData) => {
                 Delegate Contracts
               </Heading>
               <Card variant="compact">
-                <Text as="p" sx={{ mb: 3 }}>
+                <Text as="p" sx={{ mb: 3, color: 'textSecondary' }}>
                   {voteDelegateContractAddress
                     ? 'Looking for delegate contract information?'
                     : 'Interested in creating a delegate contract?'}
