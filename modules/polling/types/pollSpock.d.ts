@@ -6,4 +6,5 @@ export type PollSpock = {
   endDate: number;
   multiHash: string;
   url: string;
+  cursor: string;
 };
