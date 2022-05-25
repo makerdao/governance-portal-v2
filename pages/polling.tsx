@@ -41,6 +41,7 @@ import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserv
 import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
+import usePollsStore from 'modules/polling/stores/polls';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -79,6 +80,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
     state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters, state.pollsSortBy],
     shallow
   );
+  const setFilteredPolls = usePollsStore(state => state.setFilteredPolls);
   const router = useRouter();
 
   useEffect(() => {
@@ -99,6 +101,10 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
       pollFilters
     });
   }, [polls, pollFilters]);
+
+  useEffect(() => {
+    setFilteredPolls(filteredPolls);
+  }, [filteredPolls]);
 
   const { activeGroupBy, historicalGroupBy, activeSortFn, historicalSortFn, activeVerb, historicalVerb } =
     getSortCriteria(sort);

@@ -44,8 +44,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
-import { useFilteredPolls } from 'modules/polling/hooks/useFilteredPolls';
+import usePollsStore from 'modules/polling/stores/polls';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -53,7 +52,7 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
-  const categoryFilter = useUiFiltersStore(state => state.pollFilters.categoryFilter);
+  const filteredPollData = usePollsStore(state => state.filteredPolls);
   const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
   const [nextSlug, setNextSlug] = useState(poll.ctx?.next?.slug);
 
@@ -69,7 +68,6 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const { tally } = usePollTally(poll.pollId, 60000);
   const { comments, error: errorComments } = usePollComments(poll.pollId);
-  const { data: filteredPollData } = useFilteredPolls(categoryFilter);
 
   useEffect(() => {
     if (filteredPollData) {
