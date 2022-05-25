@@ -70,7 +70,7 @@ const PollView = ({ poll }: { poll: Poll }) => {
   const { comments, error: errorComments } = usePollComments(poll.pollId);
 
   useEffect(() => {
-    if (filteredPollData) {
+    if (filteredPollData && filteredPollData.length > 0) {
       const currentIdx = filteredPollData?.findIndex(({ pollId }) => pollId === poll.pollId);
       const previousPoll = filteredPollData[currentIdx - 1];
       const nextPoll = filteredPollData[currentIdx + 1];
