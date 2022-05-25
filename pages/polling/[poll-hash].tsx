@@ -402,6 +402,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
+      key: poll.pollId, // makes sure state updates when navigating to a new dynamic route
       poll
     }
   };
