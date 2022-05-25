@@ -20,7 +20,7 @@ import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
 import { PollTitleSearch } from 'modules/polling/components/filters/PollTitleSearch';
 import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
-import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
+// import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
 import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
@@ -181,7 +181,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
                 <PollsSort />
                 <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />
-                <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+                {/* <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} /> */}
                 <DateFilter sx={{ m: 2 }} />
               </Flex>
               <Button
