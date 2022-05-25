@@ -162,16 +162,15 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
 
       <Stack gap={3}>
         <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-          <Flex sx={{ mr: [0, 3], mb: [3, 0], alignItems: 'center' }}>
-            <Heading variant="microHeading">Filters</Heading>
+          <Flex sx={{ alignItems: 'center' }}>
+            {/* <Heading variant="microHeading">Filters</Heading> */}
             <Button
               variant="textual"
               sx={{ display: ['block', 'none'], color: 'onSecondary' }}
               onClick={() => setShowFilters(!showFilters)}
             >
-              {/* TODO: how to show this? */}
-              {showFilters ? '(hide)' : '(show)'}
-              {/* <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} /> */}
+              <Text sx={{ mr: 1 }}>{showFilters ? 'Hide poll filters' : 'Show poll filters'}</Text>
+              <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
             </Button>
           </Flex>
           {(showFilters || bpi > 0) && (
