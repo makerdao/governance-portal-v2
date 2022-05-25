@@ -7,6 +7,7 @@ import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { useMemo, useState } from 'react';
 import { parseUnits } from 'ethers/lib/utils';
+import { Icon } from '@makerdao/dai-ui-icons';
 
 type Props = {
   tally: PollTally;
@@ -74,6 +75,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               onClick={() => changeSort('address')}
             >
               Address
+              {sortBy.type === 'address' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
             <Text
               as="th"
@@ -82,6 +92,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               onClick={() => changeSort('option')}
             >
               Option
+              {sortBy.type === 'option' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
             <Text
               as="th"
@@ -90,6 +109,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               onClick={() => changeSort('mkr')}
             >
               Voting Power
+              {sortBy.type === 'mkr' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
             <Text
               as="th"
@@ -98,6 +126,15 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
               onClick={() => changeSort('mkr')}
             >
               MKR Amount
+              {sortBy.type === 'mkr' ? (
+                sortBy.order === 1 ? (
+                  <Icon name="chevron_down" size={2} ml={1} />
+                ) : (
+                  <Icon name="chevron_up" size={2} ml={1} />
+                )
+              ) : (
+                ''
+              )}
             </Text>
           </tr>
         </thead>
