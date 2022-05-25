@@ -105,7 +105,7 @@ export default function PollOverviewCard({
 
                 <Flex sx={{ flexWrap: 'wrap' }}>
                   {poll.tags.map(c => (
-                    <Box key={c} sx={{ marginRight: 2, marginBottom: 2 }}>
+                    <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
                       <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
                     </Box>
                   ))}

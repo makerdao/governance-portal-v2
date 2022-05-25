@@ -4,6 +4,7 @@ import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
 import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
+import { Tag } from 'modules/app/types/tag.dt';
 
 export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   const formatted: PartialPoll = {
@@ -51,7 +52,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     options,
     discussionLink,
     voteType,
-    tags: pollTags.map(p => tags.find(t => t.id === p)).filter(p => !!p),
+    tags: pollTags.map(p => tags.find(t => t.id === p)).filter(p => !!p) as Tag[],
     ctx: { prev: null, next: null }
   };
 }
