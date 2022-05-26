@@ -1,11 +1,15 @@
 import BigNumber from 'bignumber.js';
-import { Flex } from 'theme-ui';
+import { Box, Flex } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { useMkrDelegated } from 'modules/mkr/hooks/useMkrDelegated';
 import { Delegate } from 'modules/delegates/types';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
+import Tooltip from 'modules/app/components/Tooltip';
+import { getDescription } from 'modules/polling/components/VotingWeight';
+import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 
 export function DelegateMKRDelegatedStats({
   delegate,
@@ -18,6 +22,7 @@ export function DelegateMKRDelegatedStats({
   // TODO: Fetch addresses suporting through API fetching
 
   const { data: mkrStaked } = useMkrDelegated(account, delegate.voteDelegateAddress);
+  const { data: votingWeight } = useMKRVotingWeight(delegate.voteDelegateAddress);
 
   return (
     <Flex
@@ -32,6 +37,13 @@ export function DelegateMKRDelegatedStats({
       <StatBox
         value={formatValue(parseUnits(delegate.mkrDelegated)) ?? 'Untracked'}
         label={'Total MKR Delegated'}
+        tooltip={
+          <Tooltip label={getDescription({ votingWeight, isDelegate: true })}>
+            <Box>
+              <Icon sx={{ ml: 1 }} name="question" />
+            </Box>
+          </Tooltip>
+        }
       />
       <StatBox
         value={typeof delegatorCount !== 'undefined' ? new BigNumber(delegatorCount).toFormat(0) : '--'}
