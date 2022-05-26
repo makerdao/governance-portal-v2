@@ -13,6 +13,7 @@ import {
 
 export enum SupportedConnectors {
   METAMASK = 'metamask',
+  METAMASK_MOBILE = 'metamask_mobile',
   WALLET_CONNECT = 'walletConnect',
   COINBASE_WALLET = 'coinbaseWallet'
   // LEDGER = 'ledger',
