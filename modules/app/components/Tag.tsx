@@ -26,11 +26,6 @@ export default function TagComponent({
         label={
           <Box>
             <Text>{tag.description}</Text>
-            {tag.related_link && (
-              <Text as="p">
-                <a href={tag.related_link}>{tag.related_link}</a>
-              </Text>
-            )}
           </Box>
         }
       >
