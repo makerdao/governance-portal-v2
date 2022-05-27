@@ -21,8 +21,39 @@ function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
   return sendReturn.hasOwnProperty('result') ? sendReturn.result : sendReturn; // eslint-disable-line
 }
 
-function handleEthereum() {
-  //do stuff in active
+async function handleEthereum() {
+  // listeners
+  if (window.ethereum.on) {
+    window.ethereum.on('chainChanged', this.handleChainChanged);
+    window.ethereum.on('accountsChanged', this.handleAccountsChanged);
+    window.ethereum.on('close', this.handleClose);
+    window.ethereum.on('networkChanged', this.handleNetworkChanged);
+  }
+
+  if ((window.ethereum as any).isMetaMask) {
+    (window.ethereum as any).autoRefreshOnNetworkChange = false;
+  }
+
+  // try to activate + get account via eth_requestAccounts
+  let account;
+  try {
+    account = await (window.ethereum.send as Send)('eth_requestAccounts').then(
+      sendReturn => parseSendReturn(sendReturn)[0]
+    );
+  } catch (error) {
+    if ((error as any).code === 4001) {
+      throw new UserRejectedRequestError();
+    }
+    warning(false, 'eth_requestAccounts was unsuccessful, falling back to enable');
+  }
+
+  // if unsuccessful, try enable
+  if (!account) {
+    // if enable is successful but doesn't return accounts, fall back to getAccount (not happy i have to do this...)
+    account = await window.ethereum.enable().then(sendReturn => sendReturn && parseSendReturn(sendReturn)[0]);
+  }
+
+  return { provider: window.ethereum, ...(account ? { account } : {}) };
 }
 
 export class NoEthereumProviderError extends Error {
@@ -85,6 +116,7 @@ export class MetaMaskMobileConnector extends AbstractConnector {
     this.emitUpdate({ chainId: networkId, provider: window.ethereum });
   }
 
+  // Snippet from https://docs.metamask.io/guide/mobile-best-practices.html#the-provider-window-ethereum
   // public async activate(): Promise<ConnectorUpdate> {
   //   if (window.ethereum) {
   //     return this.handleActivate();
@@ -114,39 +146,7 @@ export class MetaMaskMobileConnector extends AbstractConnector {
       throw new NoEthereumProviderError();
     }
 
-    if (window.ethereum.on) {
-      window.ethereum.on('chainChanged', this.handleChainChanged);
-      window.ethereum.on('accountsChanged', this.handleAccountsChanged);
-      window.ethereum.on('close', this.handleClose);
-      window.ethereum.on('networkChanged', this.handleNetworkChanged);
-    }
-
-    if ((window.ethereum as any).isMetaMask) {
-      (window.ethereum as any).autoRefreshOnNetworkChange = false;
-    }
-
-    // try to activate + get account via eth_requestAccounts
-    let account;
-    try {
-      account = await (window.ethereum.send as Send)('eth_requestAccounts').then(
-        sendReturn => parseSendReturn(sendReturn)[0]
-      );
-    } catch (error) {
-      if ((error as any).code === 4001) {
-        throw new UserRejectedRequestError();
-      }
-      warning(false, 'eth_requestAccounts was unsuccessful, falling back to enable');
-    }
-
-    // if unsuccessful, try enable
-    if (!account) {
-      // if enable is successful but doesn't return accounts, fall back to getAccount (not happy i have to do this...)
-      account = await window.ethereum
-        .enable()
-        .then(sendReturn => sendReturn && parseSendReturn(sendReturn)[0]);
-    }
-
-    return { provider: window.ethereum, ...(account ? { account } : {}) };
+    return handleEthereum();
   }
 
   public async getProvider(): Promise<any> {
