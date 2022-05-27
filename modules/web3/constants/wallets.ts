@@ -1,6 +1,6 @@
 import {
   injectedConnector,
-  metamaskMobileConnector,
+  // metamaskMobileConnector,
   walletConnectConnector,
   walletLinkConnector
 } from '../connectors';

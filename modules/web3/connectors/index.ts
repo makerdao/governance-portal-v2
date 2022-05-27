@@ -4,7 +4,7 @@ import { NetworkConnector } from '@web3-react/network-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '../constants/chainID';
 import { getRPCFromChainID } from '../helpers/getRPC';
-import { MetaMaskMobileConnector } from './MetaMaskMobileConnector';
+// import { MetaMaskMobileConnector } from './MetaMaskMobileConnector';
 
 const POLLING_INTERVAL = 12000;
 
@@ -16,9 +16,9 @@ export const injectedConnector = new InjectedConnector({
   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS
 });
 
-export const metamaskMobileConnector = new MetaMaskMobileConnector({
-  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS
-});
+// export const metamaskMobileConnector = new MetaMaskMobileConnector({
+//   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS
+// });
 
 const rpcs = ALL_SUPPORTED_CHAIN_IDS.reduce((acc, cur) => {
   acc[cur] = getRPCFromChainID(cur);
