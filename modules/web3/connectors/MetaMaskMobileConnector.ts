@@ -2,6 +2,7 @@
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import warning from 'tiny-warning';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 declare global {
   interface Window {
@@ -22,6 +23,7 @@ function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
 }
 
 async function handleEthereum() {
+  const provider = await detectEthereumProvider();
   // listeners
   if (window.ethereum.on) {
     window.ethereum.on('chainChanged', this.handleChainChanged);
@@ -82,7 +84,7 @@ export class MetaMaskMobileConnector extends AbstractConnector {
     this.handleClose = this.handleClose.bind(this);
   }
 
-  private triedToActivate = false;
+  private triedToActivate = 0;
 
   private handleChainChanged(chainId: string | number): void {
     if (__DEV__) {
@@ -131,22 +133,26 @@ export class MetaMaskMobileConnector extends AbstractConnector {
   //   }
   // }
 
-  public async activate(): Promise<ConnectorUpdate> {
-    if (!window.ethereum && !this.triedToActivate) {
+  //Promise<ConnectorUpdate>
+  public async activate(): Promise<void> {
+    console.log('Activate called', this.triedToActivate);
+    if (!window.ethereum && this.triedToActivate < 3) {
+      console.log('step 1 - !window.ethereum && !this.triedToActivate both false');
       window.addEventListener('ethereum#initialized', handleEthereum, {
         once: true
       });
 
-      this.triedToActivate = true;
+      this.triedToActivate++;
 
       // If the event is not dispatched by the end of the timeout,
       // the user probably doesn't have MetaMask installed.
-      setTimeout(this.activate.bind(this), 3000); // 3 seconds
-    } else if (!window.ethereum && this.triedToActivate) {
+      setTimeout(this.activate.bind(this), 10000); // 3 seconds
+    } else if (!window.ethereum && this.triedToActivate >= 3) {
+      console.log('uh oh throwing error, no window.ethereum & we already tried to activate :(');
       throw new NoEthereumProviderError();
     }
-
-    return handleEthereum();
+    // console.log('step 2 - Running handleEthereum anyway :shrug:');
+    // return handleEthereum();
   }
 
   public async getProvider(): Promise<any> {
