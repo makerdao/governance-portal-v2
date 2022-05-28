@@ -20,6 +20,7 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { CoreUnitModal } from './modals/CoreUnitModal';
 import { CoreUnitButton } from './modals/CoreUnitButton';
 import DelegateTags from './DelegateTags';
+import Icon from 'modules/app/components/Icon';
 
 type PropTypes = {
   delegate: Delegate;
@@ -49,11 +50,11 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
   return (
     <Card
       sx={{
-        p: [0, 0]
+        p: 0
       }}
       data-testid="delegate-card"
     >
-      <Box px={[3, 4]} pb={[3, 4]} pt={3}>
+      <Box px={[3, 4]} pb={3} pt={3}>
         <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
@@ -65,17 +66,17 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
         <Flex
           sx={{
-            flexDirection: ['column', 'column', 'row', 'column', 'row']
+            flexDirection: 'column'
           }}
         >
           <Flex
             sx={{
-              maxWidth: ['100%', '100%', '300px', '100%', '300px'],
-              flex: 1,
-              flexDirection: 'column'
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between'
             }}
           >
-            <Box sx={{ mr: [0, 2] }}>
+            <Box sx={{ mr: 2, maxWidth: '155px' }}>
               <DelegateAvatarName delegate={delegate} />
             </Box>
 
@@ -83,140 +84,132 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <DelegateTags tags={delegate.tags} />
             </Box>
 
-            <Flex sx={{ height: '100%', mt: [3, 3, 0, 3, 0] }}>
-              <InternalLink
-                href={`/address/${delegate.voteDelegateAddress}`}
-                title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
-                styles={{ mt: 'auto' }}
+            <Flex sx={{
+              flexDirection: ['column', 'row'],
+              alignItems: 'center'
+            }}>
+              <Button
+                variant="primaryOutline"
+                disabled={!account}
+                onClick={() => {
+                  trackButtonClick('openUndelegateModal');
+                  setShowUndelegateModal(true);
+                }}
+                sx={{ width: ['100%', '135px'], height: '45px', maxWidth: '135px', mr: [0, 2], mb: [2, 0] }}
+                data-testid="button-undelegate"
               >
-                <Button
-                  variant="outline"
-                  onClick={() => trackButtonClick('openDelegateProfile')}
-                  sx={{ borderColor: 'text', color: 'text', mt: [0, 0, 3, 0, 3] }}
-                >
-                  {`View ${isOwner ? 'Your' : 'Profile'} Details`}
-                </Button>
-              </InternalLink>
+                Undelegate
+              </Button>
+              <Button
+                variant="primaryLarge"
+                data-testid="button-delegate"
+                disabled={!account}
+                onClick={() => {
+                  trackButtonClick('openDelegateModal');
+                  setShowDelegateModal(true);
+                }}
+                sx={{ width: ['100%', '135px'], maxWidth: '135px', height: '45px', ml: [0, 3] }}
+              >
+                Delegate
+              </Button>
             </Flex>
           </Flex>
 
           <Flex
             sx={{
-              flex: 1,
-              mt: [4, 4, 0, 4, 0],
-              mb: [2, 2, 0, 2, 0],
-              flexDirection: ['row', 'row', 'column-reverse', 'row', 'column-reverse']
+              mt: 3,
+              flexDirection: 'column'
             }}
           >
             <Flex
               sx={{
-                flexDirection: ['column', 'column', 'row', 'column', 'row'],
-                justifyContent: 'space-between',
-                width: ['50%', '100%'],
-                mr: [1, 0]
+                flexDirection: 'row',
+                justifyContent: ['space-between', 'flex-start'],
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
-                >
-                  {delegate.combinedParticipation ?? 'Untracked'}
-                </Text>
+              <Box sx={{mr: [0, 3]}}>
                 <Tooltip label={participationTooltipLabel}>
-                  <Text
-                    as="p"
-                    variant="secondary"
-                    color="onSecondary"
-                    sx={{ fontSize: [2, 3], cursor: 'help' }}
-                  >
-                    Participation
-                  </Text>
-                </Tooltip>
-              </Box>
-              <Box sx={{ width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5], color: delegate.communication ? 'text' : 'secondaryMuted' }}
-                >
-                  {delegate.communication ?? 'Untracked'}
-                </Text>
-                <Tooltip label={communicationTooltipLabel}>
-                  <Text
-                    as="p"
-                    variant="secondary"
-                    color="onSecondary"
-                    sx={{ fontSize: [2, 3], cursor: 'help' }}
-                  >
-                    Communication
-                  </Text>
+                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
+                    <Icon name="participation"/>
+                    <Text
+                      as="p"
+                      variant="caps"
+                      color="onSecondary"
+                      sx={{ fontSize: 1 }}
+                      ml={1}
+                    >
+                      {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
+                    </Text>
+                  </Flex>
                 </Tooltip>
               </Box>
               <Box>
-                <Button
-                  variant="primaryOutline"
-                  disabled={!account}
-                  onClick={() => {
-                    trackButtonClick('openUndelegateModal');
-                    setShowUndelegateModal(true);
-                  }}
-                  sx={{ width: ['100%', '150px'], height: '45px', maxWidth: '150px', mt: [4, 4, 0, 4, 0] }}
-                  data-testid="button-undelegate"
-                >
-                  Undelegate
-                </Button>
+                <Tooltip label={communicationTooltipLabel}>
+                  <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
+                    <Icon name="comment"/>
+                    <Text
+                      as="p"
+                      variant="caps"
+                      color="onSecondary"
+                      sx={{ fontSize: 1}}
+                      ml={1}
+                    >
+                      {`${delegate.communication ?? 'Untracked'} Communication`}
+                    </Text>
+                  </Flex>
+                </Tooltip>
               </Box>
             </Flex>
             <Flex
               sx={{
-                flexDirection: ['column', 'column', 'row', 'column', 'row'],
+                flexDirection: 'row',
                 justifyContent: 'space-between',
-                width: ['50%', '100%'],
-                mb: [0, 0, 3, 0, 3]
+                flexWrap: 'wrap-reverse'
               }}
             >
-              <Box sx={{ mb: [3, 3, 0, 3, 0], width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5] }}
-                  data-testid="total-mkr-delegated"
+                <Flex sx={{ height: '100%'}}>
+                <InternalLink
+                  href={`/address/${delegate.voteDelegateAddress}`}
+                  title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                  styles={{ mt: 'auto' }}
                 >
-                  {totalStaked ? formatValue(totalStaked) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                  Total MKR delegated
-                </Text>
-              </Box>
-              <Box sx={{ width: ['auto', '200px'] }}>
-                <Text
-                  as="p"
-                  variant="microHeading"
-                  sx={{ fontSize: [3, 5] }}
-                  data-testid="mkr-delegated-by-you"
-                >
-                  {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
-                </Text>
-                <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3] }}>
-                  MKR delegated by you
-                </Text>
-              </Box>
-              <Box>
-                <Button
-                  variant="primaryLarge"
-                  data-testid="button-delegate"
-                  disabled={!account}
-                  onClick={() => {
-                    trackButtonClick('openDelegateModal');
-                    setShowDelegateModal(true);
-                  }}
-                  sx={{ width: ['100%', '150px'], maxWidth: '150px', height: '45px', mt: [4, 4, 0, 4, 0] }}
-                >
-                  Delegate
-                </Button>
-              </Box>
+                  <Button
+                    variant="outline"
+                    onClick={() => trackButtonClick('openDelegateProfile')}
+                    sx={{ borderColor: 'text', color: 'text', whiteSpace: 'nowrap', mt: 3, mr: 3 }}
+                  >
+                    {`View ${isOwner ? 'Your' : 'Profile'} Details`}
+                  </Button>
+                </InternalLink>
+              </Flex>
+              <Flex sx={{ justifyContent: 'flex-end', mt: '3'}}>
+                <Box>
+                  <Text
+                    as="p"
+                    variant="microHeading"
+                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    data-testid="mkr-delegated-by-you"
+                  >
+                    {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
+                  </Text>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
+                    MKR delegated by you
+                  </Text>
+                </Box>
+                <Box sx={{ ml: '4'}}>
+                  <Text
+                    as="p"
+                    variant="microHeading"
+                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    data-testid="total-mkr-delegated"
+                  >
+                    {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}
+                  </Text>
+                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
+                    Total MKR delegated
+                  </Text>
+                </Box>
+              </Flex>
             </Flex>
           </Flex>
         </Flex>
