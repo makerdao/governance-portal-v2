@@ -14,17 +14,17 @@ export default function PollsSort(): JSX.Element {
       />
       <ListboxPopover sx={{ variant: 'listboxes.default.popover' }}>
         <ListboxList sx={{ variant: 'listboxes.default.list' }}>
-          <ListboxOption label="Sort by nearest end date" value={PollsSortEnum.endDateAsc}>
-            Nearest end date
+          <ListboxOption label="Sort by ending soonest" value={PollsSortEnum.endDateAsc}>
+            Ending soonest
           </ListboxOption>
-          <ListboxOption label="Sort by furthest end date" value={PollsSortEnum.endDateDesc}>
-            Furthest end date
+          <ListboxOption label="Sort by ending latest" value={PollsSortEnum.endDateDesc}>
+            Ending latest
           </ListboxOption>
-          <ListboxOption label="Sort by furthest start date" value={PollsSortEnum.startDateAsc}>
-            Furthest start date
+          <ListboxOption label="Sort by created latest" value={PollsSortEnum.startDateAsc}>
+            Created latest
           </ListboxOption>
-          <ListboxOption label="Sort by nearest start date" value={PollsSortEnum.startDateDesc}>
-            Nearest start date
+          <ListboxOption label="Sort by created soonest" value={PollsSortEnum.startDateDesc}>
+            Created soonest
           </ListboxOption>
         </ListboxList>
       </ListboxPopover>
