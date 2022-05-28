@@ -80,10 +80,6 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <DelegateAvatarName delegate={delegate} />
             </Box>
 
-            <Box>
-              <DelegateTags tags={delegate.tags} />
-            </Box>
-
             <Flex sx={{
               flexDirection: ['column', 'row'],
               alignItems: 'center'
@@ -117,10 +113,14 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
           <Flex
             sx={{
-              mt: 3,
               flexDirection: 'column'
             }}
           >
+            <Box sx={{
+              mb: '1'
+            }}>
+              <DelegateTags tags={delegate.tags} />
+            </Box>
             <Flex
               sx={{
                 flexDirection: 'row',

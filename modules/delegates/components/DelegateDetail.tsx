@@ -118,7 +118,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           }}
         >
           <Box>
-            <Flex>
+            <Flex sx={{mb: 1}}>
               <DelegatePicture delegate={delegate} key={delegate.id} width={52} />
               <Box sx={{ width: '100%' }}>
                 <Box sx={{ ml: 3 }}>
@@ -160,7 +160,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             </Flex>
             <DelegateTags tags={delegate.tags} />
           </Box>
-          <Flex sx={{ mt: [3, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
+          <Flex sx={{ mt: [2, 0], flexDirection: 'column', alignItems: ['flex-start', 'flex-end'] }}>
             {delegate.cuMember && <CoreUnitButton handleInfoClick={handleInfoClick} />}
             <LastVoted
               expired={delegate.expired}
@@ -170,7 +170,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
             <DelegateContractExpiration delegate={delegate} />
           </Flex>
         </Flex>
-        <Box sx={{ mt: [3], display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <DelegateMKRDelegatedStats delegate={delegate} delegatorCount={delegatorCount} />
         </Box>
       </Box>
