@@ -30,7 +30,7 @@ export default function TagComponent({
         }
       >
         <Box>
-          <Text sx={{ fontSize: 2 }}>{tag.longname}</Text>
+          <Text sx={{ fontSize: 2 }}>{tag.longname ? tag.longname : tag.shortname}</Text>
         </Box>
       </TooltipComponent>
     </Box>
