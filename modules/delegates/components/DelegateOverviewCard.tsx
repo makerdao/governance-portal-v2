@@ -113,7 +113,8 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
           <Flex
             sx={{
-              flexDirection: 'column'
+              mt: delegate.tags && delegate.tags.length > 0 ? 1 : 3,
+              flexDirection: 'column',
             }}
           >
             <Box sx={{
@@ -123,7 +124,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             </Box>
             <Flex
               sx={{
-                flexDirection: 'row',
+                flexDirection: ['column', 'row'],
                 justifyContent: ['space-between', 'flex-start'],
               }}
             >
@@ -143,7 +144,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Flex>
                 </Tooltip>
               </Box>
-              <Box>
+              <Box sx={{mt: [1, 0]}}>
                 <Tooltip label={communicationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="comment"/>
@@ -187,7 +188,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Text
                     as="p"
                     variant="microHeading"
-                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                     data-testid="mkr-delegated-by-you"
                   >
                     {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
@@ -200,7 +201,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Text
                     as="p"
                     variant="microHeading"
-                    sx={{ fontSize: [3, 5], textAlign: 'right' }}
+                    sx={{ fontSize: [3, 5], textAlign: ['left', 'right'] }}
                     data-testid="total-mkr-delegated"
                   >
                     {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}

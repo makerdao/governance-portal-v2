@@ -14,7 +14,7 @@ export function getDelegatesRepositoryInformation(network: SupportedNetworks): R
   };
 
   const repoTest = {
-    owner: 'makerdao-dux',
+    owner: 'tyler17',
     repo: 'voting-delegates',
     page: 'delegates'
   };

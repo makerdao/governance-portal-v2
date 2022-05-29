@@ -87,12 +87,13 @@ export default function DelegateTags({ tags }: { tags: Tag[] }): React.ReactElem
   };
 
   return (
-    <Flex>
+    <Flex sx={{flexWrap: 'wrap'}}>
       {tags.map(tag => (
         <Box
           key={tag.id}
           sx={{
-            m: 2
+            m: 2,
+            cursor: 'help'
           }}
         >
           <TagComponent
