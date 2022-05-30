@@ -4,8 +4,7 @@ summary: Signal your support or opposition to increase the Dust Parameter from 5
 discussion_link: https://forum.makerdao.com/t/signal-request-increasing-dust-parameter/5963
 vote_type: Plurality Voting
 categories:
-  - Risk Variable
-  - Technical
+  - risk
 options:
   0: Abstain
   1: Yes

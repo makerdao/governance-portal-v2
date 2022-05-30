@@ -1,9 +1,10 @@
 import matter from 'gray-matter';
 import validUrl from 'valid-url';
 import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
-import categoryMap from './oldPollCategories';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
+import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
+import { Tag } from 'modules/app/types/tag.dt';
 
 export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   const formatted: PartialPoll = {
@@ -15,7 +16,7 @@ export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   return formatted;
 }
 
-export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
+export async function parsePollMetadata(poll: PartialPoll, document: string): Promise<Poll> {
   const { data: pollMeta, content } = matter(document);
   const summary = pollMeta?.summary || '';
   const title = pollMeta?.title || '';
@@ -25,11 +26,10 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
   const voteType: PollVoteType =
     (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
-  const categories = [
-    ...(pollMeta?.categories || []),
-    ...(pollMeta?.category ? [pollMeta?.category] : []),
-    ...(categoryMap[poll.pollId] || [])
-  ];
+  const tags = getPollTags();
+  const mapping = await getPollTagsMapping();
+
+  const pollTags = mapping[poll.pollId] || [];
 
   let startDate, endDate;
   //poll coming from poll create page
@@ -52,7 +52,7 @@ export function parsePollMetadata(poll: PartialPoll, document: string): Poll {
     options,
     discussionLink,
     voteType,
-    categories: categories.length > 0 ? categories : ['Uncategorized'],
+    tags: pollTags.map(p => tags.find(t => t.id === p)).filter(p => !!p) as Tag[],
     ctx: { prev: null, next: null }
   };
 }

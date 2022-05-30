@@ -1,7 +1,16 @@
 import mockPolls from 'modules/polling/api/mocks/polls.json';
+import { PollVoteType } from 'modules/polling/types';
 import { filterPolls } from '../filterPolls';
 
 describe('filterPolls', () => {
+  const formattedPolls = mockPolls.map(p => {
+    return {
+      ...p,
+      endDate: new Date(p.endDate),
+      startDate: new Date(p.startDate),
+      voteType: p.voteType as PollVoteType
+    };
+  });
   const filters = {
     title: null,
     startDate: null,
@@ -14,19 +23,19 @@ describe('filterPolls', () => {
 
   it('returns all polls with no filter options passed', () => {
     const polls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters
       }
     });
 
-    expect(polls).toEqual(mockPolls);
+    expect(polls).toEqual(formattedPolls);
     expect(polls.length).toEqual(2);
   });
 
   it('returns polls filtered by title', () => {
     const polls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters,
         title: 'protocol dai'
@@ -38,7 +47,7 @@ describe('filterPolls', () => {
 
   it('returns polls filtered by category', () => {
     const polls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters,
         categoryFilter: { test1: true }
@@ -50,7 +59,7 @@ describe('filterPolls', () => {
 
   it('returns polls filtered by poll type', () => {
     const polls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters,
         pollVoteType: { 'Ranked Choice IRV': true }
@@ -62,7 +71,7 @@ describe('filterPolls', () => {
 
   it('returns polls filtered by active/ended', () => {
     const endedPolls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters,
         showPollActive: false
@@ -72,7 +81,7 @@ describe('filterPolls', () => {
     expect(endedPolls.length).toEqual(0);
 
     const activePolls = filterPolls({
-      polls: mockPolls,
+      polls: formattedPolls,
       pollFilters: {
         ...filters,
         showPollActive: true,

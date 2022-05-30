@@ -74,7 +74,7 @@ const getSortCriteria = (sort: PollsSortEnum | null) => {
   };
 };
 
-const PollingOverview = ({ polls, categories }: PollingPageData) => {
+const PollingOverview = ({ polls, tags }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
   const [pollFilters, setCategoryFilter, resetPollFilters, sort] = useUiFiltersStore(
     state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters, state.pollsSortBy],
@@ -184,7 +184,7 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
                 <PollTitleSearch sx={{ m: 2 }} />
                 <PollsSort />
-                <CategoryFilter categories={categories} polls={polls} sx={{ m: 2 }} />
+                <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />
                 {/* <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} /> */}
                 <DateFilter sx={{ m: 2 }} />
@@ -335,14 +335,14 @@ const PollingOverview = ({ polls, categories }: PollingPageData) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  categories: prefetchedCategories
+  tags: prefetchedCategories
 }: PollingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
         polls: prefetchedPolls,
-        categories: prefetchedCategories
+        tags: prefetchedCategories
       }
     : null;
 
@@ -367,7 +367,7 @@ export default function PollingOverviewPage({
 
   const props = {
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    categories: isDefaultNetwork(network) ? prefetchedCategories : data?.categories || []
+    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || []
   };
 
   return (
@@ -378,13 +378,13 @@ export default function PollingOverviewPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { polls, categories } = await fetchPollingPageData(SupportedNetworks.MAINNET);
+  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60, // revalidate every 60 seconds
     props: {
       polls,
-      categories
+      tags
     }
   };
 };

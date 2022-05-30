@@ -1,113 +1,130 @@
-import { Box, Text } from 'theme-ui';
+import TagComponent from 'modules/app/components/Tag';
+import { Tag } from 'modules/app/types/tag.dt';
+import { Box } from 'theme-ui';
 
-export function PollCategoryTag({
-  category,
-  onClick
-}: {
-  category: string;
-  onClick?: (category?: any) => void;
-}): React.ReactElement {
+export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => void }): React.ReactElement {
   const categories = {
-    Collateral: {
+    'collateral-onboard': {
       color: 'tagColorOne',
       backgroundColor: 'tagColorOneBg'
     },
-    Oracles: {
+    oracle: {
       color: 'tagColorTwo',
       backgroundColor: 'tagColorTwoBg'
     },
-    Governance: {
+    'oracle-whitelist': {
+      color: 'tagColorTwo',
+      backgroundColor: 'tagColorTwoBg'
+    },
+    'oracle-feed': {
+      color: 'tagColorTwo',
+      backgroundColor: 'tagColorTwoBg'
+    },
+    ratification: {
       color: 'tagColorThree',
       backgroundColor: 'tagColorThreeBg'
     },
-    'Risk Variable': {
+    inclusion: {
+      color: 'tagColorThree',
+      backgroundColor: 'tagColorThreeBg'
+    },
+    'real-world-assets': {
       color: 'tagColorFour',
       backgroundColor: 'tagColorFourBg'
     },
-    Risk: {
+    'risk-parameter': {
       color: 'tagColorFive',
       backgroundColor: 'tagColorFiveBg'
     },
-    Technical: {
+    technical: {
       color: 'tagColorSix',
       backgroundColor: 'tagColorSixBg'
     },
-    Other: {
+    'misc-governance': {
       color: 'tagColorSeven',
       backgroundColor: 'tagColorSevenBg'
     },
-    MIPs: {
+    delegates: {
       color: 'tagColorEight',
       backgroundColor: 'tagColorEightBg'
     },
-    Rates: {
+    mips: {
+      color: 'tagColorEight',
+      backgroundColor: 'tagColorEightBg'
+    },
+    budget: {
       color: 'tagColorNine',
       backgroundColor: 'tagColorNineBg'
     },
-    Auctions: {
+    auctions: {
       color: 'tagColorTen',
       backgroundColor: 'tagColorTenBg'
     },
-    Greenlight: {
+    greenlight: {
       color: 'tagColorEleven',
       backgroundColor: 'tagColorElevenBg'
     },
-    Transfer: {
+    d3m: {
       color: 'tagColorTwelve',
       backgroundColor: 'tagColorTwelveBg'
     },
-    Budget: {
+    'misc-funding': {
       color: 'tagColorThirteen',
       backgroundColor: 'tagColorThirteenBg'
     },
-    'Core Unit': {
+    'core-unit-onboard': {
       color: 'tagColorFourteen',
       backgroundColor: 'tagColorFourteenBg'
     },
-    Test: {
+
+    'mcd-launch': {
       color: 'tagColorFifteen',
       backgroundColor: 'tagColorFifteenBg'
     },
-    Offboard: {
+
+    'collateral-offboard': {
       color: 'tagColorSixteen',
       backgroundColor: 'tagColorSixteenBg'
     },
-    Uncategorized: {
+    surplus: {
       color: 'tagColorSeventeen',
       backgroundColor: 'tagColorSeventeenBg'
     },
-    'High Impact': {
-      color: 'tagColorFive',
-      backgroundColor: 'tagColorFiveBg'
+    dsr: {
+      color: 'tagColorSeventeen',
+      backgroundColor: 'tagColorSeventeenBg'
     },
-    'Medium Impact': {
-      color: 'tagColorThirteen',
-      backgroundColor: 'tagColorThirteenBg'
+    momc: {
+      color: 'tagColorSeventeen',
+      backgroundColor: 'tagColorSeventeenBg'
     },
-    'Low Impact': {
+    psm: {
       color: 'tagColorEleven',
       backgroundColor: 'tagColorElevenBg'
+    },
+    'black-thursday': {
+      color: 'black',
+      backgroundColor: '#00000014'
+    },
+    bridge: {
+      color: 'tagColorThirteen',
+      backgroundColor: 'tagColorThirteenBg'
     }
   };
-
-  const color = categories[category] ? categories[category].color : 'tagColorSeventeen';
-  const backgroundColor = categories[category] ? categories[category].backgroundColor : 'tagColorSeventeenBg';
 
   return (
     <Box
       sx={{
-        backgroundColor,
-        borderRadius: '12px',
-        padding: '4px 8px',
-        display: 'flex',
-        alignItems: 'center',
-        cursor: onClick ? 'pointer' : 'inherit',
-        color
+        cursor: onClick ? 'pointer' : 'inherit'
       }}
       onClick={onClick}
-      title={`See all ${category} polls`}
+      title={`See all ${tag.id} polls`}
     >
-      <Text sx={{ fontSize: 2 }}>{category}</Text>
+      <TagComponent
+        tag={tag}
+        color={categories[tag.id]?.color}
+        backgroundColor={categories[tag.id]?.backgroundColor}
+      />
     </Box>
   );
 }

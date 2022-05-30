@@ -34,17 +34,17 @@ import { isSupportedNetwork } from 'modules/web3/helpers/networks';
  *     produces:
  *     - "application/json"
  *     parameters:
- *     - name: "categories"
+ *     - name: "tags"
  *       in: "query"
- *       description: "Categories to filter polls by. Example 'Collateral', 'Greenlight'"
+ *       description: "tags to filter polls by. Example 'collateral', 'greenlight'"
  *       required: false
  *       type: "array"
  *       items:
  *         type: "string"
  *         enum:
- *         - "Collateral"
- *         - "Greenlight"
- *         - "Governance"
+ *         - "collateral"
+ *         - "greenlight"
+ *         - "governance"
  *         default: ""
  *       collectionFormat: "multi"
  *     responses:
@@ -66,11 +66,7 @@ export default withApiHandler(async (req: NextApiRequest, res: NextApiResponse) 
   const filters = {
     startDate: req.query.startDate ? new Date(req.query.startDate as string) : null,
     endDate: req.query.endDate ? new Date(req.query.endDate as string) : null,
-    categories: req.query.categories
-      ? typeof req.query.categories === 'string'
-        ? req.query.categories.split(',')
-        : req.query.categories
-      : null
+    tags: req.query.tags ? (typeof req.query.tags === 'string' ? [req.query.tags] : req.query.tags) : null
   };
 
   const pollsResponse = await getPolls(filters, network);

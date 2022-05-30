@@ -1,17 +1,18 @@
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { TagCount } from 'modules/app/types/tag.dt';
 
 export function PollTypeFilter({
   polls,
   ...props
 }: {
-  categories: PollCategory[];
+  tags: TagCount[];
   polls: Poll[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {

@@ -1,19 +1,20 @@
 import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import FilterButton from 'modules/app/components/FilterButton';
 import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
+import { TagCount } from 'modules/app/types/tag.dt';
 
 export function CategoryFilter({
-  categories,
+  tags,
   polls,
   ...props
 }: {
-  categories: PollCategory[];
+  tags: TagCount[];
   polls: Poll[];
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
@@ -45,23 +46,23 @@ export function CategoryFilter({
     >
       <Box p={2} sx={{ maxHeight: '300px', overflowY: 'scroll' }}>
         <Flex sx={{ flexDirection: 'column' }}>
-          {categories.map(category => (
-            <Flex key={category.name}>
+          {tags.map(tag => (
+            <Flex key={tag.id}>
               <Label sx={{ py: 1, fontSize: 2, alignItems: 'center' }}>
                 <Checkbox
                   sx={{ width: 3, height: 3 }}
-                  checked={(categoryFilter && categoryFilter[category.name]) || false}
+                  checked={(categoryFilter && categoryFilter[tag.id]) || false}
                   onChange={event => {
-                    setCategoryFilter({ ...categoryFilter, [category.name]: event.target.checked });
+                    setCategoryFilter({ ...categoryFilter, [tag.id]: event.target.checked });
                     trackButtonClick(
-                      `${category.name}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
+                      `${tag.id}FilterToggle${event.target.checked ? 'Checked' : 'Unchecked'}`
                     );
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{category.name}</Text>
+                  <Text>{tag.shortname}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
-                    {filteredPollsNoCategories.filter(i => i.categories.includes(category.name)).length}
+                    {filteredPollsNoCategories.filter(i => i.tags.find(t => t.id === tag.id)).length}
                   </Text>
                 </Flex>
               </Label>

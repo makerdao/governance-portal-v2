@@ -52,7 +52,7 @@ export default function PollOverviewCard({
   );
 
   function onClickCategory(category) {
-    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+    setCategoryFilter({ ...categoryFilter, [category.id]: !(categoryFilter || {})[category.id] });
   }
 
   const myComment = comments?.find(c => {
@@ -103,10 +103,10 @@ export default function PollOverviewCard({
                   </InternalLink>
                 </Box>
 
-                <Flex>
-                  {poll.categories.map(c => (
-                    <Box key={c} sx={{ marginRight: 2 }}>
-                      <PollCategoryTag onClick={() => onClickCategory(c)} category={c} />
+                <Flex sx={{ flexWrap: 'wrap' }}>
+                  {poll.tags.map(c => (
+                    <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
+                      <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
                     </Box>
                   ))}
                 </Flex>

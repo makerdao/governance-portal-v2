@@ -40,8 +40,15 @@ import invariant from 'tiny-invariant';
  *       voteType:
  *         type: string
  *         enum: ['Plurality Voting', 'Ranked Choice IRV']
- *       categories:
+ *       tags:
  *         type: array
+ *         items:
+ *           type: object
+ *           properties:
+ *             id: string
+ *             shortname: string
+ *             longname: string
+ *             description: string
  *       ctx:
  *         type: object
  *     example:
@@ -62,7 +69,7 @@ import invariant from 'tiny-invariant';
  *           2: 'No'
  *         discussionLink: 'https://forum.makerdao.com'
  *         voteType: 'Plurality Voting'
- *         categories: ['Greenlight']
+ *         tags: [{ id: 'greenlight', longname: 'Greenlight', shortname: 'Greenlight', description: 'Lorem ipsum' }]
  *         ctx:
  *           prev: null
  *           next: null

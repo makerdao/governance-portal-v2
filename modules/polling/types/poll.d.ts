@@ -1,3 +1,4 @@
+import { Tag } from 'modules/app/types/tag.dt';
 import { PollVoteType } from './pollVoteType';
 
 export type Poll = {
@@ -11,7 +12,7 @@ export type Poll = {
   startDate: Date;
   discussionLink: string | null;
   voteType: PollVoteType;
-  categories: string[];
+  tags: Tag[];
   slug: string;
   ctx: {
     prev: PartialPoll | null;

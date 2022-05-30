@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
@@ -114,7 +114,7 @@ export async function _getAllPolls(
 const defaultFilters: PollFilters = {
   startDate: null,
   endDate: null,
-  categories: null,
+  tags: null,
   active: null
 };
 
@@ -131,25 +131,16 @@ export async function getPolls(
     if (filters.endDate && new Date(poll.endDate).getTime() > filters.endDate.getTime()) return false;
 
     // if no category filters selected, return all, otherwise, check if poll contains category
-    return (
-      !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c))
-    );
+    return !filters.tags || poll.tags.some(c => filters.tags && filters.tags.includes(c.id));
   });
 
   return {
     polls: filteredPolls,
-    categories: getCategories(allPolls),
+    tags: getCategories(allPolls),
     stats: {
       active: allPolls.filter(isActivePoll).length,
       finished: allPolls.filter(p => !isActivePoll(p)).length,
       total: allPolls.length
     }
   };
-}
-
-export async function getPollCategories(): Promise<PollCategory[]> {
-  const pollsResponse = await getPolls();
-  const categories = getCategories(pollsResponse.polls);
-
-  return categories;
 }
