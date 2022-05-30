@@ -145,7 +145,11 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                 <tr key={v.voter} data-testid="vote-by-address">
                   <Text as="td" sx={{ pb: 2, fontSize: bpi < 1 ? 1 : 3 }}>
                     <InternalLink href={`/address/${v.voter}`} title="View address detail">
-                      <AddressIconBox address={v.voter} width={41} />
+                      <AddressIconBox
+                        address={v.voter}
+                        width={bpi < 1 ? 31 : 41}
+                        limitTextLength={bpi < 1 ? 15 : 0}
+                      />
                     </InternalLink>
                   </Text>
                   <Text

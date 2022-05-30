@@ -1,8 +1,9 @@
+import { limitString } from 'lib/string';
 import { formatAddress } from 'lib/utils';
 import { getENS } from 'modules/web3/helpers/ens';
 import React, { useEffect, useState } from 'react';
 
-export function Address({ address }: { address: string }): React.ReactElement {
+export function Address({ address, maxLength }: { address: string; maxLength?: number }): React.ReactElement {
   const [addressFormated, setAddressFormatted] = useState(formatAddress(address || '').toLowerCase());
 
   async function fetchENSName(address: string) {
@@ -20,5 +21,9 @@ export function Address({ address }: { address: string }): React.ReactElement {
     }
   }, [address]);
 
-  return <React.Fragment>{addressFormated}</React.Fragment>;
+  return (
+    <React.Fragment>
+      {maxLength ? limitString(addressFormated, maxLength, '...') : addressFormated}
+    </React.Fragment>
+  );
 }

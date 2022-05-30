@@ -75,7 +75,7 @@ export default function AddressIconBox({
               </Text>
             ) : (
               <Text>
-                <Address address={address} />
+                <Address address={address} maxLength={limitTextLength} />
               </Text>
             )}
             {showExternalLink && (
