@@ -87,7 +87,7 @@ export default function DelegateTags({ tags }: { tags: Tag[] }): React.ReactElem
   };
 
   return (
-    <Flex sx={{flexWrap: 'wrap'}}>
+    <Flex sx={{ flexWrap: 'wrap' }}>
       {tags.map(tag => (
         <Box
           key={tag.id}

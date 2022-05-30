@@ -53,9 +53,9 @@ export default function LastVoted({
   const isLongerThan28Days = date && Date.now() - new Date(date).getTime() > 28 * 24 * 60 * 60 * 1000;
 
   const lastVoteDate = date ? (
-    <Box>
-      LAST VOTED <DateWitHover timeago={!!isLongerThan14Days} date={date} />
-    </Box>
+    <Flex>
+      <Text sx={{ mr: 1 }}>LAST VOTED</Text> <DateWitHover timeago={!!isLongerThan14Days} date={date} />
+    </Flex>
   ) : (
     'NO VOTE HISTORY'
   );
@@ -70,7 +70,7 @@ export default function LastVoted({
         ...styles
       }}
     >
-      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2, ml: 1 }}>
+      <Text variant="caps" color={expired ? '#D8E0E3' : 'onSecondary'} sx={{ mr: 2, ml: left ? 1 : 0 }}>
         {lastVoteDate}
       </Text>
       <Flex

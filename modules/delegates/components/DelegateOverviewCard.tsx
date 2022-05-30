@@ -80,10 +80,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
               <DelegateAvatarName delegate={delegate} />
             </Box>
 
-            <Flex sx={{
-              flexDirection: ['column', 'row'],
-              alignItems: 'center'
-            }}>
+            <Flex
+              sx={{
+                flexDirection: ['column', 'row'],
+                alignItems: 'center'
+              }}
+            >
               <Button
                 variant="primaryOutline"
                 disabled={!account}
@@ -114,47 +116,37 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
           <Flex
             sx={{
               mt: delegate.tags && delegate.tags.length > 0 ? 1 : 3,
-              flexDirection: 'column',
+              flexDirection: 'column'
             }}
           >
-            <Box sx={{
-              mb: '1'
-            }}>
+            <Box
+              sx={{
+                mb: '1'
+              }}
+            >
               <DelegateTags tags={delegate.tags} />
             </Box>
             <Flex
               sx={{
                 flexDirection: ['column', 'row'],
-                justifyContent: ['space-between', 'flex-start'],
+                justifyContent: ['space-between', 'flex-start']
               }}
             >
-              <Box sx={{mr: [0, 3]}}>
+              <Box sx={{ mr: [0, 3] }}>
                 <Tooltip label={participationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
-                    <Icon name="participation"/>
-                    <Text
-                      as="p"
-                      variant="caps"
-                      color="onSecondary"
-                      sx={{ fontSize: 1 }}
-                      ml={1}
-                    >
+                    <Icon name="participation" />
+                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
                       {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
                     </Text>
                   </Flex>
                 </Tooltip>
               </Box>
-              <Box sx={{mt: [1, 0]}}>
+              <Box sx={{ mt: [1, 0] }}>
                 <Tooltip label={communicationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
-                    <Icon name="comment"/>
-                    <Text
-                      as="p"
-                      variant="caps"
-                      color="onSecondary"
-                      sx={{ fontSize: 1}}
-                      ml={1}
-                    >
+                    <Icon name="comment" />
+                    <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
                       {`${delegate.communication ?? 'Untracked'} Communication`}
                     </Text>
                   </Flex>
@@ -168,7 +160,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 flexWrap: 'wrap-reverse'
               }}
             >
-                <Flex sx={{ height: '100%'}}>
+              <Flex sx={{ height: '100%' }}>
                 <InternalLink
                   href={`/address/${delegate.voteDelegateAddress}`}
                   title={`View ${isOwner ? 'Your' : 'Profile'} Details`}
@@ -183,7 +175,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Button>
                 </InternalLink>
               </Flex>
-              <Flex sx={{ justifyContent: 'flex-end', mt: '3'}}>
+              <Flex sx={{ justifyContent: 'flex-end', mt: '3' }}>
                 <Box>
                   <Text
                     as="p"
@@ -193,11 +185,16 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {mkrDelegated ? formatValue(mkrDelegated) : '0.00'}
                   </Text>
-                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
+                  <Text
+                    as="p"
+                    variant="secondary"
+                    color="onSecondary"
+                    sx={{ fontSize: [2, 3], textAlign: 'right' }}
+                  >
                     MKR delegated by you
                   </Text>
                 </Box>
-                <Box sx={{ ml: '4'}}>
+                <Box sx={{ ml: '4' }}>
                   <Text
                     as="p"
                     variant="microHeading"
@@ -206,7 +203,12 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   >
                     {totalStaked && totalStaked.gt(0) ? formatValue(totalStaked) : '0.00'}
                   </Text>
-                  <Text as="p" variant="secondary" color="onSecondary" sx={{ fontSize: [2, 3], textAlign: 'right' }}>
+                  <Text
+                    as="p"
+                    variant="secondary"
+                    color="onSecondary"
+                    sx={{ fontSize: [2, 3], textAlign: 'right' }}
+                  >
                     Total MKR delegated
                   </Text>
                 </Box>

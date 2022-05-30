@@ -118,7 +118,7 @@ export function DelegateDetail({ delegate }: PropTypes): React.ReactElement {
           }}
         >
           <Box>
-            <Flex sx={{mb: 1}}>
+            <Flex sx={{ mb: 1 }}>
               <DelegatePicture delegate={delegate} key={delegate.id} width={52} />
               <Box sx={{ width: '100%' }}>
                 <Box sx={{ ml: 3 }}>
