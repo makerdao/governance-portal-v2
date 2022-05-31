@@ -1,4 +1,5 @@
 import { fetchJson } from 'lib/fetchJson';
+import { localStorage } from 'modules/app/client/storage/localStorage';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { PollComment, PollsCommentsRequestBody } from 'modules/comments/types/comments';
 import { sign } from 'modules/web3/helpers/sign';
@@ -76,26 +77,44 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
   const clearBallot = () => {
     setCommentSignature('');
     setBallot({});
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify({}));
   };
 
-  const { network, account: address, library } = useActiveWeb3React();
+  const loadBallotFromStorage = () => {
+    const prevBallot = localStorage.get(`ballot-${network}-${account}`);
+    if (prevBallot) {
+      try {
+        const parsed = JSON.parse(prevBallot);
+        setBallot(parsed);
+      } catch (e) {
+        console.log(e);
+        // Do nothing
+        setBallot({});
+      }
+    } else {
+      setBallot({});
+    }
+  };
 
-  // Reset ballot on network or account change
+  const { network, library } = useActiveWeb3React();
+  // Reset ballot on network change
   useEffect(() => {
-    clearBallot();
     setPreviousBallot({});
-  }, [network, address]);
+    loadBallotFromStorage();
+  }, [network, account]);
 
   // add vote to ballot
 
   const addVoteToBallot = (pollId: number, ballotVote: BallotVote) => {
     setTxId(null);
     setCommentSignature('');
-
-    setBallot({
+    const newBallot = {
       ...ballot,
       [pollId]: ballotVote
-    });
+    };
+    setBallot(newBallot);
+
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot));
   };
 
   const removeVoteFromBallot = (pollId: number) => {
@@ -104,19 +123,22 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
     const { [pollId]: pollToDelete, ...rest } = ballot;
     setBallot(rest);
+
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(rest));
   };
 
   const updateVoteFromBallot = (pollId: number, ballotVote: Partial<BallotVote>) => {
     setTxId(null);
     setCommentSignature('');
-
-    setBallot({
+    const newBallot = {
       ...ballot,
       [pollId]: {
         ...ballot[pollId],
         ...ballotVote
       }
-    });
+    };
+    setBallot(newBallot);
+    localStorage.set(`ballot-${network}-${account}`, JSON.stringify(newBallot));
   };
 
   // Helpers
@@ -231,6 +253,10 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     });
     setTxId(txId);
   };
+
+  useEffect(() => {
+    loadBallotFromStorage();
+  }, []);
 
   return (
     <BallotContext.Provider
