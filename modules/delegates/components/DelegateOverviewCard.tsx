@@ -55,7 +55,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
       data-testid="delegate-card"
     >
       <Box px={[3, 4]} pb={3} pt={3}>
-        <Flex sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}>
+        <Flex sx={{ mb: 2, justifyContent: 'space-between', alignItems: 'center' }}>
           <LastVoted
             expired={delegate.expired}
             date={delegate ? (delegate.lastVoteDate ? delegate.lastVoteDate : null) : undefined}
@@ -73,17 +73,21 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
             sx={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              flexWrap: ['wrap', 'nowrap']
             }}
           >
-            <Box sx={{ mr: 2, maxWidth: '155px' }}>
+            <Box sx={{ mr: 2, my: 2 }}>
               <DelegateAvatarName delegate={delegate} />
             </Box>
 
             <Flex
               sx={{
-                flexDirection: ['column', 'row'],
-                alignItems: 'center'
+                flexDirection: 'row',
+                alignItems: 'center',
+                ml: 2,
+                my: 2,
+                justifyContent: 'right'
               }}
             >
               <Button
@@ -93,7 +97,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   trackButtonClick('openUndelegateModal');
                   setShowUndelegateModal(true);
                 }}
-                sx={{ width: ['100%', '135px'], height: '45px', maxWidth: '135px', mr: [0, 2], mb: [2, 0] }}
+                sx={{ width: '135px', height: '45px', maxWidth: '135px', mr: [2, 2] }}
                 data-testid="button-undelegate"
               >
                 Undelegate
@@ -106,7 +110,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   trackButtonClick('openDelegateModal');
                   setShowDelegateModal(true);
                 }}
-                sx={{ width: ['100%', '135px'], maxWidth: '135px', height: '45px', ml: [0, 3] }}
+                sx={{ width: '135px', maxWidth: '135px', height: '45px', ml: 3 }}
               >
                 Delegate
               </Button>
@@ -115,24 +119,24 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
 
           <Flex
             sx={{
-              mt: delegate.tags && delegate.tags.length > 0 ? 1 : 3,
+              mt: delegate.tags && delegate.tags.length > 0 ? 0 : 3,
               flexDirection: 'column'
             }}
           >
             <Box
               sx={{
-                mb: '1'
+                mb: delegate.tags && delegate.tags.length > 0 ? 1 : 0
               }}
             >
               <DelegateTags tags={delegate.tags} />
             </Box>
             <Flex
               sx={{
-                flexDirection: ['column', 'row'],
-                justifyContent: ['space-between', 'flex-start']
+                flexDirection: 'row',
+                flexWrap: 'wrap'
               }}
             >
-              <Box sx={{ mr: [0, 3] }}>
+              <Box sx={{ mr: 3, mb: 1 }}>
                 <Tooltip label={participationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="participation" />
@@ -142,7 +146,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   </Flex>
                 </Tooltip>
               </Box>
-              <Box sx={{ mt: [1, 0] }}>
+              <Box >
                 <Tooltip label={communicationTooltipLabel}>
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="comment" />
