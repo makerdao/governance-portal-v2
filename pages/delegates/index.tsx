@@ -29,22 +29,21 @@ import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
-  const [showRecognized, showShadow, sort, textFilter, setTextFilter, resetFilters] =
-    useDelegatesFiltersStore(
-      state => [
-        state.filters.showRecognized,
-        state.filters.showShadow,
-        state.sort,
-        state.filters.text,
-        state.setTextFilter,
-        state.resetFilters
-      ],
-      shallow
-    );
+  const [showRecognized, showShadow, sort, name, setTextFilter, resetFilters] = useDelegatesFiltersStore(
+    state => [
+      state.filters.showRecognized,
+      state.filters.showShadow,
+      state.sort,
+      state.filters.text,
+      state.setTextFilter,
+      state.resetFilters
+    ],
+    shallow
+  );
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized);
-  }, [delegates, showRecognized, showShadow]);
+    return filterDelegates(delegates, showShadow, showRecognized, name);
+  }, [delegates, showRecognized, showShadow, name]);
 
   const sortedDelegates = useMemo(() => {
     return filteredDelegates.sort((prev, next) => {
@@ -83,12 +82,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       <Stack>
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-            <SearchBar
-              sx={{ m: 2 }}
-              onChange={setTextFilter}
-              value={textFilter}
-              placeholder="Search delegates"
-            />
+            <SearchBar sx={{ m: 2 }} onChange={setTextFilter} value={name} placeholder="Search by name" />
             <DelegatesSort />
 
             <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
