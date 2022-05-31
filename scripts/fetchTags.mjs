@@ -9,7 +9,7 @@ async function main() {
 
     // poll-tags mapping
     const urlPollTags =
-      'https://raw.githubusercontent.com/makerdao-dux/community/governance-tags/governance/polls/meta/poll-tags.json';
+      'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/poll-tags.json';
     const pollTags = await fetch(urlPollTags);
     const dataPollTags = await pollTags.json();
     fs.writeFileSync(
@@ -21,7 +21,7 @@ async function main() {
 
     // tags
     const urlTags =
-      'https://raw.githubusercontent.com/makerdao-dux/community/governance-tags/governance/polls/meta/tags.json';
+      'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/tags.json';
     const tags = await fetch(urlTags);
     const dataTags = await tags.json();
     fs.writeFileSync(
@@ -33,7 +33,7 @@ async function main() {
 
     // tags
     const urlDelegateTags =
-      'https://raw.githubusercontent.com/makerdao-dux/community/governance-tags/governance/delegates/meta/tags.json';
+      'https://raw.githubusercontent.com/makerdao/community/master/governance/delegates/meta/tags.json';
     const tagsDelegates = await fetch(urlDelegateTags);
     const dataTagsDelegates = await tagsDelegates.json();
     fs.writeFileSync(

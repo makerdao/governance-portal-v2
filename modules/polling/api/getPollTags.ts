@@ -16,7 +16,7 @@ export async function getPollTagsMapping(): Promise<{ [key: number]: string[] }>
     }
 
     const urlPollTags =
-      'https://raw.githubusercontent.com/makerdao-dux/community/governance-tags/governance/polls/meta/poll-tags.json';
+      'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/poll-tags.json';
     const pollTags = await fetch(urlPollTags);
     const dataPollTags = await pollTags.json();
 
