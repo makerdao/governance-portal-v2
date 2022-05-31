@@ -415,7 +415,8 @@ const AccountSelect = (): React.ReactElement => {
                     <Flex
                       sx={walletButtonStyle}
                       key={'metamask_mobile'}
-                      onClick={() => openMetaMaskUrl('https://metamask.app.link/dapp/vote.makerdao.com/')}
+                      onClick={() => openMetaMaskUrl('metamask://dapp/vote.makerdao.com/')}
+                      // onClick={() => openMetaMaskUrl('https://metamask.app.link/dapp/vote.makerdao.com/')}
                     >
                       <Icon name={'MetaMask Mobile'} />
                       <Text sx={{ ml: 3 }}>
