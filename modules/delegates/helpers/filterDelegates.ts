@@ -12,8 +12,6 @@ export function filterDelegates(
     delegates
       // name filter
       .filter(delegate => {
-        console.log(delegate);
-        console.log({ name });
         if (!name || name === '') return true;
 
         return delegate.name.toLowerCase().includes(name.toLowerCase());
@@ -32,11 +30,14 @@ export function filterDelegates(
           return false;
         }
 
-        // Filter by tags
+        return true;
+      })
+      // Filter by tags
+      .filter(delegate => {
         if (tags && tags.length > 0) {
           return delegate.tags.filter(tag => tags.indexOf(tag.id) !== -1).length > 0;
         }
-        // Apply all filters from the store
+
         return true;
       })
   );
