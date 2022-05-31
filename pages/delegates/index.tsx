@@ -29,13 +29,13 @@ import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
-  const [showRecognized, showShadow, sort, name, setTextFilter, resetFilters] = useDelegatesFiltersStore(
+  const [showRecognized, showShadow, sort, name, setName, resetFilters] = useDelegatesFiltersStore(
     state => [
       state.filters.showRecognized,
       state.filters.showShadow,
       state.sort,
-      state.filters.text,
-      state.setTextFilter,
+      state.filters.name,
+      state.setName,
       state.resetFilters
     ],
     shallow
@@ -82,7 +82,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       <Stack>
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
           <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-            <SearchBar sx={{ m: 2 }} onChange={setTextFilter} value={name} placeholder="Search by name" />
+            <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
             <DelegatesSort />
 
             <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />

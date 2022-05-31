@@ -13,7 +13,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
       state => [
         state.filters.showRecognized,
         state.filters.showShadow,
-        state.filters.text,
+        state.filters.name,
         state.setShowRecognizedFilter,
         state.setShowShadowFilter
       ],

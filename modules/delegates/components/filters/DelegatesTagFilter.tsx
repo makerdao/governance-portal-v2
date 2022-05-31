@@ -17,7 +17,7 @@ export function DelegatesTagFilter({
   sx?: ThemeUIStyleObject;
 }): JSX.Element {
   const [delegateFilters, setTags, name] = useDelegatesFiltersStore(
-    state => [state.filters, state.setTagFilter, state.filters.text],
+    state => [state.filters, state.setTagFilter, state.filters.name],
     shallow
   );
 
