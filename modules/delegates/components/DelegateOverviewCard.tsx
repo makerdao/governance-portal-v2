@@ -141,7 +141,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="participation" />
                     <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                      {`${delegate.combinedParticipation ?? 'Untracked'} Participation`}
+                      {delegate.combinedParticipation === 'No Data' ? 'No Participation Data' : delegate.combinedParticipation ? delegate.combinedParticipation + ' Participation' : 'Untracked Participation'}
                     </Text>
                   </Flex>
                 </Tooltip>
@@ -151,7 +151,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                   <Flex sx={{ cursor: 'help', alignItems: 'center' }}>
                     <Icon name="comment" />
                     <Text as="p" variant="caps" color="onSecondary" sx={{ fontSize: 1 }} ml={1}>
-                      {`${delegate.communication ?? 'Untracked'} Communication`}
+                      {delegate.communication === 'No Data' ? 'No Communication Data' : delegate.communication ? delegate.communication + ' Communication' : 'Untracked Communication'}
                     </Text>
                   </Flex>
                 </Tooltip>
