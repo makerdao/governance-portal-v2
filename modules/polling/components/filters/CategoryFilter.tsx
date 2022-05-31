@@ -40,7 +40,7 @@ export function CategoryFilter({
     <FilterButton
       name={() => `Category ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
-      data-testid="poll-filters-dropdown"
+      data-testid="poll-filters-category"
       active={itemsSelected > 0}
       {...props}
     >

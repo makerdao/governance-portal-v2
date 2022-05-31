@@ -39,7 +39,7 @@ export function StatusFilter({ polls, ...props }: { polls: Poll[]; sx?: ThemeUIS
     <FilterButton
       name={() => `Status ${filtersSelected > 0 ? `(${filtersSelected})` : ''}`}
       listVariant="cards.noPadding"
-      data-testid="poll-filters-dropdown"
+      data-testid="poll-filters-status"
       active={filtersSelected > 0}
       {...props}
     >
