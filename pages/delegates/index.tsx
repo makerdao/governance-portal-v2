@@ -5,7 +5,6 @@ import ErrorPage from 'next/error';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import shallow from 'zustand/shallow';
 import useSWR, { useSWRConfig } from 'swr';
-import { fetchJson } from 'lib/fetchJson';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { DelegateStatusEnum } from 'modules/delegates/delegates.constants';
@@ -17,8 +16,8 @@ import { DelegateOverviewCard } from 'modules/delegates/components';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import { DelegatesSystemInfo } from 'modules/delegates/components/DelegatesSystemInfo';
-import DelegatesFilter from 'modules/delegates/components/DelegatesFilter';
-import DelegatesSort from 'modules/delegates/components/DelegatesSort';
+import DelegatesFilter from 'modules/delegates/components/filters/DelegatesFilter';
+import DelegatesSort from 'modules/delegates/components/filters/DelegatesSort';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
@@ -26,12 +25,22 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { DelegatesPageData, fetchDelegatesPageData } from 'modules/delegates/api/fetchDelegatesPageData';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { SearchBar } from 'modules/app/components/filters/SearchBar';
+import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 
-const Delegates = ({ delegates, stats }: DelegatesPageData) => {
-  const [showRecognized, showShadow, sort, resetFilters] = useDelegatesFiltersStore(
-    state => [state.filters.showRecognized, state.filters.showShadow, state.sort, state.resetFilters],
-    shallow
-  );
+const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
+  const [showRecognized, showShadow, sort, textFilter, setTextFilter, resetFilters] =
+    useDelegatesFiltersStore(
+      state => [
+        state.filters.showRecognized,
+        state.filters.showShadow,
+        state.sort,
+        state.filters.text,
+        state.setTextFilter,
+        state.resetFilters
+      ],
+      shallow
+    );
 
   const filteredDelegates = useMemo(() => {
     return filterDelegates(delegates, showShadow, showRecognized);
@@ -73,22 +82,31 @@ const Delegates = ({ delegates, stats }: DelegatesPageData) => {
       />
       <Stack>
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
-          <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
-              Filters
-            </Heading>
+          <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+            <SearchBar
+              sx={{ m: 2 }}
+              onChange={setTextFilter}
+              value={textFilter}
+              placeholder="Search delegates"
+            />
             <DelegatesSort />
+
+            <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
           </Flex>
 
           <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
             <DelegatesFilter delegates={delegates} />
+
             <Button
               variant={'outline'}
-              sx={{ ml: 3 }}
+              sx={{
+                m: 2,
+                color: 'textSecondary',
+                border: 'none'
+              }}
               onClick={resetFilters}
-              data-testid="delegate-reset-filters"
             >
-              Clear filters
+              Reset filters
             </Button>
           </Flex>
         </Flex>
@@ -180,13 +198,15 @@ const Delegates = ({ delegates, stats }: DelegatesPageData) => {
 
 export default function DelegatesPage({
   delegates: prefetchedDelegates,
-  stats: prefetchedStats
+  stats: prefetchedStats,
+  tags: prefetchedTags
 }: DelegatesPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
   const fallbackData = isDefaultNetwork(network)
     ? {
-        delegates: prefetchedDelegates
+        delegates: prefetchedDelegates,
+        tags: prefetchedTags
       }
     : null;
 
@@ -211,7 +231,8 @@ export default function DelegatesPage({
 
   const props = {
     delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates || [],
-    stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || undefined
+    stats: isDefaultNetwork(network) ? prefetchedStats : data?.stats || undefined,
+    tags: isDefaultNetwork(network) ? prefetchedTags : data?.tags || []
   };
 
   return (
@@ -222,13 +243,14 @@ export default function DelegatesPage({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { delegates, stats } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
+  const { delegates, stats, tags } = await fetchDelegatesPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 60 * 30, // allow revalidation every 30 minutes
     props: {
       // Shuffle in the backend, this will be changed depending on the sorting order.
       delegates,
+      tags,
       stats
     }
   };

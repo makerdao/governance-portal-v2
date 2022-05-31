@@ -1,5 +1,5 @@
 import shallow from 'zustand/shallow';
-import useDelegatesFiltersStore, { delegatesSortEnum } from '../stores/delegatesFiltersStore';
+import useDelegatesFiltersStore, { delegatesSortEnum } from '../../stores/delegatesFiltersStore';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
 

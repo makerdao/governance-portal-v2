@@ -42,6 +42,7 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
+import { SearchBar } from 'modules/app/components/filters/SearchBar';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -157,6 +158,8 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
     mutateAllUserVotes();
   }, [addressToCheck]);
 
+  const [title, setTitle] = useUiFiltersStore(state => [state.pollFilters.title, state.setTitle], shallow);
+
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -182,7 +185,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
           {(showFilters || bpi > 0) && (
             <Flex sx={{ flexDirection: ['column', 'row'] }}>
               <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-                <PollTitleSearch sx={{ m: 2 }} />
+                <SearchBar sx={{ m: 2 }} onChange={setTitle} value={title} placeholder="Search poll titles" />
                 <PollsSort />
                 <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />

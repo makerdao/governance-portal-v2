@@ -11,12 +11,16 @@ type StoreDelegates = {
     creationDate: null | Date;
     showShadow: boolean;
     showRecognized: boolean;
+    tags: { [key: string]: boolean };
+    text: string | null;
   };
   sort: delegatesSortEnum;
   setCreationDateFilter: (creationDate: Date | null) => void;
   setShowShadowFilter: (showShadow: boolean) => void;
   setShowRecognizedFilter: (showRecognized: boolean) => void;
   setSort: (sort: delegatesSortEnum) => void;
+  setTagFilter: (tag: { [key: string]: boolean }) => void;
+  setTextFilter: (text: string) => void;
   resetFilters: () => void;
 };
 
@@ -24,9 +28,20 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
   filters: {
     creationDate: null,
     showShadow: false,
-    showRecognized: false
+    showRecognized: false,
+    text: '',
+    tags: {}
   },
   sort: delegatesSortEnum.random,
+
+  setTextFilter: (text: string) => {
+    set({
+      filters: {
+        ...get().filters,
+        text
+      }
+    });
+  },
 
   setSort: sort => {
     set({
@@ -59,9 +74,20 @@ const [useDelegatesFiltersStore] = create<StoreDelegates>((set, get) => ({
     });
   },
 
+  setTagFilter: tags => {
+    set({
+      filters: {
+        ...get().filters,
+        tags
+      }
+    });
+  },
+
   resetFilters: () => {
     set({
       filters: {
+        tags: {},
+        text: null,
         creationDate: null,
         showShadow: false,
         showRecognized: false

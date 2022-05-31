@@ -1,39 +1,39 @@
 import { useEffect, useState } from 'react';
 import { Box, Input, ThemeUIStyleObject } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
-import shallow from 'zustand/shallow';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { debounce } from 'modules/app/helpers/debounce';
 
 type Props = {
   sx?: ThemeUIStyleObject;
+  onChange: (seach: string) => void;
+  value: string | null;
+  placeholder?: string;
 };
 
-export const PollTitleSearch = ({ ...props }: Props): JSX.Element => {
+export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }: Props): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [title, setTitle] = useUiFiltersStore(state => [state.pollFilters.title, state.setTitle], shallow);
 
   const handleInput = event => {
     setSearchTerm(event.target.value);
-    debounce(setTitle(event.target.value));
+    debounce(onChange(event.target.value));
   };
 
   useEffect(() => {
-    if (title === null) {
+    if (!value) {
       setSearchTerm('');
     }
-  }, [title]);
+  }, [value]);
 
   const hasSearchTerm = !(!searchTerm || searchTerm === '');
 
   return (
     <Box sx={{ position: 'relative' }} {...props}>
       <Input
-        name="pollSearch"
+        name="search"
         onChange={handleInput}
         type="search"
         value={searchTerm}
-        placeholder="Search poll titles"
+        placeholder={placeholder}
         sx={{
           maxWidth: 250,
           borderRadius: 'round',

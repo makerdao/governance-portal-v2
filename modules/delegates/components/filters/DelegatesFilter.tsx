@@ -1,11 +1,11 @@
 import { Flex, Checkbox, Label, Text, Box } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { Delegate } from '../types';
-import useDelegatesFiltersStore from '../stores/delegatesFiltersStore';
-import { DelegateStatusEnum } from '../delegates.constants';
+import { Delegate } from '../../types';
+import useDelegatesFiltersStore from '../../stores/delegatesFiltersStore';
+import { DelegateStatusEnum } from '../../delegates.constants';
 import { useMemo } from 'react';
-import { filterDelegates } from '../helpers/filterDelegates';
+import { filterDelegates } from '../../helpers/filterDelegates';
 
 export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
   const [showRecognized, showShadow, setShowRecognizedFilter, setShowShadowFilter] = useDelegatesFiltersStore(
