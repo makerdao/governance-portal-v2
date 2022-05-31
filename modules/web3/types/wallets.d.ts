@@ -4,5 +4,5 @@ import { ConnectorName } from './connectors';
 export interface WalletInfo {
   connector: AbstractConnector;
   name: ConnectorName;
-  mobile: boolean;
+  deeplinkUri?: string;
 }

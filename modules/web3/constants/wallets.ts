@@ -11,21 +11,14 @@ export const SUPPORTED_WALLETS: { [connector in SupportedConnectors]: WalletInfo
   [SupportedConnectors.METAMASK]: {
     connector: injectedConnector,
     name: 'MetaMask',
-    mobile: false
+    deeplinkUri: 'https://metamask.app.link/dapp/vote.makerdao.com/'
   },
-  // [SupportedConnectors.METAMASK_MOBILE]: {
-  //   connector: metamaskMobileConnector,
-  //   name: 'MetaMask Mobile',
-  //   mobile: true
-  // },
   [SupportedConnectors.WALLET_CONNECT]: {
     connector: walletConnectConnector,
-    name: 'WalletConnect',
-    mobile: true
+    name: 'WalletConnect'
   },
   [SupportedConnectors.COINBASE_WALLET]: {
     connector: walletLinkConnector,
-    name: 'Coinbase Wallet',
-    mobile: true
+    name: 'Coinbase Wallet'
   }
 };

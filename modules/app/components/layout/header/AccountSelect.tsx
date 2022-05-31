@@ -28,15 +28,6 @@ import { useRouter } from 'next/router';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { getExecutiveVotingWeightCopy } from 'modules/polling/helpers/getExecutiveVotingWeightCopy';
 
-function openMetaMaskUrl(url) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_self';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
 const walletButtonStyle: ThemeUICSSObject = {
   cursor: 'pointer',
   width: '100%',
@@ -243,12 +234,15 @@ const AccountSelect = (): React.ReactElement => {
   }, [chainId, error]);
 
   const walletOptions = Object.keys(SUPPORTED_WALLETS)
-    .filter(name => SUPPORTED_WALLETS[name].mobile === isAndroid || isIOS)
     .map((connectorName: ConnectorName) => (
       <Flex
         sx={walletButtonStyle}
         key={connectorName}
-        onClick={() => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)}
+        onClick={
+          (isAndroid || isIOS) && SUPPORTED_WALLETS[connectorName].deeplinkUri
+            ? () => window.location.replace(SUPPORTED_WALLETS[connectorName].deeplinkUri)
+            : () => onClickConnector(SUPPORTED_WALLETS[connectorName].connector, connectorName)
+        }
       >
         <Icon name={SUPPORTED_WALLETS[connectorName].name} />
         <Text sx={{ ml: 3 }}>
@@ -323,18 +317,6 @@ const AccountSelect = (): React.ReactElement => {
           ) : changeWallet ? (
             <>
               <BackButton onClick={() => setChangeWallet(false)} />
-              {(isIOS || isAndroid) && (
-                <Flex
-                  sx={walletButtonStyle}
-                  key={'metamask_mobile'}
-                  onClick={() => openMetaMaskUrl('https://metamask.app.link/dapp/vote.makerdao.com/')}
-                >
-                  <Icon name={'MetaMask Mobile'} />
-                  <Text sx={{ ml: 3 }}>
-                    {loadingConnectors['metamask_mobile'] ? 'Loading...' : 'MetaMask Mobile'}
-                  </Text>
-                </Flex>
-              )}
               {walletOptions}
               {accountName === 'WalletConnect' && (
                 <Flex
@@ -410,22 +392,7 @@ const AccountSelect = (): React.ReactElement => {
                   </Button>
                 </>
               ) : (
-                <Flex sx={{ flexDirection: 'column' }}>
-                  {(isIOS || isAndroid) && (
-                    <Flex
-                      sx={walletButtonStyle}
-                      key={'metamask_mobile'}
-                      onClick={() => openMetaMaskUrl('metamask://dapp/vote.makerdao.com/')}
-                      // onClick={() => openMetaMaskUrl('https://metamask.app.link/dapp/vote.makerdao.com/')}
-                    >
-                      <Icon name={'MetaMask Mobile'} />
-                      <Text sx={{ ml: 3 }}>
-                        {loadingConnectors['metamask_mobile'] ? 'Loading...' : 'MetaMask Mobile'}
-                      </Text>
-                    </Flex>
-                  )}
-                  {walletOptions}
-                </Flex>
+                <Flex sx={{ flexDirection: 'column' }}>{walletOptions}</Flex>
               )}
             </>
           )}
