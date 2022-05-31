@@ -67,11 +67,6 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
           </Label>
         </Flex>
       </Box>
-      <Box sx={{ borderTop: '1px solid', borderColor: 'outline' }}>
-        <Text as="p" sx={{ color: 'primary', textAlign: 'center', fontWeight: 'semiBold', p: 2 }}>
-          {filteredDelegates.length} Results
-        </Text>
-      </Box>
     </FilterButton>
   );
 }

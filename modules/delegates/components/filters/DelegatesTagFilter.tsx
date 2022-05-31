@@ -34,7 +34,7 @@ export function DelegatesTagFilter({
 
   return (
     <FilterButton
-      name={() => `Delegate ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `Tag ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegates-filters-dropdown"
       active={itemsSelected > 0}

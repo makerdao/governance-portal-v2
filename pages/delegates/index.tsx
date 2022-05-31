@@ -92,11 +92,9 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
             <DelegatesSort />
 
             <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
-          </Flex>
-
-          <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
             <DelegatesFilter delegates={delegates} />
-
+          </Flex>
+          <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
             <Button
               variant={'outline'}
               sx={{
