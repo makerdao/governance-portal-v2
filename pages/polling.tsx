@@ -169,7 +169,6 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
       <Stack gap={3}>
         <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
           <Flex sx={{ alignItems: 'center' }}>
-            {/* <Heading variant="microHeading">Filters</Heading> */}
             <Button
               variant="textual"
               sx={{ display: ['block', 'none'], color: 'onSecondary' }}
@@ -180,8 +179,14 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
             </Button>
           </Flex>
           {(showFilters || bpi > 0) && (
-            <Flex sx={{ flexDirection: ['column', 'row'] }}>
-              <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+            <Flex sx={{ flexDirection: ['column', 'column', 'column', 'row'] }}>
+              <Flex
+                sx={{
+                  justifyContent: ['center', 'center', 'center', 'flex-start'],
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
                 <PollTitleSearch sx={{ m: 2 }} />
                 <PollsSort />
                 <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
