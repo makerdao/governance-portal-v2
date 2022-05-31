@@ -1,9 +1,4 @@
-import {
-  injectedConnector,
-  // metamaskMobileConnector,
-  walletConnectConnector,
-  walletLinkConnector
-} from '../connectors';
+import { injectedConnector, walletConnectConnector, walletLinkConnector } from '../connectors';
 import { WalletInfo } from '../types/wallets';
 import { SupportedConnectors } from './networks';
 
