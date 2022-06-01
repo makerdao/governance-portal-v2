@@ -53,8 +53,10 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
   }, [delegates, showRecognized, showShadow, name, delegateTags]);
 
-  const sortedDelegates = useMemo(() => {
-    return filteredDelegates.sort((prev, next) => {
+  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
+
+  const [sortedDelegates, recognizedDelegates, shadowDelegates, expiredDelegates] = useMemo(() => {
+    const sorted = filteredDelegates.sort((prev, next) => {
       if (sort === delegatesSortEnum.creationDate) {
         return prev.expirationDate > next.expirationDate ? -1 : 1;
       } else if (sort === delegatesSortEnum.mkrDelegated) {
@@ -65,28 +67,20 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
 
       return 1;
     });
-  }, [filteredDelegates, sort]);
 
-  const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
-
-  const recognizedDelegates = useMemo(() => {
-    return sortedDelegates
+    const recognized = sorted
       .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
-  }, [sortedDelegates]);
 
-  const shadowDelegates = useMemo(() => {
-    return sortedDelegates
+    const shadow = sorted
       .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
       .sort(d => (isOwner(d) ? -1 : 0));
-  }, [sortedDelegates]);
 
-  const expiredDelegates = useMemo(() => {
-    return sortedDelegates.filter(delegate => delegate.expired === true);
-  }, [sortedDelegates]);
+    const expired = sorted.filter(delegate => delegate.expired === true);
+    return [sorted, recognized, shadow, expired];
+  }, [filteredDelegates, sort]);
 
   const { voteDelegateContractAddress } = useAccount();
-
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
