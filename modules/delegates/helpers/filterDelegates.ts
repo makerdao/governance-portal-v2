@@ -36,7 +36,9 @@ export function filterDelegates(
       .filter(delegate => {
         const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
         if (tagArray.length > 0) {
-          return delegate.tags.filter(tag => tagArray.indexOf(tag.id) !== -1).length > 0;
+          return tagArray.reduce((prev, next) => {
+            return prev && delegate.tags.filter(tag => tag.id === next).length > 0;
+          }, true);
         }
 
         return true;

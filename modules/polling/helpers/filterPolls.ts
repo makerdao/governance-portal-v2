@@ -30,7 +30,6 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
   const startDate = start && new Date(start);
   const endDate = end && new Date(end);
 
-  const noCategoriesSelected = categoryFilter === null || Object.values(categoryFilter).every(c => !c);
   const noPollVoteTypesSelected = pollVoteType === null || Object.values(pollVoteType).every(t => !t);
 
   return (
@@ -46,9 +45,14 @@ export function filterPolls({ polls, pollFilters }: PollFilterInputs): Poll[] {
         // check date filters first
         if (startDate && new Date(poll.endDate).getTime() < startDate.getTime()) return false;
         if (endDate && new Date(poll.endDate).getTime() > endDate.getTime()) return false;
-
+        const tagArray = Object.keys(categoryFilter || {}).filter(t => !!(categoryFilter || {})[t]);
+        if (tagArray.length > 0) {
+          return tagArray.reduce((prev, next) => {
+            return prev && poll.tags.filter(tag => tag.id === next).length > 0;
+          }, true);
+        }
         // if no category filters selected, return all, otherwise, check if poll contains category
-        return noCategoriesSelected || poll.tags.some(c => categoryFilter && categoryFilter[c.id]);
+        return true;
       })
       // active & ended filter
       .filter(poll => {

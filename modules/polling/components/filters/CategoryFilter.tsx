@@ -29,10 +29,7 @@ export function CategoryFilter({
   const filteredPollsNoCategories = useMemo(() => {
     return filterPolls({
       polls,
-      pollFilters: {
-        ...pollFilters,
-        categoryFilter: null
-      }
+      pollFilters
     });
   }, [polls, pollFilters]);
 
