@@ -13,6 +13,12 @@ type Props = {
 export const SearchBar = ({ onChange, value, placeholder = 'Search', ...props }: Props): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  useEffect(() => {
+    if (value) {
+      setSearchTerm(value);
+    }
+  }, []);
+
   const handleInput = event => {
     setSearchTerm(event.target.value);
     debounce(onChange(event.target.value));

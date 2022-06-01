@@ -76,8 +76,15 @@ const getSortCriteria = (sort: PollsSortEnum | null) => {
 
 const PollingOverview = ({ polls, tags }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [pollFilters, setCategoryFilter, resetPollFilters, sort] = useUiFiltersStore(
-    state => [state.pollFilters, state.setCategoryFilter, state.resetPollFilters, state.pollsSortBy],
+  const [pollFilters, setCategoryFilter, resetPollFilters, sort, title, setTitle] = useUiFiltersStore(
+    state => [
+      state.pollFilters,
+      state.setCategoryFilter,
+      state.resetPollFilters,
+      state.pollsSortBy,
+      state.pollFilters.title,
+      state.setTitle
+    ],
     shallow
   );
   const setFilteredPolls = usePollsStore(state => state.setFilteredPolls);
@@ -156,8 +163,6 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
   useEffect(() => {
     mutateAllUserVotes();
   }, [addressToCheck]);
-
-  const [title, setTitle] = useUiFiltersStore(state => [state.pollFilters.title, state.setTitle], shallow);
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
