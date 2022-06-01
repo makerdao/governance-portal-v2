@@ -17,7 +17,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import { PollTitleSearch } from 'modules/polling/components/filters/PollTitleSearch';
+import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
 // import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
@@ -42,7 +42,6 @@ import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetch
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import PollsSort from 'modules/polling/components/filters/PollsSort';
 import usePollsStore from 'modules/polling/stores/polls';
-import { SearchBar } from 'modules/app/components/filters/SearchBar';
 
 const getSortCriteria = (sort: PollsSortEnum | null) => {
   if (!sort) sort = PollsSortEnum.endDateAsc;
@@ -172,7 +171,6 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
       <Stack gap={3}>
         <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
           <Flex sx={{ alignItems: 'center' }}>
-            {/* <Heading variant="microHeading">Filters</Heading> */}
             <Button
               variant="textual"
               sx={{ display: ['block', 'none'], color: 'onSecondary' }}
@@ -183,8 +181,14 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
             </Button>
           </Flex>
           {(showFilters || bpi > 0) && (
-            <Flex sx={{ flexDirection: ['column', 'row'] }}>
-              <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
+            <Flex sx={{ flexDirection: ['column', 'column', 'column', 'row'] }}>
+              <Flex
+                sx={{
+                  justifyContent: ['center', 'center', 'center', 'flex-start'],
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
                 <SearchBar sx={{ m: 2 }} onChange={setTitle} value={title} placeholder="Search poll titles" />
                 <PollsSort />
                 <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
