@@ -1,33 +1,39 @@
 import { Flex, Checkbox, Label, Text, Box } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
-import { Delegate } from '../types';
-import useDelegatesFiltersStore from '../stores/delegatesFiltersStore';
-import { DelegateStatusEnum } from '../delegates.constants';
+import { Delegate } from '../../types';
+import useDelegatesFiltersStore from '../../stores/delegatesFiltersStore';
+import { DelegateStatusEnum } from '../../delegates.constants';
 import { useMemo } from 'react';
-import { filterDelegates } from '../helpers/filterDelegates';
+import { filterDelegates } from '../../helpers/filterDelegates';
 
 export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, setShowRecognizedFilter, setShowShadowFilter] = useDelegatesFiltersStore(
-    state => [
-      state.filters.showRecognized,
-      state.filters.showShadow,
-      state.setShowRecognizedFilter,
-      state.setShowShadowFilter
-    ],
-    shallow
-  );
+  const [showRecognized, showShadow, name, delegateTags, setShowRecognizedFilter, setShowShadowFilter] =
+    useDelegatesFiltersStore(
+      state => [
+        state.filters.showRecognized,
+        state.filters.showShadow,
+        state.filters.name,
+        state.filters.tags,
+        state.setShowRecognizedFilter,
+        state.setShowShadowFilter
+      ],
+      shallow
+    );
 
   const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
+
+  // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized);
-  }, [delegates, showRecognized, showShadow]);
+    return filterDelegates(delegates, true, true, name, delegateTags);
+  }, [delegates, name, delegateTags]);
 
   return (
     <FilterButton
-      name={() => `Delegate Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `Status ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
+      active={itemsSelected > 0}
     >
       <Box p={2}>
         <Flex>
@@ -43,7 +49,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Recognized Delegates</Text>
               <Text sx={{ color: 'muted', ml: 3 }}>
-                {delegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
               </Text>
             </Flex>
           </Label>
@@ -61,16 +67,11 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Shadow Delegates</Text>
               <Text sx={{ color: 'muted', ml: 3 }}>
-                {delegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
               </Text>
             </Flex>
           </Label>
         </Flex>
-      </Box>
-      <Box sx={{ borderTop: '1px solid', borderColor: 'outline' }}>
-        <Text as="p" sx={{ color: 'primary', textAlign: 'center', fontWeight: 'semiBold', p: 2 }}>
-          {filteredDelegates.length} Results
-        </Text>
       </Box>
     </FilterButton>
   );

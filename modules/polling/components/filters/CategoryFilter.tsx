@@ -60,7 +60,7 @@ export function CategoryFilter({
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{tag.longname ? tag.longname: tag.shortname}</Text>
+                  <Text>{tag.longname ? tag.longname : tag.shortname}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
                     {filteredPollsNoCategories.filter(i => i.tags.find(t => t.id === tag.id)).length}
                   </Text>

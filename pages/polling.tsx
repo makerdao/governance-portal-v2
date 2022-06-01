@@ -17,7 +17,7 @@ import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import { PollTitleSearch } from 'modules/polling/components/filters/PollTitleSearch';
+import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
 import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
 // import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
@@ -157,6 +157,8 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
     mutateAllUserVotes();
   }, [addressToCheck]);
 
+  const [title, setTitle] = useUiFiltersStore(state => [state.pollFilters.title, state.setTitle], shallow);
+
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
@@ -187,7 +189,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                   flexWrap: 'wrap'
                 }}
               >
-                <PollTitleSearch sx={{ m: 2 }} />
+                <SearchBar sx={{ m: 2 }} onChange={setTitle} value={title} placeholder="Search poll titles" />
                 <PollsSort />
                 <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
                 <StatusFilter polls={polls} sx={{ m: 2 }} />
@@ -312,7 +314,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                   sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
                   onClick={resetPollFilters}
                 >
-                  Clear filters
+                  Reset filters
                 </Button>
               </Flex>
             )}
