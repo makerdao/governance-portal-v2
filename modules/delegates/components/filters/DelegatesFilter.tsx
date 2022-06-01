@@ -30,9 +30,10 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
 
   return (
     <FilterButton
-      name={() => `Delegate Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
+      active={itemsSelected > 0}
     >
       <Box p={2}>
         <Flex>
