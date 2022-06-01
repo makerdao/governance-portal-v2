@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Heading, Box, Flex, Card, Text, Button } from 'theme-ui';
 import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
+import { useBreakpointIndex } from '@theme-ui/match-media';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { useSWRConfig } from 'swr';
@@ -43,6 +44,10 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       ],
       shallow
     );
+
+  // only for mobile
+  const [showFilters, setShowFilters] = useState(false);
+  const bpi = useBreakpointIndex();
 
   const filteredDelegates = useMemo(() => {
     return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
@@ -91,26 +96,43 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
       />
       <Stack>
         <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
-          <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
-            <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
-            <DelegatesSort />
-
-            <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
-            <DelegatesFilter delegates={delegates} />
-          </Flex>
-          <Flex sx={{ ml: [0, 3], mt: [2, 0] }}>
+          <Flex sx={{ alignItems: 'center' }}>
             <Button
-              variant={'outline'}
-              sx={{
-                m: 2,
-                color: 'textSecondary',
-                border: 'none'
-              }}
-              onClick={resetFilters}
+              variant="textual"
+              sx={{ display: ['block', 'none'], color: 'onSecondary' }}
+              onClick={() => setShowFilters(!showFilters)}
             >
-              Reset filters
+              <Text sx={{ mr: 1 }}>{showFilters ? 'Hide poll filters' : 'Show poll filters'}</Text>
+              <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
             </Button>
           </Flex>
+          {(showFilters || bpi > 0) && (
+            <Flex sx={{ flexDirection: ['column', 'column', 'column', 'row'] }}>
+              <Flex
+                sx={{
+                  justifyContent: ['center', 'center', 'center', 'flex-start'],
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <SearchBar sx={{ m: 2 }} onChange={setName} value={name} placeholder="Search by name" />
+                <DelegatesSort />
+                <DelegatesTagFilter tags={tags} delegates={delegates} sx={{ m: 2 }} />
+                <DelegatesFilter delegates={delegates} />
+              </Flex>
+              <Button
+                variant={'outline'}
+                sx={{
+                  m: 2,
+                  color: 'textSecondary',
+                  border: 'none'
+                }}
+                onClick={resetFilters}
+              >
+                Reset filters
+              </Button>
+            </Flex>
+          )}
         </Flex>
 
         <SidebarLayout>
