@@ -155,7 +155,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
                     </Box>
                   </Flex>
                   <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
-                    No polls found
+                    No delegates found
                   </Text>
                   <Button
                     variant={'textual'}
