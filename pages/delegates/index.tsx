@@ -96,7 +96,7 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
               sx={{ display: ['block', 'none'], color: 'onSecondary' }}
               onClick={() => setShowFilters(!showFilters)}
             >
-              <Text sx={{ mr: 1 }}>{showFilters ? 'Hide poll filters' : 'Show poll filters'}</Text>
+              <Text sx={{ mr: 1 }}>{showFilters ? 'Hide delegate filters' : 'Show delegate filters'}</Text>
               <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
             </Button>
           </Flex>
