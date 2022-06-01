@@ -1,10 +1,9 @@
-import shallow from 'zustand/shallow';
-import useDelegatesFiltersStore, { delegatesSortEnum } from '../stores/delegatesFiltersStore';
+import useDelegatesFiltersStore, { delegatesSortEnum } from '../../stores/delegatesFiltersStore';
 import { ListboxInput, ListboxButton, ListboxPopover, ListboxList, ListboxOption } from '@reach/listbox';
 import { Icon } from '@makerdao/dai-ui-icons';
 
 export default function DelegatesSort(): JSX.Element {
-  const [sort, setSort] = useDelegatesFiltersStore(state => [state.sort, state.setSort], shallow);
+  const [sort, setSort] = useDelegatesFiltersStore(state => [state.sort, state.setSort]);
 
   return (
     <ListboxInput onChange={setSort} defaultValue={sort}>
@@ -20,7 +19,7 @@ export default function DelegatesSort(): JSX.Element {
           <ListboxOption label="Sort by MKR delegated" value={delegatesSortEnum.mkrDelegated}>
             MKR delegated
           </ListboxOption>
-          <ListboxOption label="Creation date" value={delegatesSortEnum.creationDate}>
+          <ListboxOption label="Sort by creation date" value={delegatesSortEnum.creationDate}>
             Creation date
           </ListboxOption>
         </ListboxList>

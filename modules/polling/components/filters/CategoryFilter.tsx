@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 
 export function CategoryFilter({
   tags,
@@ -60,7 +60,7 @@ export function CategoryFilter({
                   }}
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-                  <Text>{tag.shortname}</Text>
+                  <Text>{tag.longname ? tag.longname : tag.shortname}</Text>
                   <Text sx={{ color: 'muted', ml: 3 }}>
                     {filteredPollsNoCategories.filter(i => i.tags.find(t => t.id === tag.id)).length}
                   </Text>

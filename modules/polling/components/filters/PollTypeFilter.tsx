@@ -6,7 +6,7 @@ import useUiFiltersStore from 'modules/app/stores/uiFilters';
 import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 
 export function PollTypeFilter({
   polls,

@@ -59,7 +59,7 @@ export async function fetchLandingPageData(
 
   // filter delegates
   const recognizedDelegates = delegatesResponse
-    ? filterDelegates((delegatesResponse as DelegatesAPIResponse).delegates, false, true)
+    ? filterDelegates((delegatesResponse as DelegatesAPIResponse).delegates, false, true, null)
     : [];
   const meetYourDelegates = shuffleArray(recognizedDelegates);
 

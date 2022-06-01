@@ -1,5 +1,5 @@
 import TagComponent from 'modules/app/components/Tag';
-import { Tag } from 'modules/app/types/tag.dt';
+import { Tag } from 'modules/app/types/tag';
 import { Box, Flex } from 'theme-ui';
 
 export default function DelegateTags({ tags }: { tags: Tag[] }): React.ReactElement {

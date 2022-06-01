@@ -128,7 +128,7 @@ export function DelegateOverviewCard({ delegate }: PropTypes): React.ReactElemen
                 mb: delegate.tags && delegate.tags.length > 0 ? 1 : 0
               }}
             >
-              <DelegateTags tags={delegate.tags} />
+              <DelegateTags tags={delegate.tags.slice(0, 3)} />
             </Box>
             <Flex
               sx={{
