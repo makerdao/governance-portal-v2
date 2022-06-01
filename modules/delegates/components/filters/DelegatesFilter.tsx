@@ -30,7 +30,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
 
   return (
     <FilterButton
-      name={() => `Type ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `Status ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="delegate-type-filter"
       active={itemsSelected > 0}
