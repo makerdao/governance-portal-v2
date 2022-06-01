@@ -1,5 +1,5 @@
 import { Box, Text } from 'theme-ui';
-import { Tag } from '../types/tag.dt';
+import { Tag } from '../types/tag';
 import TooltipComponent from './Tooltip';
 
 export default function TagComponent({

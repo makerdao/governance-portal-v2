@@ -1,7 +1,7 @@
 import { Flex, Box, Heading } from 'theme-ui';
 import { PollCategoryTag } from 'modules/polling/components/PollCategoryTag';
 import { InternalLink } from 'modules/app/components/InternalLink';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 
 type Props = {
   pollCategories: TagCount[];

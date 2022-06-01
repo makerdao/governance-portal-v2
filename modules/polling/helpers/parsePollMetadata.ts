@@ -4,7 +4,7 @@ import { Poll, PartialPoll, PollVoteType } from 'modules/polling/types';
 import { POLL_VOTE_TYPE } from '../polling.constants';
 import { PollSpock } from '../types/pollSpock';
 import { getPollTags, getPollTagsMapping } from '../api/getPollTags';
-import { Tag } from 'modules/app/types/tag.dt';
+import { Tag } from 'modules/app/types/tag';
 
 export function spockPollToPartialPoll(poll: PollSpock): PartialPoll {
   const formatted: PartialPoll = {

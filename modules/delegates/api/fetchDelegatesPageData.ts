@@ -1,5 +1,5 @@
 import { fetchJson } from 'lib/fetchJson';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 import { Delegate, DelegatesAPIStats } from 'modules/delegates/types';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fetchDelegates } from './fetchDelegates';

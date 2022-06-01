@@ -2,7 +2,7 @@ import { Flex, Box, Checkbox, Label, Text, ThemeUIStyleObject } from 'theme-ui';
 import shallow from 'zustand/shallow';
 import FilterButton from 'modules/app/components/FilterButton';
 import { useMemo } from 'react';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 import { Delegate } from 'modules/delegates/types';
 import useDelegatesFiltersStore from 'modules/delegates/stores/delegatesFiltersStore';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';

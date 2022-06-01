@@ -1,4 +1,4 @@
-import { Tag } from 'modules/app/types/tag.dt';
+import { Tag } from 'modules/app/types/tag';
 
 export type DelegateStatus = 'recognized' | 'expired' | 'shadow';
 

@@ -1,4 +1,4 @@
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 import { Poll } from 'modules/polling/types';
 
 export const getCategories = (polls: Poll[]): TagCount[] => {

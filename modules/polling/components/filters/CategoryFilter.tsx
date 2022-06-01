@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { filterPolls } from '../../helpers/filterPolls';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { TagCount } from 'modules/app/types/tag.dt';
+import { TagCount } from 'modules/app/types/tag';
 
 export function CategoryFilter({
   tags,

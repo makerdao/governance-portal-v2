@@ -1,5 +1,5 @@
 import TagComponent from 'modules/app/components/Tag';
-import { Tag } from 'modules/app/types/tag.dt';
+import { Tag } from 'modules/app/types/tag';
 import { Box } from 'theme-ui';
 
 export function PollCategoryTag({ tag, onClick }: { tag: Tag; onClick?: () => void }): React.ReactElement {
