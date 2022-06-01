@@ -20,6 +20,114 @@ export type Scalars = {
   Datetime: any;
 };
 
+/** A connection to a list of `ActivePollByIdRecord` values. */
+export type ActivePollByIdConnection = {
+  __typename?: 'ActivePollByIdConnection';
+  /** A list of edges which contains the `ActivePollByIdRecord` and cursor to aid in pagination. */
+  edges: Array<ActivePollByIdEdge>;
+  /** A list of `ActivePollByIdRecord` objects. */
+  nodes: Array<Maybe<ActivePollByIdRecord>>;
+};
+
+/** A `ActivePollByIdRecord` edge in the connection. */
+export type ActivePollByIdEdge = {
+  __typename?: 'ActivePollByIdEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `ActivePollByIdRecord` at the end of the edge. */
+  node?: Maybe<ActivePollByIdRecord>;
+};
+
+/** The return type of our `activePollById` query. */
+export type ActivePollByIdRecord = {
+  __typename?: 'ActivePollByIdRecord';
+  blockCreated?: Maybe<Scalars['Int']>;
+  creator?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['Int']>;
+  multiHash?: Maybe<Scalars['String']>;
+  pollId?: Maybe<Scalars['Int']>;
+  startDate?: Maybe<Scalars['Int']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+/** A filter to be used against `ActivePollByIdRecord` object types. All fields are combined with a logical ‘and.’ */
+export type ActivePollByIdRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ActivePollByIdRecordFilter>>;
+  /** Filter by the object’s `blockCreated` field. */
+  blockCreated?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `creator` field. */
+  creator?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `endDate` field. */
+  endDate?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `multiHash` field. */
+  multiHash?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ActivePollByIdRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ActivePollByIdRecordFilter>>;
+  /** Filter by the object’s `pollId` field. */
+  pollId?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `startDate` field. */
+  startDate?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `url` field. */
+  url?: InputMaybe<StringFilter>;
+};
+
+/** A connection to a list of `ActivePollByMultihashRecord` values. */
+export type ActivePollByMultihashConnection = {
+  __typename?: 'ActivePollByMultihashConnection';
+  /** A list of edges which contains the `ActivePollByMultihashRecord` and cursor to aid in pagination. */
+  edges: Array<ActivePollByMultihashEdge>;
+  /** A list of `ActivePollByMultihashRecord` objects. */
+  nodes: Array<Maybe<ActivePollByMultihashRecord>>;
+};
+
+/** A `ActivePollByMultihashRecord` edge in the connection. */
+export type ActivePollByMultihashEdge = {
+  __typename?: 'ActivePollByMultihashEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `ActivePollByMultihashRecord` at the end of the edge. */
+  node?: Maybe<ActivePollByMultihashRecord>;
+};
+
+/** The return type of our `activePollByMultihash` query. */
+export type ActivePollByMultihashRecord = {
+  __typename?: 'ActivePollByMultihashRecord';
+  blockCreated?: Maybe<Scalars['Int']>;
+  creator?: Maybe<Scalars['String']>;
+  endDate?: Maybe<Scalars['Int']>;
+  multiHash?: Maybe<Scalars['String']>;
+  pollId?: Maybe<Scalars['Int']>;
+  startDate?: Maybe<Scalars['Int']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+/** A filter to be used against `ActivePollByMultihashRecord` object types. All fields are combined with a logical ‘and.’ */
+export type ActivePollByMultihashRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ActivePollByMultihashRecordFilter>>;
+  /** Filter by the object’s `blockCreated` field. */
+  blockCreated?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `creator` field. */
+  creator?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `endDate` field. */
+  endDate?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `multiHash` field. */
+  multiHash?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ActivePollByMultihashRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ActivePollByMultihashRecordFilter>>;
+  /** Filter by the object’s `pollId` field. */
+  pollId?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `startDate` field. */
+  startDate?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `url` field. */
+  url?: InputMaybe<StringFilter>;
+};
+
 /** A `ActivePollsRecord` edge in the connection. */
 export type ActivePollEdge = {
   __typename?: 'ActivePollEdge';
@@ -252,6 +360,105 @@ export type AllEsmJoinsRecordFilter = {
   txFrom?: InputMaybe<StringFilter>;
   /** Filter by the object’s `txHash` field. */
   txHash?: InputMaybe<StringFilter>;
+};
+
+/** A `AllEsmV2JoinsRecord` edge in the connection. */
+export type AllEsmV2JoinEdge = {
+  __typename?: 'AllEsmV2JoinEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `AllEsmV2JoinsRecord` at the end of the edge. */
+  node?: Maybe<AllEsmV2JoinsRecord>;
+};
+
+/** A connection to a list of `AllEsmV2JoinsRecord` values. */
+export type AllEsmV2JoinsConnection = {
+  __typename?: 'AllEsmV2JoinsConnection';
+  /** A list of edges which contains the `AllEsmV2JoinsRecord` and cursor to aid in pagination. */
+  edges: Array<AllEsmV2JoinEdge>;
+  /** A list of `AllEsmV2JoinsRecord` objects. */
+  nodes: Array<Maybe<AllEsmV2JoinsRecord>>;
+};
+
+/** The return type of our `allEsmV2Joins` query. */
+export type AllEsmV2JoinsRecord = {
+  __typename?: 'AllEsmV2JoinsRecord';
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  joinAmount?: Maybe<Scalars['BigFloat']>;
+  txFrom?: Maybe<Scalars['String']>;
+  txHash?: Maybe<Scalars['String']>;
+};
+
+/** A filter to be used against `AllEsmV2JoinsRecord` object types. All fields are combined with a logical ‘and.’ */
+export type AllEsmV2JoinsRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AllEsmV2JoinsRecordFilter>>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `joinAmount` field. */
+  joinAmount?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AllEsmV2JoinsRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AllEsmV2JoinsRecordFilter>>;
+  /** Filter by the object’s `txFrom` field. */
+  txFrom?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `txHash` field. */
+  txHash?: InputMaybe<StringFilter>;
+};
+
+/** A connection to a list of `AllLocksSummedRecord` values. */
+export type AllLocksSummedConnection = {
+  __typename?: 'AllLocksSummedConnection';
+  /** A list of edges which contains the `AllLocksSummedRecord` and cursor to aid in pagination. */
+  edges: Array<AllLocksSummedEdge>;
+  /** A list of `AllLocksSummedRecord` objects. */
+  nodes: Array<Maybe<AllLocksSummedRecord>>;
+};
+
+/** A `AllLocksSummedRecord` edge in the connection. */
+export type AllLocksSummedEdge = {
+  __typename?: 'AllLocksSummedEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `AllLocksSummedRecord` at the end of the edge. */
+  node?: Maybe<AllLocksSummedRecord>;
+};
+
+/** The return type of our `allLocksSummed` query. */
+export type AllLocksSummedRecord = {
+  __typename?: 'AllLocksSummedRecord';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+  lockTotal?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `AllLocksSummedRecord` object types. All fields are combined with a logical ‘and.’ */
+export type AllLocksSummedRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AllLocksSummedRecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `lockTotal` field. */
+  lockTotal?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AllLocksSummedRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AllLocksSummedRecordFilter>>;
 };
 
 /** A filter to be used against BigFloat fields. All fields are combined with a logical ‘and.’ */
@@ -728,6 +935,222 @@ export type IntFilter = {
   notIn?: InputMaybe<Array<Scalars['Int']>>;
 };
 
+/** A connection to a list of `MkrDelegatedToRecord` values. */
+export type MkrDelegatedToConnection = {
+  __typename?: 'MkrDelegatedToConnection';
+  /** A list of edges which contains the `MkrDelegatedToRecord` and cursor to aid in pagination. */
+  edges: Array<MkrDelegatedToEdge>;
+  /** A list of `MkrDelegatedToRecord` objects. */
+  nodes: Array<Maybe<MkrDelegatedToRecord>>;
+};
+
+/** A `MkrDelegatedToRecord` edge in the connection. */
+export type MkrDelegatedToEdge = {
+  __typename?: 'MkrDelegatedToEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrDelegatedToRecord` at the end of the edge. */
+  node?: Maybe<MkrDelegatedToRecord>;
+};
+
+/** The return type of our `mkrDelegatedTo` query. */
+export type MkrDelegatedToRecord = {
+  __typename?: 'MkrDelegatedToRecord';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrDelegatedToRecord` object types. All fields are combined with a logical ‘and.’ */
+export type MkrDelegatedToRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrDelegatedToRecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrDelegatedToRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrDelegatedToRecordFilter>>;
+};
+
+/** A connection to a list of `MkrLockedDelegateArrayRecord` values. */
+export type MkrLockedDelegateArrayConnection = {
+  __typename?: 'MkrLockedDelegateArrayConnection';
+  /** A list of edges which contains the `MkrLockedDelegateArrayRecord` and cursor to aid in pagination. */
+  edges: Array<MkrLockedDelegateArrayEdge>;
+  /** A list of `MkrLockedDelegateArrayRecord` objects. */
+  nodes: Array<Maybe<MkrLockedDelegateArrayRecord>>;
+};
+
+/** A `MkrLockedDelegateArrayRecord` edge in the connection. */
+export type MkrLockedDelegateArrayEdge = {
+  __typename?: 'MkrLockedDelegateArrayEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrLockedDelegateArrayRecord` at the end of the edge. */
+  node?: Maybe<MkrLockedDelegateArrayRecord>;
+};
+
+/** The return type of our `mkrLockedDelegateArray` query. */
+export type MkrLockedDelegateArrayRecord = {
+  __typename?: 'MkrLockedDelegateArrayRecord';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+  lockTotal?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrLockedDelegateArrayRecord` object types. All fields are combined with a logical ‘and.’ */
+export type MkrLockedDelegateArrayRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrLockedDelegateArrayRecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `lockTotal` field. */
+  lockTotal?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrLockedDelegateArrayRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrLockedDelegateArrayRecordFilter>>;
+};
+
+/** A `MkrLockedDelegateArrayTotalsRecord` edge in the connection. */
+export type MkrLockedDelegateArrayTotalEdge = {
+  __typename?: 'MkrLockedDelegateArrayTotalEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrLockedDelegateArrayTotalsRecord` at the end of the edge. */
+  node?: Maybe<MkrLockedDelegateArrayTotalsRecord>;
+};
+
+/** A connection to a list of `MkrLockedDelegateArrayTotalsRecord` values. */
+export type MkrLockedDelegateArrayTotalsConnection = {
+  __typename?: 'MkrLockedDelegateArrayTotalsConnection';
+  /** A list of edges which contains the `MkrLockedDelegateArrayTotalsRecord` and cursor to aid in pagination. */
+  edges: Array<MkrLockedDelegateArrayTotalEdge>;
+  /** A list of `MkrLockedDelegateArrayTotalsRecord` objects. */
+  nodes: Array<Maybe<MkrLockedDelegateArrayTotalsRecord>>;
+};
+
+/** The return type of our `mkrLockedDelegateArrayTotals` query. */
+export type MkrLockedDelegateArrayTotalsRecord = {
+  __typename?: 'MkrLockedDelegateArrayTotalsRecord';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  callerLockTotal?: Maybe<Scalars['BigFloat']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+  lockTotal?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrLockedDelegateArrayTotalsRecord` object types. All fields are combined with a logical ‘and.’ */
+export type MkrLockedDelegateArrayTotalsRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrLockedDelegateArrayTotalsRecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `callerLockTotal` field. */
+  callerLockTotal?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `lockTotal` field. */
+  lockTotal?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrLockedDelegateArrayTotalsRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrLockedDelegateArrayTotalsRecordFilter>>;
+};
+
+/** A connection to a list of `MkrLockedDelegateRecord` values. */
+export type MkrLockedDelegateConnection = {
+  __typename?: 'MkrLockedDelegateConnection';
+  /** A list of edges which contains the `MkrLockedDelegateRecord` and cursor to aid in pagination. */
+  edges: Array<MkrLockedDelegateEdge>;
+  /** A list of `MkrLockedDelegateRecord` objects. */
+  nodes: Array<Maybe<MkrLockedDelegateRecord>>;
+};
+
+/** A `MkrLockedDelegateRecord` edge in the connection. */
+export type MkrLockedDelegateEdge = {
+  __typename?: 'MkrLockedDelegateEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']>;
+  /** The `MkrLockedDelegateRecord` at the end of the edge. */
+  node?: Maybe<MkrLockedDelegateRecord>;
+};
+
+/** The return type of our `mkrLockedDelegate` query. */
+export type MkrLockedDelegateRecord = {
+  __typename?: 'MkrLockedDelegateRecord';
+  blockNumber?: Maybe<Scalars['Int']>;
+  blockTimestamp?: Maybe<Scalars['Datetime']>;
+  fromAddress?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  immediateCaller?: Maybe<Scalars['String']>;
+  lockAmount?: Maybe<Scalars['BigFloat']>;
+  lockTotal?: Maybe<Scalars['BigFloat']>;
+};
+
+/** A filter to be used against `MkrLockedDelegateRecord` object types. All fields are combined with a logical ‘and.’ */
+export type MkrLockedDelegateRecordFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<MkrLockedDelegateRecordFilter>>;
+  /** Filter by the object’s `blockNumber` field. */
+  blockNumber?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `blockTimestamp` field. */
+  blockTimestamp?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `fromAddress` field. */
+  fromAddress?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `hash` field. */
+  hash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `immediateCaller` field. */
+  immediateCaller?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `lockAmount` field. */
+  lockAmount?: InputMaybe<BigFloatFilter>;
+  /** Filter by the object’s `lockTotal` field. */
+  lockTotal?: InputMaybe<BigFloatFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<MkrLockedDelegateRecordFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<MkrLockedDelegateRecordFilter>>;
+};
+
 /** An object with a globally unique `ID`. */
 export type Node = {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -737,11 +1160,15 @@ export type Node = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  activePollById: ActivePollByIdConnection;
+  activePollByMultihash: ActivePollByMultihashConnection;
   activePolls: ActivePollsConnection;
   allCurrentVotes: AllCurrentVotesConnection;
   allCurrentVotesArray: AllCurrentVotesArrayConnection;
   allDelegates: AllDelegatesConnection;
   allEsmJoins: AllEsmJoinsConnection;
+  allEsmV2Joins: AllEsmV2JoinsConnection;
+  allLocksSummed: AllLocksSummedConnection;
   buggyVoteAddressMkrWeightsAtTime: BuggyVoteAddressMkrWeightsAtTimeConnection;
   buggyVoteMkrWeightsAtTimeRankedChoice: BuggyVoteMkrWeightsAtTimeRankedChoiceConnection;
   combinedChiefAndMkrBalances: CombinedChiefAndMkrBalancesConnection;
@@ -752,6 +1179,10 @@ export type Query = Node & {
   hotOrColdWeight: HotOrColdWeightConnection;
   hotOrColdWeightAtTime: HotOrColdWeightAtTimeConnection;
   hotOrColdWeightCurrently: HotOrColdWeightCurrentlyConnection;
+  mkrDelegatedTo: MkrDelegatedToConnection;
+  mkrLockedDelegate: MkrLockedDelegateConnection;
+  mkrLockedDelegateArray: MkrLockedDelegateArrayConnection;
+  mkrLockedDelegateArrayTotals: MkrLockedDelegateArrayTotalsConnection;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
@@ -768,6 +1199,28 @@ export type Query = Node & {
   voteOptionMkrWeights: VoteOptionMkrWeightsConnection;
   voteOptionMkrWeightsAtTime: VoteOptionMkrWeightsAtTimeConnection;
   voteOptionMkrWeightsCurrently: VoteOptionMkrWeightsCurrentlyConnection;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryActivePollByIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argPollId: Scalars['Int'];
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<ActivePollByIdRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryActivePollByMultihashArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argPollMultihash: Scalars['String'];
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<ActivePollByMultihashRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -820,6 +1273,28 @@ export type QueryAllEsmJoinsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllEsmV2JoinsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<AllEsmV2JoinsRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAllLocksSummedArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<AllLocksSummedRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  unixtimeEnd: Scalars['Int'];
+  unixtimeStart: Scalars['Int'];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -932,6 +1407,56 @@ export type QueryHotOrColdWeightCurrentlyArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMkrDelegatedToArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Scalars['String'];
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrDelegatedToRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMkrLockedDelegateArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Scalars['String'];
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrLockedDelegateRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  unixtimeEnd: Scalars['Int'];
+  unixtimeStart: Scalars['Int'];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMkrLockedDelegateArrayArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Array<InputMaybe<Scalars['String']>>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrLockedDelegateArrayRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  unixtimeEnd: Scalars['Int'];
+  unixtimeStart: Scalars['Int'];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMkrLockedDelegateArrayTotalsArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  argAddress: Array<InputMaybe<Scalars['String']>>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<MkrLockedDelegateArrayTotalsRecordFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  unixtimeEnd: Scalars['Int'];
+  unixtimeStart: Scalars['Int'];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1484,6 +2009,260 @@ export default {
     types: [
       {
         kind: 'OBJECT',
+        name: 'ActivePollByIdConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ActivePollByIdEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'ActivePollByIdRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'ActivePollByIdEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'ActivePollByIdRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'ActivePollByIdRecord',
+        fields: [
+          {
+            name: 'blockCreated',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'creator',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'endDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'multiHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'pollId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'startDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'url',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'ActivePollByMultihashConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'ActivePollByMultihashEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'ActivePollByMultihashRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'ActivePollByMultihashEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'ActivePollByMultihashRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'ActivePollByMultihashRecord',
+        fields: [
+          {
+            name: 'blockCreated',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'creator',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'endDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'multiHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'pollId',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'startDate',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'url',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
         name: 'ActivePollEdge',
         fields: [
           {
@@ -2012,6 +2791,236 @@ export default {
           },
           {
             name: 'txHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllEsmV2JoinEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllEsmV2JoinsRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllEsmV2JoinsConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllEsmV2JoinEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllEsmV2JoinsRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllEsmV2JoinsRecord',
+        fields: [
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'joinAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'txFrom',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'txHash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllLocksSummedConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'AllLocksSummedEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'AllLocksSummedRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllLocksSummedEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'AllLocksSummedRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'AllLocksSummedRecord',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockTotal',
             type: {
               kind: 'SCALAR',
               name: 'Any'
@@ -2908,6 +3917,514 @@ export default {
         interfaces: []
       },
       {
+        kind: 'OBJECT',
+        name: 'MkrDelegatedToConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrDelegatedToEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrDelegatedToRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrDelegatedToEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrDelegatedToRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrDelegatedToRecord',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrLockedDelegateArrayEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrLockedDelegateArrayRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrLockedDelegateArrayRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayRecord',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrLockedDelegateArrayTotalsRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalsConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrLockedDelegateArrayTotalEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrLockedDelegateArrayTotalsRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateArrayTotalsRecord',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'callerLockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateConnection',
+        fields: [
+          {
+            name: 'edges',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'OBJECT',
+                    name: 'MkrLockedDelegateEdge',
+                    ofType: null
+                  }
+                }
+              }
+            },
+            args: []
+          },
+          {
+            name: 'nodes',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'LIST',
+                ofType: {
+                  kind: 'OBJECT',
+                  name: 'MkrLockedDelegateRecord',
+                  ofType: null
+                }
+              }
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateEdge',
+        fields: [
+          {
+            name: 'cursor',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'node',
+            type: {
+              kind: 'OBJECT',
+              name: 'MkrLockedDelegateRecord',
+              ofType: null
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
+        kind: 'OBJECT',
+        name: 'MkrLockedDelegateRecord',
+        fields: [
+          {
+            name: 'blockNumber',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'blockTimestamp',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'fromAddress',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'hash',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'immediateCaller',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockAmount',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          },
+          {
+            name: 'lockTotal',
+            type: {
+              kind: 'SCALAR',
+              name: 'Any'
+            },
+            args: []
+          }
+        ],
+        interfaces: []
+      },
+      {
         kind: 'INTERFACE',
         name: 'Node',
         fields: [
@@ -2935,6 +4452,136 @@ export default {
         kind: 'OBJECT',
         name: 'Query',
         fields: [
+          {
+            name: 'activePollById',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ActivePollByIdConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argPollId',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'activePollByMultihash',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'ActivePollByMultihashConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argPollMultihash',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
           {
             name: 'activePolls',
             type: {
@@ -3229,6 +4876,136 @@ export default {
                 type: {
                   kind: 'SCALAR',
                   name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'allEsmV2Joins',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllEsmV2JoinsConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'allLocksSummed',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'AllLocksSummedConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'unixtimeEnd',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'unixtimeStart',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               }
             ]
@@ -3899,6 +5676,332 @@ export default {
                 type: {
                   kind: 'SCALAR',
                   name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'mkrDelegatedTo',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrDelegatedToConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              }
+            ]
+          },
+          {
+            name: 'mkrLockedDelegate',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrLockedDelegateConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'unixtimeEnd',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'unixtimeStart',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            name: 'mkrLockedDelegateArray',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrLockedDelegateArrayConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'LIST',
+                    ofType: {
+                      kind: 'SCALAR',
+                      name: 'Any'
+                    }
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'unixtimeEnd',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'unixtimeStart',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              }
+            ]
+          },
+          {
+            name: 'mkrLockedDelegateArrayTotals',
+            type: {
+              kind: 'NON_NULL',
+              ofType: {
+                kind: 'OBJECT',
+                name: 'MkrLockedDelegateArrayTotalsConnection',
+                ofType: null
+              }
+            },
+            args: [
+              {
+                name: 'after',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'argAddress',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'LIST',
+                    ofType: {
+                      kind: 'SCALAR',
+                      name: 'Any'
+                    }
+                  }
+                }
+              },
+              {
+                name: 'before',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'filter',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'first',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'last',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'offset',
+                type: {
+                  kind: 'SCALAR',
+                  name: 'Any'
+                }
+              },
+              {
+                name: 'unixtimeEnd',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
+                }
+              },
+              {
+                name: 'unixtimeStart',
+                type: {
+                  kind: 'NON_NULL',
+                  ofType: {
+                    kind: 'SCALAR',
+                    name: 'Any'
+                  }
                 }
               }
             ]

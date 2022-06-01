@@ -4,6 +4,9 @@ import { getAddressInfo } from 'modules/address/api/getAddressInfo';
 import invariant from 'tiny-invariant';
 import { CommentFromDB, CommentsAPIResponseItem } from '../types/comments';
 import { markdownToHtml } from 'lib/markdown';
+import { networkNameToChainId } from 'modules/web3/helpers/chain';
+import { getRPCFromChainID } from 'modules/web3/helpers/getRPC';
+import { ethers } from 'ethers';
 export async function getCommentsByAddress(
   address: string,
   network: SupportedNetworks
@@ -23,16 +26,28 @@ export async function getCommentsByAddress(
 
   const addressInfo = await getAddressInfo(address, network);
 
+  const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
+  const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
+
   const comments: CommentsAPIResponseItem[] = await Promise.all(
     commentsFromDB.map(async comment => {
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
+      // verify tx ownership
+      const transaction = await provider.getTransaction(comment.txHash as string);
 
+      const isValid =
+        transaction &&
+        ethers.utils.getAddress(transaction.from).toLowerCase() ===
+          ethers.utils.getAddress(comment.hotAddress).toLowerCase();
       return {
         comment: {
           ...rest,
           comment: commentBody
         },
+        isValid,
+        completed: transaction && transaction.confirmations > 10,
+
         address: addressInfo
       };
     })

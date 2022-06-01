@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { Card, Flex, Divider, Heading, Text, NavLink, Box, Button, Badge } from 'theme-ui';
+import { Card, Flex, Divider, Heading, Text, Box, Button, Badge } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import { Icon } from '@makerdao/dai-ui-icons';
 
@@ -44,6 +44,7 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { getPolls } from 'modules/polling/api/fetchPolls';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
+import usePollsStore from 'modules/polling/stores/polls';
 
 const editMarkdown = content => {
   // hide the duplicate proposal title
@@ -51,6 +52,10 @@ const editMarkdown = content => {
 };
 
 const PollView = ({ poll }: { poll: Poll }) => {
+  const filteredPollData = usePollsStore(state => state.filteredPolls);
+  const [prevSlug, setPrevSlug] = useState(poll.ctx?.prev?.slug);
+  const [nextSlug, setNextSlug] = useState(poll.ctx?.next?.slug);
+
   const { account } = useAccount();
   const bpi = useBreakpointIndex({ defaultIndex: 2 });
   const [shownOptions, setShownOptions] = useState(6);
@@ -63,6 +68,19 @@ const PollView = ({ poll }: { poll: Poll }) => {
 
   const { tally } = usePollTally(poll.pollId, 60000);
   const { comments, error: errorComments } = usePollComments(poll.pollId);
+
+  useEffect(() => {
+    if (filteredPollData && filteredPollData.length > 0) {
+      const currentIdx = filteredPollData?.findIndex(({ pollId }) => pollId === poll.pollId);
+      const previousPoll = filteredPollData[currentIdx - 1];
+      const nextPoll = filteredPollData[currentIdx + 1];
+      setPrevSlug(previousPoll?.slug);
+      setNextSlug(nextPoll?.slug);
+    } else {
+      setPrevSlug(poll.ctx?.prev?.slug);
+      setNextSlug(poll.ctx?.next?.slug);
+    }
+  }, [filteredPollData, poll]);
 
   return (
     <PrimaryLayout sx={{ maxWidth: 'dashboard' }}>
@@ -86,12 +104,8 @@ const PollView = ({ poll }: { poll: Poll }) => {
               </Button>
             </InternalLink>
             <Flex sx={{ justifyContent: 'space-between' }}>
-              {poll.ctx?.prev?.slug && (
-                <InternalLink
-                  href={`/polling/${poll.ctx.prev.slug}`}
-                  title="View previous poll"
-                  scroll={false}
-                >
+              {prevSlug && (
+                <InternalLink href={`/polling/${prevSlug}`} title="View previous poll" scroll={false}>
                   <Button variant="mutedOutline">
                     <Flex sx={{ alignItems: 'center', whiteSpace: 'nowrap' }}>
                       <Icon name="chevron_left" size={2} mr={2} />
@@ -100,9 +114,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </Button>
                 </InternalLink>
               )}
-              {poll.ctx?.next?.slug && (
+              {nextSlug && (
                 <InternalLink
-                  href={`/polling/${poll.ctx.next.slug}`}
+                  href={`/polling/${nextSlug}`}
                   title="View next poll"
                   scroll={false}
                   styles={{ ml: 2 }}
@@ -144,9 +158,9 @@ const PollView = ({ poll }: { poll: Poll }) => {
                   </Heading>
 
                   <Flex sx={{ mt: 3, mb: 3 }}>
-                    {poll.categories.map(c => (
-                      <Box key={c} sx={{ marginRight: 2 }}>
-                        <PollCategoryTag category={c} />
+                    {poll.tags.map(c => (
+                      <Box key={c.id} sx={{ marginRight: 2 }}>
+                        <PollCategoryTag tag={c} />
                       </Box>
                     ))}
                   </Flex>
@@ -170,21 +184,14 @@ const PollView = ({ poll }: { poll: Poll }) => {
             <Tabs
               tabListStyles={{ pl: [3, 4] }}
               tabTitles={[
-                'Poll Detail',
                 'Vote Breakdown',
+                'Poll Detail',
                 `Comments${comments ? ` (${comments.length})` : ''}`
               ]}
-              tabRoutes={['Poll Detail', 'Vote Breakdown', 'Comments']}
+              tabRoutes={['Vote Breakdown', 'Poll Detail', 'Comments']}
               tabPanels={[
-                <div key={1}>
-                  <div
-                    data-testid="poll-detail"
-                    sx={{ variant: 'markdown.default', p: [3, 4] }}
-                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
-                  />
-                </div>,
                 !tally ? (
-                  <Box sx={{ m: 4 }} key={2}>
+                  <Box sx={{ m: 4 }} key={1}>
                     <Skeleton />
                   </Box>
                 ) : (
@@ -280,6 +287,13 @@ const PollView = ({ poll }: { poll: Poll }) => {
                     </Flex>
                   ]
                 ),
+                <div key={2}>
+                  <div
+                    data-testid="poll-detail"
+                    sx={{ variant: 'markdown.default', p: [3, 4] }}
+                    dangerouslySetInnerHTML={{ __html: editMarkdown(poll.content) }}
+                  />
+                </div>,
                 <div key={3}>
                   {!errorComments && <PollComments comments={comments} tally={tally} poll={poll} />}
                   {errorComments && (
@@ -370,20 +384,6 @@ export default function PollPage({ poll: prefetchedPoll }: { poll?: Poll }): JSX
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context): Promise<any> => {
-//   const slug = context.query['poll-hash'] as string;
-//   const network = context.query['network'] as string;
-//   const networkToFetch = network && isSupportedNetwork(network) ? network : DEFAULT_NETWORK.network;
-
-//   const poll = await fetchPollBySlug(slug, networkToFetch);
-
-//   return {
-//     props: {
-//       poll
-//     }
-//   };
-// };
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   // fetch poll contents at build-time if on the default network
   const pollSlug = params?.['poll-hash'] as string;
@@ -402,6 +402,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     revalidate: 30, // allow revalidation every 30 seconds
     props: {
+      key: poll.pollId, // makes sure state updates when navigating to a new dynamic route
       poll
     }
   };

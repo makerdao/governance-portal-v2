@@ -1,6 +1,6 @@
 import { config } from 'lib/config';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import { fetchPollMetadata } from './fetchPollMetadata';
 import { DEFAULT_NETWORK, SupportedNetworks } from 'modules/web3/constants/networks';
 import { getCategories } from '../helpers/getCategories';
@@ -13,6 +13,8 @@ import { PollSpock } from '../types/pollSpock';
 import uniqBy from 'lodash/uniqBy';
 import chunk from 'lodash/chunk';
 import { spockPollToPartialPoll } from '../helpers/parsePollMetadata';
+import { ActivePollEdge, Query as GqlQuery } from 'modules/gql/generated/graphql';
+import { PollsQueryVariables } from 'modules/gql/types';
 
 export function sortPolls(pollList: Poll[]): Poll[] {
   return pollList.sort((a, b) => {
@@ -64,19 +66,32 @@ export async function fetchAllPollsMetadata(pollList: PollSpock[]): Promise<Poll
   return sortPolls(polls);
 }
 
-export async function fetchAllSpockPolls(network: SupportedNetworks): Promise<PollSpock[]> {
-  const data = await gqlRequest({
+export async function fetchSpockPolls(
+  network: SupportedNetworks,
+  queryVariables?: PollsQueryVariables | null
+): Promise<PollSpock[]> {
+  const requestData = {
     chainId: networkNameToChainId(network),
-    query: allWhitelistedPolls
+    query: allWhitelistedPolls,
+    variables: queryVariables
+  };
+
+  const data = await gqlRequest<GqlQuery>(requestData);
+
+  const pollEdges: ActivePollEdge[] = data.activePolls.edges;
+
+  const pollList = pollEdges.map(({ node: poll, cursor }) => {
+    return { ...poll, cursor };
   });
 
-  const pollList: PollSpock[] = data.activePolls.nodes;
-  return pollList;
+  return pollList as PollSpock[];
 }
 
-// Returns all the polls and caches them in the file system.
-export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]> {
-  const cacheKey = 'polls';
+export async function _getAllPolls(
+  network?: SupportedNetworks,
+  queryVariables?: PollsQueryVariables | null
+): Promise<Poll[]> {
+  const cacheKey = `polls-${queryVariables ? JSON.stringify(queryVariables) : 'all'}`;
 
   if (config.USE_FS_CACHE) {
     const cachedPolls = fsCacheGet(cacheKey, network);
@@ -85,7 +100,7 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
     }
   }
 
-  const pollList = await fetchAllSpockPolls(network || DEFAULT_NETWORK.network);
+  const pollList = await fetchSpockPolls(network || DEFAULT_NETWORK.network, queryVariables);
 
   const polls = await fetchAllPollsMetadata(pollList);
 
@@ -99,40 +114,33 @@ export async function _getAllPolls(network?: SupportedNetworks): Promise<Poll[]>
 const defaultFilters: PollFilters = {
   startDate: null,
   endDate: null,
-  categories: null,
+  tags: null,
   active: null
 };
 
 export async function getPolls(
   filters = defaultFilters,
-  network?: SupportedNetworks
+  network?: SupportedNetworks,
+  queryVariables?: PollsQueryVariables
 ): Promise<PollsResponse> {
-  const allPolls = await _getAllPolls(network);
+  const allPolls = await _getAllPolls(network, queryVariables);
+
   const filteredPolls = allPolls.filter(poll => {
     // check date filters first
     if (filters.startDate && new Date(poll.endDate).getTime() < filters.startDate.getTime()) return false;
     if (filters.endDate && new Date(poll.endDate).getTime() > filters.endDate.getTime()) return false;
 
     // if no category filters selected, return all, otherwise, check if poll contains category
-    return (
-      !filters.categories || poll.categories.some(c => filters.categories && filters.categories.includes(c))
-    );
+    return !filters.tags || poll.tags.some(c => filters.tags && filters.tags.includes(c.id));
   });
 
   return {
     polls: filteredPolls,
-    categories: getCategories(allPolls),
+    tags: getCategories(allPolls),
     stats: {
       active: allPolls.filter(isActivePoll).length,
       finished: allPolls.filter(p => !isActivePoll(p)).length,
       total: allPolls.length
     }
   };
-}
-
-export async function getPollCategories(): Promise<PollCategory[]> {
-  const pollsResponse = await getPolls();
-  const categories = getCategories(pollsResponse.polls);
-
-  return categories;
 }

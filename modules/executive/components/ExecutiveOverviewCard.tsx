@@ -18,13 +18,11 @@ import { ZERO_ADDRESS } from 'modules/web3/constants/addresses';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useExecutiveComments } from 'modules/comments/hooks/useExecutiveComments';
 import CommentCount from 'modules/comments/components/CommentCount';
-import { SupportedNetworks } from 'modules/web3/constants/networks';
 
 type Props = {
   proposal: Proposal;
   isHat: boolean;
   account?: string;
-  network: SupportedNetworks;
   votedProposals: string[];
   mkrOnHat?: BigNumber;
 };

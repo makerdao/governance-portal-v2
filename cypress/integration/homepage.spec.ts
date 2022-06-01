@@ -34,7 +34,7 @@ describe('Home Page', () => {
       elementContainsText('[data-testid="MKR on Hat"]', '100,000');
       elementContainsText('[data-testid="Active Polls"]', '21');
       elementContainsText('[data-testid="Recognized Delegates"]', '2');
-      elementContainsText('[data-testid="Shadow Delegates"]', '15');
+      elementContainsText('[data-testid="Shadow Delegates"]', '18');
       elementContainsText('[data-testid="MKR Delegated"]', '1,279 MKR');
       elementContainsText('[data-testid="MKR in Chief"]', '201,312 MKR');
 
@@ -82,7 +82,7 @@ describe('Home Page', () => {
         modalPollingWeightEquals('0.01 MKR');
 
         // Save screenshot
-        cy.screenshot('test');
+        // cy.screenshot('test');
       });
     });
   });

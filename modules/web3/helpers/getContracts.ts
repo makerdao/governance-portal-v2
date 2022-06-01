@@ -1,4 +1,4 @@
-import { ethers, Signer } from 'ethers';
+import { ethers, providers, Signer } from 'ethers';
 import { getGoerliSdk, getMainnetSdk, GoerliSdk, MainnetSdk } from '@dethcrypto/eth-sdk-client';
 
 import { Web3Provider } from '@ethersproject/providers';
@@ -24,10 +24,14 @@ const sdks: Sdks = {
 export const getContracts = (
   chainId?: SupportedChainId,
   library?: Web3Provider,
-  account?: string | undefined | null
+  account?: string | null,
+  readOnly?: boolean
 ): EthSdk => {
-  const provider = getDefaultProvider(getRPCFromChainID(chainId || 1));
-  const network = chainId ? CHAIN_INFO[chainId].network : DEFAULT_NETWORK.network;
+  const { network, rpcUrl } = chainId
+    ? { network: CHAIN_INFO[chainId].network, rpcUrl: getRPCFromChainID(chainId) }
+    : { network: DEFAULT_NETWORK.network, rpcUrl: DEFAULT_NETWORK.defaultRpc };
+
+  const provider = readOnly ? new providers.JsonRpcBatchProvider(rpcUrl) : getDefaultProvider(rpcUrl);
 
   // Map goerlifork to goerli contracts
   const sdkNetwork = network === SupportedNetworks.GOERLIFORK ? SupportedNetworks.GOERLI : network;
@@ -39,7 +43,11 @@ export const getContracts = (
   https://github.com/dethcrypto/eth-sdk/issues/63
   */
   const signer =
-    account && library ? library.getSigner(account) : new ethers.VoidSigner(ZERO_ADDRESS, provider);
+    account && library
+      ? readOnly
+        ? (provider as providers.JsonRpcBatchProvider).getSigner(account)
+        : library.getSigner(account)
+      : new ethers.VoidSigner(ZERO_ADDRESS, provider);
 
   return sdks[sdkNetwork](signer);
 };

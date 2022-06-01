@@ -130,10 +130,9 @@ export async function getExecutiveProposals(
 
   const analyzedProposals = await Promise.all(
     subset.map(async p => {
-      const spellData = await analyzeSpell(p.address, currentNetwork);
       return {
         ...p,
-        spellData
+        spellData: await analyzeSpell(p.address, currentNetwork)
       };
     })
   );
@@ -159,6 +158,7 @@ export async function getExecutiveProposal(
   const proposal = proposals.find(proposal => proposal.key === proposalId || proposal.address === proposalId);
   if (!proposal) return null;
   invariant(proposal, `proposal not found for proposal id ${proposalId}`);
+
   const spellData = await analyzeSpell(proposal.address, currentNetwork);
   const content = await markdownToHtml(proposal.about || '');
   return {

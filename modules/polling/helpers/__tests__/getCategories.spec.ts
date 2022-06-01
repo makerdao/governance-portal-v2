@@ -4,13 +4,24 @@ describe('Get categories', () => {
   it('Returns all the categories', () => {
     const polls = [
       {
-        categories: ['a', 'b', 'c']
+        tags: [
+          { id: 'a', longname: 'a' },
+          { id: 'b', longname: 'b' },
+          { id: 'c', longname: 'c' }
+        ]
       },
       {
-        categories: ['b', 'c']
+        tags: [
+          { id: 'b', longname: 'b' },
+          { id: 'c', longname: 'c' }
+        ]
       },
       {
-        categories: ['x', 'y', 'c']
+        tags: [
+          { id: 'x', longname: 'x' },
+          { id: 'y', longname: 'y' },
+          { id: 'c', longname: 'c' }
+        ]
       }
     ] as Poll[];
     const categories = getCategories(polls);
@@ -22,20 +33,31 @@ describe('Get categories', () => {
   it('Sorts them by alphabetical order', () => {
     const polls = [
       {
-        categories: ['x', 'b', 'c']
+        tags: [
+          { id: 'x', longname: 'x' },
+          { id: 'b', longname: 'b' },
+          { id: 'c', longname: 'c' }
+        ]
       },
       {
-        categories: ['b', 'c']
+        tags: [
+          { id: 'b', longname: 'b' },
+          { id: 'c', longname: 'c' }
+        ]
       },
       {
-        categories: ['x', 'y', 'c']
+        tags: [
+          { id: 'x', longname: 'x' },
+          { id: 'y', longname: 'y' },
+          { id: 'c', longname: 'c' }
+        ]
       }
     ] as Poll[];
 
     const categories = getCategories(polls);
 
     // First categories are the ones with more ocfurences
-    expect(categories[0]).toEqual({ count: 2, name: 'b' });
-    expect(categories[1]).toEqual({ count: 3, name: 'c' });
+    expect(categories[0]).toEqual({ count: 2, id: 'b', longname: 'b' });
+    expect(categories[1]).toEqual({ count: 3, id: 'c', longname: 'c' });
   });
 });

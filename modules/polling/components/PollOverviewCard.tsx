@@ -52,8 +52,15 @@ export default function PollOverviewCard({
   );
 
   function onClickCategory(category) {
-    setCategoryFilter({ ...categoryFilter, [category]: !(categoryFilter || {})[category] });
+    setCategoryFilter({ ...categoryFilter, [category.id]: !(categoryFilter || {})[category.id] });
   }
+
+  const myComment = comments?.find(c => {
+    return c.comment.hotAddress.toLowerCase() === account?.toLowerCase();
+  });
+
+  const hasPollComments = comments && comments.length > 0;
+  const hasUserComments = hasPollComments && myComment;
 
   return (
     <Card
@@ -88,7 +95,7 @@ export default function PollOverviewCard({
                       )}
                     </Flex>
                     <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
-                      <CardTitle title={poll.title} />
+                      <CardTitle title={poll.title} dataTestId="poll-overview-card-poll-title" />
                     </InternalLink>
                   </Box>
                   <InternalLink href={`/polling/${poll.slug}`} title="View poll details">
@@ -96,41 +103,52 @@ export default function PollOverviewCard({
                   </InternalLink>
                 </Box>
 
-                <Flex>
-                  {poll.categories.map(c => (
-                    <Box key={c} sx={{ marginRight: 2 }}>
-                      <PollCategoryTag onClick={() => onClickCategory(c)} category={c} />
+                <Flex sx={{ flexWrap: 'wrap' }}>
+                  {poll.tags.map(c => (
+                    <Box key={c.id} sx={{ marginRight: 2, marginBottom: 2 }}>
+                      <PollCategoryTag onClick={() => onClickCategory(c)} tag={c} />
                     </Box>
                   ))}
                 </Flex>
                 {bpi > 0 && (
-                  <Flex mt={3} sx={{ alignItems: 'center' }}>
-                    <Box mr={2}>
+                  <Flex mt={3} sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Box>
                       <ErrorBoundary componentName="Countdown Timer">
                         <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                       </ErrorBoundary>
                     </Box>
-
-                    {comments && comments.length > 0 && (
-                      <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
-                        <CommentCount count={comments.length} />
-                      </InternalLink>
-                    )}
-                    {errorComments && (
-                      <Badge
-                        variant="warning"
-                        sx={{
-                          color: 'warning',
-                          borderColor: 'warning',
-                          textTransform: 'uppercase',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          m: 1
-                        }}
-                      >
-                        Error loading comments
-                      </Badge>
-                    )}
+                    <Flex sx={{ gap: 2, flexWrap: 'wrap' }}>
+                      {hasPollComments && (
+                        <InternalLink href={`/polling/${poll.slug}`} title="View comments" hash="comments">
+                          <CommentCount count={comments.length} />
+                        </InternalLink>
+                      )}
+                      {hasUserComments && (
+                        <InternalLink href={`/polling/${poll.slug}`} title="Your Comment" hash="comments">
+                          <Flex sx={{ alignItems: 'center', gap: 2 }}>
+                            <Icon name="yourComment" color="primary" size={3} />
+                            <Text variant="caps" color="primary">
+                              Your Comment
+                            </Text>
+                          </Flex>
+                        </InternalLink>
+                      )}
+                      {errorComments && (
+                        <Badge
+                          variant="warning"
+                          sx={{
+                            color: 'warning',
+                            borderColor: 'warning',
+                            textTransform: 'uppercase',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            m: 1
+                          }}
+                        >
+                          Error loading comments
+                        </Badge>
+                      )}
+                    </Flex>
                   </Flex>
                 )}
               </Flex>

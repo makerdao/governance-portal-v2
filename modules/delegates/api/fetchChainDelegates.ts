@@ -5,34 +5,34 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { allDelegates } from 'modules/gql/queries/allDelegates';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
 import { getContracts } from 'modules/web3/helpers/getContracts';
-import { fetchDelegationEventsByAddresses } from './fetchDelegationEventsByAddresses';
+import { Query } from 'modules/gql/generated/graphql';
 
 export async function fetchChainDelegates(
   network: SupportedNetworks
 ): Promise<DelegateContractInformation[]> {
   const chainId = networkNameToChainId(network);
-  const data = await gqlRequest({ chainId, query: allDelegates });
+  const data = await gqlRequest<Query>({ chainId, query: allDelegates });
 
   const delegates = data.allDelegates.nodes;
 
-  const contracts = getContracts(chainId);
+  const contracts = getContracts(chainId, undefined, undefined, true);
 
   const delegatesWithMkrStaked: DelegateContractInformation[] = await Promise.all(
-    delegates.map(async (delegate, index): Promise<DelegateContractInformation> => {
-      // Get MKR delegated to each contract
-      const mkr = await contracts.chief.deposits(delegate.voteDelegate);
+    delegates.map(async (delegate): Promise<DelegateContractInformation> => {
+      if (delegate?.voteDelegate && delegate.delegate) {
+        // Get MKR delegated to each contract
+        const mkr = await contracts.chief.deposits(delegate.voteDelegate);
 
-      const delegationEvents = await fetchDelegationEventsByAddresses([delegate.voteDelegate], network);
+        const chainDelegate: DelegateContractInformation = {
+          ...(delegate as DelegateContractInformation),
+          address: delegate.delegate,
+          voteDelegateAddress: delegate.voteDelegate,
+          mkrDelegated: formatValue(mkr, 'wad', 18, false)
+        };
 
-      const chainDelegate: DelegateContractInformation = {
-        ...delegate,
-        address: delegate.delegate,
-        voteDelegateAddress: delegate.voteDelegate,
-        mkrDelegated: formatValue(mkr, 'wad', 18, false),
-        mkrLockedDelegate: delegationEvents
-      };
-
-      return chainDelegate;
+        return chainDelegate;
+      }
+      return delegate as DelegateContractInformation;
     })
   );
 

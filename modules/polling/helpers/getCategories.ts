@@ -1,21 +1,25 @@
-import { PollCategory, Poll } from 'modules/polling/types';
+import { TagCount } from 'modules/app/types/tag';
+import { Poll } from 'modules/polling/types';
 
-export const getCategories = (polls: Poll[]): PollCategory[] => {
-  const categoryMap = polls.reduce((acc, cur) => {
-    if (!cur.categories) return acc;
-    cur.categories.forEach(c => {
-      if (acc[c]) {
-        acc[c] += 1;
+export const getCategories = (polls: Poll[]): TagCount[] => {
+  const categories = polls.reduce((acc, cur) => {
+    if (!cur.tags) return acc;
+    cur.tags.forEach(c => {
+      const prev = acc.findIndex(t => t.id === c.id);
+
+      if (prev !== -1) {
+        acc[prev].count += 1;
       } else {
-        acc[c] = 1;
+        acc.push({
+          ...c,
+          count: 1
+        });
       }
     });
     return acc;
-  }, {});
+  }, [] as TagCount[]);
 
-  const allCategories = Object.keys(categoryMap)
-    .sort((a, b) => (a > b ? 1 : -1))
-    .map(c => ({ name: c, count: categoryMap[c] }));
+  const allCategories = categories.sort((a, b) => (a.longname > b.longname ? 1 : -1));
 
   return allCategories || [];
 };

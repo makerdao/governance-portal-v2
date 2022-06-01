@@ -44,8 +44,6 @@ import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import AddressIconBox from 'modules/address/components/AddressIconBox';
 import { DEFAULT_NETWORK } from 'modules/web3/constants/networks';
 import { fetchJson } from 'lib/fetchJson';
-import { fetchHistoricalSpellDiff } from 'modules/executive/api/fetchHistoricalSpellDiff';
-import { isAfter, sub } from 'date-fns';
 
 type Props = {
   proposal: Proposal;

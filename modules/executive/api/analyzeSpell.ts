@@ -5,8 +5,8 @@ import { getChiefApprovals } from 'modules/web3/api/getChiefApprovals';
 import { getSpellExecutionDate } from 'modules/web3/api/getSpellExecuationDate';
 import { getSpellScheduledDate } from 'modules/web3/api/getSpellScheduledDate';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
-import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 import { SpellData } from '../types';
+import { getSpellContract } from 'modules/web3/helpers/getSpellContract';
 
 export const getExecutiveMKRSupport = async (
   address: string,
@@ -24,6 +24,23 @@ export const getExecutiveMKRSupport = async (
 // executiveHash returns the hash of the executive proposal
 export const analyzeSpell = async (address: string, network: SupportedNetworks): Promise<SpellData> => {
   const spellContract = getSpellContract(address, network);
+  // don't fetch spell data if not on mainnet
+  if (network !== SupportedNetworks.MAINNET) {
+    const approvals = await getChiefApprovals(address, network);
+
+    return {
+      hasBeenCast: undefined,
+      hasBeenScheduled: false,
+      eta: undefined,
+      expiration: undefined,
+      nextCastTime: undefined,
+      datePassed: undefined,
+      dateExecuted: undefined,
+      mkrSupport: approvals.toString(),
+      executiveHash: undefined,
+      officeHours: undefined
+    };
+  }
 
   const getDone = async () => {
     try {

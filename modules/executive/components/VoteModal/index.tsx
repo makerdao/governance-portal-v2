@@ -4,9 +4,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import shallow from 'zustand/shallow';
 import { Icon } from '@makerdao/dai-ui-icons';
-
 import { fadeIn, slideUp } from 'lib/keyframes';
-
 import { transactionsSelectors } from 'modules/web3/stores/transactions';
 import { Proposal } from 'modules/executive/types';
 import { TxInProgress } from 'modules/app/components/TxInProgress';
@@ -16,12 +14,13 @@ import useTransactionsStore from 'modules/web3/stores/transactions';
 
 type Props = {
   close: () => void;
-  proposal: Proposal;
+  proposal?: Proposal;
+  address?: string;
 };
 
 type ModalStep = 'confirm' | 'signing' | 'pending' | 'mined' | 'failed';
 
-const VoteModal = ({ close, proposal }: Props): JSX.Element => {
+const VoteModal = ({ close, proposal, address }: Props): JSX.Element => {
   const bpi = useBreakpointIndex();
 
   const [step, setStep] = useState<ModalStep>('confirm');
@@ -46,6 +45,7 @@ const VoteModal = ({ close, proposal }: Props): JSX.Element => {
         {step === 'confirm' && (
           <DefaultVoteModalView
             proposal={proposal}
+            address={address}
             close={close}
             onTransactionPending={() => setStep('pending')}
             onTransactionFailed={() => setStep('failed')}

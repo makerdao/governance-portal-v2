@@ -10,7 +10,7 @@ jest.mock('../../api/fetchRawPollTally');
 jest.mock('../../api/fetchVotesByAddress');
 
 const mockPoll: Poll = {
-  categories: ['a'],
+  tags: ['a'],
   content: '',
   discussionLink: '',
   endDate: new Date(2011, 10, 30),

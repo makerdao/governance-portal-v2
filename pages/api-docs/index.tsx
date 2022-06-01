@@ -1,6 +1,9 @@
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import SwaggerUI from 'swagger-ui-react';
+import dynamic from 'next/dynamic';
+
+const SwaggerUI: any = dynamic(() => import('swagger-ui-react'), { ssr: false });
+
 import { HeadComponent } from 'modules/app/components/layout/Head';
 import 'swagger-ui-react/swagger-ui.css';
 import { Box, useColorMode } from 'theme-ui';

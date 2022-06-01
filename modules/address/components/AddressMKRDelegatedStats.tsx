@@ -1,7 +1,10 @@
-import { Flex } from 'theme-ui';
+import { Box, Flex } from 'theme-ui';
+import { Icon } from '@makerdao/dai-ui-icons';
 import { StatBox } from 'modules/app/components/StatBox';
 import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
 import { formatValue } from 'lib/string';
+import Tooltip from 'modules/app/components/Tooltip';
+import { getDescription } from 'modules/polling/components/VotingWeight';
 
 export function AddressMKRDelegatedStats({
   totalMKRDelegated,
@@ -22,7 +25,17 @@ export function AddressMKRDelegatedStats({
         marginBottom: 1
       }}
     >
-      <StatBox value={votingWeight ? formatValue(votingWeight.total) : '0.000'} label={'Total MKR Balance'} />
+      <StatBox
+        value={votingWeight ? formatValue(votingWeight.total) : '0.000'}
+        label={'Total MKR Balance'}
+        tooltip={
+          <Tooltip label={getDescription({ votingWeight, isDelegate: false })}>
+            <Box>
+              <Icon sx={{ ml: 1 }} name="question" />
+            </Box>
+          </Tooltip>
+        }
+      />
 
       <StatBox
         styles={{

@@ -26,6 +26,7 @@ export function elementContainsText(selector: string, text: string) {
 
 export async function setAccount(account: TestAccount, cb: () => void) {
   cy.window().then(win => {
+    if (!('setAccount' in win)) return;
     (win as any).setAccount(account.address, account.key);
     cy.get('[data-testid="active-network-name"]').contains(/goerlifork/i);
     cb();

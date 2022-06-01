@@ -1,29 +1,8 @@
 import matter from 'gray-matter';
 import isEmpty from 'lodash/isEmpty';
-import difference from 'lodash/difference';
 import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parsePollMetadata';
 import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
-
-// find the most up-to-date list here:
-// https://github.com/makerdao/community/blob/master/governance/polls/meta/categories.json
-export const hardcodedCategories = [
-  'Collateral',
-  'Oracles',
-  'Governance',
-  'Risk Variable',
-  'Technical',
-  'Other',
-  'MIPs',
-  'Rates',
-  'Auctions',
-  'Greenlight',
-  'Transfer',
-  'Budget',
-  'Core Unit',
-  'Test',
-  'Offboard'
-];
 
 type ValidationResult = {
   valid: boolean;
@@ -32,31 +11,18 @@ type ValidationResult = {
   wholeDoc?: string;
 };
 
-export async function fetchCategories(): Promise<string[]> {
-  try {
-    const url =
-      'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/categories.json';
-    const resp = await fetch(url);
-    return resp.json();
-  } catch (err) {
-    // fallback to hardcoded categories if live category fetch fails
-    return hardcodedCategories;
-  }
-}
-
 export async function validateUrl(url: string, poll?: PartialPoll): Promise<ValidationResult> {
   const resp = await fetch(url);
   const text = await resp.text();
-  const categories = await fetchCategories();
-  const result = validateText(text, categories);
+  const result = validateText(text);
   if (result.valid && poll) {
     result.wholeDoc = text;
-    result.parsedData = parsePollMetadata(poll, text);
+    result.parsedData = await parsePollMetadata(poll, text);
   }
   return result;
 }
 
-export function validateText(text: string, categories: string[]): ValidationResult {
+export function validateText(text: string): ValidationResult {
   try {
     const { data, content } = matter(text);
     if (!content) return { valid: false, errors: ['Document is blank'] };
@@ -81,14 +47,6 @@ export function validateText(text: string, categories: string[]): ValidationResu
       } catch (_) {
         errors.push('Vote options are invalid');
       }
-    }
-
-    // category
-    if (!data.categories || isEmpty(data.categories)) {
-      errors.push('Categories are missing');
-    } else {
-      const invalidCategories = difference(data.categories, categories);
-      if (invalidCategories.length > 0) errors.push(`Invalid categories: ${invalidCategories.join(', ')}`);
     }
 
     let startDate, endDate;

@@ -21,7 +21,13 @@
     },
     "discussionLink": "https://forum.makerdao.com/t/2462",
     "voteType": "Ranked Choice IRV",
-    "categories": ["test1", "test2"],
+    "tags": [
+      {
+        "id": "test1",
+        "shortname": "test",
+        "longname": "test"
+      }
+    ],
     "ctx": {
       "prev": null,
       "next": null
@@ -45,7 +51,13 @@
     },
     "discussionLink": "https://forum.makerdao.com/t/2664",
     "voteType": "Plurality Voting",
-    "categories": ["test2", "test3"],
+    "tags": [
+      {
+        "id": "test2",
+        "shortname": "test",
+        "longname": "test"
+      }
+    ],
     "ctx": {
       "prev": null,
       "next": null

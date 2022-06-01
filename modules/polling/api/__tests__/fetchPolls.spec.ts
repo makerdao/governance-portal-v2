@@ -7,7 +7,7 @@ import { gqlRequest } from '../../../../modules/gql/gqlRequest';
 
 jest.mock('modules/gql/gqlRequest');
 
-const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-${new Date().toISOString().substring(0, 10)}`;
+const cacheFile = `/${os.tmpdir()}/gov-portal-mainnet-polls-all-${new Date().toISOString().substring(0, 10)}`;
 
 describe('Fetch poll', () => {
   beforeAll(() => {
@@ -34,7 +34,7 @@ describe('Fetch poll', () => {
 describe('Sort Polls', () => {
   const polls: Poll[] = [
     {
-      categories: ['a'],
+      tags: ['a'],
       content: '',
       discussionLink: '',
       endDate: new Date(2011, 10, 30),
@@ -49,7 +49,7 @@ describe('Sort Polls', () => {
       ctx: {} as any
     },
     {
-      categories: ['a'],
+      tags: ['a'],
       content: '',
       discussionLink: '',
       endDate: new Date(2011, 10, 30),
@@ -64,7 +64,7 @@ describe('Sort Polls', () => {
       ctx: {} as any
     },
     {
-      categories: ['a'],
+      tags: ['a'],
       content: '',
       discussionLink: '',
       endDate: new Date(2021, 11, 31),
@@ -79,7 +79,7 @@ describe('Sort Polls', () => {
       ctx: {} as any
     },
     {
-      categories: ['a'],
+      tags: ['a'],
       content: '',
       discussionLink: '',
       endDate: new Date(2021, 11, 31),

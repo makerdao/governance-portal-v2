@@ -30,7 +30,7 @@ async function extractGithubInformation(
 
     const {
       content,
-      data: { name, external_profile_url }
+      data: { name, external_profile_url, tags }
     } = matter(profileMdDoc);
 
     let metricsMdDoc;
@@ -48,13 +48,13 @@ async function extractGithubInformation(
 
     const picture = folderContents.find(item => item.name.indexOf('avatar') !== -1);
     const html = await markdownToHtml(content);
-
     return {
       voteDelegateAddress: folder.name,
       name,
       picture: picture ? picture.download_url : undefined,
       externalUrl: external_profile_url,
       description: html,
+      tags,
       combinedParticipation: metricsData.combined_participation,
       pollParticipation: metricsData.poll_participation,
       executiveParticipation: metricsData.exec_participation,

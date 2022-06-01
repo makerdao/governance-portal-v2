@@ -38,7 +38,8 @@ export default function CommentItem({
           alignItems: ['flex-start', 'center'],
           justifyContent: 'space-between',
           flexDirection: ['column', 'row'],
-          mb: 2
+          mb: 2,
+          opacity: comment.completed ? 1 : 0.5
         }}
       >
         <Box>
@@ -92,7 +93,7 @@ export default function CommentItem({
                 title="View on etherscan"
               >
                 <Text sx={{ textAlign: 'center', fontSize: 14, color: 'accentBlue' }}>
-                  View on Etherscan
+                  View on Etherscan {!comment.completed ? '(Pending)' : ''}
                   <Icon name="arrowTopRight" pt={2} color="accentBlue" />
                 </Text>
               </ExternalLink>

@@ -4,7 +4,7 @@ import { Heading, Box, Button, Flex, Text } from 'theme-ui';
 import { Icon } from '@makerdao/dai-ui-icons';
 import ErrorPage from 'next/error';
 import { useBreakpointIndex } from '@theme-ui/match-media';
-import { getPolls } from 'modules/polling/api/fetchPolls';
+import useSWR, { useSWRConfig } from 'swr';
 import { isActivePoll, findPollById } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
@@ -15,7 +15,6 @@ import ReviewBox from 'modules/polling/components/review/ReviewBox';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { fetchJson } from 'lib/fetchJson';
 import { objectToGetParams, getNumberWithOrdinal } from 'lib/utils';
 import { SubmitBallotsButtons } from 'modules/polling/components/SubmitBallotButtons';
 import CommentTextBox from 'modules/comments/components/CommentTextBox';
@@ -23,15 +22,16 @@ import { useAccount } from 'modules/app/hooks/useAccount';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { BallotContext } from 'modules/polling/context/BallotContext';
-import { useMKRVotingWeight } from 'modules/mkr/hooks/useMKRVotingWeight';
-import PollVotedOption from 'modules/polling/components/PollVotedOption';
 import ActivePollsBox from 'modules/polling/components/review/ActivePollsBox';
 import { ShareVotesModal } from 'modules/polling/components/ShareVotesModal';
 import InternalIcon from 'modules/app/components/Icon';
 import Markdown from 'modules/app/components/Makrdown';
 import { InternalLink } from 'modules/app/components/InternalLink';
+import { fetchPollingPageData, PollingReviewPageData } from 'modules/polling/api/fetchPollingPageData';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 
-const PollingReview = ({ polls }: { polls: Poll[] }) => {
+const PollingReview = ({ polls }: PollingReviewPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING_REVIEW);
 
   const bpi = useBreakpointIndex();
@@ -54,7 +54,6 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   }, [transaction]);
 
   const { account } = useAccount();
-  const { data: votingWeight } = useMKRVotingWeight(account);
 
   const activePolls = polls.filter(poll => isActivePoll(poll));
 
@@ -342,40 +341,52 @@ const PollingReview = ({ polls }: { polls: Poll[] }) => {
   );
 };
 
-export default function PollingReviewPage({ polls: prefetchedPolls }: { polls: Poll[] }): JSX.Element {
-  const [_polls, _setPolls] = useState<Poll[]>();
-  const [error, setError] = useState<string>();
+export default function PollingReviewPage({ polls: prefetchedPolls }: PollingReviewPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  // fetch polls at run-time if on any network other than the default
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/polling/all-polls?network=${network}`)
-        .then(response => _setPolls(response.polls))
-        .catch(setError);
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        polls: prefetchedPolls
+      }
+    : null;
+
+  const { cache } = useSWRConfig();
+  const cacheKey = `page/polling/${network}`;
+  const { data, error } = useSWR<PollingReviewPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchPollingPageData(network, true),
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
-  }, [network]);
+  );
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
-  }
-
-  if (!isDefaultNetwork(network) && !_polls) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder />;
   }
 
-  return <PollingReview polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])} />;
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || []
+  };
+
+  return (
+    <ErrorBoundary componentName="Poll Review">
+      <PollingReview {...props} />
+    </ErrorBoundary>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls at build-time if on the default network
-  const pollsData = await getPolls();
+  const { polls } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 60 * 15, // allow revalidation every 15 minutes
+    revalidate: 60, // revalidate every 60 seconds
     props: {
-      polls: pollsData.polls
+      polls
     }
   };
 };

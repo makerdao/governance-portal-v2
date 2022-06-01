@@ -7,69 +7,87 @@ import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import shallow from 'zustand/shallow';
 import sortBy from 'lodash/sortBy';
+import useSWR, { useSWRConfig } from 'swr';
 import groupBy from 'lodash/groupBy';
 import partition from 'lodash/partition';
-
-import { Poll, PollCategory } from 'modules/polling/types';
+import { Poll } from 'modules/polling/types';
 import { formatDateWithTime } from 'lib/datetime';
-import { fetchJson } from 'lib/fetchJson';
 import { isActivePoll } from 'modules/polling/helpers/utils';
 import PrimaryLayout from 'modules/app/components/layout/layouts/Primary';
 import SidebarLayout from 'modules/app/components/layout/layouts/Sidebar';
 import Stack from 'modules/app/components/layout/layouts/Stack';
 import PollOverviewCard from 'modules/polling/components/PollOverviewCard';
-import DateFilter from 'modules/polling/components/DateFilter';
-import CategoryFilter from 'modules/polling/components/CategoryFilter';
+import { SearchBar } from 'modules/app/components/filters/SearchBar';
+import { CategoryFilter } from 'modules/polling/components/filters/CategoryFilter';
+import { StatusFilter } from 'modules/polling/components/filters/StatusFilter';
+// import { PollTypeFilter } from 'modules/polling/components/filters/PollTypeFilter';
+import { DateFilter } from 'modules/polling/components/filters/DateFilter';
 import BallotBox from 'modules/polling/components/BallotBox';
 import ResourceBox from 'modules/app/components/ResourceBox';
 import SystemStatsSidebar from 'modules/app/components/SystemStatsSidebar';
-import useUiFiltersStore from 'modules/app/stores/uiFilters';
+import useUiFiltersStore, { PollsSortEnum } from 'modules/app/stores/uiFilters';
 import BallotStatus from 'modules/polling/components/BallotStatus';
 import PageLoadingPlaceholder from 'modules/app/components/PageLoadingPlaceholder';
 import { useAnalytics } from 'modules/app/client/analytics/useAnalytics';
 import { ANALYTICS_PAGES } from 'modules/app/client/analytics/analytics.constants';
-import { getPolls } from 'modules/polling/api/fetchPolls';
 import { useAllUserVotes } from 'modules/polling/hooks/useAllUserVotes';
 import { HeadComponent } from 'modules/app/components/layout/Head';
-import { PollsResponse } from 'modules/polling/types/pollsResponse';
 import { filterPolls } from 'modules/polling/helpers/filterPolls';
 import { useActiveWeb3React } from 'modules/web3/hooks/useActiveWeb3React';
 import { useAccount } from 'modules/app/hooks/useAccount';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
 import { ErrorBoundary } from 'modules/app/components/ErrorBoundary';
 import { useIntersectionObserver } from 'modules/app/hooks/useIntersectionObserver';
+import { fetchPollingPageData, PollingPageData } from 'modules/polling/api/fetchPollingPageData';
+import { SupportedNetworks } from 'modules/web3/constants/networks';
+import PollsSort from 'modules/polling/components/filters/PollsSort';
+import usePollsStore from 'modules/polling/stores/polls';
 
-type Props = {
-  polls: Poll[];
-  categories: PollCategory[];
+const getSortCriteria = (sort: PollsSortEnum | null) => {
+  if (!sort) sort = PollsSortEnum.endDateAsc;
+  const sortCriteria = {
+    endDateAsc: {
+      active: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ending' },
+      historical: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ended' }
+    },
+    endDateDesc: {
+      active: { sortFn: x => -new Date(x), groupBy: 'endDate', verb: 'ending' },
+      historical: { sortFn: x => new Date(x), groupBy: 'endDate', verb: 'ended' }
+    },
+    startDateAsc: {
+      active: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' },
+      historical: { sortFn: x => new Date(x), groupBy: 'startDate', verb: 'posted' }
+    },
+    startDateDesc: {
+      active: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' },
+      historical: { sortFn: x => -new Date(x), groupBy: 'startDate', verb: 'posted' }
+    }
+  };
+
+  return {
+    activeVerb: sortCriteria[sort].active.verb,
+    historicalVerb: sortCriteria[sort].historical.verb,
+    activeGroupBy: sortCriteria[sort].active.groupBy,
+    historicalGroupBy: sortCriteria[sort].historical.groupBy,
+    activeSortFn: sortCriteria[sort].active.sortFn,
+    historicalSortFn: sortCriteria[sort].historical.sortFn
+  };
 };
 
-const PollingOverview = ({ polls, categories }: Props) => {
+const PollingOverview = ({ polls, tags }: PollingPageData) => {
   const { trackButtonClick } = useAnalytics(ANALYTICS_PAGES.POLLING);
-  const [
-    startDate,
-    endDate,
-    categoryFilter,
-    setCategoryFilter,
-    showHistorical,
-    showPollActive,
-    showPollEnded,
-    setShowHistorical,
-    resetPollFilters
-  ] = useUiFiltersStore(
+  const [pollFilters, setCategoryFilter, resetPollFilters, sort, title, setTitle] = useUiFiltersStore(
     state => [
-      state.pollFilters.startDate,
-      state.pollFilters.endDate,
-      state.pollFilters.categoryFilter,
+      state.pollFilters,
       state.setCategoryFilter,
-      state.pollFilters.showHistorical,
-      state.pollFilters.showPollActive,
-      state.pollFilters.showPollEnded,
-      state.setShowHistorical,
-      state.resetPollFilters
+      state.resetPollFilters,
+      state.pollsSortBy,
+      state.pollFilters.title,
+      state.setTitle
     ],
     shallow
   );
+  const setFilteredPolls = usePollsStore(state => state.setFilteredPolls);
   const router = useRouter();
 
   useEffect(() => {
@@ -85,17 +103,31 @@ const PollingOverview = ({ polls, categories }: Props) => {
   const { network } = useActiveWeb3React();
 
   const filteredPolls = useMemo(() => {
-    return filterPolls(polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded);
-  }, [polls, startDate, endDate, categoryFilter, showPollActive, showPollEnded]);
+    return filterPolls({
+      polls,
+      pollFilters
+    });
+  }, [polls, pollFilters]);
+
+  useEffect(() => {
+    setFilteredPolls(filteredPolls);
+  }, [filteredPolls]);
+
+  const { activeGroupBy, historicalGroupBy, activeSortFn, historicalSortFn, activeVerb, historicalVerb } =
+    getSortCriteria(sort);
 
   const [activePolls, setActivePolls] = useState([]);
   const [historicalPolls, setHistoricalPolls] = useState([]);
+  const [showHistorical, setShowHistorical] = useState(false);
 
-  const groupedActivePolls = groupBy(activePolls, 'endDate');
-  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), x => new Date(x));
+  // only for mobile
+  const [showFilters, setShowFilters] = useState(false);
 
-  const groupedHistoricalPolls = groupBy(historicalPolls, 'endDate');
-  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), x => -new Date(x));
+  const groupedActivePolls = groupBy(activePolls, activeGroupBy);
+  const sortedEndDatesActive = sortBy(Object.keys(groupedActivePolls), activeSortFn);
+
+  const groupedHistoricalPolls = groupBy(historicalPolls, historicalGroupBy);
+  const sortedEndDatesHistorical = sortBy(Object.keys(groupedHistoricalPolls), historicalSortFn);
 
   useEffect(() => {
     const [active, historical] = partition(filteredPolls, isActivePoll);
@@ -136,21 +168,52 @@ const PollingOverview = ({ polls, categories }: Props) => {
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
       <HeadComponent
         title="Polling"
-        description={`Lastest poll: ${polls[0].title}. Active Polls: ${activePolls.length}. Total Polls: ${polls.length}. .`}
+        description={`${polls.length > 0 ? `Lastest poll: ${polls[0].title}. ` : ''}Active Polls: ${
+          activePolls.length
+        }. Total Polls: ${polls.length}. .`}
       />
 
       <Stack gap={3}>
-        <Flex sx={{ alignItems: 'center', flexDirection: ['column', 'row'] }}>
+        <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center', flexWrap: 'wrap' }}>
           <Flex sx={{ alignItems: 'center' }}>
-            <Heading variant="microHeading" mr={3} sx={{ display: ['none', 'block'] }}>
-              Filters
-            </Heading>
-            <CategoryFilter categories={categories} polls={polls} />
-            <DateFilter sx={{ ml: 3 }} />
+            <Button
+              variant="textual"
+              sx={{ display: ['block', 'none'], color: 'onSecondary' }}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Text sx={{ mr: 1 }}>{showFilters ? 'Hide poll filters' : 'Show poll filters'}</Text>
+              <Icon name={showFilters ? 'chevron_down' : 'chevron_right'} size={2} />
+            </Button>
           </Flex>
-          <Button variant={'outline'} sx={{ ml: 3, mt: [2, 0] }} onClick={resetPollFilters}>
-            Clear filters
-          </Button>
+          {(showFilters || bpi > 0) && (
+            <Flex sx={{ flexDirection: ['column', 'column', 'column', 'row'] }}>
+              <Flex
+                sx={{
+                  justifyContent: ['center', 'center', 'center', 'flex-start'],
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <SearchBar sx={{ m: 2 }} onChange={setTitle} value={title} placeholder="Search poll titles" />
+                <PollsSort />
+                <CategoryFilter tags={tags} polls={polls} sx={{ m: 2 }} />
+                <StatusFilter polls={polls} sx={{ m: 2 }} />
+                {/* <PollTypeFilter categories={categories} polls={polls} sx={{ m: 2 }} /> */}
+                <DateFilter sx={{ m: 2 }} />
+              </Flex>
+              <Button
+                variant={'outline'}
+                sx={{
+                  m: 2,
+                  color: 'textSecondary',
+                  border: 'none'
+                }}
+                onClick={resetPollFilters}
+              >
+                Reset filters
+              </Button>
+            </Flex>
+          )}
         </Flex>
         <SidebarLayout>
           <Box>
@@ -167,9 +230,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     {sortedEndDatesActive.map(date => (
                       <div key={date}>
                         <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                          {groupedActivePolls[date].length} Poll
-                          {groupedActivePolls[date].length === 1 ? '' : 's'} - Ending{' '}
-                          {formatDateWithTime(date)}
+                          {`${groupedActivePolls[date].length} Poll${
+                            groupedActivePolls[date].length === 1 ? '' : 's'
+                          } - ${activeVerb} ${formatDateWithTime(date)}`}
                         </Text>
                         <Box sx={{ mb: 0, display: activePolls.length ? undefined : 'none' }}>
                           {groupedActivePolls[date].map((poll: Poll) => (
@@ -202,9 +265,9 @@ const PollingOverview = ({ polls, categories }: Props) => {
                       {sortedEndDatesHistorical.slice(0, numHistoricalGroupingsLoaded).map(date => (
                         <div key={date}>
                           <Text as="p" variant="caps" color="textSecondary" mb={2}>
-                            {groupedHistoricalPolls[date].length} Poll
-                            {groupedHistoricalPolls[date].length === 1 ? '' : 's'} - Ended{' '}
-                            {formatDateWithTime(date)}
+                            {`${groupedHistoricalPolls[date].length} Poll${
+                              groupedHistoricalPolls[date].length === 1 ? '' : 's'
+                            } - ${historicalVerb} ${formatDateWithTime(date)}`}
                           </Text>
                           <Box>
                             {groupedHistoricalPolls[date].map((poll: Poll) => (
@@ -226,7 +289,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                     }}
                     variant="outline"
                     data-testid="button-view-ended-polls"
-                    sx={{ py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
+                    sx={{ mb: 5, py: 3, display: historicalPolls.length > 0 ? undefined : 'none' }}
                   >
                     View ended polls ({historicalPolls.length})
                   </Button>
@@ -256,7 +319,7 @@ const PollingOverview = ({ polls, categories }: Props) => {
                   sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
                   onClick={resetPollFilters}
                 >
-                  Clear filters
+                  Reset filters
                 </Button>
               </Flex>
             )}
@@ -284,53 +347,56 @@ const PollingOverview = ({ polls, categories }: Props) => {
 
 export default function PollingOverviewPage({
   polls: prefetchedPolls,
-  categories: prefetchedCategories
-}: Props): JSX.Element {
-  const [_polls, _setPolls] = useState<Poll[]>();
-  const [_categories, _setCategories] = useState<PollCategory[]>();
-  const [error, setError] = useState<string>();
+  tags: prefetchedCategories
+}: PollingPageData): JSX.Element {
   const { network } = useActiveWeb3React();
 
-  // fetch polls at run-time if on any network other than the default
-  useEffect(() => {
-    if (!network) return;
-    if (!isDefaultNetwork(network)) {
-      fetchJson(`/api/polling/all-polls?network=${network}`)
-        .then((pollsResponse: PollsResponse) => {
-          _setPolls(pollsResponse.polls);
-          _setCategories(pollsResponse.categories);
-        })
-        .catch(setError);
+  const fallbackData = isDefaultNetwork(network)
+    ? {
+        polls: prefetchedPolls,
+        tags: prefetchedCategories
+      }
+    : null;
+
+  const { cache } = useSWRConfig();
+  const cacheKey = `page/polling/${network}`;
+  const { data, error } = useSWR<PollingPageData>(
+    !network || isDefaultNetwork(network) ? null : cacheKey,
+    () => fetchPollingPageData(network, true),
+    {
+      revalidateOnMount: !cache.get(cacheKey),
+      ...(fallbackData && { fallbackData })
     }
-  }, [network]);
+  );
 
-  if (error) {
-    return <ErrorPage statusCode={404} title="Error fetching proposals" />;
-  }
-
-  if (!isDefaultNetwork(network) && (!_polls || !_categories)) {
+  if (!isDefaultNetwork(network) && !data && !error) {
     return <PageLoadingPlaceholder />;
   }
 
+  if (error) {
+    return <ErrorPage statusCode={500} title="Error fetching data" />;
+  }
+
+  const props = {
+    polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
+    tags: isDefaultNetwork(network) ? prefetchedCategories : data?.tags || []
+  };
+
   return (
     <ErrorBoundary componentName="Poll List">
-      <PollingOverview
-        polls={isDefaultNetwork(network) ? prefetchedPolls : (_polls as Poll[])}
-        categories={isDefaultNetwork(network) ? prefetchedCategories : (_categories as PollCategory[])}
-      />
+      <PollingOverview {...props} />
     </ErrorBoundary>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  // fetch polls at build-time if on the default network
-  const pollsResponse = await getPolls();
+  const { polls, tags } = await fetchPollingPageData(SupportedNetworks.MAINNET);
 
   return {
-    revalidate: 30, // allow revalidation every 30 seconds
+    revalidate: 60, // revalidate every 60 seconds
     props: {
-      polls: pollsResponse.polls,
-      categories: pollsResponse.categories
+      polls,
+      tags
     }
   };
 };

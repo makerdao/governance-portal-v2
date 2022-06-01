@@ -5,9 +5,10 @@ type Props = {
   value?: string | JSX.Element;
   label: string;
   styles?: ThemeUIStyleObject;
+  tooltip?: string | JSX.Element;
 };
 
-export const StatBox = ({ value, label, styles }: Props): JSX.Element => {
+export const StatBox = ({ value, label, tooltip, styles }: Props): JSX.Element => {
   return (
     <Flex
       sx={{
@@ -35,15 +36,18 @@ export const StatBox = ({ value, label, styles }: Props): JSX.Element => {
           </Box>
         )}
       </Box>
-      <Text
-        as="p"
-        sx={{
-          color: 'secondaryEmphasis',
-          fontSize: [1, 3]
-        }}
-      >
-        {label}
-      </Text>
+      <Flex sx={{ alignItems: 'center' }}>
+        <Text
+          as="p"
+          sx={{
+            color: 'secondaryEmphasis',
+            fontSize: [1, 3]
+          }}
+        >
+          {label}
+        </Text>
+        {tooltip}
+      </Flex>
     </Flex>
   );
 };
