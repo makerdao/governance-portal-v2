@@ -17,14 +17,6 @@ export function filterDelegates(
         return delegate.name.toLowerCase().includes(name.toLowerCase());
       })
       .filter(delegate => {
-        console.log(tags, delegate.tags);
-
-        // Filter by tags
-        const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
-        if (tagArray.length > 0) {
-          return delegate.tags.filter(tag => tagArray.indexOf(tag.id) !== -1).length > 0;
-        }
-
         // Return all if unchecked
         if (!showShadow && !showRecognized) {
           return true;
@@ -38,7 +30,17 @@ export function filterDelegates(
           return false;
         }
 
-        // Apply all filters from the store
+        return true;
+      })
+      // Filter by tags
+      .filter(delegate => {
+        console.log(tags, delegate.tags);
+
+        const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
+        if (tagArray.length > 0) {
+          return delegate.tags.filter(tag => tagArray.indexOf(tag.id) !== -1).length > 0;
+        }
+
         return true;
       })
   );

@@ -20,7 +20,7 @@ export default function DelegatesSort(): JSX.Element {
           <ListboxOption label="Sort by MKR delegated" value={delegatesSortEnum.mkrDelegated}>
             MKR delegated
           </ListboxOption>
-          <ListboxOption label="Creation date" value={delegatesSortEnum.creationDate}>
+          <ListboxOption label="Sort by creation date" value={delegatesSortEnum.creationDate}>
             Creation date
           </ListboxOption>
         </ListboxList>
