@@ -29,7 +29,7 @@ export function DelegatesTagFilter({
       delegateFilters.showShadow,
       delegateFilters.showRecognized,
       name,
-      Object.keys(delegateFilters.tags)
+      delegateFilters.tags
     );
   }, [delegates, delegateFilters]);
 

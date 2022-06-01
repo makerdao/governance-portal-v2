@@ -6,19 +6,25 @@ export function filterDelegates(
   showShadow: boolean,
   showRecognized: boolean,
   name: string | null,
-  tags?: string[]
+  tags?: { [key: string]: boolean }
 ): Delegate[] {
   return (
     delegates
       // name filter
       .filter(delegate => {
-        console.log(delegate);
-        console.log({ name });
-        if (!name || name === '') return true;
+        if (!name || name.trim() === '') return true;
 
         return delegate.name.toLowerCase().includes(name.toLowerCase());
       })
       .filter(delegate => {
+        console.log(tags, delegate.tags);
+
+        // Filter by tags
+        const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
+        if (tagArray.length > 0) {
+          return delegate.tags.filter(tag => tagArray.indexOf(tag.id) !== -1).length > 0;
+        }
+
         // Return all if unchecked
         if (!showShadow && !showRecognized) {
           return true;
@@ -32,10 +38,6 @@ export function filterDelegates(
           return false;
         }
 
-        // Filter by tags
-        if (tags && tags.length > 0) {
-          return delegate.tags.filter(tag => tags.indexOf(tag.id) !== -1).length > 0;
-        }
         // Apply all filters from the store
         return true;
       })

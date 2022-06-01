@@ -29,21 +29,23 @@ import { SearchBar } from 'modules/app/components/filters/SearchBar';
 import { DelegatesTagFilter } from 'modules/delegates/components/filters/DelegatesTagFilter';
 
 const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
-  const [showRecognized, showShadow, sort, name, setName, resetFilters] = useDelegatesFiltersStore(
-    state => [
-      state.filters.showRecognized,
-      state.filters.showShadow,
-      state.sort,
-      state.filters.name,
-      state.setName,
-      state.resetFilters
-    ],
-    shallow
-  );
+  const [showRecognized, showShadow, sort, name, delegateTags, setName, resetFilters] =
+    useDelegatesFiltersStore(
+      state => [
+        state.filters.showRecognized,
+        state.filters.showShadow,
+        state.sort,
+        state.filters.name,
+        state.filters.tags,
+        state.setName,
+        state.resetFilters
+      ],
+      shallow
+    );
 
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, name);
-  }, [delegates, showRecognized, showShadow, name]);
+    return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
+  }, [delegates, showRecognized, showShadow, name, delegateTags]);
 
   const sortedDelegates = useMemo(() => {
     return filteredDelegates.sort((prev, next) => {
@@ -59,18 +61,25 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
     });
   }, [filteredDelegates, sort]);
 
-  const { voteDelegateContractAddress } = useAccount();
   const isOwner = d => d.voteDelegateAddress.toLowerCase() === voteDelegateContractAddress?.toLowerCase();
 
-  const expiredDelegates = sortedDelegates.filter(delegate => delegate.expired === true);
+  const recognizedDelegates = useMemo(() => {
+    return sortedDelegates
+      .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
+      .sort(d => (isOwner(d) ? -1 : 0));
+  }, [sortedDelegates]);
 
-  const recognizedDelegates = sortedDelegates
-    .filter(delegate => delegate.status === DelegateStatusEnum.recognized && !delegate.expired)
-    .sort(d => (isOwner(d) ? -1 : 0));
+  const shadowDelegates = useMemo(() => {
+    return sortedDelegates
+      .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
+      .sort(d => (isOwner(d) ? -1 : 0));
+  }, [sortedDelegates]);
 
-  const shadowDelegates = sortedDelegates
-    .filter(delegate => delegate.status === DelegateStatusEnum.shadow && !delegate.expired)
-    .sort(d => (isOwner(d) ? -1 : 0));
+  const expiredDelegates = useMemo(() => {
+    return sortedDelegates.filter(delegate => delegate.expired === true);
+  }, [sortedDelegates]);
+
+  const { voteDelegateContractAddress } = useAccount();
 
   return (
     <PrimaryLayout sx={{ maxWidth: [null, null, null, 'page', 'dashboard'] }}>
