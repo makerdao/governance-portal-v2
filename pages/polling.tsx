@@ -314,7 +314,7 @@ const PollingOverview = ({ polls, tags }: PollingPageData) => {
                   sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
                   onClick={resetPollFilters}
                 >
-                  Clear filters
+                  Reset filters
                 </Button>
               </Flex>
             )}

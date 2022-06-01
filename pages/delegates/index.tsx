@@ -4,6 +4,7 @@ import { GetStaticProps } from 'next';
 import ErrorPage from 'next/error';
 import { BigNumber as BigNumberJS } from 'bignumber.js';
 import shallow from 'zustand/shallow';
+import { Icon } from '@makerdao/dai-ui-icons';
 import useSWR, { useSWRConfig } from 'swr';
 import useDelegatesFiltersStore, { delegatesSortEnum } from 'modules/delegates/stores/delegatesFiltersStore';
 import { isDefaultNetwork } from 'modules/web3/helpers/networks';
@@ -115,7 +116,34 @@ const Delegates = ({ delegates, stats, tags }: DelegatesPageData) => {
         <SidebarLayout>
           <Box>
             <Stack gap={3}>
-              {sortedDelegates && sortedDelegates.length === 0 && <Text>No delegates found</Text>}
+              {sortedDelegates && sortedDelegates.length === 0 && (
+                <Flex sx={{ flexDirection: 'column', alignItems: 'center', pt: [5, 5, 5, 6] }}>
+                  <Flex
+                    sx={{
+                      borderRadius: '50%',
+                      backgroundColor: 'muted',
+                      p: 2,
+                      width: '111px',
+                      height: '111px',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Box m={'auto'}>
+                      <Icon name="magnifying_glass" sx={{ color: 'background', size: 4 }} />
+                    </Box>
+                  </Flex>
+                  <Text variant={'microHeading'} sx={{ color: 'onSecondary', mt: 3 }}>
+                    No polls found
+                  </Text>
+                  <Button
+                    variant={'textual'}
+                    sx={{ color: 'primary', textDecoration: 'underline', mt: 2, fontSize: 3 }}
+                    onClick={resetFilters}
+                  >
+                    Reset filters
+                  </Button>
+                </Flex>
+              )}
 
               {recognizedDelegates.length > 0 && (
                 <Stack gap={3}>
