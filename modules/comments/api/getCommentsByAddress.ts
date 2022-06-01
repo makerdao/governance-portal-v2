@@ -34,7 +34,14 @@ export async function getCommentsByAddress(
       const { _id, ...rest } = comment;
       const commentBody = await markdownToHtml(comment.comment, true);
       // verify tx ownership
-      const transaction = await provider.getTransaction(comment.txHash as string);
+      let transaction;
+      if (comment.txHash) {
+        transaction = await provider
+          .getTransaction(comment.txHash as string)
+          .catch(e =>
+            console.error(`There was a problem fetching transaction for comment ID: ${_id}. Error: ${e}`)
+          );
+      }
 
       const isValid =
         transaction &&
