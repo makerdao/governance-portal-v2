@@ -34,8 +34,6 @@ export function filterDelegates(
       })
       // Filter by tags
       .filter(delegate => {
-        console.log(tags, delegate.tags);
-
         const tagArray = tags ? Object.keys(tags).filter(t => !!tags[t]) : [];
         if (tagArray.length > 0) {
           return delegate.tags.filter(tag => tagArray.indexOf(tag.id) !== -1).length > 0;

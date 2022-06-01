@@ -22,9 +22,11 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
     );
 
   const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
+
+  // Use filtered delegates to show the right amount of each type of delegates (ignoring the current filter ones)
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
-  }, [delegates, showRecognized, showShadow, name, delegateTags]);
+    return filterDelegates(delegates, true, true, name, delegateTags);
+  }, [delegates, name, delegateTags]);
 
   return (
     <FilterButton
@@ -46,7 +48,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Recognized Delegates</Text>
               <Text sx={{ color: 'muted', ml: 3 }}>
-                {delegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.recognized).length}
               </Text>
             </Flex>
           </Label>
@@ -64,7 +66,7 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
             <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
               <Text>Shadow Delegates</Text>
               <Text sx={{ color: 'muted', ml: 3 }}>
-                {delegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
+                {filteredDelegates.filter(p => p.status === DelegateStatusEnum.shadow).length}
               </Text>
             </Flex>
           </Label>
