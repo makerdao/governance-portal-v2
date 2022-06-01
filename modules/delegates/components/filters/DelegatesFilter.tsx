@@ -8,12 +8,13 @@ import { useMemo } from 'react';
 import { filterDelegates } from '../../helpers/filterDelegates';
 
 export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }): JSX.Element {
-  const [showRecognized, showShadow, name, setShowRecognizedFilter, setShowShadowFilter] =
+  const [showRecognized, showShadow, name, delegateTags, setShowRecognizedFilter, setShowShadowFilter] =
     useDelegatesFiltersStore(
       state => [
         state.filters.showRecognized,
         state.filters.showShadow,
         state.filters.name,
+        state.filters.tags,
         state.setShowRecognizedFilter,
         state.setShowShadowFilter
       ],
@@ -22,8 +23,8 @@ export default function DelegatesFilter({ delegates }: { delegates: Delegate[] }
 
   const itemsSelected = [showRecognized, showShadow].filter(i => !!i).length;
   const filteredDelegates = useMemo(() => {
-    return filterDelegates(delegates, showShadow, showRecognized, name);
-  }, [delegates, showRecognized, showShadow, name]);
+    return filterDelegates(delegates, showShadow, showRecognized, name, delegateTags);
+  }, [delegates, showRecognized, showShadow, name, delegateTags]);
 
   return (
     <FilterButton
