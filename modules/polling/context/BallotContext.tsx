@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
 
+type BallotSteps = 'initial' | 'method-select' | 'submitting';
+
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -30,6 +32,8 @@ interface ContextProps {
   signComments: () => void;
   commentsSignature: string;
   commentsCount: number;
+  setStep: (step: string) => void;
+  ballotStep: BallotSteps;
 }
 
 export const BallotContext = React.createContext<ContextProps>({
@@ -45,7 +49,9 @@ export const BallotContext = React.createContext<ContextProps>({
   ballotCount: 0,
   signComments: () => null,
   commentsSignature: '',
-  commentsCount: 0
+  commentsCount: 0,
+  setStep: (step: BallotSteps) => null,
+  ballotStep: 'initial'
 });
 
 type PropTypes = {
@@ -60,6 +66,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
 
   // Used to track the signature of the comments API call
   const [commentsSignature, setCommentSignature] = useState('');
+
+  const [ballotStep, setBallotStep] = useState<BallotSteps>('initial');
 
   // Stores previous voted polls
   const [previousBallot, setPreviousBallot] = useState<Ballot>({});
@@ -193,6 +201,8 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     const pollIds: string[] = [];
     const pollOptions: string[] = [];
 
+    setStep('submitting');
+
     Object.keys(ballot).forEach((key: string) => {
       if (isPollOnBallot(parseInt(key, 10))) {
         pollIds.push(key);
@@ -254,6 +264,15 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setTxId(txId);
   };
 
+  const setStep = (step: BallotSteps) => {
+    setBallotStep(step);
+  };
+
+  const clearTransaction = () => {
+    setTxId(null);
+    setBallotStep('initial');
+  };
+
   useEffect(() => {
     loadBallotFromStorage();
   }, []);
@@ -264,7 +283,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballot,
         previousBallot,
         clearBallot,
-        clearTransaction: () => setTxId(null),
+        clearTransaction,
         addVoteToBallot,
         removeVoteFromBallot,
         updateVoteFromBallot,
@@ -274,7 +293,9 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         ballotCount: Object.keys(ballot).length,
         signComments,
         commentsSignature,
-        commentsCount: getComments().length
+        commentsCount: getComments().length,
+        setStep,
+        ballotStep
       }}
     >
       {children}
