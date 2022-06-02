@@ -35,7 +35,7 @@ export function CategoryFilter({
 
   return (
     <FilterButton
-      name={() => `Category ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
+      name={() => `Tag ${itemsSelected > 0 ? `(${itemsSelected})` : ''}`}
       listVariant="cards.noPadding"
       data-testid="poll-filters-dropdown"
       active={itemsSelected > 0}
@@ -58,7 +58,7 @@ export function CategoryFilter({
                 />
                 <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
                   <Text>{tag.longname ? tag.longname : tag.shortname}</Text>
-                  <Text sx={{ color: 'muted', ml: 3 }}>
+                  <Text sx={{ color: 'mutedAlt', ml: 3 }}>
                     {filteredPollsNoCategories.filter(i => i.tags.find(t => t.id === tag.id)).length}
                   </Text>
                 </Flex>
