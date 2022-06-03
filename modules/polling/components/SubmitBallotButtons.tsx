@@ -8,6 +8,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
     signComments,
     transaction,
     submitBallot,
+    submitBallotGasless,
     ballotCount,
     commentsCount,
     commentsSignature,
@@ -103,9 +104,7 @@ export function SubmitBallotsButtons({ onSubmit }: { onSubmit: () => void }): Re
             relayed. The gas fee is covered by Maker.
           </Text>
           <Button
-            onClick={() => {
-              setStep('method-select');
-            }}
+            onClick={submitBallotGasless}
             data-testid="submit-ballot-button"
             variant="primaryLarge"
             disabled={!ballotCount || !!(transaction && transaction?.status !== 'error')}

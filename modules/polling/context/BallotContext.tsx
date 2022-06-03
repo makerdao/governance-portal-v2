@@ -25,6 +25,7 @@ interface ContextProps {
   removeVoteFromBallot: (pollId: number) => void;
   addVoteToBallot: (pollId: number, ballotVote: BallotVote) => void;
   submitBallot: () => void;
+  submitBallotGasless: () => void;
   clearBallot: () => void;
   clearTransaction: () => void;
   isPollOnBallot: (pollId: number) => boolean;
@@ -45,6 +46,7 @@ export const BallotContext = React.createContext<ContextProps>({
   clearTransaction: () => null,
   removeVoteFromBallot: (pollId: number) => null,
   submitBallot: () => null,
+  submitBallotGasless: () => null,
   isPollOnBallot: (pollId: number) => false,
   ballotCount: 0,
   signComments: () => null,
@@ -264,6 +266,53 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
     setTxId(txId);
   };
 
+  const submitBallotGasless = () => {
+    const pollIds: string[] = [];
+    const pollOptions: string[] = [];
+
+    setStep('submitting');
+
+    Object.keys(ballot).forEach((key: string) => {
+      if (isPollOnBallot(parseInt(key, 10))) {
+        pollIds.push(key);
+        pollOptions.push(ballot[key].option);
+      }
+    });
+
+    fetchJson(`/api/polling/vote?network=${network}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ pollIds, pollOptions, signature: '' })
+    }).then(res => {
+      if (getComments().length > 0) {
+        const commentsRequest: PollsCommentsRequestBody = {
+          voterAddress: accountToUse || '',
+          hotAddress: account || '',
+          comments: getComments(),
+          signedMessage: commentsSignature,
+          txHash: res.txHash
+        };
+
+        fetchJson(`/api/comments/polling/add?network=${network}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(commentsRequest)
+        })
+          .then(() => {
+            // console.log('comment successfully added');
+          })
+          .catch(() => {
+            console.error('failed to add comment');
+            toast.error('Unable to store comments');
+          });
+      }
+    });
+  };
+
   const setStep = (step: BallotSteps) => {
     setBallotStep(step);
   };
@@ -288,6 +337,7 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
         removeVoteFromBallot,
         updateVoteFromBallot,
         submitBallot,
+        submitBallotGasless,
         transaction,
         isPollOnBallot,
         ballotCount: Object.keys(ballot).length,
