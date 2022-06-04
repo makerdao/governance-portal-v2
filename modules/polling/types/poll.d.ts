@@ -19,7 +19,7 @@ enum PollResultDisplay {
 
 type PollMetadata = {
   inputFormat: PollInputFormat,
-  victoryConditions: PollVictoryConditions,
+  victoryConditions: PollVictoryConditions[],
   resultDisplay: PollResultDisplay
 }
 
