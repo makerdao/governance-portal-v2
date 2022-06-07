@@ -1,4 +1,4 @@
-import { Heading, Box, Flex, NavLink, Button } from 'theme-ui';
+import { Heading, Box, Flex, Button } from 'theme-ui';
 import { useBreakpointIndex } from '@theme-ui/match-media';
 import ErrorPage from 'next/error';
 import { Icon } from '@makerdao/dai-ui-icons';
