@@ -135,7 +135,7 @@ export async function getPolls(
   });
 
   return {
-    polls: filteredPolls,
+    polls: filteredPolls.filter(p => ![814, 815].includes(p.pollId)),
     tags: getCategories(allPolls),
     stats: {
       active: allPolls.filter(isActivePoll).length,
