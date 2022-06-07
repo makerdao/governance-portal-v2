@@ -179,7 +179,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
-    console.log('pollOptions', pollOptions);
     const optionIds = pollOptions.map(option => {
       if (!Array.isArray(option)) return option;
       if (option.length === 1) return option[0];
@@ -189,7 +188,6 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       });
       return fromBuffer(byteArray, {}).toString();
     });
-    console.log('optionIds', optionIds);
 
     const voteTxCreator = voteDelegateContract
       ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
