@@ -1,15 +1,34 @@
 import { Tag } from 'modules/app/types/tag';
 import { PollVoteType } from './pollVoteType';
 
-enum PollInputFormat {
+export enum PollInputFormat {
   singleChoice = 'single-choice',
   rankFree = 'rank-free',
 }
 
-enum PollVictoryConditions {
+export enum PollVictoryConditions {
   majority = 'majority',
   plurality = 'plurality'
 }
+
+//  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+export type PollVictoryConditionComparison = {
+  type: 'comparison',
+  options: number[],
+  comparator: string
+}
+// { type : default, options : [2] }
+export type PollVictoryConditionDefault = {
+  type: 'default',
+  options: number[]
+}
+
+// NOT SUPPORTED YET: { type : majority, options : [2] }
+export type PollVictoryMajority = {
+  type: 'majority',
+  options: number[]
+}
+
 
 enum PollResultDisplay {
   singleVoteBreakdown = 'singleVoteBreakdown',
@@ -17,9 +36,9 @@ enum PollResultDisplay {
   conditionSummary = 'condition-summary'
 }
 
-type PollMetadata = {
+type PollParameters = {
   inputFormat: PollInputFormat,
-  victoryConditions: PollVictoryConditions[],
+  victoryConditions: (PollVictoryConditionComparison|PollVictoryConditionDefault|PollVictoryMajority)[],
   resultDisplay: PollResultDisplay
 }
 
@@ -34,7 +53,7 @@ export type Poll = {
   startDate: Date;
   discussionLink: string | null;
   voteType: PollVoteType;
-  metadata: PollMetadata;
+  parameters: PollParameters;
   tags: Tag[];
   slug: string;
   ctx: {

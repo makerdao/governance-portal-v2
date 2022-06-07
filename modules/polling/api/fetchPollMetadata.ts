@@ -19,16 +19,25 @@ async function fetchPollGithubDocument(url: string): Promise<string> {
 
 // Fetches poll metadata and returns null if it's invalid
 export async function fetchPollMetadata(p: PartialPoll): Promise<Poll | null> {
-  const document = await fetchPollGithubDocument(p.url);
+  const document = await fetchPollGithubDocument(p.url); 
   const poll = await parsePollMetadata(p, document);
 
   // If incorrect data, return null
   if (!poll || !poll.summary || !poll.options) {
+    console.error(`Poll ${p.pollId} incorrect data ` );
+    return null;
+  }
+
+  // Parameters are wrong
+  if(!poll.parameters) {
+    console.error(`Poll ${p.pollId} incorrect poll parameters ` );
     return null;
   }
 
   // If the poll hasn't started yet return null
   if (new Date(poll.startDate).getTime() > Date.now()) {
+    console.error(`Poll ${p.pollId} hasn't started yet.`)
+
     return null;
   }
 

@@ -23,6 +23,9 @@ export async function parsePollMetadata(poll: PartialPoll, document: string): Pr
   const options = pollMeta.options;
   const discussionLink =
     pollMeta?.discussion_link && validUrl.isUri(pollMeta.discussion_link) ? pollMeta.discussion_link : null;
+
+  // TODO: Get vote type from poll parameters
+  
   const voteType: PollVoteType =
     (pollMeta as { vote_type: PollVoteType | null })?.vote_type || POLL_VOTE_TYPE.UNKNOWN; // compiler error if invalid vote type
 
@@ -45,7 +48,7 @@ export async function parsePollMetadata(poll: PartialPoll, document: string): Pr
   return {
     ...poll,
     startDate,
-    endDate,
+    endDate, 
     content,
     summary,
     title,
