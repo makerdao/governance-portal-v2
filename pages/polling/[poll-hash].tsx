@@ -395,7 +395,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     poll = await fetchPollById(parseInt(pollSlug), DEFAULT_NETWORK.network);
   }
 
-  if (!poll) {
+  if (!poll || [814, 815].includes(poll.pollId)) {
     return { revalidate: 30, props: { poll: null } };
   }
 
