@@ -157,9 +157,8 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
                     sx={{ color: getVoteColor(v.optionId, poll.voteType), pb: 2, fontSize: bpi < 1 ? 1 : 3 }}
                   >
                     {v.rankedChoiceOption && v.rankedChoiceOption.length > 1
-                      ? poll.options[v.rankedChoiceOption[0]]
+                      ? v.rankedChoiceOption.map((choice, index) => (<Box key={`voter-${v.voter}-option-${choice}`}>{index + 1 } - {poll.options[choice]}</Box>))
                       : poll.options[v.optionId]}
-                    {v.rankedChoiceOption && v.rankedChoiceOption.length > 1 && '*'}
                   </Text>
                   <Text as="td" sx={{ pb: 2 }}>
                     {`${new BigNumber(v.mkrSupport).div(totalMkrParticipation).times(100).toFormat(1)}%`}
@@ -189,11 +188,7 @@ const VotesByAddress = ({ tally, poll }: Props): JSX.Element => {
           )}
         </tbody>
       </table>
-      {showRankedChoiceInfo && (
-        <Text as="p" sx={{ mt: 4, color: 'textSecondary', fontSize: 1 }}>
-          *First choice in ranked choice vote shown
-        </Text>
-      )}
+      
     </Box>
   );
 };

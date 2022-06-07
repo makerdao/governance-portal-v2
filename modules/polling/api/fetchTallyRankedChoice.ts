@@ -35,7 +35,8 @@ export async function fetchTallyRankedChoice(
   const votes: { optionIdRaw: string; mkrSupport: number; choice: number | undefined; ballot: number[] }[] =
     votesRaw.map(vote => {
       const ballotBuffer = toBuffer(vote.optionIdRaw, { endian: 'little' });
-      const ballot = paddedArray(32 - ballotBuffer.length, ballotBuffer);
+      const ballot = paddedArray(32 - ballotBuffer.length, ballotBuffer).reverse()
+      .filter(choice => !!choice);
 
       return {
         ...vote,
