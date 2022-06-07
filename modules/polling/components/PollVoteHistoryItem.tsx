@@ -83,7 +83,7 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED CHOICES' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
@@ -93,7 +93,13 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
               fontWeight: 'semiBold'
             }}
           >
-            {vote.optionValue}
+            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE
+              ? vote.rankedChoiceOption?.map((choice, index) => (
+                  <Box key={`voter-${vote.pollId}-option-${choice}`}>
+                    {index + 1} - {vote.poll.options[choice]}
+                  </Box>
+                ))
+              : vote.optionValue}
           </Text>
         </Box>
       </Box>
