@@ -14,6 +14,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
+import { fromBuffer } from 'lib/utils';
 
 interface ContextProps {
   ballot: Ballot;
@@ -200,9 +201,21 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
+    console.log('pollOptions', pollOptions);
+    const optionIds = pollOptions.map(option => {
+      if (!Array.isArray(option)) return option;
+      if (option.length === 1) return option[0];
+      const byteArray = new Uint8Array(32);
+      option.forEach((optionIndex, i) => {
+        byteArray[byteArray.length - i - 1] = optionIndex;
+      });
+      return fromBuffer(byteArray, {}).toString();
+    });
+    console.log('optionIds', optionIds);
+
     const voteTxCreator = voteDelegateContract
-      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, pollOptions)
-      : () => polling['vote(uint256[],uint256[])'](pollIds, pollOptions);
+      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
+      : () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
 
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
