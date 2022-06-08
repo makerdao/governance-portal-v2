@@ -80,7 +80,7 @@ export default function PollOverviewCard({
                     <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
                   </Box>
                 )}
-                <Box sx={{ cursor: 'pointer' }}>
+                <Box>
                   <Box>
                     <Flex sx={{ justifyContent: 'space-between' }}>
                       <CardHeader
