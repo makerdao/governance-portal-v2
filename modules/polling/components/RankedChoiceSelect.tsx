@@ -50,6 +50,12 @@ export default function RankedChoiceSelect({
     [numConfirmed]
   );
 
+  useEffect(() => {
+    if (Object.keys(availableChoices).length === 0) {
+      setShowListboxInput(false);
+    }
+  }, []);
+
   const handeListboxInputChange = value => {
     const newChoice = [...choice];
     newChoice[numConfirmed] = parseInt(value);
