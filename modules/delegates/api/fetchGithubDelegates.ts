@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { fsCacheGet, fsCacheSet } from 'lib/fscache';
-import { fetchGitHubPage, GithubPage } from 'lib/github';
+import { fetchGitHubPage, GithubPage, GithubTokens } from 'lib/github';
 import { markdownToHtml } from 'lib/markdown';
 import { DelegateRepoInformation } from 'modules/delegates/types';
 import { getDelegatesRepositoryInformation } from './getDelegatesRepositoryInfo';
@@ -13,7 +13,7 @@ async function extractGithubInformation(
   folder: GithubPage
 ): Promise<DelegateRepoInformation | undefined> {
   try {
-    const folderContents = await fetchGitHubPage(owner, repo, folder.path, 1);
+    const folderContents = await fetchGitHubPage(owner, repo, folder.path, GithubTokens.Delegate);
 
     const profileMd = folderContents.find(item => item.name === 'profile.md');
 
@@ -89,7 +89,7 @@ export async function fetchGithubDelegates(
       delegatesRepositoryInfo.owner,
       delegatesRepositoryInfo.repo,
       delegatesRepositoryInfo.page,
-      2
+      GithubTokens.DelegatesFolder
     );
 
     // Get the information of all the delegates, filter errored ones
@@ -141,7 +141,7 @@ export async function fetchGithubDelegate(
       delegatesRepositoryInfo.owner,
       delegatesRepositoryInfo.repo,
       delegatesRepositoryInfo.page,
-      3
+      GithubTokens.DelegatesFolder
     );
     const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
 
