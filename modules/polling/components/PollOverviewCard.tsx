@@ -74,7 +74,7 @@ export default function PollOverviewCard({
         <ErrorBoundary componentName="Poll Card">
           <Box sx={{ px: [3, 4], py: 3 }}>
             <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', minHeight: 210 }}>
-              <Flex sx={{ flexDirection: 'column' }}>
+              <Flex sx={{ flexDirection: 'column', width: '100%' }}>
                 {bpi === 0 && (
                   <Box sx={{ justifyContent: 'space-between', flexDirection: 'row', flexWrap: 'nowrap' }}>
                     <CountdownTimer endText="Poll ended" endDate={poll.endDate} />
