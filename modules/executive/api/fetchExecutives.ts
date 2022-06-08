@@ -26,7 +26,7 @@ export async function getGithubExecutives(network: SupportedNetworks): Promise<C
   const repo = 'community';
   const path = 'governance/votes';
 
-  const githubResponse = await fetchGitHubPage(owner, repo, path);
+  const githubResponse = await fetchGitHubPage(owner, repo, path, 4);
   const proposalUrls = githubResponse
     .filter(x => x.type === 'file')
     .map(x => x.download_url)

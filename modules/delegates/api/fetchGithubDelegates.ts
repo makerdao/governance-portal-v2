@@ -13,7 +13,7 @@ async function extractGithubInformation(
   folder: GithubPage
 ): Promise<DelegateRepoInformation | undefined> {
   try {
-    const folderContents = await fetchGitHubPage(owner, repo, folder.path);
+    const folderContents = await fetchGitHubPage(owner, repo, folder.path, 1);
 
     const profileMd = folderContents.find(item => item.name === 'profile.md');
 
@@ -88,7 +88,8 @@ export async function fetchGithubDelegates(
     const folders = await fetchGitHubPage(
       delegatesRepositoryInfo.owner,
       delegatesRepositoryInfo.repo,
-      delegatesRepositoryInfo.page
+      delegatesRepositoryInfo.page,
+      2
     );
 
     // Get the information of all the delegates, filter errored ones
@@ -139,7 +140,8 @@ export async function fetchGithubDelegate(
     const folders = await fetchGitHubPage(
       delegatesRepositoryInfo.owner,
       delegatesRepositoryInfo.repo,
-      delegatesRepositoryInfo.page
+      delegatesRepositoryInfo.page,
+      3
     );
     const folder = folders.find(f => f.name.toLowerCase() === address.toLowerCase());
 
