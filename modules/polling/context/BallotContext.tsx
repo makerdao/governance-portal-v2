@@ -14,7 +14,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import shallow from 'zustand/shallow';
 import { Ballot, BallotVote } from '../types/ballot';
-
+import { parsePollOptions } from '../helpers/parsePollOptions';
 interface ContextProps {
   ballot: Ballot;
   transaction?: Transaction;
@@ -200,9 +200,12 @@ export const BallotProvider = ({ children }: PropTypes): React.ReactElement => {
       }
     });
 
+    const optionIds = parsePollOptions(pollOptions);
+
     const voteTxCreator = voteDelegateContract
-      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, pollOptions)
-      : () => polling['vote(uint256[],uint256[])'](pollIds, pollOptions);
+      ? () => voteDelegateContract['votePoll(uint256[],uint256[])'](pollIds, optionIds)
+      : // vote with array arguments can be used for single vote and multiple vote
+        () => polling['vote(uint256[],uint256[])'](pollIds, optionIds);
 
     const txId = track(voteTxCreator, account, `Voting on ${Object.keys(ballot).length} polls`, {
       pending: txHash => {
