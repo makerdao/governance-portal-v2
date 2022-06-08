@@ -8,14 +8,16 @@ const token2 = config.GITHUB_TOKEN_2 ? config.GITHUB_TOKEN_2 : config.GITHUB_TOK
 const token3 = config.GITHUB_TOKEN_3 ? config.GITHUB_TOKEN_3 : config.GITHUB_TOKEN;
 const token4 = config.GITHUB_TOKEN_4 ? config.GITHUB_TOKEN_4 : config.GITHUB_TOKEN;
 
-let octokits;
+const octokits = new Array(4);
 try {
   octokits[0] = new Octokit({ auth: token1 });
   octokits[1] = new Octokit({ auth: token2 });
   octokits[2] = new Octokit({ auth: token3 });
   octokits[3] = new Octokit({ auth: token4 });
 } catch (e) {
-  console.warn('WARNING: GitHub token not configured correctly. Vote delegates and/or executives will not be fetched');
+  console.warn(
+    'WARNING: GitHub token not configured correctly. Vote delegates and/or executives will not be fetched'
+  );
 }
 
 export type GithubPage = {
@@ -26,7 +28,12 @@ export type GithubPage = {
   type: string;
 };
 
-export async function fetchGitHubPage(owner: string, repo: string, path: string, tokenNum: number): Promise<GithubPage[]> {
+export async function fetchGitHubPage(
+  owner: string,
+  repo: string,
+  path: string,
+  tokenNum: number
+): Promise<GithubPage[]> {
   if (!octokits[tokenNum - 1]) {
     return Promise.resolve([]);
   }
