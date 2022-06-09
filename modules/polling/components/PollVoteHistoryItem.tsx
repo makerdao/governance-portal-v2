@@ -5,7 +5,7 @@ import { Icon } from '@makerdao/dai-ui-icons';
 import { InternalLink } from 'modules/app/components/InternalLink';
 import { ExternalLink } from 'modules/app/components/ExternalLink';
 import { formatDateWithTime } from 'lib/datetime';
-import { POLL_VOTE_TYPE } from '../polling.constants';
+import { PollInputFormat, POLL_VOTE_TYPE } from '../polling.constants';
 import { usePollTally } from '../hooks/usePollTally';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
@@ -83,17 +83,17 @@ export function PollVoteHistoryItem({ vote }: { vote: PollVoteHistory }): React.
             }}
             as="p"
           >
-            {vote.poll.voteType === POLL_VOTE_TYPE.RANKED_VOTE ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
+            {vote.poll.parameters.inputFormat === PollInputFormat.rankFree ? 'VOTED 1ST CHOICE' : 'VOTED OPTION'}
           </Text>
           <Text
             as="p"
             sx={{
               textAlign: [isPluralityVote ? 'right' : 'left', 'right'],
-              color: getVoteColor(vote.optionId as number, vote.poll.voteType),
+              color: getVoteColor(vote.optionId as number, vote.poll.parameters.inputFormat),
               fontWeight: 'semiBold'
             }}
           >
-            {vote.optionValue}
+            {vote.optionValue.map(value => <Box key={`voted-${vote.poll.pollId}-${value}`}>{value}</Box>)}
           </Text>
         </Box>
       </Box>

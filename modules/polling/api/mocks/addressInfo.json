@@ -72,7 +72,7 @@
           },
           "numVoters": 13
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 633,
@@ -118,7 +118,7 @@
           },
           "numVoters": 13
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 632,
@@ -164,7 +164,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 631,
@@ -216,7 +216,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 630,
@@ -274,7 +274,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 629,
@@ -320,7 +320,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 628,
@@ -366,7 +366,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 627,
@@ -418,7 +418,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 626,
@@ -533,7 +533,7 @@
           },
           "numVoters": 20
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 624,
@@ -585,7 +585,7 @@
           },
           "numVoters": 13
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 623,
@@ -643,7 +643,7 @@
           },
           "numVoters": 14
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       },
       {
         "pollId": 622,
@@ -701,7 +701,7 @@
           },
           "numVoters": 15
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       },
       {
         "pollId": 621,
@@ -759,7 +759,7 @@
           },
           "numVoters": 10
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 620,
@@ -805,7 +805,7 @@
           },
           "numVoters": 10
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 619,
@@ -857,7 +857,7 @@
           },
           "numVoters": 14
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 618,
@@ -903,7 +903,7 @@
           },
           "numVoters": 14
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 617,
@@ -961,7 +961,7 @@
           },
           "numVoters": 24
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       },
       {
         "pollId": 616,
@@ -1019,7 +1019,7 @@
           },
           "numVoters": 24
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       },
       {
         "pollId": 615,
@@ -1077,7 +1077,7 @@
           },
           "numVoters": 25
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       },
       {
         "pollId": 614,
@@ -1135,7 +1135,7 @@
           },
           "numVoters": 28
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 613,
@@ -1244,7 +1244,7 @@
           },
           "numVoters": 27
         },
-        "optionValue": "Yes"
+        "optionValue": ["Yes"]
       },
       {
         "pollId": 610,
@@ -1302,7 +1302,7 @@
           },
           "numVoters": 30
         },
-        "optionValue": "Yes (Greenlight)"
+        "optionValue": ["Yes (Greenlight)"]
       }
     ]
   }
