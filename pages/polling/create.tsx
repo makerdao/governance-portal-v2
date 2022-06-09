@@ -34,7 +34,7 @@ const editMarkdown = (content, title) => {
 
 const CreateText = ({ children }) => {
   return (
-    <Text
+    <Box
       mb={3}
       sx={{
         width: '100%',
@@ -45,7 +45,7 @@ const CreateText = ({ children }) => {
       }}
     >
       {children}
-    </Text>
+    </Box>
   );
 };
 const PollingCreate = (): React.ReactElement => {
@@ -148,8 +148,16 @@ const PollingCreate = (): React.ReactElement => {
                             <Text key={i}>{`${option}: ${poll.options[option]}`}</Text>
                           ))}
                       </CreateText>
-                      <Label>Vote Type</Label>
-                      <CreateText>{poll?.voteType}</CreateText>
+                      <Label>Input Format</Label>
+                      <CreateText>{poll?.parameters.inputFormat}</CreateText>
+                      <Label>Victory Conditions</Label>
+                      <CreateText>
+                        {poll?.parameters.victoryConditions.map(v => (
+                          <Box key={`victory-condition-${v.type}`}>{JSON.stringify(v)}</Box>
+                        ))}
+                      </CreateText>
+                      <Label>Result Display</Label>
+                      <CreateText>{poll?.parameters.resultDisplay}</CreateText>
                       <Label>Category</Label>
                       <CreateText>{poll?.tags.map(t => t.longname).join(', ')}</CreateText>
                       <Label>Poll Start Time</Label>

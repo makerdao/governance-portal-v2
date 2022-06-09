@@ -28,12 +28,6 @@ export async function fetchPollMetadata(p: PartialPoll): Promise<Poll | null> {
     return null;
   }
 
-  // Parameters are wrong
-  if (!poll.parameters) {
-    console.error(`Poll ${p.pollId} incorrect poll parameters `);
-    return null;
-  }
-
   // If the poll hasn't started yet return null
   if (new Date(poll.startDate).getTime() > Date.now()) {
     console.error(`Poll ${p.pollId} hasn't started yet.`);

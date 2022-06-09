@@ -30,10 +30,15 @@ export function validateText(text: string): ValidationResult {
     if (isEmpty(data)) return { valid: false, errors: ['Front matter is blank'] };
     const errors: string[] = [];
 
-    // poll parameters
-    const [parameters, errorParameters] = validatePollParameters(data.parameters);
-    if (!parameters) {
-      errorParameters.forEach(e => errors.push(e));
+    // poll parameters | vote type. Vote type is for old polls, parameters for new polls
+    if (data.vote_type && !POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
+      errors.push(`Invalid vote type: "${data.vote_type}"`);
+    }
+    if (!data.vote_type) {
+      const [parameters, errorParameters] = validatePollParameters(data.parameters);
+      if (!parameters) {
+        errorParameters.forEach(e => errors.push(e));
+      }
     }
 
     // vote options
