@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { Poll, PartialPoll } from 'modules/polling/types';
 import { parsePollMetadata } from './parsePollMetadata';
 import { POLL_VOTE_TYPES_ARRAY } from '../polling.constants';
+import { validatePollParameters } from './validatePollParameters';
 
 type ValidationResult = {
   valid: boolean;
@@ -29,9 +30,10 @@ export function validateText(text: string): ValidationResult {
     if (isEmpty(data)) return { valid: false, errors: ['Front matter is blank'] };
     const errors: string[] = [];
 
-    // vote type
-    if (!POLL_VOTE_TYPES_ARRAY.includes(data.vote_type)) {
-      errors.push(`Invalid vote type: "${data.vote_type}"`);
+    // poll parameters
+    const [parameters, errorParameters] = validatePollParameters(data.parameters);
+    if (!parameters) {
+      errorParameters.forEach(e => errors.push(e));
     }
 
     // vote options

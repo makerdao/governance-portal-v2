@@ -1,5 +1,5 @@
 import { Tag } from 'modules/app/types/tag';
-import { PollVictoryConditions } from '../polling.constants';
+import { PollResultDisplay, PollVictoryConditions } from '../polling.constants';
 import { PollVoteType } from './pollVoteType';
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
@@ -30,12 +30,6 @@ export type PollVictoryConditionInstantRunoff = {
   type: PollVictoryConditions.instantRunoff;
 };
 
-enum PollResultDisplay {
-  singleVoteBreakdown = 'singleVoteBreakdown',
-  instantRunoffBreakdown = 'instant-runoff-breakdown',
-  conditionSummary = 'condition-summary'
-}
-
 type PollParameters = {
   inputFormat: PollInputFormat;
   victoryConditions: (
@@ -58,7 +52,6 @@ export type Poll = {
   endDate: Date;
   startDate: Date;
   discussionLink: string | null;
-  voteType: PollVoteType;
   parameters: PollParameters;
   tags: Tag[];
   slug: string;

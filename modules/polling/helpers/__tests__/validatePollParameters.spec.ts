@@ -1,5 +1,10 @@
 import matter from 'gray-matter';
-import { ERRORS_VALIDATE_POLL_PARAMETERS, validatePollParameters } from '../validatePollParameters';
+import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import {
+  ERRORS_VALIDATE_POLL_PARAMETERS,
+  oldVoteTypeToNewParameters,
+  validatePollParameters
+} from '../validatePollParameters';
 
 describe('parse poll parameters', () => {
   it('should error if it misses input_format', () => {
@@ -189,13 +194,11 @@ parameters:
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
       inputFormat: 'single-choice',
-      victoryConditions: [{ type: 'plurality'}],
+      victoryConditions: [{ type: 'plurality' }],
       resultDisplay: 'single-vote-breakdown'
     });
     expect(errors.length).toBe(0);
-
   });
-
 
   it('should error if input_format rank-free does not have result_display instant-runoff-breakdown', () => {
     const parameters = `---
@@ -233,14 +236,11 @@ parameters:
     const [parsed, errors] = validatePollParameters(parametersMarkdown.data.parameters);
     expect(parsed).toEqual({
       inputFormat: 'rank-free',
-      victoryConditions: [{ type: 'instant-runoff'}],
+      victoryConditions: [{ type: 'instant-runoff' }],
       resultDisplay: 'instant-runoff-breakdown'
     });
     expect(errors.length).toBe(0);
-
   });
-
-
 
   it('should error if victory_conditions does not include any valid condition', () => {
     const parameters = `---
@@ -261,20 +261,39 @@ parameters:
     expect(errors[0]).toEqual(ERRORS_VALIDATE_POLL_PARAMETERS.missingVictoryConditions);
   });
 
-  it('should return valid for a correct structure', () => {
-    const parameters = `
-parameters:
-  input_format: single-choice
-  victory_conditions:
-    - { type : majority: options: [1,2,3,4] }
-    - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
-    - { type : default, options : [2] }
-  result_display: single-vote-breakdown
-`;
-    const parametersMarkdown = matter(parameters);
-    // Returns correct if is correct
-    const [parsed, errors] = validatePollParameters(parametersMarkdown.data);
+  // TODO: Majority support
+  //   it('should return valid for a correct structure', () => {
+  //     const parameters = `
+  // parameters:
+  //   input_format: single-choice
+  //   victory_conditions:
+  //     - { type : majority: options: [1,2,3,4] }
+  //     - { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
+  //     - { type : default, options : [2] }
+  //   result_display: single-vote-breakdown
+  // `;
+  //     const parametersMarkdown = matter(parameters);
+  //     // Returns correct if is correct
+  //     const [parsed, errors] = validatePollParameters(parametersMarkdown.data);
+  //   });
+});
+
+describe('Transform old vote type to new parameters', () => {
+  it('transforms plurality to new structure', () => {
+    const result = oldVoteTypeToNewParameters(POLL_VOTE_TYPE.PLURALITY_VOTE);
+    expect(result).toEqual({
+      inputFormat: 'single-choice',
+      victoryConditions: [{ type: 'plurality' }],
+      resultDisplay: 'single-vote-breakdown'
+    });
   });
 
-  it('Returns errors if comparator is missing in a comparison', () => {});
+  it('transforms IRV to new structure', () => {
+    const result = oldVoteTypeToNewParameters(POLL_VOTE_TYPE.RANKED_VOTE);
+    expect(result).toEqual({
+      inputFormat: 'rank-free',
+      victoryConditions: [{ type: 'instant-runoff' }],
+      resultDisplay: 'instant-runoff-breakdown'
+    });
+  });
 });
