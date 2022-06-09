@@ -1,34 +1,34 @@
 import { Tag } from 'modules/app/types/tag';
+import { PollVictoryConditions } from '../polling.constants';
 import { PollVoteType } from './pollVoteType';
-
-export enum PollInputFormat {
-  singleChoice = 'single-choice',
-  rankFree = 'rank-free',
-}
-
-export enum PollVictoryConditions {
-  majority = 'majority',
-  plurality = 'plurality'
-}
 
 //  { type : comparison, options: [0, 1, 4], comparator : '>=10000' }
 export type PollVictoryConditionComparison = {
-  type: 'comparison',
-  options: number[],
-  comparator: string
-}
+  type: PollVictoryConditions.comparison;
+  options: number[];
+  comparator: string;
+};
 // { type : default, options : [2] }
 export type PollVictoryConditionDefault = {
-  type: 'default',
-  options: number[]
-}
+  type: PollVictoryConditions.default;
+  options: number[];
+};
 
 // NOT SUPPORTED YET: { type : majority, options : [2] }
-export type PollVictoryMajority = {
-  type: 'majority',
-  options: number[]
-}
+export type PollVictoryConditionMajority = {
+  type: PollVictoryConditions.majority;
+  options: number[];
+};
 
+// { type : 'plurality' }
+export type PollVictoryConditionPlurality = {
+  type: PollVictoryConditions.plurality;
+};
+
+// { type : 'instant-runoff' }
+export type PollVictoryConditionInstantRunoff = {
+  type: PollVictoryConditions.instantRunoff;
+};
 
 enum PollResultDisplay {
   singleVoteBreakdown = 'singleVoteBreakdown',
@@ -37,10 +37,16 @@ enum PollResultDisplay {
 }
 
 type PollParameters = {
-  inputFormat: PollInputFormat,
-  victoryConditions: (PollVictoryConditionComparison|PollVictoryConditionDefault|PollVictoryMajority)[],
-  resultDisplay: PollResultDisplay
-}
+  inputFormat: PollInputFormat;
+  victoryConditions: (
+    | PollVictoryConditionComparison
+    | PollVictoryConditionDefault
+    | PollVictoryConditionMajority
+    | PollVictoryConditionInstantRunoff
+    | PollVictoryConditionPlurality
+  )[];
+  resultDisplay: PollResultDisplay;
+};
 
 export type Poll = {
   title: string;
