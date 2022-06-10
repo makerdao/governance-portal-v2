@@ -21,7 +21,7 @@ export default async function fetchAllLocksSummed(
       }
     });
 
-    const locks: AllLocksResponse[] = data?.allLocksSummed?.nodes.map((x, i) => {
+    const locks: AllLocksResponse[] = data?.allLocksSummed?.nodes.map(x => {
       x.unixDate = Math.floor(new Date(x.blockTimestamp).getTime() / 1000);
       x.total = new BigNumber(x.lockTotal).div(1000).toFixed(0);
       x.month = format(new Date(x.blockTimestamp), 'M');

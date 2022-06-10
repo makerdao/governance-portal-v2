@@ -18,22 +18,6 @@ export default function PollCommentItem({
   commentVote: PollTallyVote | undefined;
   poll: Poll;
 }): React.ReactElement {
-  const getTwitterMessage = () => {
-    if (!commentVote) {
-      // This should not happen but in case the tally is missing
-      return `I voted on "${poll.title}". View proposal: `;
-    }
-
-    const voteOptionText =
-      poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
-        ? poll.options[commentVote.optionId]
-        : (commentVote.rankedChoiceOption || [])
-            .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
-            .join(', ');
-
-    return `I voted "${voteOptionText}" for "${poll.title}". View proposal: `;
-  };
-
   const getVotedOption = () => {
     if (!commentVote) {
       // This should not happen but in case the tally is missing

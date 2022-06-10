@@ -1,4 +1,4 @@
-import { Flex, Button, Text, Grid, Close, Link, Spinner } from 'theme-ui';
+import { Flex, Button, Text, Grid, Close, Spinner } from 'theme-ui';
 import { useState } from 'react';
 import { formatValue } from 'lib/string';
 import { Icon } from '@makerdao/dai-ui-icons';

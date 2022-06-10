@@ -40,7 +40,7 @@ export async function getPollComments(
 
   const rpcUrl = getRPCFromChainID(networkNameToChainId(network));
   const provider = await new ethers.providers.JsonRpcProvider(rpcUrl);
-  const promises = uniqueComments.map(async (comment: PollComment, i) => {
+  const promises = uniqueComments.map(async (comment: PollComment) => {
     // verify tx ownership
     const transaction = await provider.getTransaction(comment.txHash as string);
 
