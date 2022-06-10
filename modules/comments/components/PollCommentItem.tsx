@@ -1,6 +1,6 @@
 import React from 'react';
 import { Poll, PollTallyVote } from 'modules/polling/types';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollInputFormat, POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
 import { Text, Box } from 'theme-ui';
 import { getVoteColor } from 'modules/polling/helpers/getVoteColor';
 
@@ -25,7 +25,7 @@ export default function PollCommentItem({
     }
 
     const voteOptionText =
-      poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE
+      poll.parameters.inputFormat === PollInputFormat.rankFree
         ? poll.options[commentVote.optionId]
         : (commentVote.rankedChoiceOption || [])
             .map((choice, index) => `${index + 1} - ${poll.options[choice]}`)
@@ -41,8 +41,8 @@ export default function PollCommentItem({
     }
 
     const voteOptionText =
-      poll.voteType === POLL_VOTE_TYPE.PLURALITY_VOTE ? (
-        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.voteType) }}>
+      poll.parameters.inputFormat === PollInputFormat.singleChoice ? (
+        <Text sx={{ color: getVoteColor(commentVote.optionId, poll.parameters.inputFormat) }}>
           {poll.options[commentVote.optionId]}
         </Text>
       ) : (

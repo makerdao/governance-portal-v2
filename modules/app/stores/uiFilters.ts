@@ -13,7 +13,7 @@ type Store = {
     startDate: null | Date;
     endDate: null | Date;
     categoryFilter: null | { [category: string]: boolean };
-    pollVoteType: null | { [type: string]: boolean };
+    pollVictoryCondition: null | { [type: string]: boolean };
     showPollActive: boolean;
     showPollEnded: boolean;
   };
@@ -25,7 +25,7 @@ type Store = {
   setStartDate: (type: 'poll' | 'executive', startDate: Date | null) => void;
   setEndDate: (type: 'poll' | 'executive', endDate: Date | null) => void;
   setCategoryFilter: (categoryFilter: { [category: string]: boolean }) => void;
-  setPollVoteType: (pollVoteType: { [type: string]: boolean }) => void;
+  setPollVictoryCondition: (pollVictoryCondition: { [type: string]: boolean }) => void;
   setShowPollActive: (showActive: boolean) => void;
   setShowPollEnded: (ended: boolean) => void;
   resetPollFilters: () => void;
@@ -42,7 +42,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     startDate: null,
     endDate: null,
     categoryFilter: null,
-    pollVoteType: null,
+    pollVictoryCondition: null,
     showPollActive: false,
     showPollEnded: false
   },
@@ -70,8 +70,8 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
     set({ pollFilters: { ...get().pollFilters, categoryFilter } });
   },
 
-  setPollVoteType: pollVoteType => {
-    set({ pollFilters: { ...get().pollFilters, pollVoteType } });
+  setPollVictoryCondition: pollVictoryCondition => {
+    set({ pollFilters: { ...get().pollFilters, pollVictoryCondition } });
   },
 
   setShowPollActive: (active: boolean) => {
@@ -89,7 +89,7 @@ const [useUiFiltersStore] = create<Store>((set, get) => ({
         startDate: null,
         endDate: null,
         categoryFilter: null,
-        pollVoteType: null,
+        pollVictoryCondition: null,
         showPollActive: false,
         showPollEnded: false
       },

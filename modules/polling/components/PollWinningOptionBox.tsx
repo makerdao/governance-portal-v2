@@ -4,7 +4,7 @@ import { Text, Flex } from 'theme-ui';
 import { isActivePoll } from '../helpers/utils';
 import SkeletonThemed from 'modules/app/components/SkeletonThemed';
 import { getVoteColor } from '../helpers/getVoteColor';
-import { POLL_VOTE_TYPE } from 'modules/polling/polling.constants';
+import { PollInputFormat } from 'modules/polling/polling.constants';
 import { formatValue } from 'lib/string';
 import { parseUnits } from 'ethers/lib/utils';
 
@@ -17,15 +17,16 @@ export default function PollWinningOptionBox({
 }): React.ReactElement {
   const textWin = isActivePoll(poll) ? 'Leading option' : 'Winning option';
 
+
   return (
     <Flex sx={{ py: 2, justifyContent: 'center' }}>
       {tally && tally.winningOptionName && tally.totalMkrParticipation > 0 ? (
         <Text as="p" variant="caps" sx={{ textAlign: 'center', px: [3, 4], wordBreak: 'break-word' }}>
           {textWin}:{' '}
-          <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.voteType) }}>
+          <span sx={{ color: getVoteColor(parseInt(tally?.winner || '0'), poll.parameters.inputFormat) }}>
             {tally?.winningOptionName}
           </span>{' '}
-          {tally.pollVoteType === POLL_VOTE_TYPE.PLURALITY_VOTE &&
+          {poll.parameters.inputFormat === PollInputFormat.singleChoice &&
             'with ' +
               formatValue(
                 parseUnits(
@@ -35,7 +36,7 @@ export default function PollWinningOptionBox({
                 )
               ) +
               ' MKR supporting.'}
-          {tally.pollVoteType === (POLL_VOTE_TYPE.RANKED_VOTE || POLL_VOTE_TYPE.UNKNOWN) &&
+          {(poll.parameters.inputFormat === PollInputFormat.rankFree || poll.parameters.inputFormat === PollInputFormat.chooseFree)&&
             'with ' +
               formatValue(
                 parseUnits(

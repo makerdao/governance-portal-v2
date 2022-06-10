@@ -19,11 +19,9 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
     }
   }
 
-  // if poll vote type is unknown, treat as ranked choice
-  const voteType: PollVoteType = poll.voteType || POLL_VOTE_TYPE.RANKED_VOTE;
 
   // Builds raw poll tally
-  const tally: RawPollTally = await backoffRetry(3, () => fetchRawPollTally(poll.pollId, voteType, network));
+  const tally: RawPollTally = await backoffRetry(3, () => fetchRawPollTally(poll.pollId, poll.parameters, network));
 
   const endUnix = new Date(poll.endDate).getTime() / 1000;
   const votesByAddress = await fetchVotesByAddressForPoll(poll.pollId, endUnix, network);
@@ -33,7 +31,7 @@ export async function getPollTally(poll: Poll, network: SupportedNetworks): Prom
   const numVoters = tally.numVoters;
 
   const tallyObject = {
-    pollVoteType: voteType,
+    parameters: poll.parameters,
     options:
       Object.keys(tally.options).length > 0
         ? tally.options

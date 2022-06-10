@@ -3,7 +3,6 @@ import { gqlRequest } from 'modules/gql/gqlRequest';
 import { voteMkrWeightsAtTimeRankedChoice } from 'modules/gql/queries/voteMkrWeightsAtTimeRankedChoice';
 import { SupportedNetworks } from 'modules/web3/constants/networks';
 import { networkNameToChainId } from 'modules/web3/helpers/chain';
-import { POLL_VOTE_TYPE } from '../polling.constants';
 import { RawPollTallyPlurality } from '../types';
 import { fetchSpockPollById } from './fetchPollBy';
 
@@ -76,7 +75,6 @@ export async function fetchTallyPlurality(
     winner,
     totalMkrParticipation,
     numVoters,
-    pollVoteType: POLL_VOTE_TYPE.PLURALITY_VOTE,
     options
   };
 }
