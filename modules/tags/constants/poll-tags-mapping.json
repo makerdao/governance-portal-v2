@@ -783,5 +783,9 @@
   "808": ["high-impact", "collateral-offboard"],
   "809": ["medium-impact", "momc"],
   "810": ["medium-impact", "oracle", "ratification", "mips"],
-  "811": ["medium-impact", "oracle", "oracle-feed", "ratification", "mips"]
+  "811": ["medium-impact", "oracle", "oracle-feed", "ratification", "mips"],
+  "812": ["medium-impact", "greenlight"],
+  "813": ["medium-impact", "greenlight"],
+  "814": ["misc-governance", "prioritization-sentiment"],
+  "815": ["misc-governance", "prioritization-sentiment"]
 }
