@@ -9,6 +9,8 @@ type SystemConfig = {
   MONGODB_COMMENTS_DB: string;
   NODE_ENV: 'development' | 'production' | 'test';
   GITHUB_TOKEN: string;
+  GITHUB_TOKEN_2: string;
+  GITHUB_TOKEN_3: string;
   MIXPANEL_PROD: string;
   MIXPANEL_DEV: string;
 };
@@ -24,6 +26,8 @@ export const config: SystemConfig = {
   MONGODB_COMMENTS_DB: process.env.MONGODB_COMMENTS_DB || '',
   NODE_ENV: process.env.NODE_ENV || 'development',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || '',
+  GITHUB_TOKEN_2: process.env.GITHUB_TOKEN_2 || '',
+  GITHUB_TOKEN_3: process.env.GITHUB_TOKEN_3 || '',
   MIXPANEL_PROD: process.env.NEXT_PUBLIC_MIXPANEL_PROD || '',
   MIXPANEL_DEV: process.env.NEXT_PUBLIC_MIXPANEL_DEV || ''
 };
