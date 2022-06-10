@@ -38,6 +38,12 @@ import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
 import { shuffleArray } from 'lib/common/shuffleArray';
+import { Delegate } from 'modules/delegates/types';
+
+interface LandingPageProps extends LandingPageData {
+  recognizedDelegates: Delegate[];
+  meetYourDelegates: Delegate[];
+}
 
 const LandingPage = ({
   proposals,
@@ -49,7 +55,7 @@ const LandingPage = ({
   mkrOnHat,
   hat,
   mkrInChief
-}: LandingPageData) => {
+}: LandingPageProps) => {
   const bpi = useBreakpointIndex();
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
@@ -293,7 +299,7 @@ export default function Index({
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
   mkrInChief: prefetchedMkrInChief
-}: LandingPageData): JSX.Element {
+}: LandingPageProps): JSX.Element {
   const { network } = useActiveWeb3React();
 
   const fallbackData = isDefaultNetwork(network)
