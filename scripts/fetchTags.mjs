@@ -19,7 +19,7 @@ async function main() {
 
     console.log('Downloaded poll-tags mapping.');
 
-    // tags
+    //poll tags
     const urlTags =
       'https://raw.githubusercontent.com/makerdao/community/master/governance/polls/meta/tags.json';
     const tags = await fetch(urlTags);
@@ -31,7 +31,7 @@ async function main() {
 
     console.log('Downloaded poll tags.');
 
-    // tags
+    //delegate tags
     const urlDelegateTags =
       'https://raw.githubusercontent.com/makerdao/community/master/governance/delegates/meta/tags.json';
     const tagsDelegates = await fetch(urlDelegateTags);
