@@ -44,8 +44,6 @@ const LandingPage = ({
   polls,
   delegates,
   totalMKRDelegated,
-  recognizedDelegates,
-  meetYourDelegates,
   mkrOnHat,
   hat,
   mkrInChief
@@ -54,6 +52,9 @@ const LandingPage = ({
   const [videoOpen, setVideoOpen] = useState(false);
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
+
+  const recognizedDelegates = filterDelegates(delegates, false, true, null);
+  const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   // change background on color mode switch
   useEffect(() => {
@@ -287,8 +288,6 @@ export default function Index({
   proposals: prefetchedProposals,
   polls: prefetchedPolls,
   delegates: prefetchedDelegates,
-  recognizedDelegates: prefetchedRecognizedDelegates,
-  meetYourDelegates: prefetchedMeetYourDelegates,
   totalMKRDelegated: prefetchedTotalMKRDelegated,
   mkrOnHat: prefetchedMkrOnHat,
   hat: prefetchedHat,
@@ -301,8 +300,6 @@ export default function Index({
         proposals: prefetchedProposals,
         polls: prefetchedPolls,
         delegates: prefetchedDelegates,
-        recognizedDelegates: prefetchedRecognizedDelegates,
-        meetYourDelegates: prefetchedMeetYourDelegates,
         totalMKRDelegated: prefetchedTotalMKRDelegated,
         mkrOnHat: prefetchedMkrOnHat,
         hat: prefetchedHat,
@@ -329,17 +326,12 @@ export default function Index({
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
-  // filter delegates
   const delegates = isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [];
-  const recognizedDelegates = filterDelegates(delegates, false, true, null);
-  const meetYourDelegates = shuffleArray(recognizedDelegates);
 
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
     delegates,
-    recognizedDelegates,
-    meetYourDelegates,
     totalMKRDelegated: isDefaultNetwork(network)
       ? prefetchedTotalMKRDelegated
       : data?.totalMKRDelegated ?? '0',
