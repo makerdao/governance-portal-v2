@@ -53,8 +53,11 @@ const LandingPage = ({
   const [mode] = useColorMode();
   const [backgroundImage, setBackroundImage] = useState('url(/assets/bg_medium.jpeg)');
 
-  const recognizedDelegates = filterDelegates(delegates, false, true, null);
-  const meetYourDelegates = shuffleArray(recognizedDelegates);
+  const [recognizedDelegates, meetYourDelegates] = useMemo(() => {
+    const recognized = filterDelegates(delegates, false, true, null);
+    const meet = shuffleArray(recognized);
+    return [recognized, meet];
+  }, [delegates]);
 
   // change background on color mode switch
   useEffect(() => {
