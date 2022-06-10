@@ -36,6 +36,8 @@ import { useInView } from 'react-intersection-observer';
 import { useVotedProposals } from 'modules/executive/hooks/useVotedProposals';
 import { fetchLandingPageData } from 'modules/home/api/fetchLandingPageData';
 import { LandingPageData } from 'modules/home/api/fetchLandingPageData';
+import { filterDelegates } from 'modules/delegates/helpers/filterDelegates';
+import { shuffleArray } from 'lib/common/shuffleArray';
 
 const LandingPage = ({
   proposals,
@@ -327,16 +329,17 @@ export default function Index({
     return <ErrorPage statusCode={500} title="Error fetching data" />;
   }
 
+  // filter delegates
+  const delegates = isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [];
+  const recognizedDelegates = filterDelegates(delegates, false, true, null);
+  const meetYourDelegates = shuffleArray(recognizedDelegates);
+
   const props = {
     proposals: isDefaultNetwork(network) ? prefetchedProposals : data?.proposals ?? [],
     polls: isDefaultNetwork(network) ? prefetchedPolls : data?.polls || [],
-    delegates: isDefaultNetwork(network) ? prefetchedDelegates : data?.delegates ?? [],
-    recognizedDelegates: isDefaultNetwork(network)
-      ? prefetchedRecognizedDelegates
-      : data?.recognizedDelegates ?? [],
-    meetYourDelegates: isDefaultNetwork(network)
-      ? prefetchedMeetYourDelegates
-      : data?.meetYourDelegates ?? [],
+    delegates,
+    recognizedDelegates,
+    meetYourDelegates,
     totalMKRDelegated: isDefaultNetwork(network)
       ? prefetchedTotalMKRDelegated
       : data?.totalMKRDelegated ?? '0',
@@ -349,17 +352,8 @@ export default function Index({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const {
-    proposals,
-    polls,
-    delegates,
-    totalMKRDelegated,
-    recognizedDelegates,
-    meetYourDelegates,
-    mkrOnHat,
-    hat,
-    mkrInChief
-  } = await fetchLandingPageData(SupportedNetworks.MAINNET);
+  const { proposals, polls, delegates, totalMKRDelegated, mkrOnHat, hat, mkrInChief } =
+    await fetchLandingPageData(SupportedNetworks.MAINNET);
 
   return {
     revalidate: 5 * 60, // allow revalidation every 30 minutes
@@ -368,8 +362,6 @@ export const getStaticProps: GetStaticProps = async () => {
       polls,
       delegates,
       totalMKRDelegated,
-      recognizedDelegates,
-      meetYourDelegates,
       mkrOnHat,
       hat,
       mkrInChief
